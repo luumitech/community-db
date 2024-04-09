@@ -1,27 +1,35 @@
 'use client';
-import { Button, ButtonGroup } from '@nextui-org/react';
-import { signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import { Header } from '~/view/header';
-import styles from './index.module.css';
+import { MainMenu } from '~/view/main-menu';
+import { NotSignedIn } from './not-signed-in';
 
 interface Props {}
 
 export const Landing: React.FC<Props> = ({}) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  if (!session) {
+    return <NotSignedIn />;
+  }
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="grow">
-        <div>content start</div>
-        <div>content</div>
-        <div>content</div>
-        <div>content</div>
-        <div>content</div>
-        <div>content</div>
-        <div>content</div>
-        <div>content</div>
-        <div>content end</div>
-      </main>
-    </div>
+    <MainMenu
+      header="Welcome!"
+      items={[
+        {
+          id: 'select-community',
+          name: 'Select Community',
+          href: '/select-community',
+        },
+        {
+          id: 'create-community',
+          name: 'Create New Community',
+          href: '/create-community',
+        },
+      ]}
+    />
   );
 };

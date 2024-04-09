@@ -1,16 +1,23 @@
 'use client';
+import { ApolloProvider } from '@apollo/client';
 import { NextUIProvider } from '@nextui-org/react';
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider, SessionProviderProps } from 'next-auth/react';
 import React from 'react';
+import apolloClient from '~/lib/apollo';
 
-interface Props {}
+interface Props {
+  sessionProviderProps: Omit<SessionProviderProps, 'children'>;
+}
 
-export const Providers: React.FC<React.PropsWithChildren<Props>> = async ({
+export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
+  sessionProviderProps,
   children,
 }) => {
   return (
-    <SessionProvider>
-      <NextUIProvider>{children}</NextUIProvider>
+    <SessionProvider {...sessionProviderProps}>
+      <ApolloProvider client={apolloClient}>
+        <NextUIProvider>{children}</NextUIProvider>
+      </ApolloProvider>
     </SessionProvider>
   );
 };

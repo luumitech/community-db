@@ -11,6 +11,7 @@ import {
 } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
@@ -19,22 +20,30 @@ interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    // once logged out, navigate to landing page
+    if (!session) {
+      router.push('/');
+    }
+  }, [session, router]);
 
   const menuItems = ['Tab1', 'Tab2'];
 
   return (
-    <header className="sticky top-0">
+    <header className="sticky z-10 top-0">
       <Navbar
         maxWidth="full"
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
-        <NavbarContent className="sm:hidden" justify="start">
+        {/* <NavbarContent className="sm:hidden" justify="start">
           <NavbarMenuToggle
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
-        </NavbarContent>
+        </NavbarContent> */}
         <NavbarContent className="pr-3" justify="center">
           <NavbarBrand>
             <Image
@@ -51,7 +60,7 @@ export const Header: React.FC<Props> = ({}) => {
             </div>
           </NavbarBrand>
         </NavbarContent>
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
           {menuItems.map((item, index) => (
             <NavbarItem key={`${item}-${index}`}>
               <Link color="foreground" href="#">
@@ -59,17 +68,15 @@ export const Header: React.FC<Props> = ({}) => {
               </Link>
             </NavbarItem>
           ))}
-        </NavbarContent>
+        </NavbarContent> */}
         <NavbarContent justify="end">
-          <NotSignedIn />
-          <SignedIn />
+          {session ? <SignedIn /> : <NotSignedIn />}
         </NavbarContent>
-
         {/**
          * Menu items for burger menu
          * only shows in small screen
          */}
-        <NavbarMenu>
+        {/* <NavbarMenu>
           {menuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
@@ -88,7 +95,7 @@ export const Header: React.FC<Props> = ({}) => {
               </Link>
             </NavbarMenuItem>
           ))}
-        </NavbarMenu>
+        </NavbarMenu> */}
       </Navbar>
     </header>
   );
