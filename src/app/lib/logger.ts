@@ -1,6 +1,6 @@
 import pino from 'pino';
 import pretty from 'pino-pretty';
-import { isProduction } from '~/util/env-var';
+import { isProduction } from '~/lib/env-var';
 
 // Standard set of serializers
 // https://github.com/pinojs/pino-std-serializers

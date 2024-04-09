@@ -6,13 +6,27 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from '@nextui-org/react';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
+
+/**
+ * Extract the first letter of each word
+ */
+function acronym(input?: string | null) {
+  if (!input) {
+    return 'n/a';
+  }
+  return input
+    .split(/\s/)
+    .reduce((response, word) => (response += word.slice(0, 1)), '');
+}
 
 interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
   const { data: session } = useSession();
+  const router = useRouter();
   const user = session?.user;
   if (!user) {
     return null;
@@ -25,7 +39,8 @@ export const SignedIn: React.FC<Props> = ({}) => {
   return (
     <Dropdown placement="bottom-end">
       {/**
-       * This is creating a warning
+       * This is creating a warning:
+       * React does not recognize the `originalProps` prop on a DOM element.
        * https://github.com/nextui-org/nextui/issues/2593
        */}
       <DropdownTrigger>
@@ -34,7 +49,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
           as="button"
           className="transition-transform"
           color="secondary"
-          name={name ?? 'n/a'}
+          name={acronym(name) ?? 'n/a'}
           size="sm"
           {...(!!image && { src: image })}
         />
@@ -45,7 +60,11 @@ export const SignedIn: React.FC<Props> = ({}) => {
           <p className="font-semibold">{email}</p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
-        <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
+        <DropdownItem
+          key="logout"
+          color="danger"
+          onClick={() => router.push('/sign-out')}
+        >
           Log Out
         </DropdownItem>
       </DropdownMenu>

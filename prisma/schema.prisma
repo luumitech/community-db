@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator pothos {
+  provider = "prisma-pothos-types"
+  output   = "../src/app/graphql/generated/pothos-types.ts"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  email         String      @unique
+  role          Role        @default(USER)
+  communityIds  String[]    @db.ObjectId
+  communityList Community[] @relation(fields: [communityIds], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Community {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  userIds   String[] @db.ObjectId
+  userList  User[]   @relation(fields: [userIds], references: [id])
+}
