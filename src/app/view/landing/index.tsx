@@ -22,12 +22,12 @@ export const Landing: React.FC<Props> = ({}) => {
         {
           id: 'select-community',
           name: 'Select Community',
-          href: '/select-community',
+          href: '/community/select',
         },
         {
           id: 'create-community',
           name: 'Create New Community',
-          href: '/create-community',
+          href: '/community/create',
         },
       ]}
     />
