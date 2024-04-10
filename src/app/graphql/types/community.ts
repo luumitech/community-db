@@ -8,6 +8,14 @@ builder.prismaObject('Community', {
   }),
 });
 
+// builder.queryField('userList', (t) =>
+//   t.prismaField({
+//     type: ['User'],
+//     resolve: (query, _parent, _args, _ctx, _info) =>
+//       prisma.user.findMany({ ...query }),
+//   })
+// );
+
 builder.mutationField('communityCreate', (t) =>
   t.prismaField({
     type: 'Community',

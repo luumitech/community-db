@@ -43,9 +43,7 @@ const CommunityCreateMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {}
-
-const SelectCommunity: React.FC<Props> = () => {
+export default function CommunityCreate() {
   const { data: session } = useSession();
   const router = useRouter();
   const [create, result] = useMutation(CommunityCreateMutation);
@@ -75,7 +73,6 @@ const SelectCommunity: React.FC<Props> = () => {
         label="Community name"
         placeholder="Enter community name"
         isRequired
-        variant="faded"
         errorMessage={errors.name?.message}
         defaultValue={defaultValues.name}
         {...register('name')}
@@ -92,6 +89,4 @@ const SelectCommunity: React.FC<Props> = () => {
       </Button>
     </div>
   );
-};
-
-export default SelectCommunity;
+}

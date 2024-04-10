@@ -20,9 +20,7 @@ const CurrentUserInfoQuery = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {}
-
-const SelectCommunity: React.FC<Props> = () => {
+export default function CommunitySelect() {
   const { data: session } = useSession();
   const result = useQuery(CurrentUserInfoQuery);
   useGraphqlErrorHandler(result);
@@ -32,14 +30,12 @@ const SelectCommunity: React.FC<Props> = () => {
   }
 
   const communityList = result.data?.userCurrent.communityList ?? [];
+  const items = communityList.map((entry) => ({
+    ...entry,
+    href: `/community/${entry.id}`,
+  }));
 
   return (
-    <MainMenu
-      header="Select Database"
-      loading={result.loading}
-      items={communityList}
-    />
+    <MainMenu header="Select Database" loading={result.loading} items={items} />
   );
-};
-
-export default SelectCommunity;
+}
