@@ -127,6 +127,17 @@ export class WorksheetHelper {
   }
 
   /**
+   * Iterator for looping through columns of worksheet
+   */
+  *iterColumn(row: number | string) {
+    const rowIdx = WorksheetHelper.decodeRow(row);
+    for (let colIdx = 0; colIdx < this.colCount; colIdx++) {
+      const cell = this.cell(colIdx, rowIdx);
+      yield { rowIdx, colIdx, ...cell };
+    }
+  }
+
+  /**
    * Retrieve the cell object at a given cell coordinate
    *
    * @example

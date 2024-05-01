@@ -5,6 +5,7 @@ builder.prismaObject('Community', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
     userList: t.relation('userList'),
+    propertyList: t.relation('propertyList'),
   }),
 });
 
