@@ -13,7 +13,8 @@
     "seed-db": "npx prisma db push --force-reset && npx prisma db seed",
     "graphql-codegen": "graphql-codegen --config codegen.ts",
     "prisma-generate": "npx prisma generate",
-    "generate": "yarn prisma-generate && yarn graphql-codegen"
+    "generate": "yarn prisma-generate && yarn graphql-codegen",
+    "semantic-release": "semantic-release"
   },
   "prisma": {
     "seed": "ts-node -r tsconfig-paths/register --transpile-only ./prisma/seed.ts"
@@ -72,6 +73,7 @@
     "postcss": "^8",
     "prettier": "^3.1.0",
     "prettier-plugin-organize-imports": "^3.2.4",
+    "semantic-release": "^23.0.8",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"
