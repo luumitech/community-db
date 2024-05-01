@@ -9,4 +9,14 @@ module.exports = {
   rules: {
     'react/self-closing-comp': ['error', { component: true, html: true }],
   },
+  overrides: [
+    {
+      files: ['__tests__/**/*'],
+      plugins: ['jest'],
+      extends: ['plugin:jest/recommended'],
+      env: {
+        'jest/globals': true,
+      },
+    },
+  ],
 };

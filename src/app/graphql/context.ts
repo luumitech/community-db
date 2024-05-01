@@ -23,3 +23,5 @@ export async function createContext(ctx: GetServerSidePropsContext) {
     user: { ...user, email },
   };
 }
+
+export type Context = Awaited<ReturnType<typeof createContext>>;

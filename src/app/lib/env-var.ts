@@ -6,6 +6,13 @@ export function isProduction() {
 }
 
 /**
+ * Is running unit tests
+ */
+export function isRunningUnitTest() {
+  return process.env.JEST_RUNNING === 'true';
+}
+
+/**
  * Check if running in server environment (i.e. Node server)
  */
 export function isServer() {
