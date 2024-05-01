@@ -1,0 +1,52 @@
+name: Main branch
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --prefer-offline --frozen-lockfile
+
+      - name: Create release
+        run: yarn semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+
+  # Azure deployment uses up way too much github action minutes
+  # deploy:
+  #   name: Deploy to Azure
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@master
+
+  #     - name: Use Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+
+  #     - name: 'Deploy to Azure WebApp'
+  #       uses: azure/webapps-deploy@v2
+  #       with:
+  #         app-name: ${{ env.AZURE_WEBAPP_NAME }}
+  #         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+  #         slot-name: production
