@@ -20,7 +20,6 @@ model User {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   email         String      @unique
-  role          Role        @default(USER)
   communityIds  String[]    @db.ObjectId
   communityList Community[] @relation(fields: [communityIds], references: [id])
 }

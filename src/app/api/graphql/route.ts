@@ -10,6 +10,16 @@ const yoga = createYoga<{
   graphqlEndpoint: '/api/graphql',
   schema,
   context: createContext,
+  fetchAPI: {
+    Response: Response,
+    Request: Request,
+  },
+  /**
+   * See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking
+   */
+  maskedErrors: false,
 });
 
-export { yoga as GET, yoga as POST };
+const { handleRequest } = yoga;
+
+export { handleRequest as GET, handleRequest as POST };

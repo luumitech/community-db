@@ -1,6 +1,7 @@
-import { Button, Input, InputProps } from '@nextui-org/react';
+import { Input, InputProps } from '@nextui-org/react';
 import React from 'react';
-import { PiFolderOpenDuotone } from 'react-icons/pi';
+import { FaFolderOpen } from 'react-icons/fa';
+import { MdOutlineClear } from 'react-icons/md';
 
 type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 type CustomInputProps = Omit<
@@ -11,7 +12,7 @@ type CustomInputProps = Omit<
 interface Props extends CustomInputProps, ReactInputProps {}
 
 export const FileInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ onChange, ...props }, ref) => {
+  ({ onChange, onClear, ...props }, ref) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [filename, setFilename] = React.useState<string>();
 
@@ -23,19 +24,38 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
       onChange?.(evt);
     };
 
+    const onFileClear = () => {
+      setFilename(undefined);
+      onClear?.();
+    };
+
     return (
       <>
         <Input
           variant="bordered"
           readOnly
           endContent={
-            <Button
-              className="min-w-max"
-              onClick={() => inputRef.current?.click()}
-              endContent={<PiFolderOpenDuotone className="text-xl" />}
-            >
-              Browse...
-            </Button>
+            filename ? (
+              <span
+                role="button"
+                className="p-2 -m-2 opacity-50 hover:opacity-100"
+              >
+                <MdOutlineClear
+                  className="text-2xl cursor-pointer"
+                  onClick={onFileClear}
+                />
+              </span>
+            ) : (
+              <span
+                role="button"
+                className="p-2 -m-2 opacity-50 hover:opacity-100"
+              >
+                <FaFolderOpen
+                  className="text-2xl cursor-pointer"
+                  onClick={() => inputRef.current?.click()}
+                />
+              </span>
+            )
           }
           value={filename ?? ''}
           {...(props as CustomInputProps)}
@@ -49,7 +69,8 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
             //@ts-expect-error
             inputRef.current = e;
           }}
-          {...(props as ReactInputProps)}
+          name={props.name}
+          onBlur={props.onBlur}
           onChange={onFileChange}
         />
       </>

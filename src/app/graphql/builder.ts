@@ -13,9 +13,15 @@ export const builder = new SchemaBuilder<{
     Date: { Input: Date; Output: Date };
     DateTime: { Input: Date; Output: Date };
   };
+  DefaultEdgesNullability: false;
 }>({
   plugins: [PrismaPlugin, RelayPlugin],
-  relayOptions: {},
+  relayOptions: {
+    cursorType: 'String',
+    edgesFieldOptions: {
+      nullable: false,
+    },
+  },
   prisma: {
     client: prisma,
   },

@@ -10,6 +10,9 @@ const config: CodegenConfig = {
       preset: 'client',
       plugins: [],
     },
+    './src/app/graphql/generated/type-policies.ts': {
+      plugins: ['typescript-apollo-client-helpers'],
+    },
   },
 };
 

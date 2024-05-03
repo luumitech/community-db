@@ -40,6 +40,9 @@ jobs:
           yarn generate
           yarn lint
 
+      - name: Check production build for error
+        run: yarn build
+
       - name: Jest unit tests
         # add following to `yarn test`:
         #  --forceExit to bypass --detectOpenHandle error

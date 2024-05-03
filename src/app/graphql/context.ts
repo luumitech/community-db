@@ -1,6 +1,7 @@
 import type { GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '~/api/auth/[...nextauth]/route';
+import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
+import prisma from '../lib/prisma';
 
 export async function createContext(ctx: GetServerSidePropsContext) {
   const session = await getServerSession(authOptions);

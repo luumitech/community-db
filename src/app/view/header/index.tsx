@@ -54,10 +54,14 @@ export const Header: React.FC<Props> = ({}) => {
               width={36}
               height={36}
             />
-            <div className="pl-2 flex-col text-center font-bold leading-5">
+            <Link
+              href="/"
+              color="foreground"
+              className="pl-2 flex-col text-center font-bold leading-5"
+            >
               <div>Community</div>
               <div>Database</div>
-            </div>
+            </Link>
           </NavbarBrand>
         </NavbarContent>
         {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">

@@ -3,10 +3,6 @@ import { isProduction } from './env-var';
 
 let prisma: PrismaClient;
 
-declare global {
-  var prisma: PrismaClient;
-}
-
 if (isProduction()) {
   prisma = new PrismaClient();
 } else {
@@ -16,9 +12,12 @@ if (isProduction()) {
    * Next.js and Prisma Client best practices:
    * https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices
    */
+  // @ts-expect-error
   if (!global.prisma) {
+    // @ts-expect-error
     global.prisma = new PrismaClient();
   }
+  // @ts-expect-error
   prisma = global.prisma;
 }
 export default prisma;

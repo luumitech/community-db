@@ -11,7 +11,6 @@ const CurrentUserInfoQuery = graphql(/* GraphQL */ `
     userCurrent {
       id
       email
-      role
       communityList {
         id
         name
@@ -32,7 +31,7 @@ export default function CommunitySelect() {
   const communityList = result.data?.userCurrent.communityList ?? [];
   const items = communityList.map((entry) => ({
     ...entry,
-    href: `/community/${entry.id}`,
+    href: `/community/${entry.id}/property-list`,
   }));
 
   return (

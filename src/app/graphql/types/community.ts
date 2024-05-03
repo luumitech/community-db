@@ -1,3 +1,5 @@
+import { GraphQLError } from 'graphql';
+import prisma from '../../lib/prisma';
 import { builder } from '../builder';
 
 builder.prismaObject('Community', {
@@ -5,17 +7,59 @@ builder.prismaObject('Community', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
     userList: t.relation('userList'),
-    propertyList: t.relation('propertyList'),
+    /**
+     * Relay cursor pagination for propertyList
+     */
+    propertyConnectionList: t.relatedConnection('propertyList', {
+      cursor: 'id',
+      totalCount: true,
+    }),
+    /**
+     * Offset pagination for propertyList
+     */
+    propertyCount: t.relationCount('propertyList'),
+    propertyList: t.relation('propertyList', {
+      args: {
+        offset: t.arg.int(),
+        limit: t.arg.int(),
+      },
+      query: (args, ctx) => {
+        const skip = args.offset ?? 0;
+        const take = args.limit ?? 10;
+        return { skip, take };
+      },
+    }),
   }),
 });
 
-// builder.queryField('userList', (t) =>
-//   t.prismaField({
-//     type: ['User'],
-//     resolve: (query, _parent, _args, _ctx, _info) =>
-//       prisma.user.findMany({ ...query }),
-//   })
-// );
+builder.queryField('communityFromId', (t) =>
+  t.prismaField({
+    type: 'Community',
+    args: {
+      id: t.arg.id({ required: true }),
+    },
+    resolve: async (query, parent, args, ctx) => {
+      const { user } = await ctx;
+      const entry = await prisma.community.findUniqueOrThrow({
+        ...query,
+        where: {
+          id: args.id.toString(),
+          OR: [
+            {
+              userList: {
+                some: {
+                  email: user.email,
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      return entry;
+    },
+  })
+);
 
 builder.mutationField('communityCreate', (t) =>
   t.prismaField({

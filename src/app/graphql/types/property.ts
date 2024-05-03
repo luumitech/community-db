@@ -1,4 +1,6 @@
 import type { Event, Occupant } from '@prisma/client';
+import { GraphQLError } from 'graphql';
+import prisma from '../../lib/prisma';
 import { builder } from '../builder';
 
 const Occupant = builder.objectRef<Occupant>('Occupant').implement({

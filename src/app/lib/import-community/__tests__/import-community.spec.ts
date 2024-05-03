@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
 import { importLcraDB } from '~/lib/import-community';
+import prisma from '~/lib/prisma';
 
 describe('import community xlsx', () => {
   const testUtil = new TestUtil();
@@ -35,7 +36,6 @@ describe('import community xlsx', () => {
     await prisma.user.create({
       data: {
         email: 'jest@email.com',
-        role: 'ADMIN',
         communityList: {
           create: communitySeed,
         },
@@ -55,27 +55,31 @@ describe('import community xlsx', () => {
           communityList {
             id
             name
-            propertyList {
-              address
-              postalCode
-              notes
-              updatedAt
-              updatedBy
-              occupantList {
-                firstName
-                lastName
-                optOut
-                home
-                work
-                cell
-              }
-              eventList {
-                year
-                isMember
-                eventAttended
-                paymentDate
-                paymentMethod
-                paymentDeposited
+            propertyConnectionList(first: 1) {
+              edges {
+                node {
+                  address
+                  postalCode
+                  notes
+                  updatedAt
+                  updatedBy
+                  occupantList {
+                    firstName
+                    lastName
+                    optOut
+                    home
+                    work
+                    cell
+                  }
+                  eventList {
+                    year
+                    isMember
+                    eventAttended
+                    paymentDate
+                    paymentMethod
+                    paymentDeposited
+                  }
+                }
               }
             }
           }
@@ -86,8 +90,7 @@ describe('import community xlsx', () => {
     const result = await testUtil.graphql.executeSingle({ document });
     const communityList = result.data?.userCurrent.communityList ?? [];
     expect(communityList).toHaveLength(1);
-    expect(communityList[0].propertyList).toHaveLength(1);
-    const firstProperty = communityList[0].propertyList[0];
+    const firstProperty = communityList[0].propertyConnectionList.edges[0].node;
     expect(firstProperty).toEqual({
       address: '99 Fortune Drive',
       postalCode: 'A0A0A0',

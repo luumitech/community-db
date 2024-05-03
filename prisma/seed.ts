@@ -17,6 +17,9 @@ const communitySeed = [
   },
   {
     name: 'Test Community2',
+    propertyList: {
+      create: propertyList,
+    },
   },
 ];
 
@@ -24,7 +27,6 @@ async function main() {
   await prisma.user.create({
     data: {
       email: 'devuser@email.com',
-      role: 'ADMIN',
       communityList: {
         create: communitySeed,
       },

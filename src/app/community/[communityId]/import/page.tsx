@@ -109,6 +109,7 @@ export default function CommunityView({ params }: RouteArgs) {
           label="Upload xlsx file"
           isRequired
           errorMessage={errors.xlsx?.message}
+          isInvalid={errors.xlsx?.message != null}
           {...register('xlsx', {
             onChange: onXlsxSelect,
           })}
