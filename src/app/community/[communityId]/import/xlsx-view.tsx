@@ -10,8 +10,8 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
 
 interface Props {
-  data: any[];
-  columns: ColumnDef<any>[];
+  data: unknown[];
+  columns: ColumnDef<unknown>[];
 }
 
 export const XlsxView: React.FC<Props> = ({ data, columns }) => {
@@ -111,7 +111,7 @@ export const XlsxView: React.FC<Props> = ({ data, columns }) => {
           }}
         >
           {virtualRows.map((virtualRow) => {
-            const row = rows[virtualRow.index] as Row<any>;
+            const row = rows[virtualRow.index] as Row<unknown>;
             const visibleCells = row.getVisibleCells();
 
             return (

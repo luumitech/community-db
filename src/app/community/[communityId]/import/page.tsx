@@ -67,10 +67,10 @@ export default function CommunityView({ params }: RouteArgs) {
 
   const makeData = (worksheet: WorksheetHelper) => {
     const rowCount = worksheet.rowCount;
-    const columns = makeColumns(worksheet);
+    const colList = makeColumns(worksheet);
     return [...Array(rowCount)].map((_, rowIdx) => ({
       ...Object.fromEntries(
-        columns.map((col, colIdx) => [
+        colList.map((col, colIdx) => [
           col.accessorKey,
           worksheet.cell(colIdx, rowIdx).w ?? '',
         ])
@@ -119,7 +119,7 @@ export default function CommunityView({ params }: RouteArgs) {
           color="primary"
           type="submit"
           // isLoading={result.loading}
-          // @ts-expect-error
+          // @ts-expect-error: handleSubmit not compatible with handleSubmit
           onPress={handleSubmit(uploadXlsx)}
         >
           Import

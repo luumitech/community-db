@@ -82,7 +82,7 @@ export default function CommunityCreate() {
         color="primary"
         type="submit"
         isLoading={result.loading}
-        // @ts-expect-error
+        // @ts-expect-error: handleSubmit type does not match onPress
         onPress={handleSubmit(createCommunity)}
       >
         Create

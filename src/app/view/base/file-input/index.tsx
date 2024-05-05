@@ -64,9 +64,9 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
           type="file"
           hidden
           ref={(e) => {
-            //@ts-expect-error
+            //@ts-expect-error: forward ref into input field
             ref?.(e);
-            //@ts-expect-error
+            //@ts-expect-error: forward ref into input field
             inputRef.current = e;
           }}
           name={props.name}

@@ -183,34 +183,6 @@ export class WorksheetHelper {
     return valueArr;
   }
 
-  /**
-   * Delete the specified row from the worksheet
-   *
-   * @param rowIdxToDelete 0-based row number to delete
-   */
-  deleteRow(rowIdxToDelete: number) {
-    for (let rowIdx = rowIdxToDelete; rowIdx <= this.range.e.r; rowIdx++) {
-      for (let colIdx = this.range.s.c; colIdx <= this.range.e.c; colIdx++) {
-        const currRowCellAddr = XLSX.utils.encode_cell({
-          r: rowIdx,
-          c: colIdx,
-        });
-        delete this.ws[currRowCellAddr];
-        // shift the row values up by one row
-        if (rowIdx < this.range.e.r) {
-          const nextRowCellAddr = XLSX.utils.encode_cell({
-            r: rowIdx + 1,
-            c: colIdx,
-          });
-          this.ws[currRowCellAddr] = this.ws[nextRowCellAddr];
-        }
-      }
-    }
-    // adjust the range to reflect the deleted row
-    this.range.e.r--;
-    this.ws['!ref'] = XLSX.utils.encode_range(this.range.s, this.range.e);
-  }
-
   isVisible() {
     return (
       this.wb.Workbook?.Sheets?.find(

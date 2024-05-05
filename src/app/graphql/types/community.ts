@@ -20,8 +20,8 @@ builder.prismaObject('Community', {
     propertyCount: t.relationCount('propertyList'),
     propertyList: t.relation('propertyList', {
       args: {
-        offset: t.arg.int(),
-        limit: t.arg.int(),
+        offset: t.arg.int({ required: true }),
+        limit: t.arg.int({ required: true }),
       },
       query: (args, ctx) => {
         const skip = args.offset ?? 0;

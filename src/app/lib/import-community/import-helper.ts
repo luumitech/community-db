@@ -1,3 +1,4 @@
+import * as R from 'remeda';
 import type { Event, Occupant, Property } from '~/graphql/generated/graphql';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
@@ -131,18 +132,21 @@ export class ImportHelper {
   property(
     rowIdx: number,
     mapping: PropertyMapping
-  ): MProperty & Pick<Property, 'occupantList' | 'eventList'> {
-    const result: any = {};
-    for (const [propName, entry] of Object.entries(mapping)) {
-      // @ts-expect-error
-      const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-      if (val != null) {
-        result[propName] = val;
-      }
-    }
-    result.occupantList = [];
-    result.eventList = [];
-    return result;
+  ): Partial<MProperty> & Pick<Property, 'occupantList' | 'eventList'> {
+    return {
+      ...R.pipe(
+        mapping,
+        R.mapValues((entry, key) => {
+          // @ts-expect-error: entry.type can be any of the supported type
+          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+          return val;
+        }),
+        // Remove fields with nullish value
+        R.omitBy((val, key) => val == null)
+      ),
+      occupantList: [],
+      eventList: [],
+    };
   }
 
   /**
@@ -151,15 +155,18 @@ export class ImportHelper {
    * returned object
    */
   occupant(rowIdx: number, mapping: OccupantMapping): MOccupant {
-    const result: any = {};
-    for (const [propName, entry] of Object.entries(mapping)) {
-      // @ts-expect-error
-      const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-      if (val != null) {
-        result[propName] = val;
-      }
-    }
-    return result;
+    return {
+      ...R.pipe(
+        mapping,
+        R.mapValues((entry, key) => {
+          // @ts-expect-error: entry.type can be any of the supported type
+          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+          return val;
+        }),
+        // Remove fields with nullish value
+        R.omitBy((val, key) => val == null)
+      ),
+    };
   }
 
   /**
@@ -168,14 +175,17 @@ export class ImportHelper {
    * returned object
    */
   event(rowIdx: number, mapping: EventMapping): MEvent {
-    const result: any = {};
-    for (const [propName, entry] of Object.entries(mapping)) {
-      // @ts-expect-error
-      const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-      if (val != null) {
-        result[propName] = val;
-      }
-    }
-    return result;
+    return {
+      ...R.pipe(
+        mapping,
+        R.mapValues((entry, key) => {
+          // @ts-expect-error: entry.type can be any of the supported type
+          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+          return val;
+        }),
+        // Remove fields with nullish value
+        R.omitBy((val, key) => val == null)
+      ),
+    };
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-type State = Readonly<{}>;
+type State = Readonly<Record<string, never>>;
 
 interface ContextT extends State {}
 
