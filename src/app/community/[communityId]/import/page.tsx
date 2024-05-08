@@ -110,6 +110,7 @@ export default function CommunityView({ params }: RouteArgs) {
           isRequired
           errorMessage={errors.xlsx?.message}
           isInvalid={errors.xlsx?.message != null}
+          onClear={() => _setData(undefined)}
           {...register('xlsx', {
             onChange: onXlsxSelect,
           })}

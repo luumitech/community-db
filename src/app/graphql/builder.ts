@@ -4,7 +4,8 @@ import RelayPlugin from '@pothos/plugin-relay';
 import { DateResolver, DateTimeResolver } from 'graphql-scalars';
 import prisma from '../lib/prisma';
 import { createContext } from './context';
-import type PrismaTypes from './generated/pothos-types.ts';
+import type PrismaTypes from './generated/pothos-types';
+import { ListInfo } from './types/offset-pagination';
 
 export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;
@@ -14,6 +15,12 @@ export const builder = new SchemaBuilder<{
     DateTime: { Input: Date; Output: Date };
   };
   DefaultEdgesNullability: false;
+  /**
+   * Additional field added to offset/limit connection
+   */
+  Connection: {
+    listInfo: ListInfo;
+  };
 }>({
   plugins: [PrismaPlugin, RelayPlugin],
   relayOptions: {

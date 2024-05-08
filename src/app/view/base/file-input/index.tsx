@@ -24,6 +24,12 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
       onChange?.(evt);
     };
 
+    const onBrowse = React.useCallback(() => {
+      if (!filename) {
+        inputRef.current?.click();
+      }
+    }, [filename]);
+
     const onFileClear = () => {
       setFilename(undefined);
       onClear?.();
@@ -38,26 +44,27 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
             filename ? (
               <span
                 role="button"
-                className="p-2 -m-2 opacity-50 hover:opacity-100"
+                className="opacity-80 hover:opacity-100 active:opacity-50"
               >
                 <MdOutlineClear
-                  className="text-2xl cursor-pointer"
+                  className="text-xl cursor-pointer"
                   onClick={onFileClear}
                 />
               </span>
             ) : (
               <span
                 role="button"
-                className="p-2 -m-2 opacity-50 hover:opacity-100"
+                className="opacity-80 hover:opacity-100 active:opacity-50"
               >
                 <FaFolderOpen
-                  className="text-2xl cursor-pointer"
-                  onClick={() => inputRef.current?.click()}
+                  className="text-xl cursor-pointer"
+                  onClick={onBrowse}
                 />
               </span>
             )
           }
           value={filename ?? ''}
+          onClick={onBrowse}
           {...(props as CustomInputProps)}
         />
         <input

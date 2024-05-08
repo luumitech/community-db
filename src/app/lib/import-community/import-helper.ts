@@ -1,5 +1,9 @@
 import * as R from 'remeda';
-import type { Event, Occupant, Property } from '~/graphql/generated/graphql';
+import type {
+  Membership,
+  Occupant,
+  Property,
+} from '~/graphql/generated/graphql';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 export interface ImportHelperConfig {
@@ -11,10 +15,10 @@ export interface ImportHelperConfig {
 
 type MProperty = Omit<
   Property,
-  '__typename' | 'id' | 'createdAt' | 'occupantList' | 'eventList'
+  '__typename' | 'id' | 'createdAt' | 'occupantList' | 'membershipList'
 >;
 type MOccupant = Omit<Occupant, '__typename'>;
-type MEvent = Omit<Event, '__typename' | 'year'>;
+type MMembership = Omit<Membership, '__typename' | 'year'>;
 
 /**
  * Type of value being mapped (to be stored in database)
@@ -38,8 +42,8 @@ type OccupantMapping = {
   [Key in keyof Required<MOccupant>]: MappingEntry;
 };
 
-type EventMapping = {
-  [Key in keyof Required<MEvent>]: MappingEntry;
+type MembershipMapping = {
+  [Key in keyof Required<MMembership>]: MappingEntry;
 };
 
 export class ImportHelper {
@@ -132,7 +136,8 @@ export class ImportHelper {
   property(
     rowIdx: number,
     mapping: PropertyMapping
-  ): Partial<MProperty> & Pick<Property, 'occupantList' | 'eventList'> {
+  ): MProperty & Pick<Property, 'occupantList' | 'membershipList'> {
+    // @ts-expect-error: address is a required field
     return {
       ...R.pipe(
         mapping,
@@ -145,7 +150,7 @@ export class ImportHelper {
         R.omitBy((val, key) => val == null)
       ),
       occupantList: [],
-      eventList: [],
+      membershipList: [],
     };
   }
 
@@ -170,11 +175,11 @@ export class ImportHelper {
   }
 
   /**
-   * Given the mapping information, read the event information
+   * Given the mapping information, read the membership information
    * from the spreadsheet, and propagate the information into the
    * returned object
    */
-  event(rowIdx: number, mapping: EventMapping): MEvent {
+  membership(rowIdx: number, mapping: MembershipMapping): MMembership {
     return {
       ...R.pipe(
         mapping,

@@ -55,7 +55,7 @@ describe('import community xlsx', () => {
           communityList {
             id
             name
-            propertyConnectionList(first: 1) {
+            propertyList(first: 1) {
               edges {
                 node {
                   address
@@ -71,7 +71,7 @@ describe('import community xlsx', () => {
                     work
                     cell
                   }
-                  eventList {
+                  membershipList {
                     year
                     isMember
                     eventAttended
@@ -90,7 +90,7 @@ describe('import community xlsx', () => {
     const result = await testUtil.graphql.executeSingle({ document });
     const communityList = result.data?.userCurrent.communityList ?? [];
     expect(communityList).toHaveLength(1);
-    const firstProperty = communityList[0].propertyConnectionList.edges[0].node;
+    const firstProperty = communityList[0].propertyList.edges[0].node;
     expect(firstProperty).toEqual({
       address: '99 Fortune Drive',
       postalCode: 'A0A0A0',
@@ -123,7 +123,7 @@ describe('import community xlsx', () => {
           work: null,
         },
       ],
-      eventList: [
+      membershipList: [
         {
           eventAttended: null,
           isMember: false,

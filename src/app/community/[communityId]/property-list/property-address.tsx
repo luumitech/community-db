@@ -1,4 +1,3 @@
-import { Skeleton } from '@nextui-org/react';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 
@@ -10,17 +9,11 @@ const PropertyFragment = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  entry?: FragmentType<typeof PropertyFragment>;
-  loading: boolean;
+  entry: FragmentType<typeof PropertyFragment>;
 }
 
 export const PropertyAddress: React.FC<Props> = (props) => {
-  const { loading } = props;
   const entry = useFragment(PropertyFragment, props.entry);
 
-  return (
-    <Skeleton isLoaded={!loading} className="rounded-lg">
-      <div className="h-5">{entry?.address ?? ''}</div>
-    </Skeleton>
-  );
+  return <div className="truncate">{entry.address ?? ''}</div>;
 };

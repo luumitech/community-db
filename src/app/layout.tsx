@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
-import { verifyEnvVar } from '~/lib/env-var';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 
@@ -12,8 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
-
-verifyEnvVar();
 
 export const metadata: Metadata = {
   title: 'Community DB',

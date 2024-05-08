@@ -49,9 +49,9 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     return occupant;
   }
 
-  function addEvent(rowIdx: number, year: number) {
+  function addMembership(rowIdx: number, year: number) {
     const prefix = `Y${year}`;
-    const event = importHelper.event(rowIdx, {
+    const membership = importHelper.membership(rowIdx, {
       isMember: {
         colIdx: importHelper.labelColumn(`${prefix}`),
         type: 'boolean',
@@ -75,7 +75,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     });
     return {
       year: 2000 + year,
-      ...event,
+      ...membership,
     };
   }
 
@@ -114,9 +114,9 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
     // support Y2 to Y24
     R.range(2, 25).forEach((year) => {
-      const event = addEvent(rowIdx, year);
-      if (!R.isEmpty(event)) {
-        property.eventList.push(event);
+      const membership = addMembership(rowIdx, year);
+      if (!R.isEmpty(membership)) {
+        property.membershipList.push(membership);
       }
     });
 

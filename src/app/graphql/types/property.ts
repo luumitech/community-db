@@ -1,4 +1,4 @@
-import type { Event, Occupant } from '@prisma/client';
+import type { Membership, Occupant } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import prisma from '../../lib/prisma';
 import { builder } from '../builder';
@@ -15,7 +15,7 @@ const Occupant = builder.objectRef<Occupant>('Occupant').implement({
   }),
 });
 
-const Event = builder.objectRef<Event>('Event').implement({
+const Membership = builder.objectRef<Membership>('Membership').implement({
   fields: (t) => ({
     year: t.exposeInt('year'),
     isMember: t.exposeBoolean('isMember', { nullable: true }),
@@ -26,7 +26,7 @@ const Event = builder.objectRef<Event>('Event').implement({
   }),
 });
 
-builder.prismaObject('Property', {
+export const propertyRef = builder.prismaObject('Property', {
   fields: (t) => ({
     id: t.exposeID('id'),
     address: t.exposeString('address'),
@@ -41,12 +41,12 @@ builder.prismaObject('Property', {
       },
       resolve: (entry) => entry.occupantList,
     }),
-    eventList: t.field({
-      type: [Event],
+    membershipList: t.field({
+      type: [Membership],
       select: {
-        eventList: true,
+        membershipList: true,
       },
-      resolve: (entry) => entry.eventList,
+      resolve: (entry) => entry.membershipList,
     }),
   }),
 });

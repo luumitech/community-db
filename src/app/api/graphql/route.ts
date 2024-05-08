@@ -7,6 +7,10 @@ const yoga = createYoga<{
   req: NextApiRequest;
   res: NextApiResponse;
 }>({
+  /**
+   * GraphiQL is enabled only in development and served under this endpoint
+   * See: https://the-guild.dev/graphql/yoga-server/docs/features/graphiql
+   */
   graphqlEndpoint: '/api/graphql',
   schema,
   context: createContext,
