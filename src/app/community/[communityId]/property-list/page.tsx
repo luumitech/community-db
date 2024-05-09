@@ -1,11 +1,10 @@
 'use client';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
   Button,
   Input,
-  Pagination,
-  Skeleton,
   Spacer,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -13,16 +12,16 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react';
-import { offsetToCursor } from '@pothos/plugin-relay';
+import { useInfiniteScroll } from '@nextui-org/use-infinite-scroll';
 import { useDebounce } from '@uidotdev/usehooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-import { CiEdit } from 'react-icons/ci';
 import { FaSearch } from 'react-icons/fa';
 import * as R from 'remeda';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { Membership } from './membership';
 import { Occupant } from './occupant';
 import { PropertyAddress } from './property-address';
@@ -33,26 +32,6 @@ interface Params {
 
 interface RouteArgs {
   params: Params;
-}
-
-/**
- * Calculate the cursor position suitable to query entries
- * within the input 'page' using the 'after' cursor argument.
- *
- * @param page page to display
- * @param limit number of maximum entry per page
- * @returns
- */
-function pageToCursor(page: number, limit: number) {
-  const offset = (page - 1) * limit;
-  if (offset === 0) {
-    // If requesting the first page, after cursor
-    // should be undefined
-    return undefined;
-  }
-  // If querying first page, then we need to return the
-  // cursor for the last entry in the previous page
-  return offsetToCursor(offset - 1);
 }
 
 const curYear = new Date().getFullYear();
@@ -69,10 +48,13 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
       id
       name
       propertyList(first: $first, after: $after, search: $search) {
-        listInfo {
-          totalCount
-          pageCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
         }
+        totalCount
         edges {
           node {
             id
@@ -86,44 +68,39 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
   }
 `);
 
+type PropertyEntry =
+  GQL.CommunityFromIdQuery['communityFromId']['propertyList']['edges'][0]['node'];
+
 export default function PropertyList({ params }: RouteArgs) {
   const pathname = usePathname();
-  const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(10);
   const [searchText, setSearchText] = React.useState<string>();
   const debouncedSearchText = useDebounce(searchText, 300);
-  const [queryList, result] = useLazyQuery(CommunityFromIdQuery);
-  useGraphqlErrorHandler(result);
-  const { data, previousData, loading } = result;
-
-  React.useEffect(() => {
-    queryList({
-      variables: {
-        id: params.communityId,
-        first: limit,
-        after: pageToCursor(page, limit),
-        search: debouncedSearchText,
-      },
-    });
-  }, [queryList, params.communityId, limit, page, debouncedSearchText]);
-
-  const totalPages =
-    data?.communityFromId.propertyList.listInfo.pageCount ??
-    previousData?.communityFromId.propertyList.listInfo.pageCount ??
-    0;
-
-  /**
-   * Determine number of rows to show in table,
-   * - while loading, should show `limit` number of rows
-   * - after data has been loaded, if there are entries to show, show `limit` number of rows
-   * - if data is empty, don't show any rows
-   */
-  const rowsToShow = loading || totalPages ? limit : 0;
-  const rows = R.times(rowsToShow, (idx) => {
-    const edges = data?.communityFromId.propertyList.edges ?? [];
-    const entry = edges[idx]?.node;
-    return entry ?? { id: `placeholder-${idx}` };
+  const result = useQuery(CommunityFromIdQuery, {
+    variables: {
+      id: params.communityId,
+      first: limit,
+      search: debouncedSearchText,
+    },
   });
+  useGraphqlErrorHandler(result);
+  const { data, loading, fetchMore } = result;
+  const pageInfo = data?.communityFromId.propertyList.pageInfo;
+  const [loaderRef, scrollerRef] = useInfiniteScroll({
+    hasMore: !!pageInfo?.hasNextPage,
+    onLoadMore: () => {
+      fetchMore({
+        variables: {
+          after: pageInfo?.endCursor,
+          search: debouncedSearchText,
+        },
+      });
+    },
+  });
+
+  const rows = (data?.communityFromId.propertyList.edges ?? []).map(
+    (edge) => edge.node
+  );
 
   const columns = [
     { name: 'Address', uid: 'address', className: 'w-1/6' },
@@ -133,10 +110,7 @@ export default function PropertyList({ params }: RouteArgs) {
   ];
 
   const renderCell = React.useCallback(
-    (entry: (typeof rows)[0], columnKey: React.Key) => {
-      if (entry.id.startsWith('placeholder')) {
-        return <div className="h-5" />;
-      }
+    (entry: PropertyEntry, columnKey: React.Key) => {
       switch (columnKey) {
         case 'address':
           return <PropertyAddress entry={entry} />;
@@ -153,27 +127,46 @@ export default function PropertyList({ params }: RouteArgs) {
     []
   );
 
+  const topContent = React.useMemo(() => {
+    return (
+      <div>
+        <Input
+          isClearable
+          placeholder="Search ..."
+          startContent={<FaSearch className="text-xl2" />}
+          onValueChange={setSearchText}
+          onClear={() => setSearchText(undefined)}
+        />
+      </div>
+    );
+  }, []);
+
   return (
-    <div>
-      <Input
-        label="Search"
-        isClearable
-        startContent={<FaSearch className="text-xl2" />}
-        onChange={(evt) => setSearchText(evt.currentTarget.value)}
-        onClear={() => setSearchText(undefined)}
-      />
-      <Spacer y={2} />
+    <div className="w-full">
       <Table
         aria-label="Property Table"
-        removeWrapper
+        classNames={{
+          // 64px is the height of header
+          // 0.5rem is the top margin of the main div
+          base: [`max-h-[calc(100vh-64px-0.5rem)]`],
+          // Don't use array here
+          // See: https://github.com/nextui-org/nextui/issues/2304
+          // replaces the removeWrapper attribute
+          // use this to keep scroll bar within table
+          wrapper: 'p-0',
+        }}
+        baseRef={scrollerRef}
+        // removeWrapper
+        isHeaderSticky
         selectionMode="single"
+        topContent={topContent}
+        topContentPlacement="outside"
         bottomContent={
-          totalPages > 0 && (
-            <Pagination
-              className="flex"
-              total={totalPages}
-              page={page}
-              onChange={setPage}
+          !!pageInfo?.hasNextPage && (
+            <Spinner
+              className="flex w-full justify-center mb-4"
+              ref={loaderRef}
+              color="white"
             />
           )
         }
@@ -185,14 +178,17 @@ export default function PropertyList({ params }: RouteArgs) {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={'No data to display.'} items={rows}>
+        <TableBody
+          isLoading={loading}
+          loadingContent={<Spinner color="white" />}
+          emptyContent={'No data to display.'}
+          items={rows}
+        >
           {(entry) => (
             <TableRow key={entry.id}>
               {(columnKey) => (
                 <TableCell>
-                  <Skeleton isLoaded={!loading} className="rounded-lg">
-                    <div className="h-6">{renderCell(entry, columnKey)}</div>
-                  </Skeleton>
+                  <div className="h-6">{renderCell(entry, columnKey)}</div>
                 </TableCell>
               )}
             </TableRow>

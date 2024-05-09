@@ -5,7 +5,6 @@ import { DateResolver, DateTimeResolver } from 'graphql-scalars';
 import prisma from '../lib/prisma';
 import { createContext } from './context';
 import type PrismaTypes from './generated/pothos-types';
-import { ListInfo } from './types/offset-pagination';
 
 export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;
@@ -16,10 +15,10 @@ export const builder = new SchemaBuilder<{
   };
   DefaultEdgesNullability: false;
   /**
-   * Additional field added to offset/limit connection
+   * Additional connection fields added
    */
   Connection: {
-    listInfo: ListInfo;
+    totalCount: number;
   };
 }>({
   plugins: [PrismaPlugin, RelayPlugin],

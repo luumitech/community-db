@@ -1,7 +1,6 @@
 import { MaybePromise } from '@pothos/core';
 import {
   DefaultConnectionArguments,
-  offsetToCursor,
   resolveOffsetConnection,
 } from '@pothos/plugin-relay';
 import { GraphQLError } from 'graphql';
@@ -11,26 +10,11 @@ import { builder } from '../builder';
  * Implement additional properties to default pothos offset/limit
  * connection (i.e. resolveOffsetConnection):
  * - total number pages
- * - cursor for last page
  */
-
-export interface ListInfo {
-  totalCount: number;
-  pageCount: number;
-}
-
-const ListInfoRef = builder.objectRef<ListInfo>('ListInfo');
-ListInfoRef.implement({
-  fields: (t) => ({
-    totalCount: t.exposeInt('totalCount'),
-    pageCount: t.exposeInt('pageCount'),
-  }),
-});
-
-builder.globalConnectionField('listInfo', (t) =>
-  t.field({
-    type: ListInfoRef,
-    resolve: ({ listInfo }) => listInfo,
+builder.globalConnectionField('totalCount', (t) =>
+  t.int({
+    nullable: false,
+    resolve: ({ totalCount }) => totalCount,
   })
 );
 
@@ -50,23 +34,16 @@ export async function resolveCustomOffsetConnection<T>(
     limit: number;
   }) => MaybePromise<CustomOffsetConnectionResult<T>>
 ) {
-  let listInfo!: ListInfo;
+  let totalCount = 0;
 
   const result = await resolveOffsetConnection(
     options,
     async ({ limit, offset }) => {
-      const pageSize = limit - 1;
-      const { totalCount, items } = await resolve({ limit, offset });
-
-      const lastPage = Math.max(Math.ceil(totalCount / pageSize), 0);
-
-      listInfo = {
-        totalCount,
-        pageCount: lastPage,
-      };
-      return items;
+      const res = await resolve({ limit, offset });
+      totalCount = res.totalCount;
+      return res.items;
     }
   );
 
-  return { ...result, listInfo };
+  return { ...result, totalCount };
 }

@@ -35,6 +35,12 @@ export default function CommunitySelect() {
   }));
 
   return (
-    <MainMenu header="Select Database" loading={result.loading} items={items} />
+    <div className="w-full">
+      <MainMenu
+        header="Select Database"
+        loading={result.loading}
+        items={items}
+      />
+    </div>
   );
 }

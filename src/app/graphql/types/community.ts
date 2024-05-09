@@ -19,7 +19,10 @@ builder.prismaObject('Community', {
     name: t.exposeString('name', { nullable: false }),
     userList: t.relation('userList'),
     /**
-     * Offset pagination for propertyList
+     * Generate relay style pagination using
+     * offset/limit arguments
+     *
+     * Use custom implementation to enable text search
      */
     propertyList: t.connection({
       type: propertyRef,

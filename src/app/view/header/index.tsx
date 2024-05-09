@@ -33,7 +33,7 @@ export const Header: React.FC<Props> = ({}) => {
   const menuItems = ['Tab1', 'Tab2'];
 
   return (
-    <header className="sticky z-10 top-0">
+    <header className="sticky z-50 top-0">
       <Navbar
         maxWidth="full"
         isMenuOpen={isMenuOpen}

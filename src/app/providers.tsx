@@ -3,7 +3,7 @@ import { ApolloProvider } from '@apollo/client';
 import { NextUIProvider } from '@nextui-org/react';
 import { SessionProvider, SessionProviderProps } from 'next-auth/react';
 import React from 'react';
-import apolloClient from '~/lib/apollo';
+import apolloClient from '~/graphql/apollo-client';
 
 interface Props {
   sessionProviderProps: Omit<SessionProviderProps, 'children'>;
