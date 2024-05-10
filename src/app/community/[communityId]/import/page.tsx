@@ -10,7 +10,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { MdEmail } from 'react-icons/md';

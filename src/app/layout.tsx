@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth/next';
+import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
-import { ToastContainer } from 'react-toastify';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
@@ -23,17 +23,21 @@ interface RootLayoutProps {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   const session = await getServerSession(authOptions);
-
   return (
-    <html lang="en">
-      <body className={`${inter.className} dark text-foreground bg-background`}>
-        <Providers sessionProviderProps={{ session }}>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex grow mt-2 mx-2">{children}</main>
-          </div>
-          <ToastContainer position="bottom-right" theme="dark" />
-        </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} text-foreground bg-background`}>
+        {/**
+         * light/dark theme can be customized
+         * see: https://nextui.org/docs/customization/customize-theme
+         */}
+        <ThemeProvider defaultTheme="system" attribute="class">
+          <Providers sessionProviderProps={{ session }}>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex flex-col mt-2 mx-2">{children}</main>
+            </div>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

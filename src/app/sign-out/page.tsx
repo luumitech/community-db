@@ -13,11 +13,7 @@ const SignOut: React.FC<Props> = () => {
     }
   }, [session]);
 
-  if (session) {
-    return <div>...signing out</div>;
-  }
-
-  return <div>you are signed out</div>;
+  return session ? <div>...signing out</div> : <div>you are signed out</div>;
 };
 
 export default SignOut;

@@ -82,36 +82,32 @@ builder.prismaObject('Community', {
       },
     }),
     /**
-     * Example way to introduce custom fields
-     */
-    // propertyTestList: t.prismaField({
-    //   type: ['Property'],
-    //   args: {
-    //     offset: t.arg.int({ required: true }),
-    //     limit: t.arg.int({ required: true }),
-    //   },
-    //   resolve: async (query, parent, args, ctx) => {
-    //     const where = { communityId: parent.id };
-    //     const list = await prisma.property.findMany({
-    //       ...query,
-    //       where,
-    //       take: args.limit,
-    //       skip: args.offset,
-    //     });
-    //     const count = await prisma.property.count({
-    //       where,
-    //     });
-    //     console.log({ count });
-    //     return list;
-    //   },
-    // }),
-    /**
      * Relay cursor pagination for propertyList
+     * easy to implement, but does not support full text search
      */
     // propertyConnectionList: t.relatedConnection('propertyList', {
     //   cursor: 'id',
     //   totalCount: true,
     // }),
+    /**
+     * Select a property by ID
+     */
+    propertyFromId: t.prismaField({
+      type: 'Property',
+      args: {
+        id: t.arg.id({ required: true }),
+      },
+      resolve: async (query, parent, args, ctx) => {
+        const entry = await prisma.property.findFirstOrThrow({
+          ...query,
+          where: {
+            id: args.id.toString(),
+            communityId: parent.id,
+          },
+        });
+        return entry;
+      },
+    }),
   }),
 });
 

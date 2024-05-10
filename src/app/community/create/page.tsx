@@ -12,7 +12,6 @@ import {
   Textarea,
   useDisclosure,
 } from '@nextui-org/react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -44,7 +43,6 @@ const CommunityCreateMutation = graphql(/* GraphQL */ `
 `);
 
 export default function CommunityCreate() {
-  const { data: session } = useSession();
   const router = useRouter();
   const [create, result] = useMutation(CommunityCreateMutation);
   useGraphqlErrorHandler(result);
@@ -53,10 +51,6 @@ export default function CommunityCreate() {
     resolver: yupResolver(schema),
   });
   const { errors } = formState;
-
-  if (!session) {
-    return null;
-  }
 
   const createCommunity = async (form: InputData) => {
     const newCommunity = await create({ variables: form });
