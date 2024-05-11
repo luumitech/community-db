@@ -10,9 +10,12 @@ const CurrentUserInfoQuery = graphql(/* GraphQL */ `
     userCurrent {
       id
       email
-      communityList {
-        id
-        name
+      accessList {
+        role
+        community {
+          id
+          name
+        }
       }
     }
   }
@@ -22,10 +25,10 @@ export default function CommunitySelect() {
   const result = useQuery(CurrentUserInfoQuery);
   useGraphqlErrorHandler(result);
 
-  const communityList = result.data?.userCurrent.communityList ?? [];
-  const items = communityList.map((entry) => ({
-    ...entry,
-    href: `/community/${entry.id}/property-list`,
+  const accessList = result.data?.userCurrent.accessList ?? [];
+  const items = accessList.map((entry) => ({
+    ...entry.community,
+    href: `/community/${entry.community.id}/property-list`,
   }));
 
   return (

@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { PropertyEditor } from './property-editor';
 
 interface Params {
   communityId: string;
@@ -18,19 +19,7 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
     communityFromId(id: $communityId) {
       id
       propertyFromId(id: $propertyId) {
-        id
-        address
-        notes
-        updatedAt
-        updatedBy
-        membershipList {
-          year
-          isMember
-        }
-        occupantList {
-          firstName
-          lastName
-        }
+        ...PropertyId_Editor
       }
     }
   }
@@ -44,8 +33,15 @@ export default function Property({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
-
   const property = result.data?.communityFromId.propertyFromId;
 
-  return <pre>{JSON.stringify(property, null, 2)}</pre>;
+  if (!property) {
+    return null;
+  }
+
+  return (
+    <div>
+      <PropertyEditor entry={property} />
+    </div>
+  );
 }

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { graphql } from '~/graphql/generated';
@@ -24,7 +25,7 @@ describe('import community xlsx', () => {
       )
     );
     const propertyList = importLcraDB(workbook);
-    const communitySeed = [
+    const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
         propertyList: {
@@ -33,11 +34,20 @@ describe('import community xlsx', () => {
       },
     ];
 
+    const accessSeed: Prisma.AccessCreateWithoutUserInput[] = communitySeed.map(
+      (community) => ({
+        role: 'ADMIN',
+        community: {
+          create: community,
+        },
+      })
+    );
+
     await prisma.user.create({
       data: {
         email: 'jest@email.com',
-        communityList: {
-          create: communitySeed,
+        accessList: {
+          create: accessSeed,
         },
       },
     });
@@ -52,32 +62,35 @@ describe('import community xlsx', () => {
       query SampleUserCurrent {
         userCurrent {
           email
-          communityList {
-            id
-            name
-            propertyList(first: 1) {
-              edges {
-                node {
-                  address
-                  postalCode
-                  notes
-                  updatedAt
-                  updatedBy
-                  occupantList {
-                    firstName
-                    lastName
-                    optOut
-                    home
-                    work
-                    cell
-                  }
-                  membershipList {
-                    year
-                    isMember
-                    eventAttended
-                    paymentDate
-                    paymentMethod
-                    paymentDeposited
+          accessList {
+            role
+            community {
+              id
+              name
+              propertyList(first: 1) {
+                edges {
+                  node {
+                    address
+                    postalCode
+                    notes
+                    updatedAt
+                    updatedBy
+                    occupantList {
+                      firstName
+                      lastName
+                      optOut
+                      home
+                      work
+                      cell
+                    }
+                    membershipList {
+                      year
+                      isMember
+                      eventAttended
+                      paymentDate
+                      paymentMethod
+                      paymentDeposited
+                    }
                   }
                 }
               }
@@ -88,9 +101,9 @@ describe('import community xlsx', () => {
     `);
 
     const result = await testUtil.graphql.executeSingle({ document });
-    const communityList = result.data?.userCurrent.communityList ?? [];
-    expect(communityList).toHaveLength(1);
-    const firstProperty = communityList[0].propertyList.edges[0].node;
+    const accessList = result.data?.userCurrent.accessList ?? [];
+    expect(accessList).toHaveLength(1);
+    const firstProperty = accessList[0].community.propertyList.edges[0].node;
     expect(firstProperty).toEqual({
       address: '99 Fortune Drive',
       postalCode: 'A0A0A0',

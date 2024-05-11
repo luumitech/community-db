@@ -6,18 +6,10 @@ import { builder } from '../builder';
 import { resolveCustomOffsetConnection } from './offset-pagination';
 import { propertyRef } from './property';
 
-interface PropertListAggrResult {
-  items: Property[];
-  info: {
-    totalCount: number;
-  }[];
-}
-
 builder.prismaObject('Community', {
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
-    userList: t.relation('userList'),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -71,9 +63,12 @@ builder.prismaObject('Community', {
             // - {"updatedAt": {"$date": "2000-01-23T01:23:45.678+00:00"}}
             // - {"id": {"$oid": "xxx" }}
             // So it's necessary to convert it back to normal JSON
-            const result: PropertListAggrResult[] = EJSON.parse(
-              EJSON.stringify(aggr)
-            );
+            const result: {
+              items: Property[];
+              info: {
+                totalCount: number;
+              }[];
+            }[] = EJSON.parse(EJSON.stringify(aggr));
             const { items, info } = result[0];
             const totalCount = info[0]?.totalCount ?? 0;
             return { items, totalCount };
@@ -125,9 +120,11 @@ builder.queryField('communityFromId', (t) =>
           id: args.id.toString(),
           OR: [
             {
-              userList: {
+              accessList: {
                 some: {
-                  email: user.email,
+                  user: {
+                    email: user.email,
+                  },
                 },
               },
             },
@@ -150,13 +147,19 @@ builder.mutationField('communityCreate', (t) =>
       const { user } = await ctx;
       const { email } = user;
 
-      return prisma.community.create({
+      const entry = await prisma.community.create({
         ...query,
         data: {
           ...args,
-          userList: { connect: [{ email }] },
+          accessList: {
+            create: {
+              role: 'ADMIN',
+              user: { connect: { email } },
+            },
+          },
         },
       });
+      return entry;
     },
   })
 );

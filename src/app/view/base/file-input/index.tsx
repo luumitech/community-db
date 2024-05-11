@@ -2,6 +2,7 @@ import { Input, InputProps } from '@nextui-org/react';
 import React from 'react';
 import { FaFolderOpen } from 'react-icons/fa';
 import { MdOutlineClear } from 'react-icons/md';
+import { useForwardRef } from '~/custom-hooks/forward-ref';
 
 type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 type CustomInputProps = Omit<
@@ -13,24 +14,28 @@ interface Props extends CustomInputProps, ReactInputProps {}
 
 export const FileInput = React.forwardRef<HTMLInputElement, Props>(
   ({ onChange, onClear, ...props }, ref) => {
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const inputRef = useForwardRef<HTMLInputElement>(ref);
     const [filename, setFilename] = React.useState<string>();
 
-    const onFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const fileList = evt.target.files;
-      if (fileList?.length) {
-        setFilename(fileList[0].name);
-      }
-      onChange?.(evt);
-    };
+    const onFileChange = React.useCallback(
+      (evt: React.ChangeEvent<HTMLInputElement>) => {
+        const fileList = evt.target.files;
+        if (fileList?.length) {
+          setFilename(fileList[0].name);
+        }
+        onChange?.(evt);
+      },
+      [onChange]
+    );
 
     const onBrowse = React.useCallback(() => {
       if (!filename) {
         inputRef.current?.click();
       }
-    }, [filename]);
+    }, [filename, inputRef]);
 
     const onFileClear = () => {
+      inputRef.current.value = '';
       setFilename(undefined);
       onClear?.();
     };
@@ -70,12 +75,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
         <input
           type="file"
           hidden
-          ref={(e) => {
-            //@ts-expect-error: forward ref into input field
-            ref?.(e);
-            //@ts-expect-error: forward ref into input field
-            inputRef.current = e;
-          }}
+          ref={inputRef}
           name={props.name}
           onBlur={props.onBlur}
           onChange={onFileChange}

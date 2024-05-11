@@ -1,35 +1,17 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Input } from '@nextui-org/react';
-import {
-  ColumnDef,
-  Row,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { Button } from '@nextui-org/react';
+import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { MdEmail } from 'react-icons/md';
 import { PiFolderOpenDuotone } from 'react-icons/pi';
 import { read, utils } from 'xlsx';
-import * as yup from 'yup';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
-import { graphql } from '~/graphql/generated';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { FileInput } from '~/view/base/file-input';
 import { MainMenu } from '~/view/main-menu';
+import { InputData, useHookForm } from './use-hook-form';
 import { XlsxView } from './xlsx-view';
-
-interface InputData {
-  xlsx: FileList;
-}
-
-const schema = yup.object().shape({
-  xlsx: yup.mixed<FileList>().required('Please upload a valid xlsx file'),
-});
 
 type TData = Record<string, string>;
 
@@ -45,9 +27,7 @@ export default function CommunityView({ params }: RouteArgs) {
   const { communityId } = params;
   const [columns, _setColumns] = React.useState<ColumnDef<TData>[]>();
   const [data, _setData] = React.useState<TData[]>();
-  const { handleSubmit, formState, register } = useForm<InputData>({
-    resolver: yupResolver(schema),
-  });
+  const { handleSubmit, formState, register } = useHookForm();
   const { errors } = formState;
 
   const makeColumns = (worksheet: WorksheetHelper) => {
@@ -103,7 +83,7 @@ export default function CommunityView({ params }: RouteArgs) {
       // 0.5rem is the top padding within <main/>, see layout.tsx
       className={`flex flex-col h-[calc(100vh_-_64px_-_0.5rem)]`}
     >
-      <div>
+      <form onSubmit={handleSubmit(uploadXlsx)}>
         <FileInput
           label="Upload xlsx file"
           isRequired
@@ -118,13 +98,12 @@ export default function CommunityView({ params }: RouteArgs) {
           className="my-2"
           color="primary"
           type="submit"
+          isDisabled={!formState.isDirty}
           // isLoading={result.loading}
-          // @ts-expect-error: handleSubmit not compatible with handleSubmit
-          onPress={handleSubmit(uploadXlsx)}
         >
           Import
         </Button>
-      </div>
+      </form>
       {data && columns && <XlsxView data={data} columns={columns} />}
     </div>
   );

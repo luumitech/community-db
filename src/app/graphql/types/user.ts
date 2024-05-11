@@ -7,12 +7,8 @@ builder.prismaObject('User', {
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
-    communityList: t.relation('communityList'),
+    accessList: t.relation('accessList'),
   }),
-});
-
-const Role = builder.enumType('Role', {
-  values: ['USER', 'ADMIN'] as const,
 });
 
 builder.queryField('userCurrent', (t) =>
@@ -22,62 +18,39 @@ builder.queryField('userCurrent', (t) =>
       const { user } = await ctx;
       const { email } = user;
 
-      let entry = await prisma.user.findUnique({
+      // Find the user matching the current logged in user
+      let entry = await prisma.user.upsert({
         ...query,
         where: { email },
+        // not updating the record if already exists
+        update: {},
+        // create the user if not already in database
+        create: { email },
       });
 
-      // Create user entry in database if not already available
-      if (!entry) {
-        entry = await prisma.user.create({
-          data: {
-            email,
-            communityIds: [],
-          },
-        });
-      }
-
-      // In development mode, add all communities under 'devuser@email.com' to
+      // In development mode, add all document accessible under 'devuser@email.com' to
       // the current context user
       // This will ensure that context user see everything that `yarn seed-db` has
       // created for devuser@email.com'
       if (!isProduction()) {
-        const devCommunityList = await prisma.community.findMany({
+        const accessList = await prisma.access.findMany({
           select: { id: true },
           where: {
-            userList: {
-              some: {
-                email: 'devuser@email.com',
-              },
+            user: {
+              email: 'devuser@email.com',
             },
           },
         });
-        await prisma.user.update({
-          where: { id: entry.id },
-          data: {
-            communityList: {
-              connect: devCommunityList,
-            },
-          },
-        });
-        entry = await prisma.user.findUnique({
+        entry = await prisma.user.update({
           ...query,
           where: { id: entry.id },
+          data: {
+            accessList: { connect: accessList },
+          },
         });
       }
 
-      if (!entry) {
-        throw new GraphQLError(`User ${email} not found in database`);
-      }
       return entry;
     },
   })
 );
-
-// builder.queryField('userList', (t) =>
-//   t.prismaField({
-//     type: ['User'],
-//     resolve: (query, _parent, _args, _ctx, _info) =>
-//       prisma.user.findMany({ ...query }),
-//   })
-// );

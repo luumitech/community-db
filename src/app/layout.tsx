@@ -7,7 +7,6 @@ import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 
-import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
