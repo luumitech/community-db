@@ -1,33 +1,23 @@
-'use client';
 import { useMutation } from '@apollo/client';
-import { Button } from '@nextui-org/react';
 import React from 'react';
 import { FormProvider } from 'react-hook-form';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import { InfoEditor } from './info-editor';
-import { OccupantEditor } from './occupant-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
 const PropertyFragment = graphql(/* GraphQL */ `
-  fragment PropertyId_Editor on Property {
+  fragment PropertyId_PropertyEditor on Property {
     id
-    address
-    notes
     updatedAt
-    updatedBy
-    membershipList {
-      year
-      isMember
-    }
-    occupantList {
-      firstName
-      lastName
-      optOut
-      email
-      cell
-      work
-      home
+    notes
+  }
+`);
+
+const PropertyMutation = graphql(/* GraphQL */ `
+  mutation propertyModify($input: PropertyModifyInput!) {
+    propertyModify(input: $input) {
+      ...PropertyId_PropertyEditor
     }
   }
 `);
@@ -38,26 +28,28 @@ interface Props {
 
 export const PropertyEditor: React.FC<Props> = (props) => {
   const entry = useFragment(PropertyFragment, props.entry);
+  const [updateProperty, result] = useMutation(PropertyMutation);
+  useGraphqlErrorHandler(result);
   const formMethods = useHookForm(entry);
   const { formState } = formMethods;
-  const onSubmit = (input: InputData) => {
-    // console.log({ input });
+  const onSubmit = async (input: InputData) => {
+    if (!formState.isDirty) {
+      return;
+    }
+    await updateProperty({
+      variables: {
+        input: {
+          self: { id: entry.id, updatedAt: entry.updatedAt },
+          ...input,
+        },
+      },
+    });
   };
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+    <form onBlur={formMethods.handleSubmit(onSubmit)}>
       <FormProvider {...formMethods}>
         <InfoEditor />
-        <OccupantEditor />
-        <Button
-          className="my-2"
-          color="primary"
-          type="submit"
-          isDisabled={!formMethods.formState.isDirty}
-          // isLoading={result.loading}
-        >
-          Save
-        </Button>
       </FormProvider>
     </form>
   );

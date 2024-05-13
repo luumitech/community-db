@@ -9,6 +9,13 @@ const config: CodegenConfig = {
     './src/app/graphql/generated/': {
       preset: 'client',
       plugins: [],
+      config: {
+        scalars: {
+          // ISOString (i.e. "2024-05-13T15:58:12.957Z")
+          DateTime: 'string',
+          Date: 'string',
+        },
+      },
     },
     './src/app/graphql/generated/type-policies.ts': {
       plugins: ['typescript-apollo-client-helpers'],

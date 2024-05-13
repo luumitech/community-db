@@ -1,9 +1,7 @@
 'use client';
 import { useQuery } from '@apollo/client';
 import {
-  Button,
   Input,
-  Spacer,
   Spinner,
   Table,
   TableBody,
@@ -14,18 +12,13 @@ import {
 } from '@nextui-org/react';
 import { useInfiniteScroll } from '@nextui-org/use-infinite-scroll';
 import { useDebounce } from '@uidotdev/usehooks';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { FaSearch } from 'react-icons/fa';
-import * as R from 'remeda';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
-import { Membership } from './membership';
-import { Occupant } from './occupant';
-import { PropertyAddress } from './property-address';
+import { useTableData } from './use-table-data';
 
 interface Params {
   communityId: string;
@@ -34,9 +27,6 @@ interface Params {
 interface RouteArgs {
   params: Params;
 }
-
-const curYear = new Date().getFullYear();
-const prevYear = curYear - 1;
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
   query communityFromId(
@@ -67,20 +57,16 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
   }
 `);
 
-type PropertyEntry =
-  GQL.CommunityFromIdQuery['communityFromId']['propertyList']['edges'][0]['node'];
-
 export default function PropertyList({ params }: RouteArgs) {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const [limit, setLimit] = React.useState(10);
   const searchText = useSelector((state) => state.ui.propertyListSearch);
   const debouncedSearchText = useDebounce(searchText, 300);
   const result = useQuery(CommunityFromIdQuery, {
     variables: {
       id: params.communityId,
-      first: limit,
+      first: 10, // load 10 entries initally
       search: debouncedSearchText,
     },
   });
@@ -98,34 +84,10 @@ export default function PropertyList({ params }: RouteArgs) {
       });
     },
   });
+  const { columns, renderCell } = useTableData();
 
   const rows = (data?.communityFromId.propertyList.edges ?? []).map(
     (edge) => edge.node
-  );
-
-  const columns = [
-    { name: 'Address', uid: 'address', className: 'w-1/6' },
-    { name: 'Members', uid: 'occupant' },
-    { name: curYear, uid: 'curYear', className: 'w-10' },
-    { name: prevYear, uid: 'prevYear', className: 'w-10' },
-  ];
-
-  const renderCell = React.useCallback(
-    (entry: PropertyEntry, columnKey: React.Key) => {
-      switch (columnKey) {
-        case 'address':
-          return <PropertyAddress entry={entry} />;
-        case 'occupant':
-          return <Occupant entry={entry} />;
-        case 'curYear':
-          return <Membership entry={entry} year={curYear} />;
-        case 'prevYear':
-          return <Membership entry={entry} year={prevYear} />;
-        default:
-          return null;
-      }
-    },
-    []
   );
 
   const topContent = React.useMemo(() => {
@@ -178,8 +140,8 @@ export default function PropertyList({ params }: RouteArgs) {
     >
       <TableHeader columns={columns}>
         {(column) => (
-          <TableColumn key={column.uid} className={column.className}>
-            {column.name}
+          <TableColumn key={column.key} className={column.className}>
+            {column.label}
           </TableColumn>
         )}
       </TableHeader>

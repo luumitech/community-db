@@ -64,7 +64,7 @@ const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     notes: t.string(),
-    occupantList: t.field({ type: [OccupantInput], required: true }),
+    occupantList: t.field({ type: [OccupantInput] }),
   }),
 });
 
@@ -77,25 +77,44 @@ builder.mutationField('propertyModify', (t) =>
     resolve: async (query, _parent, args, ctx) => {
       const { user } = await ctx;
       const { self, ...input } = args.input;
-
-      const entry = prisma.property.update({
+      const entry = await prisma.property.findUnique({
         ...query,
         where: {
           id: self.id.toString(),
-          // Verify context user can modify document
           community: {
             accessList: {
               some: {
-                user: {
-                  email: user.email,
-                },
+                user: { email: user.email },
               },
             },
           },
         },
-        data: input,
+        select: {
+          updatedAt: true,
+        },
       });
-      return entry;
+      if (!entry) {
+        throw new GraphQLError(
+          `No permission to access property ${self.id.toString()}`
+        );
+      } else if (entry.updatedAt.toISOString() !== self.updatedAt) {
+        throw new GraphQLError(
+          `Attempting to update a stale property ${self.id.toString()}, please refresh browser.`
+        );
+      }
+
+      return prisma.property.update({
+        ...query,
+        where: {
+          id: self.id.toString(),
+        },
+        // @ts-expect-error: composite types like 'occupantList'
+        // is allowed to be undefined
+        data: {
+          updatedBy: user.email,
+          ...input,
+        },
+      });
     },
   })
 );

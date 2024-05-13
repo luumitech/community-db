@@ -4,7 +4,6 @@ import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 
 const PropertyFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Membership on Property {
-    id
     membershipList {
       year
       isMember
@@ -12,8 +11,11 @@ const PropertyFragment = graphql(/* GraphQL */ `
   }
 `);
 
+export type MemberShipFragmentType = FragmentType<typeof PropertyFragment>;
+
 interface Props {
-  entry: FragmentType<typeof PropertyFragment>;
+  className?: string;
+  entry: MemberShipFragmentType;
   year: number;
 }
 
@@ -24,6 +26,8 @@ export const Membership: React.FC<Props> = (props) => {
   );
 
   return (
-    <div>{!!membership?.isMember && <IoCheckmark className="text-xl" />}</div>
+    <div className={props.className}>
+      {!!membership?.isMember && <IoCheckmark className="text-xl" />}
+    </div>
   );
 };

@@ -21,7 +21,7 @@ const yoga = createYoga<{
   /**
    * See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking
    */
-  maskedErrors: false,
+  // maskedErrors: false,
 });
 
 const { handleRequest } = yoga;
