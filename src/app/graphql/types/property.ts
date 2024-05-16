@@ -20,7 +20,7 @@ const Membership = builder.objectRef<Membership>('Membership').implement({
   fields: (t) => ({
     year: t.exposeInt('year'),
     isMember: t.exposeBoolean('isMember', { nullable: true }),
-    eventAttended: t.exposeString('eventAttended', { nullable: true }),
+    eventsAttended: t.exposeString('eventsAttended', { nullable: true }),
     paymentDate: t.expose('paymentDate', { type: 'Date', nullable: true }),
     paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
     paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),

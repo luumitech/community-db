@@ -86,7 +86,7 @@ describe('import community xlsx', () => {
                     membershipList {
                       year
                       isMember
-                      eventAttended
+                      eventsAttended
                       paymentDate
                       paymentMethod
                       paymentDeposited
@@ -138,7 +138,7 @@ describe('import community xlsx', () => {
       ],
       membershipList: [
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -146,7 +146,7 @@ describe('import community xlsx', () => {
           year: 2002,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -154,7 +154,7 @@ describe('import community xlsx', () => {
           year: 2003,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -162,7 +162,7 @@ describe('import community xlsx', () => {
           year: 2004,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -170,7 +170,7 @@ describe('import community xlsx', () => {
           year: 2005,
         },
         {
-          eventAttended: 'Other',
+          eventsAttended: 'Other',
           isMember: true,
           paymentDate: '2006-01-01',
           paymentDeposited: true,
@@ -178,7 +178,7 @@ describe('import community xlsx', () => {
           year: 2006,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -186,7 +186,7 @@ describe('import community xlsx', () => {
           year: 2007,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -194,7 +194,7 @@ describe('import community xlsx', () => {
           year: 2008,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -202,7 +202,7 @@ describe('import community xlsx', () => {
           year: 2009,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -210,7 +210,7 @@ describe('import community xlsx', () => {
           year: 2010,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -218,7 +218,7 @@ describe('import community xlsx', () => {
           year: 2011,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -226,7 +226,7 @@ describe('import community xlsx', () => {
           year: 2012,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -234,7 +234,7 @@ describe('import community xlsx', () => {
           year: 2013,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -242,7 +242,7 @@ describe('import community xlsx', () => {
           year: 2014,
         },
         {
-          eventAttended: 'Other',
+          eventsAttended: 'Other',
           isMember: true,
           paymentDate: '2015-01-01',
           paymentDeposited: true,
@@ -250,7 +250,7 @@ describe('import community xlsx', () => {
           year: 2015,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -258,7 +258,7 @@ describe('import community xlsx', () => {
           year: 2016,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,
@@ -266,7 +266,7 @@ describe('import community xlsx', () => {
           year: 2017,
         },
         {
-          eventAttended: 'Other',
+          eventsAttended: 'Other',
           isMember: true,
           paymentDate: '2018-01-01',
           paymentDeposited: true,
@@ -274,7 +274,7 @@ describe('import community xlsx', () => {
           year: 2018,
         },
         {
-          eventAttended: 'Corn Roast',
+          eventsAttended: 'Corn Roast',
           isMember: true,
           paymentDate: '2019-08-18',
           paymentDeposited: false,
@@ -282,7 +282,7 @@ describe('import community xlsx', () => {
           year: 2019,
         },
         {
-          eventAttended: 'Membership Form',
+          eventsAttended: 'Membership Form',
           isMember: true,
           paymentDate: '2020-11-11',
           paymentDeposited: false,
@@ -290,7 +290,7 @@ describe('import community xlsx', () => {
           year: 2020,
         },
         {
-          eventAttended: 'Membership Carry Forward',
+          eventsAttended: 'Membership Carry Forward',
           isMember: true,
           paymentDate: '2021-01-24',
           paymentDeposited: false,
@@ -298,7 +298,7 @@ describe('import community xlsx', () => {
           year: 2021,
         },
         {
-          eventAttended: 'Membership Carry Forward',
+          eventsAttended: 'Membership Carry Forward',
           isMember: true,
           paymentDate: '2022-02-11',
           paymentDeposited: false,
@@ -306,7 +306,7 @@ describe('import community xlsx', () => {
           year: 2022,
         },
         {
-          eventAttended: 'Membership Form',
+          eventsAttended: 'Membership Form',
           isMember: true,
           paymentDate: '2023-02-23',
           paymentDeposited: true,
@@ -314,7 +314,7 @@ describe('import community xlsx', () => {
           year: 2023,
         },
         {
-          eventAttended: null,
+          eventsAttended: null,
           isMember: false,
           paymentDate: null,
           paymentDeposited: false,

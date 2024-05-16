@@ -56,7 +56,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         colIdx: importHelper.labelColumn(`${prefix}`),
         type: 'boolean',
       },
-      eventAttended: {
+      eventsAttended: {
         colIdx: importHelper.labelColumn(`${prefix}-event`),
         type: 'string',
       },

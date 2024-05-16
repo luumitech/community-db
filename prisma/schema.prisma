@@ -85,7 +85,8 @@ type Occupant {
 type Membership {
   year             Int
   isMember         Boolean?
-  eventAttended    String?
+  /// List of events attended (semi-comma separated)
+  eventsAttended   String?
   paymentDate      DateTime?
   paymentMethod    String?
   paymentDeposited Boolean?

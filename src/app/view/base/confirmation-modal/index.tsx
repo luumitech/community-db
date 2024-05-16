@@ -29,7 +29,7 @@ export const ConfirmationModal: React.FC<Props> = () => {
       isKeyboardDismissDisabled={true}
       hideCloseButton
       classNames={{
-        base: 'border-[#F9C97C] border-[2px]',
+        base: 'border-warning border-[2px]',
       }}
     >
       <ModalContent>
