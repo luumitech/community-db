@@ -10,6 +10,7 @@ const config: CodegenConfig = {
       preset: 'client',
       plugins: [],
       config: {
+        dedupeFragments: true,
         scalars: {
           // ISOString (i.e. "2024-05-13T15:58:12.957Z")
           DateTime: 'string',

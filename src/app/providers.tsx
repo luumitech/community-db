@@ -5,7 +5,9 @@ import { SessionProvider, SessionProviderProps } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
+import { AppProvider } from '~/custom-hooks/app-context';
 import apolloClient from '~/graphql/apollo-client';
+import { ConfirmationModal } from '~/view/base/confirmation-modal';
 import { ReduxProviders } from './redux-providers';
 
 interface Props {
@@ -23,8 +25,11 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
       <ApolloProvider client={apolloClient}>
         <NextUIProvider>
           <ReduxProviders>
-            {children}
-            <ToastContainer position="bottom-right" theme={resolvedTheme} />
+            <AppProvider>
+              {children}
+              <ConfirmationModal />
+              <ToastContainer position="bottom-right" theme={resolvedTheme} />
+            </AppProvider>
           </ReduxProviders>
         </NextUIProvider>
       </ApolloProvider>

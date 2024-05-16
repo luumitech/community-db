@@ -6,11 +6,7 @@ import { BiEditAlt } from 'react-icons/bi';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import { ModalDialog } from './modal-dialog';
-import {
-  InputData,
-  useFieldArray,
-  useHookFormWithDisclosure,
-} from './use-hook-form';
+import { InputData, useHookFormWithDisclosure } from './use-hook-form';
 
 const PropertyFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantEditor on Property {
@@ -68,7 +64,7 @@ export const OccupantEditor: React.FC<Props> = (props) => {
         <Button
           size="sm"
           endContent={<BiEditAlt />}
-          onPress={disclosure.onOpen}
+          {...disclosure.getButtonProps()}
         >
           Edit Member Details
         </Button>

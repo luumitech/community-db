@@ -4,6 +4,7 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
+  TableProps,
   TableRow,
   getKeyValue,
 } from '@nextui-org/react';
@@ -12,12 +13,28 @@ import { MdEmail } from 'react-icons/md';
 import { OccupantEntry } from './_type';
 import { OptOut } from './opt-out';
 
+/**
+ * Converts a 10 digit phone number to (xxx)xxx-xxxx format
+ * @param {*} phoneNumber
+ */
+function formatPhoneNumber(phoneNumber: string) {
+  if (!phoneNumber) return null;
+  const cleaned = phoneNumber.toString().replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  return !match ? phoneNumber : `(${match[1]}) ${match[2]}-${match[3]}`;
+}
+
 interface Props {
   className?: string;
   occupantList: OccupantEntry[];
+  bottomContent?: TableProps['bottomContent'];
 }
 
-export const OccupantTable: React.FC<Props> = ({ className, occupantList }) => {
+export const OccupantTable: React.FC<Props> = ({
+  className,
+  occupantList,
+  bottomContent,
+}) => {
   const rows = occupantList.map((occupant, idx) => ({
     key: idx,
     ...occupant,
@@ -45,6 +62,10 @@ export const OccupantTable: React.FC<Props> = ({ className, occupantList }) => {
       switch (columnKey) {
         case 'optOut':
           return <OptOut entry={occupant} />;
+        case 'cell':
+        case 'work':
+        case 'home':
+          return formatPhoneNumber(getKeyValue(occupant, columnKey));
         default:
           return getKeyValue(occupant, columnKey);
       }
@@ -53,7 +74,12 @@ export const OccupantTable: React.FC<Props> = ({ className, occupantList }) => {
   );
 
   return (
-    <Table className={className} aria-label="Occupant Table" removeWrapper>
+    <Table
+      className={className}
+      aria-label="Occupant Table"
+      removeWrapper
+      bottomContent={bottomContent}
+    >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>

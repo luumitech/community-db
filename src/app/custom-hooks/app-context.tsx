@@ -1,8 +1,11 @@
 import React from 'react';
+import { useConfirmationModal } from '~/view/base/confirmation-modal/helper';
 
-type State = Readonly<Record<string, never>>;
+type State = Readonly<Record<string, unknown>>;
 
-interface ContextT extends State {}
+interface ContextT extends State {
+  confirmationModal: ReturnType<typeof useConfirmationModal>;
+}
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
@@ -12,7 +15,13 @@ interface Props {
 }
 
 export function AppProvider(props: Props) {
-  return <Context.Provider value={{}} {...props} />;
+  const confirmationModal = useConfirmationModal();
+
+  const value = React.useMemo<ContextT>(
+    () => ({ confirmationModal }),
+    [confirmationModal]
+  );
+  return <Context.Provider value={value} {...props} />;
 }
 
 export function useAppContext() {

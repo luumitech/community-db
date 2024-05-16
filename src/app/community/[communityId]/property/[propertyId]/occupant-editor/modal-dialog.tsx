@@ -1,5 +1,4 @@
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
@@ -9,6 +8,7 @@ import {
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { IoPersonAdd } from 'react-icons/io5';
+import { Button } from '~/view/base/button';
 import { Editor } from './editor';
 import {
   InputData,
@@ -31,8 +31,9 @@ export const ModalDialog: React.FC<Props> = ({
   onSave,
   isSaving,
 }) => {
-  const { control, formState, handleSubmit } = useHookFormContext();
   const { isOpen, onOpenChange, onClose } = disclosureProps;
+  const { control, formState, handleSubmit } = useHookFormContext();
+  const { isDirty } = formState;
   const occupantMethods = useFieldArray({
     control,
     name: 'occupantList',
@@ -55,6 +56,7 @@ export const ModalDialog: React.FC<Props> = ({
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      hideCloseButton
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
@@ -66,14 +68,13 @@ export const ModalDialog: React.FC<Props> = ({
           </ModalBody>
           <ModalFooter>
             <Button
-              variant="flat"
               startContent={<IoPersonAdd />}
               onPress={() => occupantMethods.append(occupantDefault)}
             >
               Add Member
             </Button>
             <div className="flex-grow" />
-            <Button color="danger" variant="flat" onPress={onClose}>
+            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
               Cancel
             </Button>
             <Button

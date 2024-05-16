@@ -9,12 +9,7 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-import {
-  OccupantFieldArrayReturn,
-  occupantDefault,
-  useFieldArray,
-  useHookFormContext,
-} from './use-hook-form';
+import { OccupantFieldArrayReturn, useHookFormContext } from './use-hook-form';
 
 interface Props {
   className?: string;
