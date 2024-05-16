@@ -13,12 +13,23 @@ export interface ImportHelperConfig {
   headerCol: number;
 }
 
+/**
+ * These data structures defines cell values that can be mapped from
+ * the input spreadsheet. (i.e each property in the data structure) should
+ * correspond to exactly one column in the spreadsheet
+ */
 type MProperty = Omit<
   Property,
   '__typename' | 'id' | 'createdAt' | 'occupantList' | 'membershipList'
 >;
 type MOccupant = Omit<Occupant, '__typename'>;
-type MMembership = Omit<Membership, '__typename' | 'year'>;
+interface MMembership
+  extends Omit<Membership, '__typename' | 'year' | 'eventAttendedList'> {
+  // Additional fields that are not directly mappable from excel
+  // spreadsheet to internal database structure
+  eventNames?: string;
+  eventDates?: string;
+}
 
 /**
  * Type of value being mapped (to be stored in database)
@@ -34,6 +45,11 @@ interface MappingEntry {
   type: MappingType;
 }
 
+/**
+ * For each of the property in the 'M' structure defined above,
+ * get mapping information to where each property map to the
+ * spreadsheet.  (i.e. 'address' field maps to column 0)
+ */
 type PropertyMapping = {
   [Key in keyof Required<MProperty>]: MappingEntry;
 };
@@ -126,6 +142,13 @@ export class ImportHelper {
    */
   labelColumn(label: string) {
     return this.headerLabels.findIndex((entry) => entry === label);
+  }
+
+  /**
+   * Return all header column labels that matches the given regex
+   */
+  labelMatch(regex: RegExp) {
+    return this.headerLabels.filter((entry) => entry.match(regex));
   }
 
   /**

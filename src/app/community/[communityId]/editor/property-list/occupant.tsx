@@ -4,7 +4,7 @@ import React from 'react';
 import * as R from 'remeda';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 
-const PropertyFragment = graphql(/* GraphQL */ `
+const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Occupant on Property {
     occupantList {
       firstName
@@ -13,15 +13,15 @@ const PropertyFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export type OccupantFragmentType = FragmentType<typeof PropertyFragment>;
+export type OccupantFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;
-  entry: FragmentType<typeof PropertyFragment>;
+  entry: FragmentType<typeof EntryFragment>;
 }
 
 export const Occupant: React.FC<Props> = (props) => {
-  const entry = useFragment(PropertyFragment, props.entry);
+  const entry = useFragment(EntryFragment, props.entry);
   const nameList = entry.occupantList
     .map(({ firstName, lastName }) => {
       const name = `${firstName ?? ''} ${lastName ?? ''}`;

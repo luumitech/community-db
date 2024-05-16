@@ -1,4 +1,4 @@
-import type { Membership, Occupant } from '@prisma/client';
+import type { Event, Membership, Occupant } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import prisma from '../../lib/prisma';
 import { builder } from '../builder';
@@ -16,12 +16,21 @@ const Occupant = builder.objectRef<Occupant>('Occupant').implement({
   }),
 });
 
+const Event = builder.objectRef<Event>('Event').implement({
+  fields: (t) => ({
+    eventName: t.exposeString('eventName'),
+    eventDate: t.expose('eventDate', { type: 'Date', nullable: true }),
+  }),
+});
+
 const Membership = builder.objectRef<Membership>('Membership').implement({
   fields: (t) => ({
     year: t.exposeInt('year'),
     isMember: t.exposeBoolean('isMember', { nullable: true }),
-    eventsAttended: t.exposeString('eventsAttended', { nullable: true }),
-    paymentDate: t.expose('paymentDate', { type: 'Date', nullable: true }),
+    eventAttendedList: t.field({
+      type: [Event],
+      resolve: (entry) => entry.eventAttendedList,
+    }),
     paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
     paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),
   }),
@@ -60,11 +69,29 @@ const OccupantInput = builder.inputType('OccupantInput', {
   }),
 });
 
+const EventInput = builder.inputType('EventInput', {
+  fields: (t) => ({
+    eventName: t.string({ required: true }),
+    eventDate: t.string(),
+  }),
+});
+
+const MembershipInput = builder.inputType('MembershipInput', {
+  fields: (t) => ({
+    year: t.int({ required: true }),
+    isMember: t.boolean(),
+    eventAttendedList: t.field({ type: [EventInput] }),
+    paymentMethod: t.string(),
+    paymentDeposited: t.boolean(),
+  }),
+});
+
 const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     notes: t.string(),
     occupantList: t.field({ type: [OccupantInput] }),
+    membershipList: t.field({ type: [MembershipInput] }),
   }),
 });
 

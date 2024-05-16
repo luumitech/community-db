@@ -6,7 +6,7 @@ interface Props {
   className?: string;
 }
 
-export const InfoEditor: React.FC<Props> = ({ className }) => {
+export const NotesEditor: React.FC<Props> = ({ className }) => {
   const { register, formState } = useHookFormContext();
   const { errors } = formState;
 

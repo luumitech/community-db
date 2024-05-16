@@ -27,7 +27,7 @@ export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
   home: '',
 };
 
-function defaultInputValue(
+function defaultInputData(
   item: GQL.PropertyId_OccupantEditorFragment
 ): DefaultData {
   return {
@@ -65,7 +65,7 @@ function validationResolver() {
 export function useHookFormWithDisclosure(
   fragment: GQL.PropertyId_OccupantEditorFragment
 ) {
-  const defaultValues = defaultInputValue(fragment);
+  const defaultValues = defaultInputData(fragment);
   const formMethods = useForm<InputData>({
     defaultValues,
     resolver: validationResolver(),

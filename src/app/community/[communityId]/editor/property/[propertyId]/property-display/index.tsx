@@ -10,7 +10,7 @@ import React from 'react';
 import { useTableData } from '~/community/[communityId]/editor/property-list/use-table-data';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 
-const PropertyFragment = graphql(/* GraphQL */ `
+const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyDisplay on Property {
     id
     ...PropertyList_Address
@@ -20,16 +20,17 @@ const PropertyFragment = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  entry: FragmentType<typeof PropertyFragment>;
+  className?: string;
+  entry: FragmentType<typeof EntryFragment>;
 }
 
 export const PropertyDisplay: React.FC<Props> = (props) => {
-  const entry = useFragment(PropertyFragment, props.entry);
+  const entry = useFragment(EntryFragment, props.entry);
   const { columns, renderCell } = useTableData();
   const rows = [{ key: entry.id, ...entry }];
 
   return (
-    <Table aria-label="Property Info" removeWrapper>
+    <Table className={props.className} aria-label="Property Info" removeWrapper>
       <TableHeader columns={columns}>
         {(column) => (
           <TableColumn key={column.key} className={column.className}>

@@ -7,17 +7,14 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { IoPersonAdd } from 'react-icons/io5';
+import * as GQL from '~/graphql/generated/graphql';
 import { Button } from '~/view/base/button';
-import { Editor } from './editor';
-import {
-  InputData,
-  occupantDefault,
-  useFieldArray,
-  useHookFormContext,
-} from './use-hook-form';
+import { MembershipInfoEditor } from './membership-info-editor';
+import { NotesEditor } from './notes-editor';
+import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
+  entry: GQL.PropertyId_MembershipEditorFragment;
   disclosureProps: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
   /**
@@ -27,17 +24,14 @@ interface Props {
 }
 
 export const ModalDialog: React.FC<Props> = ({
+  entry,
   disclosureProps,
   onSave,
   isSaving,
 }) => {
   const { isOpen, onOpenChange, onClose } = disclosureProps;
-  const { control, formState, handleSubmit } = useHookFormContext();
+  const { formState, handleSubmit } = useHookFormContext();
   const { isDirty } = formState;
-  const occupantMethods = useFieldArray({
-    control,
-    name: 'occupantList',
-  });
 
   const onSubmit = React.useCallback(
     async (input: InputData) => {
@@ -60,18 +54,12 @@ export const ModalDialog: React.FC<Props> = ({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Member Details</ModalHeader>
+          <ModalHeader>Edit Membership</ModalHeader>
           <ModalBody>
-            <Editor fieldArrayMethods={occupantMethods} />
+            <NotesEditor />
+            <MembershipInfoEditor />
           </ModalBody>
           <ModalFooter>
-            <Button
-              startContent={<IoPersonAdd />}
-              onPress={() => occupantMethods.append(occupantDefault)}
-            >
-              Add Member
-            </Button>
-            <div className="flex-grow" />
             <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
               Cancel
             </Button>

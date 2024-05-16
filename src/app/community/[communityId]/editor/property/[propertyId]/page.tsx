@@ -5,9 +5,10 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { toLocalDateTime } from '~/lib/date-util';
+import { MembershipDisplay } from './membership-display';
+import { MembershipEditor } from './membership-editor';
 import { OccupantDisplay } from './occupant-display';
 import { PropertyDisplay } from './property-display';
-import { PropertyEditor } from './property-editor';
 
 interface Params {
   communityId: string;
@@ -27,7 +28,8 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
         updatedAt
         updatedBy
         ...PropertyId_PropertyDisplay
-        ...PropertyId_PropertyEditor
+        ...PropertyId_MembershipEditor
+        ...PropertyId_MembershipDisplay
         ...PropertyId_OccupantDisplay
       }
     }
@@ -53,7 +55,8 @@ export default function Property({ params }: RouteArgs) {
     <div>
       <PropertyDisplay entry={property} />
       <Divider className="mb-4" />
-      <PropertyEditor entry={property} />
+      <MembershipDisplay entry={property} />
+      <MembershipEditor entry={property} />
       <OccupantDisplay className="my-4" entry={property} />
       <div className="text-right text-xs">
         Last modified on {updatedAt} by {property.updatedBy ?? 'n/a'}

@@ -2,7 +2,7 @@ import React from 'react';
 import { IoCheckmark } from 'react-icons/io5';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 
-const PropertyFragment = graphql(/* GraphQL */ `
+const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Membership on Property {
     membershipList {
       year
@@ -11,7 +11,7 @@ const PropertyFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export type MemberShipFragmentType = FragmentType<typeof PropertyFragment>;
+export type MemberShipFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const Membership: React.FC<Props> = (props) => {
-  const entry = useFragment(PropertyFragment, props.entry);
+  const entry = useFragment(EntryFragment, props.entry);
   const membership = entry.membershipList.find(
     ({ year }) => year === props.year
   );

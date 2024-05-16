@@ -81,13 +81,18 @@ type Occupant {
   cell      String?
 }
 
+/// Event Information
+type Event {
+  eventName String
+  eventDate DateTime?
+}
+
 /// Membership information within a property
 type Membership {
-  year             Int
-  isMember         Boolean?
-  /// List of events attended (semi-comma separated)
-  eventsAttended   String?
-  paymentDate      DateTime?
-  paymentMethod    String?
-  paymentDeposited Boolean?
+  year              Int
+  isMember          Boolean?
+  /// List of events attended
+  eventAttendedList Event[]
+  paymentMethod     String?
+  paymentDeposited  Boolean?
 }
