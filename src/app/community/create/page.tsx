@@ -27,7 +27,7 @@ export default function CommunityCreate() {
     const newCommunity = await create({ variables: form });
     const newId = newCommunity.data?.communityCreate.id;
     if (newId) {
-      router.push(`/community/${newId}/property-list`);
+      router.push(`/community/${newId}/editor/property-list`);
     }
   };
 

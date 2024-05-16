@@ -12,21 +12,31 @@ export function useNavMenu() {
   const [menuItems, setMenuItems] = React.useState<MenuItemEntry[]>([]);
 
   React.useEffect(() => {
-    const withinEditor = match<{ id: string }>('/community/:id/(.*)', {
-      decode: decodeURIComponent,
-    });
-    const editorMatch = withinEditor(pathname);
-    if (editorMatch) {
+    const withinOneCommunityMatcher = match<{ communityId: string }>(
+      '/community/:communityId/(.*)',
+      { decode: decodeURIComponent }
+    );
+    const withinOneCommunity = withinOneCommunityMatcher(pathname);
+    if (withinOneCommunity) {
+      const { communityId } = withinOneCommunity.params;
+      const withinEditorMatcher = match<{ communityId: string }>(
+        '/community/:communityId/editor/(.*)',
+        { decode: decodeURIComponent }
+      );
+      const withinToolMatcher = match<{ communityId: string }>(
+        '/community/:communityId/tool/(.*)',
+        { decode: decodeURIComponent }
+      );
       setMenuItems([
         {
           id: 'membership-editor',
-          isActive: pathname.endsWith('/property-list'),
-          href: `/community/${editorMatch.params.id}/property-list`,
+          isActive: !!withinEditorMatcher(pathname),
+          href: `/community/${communityId}/editor/property-list`,
           children: 'Membership Editor',
         },
         {
           id: 'tools',
-          isActive: pathname.endsWith('/tool'),
+          isActive: !!withinToolMatcher(pathname),
           href: '#',
           children: 'Tools',
         },

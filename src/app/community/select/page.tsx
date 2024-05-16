@@ -28,7 +28,7 @@ export default function CommunitySelect() {
   const accessList = result.data?.userCurrent.accessList ?? [];
   const items = accessList.map((entry) => ({
     ...entry.community,
-    href: `/community/${entry.community.id}/property-list`,
+    href: `/community/${entry.community.id}/editor/property-list`,
   }));
 
   return (

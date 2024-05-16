@@ -7,7 +7,7 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import React from 'react';
-import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
+import { useTableData } from '~/community/[communityId]/editor/property-list/use-table-data';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 
 const PropertyFragment = graphql(/* GraphQL */ `
