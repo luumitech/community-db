@@ -42,7 +42,7 @@ export const MainMenu: React.FC<Props> = ({ header, items, loading }) => {
             <Listbox aria-label="main menu">
               {items.map((item) => (
                 <ListboxItem key={item.id} href={item.href}>
-                  {item.name || 'n/a'}
+                  {item.name ?? 'n/a'}
                 </ListboxItem>
               ))}
             </Listbox>

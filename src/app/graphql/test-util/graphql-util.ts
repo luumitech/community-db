@@ -11,7 +11,7 @@ import { schema } from '../schema';
  * Helper test utility class for invoking graphQL query/mutation
  */
 export class GraphQLUtil {
-  private _executor: AsyncExecutor<any, HTTPExecutorOptions>;
+  private _executor: AsyncExecutor<unknown, HTTPExecutorOptions>;
 
   // Default context for graphQL
   private _context: Context = {
@@ -48,9 +48,9 @@ export class GraphQLUtil {
    * non iteratable
    */
   async executeSingle<
-    TVariables extends Record<string, any> = any,
-    TRootValue = any,
-    TReturn = any,
+    TVariables extends Record<string, unknown> = Record<string, unknown>,
+    TRootValue = unknown,
+    TReturn = unknown,
   >(
     request: ExecutionRequest<
       TVariables,

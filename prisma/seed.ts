@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { importLcraDB } from '~/lib/import-community';
@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 const workbook = XLSX.readFile(path.join(__dirname, 'lcra-db.xlsx'));
 const propertyList = importLcraDB(workbook);
 
-const communitySeed = [
+const communitySeed: Prisma.CommunityCreateInput[] = [
   {
     name: 'Test Community1',
     propertyList: {
@@ -17,16 +17,27 @@ const communitySeed = [
   },
   {
     name: 'Test Community2',
+    propertyList: {
+      create: propertyList,
+    },
   },
 ];
+
+const accessSeed: Prisma.AccessCreateWithoutUserInput[] = communitySeed.map(
+  (community) => ({
+    role: 'ADMIN',
+    community: {
+      create: community,
+    },
+  })
+);
 
 async function main() {
   await prisma.user.create({
     data: {
       email: 'devuser@email.com',
-      role: 'ADMIN',
-      communityList: {
-        create: communitySeed,
+      accessList: {
+        create: accessSeed,
       },
     },
   });

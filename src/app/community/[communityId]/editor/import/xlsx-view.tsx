@@ -1,5 +1,4 @@
 import {
-  Column,
   ColumnDef,
   Row,
   flexRender,
@@ -9,12 +8,12 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
 
-interface Props {
-  data: any[];
-  columns: ColumnDef<any>[];
+interface Props<TData> {
+  data: TData[];
+  columns: ColumnDef<TData>[];
 }
 
-export const XlsxView: React.FC<Props> = ({ data, columns }) => {
+export function XlsxView<T>({ data, columns }: Props<T>) {
   // The virtualizers need to know the scrollable container element
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const table = useReactTable({
@@ -111,7 +110,7 @@ export const XlsxView: React.FC<Props> = ({ data, columns }) => {
           }}
         >
           {virtualRows.map((virtualRow) => {
-            const row = rows[virtualRow.index] as Row<any>;
+            const row = rows[virtualRow.index] as Row<unknown>;
             const visibleCells = row.getVisibleCells();
 
             return (
@@ -154,4 +153,4 @@ export const XlsxView: React.FC<Props> = ({ data, columns }) => {
       </table>
     </div>
   );
-};
+}

@@ -57,5 +57,11 @@ The mongo DB must be configured with replication set:
 - while mongod is running, run `mongosh`, then:
 
     ```sh
-    rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]});
+    rs.initiate({_id: 'rs0', members: [{_id: 0, host: '127.0.0.1:27017'}]});
+    ```
+
+- if you need to apply new configuration, then:
+
+    ```sh
+    rs.reconfig({_id: 'rs0', members: [{_id: 0, host: '127.0.0.1:27017'}]}, {force:true});
     ```

@@ -7,9 +7,23 @@ const yoga = createYoga<{
   req: NextApiRequest;
   res: NextApiResponse;
 }>({
+  /**
+   * GraphiQL is enabled only in development and served under this endpoint
+   * See: https://the-guild.dev/graphql/yoga-server/docs/features/graphiql
+   */
   graphqlEndpoint: '/api/graphql',
   schema,
   context: createContext,
+  fetchAPI: {
+    Response: Response,
+    Request: Request,
+  },
+  /**
+   * See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking
+   */
+  // maskedErrors: false,
 });
 
-export { yoga as GET, yoga as POST };
+const { handleRequest } = yoga;
+
+export { handleRequest as GET, handleRequest as POST };

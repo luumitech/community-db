@@ -39,6 +39,7 @@ jobs:
         run: |
           yarn generate
           yarn lint
+          yarn ts-check
 
       - name: Jest unit tests
         # add following to `yarn test`:

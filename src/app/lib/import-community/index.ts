@@ -1,5 +1,6 @@
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
+import type { Event } from '~/graphql/generated/graphql';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { ImportHelper } from './import-helper';
 
@@ -49,20 +50,22 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     return occupant;
   }
 
-  function addEvent(rowIdx: number, year: number) {
+  function addMembership(rowIdx: number, year: number) {
     const prefix = `Y${year}`;
-    const event = importHelper.event(rowIdx, {
+    const membership = importHelper.membership(rowIdx, {
       isMember: {
         colIdx: importHelper.labelColumn(`${prefix}`),
         type: 'boolean',
       },
-      eventAttended: {
+      // event names separated by semi-colons
+      eventNames: {
         colIdx: importHelper.labelColumn(`${prefix}-event`),
         type: 'string',
       },
-      paymentDate: {
+      // event dates separated by semi-colons
+      eventDates: {
         colIdx: importHelper.labelColumn(`${prefix}-date`),
-        type: 'date',
+        type: 'string',
       },
       paymentMethod: {
         colIdx: importHelper.labelColumn(`${prefix}-payment`),
@@ -73,9 +76,20 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         type: 'boolean',
       },
     });
+    // Map eventNameList/eventDateList into the format of
+    // eventAttendedList
+    const { eventNames, eventDates, ...rest } = membership;
+    const eventNameList = membership.eventNames?.split(';') ?? [];
+    const eventDateList = membership.eventDates?.split(';') ?? [];
+    const eventAttendedList = eventNameList.map((eventName, idx) => ({
+      eventName,
+      eventDate: eventDateList[idx],
+    }));
+
     return {
       year: 2000 + year,
-      ...event,
+      ...rest,
+      eventAttendedList,
     };
   }
 
@@ -104,19 +118,29 @@ export function importLcraDB(wb: XLSX.WorkBook) {
       },
     });
 
-    // support 4 different occupants
-    R.times(4, (occupantIdx) => {
+    // Determine total number of occupants by scanning the
+    // column headers
+    const occupantCount = importHelper.labelMatch(/^FirstName/).length;
+    R.times(occupantCount, (occupantIdx) => {
       const occupant = addOccupant(rowIdx, occupantIdx);
       if (!R.isEmpty(occupant)) {
         property.occupantList.push(occupant);
       }
     });
 
-    // support Y2 to Y24
-    R.range(2, 25).forEach((year) => {
-      const event = addEvent(rowIdx, year);
-      if (!R.isEmpty(event)) {
-        property.eventList.push(event);
+    // Determine total number of membership years by scanning the
+    // column headers, and also sort it in descending order
+    const yearList = importHelper
+      .labelMatch(/^Y[\d]+$/)
+      .map((yearStr) => parseInt(yearStr.slice(1), 10))
+      .sort((a, b) => b - a);
+
+    // The yearList should be array of number like
+    // [24, 23, 22, ...]
+    yearList.forEach((year) => {
+      const membership = addMembership(rowIdx, year);
+      if (!R.isEmpty(membership)) {
+        property.membershipList.push(membership);
       }
     });
 

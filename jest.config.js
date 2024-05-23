@@ -8,7 +8,7 @@ module.exports = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   transform: {
-    '\\.tsx?$': 'babel-jest',
+    '\\.tsx?$': ['babel-jest', { configFile: './.jest/babel.config.js' }],
   },
   testMatch: ['<rootDir>/src/**/?(*.)(spec).(ts|js)?(x)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],

@@ -1,6 +1,7 @@
-import { Button, Input, InputProps } from '@nextui-org/react';
+import { Input, InputProps } from '@nextui-org/react';
 import React from 'react';
-import { PiFolderOpenDuotone } from 'react-icons/pi';
+import { useForwardRef } from '~/custom-hooks/forward-ref';
+import { FlatButton } from '~/view/base/flat-button';
 
 type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 type CustomInputProps = Omit<
@@ -11,16 +12,31 @@ type CustomInputProps = Omit<
 interface Props extends CustomInputProps, ReactInputProps {}
 
 export const FileInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ onChange, ...props }, ref) => {
-    const inputRef = React.useRef<HTMLInputElement>(null);
+  ({ onChange, onClear, ...props }, ref) => {
+    const inputRef = useForwardRef<HTMLInputElement>(ref);
     const [filename, setFilename] = React.useState<string>();
 
-    const onFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const fileList = evt.target.files;
-      if (fileList?.length) {
-        setFilename(fileList[0].name);
+    const onFileChange = React.useCallback(
+      (evt: React.ChangeEvent<HTMLInputElement>) => {
+        const fileList = evt.target.files;
+        if (fileList?.length) {
+          setFilename(fileList[0].name);
+        }
+        onChange?.(evt);
+      },
+      [onChange]
+    );
+
+    const onBrowse = React.useCallback(() => {
+      if (!filename) {
+        inputRef.current?.click();
       }
-      onChange?.(evt);
+    }, [filename, inputRef]);
+
+    const onFileClear = () => {
+      inputRef.current.value = '';
+      setFilename(undefined);
+      onClear?.();
     };
 
     return (
@@ -29,27 +45,22 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
           variant="bordered"
           readOnly
           endContent={
-            <Button
-              className="min-w-max"
-              onClick={() => inputRef.current?.click()}
-              endContent={<PiFolderOpenDuotone className="text-xl" />}
-            >
-              Browse...
-            </Button>
+            filename ? (
+              <FlatButton icon="clear" onClick={onFileClear} />
+            ) : (
+              <FlatButton icon="folder-open" onClick={onBrowse} />
+            )
           }
           value={filename ?? ''}
+          onClick={onBrowse}
           {...(props as CustomInputProps)}
         />
         <input
           type="file"
           hidden
-          ref={(e) => {
-            //@ts-expect-error
-            ref?.(e);
-            //@ts-expect-error
-            inputRef.current = e;
-          }}
-          {...(props as ReactInputProps)}
+          ref={inputRef}
+          name={props.name}
+          onBlur={props.onBlur}
           onChange={onFileChange}
         />
       </>

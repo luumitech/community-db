@@ -5,6 +5,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  User,
 } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -38,20 +39,17 @@ export const SignedIn: React.FC<Props> = ({}) => {
 
   return (
     <Dropdown placement="bottom-end">
-      {/**
-       * This is creating a warning:
-       * React does not recognize the `originalProps` prop on a DOM element.
-       * https://github.com/nextui-org/nextui/issues/2593
-       */}
       <DropdownTrigger>
-        <Avatar
-          isBordered
-          as="button"
+        <User
           className="transition-transform"
-          color="secondary"
-          name={acronym(name) ?? 'n/a'}
-          size="sm"
-          {...(!!image && { src: image })}
+          name=""
+          isFocusable
+          avatarProps={{
+            isBordered: true,
+            name: acronym(name) ?? 'n/a',
+            color: 'secondary',
+            ...(!!image && { src: image }),
+          }}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Profile Actions" variant="flat">

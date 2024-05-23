@@ -1,4 +1,9 @@
-import type { Event, Occupant, Property } from '~/graphql/generated/graphql';
+import * as R from 'remeda';
+import type {
+  Membership,
+  Occupant,
+  Property,
+} from '~/graphql/generated/graphql';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 export interface ImportHelperConfig {
@@ -8,12 +13,23 @@ export interface ImportHelperConfig {
   headerCol: number;
 }
 
+/**
+ * These data structures defines cell values that can be mapped from
+ * the input spreadsheet. (i.e each property in the data structure) should
+ * correspond to exactly one column in the spreadsheet
+ */
 type MProperty = Omit<
   Property,
-  '__typename' | 'id' | 'createdAt' | 'occupantList' | 'eventList'
+  '__typename' | 'id' | 'createdAt' | 'occupantList' | 'membershipList'
 >;
 type MOccupant = Omit<Occupant, '__typename'>;
-type MEvent = Omit<Event, '__typename' | 'year'>;
+interface MMembership
+  extends Omit<Membership, '__typename' | 'year' | 'eventAttendedList'> {
+  // Additional fields that are not directly mappable from excel
+  // spreadsheet to internal database structure
+  eventNames?: string;
+  eventDates?: string;
+}
 
 /**
  * Type of value being mapped (to be stored in database)
@@ -29,6 +45,11 @@ interface MappingEntry {
   type: MappingType;
 }
 
+/**
+ * For each of the property in the 'M' structure defined above,
+ * get mapping information to where each property map to the
+ * spreadsheet.  (i.e. 'address' field maps to column 0)
+ */
 type PropertyMapping = {
   [Key in keyof Required<MProperty>]: MappingEntry;
 };
@@ -37,8 +58,8 @@ type OccupantMapping = {
   [Key in keyof Required<MOccupant>]: MappingEntry;
 };
 
-type EventMapping = {
-  [Key in keyof Required<MEvent>]: MappingEntry;
+type MembershipMapping = {
+  [Key in keyof Required<MMembership>]: MappingEntry;
 };
 
 export class ImportHelper {
@@ -124,6 +145,13 @@ export class ImportHelper {
   }
 
   /**
+   * Return all header column labels that matches the given regex
+   */
+  labelMatch(regex: RegExp) {
+    return this.headerLabels.filter((entry) => entry.match(regex));
+  }
+
+  /**
    * Given the mapping information, read the property information
    * from the spreadsheet, and propagate the information into the
    * returned object
@@ -131,18 +159,22 @@ export class ImportHelper {
   property(
     rowIdx: number,
     mapping: PropertyMapping
-  ): MProperty & Pick<Property, 'occupantList' | 'eventList'> {
-    const result: any = {};
-    for (const [propName, entry] of Object.entries(mapping)) {
-      // @ts-expect-error
-      const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-      if (val != null) {
-        result[propName] = val;
-      }
-    }
-    result.occupantList = [];
-    result.eventList = [];
-    return result;
+  ): MProperty & Pick<Property, 'occupantList' | 'membershipList'> {
+    // @ts-expect-error: address is a required field
+    return {
+      ...R.pipe(
+        mapping,
+        R.mapValues((entry, key) => {
+          // @ts-expect-error: entry.type can be any of the supported type
+          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+          return val;
+        }),
+        // Remove fields with nullish value
+        R.omitBy((val, key) => val == null)
+      ),
+      occupantList: [],
+      membershipList: [],
+    };
   }
 
   /**
@@ -151,31 +183,37 @@ export class ImportHelper {
    * returned object
    */
   occupant(rowIdx: number, mapping: OccupantMapping): MOccupant {
-    const result: any = {};
-    for (const [propName, entry] of Object.entries(mapping)) {
-      // @ts-expect-error
-      const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-      if (val != null) {
-        result[propName] = val;
-      }
-    }
-    return result;
+    return {
+      ...R.pipe(
+        mapping,
+        R.mapValues((entry, key) => {
+          // @ts-expect-error: entry.type can be any of the supported type
+          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+          return val;
+        }),
+        // Remove fields with nullish value
+        R.omitBy((val, key) => val == null)
+      ),
+    };
   }
 
   /**
-   * Given the mapping information, read the event information
+   * Given the mapping information, read the membership information
    * from the spreadsheet, and propagate the information into the
    * returned object
    */
-  event(rowIdx: number, mapping: EventMapping): MEvent {
-    const result: any = {};
-    for (const [propName, entry] of Object.entries(mapping)) {
-      // @ts-expect-error
-      const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-      if (val != null) {
-        result[propName] = val;
-      }
-    }
-    return result;
+  membership(rowIdx: number, mapping: MembershipMapping): MMembership {
+    return {
+      ...R.pipe(
+        mapping,
+        R.mapValues((entry, key) => {
+          // @ts-expect-error: entry.type can be any of the supported type
+          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+          return val;
+        }),
+        // Remove fields with nullish value
+        R.omitBy((val, key) => val == null)
+      ),
+    };
   }
 }

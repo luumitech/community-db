@@ -13,7 +13,7 @@ export function useGraphqlErrorHandler(result: GraphQLResult) {
 
   React.useEffect(() => {
     if (error) {
-      toast(error.message);
+      toast.error(error.message, { autoClose: false });
     }
   }, [error]);
 }

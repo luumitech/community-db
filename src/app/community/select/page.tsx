@@ -1,6 +1,5 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
@@ -11,31 +10,34 @@ const CurrentUserInfoQuery = graphql(/* GraphQL */ `
     userCurrent {
       id
       email
-      role
-      communityList {
-        id
-        name
+      accessList {
+        role
+        community {
+          id
+          name
+        }
       }
     }
   }
 `);
 
 export default function CommunitySelect() {
-  const { data: session } = useSession();
   const result = useQuery(CurrentUserInfoQuery);
   useGraphqlErrorHandler(result);
 
-  if (!session) {
-    return null;
-  }
-
-  const communityList = result.data?.userCurrent.communityList ?? [];
-  const items = communityList.map((entry) => ({
-    ...entry,
-    href: `/community/${entry.id}`,
+  const accessList = result.data?.userCurrent.accessList ?? [];
+  const items = accessList.map((entry) => ({
+    ...entry.community,
+    href: `/community/${entry.community.id}/editor/property-list`,
   }));
 
   return (
-    <MainMenu header="Select Database" loading={result.loading} items={items} />
+    <div>
+      <MainMenu
+        header="Select Database"
+        loading={result.loading}
+        items={items}
+      />
+    </div>
   );
 }
