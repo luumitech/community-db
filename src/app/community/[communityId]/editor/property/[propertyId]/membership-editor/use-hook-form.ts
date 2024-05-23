@@ -11,13 +11,17 @@ export interface InputData
   extends Pick<GQL.PropertyModifyInput, 'notes' | 'membershipList'> {}
 type DefaultData = DefaultInput<InputData>;
 
-export const membershipDefault: DefaultInput<GQL.MembershipInput> = {
-  year: null,
-  isMember: false,
-  eventAttendedList: [],
-  paymentMethod: '',
-  paymentDeposited: false,
-};
+export function membershipDefault(
+  year: number
+): DefaultInput<GQL.MembershipInput> {
+  return {
+    year,
+    isMember: false,
+    eventAttendedList: [],
+    paymentMethod: '',
+    paymentDeposited: false,
+  };
+}
 
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment
@@ -25,22 +29,41 @@ function defaultInputData(
   return {
     notes: item.notes ?? '',
     membershipList: item.membershipList.map((entry) => ({
-      year: entry.year ?? membershipDefault.year,
-      isMember: entry.isMember ?? membershipDefault.isMember,
+      year: entry.year,
+      isMember: entry.isMember ?? membershipDefault(0).isMember,
       eventAttendedList: entry.eventAttendedList.map((event) => ({
         eventName: event.eventName ?? '',
         eventDate: event.eventDate ?? '',
       })),
-      paymentMethod: entry.paymentMethod ?? membershipDefault.paymentMethod,
+      paymentMethod: entry.paymentMethod ?? membershipDefault(0).paymentMethod,
       paymentDeposited:
-        entry.paymentDeposited ?? membershipDefault.paymentDeposited,
+        entry.paymentDeposited ?? membershipDefault(0).paymentDeposited,
     })),
   };
 }
 
 function validationResolver() {
-  const schema = yup.object().shape({
+  const schema = yup.object({
     notes: yup.string().nullable(),
+    membershipList: yup.array(
+      yup.object({
+        eventAttendedList: yup
+          .array(
+            yup.object({
+              eventName: yup.string().required('Must specify a value'),
+              eventDate: yup.string().asDate().required('Must specify a value'),
+            })
+          )
+          .unique('Event Name must be unique', (item) => item.eventName),
+        paymentMethod: yup
+          .string()
+          .when('eventAttendedList', ([eventList], _schema) => {
+            return eventList.length === 0
+              ? _schema
+              : _schema.required('Must specify a value');
+          }),
+      })
+    ),
   });
   return yupResolver(schema);
 }
@@ -49,7 +72,7 @@ export function useHookFormWithDisclosure(
   fragment: GQL.PropertyId_MembershipEditorFragment
 ) {
   const defaultValues = defaultInputData(fragment);
-  const formMethods = useForm<InputData>({
+  const formMethods = useForm({
     defaultValues,
     resolver: validationResolver(),
   });

@@ -72,7 +72,7 @@ const OccupantInput = builder.inputType('OccupantInput', {
 const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
-    eventDate: t.string(),
+    eventDate: t.string({ required: true }),
   }),
 });
 

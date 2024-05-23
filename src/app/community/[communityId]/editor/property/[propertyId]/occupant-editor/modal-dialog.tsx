@@ -66,7 +66,7 @@ export const ModalDialog: React.FC<Props> = ({
           </ModalBody>
           <ModalFooter>
             <Button
-              startContent={<IoPersonAdd />}
+              endContent={<IoPersonAdd />}
               onPress={() => occupantMethods.append(occupantDefault)}
             >
               Add Member

@@ -17,14 +17,14 @@ function defaultInputData(): DefaultData {
 }
 
 function validationResolver() {
-  const schema = yup.object().shape({
+  const schema = yup.object({
     name: yup.string().required('Please provide a name'),
   });
   return yupResolver(schema);
 }
 
 export function useHookForm() {
-  return useForm<InputData>({
+  return useForm({
     defaultValues: defaultInputData(),
     resolver: validationResolver(),
   });

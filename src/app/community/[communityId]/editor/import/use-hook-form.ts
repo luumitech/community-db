@@ -17,7 +17,7 @@ function defaultInputData(): DefaultData {
 }
 
 function validationResolver() {
-  const schema = yup.object().shape({
+  const schema = yup.object({
     xlsx: yup
       .mixed<FileList>()
       .required()
@@ -31,7 +31,7 @@ function validationResolver() {
 }
 
 export function useHookForm() {
-  return useForm<InputData>({
+  return useForm({
     defaultValues: defaultInputData(),
     resolver: validationResolver(),
   });

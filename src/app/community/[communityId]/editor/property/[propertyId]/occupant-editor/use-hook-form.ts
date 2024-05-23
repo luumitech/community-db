@@ -44,20 +44,18 @@ function defaultInputData(
 }
 
 function validationResolver() {
-  const schema = yup.object().shape({
-    occupantList: yup
-      .array(
-        yup.object().shape({
-          firstName: yup.string().nullable(),
-          lastName: yup.string().nullable(),
-          optOut: yup.boolean().nullable(),
-          email: yup.string().nullable(),
-          cell: yup.string().nullable(),
-          work: yup.string().nullable(),
-          home: yup.string().nullable(),
-        })
-      )
-      .nullable(),
+  const schema = yup.object({
+    occupantList: yup.array(
+      yup.object({
+        firstName: yup.string().nullable(),
+        lastName: yup.string().nullable(),
+        optOut: yup.boolean().nullable(),
+        email: yup.string().nullable(),
+        cell: yup.string().nullable(),
+        work: yup.string().nullable(),
+        home: yup.string().nullable(),
+      })
+    ),
   });
   return yupResolver(schema);
 }
@@ -66,7 +64,7 @@ export function useHookFormWithDisclosure(
   fragment: GQL.PropertyId_OccupantEditorFragment
 ) {
   const defaultValues = defaultInputData(fragment);
-  const formMethods = useForm<InputData>({
+  const formMethods = useForm({
     defaultValues,
     resolver: validationResolver(),
   });

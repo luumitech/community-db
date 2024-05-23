@@ -1,8 +1,7 @@
 import { Input, InputProps } from '@nextui-org/react';
 import React from 'react';
-import { FaFolderOpen } from 'react-icons/fa';
-import { MdOutlineClear } from 'react-icons/md';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
+import { FlatButton } from '~/view/base/flat-button';
 
 type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 type CustomInputProps = Omit<
@@ -47,25 +46,9 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
           readOnly
           endContent={
             filename ? (
-              <span
-                role="button"
-                className="opacity-80 hover:opacity-100 active:opacity-50"
-              >
-                <MdOutlineClear
-                  className="text-xl cursor-pointer"
-                  onClick={onFileClear}
-                />
-              </span>
+              <FlatButton icon="clear" onClick={onFileClear} />
             ) : (
-              <span
-                role="button"
-                className="opacity-80 hover:opacity-100 active:opacity-50"
-              >
-                <FaFolderOpen
-                  className="text-xl cursor-pointer"
-                  onClick={onBrowse}
-                />
-              </span>
+              <FlatButton icon="folder-open" onClick={onBrowse} />
             )
           }
           value={filename ?? ''}
