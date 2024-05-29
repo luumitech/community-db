@@ -37,7 +37,7 @@ export function useNavMenu() {
         {
           id: 'tools',
           isActive: !!withinToolMatcher(pathname),
-          href: '#',
+          href: `/community/${communityId}/tool/menu`,
           children: 'Tools',
         },
       ]);

@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
-import { importLcraDB } from '~/lib/import-community';
+import { importLcraDB } from '~/lib/lcra-community/import';
 
 const prisma = new PrismaClient();
 

@@ -1,6 +1,5 @@
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
-import type { Event } from '~/graphql/generated/graphql';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { ImportHelper } from './import-helper';
 
@@ -11,7 +10,7 @@ import { ImportHelper } from './import-helper';
  * @returns list of properties with information
  */
 export function importLcraDB(wb: XLSX.WorkBook) {
-  const wsHelper = new WorksheetHelper(wb, 'LCRA membership');
+  const wsHelper = WorksheetHelper.fromFirstSheet(wb);
   const importHelper = new ImportHelper(wsHelper, {
     headerCol: 0,
   });
@@ -83,7 +82,8 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     const eventDateList = membership.eventDates?.split(';') ?? [];
     const eventAttendedList = eventNameList.map((eventName, idx) => ({
       eventName,
-      eventDate: eventDateList[idx],
+      // normalize date to ISOString format
+      eventDate: new Date(eventDateList[idx]).toISOString(),
     }));
 
     return {
@@ -98,6 +98,14 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     const property = importHelper.property(rowIdx, {
       address: {
         colIdx: importHelper.labelColumn('Address'),
+        type: 'string',
+      },
+      streetNo: {
+        colIdx: importHelper.labelColumn('StreetNo'),
+        type: 'string',
+      },
+      streetName: {
+        colIdx: importHelper.labelColumn('StreetName'),
         type: 'string',
       },
       postalCode: {
@@ -122,7 +130,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     // column headers
     const occupantCount = importHelper.labelMatch(/^FirstName/).length;
     R.times(occupantCount, (occupantIdx) => {
-      const occupant = addOccupant(rowIdx, occupantIdx);
+      const occupant = addOccupant(rowIdx, occupantIdx + 1);
       if (!R.isEmpty(occupant)) {
         property.occupantList.push(occupant);
       }

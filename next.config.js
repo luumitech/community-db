@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-// Verify required environment variables
-require('./verify-env');
+const nextConfig = {
+  experimental: {
+    /**
+     * omniconfig.js has a too complex require statement which
+     * cannot be analyzed for bundling
+     */
+    serverComponentsExternalPackages: ['omniconfig.js'],
+  },
+};
 
 module.exports = nextConfig;

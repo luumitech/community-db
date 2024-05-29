@@ -58,6 +58,8 @@ model Property {
   updatedAt      DateTime     @updatedAt
   updatedBy      String?
   address        String
+  streetNo       String?
+  streetName     String?
   postalCode     String?
   notes          String?
   occupantList   Occupant[]

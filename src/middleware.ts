@@ -5,7 +5,14 @@ import { withAuth } from 'next-auth/middleware';
  * Matcher expression uses path-to-regexp:
  * See: https://github.com/pillarjs/path-to-regexp
  */
-export const config = { matcher: ['/community(.*)'] };
+export const config = {
+  matcher: [
+    // UI routes
+    '/community(.*)',
+    // API route handlers
+    '/api/sample(.*)',
+  ],
+};
 
 export default withAuth({
   // For more detail

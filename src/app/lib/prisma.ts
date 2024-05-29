@@ -1,3 +1,6 @@
+/**
+ * This is for server use only
+ */
 import { PrismaClient } from '@prisma/client';
 import { isProduction } from './env-var';
 

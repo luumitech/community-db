@@ -4,6 +4,7 @@ import type {
   Occupant,
   Property,
 } from '~/graphql/generated/graphql';
+import { isValidDate } from '~/lib/date-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 export interface ImportHelperConfig {
@@ -122,11 +123,11 @@ export class ImportHelper {
       case 'boolean':
         return !!val;
       case 'date':
-        if (val instanceof Date) {
+        if (isValidDate(val as Date)) {
           return val;
         } else {
           const dateResult = new Date(val.toString());
-          if (isNaN(+dateResult)) {
+          if (!isValidDate(dateResult)) {
             return undefined;
           }
           return dateResult;
