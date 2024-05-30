@@ -1,6 +1,7 @@
 import { ButtonProps, Button as NextUIButton } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
 
 interface Props extends ButtonProps {
@@ -16,6 +17,7 @@ type OnPressFn = NonNullable<ButtonProps['onPress']>;
 
 export const Button = React.forwardRef<HTMLButtonElement, Props>(
   ({ confirmation, confirmationArg, onPress, ...props }, ref) => {
+    const buttonRef = useForwardRef<HTMLButtonElement>(ref);
     const { confirmationModal } = useAppContext();
     const { open } = confirmationModal;
 
@@ -24,16 +26,34 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>(
         if (confirmation) {
           open({
             ...confirmationArg,
-            onConfirm: () => onPress?.(evt),
+            onConfirm: () => {
+              if (props.type != null && props.type !== 'button') {
+                buttonRef.current.type = props.type;
+                buttonRef.current.click();
+                buttonRef.current.type = 'button';
+              }
+              onPress?.(evt);
+            },
           });
         } else {
           onPress?.(evt);
         }
       },
-      [confirmation, confirmationArg, open, onPress]
+      [confirmation, confirmationArg, props.type, open, onPress, buttonRef]
     );
 
-    return <NextUIButton ref={ref} onPress={customOnPress} {...props} />;
+    return (
+      <NextUIButton
+        ref={buttonRef}
+        onPress={customOnPress}
+        {...props}
+        /**
+         * When confirmation dialog is enabled, need to handle
+         * submit/reset type manually
+         */
+        {...(confirmation && { type: 'button' })}
+      />
+    );
   }
 );
 

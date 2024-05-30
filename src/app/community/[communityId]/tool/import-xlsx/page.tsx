@@ -1,16 +1,11 @@
 'use client';
-import { useQuery } from '@apollo/client';
-import { Button } from '@nextui-org/react';
+import { Button, Link } from '@nextui-org/react';
 import React from 'react';
-import * as XLSX from 'xlsx';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
-import { WorksheetHelper } from '~/lib/worksheet-helper';
-import { FileInput } from '~/view/base/file-input';
-import { useMakeXlsxData } from '../view/make-xlsx-data';
-import { XlsxView } from '../view/xlsx-view';
+import { FormProvider } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { importCommunity } from '~/server-action/import-community';
+import { ImportForm } from './import-form';
 import { InputData, useHookForm } from './use-hook-form';
-
-type TData = Record<string, string>;
 
 interface Params {
   communityId: string;
@@ -22,52 +17,64 @@ interface RouteArgs {
 
 export default function ImportXlsx({ params }: RouteArgs) {
   const { communityId } = params;
-  const { data, columns, updateWorksheet, clear } = useMakeXlsxData();
-  const { handleSubmit, formState, register } = useHookForm();
-  const { errors } = formState;
+  const { formMethods } = useHookForm(communityId);
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const { handleSubmit } = formMethods;
 
-  const onXlsxSelect = async (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const blob = evt.target.files?.[0];
-    if (blob) {
-      const buffer = await blob.arrayBuffer();
-      const workbook = XLSX.read(buffer);
-      const worksheet = WorksheetHelper.fromFirstSheet(workbook);
-      updateWorksheet(worksheet);
-    }
-  };
-
-  const uploadXlsx = async (form: InputData) => {
-    const blob = form.xlsx[0];
-  };
+  const onImport = React.useCallback(
+    (form: InputData) => {
+      toast.promise(
+        async () => {
+          if (formRef.current) {
+            const formData = new FormData(formRef.current);
+            await importCommunity(formData);
+          }
+        },
+        {
+          pending: 'Importing...',
+          success: {
+            render: () => {
+              return (
+                <div className="flex items-center gap-2">
+                  Imported Successfully!
+                  <Button
+                    size="sm"
+                    as={Link}
+                    color="primary"
+                    href={`/community/${communityId}/editor/property-list`}
+                  >
+                    View
+                  </Button>
+                </div>
+              );
+            },
+          },
+          error: {
+            render: ({ data }) => {
+              if (data instanceof Error) {
+                return data.message;
+              } else {
+                return 'Import Failed';
+              }
+            },
+          },
+        }
+      );
+    },
+    [communityId]
+  );
 
   return (
-    <div
-      // 64px is height of header bar
-      // 0.5rem is the top padding within <main/>, see layout.tsx
-      className={`flex flex-col h-[calc(100vh_-_64px_-_0.5rem)]`}
-    >
-      <form onSubmit={handleSubmit(uploadXlsx)}>
-        <FileInput
-          label="Upload xlsx file"
-          isRequired
-          errorMessage={errors.xlsx?.message}
-          isInvalid={errors.xlsx?.message != null}
-          onClear={() => clear()}
-          {...register('xlsx', {
-            onChange: onXlsxSelect,
-          })}
-        />
-        <Button
-          className="my-2"
-          color="primary"
-          type="submit"
-          isDisabled={!formState.isDirty}
-          // isLoading={result.loading}
-        >
-          Import
-        </Button>
+    <FormProvider {...formMethods}>
+      <form
+        // 64px is height of header bar
+        // 0.5rem is the top padding within <main/>, see layout.tsx
+        className="flex flex-col h-[calc(100vh_-_64px_-_0.5rem)]"
+        ref={formRef}
+        onSubmit={handleSubmit(onImport)}
+      >
+        <ImportForm />
       </form>
-      {data && columns && <XlsxView data={data} columns={columns} />}
-    </div>
+    </FormProvider>
   );
 }

@@ -2,7 +2,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 
 export interface ConfirmationModalArg {
-  bodyText?: string;
+  bodyText?: React.ReactNode;
   onConfirm?: () => void;
   onCancel?: () => void;
 }

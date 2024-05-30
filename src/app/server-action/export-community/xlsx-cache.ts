@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-import { InputData } from '~/community/[communityId]/tool/export-xlsx/use-hook-form';
 import { BlobContainer, getBlobContainerTempCache } from '~/lib/azure-storage';
 import { GenMD5 } from '~/lib/cache/gen-md5';
 import {
@@ -7,6 +5,8 @@ import {
   communityData,
   type Community,
 } from '~/lib/lcra-community/export';
+import { type InputData } from './_type';
+import { getDefaultXlsxFn } from './util';
 
 export class XlsxCache extends GenMD5 {
   protected rootDir: string;
@@ -33,9 +33,7 @@ export class XlsxCache extends GenMD5 {
     this.md5 = GenMD5.genMD5(community);
     this.xlsxDir = `${this.rootDir}/xlsx`;
 
-    const { createdAt, updatedAt } = community;
-    const dateStr = format(updatedAt ?? createdAt, 'yyyyMMdd');
-    this.xlsxFn = `db-${dateStr}.xlsx`;
+    this.xlsxFn = getDefaultXlsxFn(community);
     this.xlsxBlobName = `${this.xlsxDir}/${this.xlsxFn}`;
   }
 

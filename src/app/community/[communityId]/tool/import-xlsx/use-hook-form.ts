@@ -5,36 +5,40 @@ import * as yup from 'yup';
 export { useFieldArray } from 'react-hook-form';
 
 export interface InputData {
+  communityId: string;
   xlsx: FileList;
 }
 
 type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(): DefaultData {
+function defaultInputData(communityId: string): DefaultData {
   return {
+    communityId,
     xlsx: [] as unknown as FileList,
   };
 }
 
 function validationResolver() {
   const schema = yup.object({
+    communityId: yup.string().required(),
     xlsx: yup
       .mixed<FileList>()
       .required()
-      .test(
-        'required',
-        'Please upload a valid xlsx file',
-        (files?: FileList) => !!files?.length
-      ),
+      .test('required', 'Please upload a valid xlsx file', (files) => {
+        return files.length > 0;
+      }),
   });
   return yupResolver(schema);
 }
 
-export function useHookForm() {
-  return useForm({
-    defaultValues: defaultInputData(),
+export function useHookForm(communityId: string) {
+  const defaultValues = defaultInputData(communityId);
+  const formMethods = useForm({
+    defaultValues,
     resolver: validationResolver(),
   });
+
+  return { formMethods };
 }
 
 export function useHookFormContext() {

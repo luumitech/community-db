@@ -1,0 +1,164 @@
+import * as R from 'remeda';
+import * as XLSX from 'xlsx';
+import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { ImportHelper } from './import-helper';
+
+/**
+ * Import LCRA Database spreadsheet
+ *
+ * @param wb xlsx workbook object
+ * @returns list of properties with information
+ */
+export function importLcraDB(wb: XLSX.WorkBook) {
+  const wsHelper = WorksheetHelper.fromFirstSheet(wb);
+  const importHelper = new ImportHelper(wsHelper, {
+    headerCol: 0,
+  });
+
+  function addOccupant(rowIdx: number, num: number) {
+    const occupant = importHelper.occupant(rowIdx, {
+      firstName: {
+        colIdx: importHelper.labelColumn(`FirstName${num}`),
+        type: 'string',
+      },
+      lastName: {
+        colIdx: importHelper.labelColumn(`LastName${num}`),
+        type: 'string',
+      },
+      optOut: {
+        colIdx: importHelper.labelColumn(`EMail${num}OptOut`),
+        type: 'boolean',
+      },
+      email: {
+        colIdx: importHelper.labelColumn(`EMail${num}`),
+        type: 'string',
+      },
+      home: {
+        colIdx: importHelper.labelColumn(`HomePhone${num}`),
+        type: 'string',
+      },
+      work: {
+        colIdx: importHelper.labelColumn(`WorkPhone${num}`),
+        type: 'string',
+      },
+      cell: {
+        colIdx: importHelper.labelColumn(`CellPhone${num}`),
+        type: 'string',
+      },
+    });
+    return occupant;
+  }
+
+  function addMembership(rowIdx: number, year: number) {
+    const prefix = `Y${year}`;
+    const membership = importHelper.membership(rowIdx, {
+      isMember: {
+        colIdx: importHelper.labelColumn(`${prefix}`),
+        type: 'boolean',
+      },
+      // event names separated by semi-colons
+      eventNames: {
+        colIdx: importHelper.labelColumn(`${prefix}-event`),
+        type: 'string',
+      },
+      // event dates separated by semi-colons
+      eventDates: {
+        colIdx: importHelper.labelColumn(`${prefix}-date`),
+        type: 'string',
+      },
+      paymentMethod: {
+        colIdx: importHelper.labelColumn(`${prefix}-payment`),
+        type: 'string',
+      },
+      paymentDeposited: {
+        colIdx: importHelper.labelColumn(`${prefix}-deposited`),
+        type: 'boolean',
+      },
+    });
+    // Map eventNameList/eventDateList into the format of
+    // eventAttendedList
+    const { eventNames, eventDates, ...rest } = membership;
+    const eventNameList = membership.eventNames?.split(';') ?? [];
+    const eventDateList = membership.eventDates?.split(';') ?? [];
+    const eventAttendedList = eventNameList.map((eventName, idx) => ({
+      eventName,
+      // normalize date to ISOString format
+      eventDate: new Date(eventDateList[idx]).toISOString(),
+    }));
+
+    return {
+      year: 2000 + year,
+      ...rest,
+      eventAttendedList,
+    };
+  }
+
+  const propertyList = [];
+  for (let rowIdx = 1; rowIdx < wsHelper.rowCount; rowIdx++) {
+    const property = importHelper.property(rowIdx, {
+      address: {
+        colIdx: importHelper.labelColumn('Address'),
+        type: 'string',
+      },
+      streetNo: {
+        colIdx: importHelper.labelColumn('StreetNo'),
+        type: 'string',
+      },
+      streetName: {
+        colIdx: importHelper.labelColumn('StreetName'),
+        type: 'string',
+      },
+      postalCode: {
+        colIdx: importHelper.labelColumn('PostalCode'),
+        type: 'string',
+      },
+      notes: {
+        colIdx: importHelper.labelColumn('Notes'),
+        type: 'string',
+      },
+      updatedAt: {
+        colIdx: importHelper.labelColumn('LastModDate'),
+        type: 'date',
+      },
+      updatedBy: {
+        colIdx: importHelper.labelColumn('LastModBy'),
+        type: 'string',
+      },
+    });
+
+    // Determine total number of occupants by scanning the
+    // column headers
+    const occupantCount = importHelper.labelMatch(/^FirstName/).length;
+    R.times(occupantCount, (occupantIdx) => {
+      const occupant = addOccupant(rowIdx, occupantIdx + 1);
+      if (!R.isEmpty(occupant)) {
+        property.occupantList.push(occupant);
+      }
+    });
+
+    // Determine total number of membership years by scanning the
+    // column headers, and also sort it in descending order
+    const yearList = importHelper
+      .labelMatch(/^Y[\d]+$/)
+      .map((yearStr) => parseInt(yearStr.slice(1), 10))
+      .sort((a, b) => b - a);
+
+    // The yearList should be array of number like
+    // [24, 23, 22, ...]
+    yearList.forEach((year) => {
+      const membership = addMembership(rowIdx, year);
+      if (!R.isEmpty(membership)) {
+        property.membershipList.push(membership);
+      }
+    });
+
+    propertyList.push(property);
+  }
+
+  return propertyList;
+}
+
+/**
+ * Data type returned from importLcraDB
+ */
+export type PropertyList = Awaited<ReturnType<typeof importLcraDB>>;

@@ -106,10 +106,15 @@ export class ExportHelper {
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'membership');
+    /**
+     * For option descriptions
+     * See: https://docs.sheetjs.com/docs/api/write-options
+     */
     const xlsxBuf: Buffer = XLSX.write(workbook, {
       type: 'buffer',
       bookType: 'xlsx',
       bookSST: false,
+      compression: true,
     });
     return xlsxBuf;
   }

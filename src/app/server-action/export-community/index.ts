@@ -1,21 +1,22 @@
 'use server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
-import {
-  InputData,
-  schema,
-} from '~/community/[communityId]/tool/export-xlsx/use-hook-form';
 import { ExportHelper, communityData } from '~/lib/lcra-community/export';
+import { schema } from './_type';
+import { getDefaultXlsxFn } from './util';
 import { XlsxCache } from './xlsx-cache';
 
 /**
  * Export community information
  */
-export async function exportCommunityAsUrl(input: InputData) {
+export async function exportCommunityAsUrl(communityId: string) {
   const session = await getServerSession(authOptions);
+  if (!session) {
+    throw new Error('Not authorized');
+  }
   const form = await schema.validate({
-    ...input,
-    ctxEmail: session?.user?.email,
+    ctxEmail: session.user?.email,
+    communityId,
   });
 
   const cache = await XlsxCache.fromForm(form);
@@ -29,15 +30,20 @@ export async function exportCommunityAsUrl(input: InputData) {
  * @param input form input for generating xlsx
  * @returns xlsx buffer encoded in base64
  */
-export async function exportCommunityAsBase64(input: InputData) {
+export async function exportCommunityAsBase64(communityId: string) {
   const session = await getServerSession(authOptions);
+  if (!session) {
+    throw new Error('Not authorized');
+  }
   const form = await schema.validate({
-    ...input,
-    ctxEmail: session?.user?.email,
+    ctxEmail: session.user?.email,
+    communityId,
   });
-
   const community = await communityData(form.communityId, form.ctxEmail);
   const helper = new ExportHelper(community.propertyList);
   const xlsxBuf = helper.toXlsx();
-  return xlsxBuf.toString('base64');
+  return {
+    base64: xlsxBuf.toString('base64'),
+    fn: getDefaultXlsxFn(community),
+  };
 }

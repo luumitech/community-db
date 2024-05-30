@@ -53,12 +53,16 @@ export function useMakeXlsxData() {
    */
   const clear = React.useCallback(() => {
     _setData(undefined);
+    _setColumns(undefined);
   }, []);
 
-  const updateWorksheet = (worksheet: WorksheetHelper) => {
-    _setColumns(makeColumns(worksheet));
-    _setData(makeData(worksheet));
-  };
+  const updateWorksheet = React.useCallback(
+    (worksheet: WorksheetHelper) => {
+      _setColumns(makeColumns(worksheet));
+      _setData(makeData(worksheet));
+    },
+    [makeColumns, makeData]
+  );
 
   return { updateWorksheet, clear, columns, data };
 }
