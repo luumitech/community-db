@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, useFormContext } from 'react-hook-form';
 import * as yup from 'yup';
+import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 
 export interface InputData {
   communityId: string;

@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { Button } from '@nextui-org/react';
 import React from 'react';
-import { FormProvider } from 'react-hook-form';
 import { BiEditAlt } from 'react-icons/bi';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import { ModalDialog } from './modal-dialog';
 import { InputData, useHookFormWithDisclosure } from './use-hook-form';

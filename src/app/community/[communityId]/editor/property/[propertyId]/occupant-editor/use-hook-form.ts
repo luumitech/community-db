@@ -1,11 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { UseFieldArrayReturn, useForm, useFormContext } from 'react-hook-form';
 import * as yup from 'yup';
+import {
+  UseFieldArrayReturn,
+  useForm,
+  useFormContext,
+} from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
-
-export { useFieldArray } from 'react-hook-form';
 
 export interface InputData
   extends Pick<GQL.PropertyModifyInput, 'occupantList'> {}

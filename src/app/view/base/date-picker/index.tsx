@@ -3,7 +3,7 @@ import {
   DatePicker as NextUIDatePicker,
 } from '@nextui-org/react';
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { parseAsDate } from '~/lib/date-util';
 
 interface Props extends Omit<DatePickerProps, 'onChange' | 'onBlur'> {

@@ -8,12 +8,12 @@ import {
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { IoPersonAdd } from 'react-icons/io5';
+import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Editor } from './editor';
 import {
   InputData,
   occupantDefault,
-  useFieldArray,
   useHookFormContext,
 } from './use-hook-form';
 

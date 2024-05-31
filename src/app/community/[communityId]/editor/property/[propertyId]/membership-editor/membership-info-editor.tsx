@@ -2,13 +2,10 @@ import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
+import { useFieldArray } from '~/custom-hooks/hook-form';
 import { EventsAttendedSelect } from './events-attended-select';
 import { PaymentInfoEditor } from './payment-info-editor';
-import {
-  membershipDefault,
-  useFieldArray,
-  useHookFormContext,
-} from './use-hook-form';
+import { membershipDefault, useHookFormContext } from './use-hook-form';
 
 interface Props {
   className?: string;

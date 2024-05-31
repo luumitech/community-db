@@ -56,8 +56,9 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
           confirmationArg={{
             bodyText: (
               <p>
-                <div>Importing will wipe existing entries.</div>
-                <div>Proceed?</div>
+                Importing will wipe existing entries.
+                <br />
+                Proceed?
               </p>
             ),
           }}

@@ -1,11 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { useForm, useFormContext } from 'react-hook-form';
 import * as yup from 'yup';
+import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
-
-export { useFieldArray } from 'react-hook-form';
 
 export interface InputData
   extends Pick<GQL.PropertyModifyInput, 'notes' | 'membershipList'> {}
@@ -46,23 +44,40 @@ function validationResolver() {
   const schema = yup.object({
     notes: yup.string().nullable(),
     membershipList: yup.array(
-      yup.object({
-        eventAttendedList: yup
-          .array(
-            yup.object({
-              eventName: yup.string().required('Must specify a value'),
-              eventDate: yup.string().asDate().required('Must specify a value'),
-            })
-          )
-          .unique('Event Name must be unique', (item) => item.eventName),
-        paymentMethod: yup
-          .string()
-          .when('eventAttendedList', ([eventList], _schema) => {
-            return eventList.length === 0
-              ? _schema
-              : _schema.required('Must specify a value');
+      yup.object().shape(
+        {
+          eventAttendedList: yup
+            .array(
+              yup.object({
+                eventName: yup.string().required('Must specify a value'),
+                eventDate: yup
+                  .string()
+                  .asDate()
+                  .required('Must specify a value'),
+              })
+            )
+            .unique('Event Name must be unique', (item) => item.eventName)
+            .when('paymentMethod', {
+              is: (paymentMethod?: string) => !!paymentMethod,
+              then: (_schema) =>
+                _schema.min(
+                  1,
+                  'Must add at least one event when Payment Method is specified'
+                ),
+            }),
+          paymentMethod: yup.string().when('eventAttendedList', {
+            is: (eventAttendedList?: GQL.EventInput[]) =>
+              !!eventAttendedList?.length,
+            then: (_schema) =>
+              _schema.required(
+                'Must specify a value when event has been added'
+              ),
           }),
-      })
+        },
+        // Add dependency to avoid cyclic dependency error,
+        // see: https://github.com/jquense/yup/issues/79#issuecomment-274174656
+        [['eventAttendedList', 'paymentMethod']]
+      )
     ),
   });
   return yupResolver(schema);
