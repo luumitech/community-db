@@ -1,7 +1,19 @@
 import { usePathname } from 'next/navigation';
 import { match } from 'path-to-regexp';
 import React from 'react';
+import * as R from 'remeda';
 import { MenuItemEntry } from '~/view/header';
+
+function indentMenuItem(label: string, indentLevel = 0) {
+  // \u2003 is &emsp;
+  const emSpc = R.times(indentLevel, () => '\u2003').join('');
+  return (
+    <span>
+      {emSpc}
+      {label}
+    </span>
+  );
+}
 
 /**
  * Controls content of navigation menu base on
@@ -23,11 +35,13 @@ export function useNavMenu() {
         '/community/:communityId/editor/(.*)',
         { decode: decodeURIComponent }
       );
-      const withinToolMatcher = match<{ communityId: string }>(
-        '/community/:communityId/tool/(.*)',
-        { decode: decodeURIComponent }
-      );
       setMenuItems([
+        {
+          id: 'welcome',
+          isActive: pathname === '/',
+          href: '/',
+          children: 'Welcome',
+        },
         {
           id: 'membership-editor',
           isActive: !!withinEditorMatcher(pathname),
@@ -36,9 +50,21 @@ export function useNavMenu() {
         },
         {
           id: 'tools',
-          isActive: !!withinToolMatcher(pathname),
-          href: '#',
+          isActive: pathname === `/community/${communityId}/tool/menu`,
+          href: `/community/${communityId}/tool/menu`,
           children: 'Tools',
+        },
+        {
+          id: 'import-xlsx',
+          isActive: pathname === `/community/${communityId}/tool/import-xlsx`,
+          href: `/community/${communityId}/tool/import-xlsx`,
+          children: indentMenuItem('Import', 1),
+        },
+        {
+          id: 'export-xlsx',
+          isActive: pathname === `/community/${communityId}/tool/export-xlsx`,
+          href: `/community/${communityId}/tool/export-xlsx`,
+          children: indentMenuItem('Export', 1),
         },
       ]);
     }

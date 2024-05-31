@@ -1,5 +1,9 @@
+/**
+ * This is for server use only
+ */
 import pino from 'pino';
 import pretty from 'pino-pretty';
+import { env } from '~/lib/env-cfg';
 import { isProduction } from '~/lib/env-var';
 
 // Standard set of serializers
@@ -30,7 +34,7 @@ function errorSerializer(err: Error) {
  *   debugEnabled('flow');  // false
  */
 function debugEnabled(flag: string) {
-  const flagEnv = process.env.LOG_DEBUG;
+  const flagEnv = env.log.debug;
 
   if (!flagEnv) {
     return false;

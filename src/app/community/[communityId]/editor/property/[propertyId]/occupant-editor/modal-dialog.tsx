@@ -8,31 +8,25 @@ import {
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { IoPersonAdd } from 'react-icons/io5';
+import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Editor } from './editor';
 import {
   InputData,
   occupantDefault,
-  useFieldArray,
   useHookFormContext,
 } from './use-hook-form';
 
 interface Props {
   disclosureProps: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
-  /**
-   * onSave is in progress
-   */
-  isSaving?: boolean;
 }
 
-export const ModalDialog: React.FC<Props> = ({
-  disclosureProps,
-  onSave,
-  isSaving,
-}) => {
+export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
   const { isOpen, onOpenChange, onClose } = disclosureProps;
+  const [pending, startTransition] = React.useTransition();
   const { control, formState, handleSubmit } = useHookFormContext();
+
   const { isDirty } = formState;
   const occupantMethods = useFieldArray({
     control,
@@ -40,10 +34,15 @@ export const ModalDialog: React.FC<Props> = ({
   });
 
   const onSubmit = React.useCallback(
-    async (input: InputData) => {
-      await onSave(input);
-      onClose?.();
-    },
+    async (input: InputData) =>
+      startTransition(async () => {
+        try {
+          await onSave(input);
+          onClose?.();
+        } catch (err) {
+          // error handled by parent
+        }
+      }),
     [onSave, onClose]
   );
 
@@ -78,8 +77,7 @@ export const ModalDialog: React.FC<Props> = ({
             <Button
               type="submit"
               color="primary"
-              isDisabled={!formState.isDirty}
-              isLoading={isSaving}
+              isDisabled={!formState.isDirty || pending}
             >
               Save
             </Button>

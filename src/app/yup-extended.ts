@@ -23,7 +23,7 @@ declare module 'yup' {
 
   interface NumberSchema<TType> extends yup.Schema<TType> {
     /**
-     * Accept empty string, and interpret it as null.
+     * Accept empty string/NaN, and interpret it as null.
      * Useful for handling input(type=number) when no value is entered
      */
     canBeEmpty(): NumberSchema<TType | null>;
@@ -50,7 +50,11 @@ yup.addMethod<yup.NumberSchema<number | null>>(
   'canBeEmpty',
   function () {
     return this.nullable().transform((valAsNum, valAsStr) => {
-      return valAsStr === '' ? null : Number(valAsNum);
+      if (valAsStr() === '') {
+        return null;
+      }
+      const val = Number(valAsNum);
+      return Number.isNaN(val) ? null : val;
     });
   }
 );

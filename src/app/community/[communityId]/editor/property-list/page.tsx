@@ -18,6 +18,7 @@ import { FaSearch } from 'react-icons/fa';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { MoreMenu } from './more-menu';
 import { useTableData } from './use-table-data';
 
 interface Params {
@@ -36,8 +37,7 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
     $search: String
   ) {
     communityFromId(id: $id) {
-      id
-      name
+      ...CommunityId_CommunityModifyModal
       propertyList(first: $first, after: $after, search: $search) {
         pageInfo {
           hasNextPage
@@ -86,17 +86,18 @@ export default function PropertyList({ params }: RouteArgs) {
   });
   const { columns, renderCell } = useTableData();
 
-  const rows = (data?.communityFromId.propertyList.edges ?? []).map(
+  const communityFromId = data?.communityFromId;
+  const rows = (communityFromId?.propertyList.edges ?? []).map(
     (edge) => edge.node
   );
 
   const topContent = React.useMemo(() => {
-    const totalCount = data?.communityFromId.propertyList.totalCount ?? 0;
+    const totalCount = communityFromId?.propertyList.totalCount ?? 0;
     const setSearchText = (input?: string) => {
       dispatch(actions.ui.setPropertyListSearch(input));
     };
     return (
-      <div>
+      <div className="flex gap-2">
         <Input
           isClearable
           placeholder="Search ..."
@@ -106,9 +107,10 @@ export default function PropertyList({ params }: RouteArgs) {
           onValueChange={setSearchText}
           onClear={() => setSearchText(undefined)}
         />
+        {communityFromId && <MoreMenu entry={communityFromId} />}
       </div>
     );
-  }, [data, searchText, dispatch]);
+  }, [communityFromId, searchText, dispatch]);
 
   return (
     <Table
@@ -167,9 +169,4 @@ export default function PropertyList({ params }: RouteArgs) {
       </TableBody>
     </Table>
   );
-
-  //   {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-  // {/* <Button>
-  //   <Link href={`${pathname}/../import`}>Import</Link>
-  // </Button> */}
 }

@@ -1,21 +1,33 @@
 'use client';
+import { useQuery } from '@apollo/client';
 import {
   Link,
   LinkProps,
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
+  Spacer,
 } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import React from 'react';
+import { graphql } from '~/graphql/generated';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
+
+const CommunityNameFromIdQuery = graphql(/* GraphQL */ `
+  query communityNameFromId($id: ID!) {
+    communityFromId(id: $id) {
+      id
+      name
+    }
+  }
+`);
 
 export interface MenuItemEntry extends LinkProps {
   id: string;
@@ -26,8 +38,15 @@ interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
   const { data: session } = useSession();
+  const params = useParams<{ communityId?: string }>();
+  const result = useQuery(CommunityNameFromIdQuery, {
+    variables: { id: params.communityId! },
+    skip: params.communityId == null,
+  });
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuItems = useNavMenu();
+
+  const communityName = result.data?.communityFromId.name;
 
   return (
     <header className="sticky z-50 top-0">
@@ -77,16 +96,7 @@ export const Header: React.FC<Props> = ({}) => {
             </Link>
           </NavbarBrand>
         </NavbarContent>
-        {/**
-         * Easy access menu on top (hide in small view)
-         */}
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          {menuItems.map(({ id, isActive, ...entry }) => (
-            <NavbarItem key={id} isActive={isActive}>
-              <Link color={isActive ? 'primary' : 'foreground'} {...entry} />
-            </NavbarItem>
-          ))}
-        </NavbarContent>
+        {communityName}
         <NavbarContent justify="end">
           {session ? <SignedIn /> : <NotSignedIn />}
         </NavbarContent>
@@ -95,7 +105,7 @@ export const Header: React.FC<Props> = ({}) => {
          */}
         <NavbarMenu>
           {menuItems.map(({ id, isActive, ...entry }) => (
-            <NavbarMenuItem key={id} isActive={isActive}>
+            <NavbarMenuItem key={id} className="flex" isActive={isActive}>
               <Link
                 className="w-full"
                 size="lg"

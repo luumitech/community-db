@@ -46,7 +46,8 @@ model Access {
 model Community {
   id           String     @id @default(auto()) @map("_id") @db.ObjectId
   createdAt    DateTime   @default(now())
-  updatedAt    DateTime?  @updatedAt
+  updatedAt    DateTime   @updatedAt
+  updatedBy    String?
   name         String
   accessList   Access[]
   propertyList Property[]
@@ -58,6 +59,8 @@ model Property {
   updatedAt      DateTime     @updatedAt
   updatedBy      String?
   address        String
+  streetNo       String?
+  streetName     String?
   postalCode     String?
   notes          String?
   occupantList   Occupant[]

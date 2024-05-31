@@ -1,5 +1,3 @@
-type OnlyNumIsNullable<T> = T extends number ? Nullable<T> : NonNullable<T>;
-
 /**
  * Convert each property into a required field (i.e. no null/undefined)
  * recursively.
@@ -12,11 +10,11 @@ type OnlyNumIsNullable<T> = T extends number ? Nullable<T> : NonNullable<T>;
  *   recursed into:
  *   - Date
  *   - FileList
- * - for number input field, use null to represent empty value
+ * - for number input field, use NaN to represent empty value
  * - for string input field, use '' to represent empty value
  */
 type DefaultInput<T> = {
-  [P in keyof T]-?: OnlyNumIsNullable<
+  [P in keyof T]-?: NonNullable<
     T[P] extends Date | FileList ? T[P] : DefaultInput<T[P]>
   >;
 };

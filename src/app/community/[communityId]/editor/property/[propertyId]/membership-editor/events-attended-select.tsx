@@ -11,11 +11,12 @@ import { Select, SelectItem, SelectProps } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
+import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { DatePicker } from '~/view/base/date-picker';
 import { FlatButton } from '~/view/base/flat-button';
 import { EventDefaultSelect } from './event-default-select';
-import { useFieldArray, useHookFormContext } from './use-hook-form';
+import { useHookFormContext } from './use-hook-form';
 
 export const supportedEvents = [
   'Membership Form',
@@ -53,7 +54,12 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   const bottomContent = React.useMemo(() => {
     return (
       <div>
-        <div className="mb-2 text-sm text-danger">{eventAttendedListError}</div>
+        <div
+          className="mb-2 text-sm text-danger"
+          {...register(`membershipList.${yearIdx}.eventAttendedList`)}
+        >
+          {eventAttendedListError}
+        </div>
         <div className="flex w-full items-center gap-2">
           <EventDefaultSelect />
           <Button
@@ -70,16 +76,13 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         </div>
       </div>
     );
-  }, [eventAttendedListError, lastEventSelected, append]);
+  }, [register, yearIdx, eventAttendedListError, lastEventSelected, append]);
 
   React.useEffect(() => {
     /**
      * Set isMember flag if at least one event has been registered
      */
     setValue(`membershipList.${yearIdx}.isMember`, fields.length !== 0);
-    if (fields.length === 0) {
-      setValue(`membershipList.${yearIdx}.paymentMethod`, '');
-    }
   }, [setValue, fields, yearIdx]);
 
   const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =

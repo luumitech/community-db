@@ -1,7 +1,7 @@
 import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller } from '~/custom-hooks/hook-form';
 import { useHookFormContext } from './use-hook-form';
 
 const supportedPaymentType = [

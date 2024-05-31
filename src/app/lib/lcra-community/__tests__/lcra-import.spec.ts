@@ -3,7 +3,7 @@ import path from 'path';
 import * as XLSX from 'xlsx';
 import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
-import { importLcraDB } from '~/lib/import-community';
+import { importLcraDB } from '~/lib/lcra-community/import';
 import prisma from '~/lib/prisma';
 
 describe('import community xlsx', () => {
@@ -67,10 +67,12 @@ describe('import community xlsx', () => {
             community {
               id
               name
-              propertyList(first: 1) {
+              propertyList(first: 2) {
                 edges {
                   node {
                     address
+                    streetNo
+                    streetName
                     postalCode
                     notes
                     updatedAt
@@ -79,6 +81,7 @@ describe('import community xlsx', () => {
                       firstName
                       lastName
                       optOut
+                      email
                       home
                       work
                       cell
@@ -105,9 +108,11 @@ describe('import community xlsx', () => {
     const result = await testUtil.graphql.executeSingle({ document });
     const accessList = result.data?.userCurrent.accessList ?? [];
     expect(accessList).toHaveLength(1);
-    const firstProperty = accessList[0].community.propertyList.edges[0].node;
+    const firstProperty = accessList[0].community.propertyList.edges[1].node;
     expect(firstProperty).toEqual({
       address: '99 Fortune Drive',
+      streetNo: '99',
+      streetName: 'Fortune Drive',
       postalCode: 'A0A0A0',
       notes: 'Notes',
       updatedAt: '2023-02-23T03:19:09.000Z',
@@ -116,6 +121,7 @@ describe('import community xlsx', () => {
         {
           firstName: 'First1',
           lastName: 'Last1',
+          email: 'Email1',
           optOut: false,
           cell: '4163456789',
           home: '4161234567',
@@ -124,6 +130,7 @@ describe('import community xlsx', () => {
         {
           firstName: 'First2',
           lastName: 'Last2',
+          email: 'Email2',
           optOut: true,
           cell: null,
           home: '4171234567',
@@ -132,6 +139,7 @@ describe('import community xlsx', () => {
         {
           firstName: 'First3',
           lastName: 'Last3',
+          email: 'Email3',
           optOut: null,
           cell: null,
           home: null,

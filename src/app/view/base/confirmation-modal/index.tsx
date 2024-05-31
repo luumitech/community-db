@@ -33,9 +33,7 @@ export const ConfirmationModal: React.FC<Props> = () => {
       }}
     >
       <ModalContent>
-        <ModalBody>
-          <p>{bodyText ?? 'Discard Changes?'}</p>
-        </ModalBody>
+        <ModalBody>{bodyText ?? <p>Discard Changes?</p>}</ModalBody>
         <ModalFooter>
           <Button variant="bordered" onPress={onCancel}>
             Cancel

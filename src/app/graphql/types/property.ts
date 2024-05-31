@@ -40,6 +40,8 @@ export const propertyRef = builder.prismaObject('Property', {
   fields: (t) => ({
     id: t.exposeID('id'),
     address: t.exposeString('address'),
+    streetNo: t.exposeString('streetNo', { nullable: true }),
+    streetName: t.exposeString('streetName', { nullable: true }),
     postalCode: t.exposeString('postalCode', { nullable: true }),
     notes: t.exposeString('notes', { nullable: true }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),

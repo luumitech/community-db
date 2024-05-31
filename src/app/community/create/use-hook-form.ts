@@ -1,13 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, useFormContext } from 'react-hook-form';
+import React from 'react';
 import * as yup from 'yup';
+import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 
-export { useFieldArray } from 'react-hook-form';
-
-export interface InputData {
-  name: string;
+function schema() {
+  return yup.object({
+    name: yup.string().required('Please provide a name'),
+  });
 }
 
+export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(): DefaultData {
@@ -16,18 +18,20 @@ function defaultInputData(): DefaultData {
   };
 }
 
-function validationResolver() {
-  const schema = yup.object({
-    name: yup.string().required('Please provide a name'),
-  });
-  return yupResolver(schema);
-}
-
 export function useHookForm() {
-  return useForm({
+  const formMethods = useForm({
     defaultValues: defaultInputData(),
-    resolver: validationResolver(),
+    resolver: yupResolver(schema()),
   });
+  const { reset } = formMethods;
+
+  React.useEffect(() => {
+    // After form is submitted, update the form with
+    // new default from fragment
+    reset(defaultInputData());
+  }, [reset]);
+
+  return formMethods;
 }
 
 export function useHookFormContext() {

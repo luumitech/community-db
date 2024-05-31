@@ -12,7 +12,7 @@ type CustomInputProps = Omit<
 interface Props extends CustomInputProps, ReactInputProps {}
 
 export const FileInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ onChange, onClear, ...props }, ref) => {
+  ({ name, onBlur, onChange, onClear, ...props }, ref) => {
     const inputRef = useForwardRef<HTMLInputElement>(ref);
     const [filename, setFilename] = React.useState<string>();
 
@@ -59,8 +59,8 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
           type="file"
           hidden
           ref={inputRef}
-          name={props.name}
-          onBlur={props.onBlur}
+          name={name}
+          onBlur={onBlur}
           onChange={onFileChange}
         />
       </>

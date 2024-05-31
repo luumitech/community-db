@@ -1,3 +1,4 @@
+'use client';
 import {
   Card,
   CardBody,
@@ -7,6 +8,7 @@ import {
   ListboxItem,
   Skeleton,
 } from '@nextui-org/react';
+import clsx from 'clsx';
 import React from 'react';
 
 interface MenuEntry {
@@ -16,14 +18,22 @@ interface MenuEntry {
 }
 
 interface Props {
+  className?: string;
   header?: string;
   items: MenuEntry[];
   loading?: boolean;
 }
 
-export const MainMenu: React.FC<Props> = ({ header, items, loading }) => {
+export const MainMenu: React.FC<Props> = ({
+  className,
+  header,
+  items,
+  loading,
+}) => {
   return (
-    <div className="flex flex-row justify-center items-center">
+    <div
+      className={clsx(className, 'flex flex-row justify-center items-center')}
+    >
       <Card className="w-80 md:w-96">
         {!!header && (
           <>

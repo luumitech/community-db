@@ -1,14 +1,35 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { UseFieldArrayReturn, useForm, useFormContext } from 'react-hook-form';
 import * as yup from 'yup';
+import {
+  UseFieldArrayReturn,
+  useForm,
+  useFormContext,
+} from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 
-export { useFieldArray } from 'react-hook-form';
+function schema() {
+  return yup.object({
+    self: yup.object({
+      id: yup.string().required(),
+      updatedAt: yup.string().required(),
+    }),
+    occupantList: yup.array(
+      yup.object({
+        firstName: yup.string().nullable(),
+        lastName: yup.string().nullable(),
+        optOut: yup.boolean().nullable(),
+        email: yup.string().nullable(),
+        cell: yup.string().nullable(),
+        work: yup.string().nullable(),
+        home: yup.string().nullable(),
+      })
+    ),
+  });
+}
 
-export interface InputData
-  extends Pick<GQL.PropertyModifyInput, 'occupantList'> {}
+export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
 export type OccupantFieldArrayReturn = UseFieldArrayReturn<
@@ -31,6 +52,10 @@ function defaultInputData(
   item: GQL.PropertyId_OccupantEditorFragment
 ): DefaultData {
   return {
+    self: {
+      id: item.id,
+      updatedAt: item.updatedAt,
+    },
     occupantList: item.occupantList.map((entry) => ({
       firstName: entry.firstName ?? occupantDefault.firstName,
       lastName: entry.lastName ?? occupantDefault.lastName,
@@ -43,39 +68,27 @@ function defaultInputData(
   };
 }
 
-function validationResolver() {
-  const schema = yup.object({
-    occupantList: yup.array(
-      yup.object({
-        firstName: yup.string().nullable(),
-        lastName: yup.string().nullable(),
-        optOut: yup.boolean().nullable(),
-        email: yup.string().nullable(),
-        cell: yup.string().nullable(),
-        work: yup.string().nullable(),
-        home: yup.string().nullable(),
-      })
-    ),
-  });
-  return yupResolver(schema);
-}
-
 export function useHookFormWithDisclosure(
   fragment: GQL.PropertyId_OccupantEditorFragment
 ) {
-  const defaultValues = defaultInputData(fragment);
   const formMethods = useForm({
-    defaultValues,
-    resolver: validationResolver(),
+    defaultValues: defaultInputData(fragment),
+    resolver: yupResolver(schema()),
   });
   const { reset } = formMethods;
+
+  React.useEffect(() => {
+    // After form is submitted, update the form with new default
+    reset(defaultInputData(fragment));
+  }, [reset, fragment]);
+
   /**
    * When modal is closed, reset form value with
    * default values derived from fragment
    */
   const onModalClose = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
+    reset(defaultInputData(fragment));
+  }, [reset, fragment]);
   const disclosure = useDisclosure({
     onClose: onModalClose,
   });

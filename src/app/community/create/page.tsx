@@ -3,8 +3,8 @@ import { useMutation } from '@apollo/client';
 import { Button, Input } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { toast } from '~/view/base/toastify';
 import { InputData, useHookForm } from './use-hook-form';
 
 const CommunityCreateMutation = graphql(/* GraphQL */ `
@@ -19,17 +19,27 @@ const CommunityCreateMutation = graphql(/* GraphQL */ `
 export default function CommunityCreate() {
   const router = useRouter();
   const [create, result] = useMutation(CommunityCreateMutation);
-  useGraphqlErrorHandler(result);
   const { handleSubmit, formState, register } = useHookForm();
   const { errors } = formState;
 
-  const createCommunity = async (form: InputData) => {
-    const newCommunity = await create({ variables: form });
-    const newId = newCommunity.data?.communityCreate.id;
-    if (newId) {
-      router.push(`/community/${newId}/editor/property-list`);
-    }
-  };
+  const createCommunity = React.useCallback(
+    async (form: InputData) => {
+      toast.promise(
+        async () => {
+          const newCommunity = await create({ variables: form });
+          const newId = newCommunity.data?.communityCreate.id;
+          if (newId) {
+            router.push(`/community/${newId}/editor/property-list`);
+          }
+        },
+        {
+          pending: 'Creating...',
+          success: 'Community created',
+        }
+      );
+    },
+    [create, router]
+  );
 
   return (
     <form onSubmit={handleSubmit(createCommunity)}>
