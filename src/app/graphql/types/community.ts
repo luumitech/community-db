@@ -3,6 +3,7 @@ import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
 import prisma from '../../lib/prisma';
 import { builder } from '../builder';
+import { UpdateInput } from './common';
 import { resolveCustomOffsetConnection } from './offset-pagination';
 import { propertyRef } from './property';
 
@@ -10,6 +11,8 @@ builder.prismaObject('Community', {
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
+    updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
+    updatedBy: t.exposeString('updatedBy', { nullable: true }),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -160,6 +163,63 @@ builder.mutationField('communityCreate', (t) =>
         },
       });
       return entry;
+    },
+  })
+);
+
+const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
+  fields: (t) => ({
+    self: t.field({ type: UpdateInput, required: true }),
+    name: t.string(),
+  }),
+});
+
+builder.mutationField('communityModify', (t) =>
+  t.prismaField({
+    type: 'Community',
+    args: {
+      input: t.arg({ type: CommunityModifyInput, required: true }),
+    },
+    resolve: async (query, _parent, args, ctx) => {
+      const { user } = await ctx;
+      const { self, ...input } = args.input;
+      const entry = await prisma.community.findUnique({
+        ...query,
+        where: {
+          id: self.id.toString(),
+          accessList: {
+            some: {
+              user: { email: user.email },
+            },
+          },
+        },
+        select: {
+          updatedAt: true,
+        },
+      });
+      if (!entry) {
+        throw new GraphQLError(
+          `No permission to access community ${self.id.toString()}`
+        );
+      } else if (entry.updatedAt.toISOString() !== self.updatedAt) {
+        throw new GraphQLError(
+          `Attempting to update a stale community ${self.id.toString()}, please refresh browser.`
+        );
+      }
+
+      const { name, ...optionalInput } = input;
+      return prisma.community.update({
+        ...query,
+        where: {
+          id: self.id.toString(),
+        },
+        data: {
+          updatedBy: user.email,
+          // only supply name if explicitly specified
+          ...(!!name && { name }),
+          ...optionalInput,
+        },
+      });
     },
   })
 );

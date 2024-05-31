@@ -5,47 +5,18 @@ import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 
-export interface InputData
-  extends Pick<GQL.PropertyModifyInput, 'notes' | 'membershipList'> {}
-type DefaultData = DefaultInput<InputData>;
-
-export function membershipDefault(
-  year: number
-): DefaultInput<GQL.MembershipInput> {
-  return {
-    year,
-    isMember: false,
-    eventAttendedList: [],
-    paymentMethod: '',
-    paymentDeposited: false,
-  };
-}
-
-function defaultInputData(
-  item: GQL.PropertyId_MembershipEditorFragment
-): DefaultData {
-  return {
-    notes: item.notes ?? '',
-    membershipList: item.membershipList.map((entry) => ({
-      year: entry.year,
-      isMember: entry.isMember ?? membershipDefault(0).isMember,
-      eventAttendedList: entry.eventAttendedList.map((event) => ({
-        eventName: event.eventName ?? '',
-        eventDate: event.eventDate ?? '',
-      })),
-      paymentMethod: entry.paymentMethod ?? membershipDefault(0).paymentMethod,
-      paymentDeposited:
-        entry.paymentDeposited ?? membershipDefault(0).paymentDeposited,
-    })),
-  };
-}
-
-function validationResolver() {
-  const schema = yup.object({
+function schema() {
+  return yup.object({
+    self: yup.object({
+      id: yup.string().required(),
+      updatedAt: yup.string().required(),
+    }),
     notes: yup.string().nullable(),
     membershipList: yup.array(
       yup.object().shape(
         {
+          year: yup.number().required(),
+          isMember: yup.boolean(),
           eventAttendedList: yup
             .array(
               yup.object({
@@ -73,32 +44,77 @@ function validationResolver() {
                 'Must specify a value when event has been added'
               ),
           }),
+          paymentDeposited: yup.boolean(),
         },
-        // Add dependency to avoid cyclic dependency error,
-        // see: https://github.com/jquense/yup/issues/79#issuecomment-274174656
-        [['eventAttendedList', 'paymentMethod']]
+        [
+          // Add dependency to avoid cyclic dependency error,
+          // see: https://github.com/jquense/yup/issues/79#issuecomment-274174656
+          ['eventAttendedList', 'paymentMethod'],
+        ]
       )
     ),
   });
-  return yupResolver(schema);
+}
+
+export type InputData = ReturnType<typeof schema>['__outputType'];
+type DefaultData = DefaultInput<InputData>;
+
+export function membershipDefault(
+  year: number
+): DefaultInput<GQL.MembershipInput> {
+  return {
+    year,
+    isMember: false,
+    eventAttendedList: [],
+    paymentMethod: '',
+    paymentDeposited: false,
+  };
+}
+
+function defaultInputData(
+  item: GQL.PropertyId_MembershipEditorFragment
+): DefaultData {
+  return {
+    self: {
+      id: item.id,
+      updatedAt: item.updatedAt,
+    },
+    notes: item.notes ?? '',
+    membershipList: item.membershipList.map((entry) => ({
+      year: entry.year,
+      isMember: entry.isMember ?? membershipDefault(0).isMember,
+      eventAttendedList: entry.eventAttendedList.map((event) => ({
+        eventName: event.eventName ?? '',
+        eventDate: event.eventDate ?? '',
+      })),
+      paymentMethod: entry.paymentMethod ?? membershipDefault(0).paymentMethod,
+      paymentDeposited:
+        entry.paymentDeposited ?? membershipDefault(0).paymentDeposited,
+    })),
+  };
 }
 
 export function useHookFormWithDisclosure(
   fragment: GQL.PropertyId_MembershipEditorFragment
 ) {
-  const defaultValues = defaultInputData(fragment);
   const formMethods = useForm({
-    defaultValues,
-    resolver: validationResolver(),
+    defaultValues: defaultInputData(fragment),
+    resolver: yupResolver(schema()),
   });
   const { reset } = formMethods;
+
+  React.useEffect(() => {
+    // After form is submitted, update the form with new default
+    reset(defaultInputData(fragment));
+  }, [reset, fragment]);
+
   /**
    * When modal is closed, reset form value with
    * default values derived from fragment
    */
   const onModalClose = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
+    reset(defaultInputData(fragment));
+  }, [reset, fragment]);
   const disclosure = useDisclosure({
     onClose: onModalClose,
   });

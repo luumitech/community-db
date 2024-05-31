@@ -7,31 +7,23 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { IoPersonAdd } from 'react-icons/io5';
-import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
-import { Editor } from './editor';
-import {
-  InputData,
-  occupantDefault,
-  useHookFormContext,
-} from './use-hook-form';
+import { NameEditor } from './name-editor';
+import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
   disclosureProps: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
+export const CommunityModifyModal: React.FC<Props> = ({
+  disclosureProps,
+  onSave,
+}) => {
   const { isOpen, onOpenChange, onClose } = disclosureProps;
   const [pending, startTransition] = React.useTransition();
-  const { control, formState, handleSubmit } = useHookFormContext();
-
+  const { formState, handleSubmit } = useHookFormContext();
   const { isDirty } = formState;
-  const occupantMethods = useFieldArray({
-    control,
-    name: 'occupantList',
-  });
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -59,18 +51,11 @@ export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Member Details</ModalHeader>
+          <ModalHeader>Edit Community</ModalHeader>
           <ModalBody>
-            <Editor fieldArrayMethods={occupantMethods} />
+            <NameEditor />
           </ModalBody>
           <ModalFooter>
-            <Button
-              endContent={<IoPersonAdd />}
-              onPress={() => occupantMethods.append(occupantDefault)}
-            >
-              Add Member
-            </Button>
-            <div className="flex-grow" />
             <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
               Cancel
             </Button>

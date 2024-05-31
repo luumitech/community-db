@@ -1,9 +1,9 @@
 'use client';
 import { Button, Link } from '@nextui-org/react';
 import React from 'react';
-import { toast } from 'react-toastify';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { importCommunity } from '~/server-action/import-community';
+import { toast } from '~/view/base/toastify';
 import { ImportForm } from './import-form';
 import { InputData, useHookForm } from './use-hook-form';
 
@@ -36,7 +36,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
             render: () => {
               return (
                 <div className="flex items-center gap-2">
-                  Imported Successfully!
+                  Imported Successfully
                   <Button
                     size="sm"
                     as={Link}
@@ -47,15 +47,6 @@ export default function ImportXlsx({ params }: RouteArgs) {
                   </Button>
                 </div>
               );
-            },
-          },
-          error: {
-            render: ({ data }) => {
-              if (data instanceof Error) {
-                return data.message;
-              } else {
-                return 'Import Failed';
-              }
             },
           },
         }

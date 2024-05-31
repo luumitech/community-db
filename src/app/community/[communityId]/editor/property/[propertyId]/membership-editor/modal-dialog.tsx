@@ -17,27 +17,28 @@ interface Props {
   entry: GQL.PropertyId_MembershipEditorFragment;
   disclosureProps: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
-  /**
-   * onSave is in progress
-   */
-  isSaving?: boolean;
 }
 
 export const ModalDialog: React.FC<Props> = ({
   entry,
   disclosureProps,
   onSave,
-  isSaving,
 }) => {
   const { isOpen, onOpenChange, onClose } = disclosureProps;
+  const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();
   const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
-    async (input: InputData) => {
-      await onSave(input);
-      onClose?.();
-    },
+    async (input: InputData) =>
+      startTransition(async () => {
+        try {
+          await onSave(input);
+          onClose?.();
+        } catch (err) {
+          // error handled by parent
+        }
+      }),
     [onSave, onClose]
   );
 
@@ -66,8 +67,7 @@ export const ModalDialog: React.FC<Props> = ({
             <Button
               type="submit"
               color="primary"
-              isDisabled={!formState.isDirty}
-              isLoading={isSaving}
+              isDisabled={!formState.isDirty || pending}
             >
               Save
             </Button>
