@@ -56,7 +56,7 @@ export default function Property({ params }: RouteArgs) {
       <PropertyDisplay entry={property} />
       <Divider className="mb-4" />
       <MembershipDisplay entry={property} />
-      <MembershipEditor entry={property} />
+      <MembershipEditor className="mt-2" entry={property} />
       <OccupantDisplay className="my-4" entry={property} />
       <div className="text-right text-xs">
         Last modified on {updatedAt} by {property.updatedBy ?? 'n/a'}

@@ -16,10 +16,11 @@ const cache = new InMemoryCache({
  */
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    graphQLErrors.map(({ message, locations, path }) =>
+    graphQLErrors.map(({ message, locations, path, extensions }) =>
       console.warn(
-        `[GraphQL error]: Message: ${message}, Path: ${path}, Location: %o`,
-        locations
+        `[GraphQL error]: Message: ${message}, Path: ${path}, Location: %o, extensions: %o`,
+        locations,
+        extensions
       )
     );
   }

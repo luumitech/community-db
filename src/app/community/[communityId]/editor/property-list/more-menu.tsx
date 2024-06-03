@@ -1,68 +1,31 @@
-import { useMutation } from '@apollo/client';
 import {
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  useDisclosure,
 } from '@nextui-org/react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { IoMdMore } from 'react-icons/io';
 import { FormProvider } from '~/custom-hooks/hook-form';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
-import { toast } from '~/view/base/toastify';
-import { CommunityModifyModal } from './community-modify-modal';
+import * as GQL from '~/graphql/generated/graphql';
+import { CommunityDeleteModal } from './community-delete-modal';
 import {
-  InputData,
+  CommunityModifyModal,
   useHookFormWithDisclosure,
-} from './community-modify-modal/use-hook-form';
-
-const EntryFragment = graphql(/* GraphQL */ `
-  fragment CommunityId_CommunityModifyModal on Community {
-    id
-    name
-    updatedAt
-    updatedBy
-  }
-`);
-
-const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityModify($input: CommunityModifyInput!) {
-    communityModify(input: $input) {
-      ...CommunityId_CommunityModifyModal
-    }
-  }
-`);
+} from './community-modify-modal';
 
 interface Props {
-  entry: FragmentType<typeof EntryFragment>;
+  community: GQL.CommunityFromIdQuery['communityFromId'];
 }
 
-export const MoreMenu: React.FC<Props> = (props) => {
+export const MoreMenu: React.FC<Props> = ({ community }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const entry = useFragment(EntryFragment, props.entry);
-  const communityModify = useHookFormWithDisclosure(entry);
-  const [updateCommunity] = useMutation(CommunityMutation);
-
-  const onSave = React.useCallback(
-    async (input: InputData) => {
-      if (!communityModify.formMethods.formState.isDirty) {
-        return;
-      }
-      await toast.promise(
-        updateCommunity({
-          variables: { input },
-        }),
-        {
-          pending: 'Saving...',
-          success: 'Saved',
-        }
-      );
-    },
-    [communityModify.formMethods.formState, updateCommunity]
-  );
+  const communityModify = useHookFormWithDisclosure(community);
+  const communityDeleteDisclosure = useDisclosure();
 
   return (
     <>
@@ -81,29 +44,44 @@ export const MoreMenu: React.FC<Props> = (props) => {
           <DropdownItem
             key="modify"
             {...communityModify.disclosure.getButtonProps()}
+            showDivider
           >
             Modify Community
           </DropdownItem>
           <DropdownItem
             key="import"
-            onClick={() => router.push(`${pathname}/../../tool/import-xlsx`)}
+            onClick={() =>
+              router.push(`${pathname}/../../management/import-xlsx`)
+            }
           >
-            Import
+            Import from Excel
           </DropdownItem>
           <DropdownItem
             key="export"
-            onClick={() => router.push(`${pathname}/../../tool/export-xlsx`)}
+            onClick={() =>
+              router.push(`${pathname}/../../management/export-xlsx`)
+            }
+            showDivider
           >
-            Export
+            Export to Excel
+          </DropdownItem>
+          <DropdownItem
+            key="delete"
+            className="text-danger"
+            {...communityDeleteDisclosure.getButtonProps()}
+            showDivider
+          >
+            Delete Community
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <FormProvider {...communityModify.formMethods}>
-        <CommunityModifyModal
-          disclosureProps={communityModify.disclosure}
-          onSave={onSave}
-        />
+        <CommunityModifyModal hookForm={communityModify} />
       </FormProvider>
+      <CommunityDeleteModal
+        disclosure={communityDeleteDisclosure}
+        community={community}
+      />
     </>
   );
 };

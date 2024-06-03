@@ -16,12 +16,12 @@ export default async function ToolMenu({ params }: RouteArgs) {
     {
       id: 'import',
       name: 'Import',
-      href: `/community/${communityId}/tool/import-xlsx`,
+      href: `/community/${communityId}/management/import-xlsx`,
     },
     {
       id: 'export',
       name: 'Export',
-      href: `/community/${communityId}/tool/export-xlsx`,
+      href: `/community/${communityId}/management/export-xlsx`,
     },
   ];
 

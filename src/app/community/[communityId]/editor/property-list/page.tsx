@@ -1,7 +1,9 @@
 'use client';
 import { useQuery } from '@apollo/client';
 import {
+  Button,
   Input,
+  Link,
   Spinner,
   Table,
   TableBody,
@@ -37,7 +39,9 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
     $search: String
   ) {
     communityFromId(id: $id) {
+      id
       ...CommunityId_CommunityModifyModal
+      ...CommunityId_CommunityDeleteModal
       propertyList(first: $first, after: $after, search: $search) {
         pageInfo {
           hasNextPage
@@ -107,10 +111,27 @@ export default function PropertyList({ params }: RouteArgs) {
           onValueChange={setSearchText}
           onClear={() => setSearchText(undefined)}
         />
-        {communityFromId && <MoreMenu entry={communityFromId} />}
+        {communityFromId && <MoreMenu community={communityFromId} />}
       </div>
     );
   }, [communityFromId, searchText, dispatch]);
+
+  const emptyContent = React.useMemo(() => {
+    return (
+      <div>
+        <p className="mb-2">No data to display.</p>
+        {!!communityFromId?.id && (
+          <Button
+            as={Link}
+            color="primary"
+            href={`/community/${communityFromId.id}/management/import-xlsx`}
+          >
+            Import from Excel
+          </Button>
+        )}
+      </div>
+    );
+  }, [communityFromId?.id]);
 
   return (
     <Table
@@ -150,7 +171,7 @@ export default function PropertyList({ params }: RouteArgs) {
       <TableBody
         isLoading={loading}
         loadingContent={<Spinner />}
-        emptyContent={'No data to display.'}
+        emptyContent={emptyContent}
         items={rows}
       >
         {(entry) => (

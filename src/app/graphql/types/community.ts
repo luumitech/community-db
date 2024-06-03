@@ -1,4 +1,4 @@
-import { Property } from '@prisma/client';
+import { Prisma, Property } from '@prisma/client';
 import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
 import prisma from '../../lib/prisma';
@@ -117,25 +117,39 @@ builder.queryField('communityFromId', (t) =>
     },
     resolve: async (query, parent, args, ctx) => {
       const { user } = await ctx;
-      const entry = await prisma.community.findUniqueOrThrow({
-        ...query,
-        where: {
-          id: args.id.toString(),
-          OR: [
-            {
-              accessList: {
-                some: {
-                  user: {
-                    email: user.email,
+      try {
+        const entry = await prisma.community.findUniqueOrThrow({
+          ...query,
+          where: {
+            id: args.id.toString(),
+            OR: [
+              {
+                accessList: {
+                  some: {
+                    user: {
+                      email: user.email,
+                    },
                   },
                 },
               },
-            },
-          ],
-        },
-      });
-
-      return entry;
+            ],
+          },
+        });
+        return entry;
+      } catch (err) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+          switch (err.code) {
+            /**
+             * https://www.prisma.io/docs/orm/reference/error-reference#p2025
+             */
+            case 'P2025':
+              throw new GraphQLError(
+                `Community ${args.id.toString()} Not Found`
+              );
+          }
+        }
+        throw err;
+      }
     },
   })
 );
@@ -220,6 +234,60 @@ builder.mutationField('communityModify', (t) =>
           ...optionalInput,
         },
       });
+    },
+  })
+);
+
+const CommunityDeletePayload = builder
+  .objectRef<{ id: string }>('CommunityDeletePayload')
+  .implement({
+    fields: (t) => ({
+      id: t.exposeID('id', {}),
+    }),
+  });
+
+builder.mutationField('communityDelete', (t) =>
+  t.field({
+    type: CommunityDeletePayload,
+    args: {
+      id: t.arg.id({ required: true }),
+    },
+    resolve: async (_parent, args, ctx) => {
+      const { user } = await ctx;
+      const entry = await prisma.community.findUnique({
+        where: {
+          id: args.id.toString(),
+          accessList: {
+            some: {
+              user: { email: user.email },
+            },
+          },
+        },
+      });
+      if (!entry) {
+        throw new GraphQLError(
+          `No permission to access community ${args.id.toString()}`
+        );
+      }
+
+      const [access, property, community] = await prisma.$transaction([
+        prisma.access.deleteMany({
+          where: {
+            communityId: args.id.toString(),
+          },
+        }),
+        prisma.property.deleteMany({
+          where: {
+            communityId: args.id.toString(),
+          },
+        }),
+        prisma.community.delete({
+          where: {
+            id: args.id.toString(),
+          },
+        }),
+      ]);
+      return community;
     },
   })
 );

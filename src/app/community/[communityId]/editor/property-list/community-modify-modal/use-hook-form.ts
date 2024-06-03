@@ -3,6 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 
 function schema() {
@@ -18,6 +19,23 @@ function schema() {
 export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
+const EntryFragment = graphql(/* GraphQL */ `
+  fragment CommunityId_CommunityModifyModal on Community {
+    id
+    name
+    updatedAt
+    updatedBy
+  }
+`);
+
+export const CommunityMutation = graphql(/* GraphQL */ `
+  mutation communityModify($input: CommunityModifyInput!) {
+    communityModify(input: $input) {
+      ...CommunityId_CommunityModifyModal
+    }
+  }
+`);
+
 function defaultInputData(
   item: GQL.CommunityId_CommunityModifyModalFragment
 ): DefaultData {
@@ -31,8 +49,9 @@ function defaultInputData(
 }
 
 export function useHookFormWithDisclosure(
-  fragment: GQL.CommunityId_CommunityModifyModalFragment
+  entry: FragmentType<typeof EntryFragment>
 ) {
+  const fragment = useFragment(EntryFragment, entry);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),
@@ -57,6 +76,10 @@ export function useHookFormWithDisclosure(
 
   return { disclosure, formMethods };
 }
+
+export type UseHookFormWithDisclosureResult = ReturnType<
+  typeof useHookFormWithDisclosure
+>;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();
