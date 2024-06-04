@@ -1,3 +1,4 @@
+import { Chip } from '@nextui-org/chip';
 import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
@@ -15,10 +16,16 @@ export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
   return (
     <Select
       className={clsx(className, 'max-w-sm')}
-      label="Event Name"
+      aria-label="Event Name"
       items={supportedEvents}
+      variant="underlined"
       placeholder="Select event to add"
       defaultSelectedKeys={lastEventSelected ? [lastEventSelected] : []}
+      startContent={
+        <Chip size="sm" radius="sm">
+          Add New Event
+        </Chip>
+      }
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
         dispatch(

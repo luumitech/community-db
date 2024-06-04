@@ -1,5 +1,4 @@
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -8,9 +7,9 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import { Select, SelectItem, SelectProps } from '@nextui-org/select';
+import { type RowElement, type RowProps } from '@react-types/table';
 import clsx from 'clsx';
 import React from 'react';
-import { IoMdAddCircleOutline } from 'react-icons/io';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { DatePicker } from '~/view/base/date-picker';
@@ -60,23 +59,9 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         >
           {eventAttendedListError}
         </div>
-        <div className="flex w-full items-center gap-2">
-          <EventDefaultSelect />
-          <Button
-            endContent={<IoMdAddCircleOutline />}
-            onClick={() =>
-              append({
-                eventName: lastEventSelected ?? '',
-                eventDate: new Date(Date.now()).toISOString(),
-              })
-            }
-          >
-            Add event
-          </Button>
-        </div>
       </div>
     );
-  }, [register, yearIdx, eventAttendedListError, lastEventSelected, append]);
+  }, [register, yearIdx, eventAttendedListError]);
 
   React.useEffect(() => {
     /**
@@ -93,6 +78,72 @@ export const EventsAttendedSelect: React.FC<Props> = ({
       [clearErrors, yearIdx]
     );
 
+  const renderRows = React.useCallback(() => {
+    return fields.map((field, idx) => (
+      <TableRow key={field.id}>
+        <TableCell>
+          <Select
+            className={'max-w-sm'}
+            aria-label="Event Name"
+            items={supportedEvents}
+            variant="underlined"
+            placeholder="Select an event"
+            errorMessage={
+              errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
+                ?.eventName?.message
+            }
+            isInvalid={
+              !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
+                ?.eventName?.message
+            }
+            onSelectionChange={onSelectionChange}
+            {...register(
+              `membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`
+            )}
+          >
+            {(entry) => (
+              <SelectItem key={entry.value} textValue={entry.label}>
+                {entry.label}
+              </SelectItem>
+            )}
+          </Select>
+        </TableCell>
+        <TableCell>
+          <DatePicker
+            className={'max-w-sm'}
+            aria-label="Event Date"
+            variant="underlined"
+            granularity="day"
+            name={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
+            errorMessage={
+              errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
+                ?.eventDate?.message
+            }
+            isInvalid={
+              !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
+                ?.eventDate?.message
+            }
+          />
+        </TableCell>
+        <TableCell>
+          <FlatButton
+            className="text-danger"
+            icon="trash"
+            tooltip="Remove Event"
+            onClick={() => remove(idx)}
+          />
+        </TableCell>
+      </TableRow>
+    ));
+  }, [
+    errors.membershipList,
+    fields,
+    onSelectionChange,
+    register,
+    remove,
+    yearIdx,
+  ]);
+
   return (
     <div className={clsx(className)}>
       <Table
@@ -106,62 +157,30 @@ export const EventsAttendedSelect: React.FC<Props> = ({
           <TableColumn>Action</TableColumn>
         </TableHeader>
         <TableBody>
-          {fields.map((field, idx) => (
-            <TableRow key={field.id}>
-              <TableCell>
-                <Select
-                  className={'max-w-sm'}
-                  aria-label="Event Name"
-                  items={supportedEvents}
-                  variant="underlined"
-                  placeholder="Select an event"
-                  errorMessage={
-                    errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                      ?.eventName?.message
-                  }
-                  isInvalid={
-                    !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                      ?.eventName?.message
-                  }
-                  onSelectionChange={onSelectionChange}
-                  {...register(
-                    `membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`
-                  )}
-                >
-                  {(entry) => (
-                    <SelectItem key={entry.value} textValue={entry.label}>
-                      {entry.label}
-                    </SelectItem>
-                  )}
-                </Select>
-              </TableCell>
-              <TableCell>
-                <DatePicker
-                  className={'max-w-sm'}
-                  aria-label="Event Date"
-                  variant="underlined"
-                  granularity="day"
-                  name={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
-                  errorMessage={
-                    errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                      ?.eventDate?.message
-                  }
-                  isInvalid={
-                    !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                      ?.eventDate?.message
-                  }
-                />
-              </TableCell>
-              <TableCell>
-                <FlatButton
-                  className="text-danger"
-                  icon="trash"
-                  tooltip="Remove Event"
-                  onClick={() => remove(idx)}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+          {/* Cannot resolve strange typescript error */}
+          {renderRows() as unknown as RowElement<unknown>}
+          <TableRow>
+            <TableCell colSpan={2}>
+              <EventDefaultSelect />
+            </TableCell>
+            {/* This hidden cell is needed to workaround an error
+             * https://github.com/nextui-org/nextui/issues/1779
+             */}
+            <TableCell className="hidden">{null}</TableCell>
+            <TableCell>
+              <FlatButton
+                className="text-primary"
+                icon="add"
+                tooltip="Add Event"
+                onClick={() =>
+                  append({
+                    eventName: lastEventSelected ?? '',
+                    eventDate: new Date(Date.now()).toISOString(),
+                  })
+                }
+              />
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </div>
