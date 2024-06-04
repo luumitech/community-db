@@ -1,5 +1,5 @@
 import React from 'react';
-import { MainMenu } from '~/view/main-menu';
+import { ListBox, ListboxItemProps } from '~/view/base/list-box';
 
 interface Params {
   communityId: string;
@@ -12,22 +12,22 @@ interface RouteArgs {
 export default async function ToolMenu({ params }: RouteArgs) {
   const { communityId } = params;
 
-  const items = [
+  const items: ListboxItemProps[] = [
     {
-      id: 'import',
-      name: 'Import',
+      key: 'import',
       href: `/community/${communityId}/management/import-xlsx`,
+      children: 'Import',
     },
     {
-      id: 'export',
-      name: 'Export',
+      key: 'export',
       href: `/community/${communityId}/management/export-xlsx`,
+      children: 'Export',
     },
   ];
 
   return (
     <div>
-      <MainMenu header="Tool Menu" items={items} />
+      <ListBox header="Tool Menu" items={items} />
     </div>
   );
 }

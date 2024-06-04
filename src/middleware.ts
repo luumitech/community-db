@@ -9,6 +9,7 @@ export const config = {
   matcher: [
     // UI routes
     '/community(.*)',
+    '/preference(.*)',
     // API route handlers
     '/api/sample(.*)',
   ],

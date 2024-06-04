@@ -56,7 +56,12 @@ export const SignedIn: React.FC<Props> = ({}) => {
           <p className="font-semibold">Signed in as</p>
           <p className="font-semibold">{email}</p>
         </DropdownItem>
-        <DropdownItem key="settings">My Settings</DropdownItem>
+        <DropdownItem
+          key="preference"
+          onClick={() => router.push('/preference')}
+        >
+          Preference
+        </DropdownItem>
         <DropdownItem
           key="logout"
           color="danger"
