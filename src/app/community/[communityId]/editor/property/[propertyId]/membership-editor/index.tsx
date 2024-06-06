@@ -67,7 +67,7 @@ export const MembershipEditor: React.FC<Props> = (props) => {
           endContent={<BiEditAlt />}
           {...disclosure.getButtonProps()}
         >
-          Edit Membership
+          Edit Membership Info
         </Button>
         <ModalDialog
           entry={entry}

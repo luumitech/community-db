@@ -68,6 +68,12 @@ export function useNavMenu() {
           href: `/community/${communityId}/tool/menu`,
           children: 'Tools',
         },
+        {
+          id: 'dashboard',
+          isActive: pathname === `/community/${communityId}/tool/dashboard`,
+          href: `/community/${communityId}/tool/dashboard`,
+          children: indentMenuItem('Dashboard', 1),
+        },
       ]);
     }
   }, [pathname]);

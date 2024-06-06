@@ -14,14 +14,9 @@ export default async function ToolMenu({ params }: RouteArgs) {
 
   const items: ListboxItemProps[] = [
     {
-      key: 'import',
-      href: `/community/${communityId}/management/import-xlsx`,
-      children: 'Import',
-    },
-    {
-      key: 'export',
-      href: `/community/${communityId}/management/export-xlsx`,
-      children: 'Export',
+      key: 'dashboard',
+      href: `/community/${communityId}/tool/dashboard`,
+      children: 'Dashboard',
     },
   ];
 
