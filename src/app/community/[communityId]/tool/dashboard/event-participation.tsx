@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
 
 interface ChartDataEntry {
@@ -12,30 +13,41 @@ interface ChartDataEntry {
 }
 
 const EntryFragment = graphql(/* GraphQL */ `
-  fragment Dashboard_EventParticipation on CommunityStat {
-    propertyStat {
-      year
-      joinEvent
-      otherEvents
-      renew
+  fragment Dashboard_EventParticipation on Community {
+    eventList
+    communityStat {
+      propertyStat {
+        year
+        joinEvent
+        otherEvents
+        renew
+      }
     }
   }
 `);
 
-export type CommunityStatFragmentType = FragmentType<typeof EntryFragment>;
+export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
 
 class ChartDataHelper {
   private dataMap = new Map<string, Omit<ChartDataEntry, 'event'>>();
 
-  getEvent(eventName: string) {
-    if (!this.dataMap.has(eventName)) {
+  constructor(fragment: GQL.Dashboard_EventParticipationFragment) {
+    const { eventList } = fragment;
+    eventList.map((eventName) => {
       this.dataMap.set(eventName, {
         renew: 0,
         new: 0,
         existing: 0,
       });
+    });
+  }
+
+  getEvent(eventName: string) {
+    const result = this.dataMap.get(eventName);
+    if (result == null) {
+      throw new Error(`Unexpected event ${eventName} requested`);
     }
-    return this.dataMap.get(eventName)!;
+    return result;
   }
 
   getChartData() {
@@ -49,7 +61,7 @@ class ChartDataHelper {
 
 interface Props {
   className?: string;
-  entry: CommunityStatFragmentType;
+  entry: CommunityFragmentType;
   year: number;
 }
 
@@ -61,8 +73,9 @@ export const EventParticipation: React.FC<Props> = ({
   const entry = useFragment(EntryFragment, props.entry);
 
   const chartData = React.useMemo(() => {
-    const chartHelper = new ChartDataHelper();
-    entry.propertyStat.forEach((stat) => {
+    const chartHelper = new ChartDataHelper(entry);
+    const { propertyStat } = entry.communityStat;
+    propertyStat.forEach((stat) => {
       if (stat.year === year) {
         if (stat.renew) {
           chartHelper.getEvent(stat.joinEvent).renew++;

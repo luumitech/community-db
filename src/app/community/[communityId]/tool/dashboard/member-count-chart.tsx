@@ -13,26 +13,29 @@ interface ChartDataEntry {
 }
 
 const EntryFragment = graphql(/* GraphQL */ `
-  fragment Dashboard_MemberCount on CommunityStat {
-    minYear
-    maxYear
-    propertyStat {
-      year
-      joinEvent
-      otherEvents
-      renew
+  fragment Dashboard_MemberCount on Community {
+    communityStat {
+      minYear
+      maxYear
+      propertyStat {
+        year
+        joinEvent
+        otherEvents
+        renew
+      }
     }
   }
 `);
 
-export type CommunityStatFragmentType = FragmentType<typeof EntryFragment>;
-type PropertyStat = GQL.Dashboard_MemberCountFragment['propertyStat'][0];
+export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
+type PropertyStat =
+  GQL.Dashboard_MemberCountFragment['communityStat']['propertyStat'][0];
 
 class ChartDataHelper {
   private dataMap = new Map<number, Omit<PropertyStat, 'year'>[]>();
 
   constructor(fragment: GQL.Dashboard_MemberCountFragment) {
-    const { minYear, maxYear } = fragment;
+    const { minYear, maxYear } = fragment.communityStat;
     // Year should be in descending order
     R.range(minYear, maxYear + 1)
       .reverse()
@@ -67,7 +70,7 @@ class ChartDataHelper {
 
 interface Props {
   className?: string;
-  entry: CommunityStatFragmentType;
+  entry: CommunityFragmentType;
   onDataClick?: (datum: ChartDataEntry) => void;
 }
 
@@ -80,7 +83,8 @@ export const MemberCountChart: React.FC<Props> = ({
 
   const chartData = React.useMemo(() => {
     const chartHelper = new ChartDataHelper(entry);
-    entry.propertyStat.forEach(({ year, ...stat }) => {
+    const { propertyStat } = entry.communityStat;
+    propertyStat.forEach(({ year, ...stat }) => {
       chartHelper.getYear(year).push(stat);
     });
     return chartHelper.getChartData();

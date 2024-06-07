@@ -24,10 +24,11 @@ describe('import community xlsx', () => {
         'lcra-db.xlsx'
       )
     );
-    const propertyList = importLcraDB(workbook);
+    const { eventList, propertyList } = importLcraDB(workbook);
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
+        eventList,
         propertyList: {
           create: propertyList,
         },
@@ -166,7 +167,7 @@ describe('import community xlsx', () => {
         },
         {
           eventAttendedList: [
-            { eventName: 'Membership Carry Forward', eventDate: '2022-02-11' },
+            { eventName: 'Membership Carry Forward', eventDate: '2022-02-10' },
           ],
           isMember: true,
           paymentDeposited: false,
@@ -175,7 +176,7 @@ describe('import community xlsx', () => {
         },
         {
           eventAttendedList: [
-            { eventName: 'Membership Carry Forward', eventDate: '2021-01-24' },
+            { eventName: 'Membership Carry Forward', eventDate: '2021-01-23' },
           ],
           isMember: true,
           paymentDeposited: false,

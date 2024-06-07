@@ -1,9 +1,5 @@
+import type { Membership, Occupant, Property } from '@prisma/client';
 import * as R from 'remeda';
-import type {
-  Membership,
-  Occupant,
-  Property,
-} from '~/graphql/generated/graphql';
 import { isValidDate } from '~/lib/date-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
@@ -21,15 +17,15 @@ export interface ImportHelperConfig {
  */
 type MProperty = Omit<
   Property,
-  '__typename' | 'id' | 'createdAt' | 'occupantList' | 'membershipList'
+  'id' | 'createdAt' | 'occupantList' | 'membershipList' | 'communityId'
 >;
-type MOccupant = Omit<Occupant, '__typename'>;
-interface MMembership
-  extends Omit<Membership, '__typename' | 'year' | 'eventAttendedList'> {
-  // Additional fields that are not directly mappable from excel
-  // spreadsheet to internal database structure
-  eventNames?: string;
-  eventDates?: string;
+type MOccupant = Omit<Occupant, ''>;
+interface MMembership extends Omit<Membership, 'year' | 'eventAttendedList'> {
+  // Additional fields in excel spreadsheet that cannot be mapped
+  // to membership database directly.  So store them as extra fields
+  // and map them separately afterwards
+  eventNames: string | null;
+  eventDates: string | null;
 }
 
 /**
@@ -98,22 +94,22 @@ export class ImportHelper {
   /**
    * Return cell value and convert it to a given type
    */
-  cellAs(col: number, row: number, type: 'string'): string | undefined;
-  cellAs(col: number, row: number, type: 'number'): number | undefined;
-  cellAs(col: number, row: number, type: 'boolean'): boolean | undefined;
-  cellAs(col: number, row: number, type: 'date'): Date | undefined;
+  cellAs(col: number, row: number, type: 'string'): string | null;
+  cellAs(col: number, row: number, type: 'number'): number | null;
+  cellAs(col: number, row: number, type: 'boolean'): boolean | null;
+  cellAs(col: number, row: number, type: 'date'): Date | null;
   cellAs(
     col: number,
     row: number,
     type: MappingType
-  ): string | number | boolean | Date | undefined {
+  ): string | number | boolean | Date | null {
     const val = this.cellValue(col, row);
     if (val == null) {
-      return undefined;
+      return null;
     }
     switch (type) {
       case 'string':
-        return val.toString() || undefined;
+        return val.toString() || null;
       case 'number':
         if (typeof val !== 'number') {
           return parseFloat(val.toString());
@@ -128,7 +124,7 @@ export class ImportHelper {
         } else {
           const dateResult = new Date(val.toString());
           if (!isValidDate(dateResult)) {
-            return undefined;
+            return null;
           }
           return dateResult;
         }
@@ -161,7 +157,8 @@ export class ImportHelper {
     rowIdx: number,
     mapping: PropertyMapping
   ): MProperty & Pick<Property, 'occupantList' | 'membershipList'> {
-    // @ts-expect-error: address is a required field
+    // @ts-expect-error: some fields like updatedAt or address are required
+    // field
     return {
       ...R.pipe(
         mapping,

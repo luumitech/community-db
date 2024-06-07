@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 
 interface ChartDataEntry {
@@ -13,16 +14,19 @@ interface ChartDataEntry {
 }
 
 const EntryFragment = graphql(/* GraphQL */ `
-  fragment Dashboard_MembershipSource on CommunityStat {
-    propertyStat {
-      year
-      joinEvent
-      renew
+  fragment Dashboard_MembershipSource on Community {
+    eventList
+    communityStat {
+      propertyStat {
+        year
+        joinEvent
+        renew
+      }
     }
   }
 `);
 
-export type CommunityStatFragmentType = FragmentType<typeof EntryFragment>;
+export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
 
 class ChartDataHelper {
   private dataMap = new Map<
@@ -30,25 +34,37 @@ class ChartDataHelper {
     Omit<ChartDataEntry, 'id' | 'label' | 'value'>
   >();
 
-  getEvent(eventName: string) {
-    if (!this.dataMap.has(eventName)) {
+  constructor(fragment: GQL.Dashboard_MembershipSourceFragment) {
+    const { eventList } = fragment;
+    eventList.map((eventName) => {
       this.dataMap.set(eventName, {
         renew: 0,
         new: 0,
       });
+    });
+  }
+
+  getEvent(eventName: string) {
+    const result = this.dataMap.get(eventName);
+    if (result == null) {
+      throw new Error(`Unexpected event ${eventName} requested`);
     }
-    return this.dataMap.get(eventName)!;
+    return result;
   }
 
   getChartData() {
     const chartData: Readonly<ChartDataEntry>[] = [];
     this.dataMap.forEach((entry, event) => {
-      chartData.push({
-        id: event,
-        label: event,
-        value: entry.new + entry.renew,
-        ...entry,
-      });
+      const value = entry.new + entry.renew;
+      // Filter out entry with no count
+      if (value) {
+        chartData.push({
+          id: event,
+          label: event,
+          value,
+          ...entry,
+        });
+      }
     });
     return chartData;
   }
@@ -56,7 +72,7 @@ class ChartDataHelper {
 
 interface Props {
   className?: string;
-  entry: CommunityStatFragmentType;
+  entry: CommunityFragmentType;
   year: number;
 }
 
@@ -68,8 +84,9 @@ export const MembershipSource: React.FC<Props> = ({
   const entry = useFragment(EntryFragment, props.entry);
 
   const chartData = React.useMemo(() => {
-    const chartHelper = new ChartDataHelper();
-    entry.propertyStat.forEach((stat) => {
+    const chartHelper = new ChartDataHelper(entry);
+    const { propertyStat } = entry.communityStat;
+    propertyStat.forEach((stat) => {
       if (stat.year === year) {
         if (stat.renew) {
           chartHelper.getEvent(stat.joinEvent).renew++;
@@ -90,21 +107,7 @@ export const MembershipSource: React.FC<Props> = ({
         </div>
       </CardHeader>
       <CardBody>
-        <PieChart
-          className="h-[400px]"
-          data={chartData}
-          // keys={['renew', 'new', 'existing']}
-          // indexBy="event"
-          // axisBottom={{
-          //   legend: 'Event',
-          //   tickRotation: -15,
-          // }}
-          // axisLeft={{
-          //   legend: 'Member Count',
-          // }}
-          // enableTotals
-          // legendPos="bottom"
-        />
+        <PieChart className="h-[400px]" data={chartData} />
       </CardBody>
     </Card>
   );

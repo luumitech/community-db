@@ -21,10 +21,10 @@ const DashboardQuery = graphql(/* GraphQL */ `
       id
       communityStat {
         maxYear
-        ...Dashboard_MemberCount
-        ...Dashboard_EventParticipation
-        ...Dashboard_MembershipSource
       }
+      ...Dashboard_MemberCount
+      ...Dashboard_EventParticipation
+      ...Dashboard_MembershipSource
     }
   }
 `);
@@ -48,21 +48,21 @@ export default function Dashboard({ params }: RouteArgs) {
     }
   }, [selectedYear, result]);
 
-  const communityStat = result.data?.communityFromId.communityStat;
-  if (!communityStat) {
+  const community = result.data?.communityFromId;
+  if (!community) {
     return null;
   }
 
   return (
     <div className="flex flex-col gap-4 mb-4">
       <MemberCountChart
-        entry={communityStat}
+        entry={community}
         onDataClick={(datum) => setSelectedYear(datum.year)}
       />
       {selectedYear && (
         <div className="columns-2">
-          <MembershipSource entry={communityStat} year={selectedYear} />
-          <EventParticipation entry={communityStat} year={selectedYear} />
+          <MembershipSource entry={community} year={selectedYear} />
+          <EventParticipation entry={community} year={selectedYear} />
         </div>
       )}
     </div>

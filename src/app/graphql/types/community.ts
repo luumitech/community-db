@@ -14,6 +14,7 @@ builder.prismaObject('Community', {
     name: t.exposeString('name', { nullable: false }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.exposeString('updatedBy', { nullable: true }),
+    eventList: t.exposeStringList('eventList'),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -226,6 +227,7 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     name: t.string(),
+    eventList: t.stringList(),
   }),
 });
 
@@ -262,7 +264,7 @@ builder.mutationField('communityModify', (t) =>
         );
       }
 
-      const { name, ...optionalInput } = input;
+      const { name, eventList, ...optionalInput } = input;
       return prisma.community.update({
         ...query,
         where: {
@@ -270,8 +272,9 @@ builder.mutationField('communityModify', (t) =>
         },
         data: {
           updatedBy: user.email,
-          // only supply name if explicitly specified
+          // non-nullable fields needs to be specified explicitly
           ...(!!name && { name }),
+          ...(!!eventList && { eventList }),
           ...optionalInput,
         },
       });

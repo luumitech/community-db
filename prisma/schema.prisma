@@ -49,6 +49,8 @@ model Community {
   updatedAt    DateTime   @updatedAt
   updatedBy    String?
   name         String
+  /// List of events supported (can be sorted)
+  eventList    String[]
   accessList   Access[]
   propertyList Property[]
 }
