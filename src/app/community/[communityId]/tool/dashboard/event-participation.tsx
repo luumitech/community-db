@@ -27,25 +27,28 @@ const EntryFragment = graphql(/* GraphQL */ `
 `);
 
 export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
+type DataMapEntry = Omit<ChartDataEntry, 'event'>;
 
 class ChartDataHelper {
-  private dataMap = new Map<string, Omit<ChartDataEntry, 'event'>>();
+  private dataMap = new Map<string, DataMapEntry>();
+
+  static newItem(): DataMapEntry {
+    return { renew: 0, new: 0, existing: 0 };
+  }
 
   constructor(fragment: GQL.Dashboard_EventParticipationFragment) {
     const { eventList } = fragment;
     eventList.map((eventName) => {
-      this.dataMap.set(eventName, {
-        renew: 0,
-        new: 0,
-        existing: 0,
-      });
+      this.dataMap.set(eventName, ChartDataHelper.newItem());
     });
   }
 
   getEvent(eventName: string) {
     const result = this.dataMap.get(eventName);
     if (result == null) {
-      throw new Error(`Unexpected event ${eventName} requested`);
+      const item = ChartDataHelper.newItem();
+      this.dataMap.set(eventName, item);
+      return item;
     }
     return result;
   }

@@ -8,6 +8,7 @@ import {
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
+import { EventListEditor } from './event-list-editor';
 import { NameEditor } from './name-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
 
@@ -51,6 +52,7 @@ export const ModifyModal: React.FC<Props> = ({ disclosure, onSave }) => {
           <ModalHeader>Edit Community</ModalHeader>
           <ModalBody>
             <NameEditor />
+            <EventListEditor />
           </ModalBody>
           <ModalFooter>
             <Button variant="bordered" confirmation={isDirty} onPress={onClose}>

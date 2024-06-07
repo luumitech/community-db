@@ -3,7 +3,12 @@ import clsx from 'clsx';
 import React from 'react';
 import { FaFolderOpen, FaTrashAlt } from 'react-icons/fa';
 import { IoMdAddCircleOutline } from 'react-icons/io';
-import { MdOutlineClear, MdQuestionMark } from 'react-icons/md';
+import {
+  MdDragIndicator,
+  MdOutlineClear,
+  MdQuestionMark,
+} from 'react-icons/md';
+import { RxCross2 } from 'react-icons/rx';
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -11,7 +16,7 @@ interface Props
     HTMLSpanElement
   > {
   className?: string;
-  icon: 'trash' | 'folder-open' | 'clear' | 'add';
+  icon: 'trash' | 'folder-open' | 'clear' | 'add' | 'drag-handle' | 'cross';
   /**
    * Tooltip description
    */
@@ -38,6 +43,12 @@ export const FlatButton: React.FC<Props> = ({
         break;
       case 'add':
         iconImg = <IoMdAddCircleOutline />;
+        break;
+      case 'drag-handle':
+        iconImg = <MdDragIndicator />;
+        break;
+      case 'cross':
+        iconImg = <RxCross2 />;
         break;
       default:
         iconImg = <MdQuestionMark />;

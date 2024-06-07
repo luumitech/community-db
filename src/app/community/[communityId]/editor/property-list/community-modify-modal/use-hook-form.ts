@@ -13,7 +13,7 @@ function schema() {
       updatedAt: yup.string().required(),
     }),
     name: yup.string().required(),
-    eventList: yup.array(yup.string().required()),
+    eventList: yup.array(yup.string().required()).required(),
   });
 }
 
