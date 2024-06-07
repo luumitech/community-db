@@ -4,7 +4,7 @@ import { schema } from './src/app/graphql/schema';
 
 const config: CodegenConfig = {
   schema: printSchema(schema),
-  documents: ['src/**/*.tsx', 'src/**/*.spec.ts'],
+  documents: ['src/**/*.tsx', 'src/**/*.ts'],
   generates: {
     './src/app/graphql/generated/': {
       preset: 'client',

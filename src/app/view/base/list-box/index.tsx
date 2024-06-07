@@ -6,25 +6,22 @@ import {
   Divider,
   Listbox,
   ListboxItem,
+  ListboxItemProps,
   Skeleton,
 } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 
-interface MenuEntry {
-  id: string;
-  name?: string | null;
-  href?: string;
-}
+export { type ListboxItemProps } from '@nextui-org/react';
 
 interface Props {
   className?: string;
   header?: string;
-  items: MenuEntry[];
+  items: ListboxItemProps[];
   loading?: boolean;
 }
 
-export const MainMenu: React.FC<Props> = ({
+export const ListBox: React.FC<Props> = ({
   className,
   header,
   items,
@@ -50,10 +47,8 @@ export const MainMenu: React.FC<Props> = ({
             </Skeleton>
           ) : (
             <Listbox aria-label="main menu">
-              {items.map((item) => (
-                <ListboxItem key={item.id} href={item.href}>
-                  {item.name ?? 'n/a'}
-                </ListboxItem>
+              {items.map(({ key, ...itemProps }) => (
+                <ListboxItem key={key} {...itemProps} />
               ))}
             </Listbox>
           )}

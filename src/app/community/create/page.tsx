@@ -56,8 +56,7 @@ export default function CommunityCreate() {
         className="mt-2"
         color="primary"
         type="submit"
-        isDisabled={!formState.isDirty}
-        isLoading={result.loading}
+        isDisabled={!formState.isDirty || result.loading}
       >
         Create
       </Button>

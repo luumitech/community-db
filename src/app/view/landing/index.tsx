@@ -1,7 +1,7 @@
 'use client';
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import { MainMenu } from '~/view/main-menu';
+import { ListBox } from '~/view/base/list-box';
 import { NotSignedIn } from './not-signed-in';
 
 interface Props {}
@@ -14,18 +14,18 @@ export const Landing: React.FC<Props> = ({}) => {
   }
 
   return (
-    <MainMenu
+    <ListBox
       header="Welcome!"
       items={[
         {
-          id: 'select-community',
-          name: 'Select Community',
+          key: 'select-community',
           href: '/community/select',
+          children: 'Select Community',
         },
         {
-          id: 'create-community',
-          name: 'Create New Community',
+          key: 'create-community',
           href: '/community/create',
+          children: 'Create New Community',
         },
       ]}
     />

@@ -1,4 +1,4 @@
-import { fromDate, toCalendarDate } from '@internationalized/date';
+import { parseDate } from '@internationalized/date';
 import * as GQL from '~/graphql/generated/graphql';
 
 type GQLDateTime = GQL.Scalars['DateTime']['output'];
@@ -33,10 +33,10 @@ export function isValidDate(date: Date | undefined | null): date is Date {
 /**
  * Extract the YYYY-MM-DD portion of the input string
  * supports DateTime and Date (in prisma context) string
- * ignores the time portion of the input
+ * ignores the time portion of the input (skips
+ * processing time string)
  *
- * @param input any date string supported by javascript Date object, if time portion
- * is provided, will interpret it as UTC
+ * @param input any date string supported by javascript Date object
  * @returns CalendarDate object (useful for DatePicker)
  */
 export function parseAsDate(input: GQLDate | null | undefined) {
@@ -44,10 +44,10 @@ export function parseAsDate(input: GQLDate | null | undefined) {
     return null;
   }
 
-  const dateObj = new Date(input);
-  if (!isValidDate(dateObj)) {
+  try {
+    const dateObj = parseDate(input.slice(0, 10));
+    return dateObj;
+  } catch (err) {
     return null;
   }
-  const zoned = fromDate(new Date(input), 'UTC');
-  return toCalendarDate(zoned);
 }

@@ -1,6 +1,8 @@
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
+import { parseAsDate } from '~/lib/date-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { extractEventList } from './event-list-util';
 import { ImportHelper } from './import-helper';
 
 /**
@@ -80,11 +82,14 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     const { eventNames, eventDates, ...rest } = membership;
     const eventNameList = membership.eventNames?.split(';') ?? [];
     const eventDateList = membership.eventDates?.split(';') ?? [];
-    const eventAttendedList = eventNameList.map((eventName, idx) => ({
-      eventName,
-      // normalize date to ISOString format
-      eventDate: new Date(eventDateList[idx]).toISOString(),
-    }));
+    const eventAttendedList = eventNameList.map((eventName, idx) => {
+      // intepret date string as CalendarDate
+      const eventDateObj = parseAsDate(eventDateList[idx]);
+      return {
+        eventName,
+        eventDate: eventDateObj ? eventDateObj.toDate('UTC') : null,
+      };
+    });
 
     return {
       year: 2000 + year,
@@ -155,7 +160,9 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     propertyList.push(property);
   }
 
-  return propertyList;
+  const eventList = extractEventList(propertyList);
+
+  return { propertyList, eventList };
 }
 
 /**

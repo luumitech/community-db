@@ -4,7 +4,7 @@ import prisma from '../../lib/prisma';
 import { builder } from '../builder';
 import { UpdateInput } from './common';
 
-const Occupant = builder.objectRef<Occupant>('Occupant').implement({
+const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
   fields: (t) => ({
     firstName: t.exposeString('firstName', { nullable: true }),
     lastName: t.exposeString('lastName', { nullable: true }),
@@ -16,19 +16,19 @@ const Occupant = builder.objectRef<Occupant>('Occupant').implement({
   }),
 });
 
-const Event = builder.objectRef<Event>('Event').implement({
+const eventRef = builder.objectRef<Event>('Event').implement({
   fields: (t) => ({
     eventName: t.exposeString('eventName'),
     eventDate: t.expose('eventDate', { type: 'Date', nullable: true }),
   }),
 });
 
-const Membership = builder.objectRef<Membership>('Membership').implement({
+const membershipRef = builder.objectRef<Membership>('Membership').implement({
   fields: (t) => ({
     year: t.exposeInt('year'),
     isMember: t.exposeBoolean('isMember', { nullable: true }),
     eventAttendedList: t.field({
-      type: [Event],
+      type: [eventRef],
       resolve: (entry) => entry.eventAttendedList,
     }),
     paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
@@ -47,12 +47,12 @@ export const propertyRef = builder.prismaObject('Property', {
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.exposeString('updatedBy', { nullable: true }),
     occupantList: t.field({
-      type: [Occupant],
+      type: [occupantRef],
       select: { occupantList: true },
       resolve: (entry) => entry.occupantList,
     }),
     membershipList: t.field({
-      type: [Membership],
+      type: [membershipRef],
       select: { membershipList: true },
       resolve: (entry) => entry.membershipList,
     }),

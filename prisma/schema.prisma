@@ -38,9 +38,9 @@ model Access {
   updatedAt   DateTime  @updatedAt
   role        Role
   userId      String    @db.ObjectId
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   communityId String    @db.ObjectId
-  community   Community @relation(fields: [communityId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
 }
 
 model Community {
@@ -49,6 +49,8 @@ model Community {
   updatedAt    DateTime   @updatedAt
   updatedBy    String?
   name         String
+  /// List of events supported (can be sorted)
+  eventList    String[]
   accessList   Access[]
   propertyList Property[]
 }
@@ -66,7 +68,7 @@ model Property {
   occupantList   Occupant[]
   membershipList Membership[]
   communityId    String       @db.ObjectId
-  community      Community    @relation(fields: [communityId], references: [id])
+  community      Community    @relation(fields: [communityId], references: [id], onDelete: Cascade)
 
   // Add text index on fields that are searchable
   @@fulltext([address, occupantList.firstName, occupantList.lastName])

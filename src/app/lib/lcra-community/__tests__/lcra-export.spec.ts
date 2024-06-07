@@ -9,7 +9,7 @@ import prisma from '~/lib/prisma';
 describe('export community xlsx', () => {
   const testUtil = new TestUtil();
   const ctxEmail = 'jest@email.com';
-  let expectedPropertyList: ReturnType<typeof importLcraDB>;
+  let expectedImportResult: ReturnType<typeof importLcraDB>;
 
   beforeAll(async () => {
     await testUtil.initialize();
@@ -27,12 +27,13 @@ describe('export community xlsx', () => {
       )
     );
 
-    expectedPropertyList = importLcraDB(workbook);
+    expectedImportResult = importLcraDB(workbook);
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
+        eventList: expectedImportResult.eventList,
         propertyList: {
-          create: expectedPropertyList,
+          create: expectedImportResult.propertyList,
         },
       },
     ];
@@ -71,8 +72,8 @@ describe('export community xlsx', () => {
 
     // Compare exported XLSX against original XLSX
     const actualwb = XLSX.read(xlsxBuf);
-    const actualPropertyList = importLcraDB(actualwb);
+    const { propertyList } = importLcraDB(actualwb);
 
-    expect(actualPropertyList).toEqual(expectedPropertyList);
+    expect(propertyList).toEqual(expectedImportResult.propertyList);
   });
 });

@@ -1,3 +1,4 @@
+import { Tooltip } from '@nextui-org/react';
 import React from 'react';
 import { IoCheckmark } from 'react-icons/io5';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
@@ -7,6 +8,10 @@ const EntryFragment = graphql(/* GraphQL */ `
     membershipList {
       year
       isMember
+      eventAttendedList {
+        eventName
+        eventDate
+      }
     }
   }
 `);
@@ -24,10 +29,20 @@ export const Membership: React.FC<Props> = (props) => {
   const membership = entry.membershipList.find(
     ({ year }) => year === props.year
   );
+  const firstEvent = membership?.eventAttendedList[0];
+  const eventInfo = firstEvent
+    ? `Registered @ ${firstEvent.eventName} on ${firstEvent.eventDate}`
+    : '';
 
   return (
     <div className={props.className}>
-      {!!membership?.isMember && <IoCheckmark className="text-xl" />}
+      {!!membership?.isMember && (
+        <Tooltip content={eventInfo}>
+          <span className="text-xl">
+            <IoCheckmark />
+          </span>
+        </Tooltip>
+      )}
     </div>
   );
 };

@@ -49,22 +49,30 @@ export function useNavMenu() {
           children: 'Membership Editor',
         },
         {
+          id: 'import-xlsx',
+          isActive:
+            pathname === `/community/${communityId}/management/import-xlsx`,
+          href: `/community/${communityId}/management/import-xlsx`,
+          children: indentMenuItem('Import', 1),
+        },
+        {
+          id: 'export-xlsx',
+          isActive:
+            pathname === `/community/${communityId}/management/export-xlsx`,
+          href: `/community/${communityId}/management/export-xlsx`,
+          children: indentMenuItem('Export', 1),
+        },
+        {
           id: 'tools',
           isActive: pathname === `/community/${communityId}/tool/menu`,
           href: `/community/${communityId}/tool/menu`,
           children: 'Tools',
         },
         {
-          id: 'import-xlsx',
-          isActive: pathname === `/community/${communityId}/tool/import-xlsx`,
-          href: `/community/${communityId}/tool/import-xlsx`,
-          children: indentMenuItem('Import', 1),
-        },
-        {
-          id: 'export-xlsx',
-          isActive: pathname === `/community/${communityId}/tool/export-xlsx`,
-          href: `/community/${communityId}/tool/export-xlsx`,
-          children: indentMenuItem('Export', 1),
+          id: 'dashboard',
+          isActive: pathname === `/community/${communityId}/tool/dashboard`,
+          href: `/community/${communityId}/tool/dashboard`,
+          children: indentMenuItem('Dashboard', 1),
         },
       ]);
     }

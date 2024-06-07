@@ -1,9 +1,10 @@
-import { Property } from '@prisma/client';
+import { Prisma, Property } from '@prisma/client';
 import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
 import prisma from '../../lib/prisma';
 import { builder } from '../builder';
 import { UpdateInput } from './common';
+import { communityStatRef, type PropertyStat } from './community-stat';
 import { resolveCustomOffsetConnection } from './offset-pagination';
 import { propertyRef } from './property';
 
@@ -13,6 +14,7 @@ builder.prismaObject('Community', {
     name: t.exposeString('name', { nullable: false }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.exposeString('updatedBy', { nullable: true }),
+    eventList: t.exposeStringList('eventList'),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -106,6 +108,46 @@ builder.prismaObject('Community', {
         return entry;
       },
     }),
+    /**
+     * Return statistics for community
+     * Primary purpose is for rendering dashboard information
+     */
+    communityStat: t.field({
+      type: communityStatRef,
+      resolve: async (parent, args, ctx) => {
+        const propertyList = await prisma.property.findMany({
+          where: { communityId: parent.id },
+          select: { membershipList: true },
+        });
+        let minYear = Infinity;
+        let maxYear = -Infinity;
+        const propertyStat = propertyList.flatMap(({ membershipList }) => {
+          // For each address, go through all membership information
+          // to collect statistic for each year
+          const byYear: PropertyStat[] = [];
+          membershipList.forEach((entry, idx) => {
+            minYear = Math.min(minYear, entry.year);
+            maxYear = Math.max(maxYear, entry.year);
+            if (entry.isMember && entry.eventAttendedList.length) {
+              const joinEvent = entry.eventAttendedList.shift()!;
+              const otherEvent = entry.eventAttendedList;
+              byYear.push({
+                year: entry.year,
+                joinEvent: joinEvent.eventName,
+                otherEvents: otherEvent.map(({ eventName }) => eventName),
+                renew: !!membershipList[idx + 1]?.isMember,
+              });
+            }
+          });
+          return byYear;
+        });
+        return {
+          minYear,
+          maxYear,
+          propertyStat,
+        };
+      },
+    }),
   }),
 });
 
@@ -117,25 +159,39 @@ builder.queryField('communityFromId', (t) =>
     },
     resolve: async (query, parent, args, ctx) => {
       const { user } = await ctx;
-      const entry = await prisma.community.findUniqueOrThrow({
-        ...query,
-        where: {
-          id: args.id.toString(),
-          OR: [
-            {
-              accessList: {
-                some: {
-                  user: {
-                    email: user.email,
+      try {
+        const entry = await prisma.community.findUniqueOrThrow({
+          ...query,
+          where: {
+            id: args.id.toString(),
+            OR: [
+              {
+                accessList: {
+                  some: {
+                    user: {
+                      email: user.email,
+                    },
                   },
                 },
               },
-            },
-          ],
-        },
-      });
-
-      return entry;
+            ],
+          },
+        });
+        return entry;
+      } catch (err) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+          switch (err.code) {
+            /**
+             * https://www.prisma.io/docs/orm/reference/error-reference#p2025
+             */
+            case 'P2025':
+              throw new GraphQLError(
+                `Community ${args.id.toString()} Not Found`
+              );
+          }
+        }
+        throw err;
+      }
     },
   })
 );
@@ -171,6 +227,7 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     name: t.string(),
+    eventList: t.stringList(),
   }),
 });
 
@@ -207,7 +264,7 @@ builder.mutationField('communityModify', (t) =>
         );
       }
 
-      const { name, ...optionalInput } = input;
+      const { name, eventList, ...optionalInput } = input;
       return prisma.community.update({
         ...query,
         where: {
@@ -215,11 +272,66 @@ builder.mutationField('communityModify', (t) =>
         },
         data: {
           updatedBy: user.email,
-          // only supply name if explicitly specified
+          // non-nullable fields needs to be specified explicitly
           ...(!!name && { name }),
+          ...(!!eventList && { eventList }),
           ...optionalInput,
         },
       });
+    },
+  })
+);
+
+const CommunityDeletePayload = builder
+  .objectRef<{ id: string }>('CommunityDeletePayload')
+  .implement({
+    fields: (t) => ({
+      id: t.exposeID('id', {}),
+    }),
+  });
+
+builder.mutationField('communityDelete', (t) =>
+  t.field({
+    type: CommunityDeletePayload,
+    args: {
+      id: t.arg.id({ required: true }),
+    },
+    resolve: async (_parent, args, ctx) => {
+      const { user } = await ctx;
+      const entry = await prisma.community.findUnique({
+        where: {
+          id: args.id.toString(),
+          accessList: {
+            some: {
+              user: { email: user.email },
+            },
+          },
+        },
+      });
+      if (!entry) {
+        throw new GraphQLError(
+          `No permission to access community ${args.id.toString()}`
+        );
+      }
+
+      const [access, property, community] = await prisma.$transaction([
+        prisma.access.deleteMany({
+          where: {
+            communityId: args.id.toString(),
+          },
+        }),
+        prisma.property.deleteMany({
+          where: {
+            communityId: args.id.toString(),
+          },
+        }),
+        prisma.community.delete({
+          where: {
+            id: args.id.toString(),
+          },
+        }),
+      ]);
+      return community;
     },
   })
 );

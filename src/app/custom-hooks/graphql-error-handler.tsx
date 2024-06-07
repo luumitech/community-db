@@ -1,19 +1,35 @@
-import { QueryResult } from '@apollo/client';
+import { ApolloError, QueryResult } from '@apollo/client';
 import React from 'react';
-import { toast } from 'react-toastify';
+import { toast } from '~/view/base/toastify';
 
-type GraphQLResult = Pick<QueryResult, 'loading' | 'error'>;
+type ApolloResult = Pick<QueryResult, 'loading' | 'error'>;
+
+interface ErrorHandlerOptions {
+  /**
+   * handle error on your own, if the error is not handled,
+   * return it, and it will be handled by the default
+   * error handler
+   */
+  onError?: (err?: ApolloError | undefined) => ApolloError | undefined | void;
+}
 
 /**
  * Handling loading and error coming from
  * graphQL query/mutation
  */
-export function useGraphqlErrorHandler(result: GraphQLResult) {
+export function useGraphqlErrorHandler(
+  result: ApolloResult,
+  opt?: ErrorHandlerOptions
+) {
   const { loading, error } = result;
 
   React.useEffect(() => {
     if (error) {
-      toast.error(error.message);
+      const unhandledError = opt?.onError?.(error);
+      if (unhandledError) {
+        // Default error goes to toast
+        toast.error(unhandledError.message);
+      }
     }
-  }, [error]);
+  }, [error, opt]);
 }
