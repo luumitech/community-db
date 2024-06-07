@@ -14,21 +14,9 @@ import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { DatePicker } from '~/view/base/date-picker';
 import { FlatButton } from '~/view/base/flat-button';
+import { useContext } from '../context';
 import { EventDefaultSelect } from './event-default-select';
 import { useHookFormContext } from './use-hook-form';
-
-export const supportedEvents = [
-  'Membership Form',
-  'AGM',
-  'Spring Garage Sale',
-  'Summer Festival',
-  'Corn Roast',
-  'Fall Garage Sale',
-  'Membership Drive',
-  'Membership Carry Forward',
-  'Legacy Issue',
-  'Other',
-].map((entry) => ({ label: entry, value: entry }));
 
 interface Props {
   className?: string;
@@ -39,6 +27,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   className,
   yearIdx,
 }) => {
+  const { supportedEvents } = useContext();
   const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
   const { control, register, formState, setValue, clearErrors } =
     useHookFormContext();
@@ -142,6 +131,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     register,
     remove,
     yearIdx,
+    supportedEvents,
   ]);
 
   return (

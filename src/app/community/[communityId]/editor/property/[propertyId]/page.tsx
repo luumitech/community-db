@@ -5,6 +5,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { toLocalDateTime } from '~/lib/date-util';
+import { ContextProvider } from './context';
 import { MembershipDisplay } from './membership-display';
 import { MembershipEditor } from './membership-editor';
 import { OccupantDisplay } from './occupant-display';
@@ -23,6 +24,7 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
   query propertyFromId($communityId: ID!, $propertyId: ID!) {
     communityFromId(id: $communityId) {
       id
+      eventList
       propertyFromId(id: $propertyId) {
         id
         updatedAt
@@ -44,23 +46,27 @@ export default function Property({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
-  const property = result.data?.communityFromId.propertyFromId;
-
-  if (!property) {
+  const community = result.data?.communityFromId;
+  if (!community) {
     return null;
   }
+
+  const property = community.propertyFromId;
+  const { eventList } = community;
   const updatedAt = toLocalDateTime(property.updatedAt);
 
   return (
     <div>
-      <PropertyDisplay entry={property} />
-      <Divider className="mb-4" />
-      <MembershipDisplay entry={property} />
-      <MembershipEditor className="mt-2" entry={property} />
-      <OccupantDisplay className="my-4" entry={property} />
-      <div className="text-right text-xs">
-        Last modified on {updatedAt} by {property.updatedBy ?? 'n/a'}
-      </div>
+      <ContextProvider eventList={eventList}>
+        <PropertyDisplay entry={property} />
+        <Divider className="mb-4" />
+        <MembershipDisplay entry={property} />
+        <MembershipEditor className="mt-2" entry={property} />
+        <OccupantDisplay className="my-4" entry={property} />
+        <div className="text-right text-xs">
+          Last modified on {updatedAt} by {property.updatedBy ?? 'n/a'}
+        </div>
+      </ContextProvider>
     </div>
   );
 }
