@@ -1,7 +1,8 @@
 import React from 'react';
+import * as GQL from '~/graphql/generated/graphql';
 
 type State = Readonly<{
-  eventList: string[];
+  eventList: GQL.SupportedEvent[];
   /**
    * items for Select component
    */
@@ -18,17 +19,19 @@ const Context = React.createContext<ContextT>();
 
 interface Props {
   children: React.ReactNode;
-  eventList: string[];
+  eventList: GQL.SupportedEvent[];
 }
 
 export function ContextProvider({ eventList, ...props }: Props) {
   const value = React.useMemo<ContextT>(
     () => ({
       eventList,
-      supportedEvents: eventList.map((entry) => ({
-        label: entry,
-        value: entry,
-      })),
+      supportedEvents: eventList
+        .filter((entry) => !entry.hidden)
+        .map((entry) => ({
+          label: entry.name,
+          value: entry.name,
+        })),
     }),
     [eventList]
   );

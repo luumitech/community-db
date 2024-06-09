@@ -24,7 +24,10 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
   query propertyFromId($communityId: ID!, $propertyId: ID!) {
     communityFromId(id: $communityId) {
       id
-      eventList
+      eventList {
+        name
+        hidden
+      }
       propertyFromId(id: $propertyId) {
         id
         updatedAt

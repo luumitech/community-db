@@ -1,5 +1,5 @@
 import { CalendarDate } from '@internationalized/date';
-import type { Membership } from '@prisma/client';
+import { type Membership, type SupportedEvent } from '@prisma/client';
 import { isValidDate } from '~/lib/date-util';
 
 export interface Property {
@@ -28,7 +28,7 @@ function toCalendarDate(input: Date | null) {
  * the events from eventAttendedList, and sort them in ascending
  * order
  */
-export function extractEventList(propertyList: Property[]) {
+export function extractEventList(propertyList: Property[]): SupportedEvent[] {
   const eventMap = new Map<string, CalendarDate>();
 
   const membershipList = propertyList.flatMap((entry) => entry.membershipList);
@@ -56,5 +56,5 @@ export function extractEventList(propertyList: Property[]) {
         : // compare event name
           a[0].localeCompare(b[0]);
     })
-    .map(([eventName]) => eventName);
+    .map(([eventName]) => ({ name: eventName, hidden: false }));
 }

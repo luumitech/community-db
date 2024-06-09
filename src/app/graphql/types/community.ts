@@ -1,4 +1,4 @@
-import { Prisma, Property } from '@prisma/client';
+import { Prisma, Property, SupportedEvent } from '@prisma/client';
 import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
 import prisma from '../../lib/prisma';
@@ -8,13 +8,25 @@ import { communityStatRef, type PropertyStat } from './community-stat';
 import { resolveCustomOffsetConnection } from './offset-pagination';
 import { propertyRef } from './property';
 
+const supportedEventRef = builder
+  .objectRef<SupportedEvent>('SupportedEvent')
+  .implement({
+    fields: (t) => ({
+      name: t.exposeString('name', { nullable: false }),
+      hidden: t.exposeBoolean('hidden', { nullable: true }),
+    }),
+  });
+
 builder.prismaObject('Community', {
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.exposeString('updatedBy', { nullable: true }),
-    eventList: t.exposeStringList('eventList'),
+    eventList: t.field({
+      type: [supportedEventRef],
+      resolve: (entry) => entry.eventList,
+    }),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -223,11 +235,18 @@ builder.mutationField('communityCreate', (t) =>
   })
 );
 
+const SupportedEventInput = builder.inputType('SupportedEventInput', {
+  fields: (t) => ({
+    name: t.string({ required: true }),
+    hidden: t.boolean(),
+  }),
+});
+
 const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     name: t.string(),
-    eventList: t.stringList(),
+    eventList: t.field({ type: [SupportedEventInput] }),
   }),
 });
 

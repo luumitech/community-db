@@ -120,7 +120,7 @@ export default function PropertyList({ params }: RouteArgs) {
     return (
       <div>
         <p className="mb-2">No data to display.</p>
-        {!!communityFromId?.id && (
+        {!!communityFromId?.id && !debouncedSearchText && (
           <Button
             as={Link}
             color="primary"
@@ -131,7 +131,7 @@ export default function PropertyList({ params }: RouteArgs) {
         )}
       </div>
     );
-  }, [communityFromId?.id]);
+  }, [debouncedSearchText, communityFromId?.id]);
 
   return (
     <Table

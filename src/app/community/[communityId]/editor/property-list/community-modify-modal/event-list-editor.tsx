@@ -5,7 +5,6 @@ import {
 } from '@dnd-kit/modifiers';
 import {
   SortableContext,
-  arrayMove,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {
@@ -18,6 +17,7 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { IoMdAddCircleOutline } from 'react-icons/io';
+import { useFieldArray } from '~/custom-hooks/hook-form';
 import { EventListItem } from './event-list-item';
 import { useHookFormContext } from './use-hook-form';
 
@@ -27,40 +27,47 @@ interface Props {
 
 export const EventListEditor: React.FC<Props> = ({ className }) => {
   const [newItem, setNewItem] = React.useState<string>('');
-  const { watch, setValue } = useHookFormContext();
-  const eventList = watch('eventList');
+  const { control } = useHookFormContext();
+  const { fields, remove, append, move } = useFieldArray({
+    control,
+    name: 'eventList',
+  });
 
   const reorderList = React.useCallback(
-    (e: DragEndEvent) => {
-      if (!e.over) return;
+    (evt: DragEndEvent) => {
+      const { active, over } = evt;
+      if (!over) return;
 
-      if (e.active.id !== e.over.id) {
-        const oldIdx = eventList.indexOf(e.active.id.toString());
-        const newIdx = eventList.indexOf(e.over!.id.toString());
-        const newEventList = arrayMove(eventList, oldIdx, newIdx);
-        setValue('eventList', newEventList, { shouldDirty: true });
+      if (active.id !== over.id) {
+        const activeIndex = active.data.current?.sortable?.index;
+        const overIndex = over.data.current?.sortable?.index;
+        if (activeIndex != null && overIndex != null) {
+          move(activeIndex, overIndex);
+        }
       }
     },
-    [eventList, setValue]
+    [move]
   );
 
-  const newItemAlreadyExists = eventList.includes(newItem);
+  // New item can only be added if it is different than
+  // the ones on the existing list
+  const newItemIsValid = !fields.find(
+    ({ name }) =>
+      !name.localeCompare(newItem, undefined, { sensitivity: 'accent' })
+  );
 
   const addItem = React.useCallback(() => {
-    if (!newItemAlreadyExists) {
-      setValue('eventList', [...eventList, newItem], { shouldDirty: true });
+    if (newItemIsValid) {
+      append({ name: newItem, hidden: false });
       setNewItem('');
     }
-  }, [newItemAlreadyExists, eventList, setValue, newItem]);
+  }, [append, newItemIsValid, newItem]);
 
   const removeItem = React.useCallback(
-    (itemToRemove: string) => {
-      const newEventList = eventList.filter(
-        (evtName) => evtName !== itemToRemove
-      );
-      setValue('eventList', newEventList, { shouldDirty: true });
+    (idx: number) => {
+      remove(idx);
     },
-    [eventList, setValue]
+    [remove]
   );
 
   return (
@@ -74,7 +81,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
       modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
       onDragEnd={reorderList}
     >
-      <SortableContext items={eventList} strategy={verticalListSortingStrategy}>
+      <SortableContext items={fields} strategy={verticalListSortingStrategy}>
         <Card shadow="none" className="border-2">
           <CardHeader>
             <div className="flex flex-col text-foreground-500">
@@ -83,11 +90,12 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
           </CardHeader>
           <CardBody>
             <ul className="grid auto-cols-max gap-1">
-              {eventList.map((eventName) => (
+              {fields.map((field, index) => (
                 <EventListItem
-                  key={eventName}
-                  label={eventName}
-                  onRemove={removeItem}
+                  key={field.id}
+                  id={field.id}
+                  label={field.name}
+                  onRemove={() => removeItem(index)}
                 />
               ))}
             </ul>
@@ -96,17 +104,17 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
             <div className="flex items-start gap-2">
               <Input
                 aria-label="New event name"
-                placeholder="New event name"
+                placeholder="Enter new event name"
                 value={newItem}
                 onValueChange={setNewItem}
                 errorMessage="Event name must be unique"
-                isInvalid={newItemAlreadyExists}
+                isInvalid={!newItemIsValid}
               />
               <div>
                 <Button
                   onClick={addItem}
                   endContent={<IoMdAddCircleOutline />}
-                  isDisabled={newItemAlreadyExists}
+                  isDisabled={!newItem || !newItemIsValid}
                 >
                   Add Event
                 </Button>

@@ -13,7 +13,12 @@ function schema() {
       updatedAt: yup.string().required(),
     }),
     name: yup.string().required(),
-    eventList: yup.array(yup.string().required()).required(),
+    eventList: yup.array(
+      yup.object({
+        name: yup.string().required(),
+        hidden: yup.boolean(),
+      })
+    ),
   });
 }
 
@@ -24,7 +29,10 @@ const EntryFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityModifyModal on Community {
     id
     name
-    eventList
+    eventList {
+      name
+      hidden
+    }
     updatedAt
     updatedBy
   }
@@ -47,7 +55,10 @@ function defaultInputData(
       updatedAt: item.updatedAt,
     },
     name: item.name,
-    eventList: item.eventList,
+    eventList: item.eventList.map((event) => ({
+      name: event.name,
+      hidden: event.hidden ?? false,
+    })),
   };
 }
 

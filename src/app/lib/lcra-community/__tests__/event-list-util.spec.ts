@@ -22,6 +22,10 @@ const NEW_YEAR_EVE_CLONE = {
   eventDate: new Date(Date.UTC(2020, 11, 31)),
 };
 
+function extractEventName(input: Property[]) {
+  return extractEventList(input).map(({ name }) => name);
+}
+
 describe('Event List conversion', () => {
   test('verify sort order', async () => {
     const input: Property[] = [
@@ -33,7 +37,7 @@ describe('Event List conversion', () => {
         ],
       },
     ];
-    const actual = extractEventList(input);
+    const actual = extractEventName(input);
     expect(actual).toEqual([
       NEW_YEAR.eventName,
       CANADA_DAY.eventName,
@@ -58,7 +62,7 @@ describe('Event List conversion', () => {
         ],
       },
     ];
-    const actual = extractEventList(input);
+    const actual = extractEventName(input);
     expect(actual).toEqual([
       NEW_YEAR.eventName,
       XMAS.eventName,
@@ -76,7 +80,7 @@ describe('Event List conversion', () => {
         ],
       },
     ];
-    const actual = extractEventList(input);
+    const actual = extractEventName(input);
     expect(actual).toEqual([
       NEW_YEAR_EVE_CLONE.eventName,
       NEW_YEAR_EVE.eventName,
