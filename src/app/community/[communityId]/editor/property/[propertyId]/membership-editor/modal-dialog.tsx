@@ -55,7 +55,7 @@ export const ModalDialog: React.FC<Props> = ({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Membership</ModalHeader>
+          <ModalHeader>Edit Membership Info</ModalHeader>
           <ModalBody>
             <NotesEditor />
             <MembershipInfoEditor />

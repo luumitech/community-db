@@ -21,12 +21,15 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
   });
   const { fields, prepend } = membershipMethods;
 
+  const yearToAdd = React.useMemo(() => {
+    return fields.length ? fields[0].year + 1 : currentYear;
+  }, [currentYear, fields]);
+
   const prependYear = React.useCallback(() => {
-    const yearToAdd = fields.length ? fields[0].year + 1 : currentYear;
     const newEntry = membershipDefault(yearToAdd);
     prepend(newEntry);
     setSelectedYear(yearToAdd);
-  }, [currentYear, prepend, fields]);
+  }, [yearToAdd, prepend]);
 
   const handleSelectionChange: React.ChangeEventHandler<HTMLSelectElement> = (
     evt
@@ -54,7 +57,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
             onChange={handleSelectionChange}
           >
             {[
-              <SelectItem key="new-item">Add another year</SelectItem>,
+              <SelectItem key="new-item">Add Year {yearToAdd}</SelectItem>,
               ...fields.map((entry) => (
                 <SelectItem
                   key={entry.year.toString()}

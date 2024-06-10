@@ -12,13 +12,13 @@ interface Props {
 export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
   const dispatch = useDispatch();
   const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
-  const { supportedEvents } = useContext();
+  const { addEventItems } = useContext();
 
   return (
     <Select
       className={clsx(className, 'max-w-sm')}
       aria-label="Event Name"
-      items={supportedEvents}
+      items={addEventItems}
       variant="underlined"
       placeholder="Select event to add"
       defaultSelectedKeys={lastEventSelected ? [lastEventSelected] : []}
@@ -34,9 +34,9 @@ export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
         );
       }}
     >
-      {(entry) => (
-        <SelectItem key={entry.value} textValue={entry.label}>
-          {entry.label}
+      {(item) => (
+        <SelectItem key={item.value} textValue={item.label}>
+          {item.label}
         </SelectItem>
       )}
     </Select>

@@ -2,6 +2,7 @@ import { Tooltip } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { FaFolderOpen, FaTrashAlt } from 'react-icons/fa';
+import { GrUndo } from 'react-icons/gr';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import {
   MdDragIndicator,
@@ -16,7 +17,14 @@ interface Props
     HTMLSpanElement
   > {
   className?: string;
-  icon: 'trash' | 'folder-open' | 'clear' | 'add' | 'drag-handle' | 'cross';
+  icon:
+    | 'trash'
+    | 'folder-open'
+    | 'clear'
+    | 'add'
+    | 'drag-handle'
+    | 'cross'
+    | 'undo';
   /**
    * Tooltip description
    */
@@ -49,6 +57,9 @@ export const FlatButton: React.FC<Props> = ({
         break;
       case 'cross':
         iconImg = <RxCross2 />;
+        break;
+      case 'undo':
+        iconImg = <GrUndo />;
         break;
       default:
         iconImg = <MdQuestionMark />;

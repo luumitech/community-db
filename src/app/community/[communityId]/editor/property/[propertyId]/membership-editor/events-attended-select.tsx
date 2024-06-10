@@ -6,8 +6,13 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react';
-import { Select, SelectItem, SelectProps } from '@nextui-org/select';
-import { type RowElement, type RowProps } from '@react-types/table';
+import {
+  Select,
+  SelectItem,
+  SelectProps,
+  SelectSection,
+} from '@nextui-org/select';
+import { type RowElement } from '@react-types/table';
 import clsx from 'clsx';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
@@ -27,7 +32,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   className,
   yearIdx,
 }) => {
-  const { supportedEvents } = useContext();
+  const { selectEventSections } = useContext();
   const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
   const { control, register, formState, setValue, clearErrors } =
     useHookFormContext();
@@ -74,7 +79,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
           <Select
             className={'max-w-sm'}
             aria-label="Event Name"
-            items={supportedEvents}
+            items={selectEventSections}
             variant="underlined"
             placeholder="Select an event"
             errorMessage={
@@ -90,10 +95,20 @@ export const EventsAttendedSelect: React.FC<Props> = ({
               `membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`
             )}
           >
-            {(entry) => (
-              <SelectItem key={entry.value} textValue={entry.label}>
-                {entry.label}
-              </SelectItem>
+            {(section) => (
+              <SelectSection
+                key={section.title}
+                title={section.title}
+                items={section.items}
+                showDivider={section.showDivider}
+              >
+                {/* @ts-expect-error: NextUI typing is not supporting dynamic section */}
+                {(item) => (
+                  <SelectItem key={item.value} textValue={item.label}>
+                    {item.label}
+                  </SelectItem>
+                )}
+              </SelectSection>
             )}
           </Select>
         </TableCell>
@@ -131,7 +146,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     register,
     remove,
     yearIdx,
-    supportedEvents,
+    selectEventSections,
   ]);
 
   return (

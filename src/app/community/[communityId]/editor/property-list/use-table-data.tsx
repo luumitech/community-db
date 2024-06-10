@@ -24,7 +24,9 @@ export function useTableData() {
         case 'occupant':
           return <Occupant entry={entry} />;
         case 'curYear':
-          return <Membership entry={entry} year={curYear} />;
+          return (
+            <Membership className="text-success" entry={entry} year={curYear} />
+          );
         case 'prevYear':
           return <Membership entry={entry} year={prevYear} />;
         default:

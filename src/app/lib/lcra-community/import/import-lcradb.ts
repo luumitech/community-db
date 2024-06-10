@@ -160,12 +160,18 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     propertyList.push(property);
   }
 
-  const eventList = extractEventList(propertyList);
+  const eventNameList = extractEventList(propertyList);
 
-  return { propertyList, eventList };
+  return {
+    propertyList,
+    eventList: eventNameList.map((eventName) => ({
+      name: eventName,
+      hidden: false,
+    })),
+  };
 }
 
 /**
  * Data type returned from importLcraDB
  */
-export type PropertyList = Awaited<ReturnType<typeof importLcraDB>>;
+export type ImportResult = Awaited<ReturnType<typeof importLcraDB>>;
