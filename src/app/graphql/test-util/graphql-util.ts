@@ -4,6 +4,7 @@ import {
 } from '@graphql-tools/executor-http';
 import { AsyncExecutor, ExecutionRequest } from '@graphql-tools/utils';
 import { createYoga } from 'graphql-yoga';
+import { pubSub } from '~/graphql/pubsub';
 import type { Context } from '../context';
 import { schema } from '../schema';
 
@@ -19,6 +20,7 @@ export class GraphQLUtil {
       email: 'jest@email.com',
       name: 'jest tester',
     },
+    pubSub,
   };
 
   constructor() {

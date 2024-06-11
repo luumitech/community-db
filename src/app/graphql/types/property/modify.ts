@@ -1,63 +1,8 @@
-import type { Event, Membership, Occupant } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import prisma from '../../lib/prisma';
-import { builder } from '../builder';
-import { UpdateInput } from './common';
-
-const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
-  fields: (t) => ({
-    firstName: t.exposeString('firstName', { nullable: true }),
-    lastName: t.exposeString('lastName', { nullable: true }),
-    optOut: t.exposeBoolean('optOut', { nullable: true }),
-    email: t.exposeString('email', { nullable: true }),
-    cell: t.exposeString('cell', { nullable: true }),
-    work: t.exposeString('work', { nullable: true }),
-    home: t.exposeString('home', { nullable: true }),
-  }),
-});
-
-const eventRef = builder.objectRef<Event>('Event').implement({
-  fields: (t) => ({
-    eventName: t.exposeString('eventName'),
-    eventDate: t.expose('eventDate', { type: 'Date', nullable: true }),
-  }),
-});
-
-const membershipRef = builder.objectRef<Membership>('Membership').implement({
-  fields: (t) => ({
-    year: t.exposeInt('year'),
-    isMember: t.exposeBoolean('isMember', { nullable: true }),
-    eventAttendedList: t.field({
-      type: [eventRef],
-      resolve: (entry) => entry.eventAttendedList,
-    }),
-    paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
-    paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),
-  }),
-});
-
-export const propertyRef = builder.prismaObject('Property', {
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    address: t.exposeString('address'),
-    streetNo: t.exposeString('streetNo', { nullable: true }),
-    streetName: t.exposeString('streetName', { nullable: true }),
-    postalCode: t.exposeString('postalCode', { nullable: true }),
-    notes: t.exposeString('notes', { nullable: true }),
-    updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
-    updatedBy: t.exposeString('updatedBy', { nullable: true }),
-    occupantList: t.field({
-      type: [occupantRef],
-      select: { occupantList: true },
-      resolve: (entry) => entry.occupantList,
-    }),
-    membershipList: t.field({
-      type: [membershipRef],
-      select: { membershipList: true },
-      resolve: (entry) => entry.membershipList,
-    }),
-  }),
-});
+import prisma from '../../../lib/prisma';
+import { builder } from '../../builder';
+import { MutationType } from '../../pubsub';
+import { UpdateInput } from '../common';
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -104,7 +49,7 @@ builder.mutationField('propertyModify', (t) =>
       input: t.arg({ type: PropertyModifyInput, required: true }),
     },
     resolve: async (query, _parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
       const entry = await prisma.property.findUnique({
         ...query,
@@ -120,6 +65,7 @@ builder.mutationField('propertyModify', (t) =>
         },
         select: {
           updatedAt: true,
+          communityId: true,
         },
       });
       if (!entry) {
@@ -132,7 +78,7 @@ builder.mutationField('propertyModify', (t) =>
         );
       }
 
-      return prisma.property.update({
+      const property = await prisma.property.update({
         ...query,
         where: {
           id: self.id.toString(),
@@ -144,6 +90,13 @@ builder.mutationField('propertyModify', (t) =>
           ...input,
         },
       });
+
+      // broadcast modification to property
+      pubSub.publish(`community/${entry.communityId}/property`, {
+        mutationType: MutationType.UPDATED,
+        property,
+      });
+      return property;
     },
   })
 );

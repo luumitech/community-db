@@ -3,6 +3,7 @@ import type { GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import prisma from '../lib/prisma';
+import { pubSub } from './pubsub';
 
 export async function createContext(ctx: GetServerSidePropsContext) {
   const session = await getServerSession(authOptions);
@@ -23,6 +24,7 @@ export async function createContext(ctx: GetServerSidePropsContext) {
   return {
     // Email is always available in user context
     user: { ...user, email },
+    pubSub,
   };
 }
 
