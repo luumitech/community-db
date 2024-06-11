@@ -15,7 +15,10 @@ interface ChartDataEntry {
 
 const EntryFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
-    eventList
+    eventList {
+      name
+      hidden
+    }
     communityStat {
       propertyStat {
         year
@@ -38,8 +41,10 @@ class ChartDataHelper {
 
   constructor(fragment: GQL.Dashboard_MembershipSourceFragment) {
     const { eventList } = fragment;
-    eventList.map((eventName) => {
-      this.dataMap.set(eventName, ChartDataHelper.newItem());
+    eventList.map((event) => {
+      if (!event.hidden) {
+        this.dataMap.set(event.name, ChartDataHelper.newItem());
+      }
     });
   }
 

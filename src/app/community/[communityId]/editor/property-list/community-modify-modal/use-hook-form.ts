@@ -2,7 +2,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import * as yup from 'yup';
-import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  useForm,
+  useFormContext,
+  type UseFieldArrayReturn,
+} from '~/custom-hooks/hook-form';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 
@@ -13,7 +17,18 @@ function schema() {
       updatedAt: yup.string().required(),
     }),
     name: yup.string().required(),
-    eventList: yup.array(yup.string().required()).required(),
+    eventList: yup.array(
+      yup.object({
+        name: yup.string().required(),
+      })
+    ),
+    // Used for rendering UI only, not submitted
+    // to server
+    hiddenEventList: yup.array(
+      yup.object({
+        name: yup.string().required(),
+      })
+    ),
   });
 }
 
@@ -24,7 +39,10 @@ const EntryFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityModifyModal on Community {
     id
     name
-    eventList
+    eventList {
+      name
+      hidden
+    }
     updatedAt
     updatedBy
   }
@@ -47,7 +65,12 @@ function defaultInputData(
       updatedAt: item.updatedAt,
     },
     name: item.name,
-    eventList: item.eventList,
+    eventList: item.eventList
+      .filter((event) => !event.hidden)
+      .map((event) => ({ name: event.name })),
+    hiddenEventList: item.eventList
+      .filter((event) => !!event.hidden)
+      .map((event) => ({ name: event.name })),
   };
 }
 
@@ -82,6 +105,12 @@ export function useHookFormWithDisclosure(
 
 export type UseHookFormWithDisclosureResult = ReturnType<
   typeof useHookFormWithDisclosure
+>;
+
+export type EventListFieldArray = UseFieldArrayReturn<InputData, 'eventList'>;
+export type HiddenEventListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'hiddenEventList'
 >;
 
 export function useHookFormContext() {

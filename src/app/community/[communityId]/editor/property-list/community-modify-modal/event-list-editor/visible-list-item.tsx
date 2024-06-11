@@ -9,9 +9,9 @@ import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 
+// Enable animation when item is removed
 const animateLayoutChanges: AnimateLayoutChanges = (args) => {
   const { isSorting, wasDragging } = args;
-
   if (isSorting || wasDragging) {
     return defaultAnimateLayoutChanges(args);
   }
@@ -21,24 +21,26 @@ const animateLayoutChanges: AnimateLayoutChanges = (args) => {
 
 interface Props {
   className?: string;
+  id: string;
   label: string;
   onRemove?: (label: string) => void;
 }
 
-export const EventListItem: React.FC<React.PropsWithChildren<Props>> = ({
+export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
   className,
+  id,
   label,
   onRemove,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ animateLayoutChanges, id: label });
+    useSortable({ animateLayoutChanges, id });
 
   return (
     <li
       ref={setNodeRef}
       className={clsx(
         className,
-        'flex items-center p-2 border-2 min-w-[300px]'
+        'flex items-center p-2 border-2 rounded-md min-w-[300px]'
       )}
       style={{
         transform: CSS.Transform.toString(transform),

@@ -20,10 +20,13 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
   const { formMethods, disclosure } = hookForm;
 
   const onSave = React.useCallback(
-    async (input: InputData) => {
+    async (_input: InputData) => {
       if (!formMethods.formState.isDirty) {
         return;
       }
+
+      // hiddenEventList is not saved in server
+      const { hiddenEventList, ...input } = _input;
       await toast.promise(
         updateCommunity({
           variables: { input },

@@ -1,7 +1,9 @@
 import { Tooltip } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { type IconType } from 'react-icons';
 import { FaFolderOpen, FaTrashAlt } from 'react-icons/fa';
+import { GrUndo } from 'react-icons/gr';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import {
   MdDragIndicator,
@@ -16,7 +18,14 @@ interface Props
     HTMLSpanElement
   > {
   className?: string;
-  icon: 'trash' | 'folder-open' | 'clear' | 'add' | 'drag-handle' | 'cross';
+  icon:
+    | 'trash'
+    | 'folder-open'
+    | 'clear'
+    | 'add'
+    | 'drag-handle'
+    | 'cross'
+    | 'undo';
   /**
    * Tooltip description
    */
@@ -30,28 +39,31 @@ export const FlatButton: React.FC<Props> = ({
 }) => {
   const renderButton = React.useMemo(() => {
     const { icon, ...other } = props;
-    let iconImg = null;
+    let Icon: IconType;
     switch (props.icon) {
       case 'trash':
-        iconImg = <FaTrashAlt />;
+        Icon = FaTrashAlt;
         break;
       case 'folder-open':
-        iconImg = <FaFolderOpen />;
+        Icon = FaFolderOpen;
         break;
       case 'clear':
-        iconImg = <MdOutlineClear />;
+        Icon = MdOutlineClear;
         break;
       case 'add':
-        iconImg = <IoMdAddCircleOutline />;
+        Icon = IoMdAddCircleOutline;
         break;
       case 'drag-handle':
-        iconImg = <MdDragIndicator />;
+        Icon = MdDragIndicator;
         break;
       case 'cross':
-        iconImg = <RxCross2 />;
+        Icon = RxCross2;
+        break;
+      case 'undo':
+        Icon = GrUndo;
         break;
       default:
-        iconImg = <MdQuestionMark />;
+        Icon = MdQuestionMark;
     }
 
     return (
@@ -63,7 +75,7 @@ export const FlatButton: React.FC<Props> = ({
         )}
         {...other}
       >
-        {iconImg}
+        <Icon size={16} />
       </span>
     );
   }, [className, props]);

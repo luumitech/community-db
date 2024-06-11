@@ -44,15 +44,22 @@ model Access {
 }
 
 model Community {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
   updatedBy    String?
   name         String
   /// List of events supported (can be sorted)
-  eventList    String[]
+  eventList    SupportedEvent[]
   accessList   Access[]
   propertyList Property[]
+}
+
+type SupportedEvent {
+  /// Event name
+  name   String
+  /// Should event name be visible in the event select list
+  hidden Boolean?
 }
 
 model Property {

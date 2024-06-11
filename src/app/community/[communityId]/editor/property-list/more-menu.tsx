@@ -69,7 +69,6 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
             key="delete"
             className="text-danger"
             {...communityDeleteDisclosure.getButtonProps()}
-            showDivider
           >
             Delete Community
           </DropdownItem>

@@ -1,6 +1,7 @@
-import { Prisma, Property } from '@prisma/client';
+import { Community, Prisma, Property, SupportedEvent } from '@prisma/client';
 import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
+import { extractEventList } from '../../lib/lcra-community/import/event-list-util';
 import prisma from '../../lib/prisma';
 import { builder } from '../builder';
 import { UpdateInput } from './common';
@@ -8,13 +9,25 @@ import { communityStatRef, type PropertyStat } from './community-stat';
 import { resolveCustomOffsetConnection } from './offset-pagination';
 import { propertyRef } from './property';
 
+const supportedEventRef = builder
+  .objectRef<SupportedEvent>('SupportedEvent')
+  .implement({
+    fields: (t) => ({
+      name: t.exposeString('name', { nullable: false }),
+      hidden: t.exposeBoolean('hidden', { nullable: true }),
+    }),
+  });
+
 builder.prismaObject('Community', {
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.exposeString('updatedBy', { nullable: true }),
-    eventList: t.exposeStringList('eventList'),
+    eventList: t.field({
+      type: [supportedEventRef],
+      resolve: (entry) => entry.eventList,
+    }),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -223,13 +236,56 @@ builder.mutationField('communityCreate', (t) =>
   })
 );
 
+const SupportedEventInput = builder.inputType('SupportedEventInput', {
+  fields: (t) => ({
+    name: t.string({ required: true }),
+  }),
+});
+
 const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     name: t.string(),
-    eventList: t.stringList(),
+    eventList: t.field({ type: [SupportedEventInput] }),
   }),
 });
+
+/**
+ * Generate eventList entry for database
+ *
+ * User may want a reduced list of events to show when selecting
+ * in the UI, but the database may contain events that are still being
+ * referenced, and they need to be maintained in this list.
+ * We'll mark these entries as hidden, so they would still show up
+ * properly in the selection UI
+ *
+ * @param community community entry in database
+ * @param eventList new event list as requested by user
+ * @returns
+ */
+async function getCompleteEventList(
+  community: Pick<Community, 'id' | 'eventList'>,
+  eventList: (typeof SupportedEventInput.$inferInput)[]
+) {
+  const result: SupportedEvent[] = [];
+  eventList.forEach(({ name }) => {
+    result.push({ name, hidden: false });
+  });
+
+  // mark any events missing in the input eventList as hidden
+  const propertyList = await prisma.property.findMany({
+    where: { communityId: community.id },
+    select: { membershipList: true },
+  });
+  const completeEventList = extractEventList(propertyList);
+  completeEventList.forEach((name) => {
+    if (!eventList.find((entry) => entry.name === name)) {
+      result.push({ name, hidden: true });
+    }
+  });
+
+  return result;
+}
 
 builder.mutationField('communityModify', (t) =>
   t.prismaField({
@@ -251,7 +307,9 @@ builder.mutationField('communityModify', (t) =>
           },
         },
         select: {
+          id: true,
           updatedAt: true,
+          eventList: true,
         },
       });
       if (!entry) {
@@ -265,6 +323,7 @@ builder.mutationField('communityModify', (t) =>
       }
 
       const { name, eventList, ...optionalInput } = input;
+
       return prisma.community.update({
         ...query,
         where: {
@@ -274,7 +333,11 @@ builder.mutationField('communityModify', (t) =>
           updatedBy: user.email,
           // non-nullable fields needs to be specified explicitly
           ...(!!name && { name }),
-          ...(!!eventList && { eventList }),
+          // If eventList is provided, make sure eventList contains
+          // every event used within the community database
+          ...(!!eventList && {
+            eventList: await getCompleteEventList(entry, eventList),
+          }),
           ...optionalInput,
         },
       });
