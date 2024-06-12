@@ -49,8 +49,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Profile Actions" variant="flat">
-        <DropdownItem key="profile" className="h-14 gap-2" textValue="sign in">
-          <p className="font-semibold">Signed in as</p>
+        <DropdownItem key="profile" textValue="user email" isReadOnly>
           <p className="font-semibold">{email}</p>
         </DropdownItem>
         <DropdownItem

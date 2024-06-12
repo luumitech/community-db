@@ -11,4 +11,10 @@ export const typePolicies: TypedTypePolicies = {
       propertyList: relayStylePagination(['search']),
     },
   },
+  Property: {
+    fields: {
+      occupantList: { merge: false },
+      membershipList: { merge: false },
+    },
+  },
 };

@@ -104,6 +104,7 @@ builder.mutationField('communityModify', (t) =>
 
       // broadcast modification to community
       pubSub.publish(`community/${community.id}/`, {
+        broadcasterId: user.uid,
         mutationType: MutationType.UPDATED,
         community,
       });

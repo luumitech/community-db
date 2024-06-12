@@ -40,7 +40,7 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
       ref={setNodeRef}
       className={clsx(
         className,
-        'flex items-center p-2 border-2 rounded-md min-w-[300px]'
+        'flex items-center p-2 border-2 border-default-200 rounded-md min-w-[300px]'
       )}
       style={{
         transform: CSS.Transform.toString(transform),

@@ -1,11 +1,11 @@
 import { GraphQLError } from 'graphql';
-import type { GetServerSidePropsContext } from 'next';
+import { type YogaInitialContext } from 'graphql-yoga';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import prisma from '../lib/prisma';
 import { pubSub } from './pubsub';
 
-export async function createContext(ctx: GetServerSidePropsContext) {
+export async function createContext(ctx: YogaInitialContext) {
   const session = await getServerSession(authOptions);
 
   // All graphQL operations require user to be authenticated

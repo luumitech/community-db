@@ -1,3 +1,4 @@
+import { filter, pipe } from 'graphql-yoga';
 import prisma from '../../lib/prisma';
 import { builder } from '../builder';
 import {
@@ -17,6 +18,16 @@ const subscriptionEventRef = builder
     fields: (t) => ({
       mutationType: t.exposeString('mutationType', {
         description: 'type of change triggering the subscription event',
+      }),
+      broadcaster: t.prismaField({
+        description: 'event publisher user information',
+        type: 'User',
+        resolve: (query, event, args, ctx) => {
+          const { broadcasterId } = event;
+          return prisma.user.findUniqueOrThrow({
+            where: { uid: broadcasterId },
+          });
+        },
       }),
     }),
   });
@@ -63,8 +74,13 @@ builder.subscriptionType({
         id: t.arg.id({ description: 'Community ID', required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
-        const { pubSub } = await ctx;
-        return pubSub.subscribe(`community/${args.id.toString()}/`);
+        const { user, pubSub } = await ctx;
+        const communityId = args.id.toString();
+        return pipe(
+          pubSub.subscribe(`community/${communityId}/`),
+          // Don't subscribe to events that context user publish themselves
+          filter((event) => event.broadcasterId !== user.uid)
+        );
       },
       resolve: (event) => event,
     }),
@@ -76,9 +92,11 @@ builder.subscriptionType({
         communityId: t.arg.id({ required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
-        const { pubSub } = await ctx;
-        return pubSub.subscribe(
-          `community/${args.communityId.toString()}/property`
+        const { user, pubSub } = await ctx;
+        return pipe(
+          pubSub.subscribe(`community/${args.communityId.toString()}/property`),
+          // Don't subscribe to events that context user publish themselves
+          filter((event) => event.broadcasterId !== user.uid)
         );
       },
       resolve: (event) => event,

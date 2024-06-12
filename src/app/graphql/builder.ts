@@ -5,7 +5,6 @@ import { DateResolver, DateTimeResolver } from 'graphql-scalars';
 import prisma from '../lib/prisma';
 import { createContext } from './context';
 import type PrismaTypes from './generated/pothos-types';
-import { pubSub } from './pubsub';
 
 export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;

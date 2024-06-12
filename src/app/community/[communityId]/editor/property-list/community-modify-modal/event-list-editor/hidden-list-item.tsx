@@ -20,7 +20,7 @@ export const HiddenListItem: React.FC<React.PropsWithChildren<Props>> = ({
     <li
       className={clsx(
         className,
-        'flex items-center p-2 border-2 rounded-md min-w-[300px]'
+        'flex items-center p-2 border-2 border-default-200 rounded-md min-w-[300px]'
       )}
     >
       {label}

@@ -4,13 +4,18 @@ import { useParams } from 'next/navigation';
 import React from 'react';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
+import { toast } from '~/view/base/toastify';
 
 const CommunitySubscription = graphql(/* GraphQL */ `
   subscription communitySubscription($id: ID!) {
     communityFromId(id: $id) {
+      broadcaster {
+        email
+      }
       mutationType
       community {
         id
+        name
       }
     }
   }
@@ -19,9 +24,13 @@ const CommunitySubscription = graphql(/* GraphQL */ `
 const PropertySubscription = graphql(/* GraphQL */ `
   subscription propertySubscription($communityId: ID!) {
     propertyInCommunity(communityId: $communityId) {
+      broadcaster {
+        email
+      }
       mutationType
       property {
         id
+        address
       }
     }
   }
@@ -41,7 +50,15 @@ export default function CommunityFromIdLayout({ children }: LayoutProps) {
     skip: communityId == null,
     onData: ({ client, data }) => {
       const { cache } = client;
-      evictCache(cache, 'Community', communityId);
+      const communityFromId = data.data?.communityFromId;
+      if (communityFromId) {
+        const community = communityFromId.community;
+        if (community) {
+          const { broadcaster } = communityFromId;
+          evictCache(cache, 'Community', communityId);
+          toast.info(`${community.name} was modified by ${broadcaster.email}`);
+        }
+      }
     },
   });
 
@@ -50,11 +67,21 @@ export default function CommunityFromIdLayout({ children }: LayoutProps) {
     skip: communityId == null,
     onData: ({ client, data }) => {
       const { cache } = client;
-      const propertyId = data.data?.propertyInCommunity?.property?.id;
-      evictCache(cache, 'Property', propertyId);
-      // evict community cache too because some fields like
-      // community stat are changes if property changes as well
-      evictCache(cache, 'Community', communityId);
+      const propertyInCommunity = data.data?.propertyInCommunity;
+      if (propertyInCommunity) {
+        const property = propertyInCommunity.property;
+        if (property) {
+          evictCache(cache, 'Property', property.id);
+          // evict community cache too because some fields like
+          // community stat are changes if property changes as well
+          evictCache(cache, 'Community', communityId);
+
+          const { broadcaster } = propertyInCommunity;
+          toast.info(
+            `${property.address} was modified by ${broadcaster.email}`
+          );
+        }
+      }
     },
   });
 

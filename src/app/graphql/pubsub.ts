@@ -12,6 +12,10 @@ export enum MutationType {
 }
 
 export interface PubSubEvent {
+  /**
+   * uid (AuthContext) of broadcaster
+   */
+  broadcasterId: string;
   mutationType: MutationType;
 }
 
@@ -24,9 +28,9 @@ export interface PubSubPropertyEvent extends PubSubEvent {
 }
 
 interface PubSubEventsImpl {
-  // arg is communityId
+  // i.e. /community/${communityId}/
   [key: `community/${string}/`]: [PubSubCommunityEvent];
-  // arg is communityId
+  // i.e. /community/${communityId}/property
   [key: `community/${string}/property`]: [PubSubPropertyEvent];
 }
 type ValueOf<T> = T[keyof T];
