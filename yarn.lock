@@ -8376,6 +8376,11 @@ graphql-scalars@^1.23.0:
   dependencies:
     tslib "^2.5.0"
 
+graphql-sse@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/graphql-sse/-/graphql-sse-2.5.3.tgz#c3557803f2db306d8ac87fd3bc089b6d4bac8353"
+  integrity sha512-5IcFW3e7fPOG7oFkK1v3X1wWtCJArQKB/H1UJeNotjy7a/9EYA5K+EiHJF1BiDSVNx7y64bd0FlDETrNBSvIHQ==
+
 graphql-tag@^2.11.0, graphql-tag@^2.12.6:
   version "2.12.6"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.12.6.tgz#d441a569c1d2537ef10ca3d1633b48725329b5f1"

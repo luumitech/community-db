@@ -1,10 +1,11 @@
 import { GraphQLError } from 'graphql';
-import type { GetServerSidePropsContext } from 'next';
+import { type YogaInitialContext } from 'graphql-yoga';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import prisma from '../lib/prisma';
+import { pubSub } from './pubsub';
 
-export async function createContext(ctx: GetServerSidePropsContext) {
+export async function createContext(ctx: YogaInitialContext) {
   const session = await getServerSession(authOptions);
 
   // All graphQL operations require user to be authenticated
@@ -16,13 +17,13 @@ export async function createContext(ctx: GetServerSidePropsContext) {
   if (!user) {
     throw new GraphQLError('Auth: Missing user context');
   }
-  const { email } = user;
-  if (!email) {
-    throw new GraphQLError('Auth: Missing email in user context');
+  const { uid } = user;
+  if (!uid) {
+    throw new GraphQLError('Auth: Missing uid in user context');
   }
   return {
-    // Email is always available in user context
-    user: { ...user, email },
+    user,
+    pubSub,
   };
 }
 

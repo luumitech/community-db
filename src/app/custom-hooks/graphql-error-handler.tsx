@@ -25,10 +25,14 @@ export function useGraphqlErrorHandler(
 
   React.useEffect(() => {
     if (error) {
-      const unhandledError = opt?.onError?.(error);
-      if (unhandledError) {
-        // Default error goes to toast
-        toast.error(unhandledError.message);
+      if (opt?.onError == null) {
+        toast.error(error.message);
+      } else {
+        const unhandledError = opt.onError(error);
+        if (unhandledError) {
+          // Default error goes to toast
+          toast.error(unhandledError.message);
+        }
       }
     }
   }, [error, opt]);

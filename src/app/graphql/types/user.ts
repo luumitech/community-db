@@ -26,42 +26,58 @@ builder.queryField('userCurrent', (t) =>
   t.prismaField({
     type: 'User',
     resolve: async (query, parent, args, ctx, info) => {
-      const { user } = await ctx;
-      const { email } = user;
+      const {
+        // Only image is not saved in user document
+        user: { image, ...user },
+      } = await ctx;
 
       // Find the user matching the current logged in user
-      let entry = await prisma.user.upsert({
+      let userEntry = await prisma.user.upsert({
         ...query,
-        where: { email },
+        where: { uid: user.uid },
         // not updating the record if already exists
         update: {},
         // create the user if not already in database
-        create: { email },
+        create: user,
       });
 
-      // In development mode, add all document accessible under 'devuser@email.com' to
-      // the current context user
+      // In development mode, if context user does not have access
+      // to any community, then add all document accessible under
+      // 'devuser@email.com' to the current context user
       // This will ensure that context user see everything that `yarn seed-db` has
       // created for devuser@email.com'
       if (!isProduction()) {
-        const accessList = await prisma.access.findMany({
+        const ownAccess = await prisma.access.findFirst({
           select: { id: true },
-          where: {
-            user: {
-              email: 'devuser@email.com',
+          where: { user: { uid: user.uid } },
+        });
+        if (ownAccess == null) {
+          const devAccessList = await prisma.access.findMany({
+            where: { user: { email: 'devuser@email.com' } },
+          });
+          // clone devAccessList to context user
+          const ownAccessLists = await Promise.all(
+            devAccessList.map(async (devAccess) =>
+              prisma.access.create({
+                data: {
+                  role: 'ADMIN',
+                  userId: userEntry.id,
+                  communityId: devAccess.communityId,
+                },
+              })
+            )
+          );
+          userEntry = await prisma.user.update({
+            ...query,
+            where: { id: userEntry.id },
+            data: {
+              accessList: { connect: ownAccessLists },
             },
-          },
-        });
-        entry = await prisma.user.update({
-          ...query,
-          where: { id: entry.id },
-          data: {
-            accessList: { connect: accessList },
-          },
-        });
+          });
+        }
       }
 
-      return entry;
+      return userEntry;
     },
   })
 );
