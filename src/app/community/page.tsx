@@ -1,18 +1,7 @@
-'use client';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import { ListBox } from '~/view/base/list-box';
-import { NotSignedIn } from './not-signed-in';
 
-interface Props {}
-
-export const Landing: React.FC<Props> = ({}) => {
-  const { data: session } = useSession();
-
-  if (!session) {
-    return <NotSignedIn />;
-  }
-
+export default function CommunityLanding() {
   return (
     <ListBox
       header="Welcome!"
@@ -30,4 +19,4 @@ export const Landing: React.FC<Props> = ({}) => {
       ]}
     />
   );
-};
+}

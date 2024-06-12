@@ -67,7 +67,8 @@ builder.mutationField('communityModify', (t) =>
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
-      const entry = await getCommunityEntry(user, self.id.toString(), {
+      const communityId = self.id.toString();
+      const entry = await getCommunityEntry(user, communityId, {
         ...query,
         select: {
           id: true,
@@ -77,7 +78,7 @@ builder.mutationField('communityModify', (t) =>
       });
       if (entry.updatedAt.toISOString() !== self.updatedAt) {
         throw new GraphQLError(
-          `Attempting to update a stale community ${self.id.toString()}, please refresh browser.`
+          `Attempting to update a stale community ${communityId}, please refresh browser.`
         );
       }
 
@@ -86,7 +87,7 @@ builder.mutationField('communityModify', (t) =>
       const community = await prisma.community.update({
         ...query,
         where: {
-          id: self.id.toString(),
+          id: communityId,
         },
         data: {
           updatedBy: user.email,

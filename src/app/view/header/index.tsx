@@ -9,7 +9,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-  Spacer,
+  Spinner,
 } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -37,7 +37,7 @@ export interface MenuItemEntry extends LinkProps {
 interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
-  const { data: session } = useSession();
+  const { status } = useSession();
   const params = useParams<{ communityId?: string }>();
   const result = useQuery(CommunityNameFromIdQuery, {
     variables: { id: params.communityId! },
@@ -98,7 +98,13 @@ export const Header: React.FC<Props> = ({}) => {
         </NavbarContent>
         {communityName}
         <NavbarContent justify="end">
-          {session ? <SignedIn /> : <NotSignedIn />}
+          {status === 'loading' ? (
+            <Spinner />
+          ) : status === 'authenticated' ? (
+            <SignedIn />
+          ) : (
+            <NotSignedIn />
+          )}
         </NavbarContent>
         {/**
          * Menu items for burger menu

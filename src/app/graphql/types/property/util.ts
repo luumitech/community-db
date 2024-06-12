@@ -4,26 +4,26 @@ import prisma from '../../../lib/prisma';
 import { type Context } from '../../context';
 
 /**
- * Get community database entry of a given ID
+ * Get property database entry of a given ID
  * and verify if user has access to it
  */
-export async function getCommunityEntry(
+export async function getPropertyEntry(
   user: Context['user'],
-  communityId: string,
+  propertyId: string,
   findArgs?: Omit<
-    Parameters<typeof prisma.community.findUniqueOrThrow>[0],
+    Parameters<typeof prisma.property.findUniqueOrThrow>[0],
     'where'
   >
 ) {
   try {
-    const entry = await prisma.community.findUniqueOrThrow({
+    const entry = await prisma.property.findUniqueOrThrow({
       ...findArgs,
       where: {
-        id: communityId,
-        accessList: {
-          some: {
-            user: {
-              uid: user.uid,
+        id: propertyId,
+        community: {
+          accessList: {
+            some: {
+              user: { uid: user.uid },
             },
           },
         },
@@ -37,7 +37,7 @@ export async function getCommunityEntry(
          * https://www.prisma.io/docs/orm/reference/error-reference#p2025
          */
         case 'P2025':
-          throw new GraphQLError(`Community ${communityId} Not Found`);
+          throw new GraphQLError(`Property ${propertyId} Not Found`);
       }
     }
     throw err;

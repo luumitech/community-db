@@ -57,7 +57,9 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
             onChange={handleSelectionChange}
           >
             {[
-              <SelectItem key="new-item">Add Year {yearToAdd}</SelectItem>,
+              <SelectItem key="new-item" textValue={`Add Year ${yearToAdd}`}>
+                Add Year {yearToAdd}
+              </SelectItem>,
               ...fields.map((entry) => (
                 <SelectItem
                   key={entry.year.toString()}

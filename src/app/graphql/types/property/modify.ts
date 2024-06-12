@@ -3,6 +3,7 @@ import prisma from '../../../lib/prisma';
 import { builder } from '../../builder';
 import { MutationType } from '../../pubsub';
 import { UpdateInput } from '../common';
+import { getPropertyEntry } from './util';
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -51,37 +52,24 @@ builder.mutationField('propertyModify', (t) =>
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
-      const entry = await prisma.property.findUnique({
+      const propertyId = self.id.toString();
+      const entry = await getPropertyEntry(user, propertyId, {
         ...query,
-        where: {
-          id: self.id.toString(),
-          community: {
-            accessList: {
-              some: {
-                user: { email: user.email },
-              },
-            },
-          },
-        },
         select: {
           updatedAt: true,
           communityId: true,
         },
       });
-      if (!entry) {
+      if (entry.updatedAt.toISOString() !== self.updatedAt) {
         throw new GraphQLError(
-          `No permission to access property ${self.id.toString()}`
-        );
-      } else if (entry.updatedAt.toISOString() !== self.updatedAt) {
-        throw new GraphQLError(
-          `Attempting to update a stale property ${self.id.toString()}, please refresh browser.`
+          `Attempting to update a stale property ${propertyId}, please refresh browser.`
         );
       }
 
       const property = await prisma.property.update({
         ...query,
         where: {
-          id: self.id.toString(),
+          id: propertyId,
         },
         // @ts-expect-error: composite types like 'occupantList'
         // is allowed to be undefined

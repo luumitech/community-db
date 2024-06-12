@@ -17,13 +17,12 @@ export async function createContext(ctx: GetServerSidePropsContext) {
   if (!user) {
     throw new GraphQLError('Auth: Missing user context');
   }
-  const { email } = user;
-  if (!email) {
-    throw new GraphQLError('Auth: Missing email in user context');
+  const { uid } = user;
+  if (!uid) {
+    throw new GraphQLError('Auth: Missing uid in user context');
   }
   return {
-    // Email is always available in user context
-    user: { ...user, email },
+    user,
     pubSub,
   };
 }

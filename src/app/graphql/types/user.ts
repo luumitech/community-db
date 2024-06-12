@@ -26,17 +26,19 @@ builder.queryField('userCurrent', (t) =>
   t.prismaField({
     type: 'User',
     resolve: async (query, parent, args, ctx, info) => {
-      const { user } = await ctx;
-      const { email } = user;
+      const {
+        // Only image is not saved in user document
+        user: { image, ...user },
+      } = await ctx;
 
       // Find the user matching the current logged in user
       let entry = await prisma.user.upsert({
         ...query,
-        where: { email },
+        where: { uid: user.uid },
         // not updating the record if already exists
         update: {},
         // create the user if not already in database
-        create: { email },
+        create: user,
       });
 
       // In development mode, add all document accessible under 'devuser@email.com' to

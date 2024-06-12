@@ -59,11 +59,20 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
-const httpLink = new HttpLink({
-  uri: '/api/graphql',
+// Non-subscription enabled link
+// const httpLink = new HttpLink({
+//   uri: '/api/graphql',
+// });
+
+const sseLink = new SSELink({
+  url: '/api/graphql',
 });
 
-const link = SSELink.from([errorLink, httpLink]);
+const link = SSELink.from([
+  errorLink,
+  // httpLink
+  sseLink,
+]);
 
 const apolloClient = new ApolloClient({
   link,

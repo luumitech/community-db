@@ -55,8 +55,8 @@ const propertyEventRef = builder
 
 builder.subscriptionType({
   fields: (t) => ({
-    community: t.field({
-      description: 'Subscribe to changes to the given community',
+    communityFromId: t.field({
+      description: 'Subscribe to changes for a given community',
       type: communityEventRef,
       nullable: true,
       args: {
@@ -68,8 +68,8 @@ builder.subscriptionType({
       },
       resolve: (event) => event,
     }),
-    property: t.field({
-      description: 'Subscribe to changes to the given property',
+    propertyInCommunity: t.field({
+      description: 'Subscribe to changes to property for a given community',
       type: propertyEventRef,
       nullable: true,
       args: {

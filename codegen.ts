@@ -21,6 +21,12 @@ const config: CodegenConfig = {
     './src/app/graphql/generated/type-policies.ts': {
       plugins: ['typescript-apollo-client-helpers'],
     },
+    './src/app/graphql/generated/schema.graphql': {
+      plugins: ['schema-ast'],
+      config: {
+        includeDirectives: true,
+      },
+    },
   },
 };
 

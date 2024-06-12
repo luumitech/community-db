@@ -8,7 +8,10 @@ import prisma from '~/lib/prisma';
 
 describe('export community xlsx', () => {
   const testUtil = new TestUtil();
-  const ctxEmail = 'jest@email.com';
+  const ctx = {
+    uid: '001',
+    email: 'jest@email.com',
+  };
   let expectedImportResult: ReturnType<typeof importLcraDB>;
 
   beforeAll(async () => {
@@ -49,7 +52,7 @@ describe('export community xlsx', () => {
 
     await prisma.user.create({
       data: {
-        email: ctxEmail,
+        ...ctx,
         accessList: {
           create: accessSeed,
         },

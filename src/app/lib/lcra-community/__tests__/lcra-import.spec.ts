@@ -46,6 +46,7 @@ describe('import community xlsx', () => {
 
     await prisma.user.create({
       data: {
+        uid: '001',
         email: 'jest@email.com',
         accessList: {
           create: accessSeed,

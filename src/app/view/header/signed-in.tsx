@@ -1,4 +1,3 @@
-'use client';
 import {
   Dropdown,
   DropdownItem,
@@ -6,7 +5,7 @@ import {
   DropdownTrigger,
   User,
 } from '@nextui-org/react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -25,16 +24,14 @@ function acronym(input?: string | null) {
 interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
-  const { data: session } = useSession();
+  const { status, data } = useSession({ required: true });
   const router = useRouter();
-  const user = session?.user;
-  if (!user) {
+  if (status === 'loading') {
     return null;
   }
-  const { name, email, image } = user;
-  if (!email) {
-    return null;
-  }
+
+  // useSession guarantees user to be authenticated
+  const { name, email, image } = data!.user!;
 
   return (
     <Dropdown placement="bottom-end">
@@ -62,11 +59,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         >
           Preference
         </DropdownItem>
-        <DropdownItem
-          key="logout"
-          color="danger"
-          onClick={() => router.push('/sign-out')}
-        >
+        <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
           Log Out
         </DropdownItem>
       </DropdownMenu>
