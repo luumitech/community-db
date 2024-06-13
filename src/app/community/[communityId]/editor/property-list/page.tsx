@@ -12,11 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react';
-import { useInfiniteScroll } from '@nextui-org/use-infinite-scroll';
 import { useDebounce } from '@uidotdev/usehooks';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { FaSearch } from 'react-icons/fa';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
@@ -77,8 +77,10 @@ export default function PropertyList({ params }: RouteArgs) {
   useGraphqlErrorHandler(result);
   const { data, loading, fetchMore } = result;
   const pageInfo = data?.communityFromId.propertyList.pageInfo;
-  const [loaderRef, scrollerRef] = useInfiniteScroll({
-    hasMore: !!pageInfo?.hasNextPage,
+  const [loadingRef] = useInfiniteScroll({
+    loading,
+    disabled: !!result.error,
+    hasNextPage: !!pageInfo?.hasNextPage,
     onLoadMore: () => {
       fetchMore({
         variables: {
@@ -146,7 +148,6 @@ export default function PropertyList({ params }: RouteArgs) {
         // use this to keep scroll bar within table
         wrapper: 'p-0',
       }}
-      baseRef={scrollerRef}
       // removeWrapper
       isHeaderSticky
       selectionMode="single"
@@ -156,7 +157,7 @@ export default function PropertyList({ params }: RouteArgs) {
         !!pageInfo?.hasNextPage && (
           <Spinner
             className="flex w-full justify-center mb-4"
-            ref={loaderRef}
+            ref={loadingRef}
           />
         )
       }
