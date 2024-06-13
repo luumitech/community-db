@@ -3,6 +3,7 @@ import { ApolloProvider } from '@apollo/client';
 import { NextUIProvider } from '@nextui-org/react';
 import { SessionProvider, SessionProviderProps } from 'next-auth/react';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { AppProvider } from '~/custom-hooks/app-context';
@@ -19,11 +20,12 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   const { resolvedTheme } = useTheme();
+  const router = useRouter();
 
   return (
     <SessionProvider {...sessionProviderProps}>
       <ApolloProvider client={apolloClient}>
-        <NextUIProvider>
+        <NextUIProvider navigate={router.push}>
           <ReduxProviders>
             <AppProvider>
               {children}

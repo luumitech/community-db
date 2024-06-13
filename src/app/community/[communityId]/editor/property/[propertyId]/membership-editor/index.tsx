@@ -12,6 +12,7 @@ const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyId_MembershipEditor on Property {
     id
     updatedAt
+    updatedBy
     notes
     membershipList {
       year

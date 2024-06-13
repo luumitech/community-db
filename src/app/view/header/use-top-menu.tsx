@@ -51,27 +51,40 @@ export function useTopMenu() {
     const segment = segments.shift();
     switch (segment) {
       case 'community': {
-        const communityId = segments.shift();
-        if (communityId) {
-          const result = await communityNameQuery({
-            variables: { id: communityId },
-          });
-          const communityName = result.data?.communityFromId.name;
-          if (communityName) {
-            items.push({
-              id: 'community-editor',
-              href: `/community/${communityId}/editor/property-list`,
-              children: communityName,
-            });
-          }
-          await handleCommunity(communityId);
-        }
+        await handleCommunity();
         break;
       }
     }
     return items;
 
-    async function handleCommunity(communityId: string) {
+    async function handleCommunity() {
+      const op = segments.shift();
+      switch (op) {
+        case 'create':
+        case 'select':
+          break;
+
+        default:
+          if (op != null) {
+            const communityId = op;
+            const result = await communityNameQuery({
+              variables: { id: communityId },
+            });
+            const communityName = result.data?.communityFromId.name;
+            if (communityName) {
+              items.push({
+                id: 'community-editor',
+                href: `/community/${communityId}/editor/property-list`,
+                children: communityName,
+              });
+              await handleSingleCommunity(communityId);
+            }
+          }
+          break;
+      }
+    }
+
+    async function handleSingleCommunity(communityId: string) {
       const op = segments.shift();
       switch (op) {
         case 'editor':
