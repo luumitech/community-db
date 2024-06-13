@@ -1,8 +1,8 @@
 'use client';
-import { useQuery } from '@apollo/client';
 import {
+  BreadcrumbItem,
+  Breadcrumbs,
   Link,
-  LinkProps,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -13,40 +13,19 @@ import {
 } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
 import React from 'react';
-import { graphql } from '~/graphql/generated';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
-
-const CommunityNameFromIdQuery = graphql(/* GraphQL */ `
-  query communityNameFromId($id: ID!) {
-    communityFromId(id: $id) {
-      id
-      name
-    }
-  }
-`);
-
-export interface MenuItemEntry extends LinkProps {
-  id: string;
-  isActive?: boolean;
-}
+import { useTopMenu } from './use-top-menu';
 
 interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
   const { status } = useSession();
-  const params = useParams<{ communityId?: string }>();
-  const result = useQuery(CommunityNameFromIdQuery, {
-    variables: { id: params.communityId! },
-    skip: params.communityId == null,
-  });
+  const breadcrumbItems = useTopMenu();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuItems = useNavMenu();
-
-  const communityName = result.data?.communityFromId.name;
 
   return (
     <header className="sticky z-50 top-0">
@@ -96,7 +75,14 @@ export const Header: React.FC<Props> = ({}) => {
             </Link>
           </NavbarBrand>
         </NavbarContent>
-        {communityName}
+        {/**
+         * Top breadcrumb menu
+         */}
+        <Breadcrumbs>
+          {breadcrumbItems.map(({ id, ...entry }) => (
+            <BreadcrumbItem key={id} {...entry} />
+          ))}
+        </Breadcrumbs>
         <NavbarContent justify="end">
           {status === 'loading' ? (
             <Spinner />
