@@ -6,6 +6,7 @@ const nextConfig = {
      * cannot be analyzed for bundling
      */
     serverComponentsExternalPackages: ['omniconfig.js'],
+    serverActions: { allowedOrigins: ['localhost:3443'] },
   },
 };
 

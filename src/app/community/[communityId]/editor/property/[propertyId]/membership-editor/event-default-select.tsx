@@ -22,11 +22,6 @@ export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
       variant="underlined"
       placeholder="Select event to add"
       defaultSelectedKeys={lastEventSelected ? [lastEventSelected] : []}
-      startContent={
-        <Chip size="sm" radius="sm">
-          Add New Event
-        </Chip>
-      }
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
         dispatch(

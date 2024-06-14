@@ -42,7 +42,7 @@ export const propertyRef = builder.prismaObject('Property', {
     postalCode: t.exposeString('postalCode', { nullable: true }),
     notes: t.exposeString('notes', { nullable: true }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
-    updatedBy: t.exposeString('updatedBy', { nullable: true }),
+    updatedBy: t.relation('updatedBy', { nullable: true }),
     occupantList: t.field({
       type: [occupantRef],
       select: { occupantList: true },

@@ -24,11 +24,13 @@ function schema() {
     ),
     // Used for rendering UI only, not submitted
     // to server
-    hiddenEventList: yup.array(
-      yup.object({
-        name: yup.string().required(),
-      })
-    ),
+    hidden: yup.object({
+      eventList: yup.array(
+        yup.object({
+          name: yup.string().required(),
+        })
+      ),
+    }),
   });
 }
 
@@ -44,7 +46,9 @@ const EntryFragment = graphql(/* GraphQL */ `
       hidden
     }
     updatedAt
-    updatedBy
+    updatedBy {
+      ...User
+    }
   }
 `);
 
@@ -68,9 +72,11 @@ function defaultInputData(
     eventList: item.eventList
       .filter((event) => !event.hidden)
       .map((event) => ({ name: event.name })),
-    hiddenEventList: item.eventList
-      .filter((event) => !!event.hidden)
-      .map((event) => ({ name: event.name })),
+    hidden: {
+      eventList: item.eventList
+        .filter((event) => !!event.hidden)
+        .map((event) => ({ name: event.name })),
+    },
   };
 }
 
@@ -100,7 +106,7 @@ export function useHookFormWithDisclosure(
     onClose: onModalClose,
   });
 
-  return { disclosure, formMethods };
+  return { disclosure, formMethods, fragment };
 }
 
 export type UseHookFormWithDisclosureResult = ReturnType<
@@ -110,7 +116,7 @@ export type UseHookFormWithDisclosureResult = ReturnType<
 export type EventListFieldArray = UseFieldArrayReturn<InputData, 'eventList'>;
 export type HiddenEventListFieldArray = UseFieldArrayReturn<
   InputData,
-  'hiddenEventList'
+  'hidden.eventList'
 >;
 
 export function useHookFormContext() {

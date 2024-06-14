@@ -37,7 +37,6 @@ const accessSeed: Prisma.AccessCreateWithoutUserInput[] = communitySeed.map(
 async function main() {
   await prisma.user.create({
     data: {
-      uid: '001',
       email: 'devuser@email.com',
       accessList: {
         create: accessSeed,

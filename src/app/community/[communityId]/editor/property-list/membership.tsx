@@ -1,7 +1,7 @@
 import { Tooltip } from '@nextui-org/react';
 import React from 'react';
-import { IoCheckmark } from 'react-icons/io5';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { Icon } from '~/view/base/icon';
 
 const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Membership on Property {
@@ -39,7 +39,7 @@ export const Membership: React.FC<Props> = (props) => {
       {!!membership?.isMember && (
         <Tooltip content={eventInfo}>
           <span className="text-xl">
-            <IoCheckmark />
+            <Icon icon="checkmark" />
           </span>
         </Tooltip>
       )}

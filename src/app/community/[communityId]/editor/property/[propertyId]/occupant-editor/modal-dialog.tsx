@@ -7,9 +7,9 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { IoPersonAdd } from 'react-icons/io5';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
+import { Icon } from '~/view/base/icon';
 import { Editor } from './editor';
 import {
   InputData,
@@ -65,7 +65,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
           </ModalBody>
           <ModalFooter>
             <Button
-              endContent={<IoPersonAdd />}
+              endContent={<Icon icon="person-add" />}
               onPress={() => occupantMethods.append(occupantDefault)}
             >
               Add Member

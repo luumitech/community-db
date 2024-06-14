@@ -83,7 +83,7 @@ builder.prismaObject('Community', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: false }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
-    updatedBy: t.exposeString('updatedBy', { nullable: true }),
+    updatedBy: t.relation('updatedBy', { nullable: true }),
     eventList: t.field({
       type: [supportedEventRef],
       resolve: (entry) => entry.eventList,

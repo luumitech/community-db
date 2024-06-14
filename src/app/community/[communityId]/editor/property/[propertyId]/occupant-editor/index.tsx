@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { Button } from '@nextui-org/react';
 import React from 'react';
-import { BiEditAlt } from 'react-icons/bi';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
 import { ModalDialog } from './modal-dialog';
 import { InputData, useHookFormWithDisclosure } from './use-hook-form';
@@ -12,6 +12,9 @@ const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantEditor on Property {
     id
     updatedAt
+    updatedBy {
+      ...User
+    }
     occupantList {
       firstName
       lastName
@@ -63,7 +66,7 @@ export const OccupantEditor: React.FC<Props> = (props) => {
       <FormProvider {...formMethods}>
         <Button
           size="sm"
-          endContent={<BiEditAlt />}
+          endContent={<Icon icon="edit" />}
           {...disclosure.getButtonProps()}
         >
           Edit Member Details

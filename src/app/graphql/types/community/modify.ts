@@ -69,7 +69,6 @@ builder.mutationField('communityModify', (t) =>
       const { self, ...input } = args.input;
       const communityId = self.id.toString();
       const entry = await getCommunityEntry(user, communityId, {
-        ...query,
         select: {
           id: true,
           updatedAt: true,
@@ -90,7 +89,7 @@ builder.mutationField('communityModify', (t) =>
           id: communityId,
         },
         data: {
-          updatedBy: user.email,
+          updatedBy: { connect: { email: user.email } },
           // non-nullable fields needs to be specified explicitly
           ...(!!name && { name }),
           // If eventList is provided, make sure eventList contains
@@ -104,7 +103,7 @@ builder.mutationField('communityModify', (t) =>
 
       // broadcast modification to community
       pubSub.publish(`community/${community.id}/`, {
-        broadcasterId: user.uid,
+        broadcasterId: user.email,
         mutationType: MutationType.UPDATED,
         community,
       });

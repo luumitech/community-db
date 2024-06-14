@@ -13,7 +13,7 @@ export enum MutationType {
 
 export interface PubSubEvent {
   /**
-   * uid (AuthContext) of broadcaster
+   * email (AuthContext) of broadcaster
    */
   broadcasterId: string;
   mutationType: MutationType;

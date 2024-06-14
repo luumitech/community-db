@@ -17,7 +17,7 @@ interface Props {
 
 export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
   const [updateCommunity] = useMutation(CommunityMutation);
-  const { formMethods, disclosure } = hookForm;
+  const { formMethods, disclosure, fragment } = hookForm;
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -25,8 +25,8 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
         return;
       }
 
-      // hiddenEventList is not saved in server
-      const { hiddenEventList, ...input } = _input;
+      // hidden is not saved in server
+      const { hidden, ...input } = _input;
       await toast.promise(
         updateCommunity({
           variables: { input },
@@ -42,7 +42,11 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
 
   return (
     <FormProvider {...formMethods}>
-      <ModifyModal disclosure={disclosure} onSave={onSave} />
+      <ModifyModal
+        fragment={fragment}
+        disclosure={disclosure}
+        onSave={onSave}
+      />
     </FormProvider>
   );
 };

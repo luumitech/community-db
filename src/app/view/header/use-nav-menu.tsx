@@ -1,8 +1,14 @@
+import { LinkProps } from '@nextui-org/react';
+import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
-import { match } from 'path-to-regexp';
 import React from 'react';
 import * as R from 'remeda';
-import { MenuItemEntry } from '~/view/header';
+import * as matcherUtil from './matcher-util';
+
+interface MenuItemEntry extends LinkProps {
+  id: string;
+  isActive?: boolean;
+}
 
 function indentMenuItem(label: string, indentLevel = 0) {
   // \u2003 is &emsp;
@@ -16,26 +22,19 @@ function indentMenuItem(label: string, indentLevel = 0) {
 }
 
 /**
- * Controls content of navigation menu base on
- * the current URL
+ * Controls content of hamburger menu located on the left
+ * of the header
  */
 export function useNavMenu() {
   const pathname = usePathname();
-  const [menuItems, setMenuItems] = React.useState<MenuItemEntry[]>([]);
+  const [menuItems, { set }] = useList<MenuItemEntry>([]);
 
-  React.useEffect(() => {
-    const withinOneCommunityMatcher = match<{ communityId: string }>(
-      '/community/:communityId/(.*)',
-      { decode: decodeURIComponent }
-    );
-    const withinOneCommunity = withinOneCommunityMatcher(pathname);
-    if (withinOneCommunity) {
-      const { communityId } = withinOneCommunity.params;
-      const withinEditorMatcher = match<{ communityId: string }>(
-        '/community/:communityId/editor/(.*)',
-        { decode: decodeURIComponent }
-      );
-      setMenuItems([
+  const getItems = React.useCallback(async () => {
+    const items: MenuItemEntry[] = [];
+    const withinCommunity = matcherUtil.matchCommunity(pathname);
+    if (withinCommunity) {
+      const { communityId } = withinCommunity.params;
+      items.push(
         {
           id: 'welcome',
           isActive: pathname === '/',
@@ -44,7 +43,7 @@ export function useNavMenu() {
         },
         {
           id: 'membership-editor',
-          isActive: !!withinEditorMatcher(pathname),
+          isActive: !!matcherUtil.matchCommunityEditor(pathname),
           href: `/community/${communityId}/editor/property-list`,
           children: 'Membership Editor',
         },
@@ -73,10 +72,18 @@ export function useNavMenu() {
           isActive: pathname === `/community/${communityId}/tool/dashboard`,
           href: `/community/${communityId}/tool/dashboard`,
           children: indentMenuItem('Dashboard', 1),
-        },
-      ]);
+        }
+      );
     }
+    return items;
   }, [pathname]);
+
+  React.useEffect(() => {
+    (async () => {
+      const items = await getItems();
+      set(items);
+    })();
+  }, [getItems, set]);
 
   return menuItems;
 }

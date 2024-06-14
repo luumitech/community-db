@@ -26,4 +26,4 @@ const yoga = createYoga<{
 
 const { handleRequest } = yoga;
 
-export { handleRequest as GET, handleRequest as POST };
+export { handleRequest as POST };

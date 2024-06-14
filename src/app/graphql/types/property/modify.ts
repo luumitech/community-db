@@ -54,7 +54,6 @@ builder.mutationField('propertyModify', (t) =>
       const { self, ...input } = args.input;
       const propertyId = self.id.toString();
       const entry = await getPropertyEntry(user, propertyId, {
-        ...query,
         select: {
           updatedAt: true,
           communityId: true,
@@ -74,14 +73,14 @@ builder.mutationField('propertyModify', (t) =>
         // @ts-expect-error: composite types like 'occupantList'
         // is allowed to be undefined
         data: {
-          updatedBy: user.email,
+          updatedBy: { connect: { email: user.email } },
           ...input,
         },
       });
 
       // broadcast modification to property
       pubSub.publish(`community/${entry.communityId}/property`, {
-        broadcasterId: user.uid,
+        broadcasterId: user.email,
         mutationType: MutationType.UPDATED,
         property,
       });

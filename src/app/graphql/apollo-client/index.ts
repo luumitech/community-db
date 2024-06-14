@@ -6,8 +6,11 @@ import {
   InMemoryCache,
   Observable,
   Operation,
+  from,
+  split,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { print } from 'graphql';
 import { Client, ClientOptions, createClient } from 'graphql-sse';
 import { typePolicies } from './type-policies';
@@ -44,7 +47,8 @@ class SSELink extends ApolloLink {
 /**
  * Unified error handling for apollo
  */
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError((response) => {
+  const { graphQLErrors, networkError, operation } = response;
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path, extensions }) =>
       console.warn(
@@ -55,27 +59,35 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     );
   }
   if (networkError) {
-    console.warn(`[Network error]: ${networkError}`);
+    console.warn(networkError);
   }
+  console.warn('operation: %o', operation);
 });
 
 // Non-subscription enabled link
-// const httpLink = new HttpLink({
-//   uri: '/api/graphql',
-// });
+const httpLink = new HttpLink({
+  uri: '/api/graphql',
+});
 
+// Subscription enabled link
 const sseLink = new SSELink({
   url: '/api/graphql',
 });
 
-const link = SSELink.from([
-  errorLink,
-  // httpLink
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
   sseLink,
-]);
+  from([errorLink, httpLink])
+);
 
 const apolloClient = new ApolloClient({
-  link,
+  link: splitLink,
   cache,
 });
 

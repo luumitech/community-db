@@ -23,7 +23,7 @@ export async function getPropertyEntry(
         community: {
           accessList: {
             some: {
-              user: { uid: user.uid },
+              user: { email: user.email },
             },
           },
         },

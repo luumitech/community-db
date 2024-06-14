@@ -17,7 +17,6 @@ export class GraphQLUtil {
   // Default context for graphQL
   private _context: Context = {
     user: {
-      uid: '001',
       email: 'jest@email.com',
       name: 'jest tester',
     },

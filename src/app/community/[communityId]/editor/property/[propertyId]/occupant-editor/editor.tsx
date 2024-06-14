@@ -8,7 +8,7 @@ import {
   Input,
 } from '@nextui-org/react';
 import React from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
+import { Icon } from '~/view/base/icon';
 import { OccupantFieldArrayReturn, useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -93,7 +93,7 @@ export const Editor: React.FC<Props> = ({ className, fieldArrayMethods }) => {
           </CardBody>
           <CardFooter className="justify-end">
             <Button isIconOnly color="danger" onPress={() => remove(idx)}>
-              <FaTrashAlt />
+              <Icon icon="trash" />
             </Button>
           </CardFooter>
         </Card>

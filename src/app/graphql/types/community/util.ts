@@ -22,9 +22,7 @@ export async function getCommunityEntry(
         id: communityId,
         accessList: {
           some: {
-            user: {
-              uid: user.uid,
-            },
+            user: { email: user.email },
           },
         },
       },

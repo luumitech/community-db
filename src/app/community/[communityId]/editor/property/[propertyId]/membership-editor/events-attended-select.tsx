@@ -17,8 +17,10 @@ import clsx from 'clsx';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
+import { Button } from '~/view/base/button';
 import { DatePicker } from '~/view/base/date-picker';
 import { FlatButton } from '~/view/base/flat-button';
+import { Icon } from '~/view/base/icon';
 import { useContext } from '../context';
 import { EventDefaultSelect } from './event-default-select';
 import { useHookFormContext } from './use-hook-form';
@@ -165,26 +167,29 @@ export const EventsAttendedSelect: React.FC<Props> = ({
           {/* Cannot resolve strange typescript error */}
           {renderRows() as unknown as RowElement<unknown>}
           <TableRow>
-            <TableCell colSpan={2}>
-              <EventDefaultSelect />
+            <TableCell colSpan={3}>
+              <div className="flex items-center gap-4">
+                <EventDefaultSelect />
+                <Button
+                  className="text-primary"
+                  endContent={<Icon icon="add" />}
+                  variant="faded"
+                  onClick={() =>
+                    append({
+                      eventName: lastEventSelected ?? '',
+                      eventDate: new Date(Date.now()).toISOString(),
+                    })
+                  }
+                >
+                  Add Event
+                </Button>
+              </div>
             </TableCell>
             {/* This hidden cell is needed to workaround an error
              * https://github.com/nextui-org/nextui/issues/1779
              */}
             <TableCell className="hidden">{null}</TableCell>
-            <TableCell>
-              <FlatButton
-                className="text-primary"
-                icon="add"
-                tooltip="Add Event"
-                onClick={() =>
-                  append({
-                    eventName: lastEventSelected ?? '',
-                    eventDate: new Date(Date.now()).toISOString(),
-                  })
-                }
-              />
-            </TableCell>
+            <TableCell className="hidden">{null}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
