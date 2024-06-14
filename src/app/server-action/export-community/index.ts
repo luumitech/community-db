@@ -15,7 +15,7 @@ export async function exportCommunityAsUrl(communityId: string) {
     throw new Error('Not authorized');
   }
   const form = await schema.validate({
-    ctxEmail: session.user?.email,
+    email: session.user.email,
     communityId,
   });
 
@@ -36,10 +36,10 @@ export async function exportCommunityAsBase64(communityId: string) {
     throw new Error('Not authorized');
   }
   const form = await schema.validate({
-    ctxEmail: session.user?.email,
+    email: session.user.email,
     communityId,
   });
-  const community = await communityData(form.communityId, form.ctxEmail);
+  const community = await communityData(form.communityId, form.email);
   const helper = new ExportHelper(community.propertyList);
   const xlsxBuf = helper.toXlsx();
   return {

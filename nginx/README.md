@@ -75,17 +75,4 @@ sudo nginx -s stop
   cd ..
   ```
 
-- Make sure `.env.development.local` has the following fields:
-
-  ```sh
-  AUTH_HTTPS=true
-  ```
-
-- If you are testing SAML config, add:
-
-  ```shell
-  AUTH_ENABLE=true
-  AUTH_STRATEGY=saml
-  ```
-
 - Point your browser to <https://localhost:3443>

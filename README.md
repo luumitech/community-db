@@ -12,9 +12,9 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+To start development server in HTTPS mode and HTTP/2 mode, refer to `nginx/README.md`.  This project uses SSE (Server Sent Events) to perform graphQL subscription, using HTTP/1 would work as well, but with some restrictions.
 
 ## Learn More
 

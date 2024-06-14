@@ -26,7 +26,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
   });
   const hiddenEventListMethods = useFieldArray({
     control,
-    name: 'hiddenEventList',
+    name: 'hidden.eventList',
   });
 
   /**

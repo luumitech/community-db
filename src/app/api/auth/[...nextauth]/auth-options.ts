@@ -6,14 +6,11 @@ export const authOptions: AuthOptions = {
   providers: [GoogleProvider(env.google)],
   callbacks: {
     async session({ session, token, user }) {
-      return {
-        ...session,
-        // Send a little more user information back
-        user: {
-          ...session.user,
-          uid: token.sub,
-        },
-      };
+      if (!session.user.email) {
+        throw new Error('email missing in session');
+      }
+
+      return session;
     },
   },
 };

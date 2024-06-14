@@ -12,7 +12,9 @@ const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantEditor on Property {
     id
     updatedAt
-    updatedBy
+    updatedBy {
+      ...User
+    }
     occupantList {
       firstName
       lastName

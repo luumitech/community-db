@@ -15,11 +15,22 @@ export interface ImportHelperConfig {
  * the input spreadsheet. (i.e each property in the data structure) should
  * correspond to exactly one column in the spreadsheet
  */
-type MProperty = Omit<
-  Property,
-  'id' | 'createdAt' | 'occupantList' | 'membershipList' | 'communityId'
->;
-type MOccupant = Omit<Occupant, ''>;
+interface MProperty
+  extends Omit<
+    Property,
+    | 'id'
+    | 'createdAt'
+    | 'occupantList'
+    | 'membershipList'
+    | 'communityId'
+    | 'updatedById'
+  > {
+  // Additional fields in excel spreadsheet that cannot be mapped
+  // to proeprty database directly.  So store them as extra fields
+  // and map them separately afterwards
+  updatedByEmail: string | null;
+}
+interface MOccupant extends Omit<Occupant, ''> {}
 interface MMembership extends Omit<Membership, 'year' | 'eventAttendedList'> {
   // Additional fields in excel spreadsheet that cannot be mapped
   // to membership database directly.  So store them as extra fields

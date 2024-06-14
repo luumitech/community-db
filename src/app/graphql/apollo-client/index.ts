@@ -83,11 +83,11 @@ const splitLink = split(
     );
   },
   sseLink,
-  httpLink
+  from([errorLink, httpLink])
 );
 
 const apolloClient = new ApolloClient({
-  link: from([errorLink, splitLink]),
+  link: splitLink,
   cache,
 });
 

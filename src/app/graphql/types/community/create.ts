@@ -10,7 +10,7 @@ builder.mutationField('communityCreate', (t) =>
     },
     resolve: async (query, _parent, args, ctx) => {
       const { user } = await ctx;
-      const { uid } = user;
+      const { email } = user;
 
       const entry = await prisma.community.create({
         ...query,
@@ -19,7 +19,7 @@ builder.mutationField('communityCreate', (t) =>
           accessList: {
             create: {
               role: 'ADMIN',
-              user: { connect: { uid } },
+              user: { connect: { email } },
             },
           },
         },

@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { type DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   /**
@@ -6,15 +6,11 @@ declare module 'next-auth' {
    * on the `SessionProvider` React Context
    */
   interface Session {
-    user?: {
-      // Default fields provided by nextAuth
-      name?: string | null;
-      image?: string | null;
-      email: string;
+    user: {
       /**
-       * unique user ID (must be available in user context)
+       * Email is a required field in session user object
        */
-      uid: string;
-    };
+      email: string;
+    } & DefaultSession['user'];
   }
 }

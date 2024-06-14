@@ -12,11 +12,12 @@ export const NotSignedIn: React.FC<Props> = ({}) => {
     <NavbarItem>
       <Button
         color="primary"
-        onClick={() =>
-          signIn('google', {
-            callbackUrl: query.get('callbackUrl') ?? '/',
-          })
-        }
+        onClick={() => {
+          /**
+           * You can optionally force provider to google
+           */
+          signIn(undefined, { callbackUrl: query.get('callbackUrl') ?? '/' });
+        }}
       >
         Sign In
       </Button>

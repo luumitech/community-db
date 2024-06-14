@@ -9,7 +9,6 @@ import prisma from '~/lib/prisma';
 describe('export community xlsx', () => {
   const testUtil = new TestUtil();
   const ctx = {
-    uid: '001',
     email: 'jest@email.com',
   };
   let expectedImportResult: ReturnType<typeof importLcraDB>;
@@ -67,7 +66,11 @@ describe('export community xlsx', () => {
   test('verify export workbook', async () => {
     const community = await prisma.community.findFirst({
       include: {
-        propertyList: true,
+        propertyList: {
+          include: {
+            updatedBy: true,
+          },
+        },
       },
     });
     const helper = new ExportHelper(community!.propertyList);

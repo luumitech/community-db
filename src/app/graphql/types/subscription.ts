@@ -25,7 +25,7 @@ const subscriptionEventRef = builder
         resolve: (query, event, args, ctx) => {
           const { broadcasterId } = event;
           return prisma.user.findUniqueOrThrow({
-            where: { uid: broadcasterId },
+            where: { email: broadcasterId },
           });
         },
       }),
@@ -79,7 +79,7 @@ builder.subscriptionType({
         return pipe(
           pubSub.subscribe(`community/${communityId}/`),
           // Don't subscribe to events that context user publish themselves
-          filter((event) => event.broadcasterId !== user.uid)
+          filter((event) => event.broadcasterId !== user.email)
         );
       },
       resolve: (event) => event,
@@ -96,7 +96,7 @@ builder.subscriptionType({
         return pipe(
           pubSub.subscribe(`community/${args.communityId.toString()}/property`),
           // Don't subscribe to events that context user publish themselves
-          filter((event) => event.broadcasterId !== user.uid)
+          filter((event) => event.broadcasterId !== user.email)
         );
       },
       resolve: (event) => event,

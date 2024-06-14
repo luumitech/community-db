@@ -53,7 +53,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
   function addMembership(rowIdx: number, year: number) {
     const prefix = `Y${year}`;
-    const membership = importHelper.membership(rowIdx, {
+    const _membership = importHelper.membership(rowIdx, {
       isMember: {
         colIdx: importHelper.labelColumn(`${prefix}`),
         type: 'boolean',
@@ -79,9 +79,9 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     });
     // Map eventNameList/eventDateList into the format of
     // eventAttendedList
-    const { eventNames, eventDates, ...rest } = membership;
-    const eventNameList = membership.eventNames?.split(';') ?? [];
-    const eventDateList = membership.eventDates?.split(';') ?? [];
+    const { eventNames, eventDates, ...membership } = _membership;
+    const eventNameList = eventNames?.split(';') ?? [];
+    const eventDateList = eventDates?.split(';') ?? [];
     const eventAttendedList = eventNameList.map((eventName, idx) => {
       // intepret date string as CalendarDate
       const eventDateObj = parseAsDate(eventDateList[idx]);
@@ -93,14 +93,14 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
     return {
       year: 2000 + year,
-      ...rest,
+      ...membership,
       eventAttendedList,
     };
   }
 
   const propertyList = [];
   for (let rowIdx = 1; rowIdx < wsHelper.rowCount; rowIdx++) {
-    const property = importHelper.property(rowIdx, {
+    const _property = importHelper.property(rowIdx, {
       address: {
         colIdx: importHelper.labelColumn('Address'),
         type: 'string',
@@ -125,11 +125,19 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         colIdx: importHelper.labelColumn('LastModDate'),
         type: 'date',
       },
-      updatedBy: {
+      updatedByEmail: {
         colIdx: importHelper.labelColumn('LastModBy'),
         type: 'string',
       },
     });
+    // Map updatedByEmail into a user database document
+    const { updatedByEmail, ...property } = _property;
+    const updatedBy = {
+      connectOrCreate: {
+        where: { email: updatedByEmail },
+        create: { email: updatedByEmail },
+      },
+    };
 
     // Determine total number of occupants by scanning the
     // column headers
@@ -157,7 +165,10 @@ export function importLcraDB(wb: XLSX.WorkBook) {
       }
     });
 
-    propertyList.push(property);
+    propertyList.push({
+      ...property,
+      updatedBy,
+    });
   }
 
   const eventNameList = extractEventList(propertyList);

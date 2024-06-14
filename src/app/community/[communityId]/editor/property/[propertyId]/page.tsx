@@ -4,7 +4,7 @@ import { Divider } from '@nextui-org/react';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
-import { toLocalDateTime } from '~/lib/date-util';
+import { LastModified } from '~/view/last-modified';
 import { ContextProvider } from './context';
 import { MembershipDisplay } from './membership-display';
 import { MembershipEditor } from './membership-editor';
@@ -31,7 +31,9 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
       propertyFromId(id: $propertyId) {
         id
         updatedAt
-        updatedBy
+        updatedBy {
+          ...User
+        }
         ...PropertyId_PropertyDisplay
         ...PropertyId_MembershipEditor
         ...PropertyId_MembershipDisplay
@@ -56,7 +58,6 @@ export default function Property({ params }: RouteArgs) {
 
   const property = community.propertyFromId;
   const { eventList } = community;
-  const updatedAt = toLocalDateTime(property.updatedAt);
 
   return (
     <div>
@@ -66,9 +67,11 @@ export default function Property({ params }: RouteArgs) {
         <MembershipDisplay entry={property} />
         <MembershipEditor className="mt-2" entry={property} />
         <OccupantDisplay className="my-4" entry={property} />
-        <div className="text-right text-xs">
-          Last modified on {updatedAt} by {property.updatedBy ?? 'n/a'}
-        </div>
+        <LastModified
+          className="text-right"
+          updatedAt={property.updatedAt}
+          user={property.updatedBy}
+        />
       </ContextProvider>
     </div>
   );

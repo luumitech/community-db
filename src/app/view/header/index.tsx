@@ -102,6 +102,7 @@ export const Header: React.FC<Props> = ({}) => {
                 className="w-full"
                 size="lg"
                 color={isActive ? 'primary' : 'foreground'}
+                onClick={() => setIsMenuOpen(false)}
                 {...entry}
               />
             </NavbarMenuItem>

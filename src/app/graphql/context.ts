@@ -17,9 +17,9 @@ export async function createContext(ctx: YogaInitialContext) {
   if (!user) {
     throw new GraphQLError('Auth: Missing user context');
   }
-  const { uid } = user;
-  if (!uid) {
-    throw new GraphQLError('Auth: Missing uid in user context');
+  const { email } = user;
+  if (!email) {
+    throw new GraphQLError('Auth: Missing email in user context');
   }
   return {
     user,

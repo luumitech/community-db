@@ -13,6 +13,7 @@ builder.prismaObject('User', {
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
+    name: t.exposeString('name', { nullable: true }),
     accessList: t.relation('accessList'),
     // preference: t.field({
     //   type: Preference,
@@ -34,7 +35,7 @@ builder.queryField('userCurrent', (t) =>
       // Find the user matching the current logged in user
       let userEntry = await prisma.user.upsert({
         ...query,
-        where: { uid: user.uid },
+        where: { email: user.email },
         // not updating the record if already exists
         update: {},
         // create the user if not already in database
@@ -49,7 +50,7 @@ builder.queryField('userCurrent', (t) =>
       if (!isProduction()) {
         const ownAccess = await prisma.access.findFirst({
           select: { id: true },
-          where: { user: { uid: user.uid } },
+          where: { user: { email: user.email } },
         });
         if (ownAccess == null) {
           const devAccessList = await prisma.access.findMany({

@@ -73,7 +73,7 @@ export class ExportHelper {
     });
 
     row.LastModDate = toDate(property.updatedAt);
-    row.LastModBy = property.updatedBy;
+    row.LastModBy = property.updatedBy?.email;
     row.Notes = property.notes;
 
     R.range(this.minYear, this.maxYear + 1)

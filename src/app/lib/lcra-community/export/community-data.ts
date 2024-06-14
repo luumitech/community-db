@@ -4,27 +4,25 @@ import prisma from '~/lib/prisma';
  * Get property list for a given community from database
  *
  * @param communityId community ID
- * @param ctxEmail context email
+ * @param email context email
  * @returns
  */
-export async function communityData(communityId: string, ctxEmail: string) {
+export async function communityData(communityId: string, email: string) {
   const data = await prisma.community.findUniqueOrThrow({
     where: {
       id: communityId,
-      OR: [
-        {
-          accessList: {
-            some: {
-              user: {
-                email: ctxEmail,
-              },
-            },
-          },
+      accessList: {
+        some: {
+          user: { email },
         },
-      ],
+      },
     },
     include: {
-      propertyList: true,
+      propertyList: {
+        include: {
+          updatedBy: true,
+        },
+      },
     },
   });
   return data;
