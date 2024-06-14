@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
-import { isProduction } from '../../lib/env-var';
-import prisma from '../../lib/prisma';
-import { builder } from '../builder';
+import { isProduction } from '../../../lib/env-var';
+import prisma from '../../../lib/prisma';
+import { builder } from '../../builder';
 
 const Role = builder.enumType('Role', {
   values: ['USER', 'ADMIN'] as const,

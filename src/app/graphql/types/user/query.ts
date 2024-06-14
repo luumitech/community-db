@@ -1,27 +1,8 @@
 import { GraphQLError } from 'graphql';
-import { isProduction } from '../../lib/env-var';
-import prisma from '../../lib/prisma';
-import { builder } from '../builder';
-
-// const Preference = builder.objectRef<Preference>('Preference').implement({
-//   fields: (t) => ({
-//     theme: t.exposeString('theme'),
-//   }),
-// });
-
-builder.prismaObject('User', {
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    email: t.exposeString('email'),
-    name: t.exposeString('name', { nullable: true }),
-    accessList: t.relation('accessList'),
-    // preference: t.field({
-    //   type: Preference,
-    //   select: { preference: true },
-    //   resolve: (entry) => entry.preference,
-    // }),
-  }),
-});
+import { isProduction } from '../../../lib/env-var';
+import prisma from '../../../lib/prisma';
+import { builder } from '../../builder';
+import { createAccess } from '../access/util';
 
 builder.queryField('userCurrent', (t) =>
   t.prismaField({
@@ -36,8 +17,10 @@ builder.queryField('userCurrent', (t) =>
       let userEntry = await prisma.user.upsert({
         ...query,
         where: { email: user.email },
-        // not updating the record if already exists
-        update: {},
+        // updating document from context, if
+        update: {
+          name: user.name,
+        },
         // create the user if not already in database
         create: user,
       });
@@ -57,23 +40,20 @@ builder.queryField('userCurrent', (t) =>
             where: { user: { email: 'devuser@email.com' } },
           });
           // clone devAccessList to context user
-          const ownAccessLists = await Promise.all(
+          // We can't create access directly in user.update because
+          // mongoDB does not support composite IDs and compound
+          // unique constraints
+          // See: https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-composite-ids-and-constraints
+          await Promise.all(
             devAccessList.map(async (devAccess) =>
-              prisma.access.create({
-                data: {
-                  role: 'ADMIN',
-                  userId: userEntry.id,
-                  communityId: devAccess.communityId,
-                },
-              })
+              createAccess(user, devAccess.communityId)
             )
           );
-          userEntry = await prisma.user.update({
+          // Get the new userEntry again (should contain new
+          // connections to the access document now)
+          userEntry = await prisma.user.findUniqueOrThrow({
             ...query,
             where: { id: userEntry.id },
-            data: {
-              accessList: { connect: ownAccessLists },
-            },
           });
         }
       }
