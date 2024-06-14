@@ -15,11 +15,11 @@ import {
 import { useDebounce } from '@uidotdev/usehooks';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { FaSearch } from 'react-icons/fa';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { Icon } from '~/view/base/icon';
 import { MoreMenu } from './more-menu';
 import { useTableData } from './use-table-data';
 
@@ -108,7 +108,7 @@ export default function PropertyList({ params }: RouteArgs) {
           isClearable
           placeholder="Search ..."
           description={`${totalCount} entries found`}
-          startContent={<FaSearch className="text-xl2" />}
+          startContent={<Icon icon="search" />}
           defaultValue={searchText}
           onValueChange={setSearchText}
           onClear={() => setSearchText(undefined)}

@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardBody,
   CardFooter,
@@ -7,8 +6,9 @@ import {
   Input,
 } from '@nextui-org/react';
 import React from 'react';
-import { IoMdAddCircleOutline } from 'react-icons/io';
 import { useFieldArray } from '~/custom-hooks/hook-form';
+import { Button } from '~/view/base/button';
+import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
 import { HiddenList } from './hidden-list';
 import { VisibleList } from './visible-list';
@@ -88,7 +88,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
           />
         </div>
       </CardBody>
-      <CardFooter>
+      <CardFooter className="min-h-[48px] mt-1">
         <div className="flex items-start gap-2">
           <Input
             aria-label="New event name"
@@ -101,7 +101,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
           <div>
             <Button
               onClick={addNewEventItem}
-              endContent={<IoMdAddCircleOutline />}
+              endContent={<Icon icon="add" />}
               isDisabled={!newItem || !isItemValid(newItem)}
             >
               Add Event

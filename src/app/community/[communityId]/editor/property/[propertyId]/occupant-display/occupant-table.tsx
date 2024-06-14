@@ -9,7 +9,7 @@ import {
   getKeyValue,
 } from '@nextui-org/react';
 import React from 'react';
-import { MdEmail } from 'react-icons/md';
+import { Icon } from '~/view/base/icon';
 import { OccupantEntry } from './_type';
 import { OptOut } from './opt-out';
 
@@ -48,7 +48,7 @@ export const OccupantTable: React.FC<Props> = ({
       key: 'email',
       label: (
         <div className="flex items-center gap-1">
-          <MdEmail /> Email
+          <Icon icon="email" /> Email
         </div>
       ),
     },

@@ -59,7 +59,7 @@ const errorLink = onError((response) => {
     );
   }
   if (networkError) {
-    console.warn(`[Network error]: ${networkError}`);
+    console.warn(networkError);
   }
   console.warn('operation: %o', operation);
 });

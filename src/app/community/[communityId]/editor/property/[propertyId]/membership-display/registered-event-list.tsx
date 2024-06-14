@@ -1,8 +1,8 @@
 import { Chip } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
-import { MdOutlineThumbDown, MdOutlineThumbUp } from 'react-icons/md';
 import * as GQL from '~/graphql/generated/graphql';
+import { Icon } from '~/view/base/icon';
 
 interface Props {
   className?: string;
@@ -23,7 +23,11 @@ export const RegisteredEventList: React.FC<Props> = ({
           radius="md"
           color={isMember ? 'success' : 'secondary'}
           endContent={
-            isMember ? <MdOutlineThumbUp size={18} /> : <MdOutlineThumbDown />
+            isMember ? (
+              <Icon icon="thumb-up" size={18} />
+            ) : (
+              <Icon icon="thumb-down" size={18} />
+            )
           }
         >
           {isMember ? 'member' : 'non-member'}

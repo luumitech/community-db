@@ -1,5 +1,5 @@
 import React from 'react';
-import { IoCheckmark } from 'react-icons/io5';
+import { Icon } from '~/view/base/icon';
 import { OccupantEntry } from './_type';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 export const OptOut: React.FC<Props> = ({ className, entry }) => {
   return (
     <div className={className}>
-      {!!entry.optOut && <IoCheckmark className="text-xl" />}
+      {!!entry.optOut && <Icon icon="checkmark" size={18} />}
     </div>
   );
 };

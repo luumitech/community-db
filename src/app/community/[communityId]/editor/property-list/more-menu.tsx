@@ -8,9 +8,9 @@ import {
 } from '@nextui-org/react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { IoMdMore } from 'react-icons/io';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
+import { Icon } from '~/view/base/icon';
 import { CommunityDeleteModal } from './community-delete-modal';
 import {
   CommunityModifyModal,
@@ -37,7 +37,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
             isIconOnly
             variant="light"
           >
-            <IoMdMore />
+            <Icon icon="more" />
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
