@@ -1,30 +1,9 @@
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps } from '@nextui-org/react';
 import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-
-const CommunityNameFromIdQuery = graphql(/* GraphQL */ `
-  query communityNameFromId($id: ID!) {
-    communityFromId(id: $id) {
-      id
-      name
-    }
-  }
-`);
-
-const PropertyNameFromIdQuery = graphql(/* GraphQL */ `
-  query propertyNameFromId($communityId: ID!, $propertyId: ID!) {
-    communityFromId(id: $communityId) {
-      id
-      propertyFromId(id: $propertyId) {
-        id
-        address
-      }
-    }
-  }
-`);
 
 interface MenuItemEntry extends BreadcrumbItemProps {
   id: string;
@@ -36,8 +15,6 @@ interface MenuItemEntry extends BreadcrumbItemProps {
  */
 export function useTopMenu() {
   const pathname = usePathname();
-  const [communityNameQuery] = useLazyQuery(CommunityNameFromIdQuery);
-  const [propertyNameQuery] = useLazyQuery(PropertyNameFromIdQuery);
   const [menuItems, { set }] = useList<MenuItemEntry>([]);
 
   const getItems = React.useCallback(async () => {
@@ -67,18 +44,12 @@ export function useTopMenu() {
         default:
           if (op != null) {
             const communityId = op;
-            const result = await communityNameQuery({
-              variables: { id: communityId },
+            items.push({
+              id: 'community-editor',
+              href: `/community/${communityId}/editor/property-list`,
+              children: <CommunityName communityId={communityId} />,
             });
-            const communityName = result.data?.communityFromId.name;
-            if (communityName) {
-              items.push({
-                id: 'community-editor',
-                href: `/community/${communityId}/editor/property-list`,
-                children: communityName,
-              });
-              await handleSingleCommunity(communityId);
-            }
+            await handleSingleCommunity(communityId);
           }
           break;
       }
@@ -107,17 +78,16 @@ export function useTopMenu() {
         case 'property': {
           const propertyId = segments.shift();
           if (propertyId) {
-            const result = await propertyNameQuery({
-              variables: { communityId, propertyId },
+            items.push({
+              id: 'property-editor',
+              href: `/community/${communityId}/editor/property/${propertyId}`,
+              children: (
+                <PropertyAddress
+                  communityId={communityId}
+                  propertyId={propertyId}
+                />
+              ),
             });
-            const address = result.data?.communityFromId.propertyFromId.address;
-            if (address) {
-              items.push({
-                id: 'property-editor',
-                href: `/community/${communityId}/editor/property/${propertyId}`,
-                children: address,
-              });
-            }
           }
           break;
         }
@@ -157,7 +127,7 @@ export function useTopMenu() {
           break;
       }
     }
-  }, [pathname, communityNameQuery, propertyNameQuery]);
+  }, [pathname]);
 
   React.useEffect(() => {
     (async () => {
@@ -168,3 +138,51 @@ export function useTopMenu() {
 
   return menuItems;
 }
+
+const CommunityNameQuery = graphql(/* GraphQL */ `
+  query communityName($id: ID!) {
+    communityFromId(id: $id) {
+      id
+      name
+    }
+  }
+`);
+
+/**
+ * Get community name from Id
+ */
+const CommunityName: React.FC<{ communityId: string }> = ({ communityId }) => {
+  const result = useQuery(CommunityNameQuery, {
+    variables: { id: communityId },
+  });
+  const communityName = result.data?.communityFromId.name;
+
+  return <div>{communityName ?? ''}</div>;
+};
+
+const PropertyNameQuery = graphql(/* GraphQL */ `
+  query propertyName($communityId: ID!, $propertyId: ID!) {
+    communityFromId(id: $communityId) {
+      id
+      propertyFromId(id: $propertyId) {
+        id
+        address
+      }
+    }
+  }
+`);
+
+/**
+ * Get property address from Id
+ */
+const PropertyAddress: React.FC<{
+  communityId: string;
+  propertyId: string;
+}> = ({ communityId, propertyId }) => {
+  const result = useQuery(PropertyNameQuery, {
+    variables: { communityId, propertyId },
+  });
+  const address = result.data?.communityFromId.propertyFromId.address;
+
+  return <div>{address ?? ''}</div>;
+};

@@ -31,7 +31,8 @@ model User {
 
 enum Role {
   ADMIN
-  VIEW
+  EDITOR
+  VIEWER
 }
 
 /// Access document describes one user's access permission
@@ -49,6 +50,7 @@ model Access {
 
 model Community {
   id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  shortId      String           @default(nanoid(6))
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   updatedById  String?          @db.ObjectId
@@ -69,6 +71,7 @@ type SupportedEvent {
 
 model Property {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  shortId        String       @default(nanoid(6))
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   updatedById    String?      @db.ObjectId

@@ -1,5 +1,6 @@
 import prisma from '../../../lib/prisma';
 import { builder } from '../../builder';
+import { MutationType } from '../../pubsub';
 import { getCommunityEntry } from './util';
 
 const communityDeletePayloadRef = builder
@@ -17,27 +18,35 @@ builder.mutationField('communityDelete', (t) =>
       id: t.arg.id({ required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user, pubSub } = await ctx;
       // Verify access to community
-      await getCommunityEntry(user, args.id.toString());
+      const entry = await getCommunityEntry(user, args.id.toString());
 
       const [access, property, community] = await prisma.$transaction([
         prisma.access.deleteMany({
           where: {
-            communityId: args.id.toString(),
+            communityId: entry.id,
           },
         }),
         prisma.property.deleteMany({
           where: {
-            communityId: args.id.toString(),
+            communityId: entry.id,
           },
         }),
         prisma.community.delete({
           where: {
-            id: args.id.toString(),
+            id: entry.id,
           },
         }),
       ]);
+
+      // broadcast deletion to community
+      pubSub.publish(`community/${entry.shortId}/`, {
+        broadcasterId: user.email,
+        mutationType: MutationType.DELETED,
+        community,
+      });
+
       return community;
     },
   })

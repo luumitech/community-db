@@ -35,7 +35,7 @@ const membershipRef = builder.objectRef<Membership>('Membership').implement({
 
 export const propertyRef = builder.prismaObject('Property', {
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeString('shortId'),
     address: t.exposeString('address'),
     streetNo: t.exposeString('streetNo', { nullable: true }),
     streetName: t.exposeString('streetName', { nullable: true }),

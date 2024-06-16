@@ -16,8 +16,9 @@ const subscriptionEventRef = builder
   .interfaceRef<PubSubEvent>('SubscriptionEvent')
   .implement({
     fields: (t) => ({
-      mutationType: t.exposeString('mutationType', {
+      mutationType: t.expose('mutationType', {
         description: 'type of change triggering the subscription event',
+        type: MutationType,
       }),
       broadcaster: t.prismaField({
         description: 'event publisher user information',
@@ -71,7 +72,7 @@ builder.subscriptionType({
       type: communityEventRef,
       nullable: true,
       args: {
-        id: t.arg.id({ description: 'Community ID', required: true }),
+        id: t.arg.id({ description: 'Community short ID', required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
         const { user, pubSub } = await ctx;

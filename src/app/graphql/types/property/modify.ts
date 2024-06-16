@@ -52,23 +52,28 @@ builder.mutationField('propertyModify', (t) =>
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
-      const propertyId = self.id.toString();
-      const entry = await getPropertyEntry(user, propertyId, {
+      const shortId = self.id.toString();
+      const entry = await getPropertyEntry(user, shortId, {
         select: {
+          id: true,
           updatedAt: true,
-          communityId: true,
+          community: {
+            select: {
+              shortId: true,
+            },
+          },
         },
       });
       if (entry.updatedAt.toISOString() !== self.updatedAt) {
         throw new GraphQLError(
-          `Attempting to update a stale property ${propertyId}, please refresh browser.`
+          `Attempting to update a stale property ${shortId}, please refresh browser.`
         );
       }
 
       const property = await prisma.property.update({
         ...query,
         where: {
-          id: propertyId,
+          id: entry.id,
         },
         // @ts-expect-error: composite types like 'occupantList'
         // is allowed to be undefined
@@ -79,7 +84,7 @@ builder.mutationField('propertyModify', (t) =>
       });
 
       // broadcast modification to property
-      pubSub.publish(`community/${entry.communityId}/property`, {
+      pubSub.publish(`community/${entry.community.shortId}/property`, {
         broadcasterId: user.email,
         mutationType: MutationType.UPDATED,
         property,

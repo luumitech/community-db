@@ -80,7 +80,7 @@ const communityStatRef = builder
 
 builder.prismaObject('Community', {
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeString('shortId'),
     name: t.exposeString('name', { nullable: false }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
@@ -174,7 +174,7 @@ builder.prismaObject('Community', {
         const entry = await prisma.property.findFirstOrThrow({
           ...query,
           where: {
-            id: args.id.toString(),
+            shortId: args.id.toString(),
             communityId: parent.id,
           },
         });

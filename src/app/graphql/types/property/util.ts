@@ -3,23 +3,27 @@ import { GraphQLError } from 'graphql';
 import prisma from '../../../lib/prisma';
 import { type Context } from '../../context';
 
+type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
+
 /**
  * Get property database entry of a given ID
  * and verify if user has access to it
+ *
+ * @param user context user performing search
+ * @param shortId property shortID
+ * @param args prisma findFirstOrThrow arguments
+ * @returns
  */
-export async function getPropertyEntry(
+export async function getPropertyEntry<T extends FindArgs>(
   user: Context['user'],
-  propertyId: string,
-  findArgs?: Omit<
-    Parameters<typeof prisma.property.findUniqueOrThrow>[0],
-    'where'
-  >
+  shortId: string,
+  args?: Prisma.SelectSubset<T, FindArgs>
 ) {
   try {
-    const entry = await prisma.property.findUniqueOrThrow({
-      ...findArgs,
+    const entry = await prisma.property.findFirstOrThrow<T>({
+      ...args!,
       where: {
-        id: propertyId,
+        shortId,
         community: {
           accessList: {
             some: {
@@ -27,7 +31,7 @@ export async function getPropertyEntry(
             },
           },
         },
-      },
+      } satisfies Prisma.PropertyWhereInput,
     });
     return entry;
   } catch (err) {
@@ -37,7 +41,7 @@ export async function getPropertyEntry(
          * https://www.prisma.io/docs/orm/reference/error-reference#p2025
          */
         case 'P2025':
-          throw new GraphQLError(`Property ${propertyId} Not Found`);
+          throw new GraphQLError(`Property ${shortId} Not Found`);
       }
     }
     throw err;

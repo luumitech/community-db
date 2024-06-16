@@ -2,6 +2,7 @@ import { useSubscription } from '@apollo/client';
 import { useParams } from 'next/navigation';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 
 const CommunitySubscription = graphql(/* GraphQL */ `
@@ -34,6 +35,17 @@ const PropertySubscription = graphql(/* GraphQL */ `
   }
 `);
 
+function mutationVerb(mutationType: GQL.MutationType) {
+  switch (mutationType) {
+    case GQL.MutationType.Created:
+      return 'created';
+    case GQL.MutationType.Updated:
+      return 'modified';
+    case GQL.MutationType.Deleted:
+      return 'deleted';
+  }
+}
+
 export function useSetupSubscription() {
   const params = useParams<{ communityId?: string }>();
   const communityId = params.communityId;
@@ -48,9 +60,13 @@ export function useSetupSubscription() {
       if (communityFromId) {
         const community = communityFromId.community;
         if (community) {
-          const { broadcaster } = communityFromId;
+          const { broadcaster, mutationType } = communityFromId;
           evictCache(cache, 'Community', communityId);
-          toast.info(`${community.name} was modified by ${broadcaster.email}`);
+          toast.info(
+            `${community.name} was ${mutationVerb(mutationType)} by ${
+              broadcaster.email
+            }`
+          );
         }
       }
     },
@@ -70,9 +86,11 @@ export function useSetupSubscription() {
           // community stat are changed if property changes as well
           evictCache(cache, 'Community', communityId);
 
-          const { broadcaster } = propertyInCommunity;
+          const { broadcaster, mutationType } = propertyInCommunity;
           toast.info(
-            `${property.address} was modified by ${broadcaster.email}`
+            `${property.address} was ${mutationVerb(mutationType)} by ${
+              broadcaster.email
+            }`
           );
         }
       }
