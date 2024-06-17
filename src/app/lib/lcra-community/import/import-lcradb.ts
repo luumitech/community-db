@@ -132,12 +132,14 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     });
     // Map updatedByEmail into a user database document
     const { updatedByEmail, ...property } = _property;
-    const updatedBy = {
-      connectOrCreate: {
-        where: { email: updatedByEmail },
-        create: { email: updatedByEmail },
-      },
-    };
+    const updatedBy = updatedByEmail
+      ? {
+          connectOrCreate: {
+            where: { email: updatedByEmail },
+            create: { email: updatedByEmail },
+          },
+        }
+      : undefined;
 
     // Determine total number of occupants by scanning the
     // column headers
@@ -167,7 +169,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
     propertyList.push({
       ...property,
-      updatedBy,
+      ...(updatedBy && { updatedBy }),
     });
   }
 

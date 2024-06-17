@@ -1,22 +1,18 @@
-import prisma from '~/lib/prisma';
+import { type Context } from '~/graphql/context';
+import { getCommunityEntry } from '~/graphql/types/community/util';
 
 /**
  * Get property list for a given community from database
  *
- * @param communityId community ID
- * @param email context email
+ * @param user context user performing search
+ * @param communityId community shortID
  * @returns
  */
-export async function communityData(communityId: string, email: string) {
-  const data = await prisma.community.findUniqueOrThrow({
-    where: {
-      id: communityId,
-      accessList: {
-        some: {
-          user: { email },
-        },
-      },
-    },
+export async function communityData(
+  user: Context['user'],
+  communityId: string
+) {
+  const data = await getCommunityEntry(user, communityId, {
     include: {
       propertyList: {
         include: {

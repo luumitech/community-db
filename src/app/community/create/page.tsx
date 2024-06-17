@@ -4,6 +4,7 @@ import { Button, Input } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { InputData, useHookForm } from './use-hook-form';
 
@@ -29,7 +30,7 @@ export default function CommunityCreate() {
           const newCommunity = await create({ variables: form });
           const newId = newCommunity.data?.communityCreate.id;
           if (newId) {
-            router.push(`/community/${newId}/editor/property-list`);
+            router.push(appPath('propertyList', { communityId: newId }));
           }
         },
         {

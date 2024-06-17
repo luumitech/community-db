@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { ListBox, ListboxItemProps } from '~/view/base/list-box';
 
 const CurrentUserInfoQuery = graphql(/* GraphQL */ `
@@ -28,14 +29,14 @@ export default function CommunitySelect() {
   const accessList = result.data?.userCurrent.accessList ?? [];
   const items: ListboxItemProps[] = accessList.map((entry) => ({
     key: entry.community.id,
-    href: `/community/${entry.community.id}/editor/property-list`,
+    href: appPath('propertyList', { communityId: entry.community.id }),
     children: entry.community.name,
   }));
 
   return (
     <div>
       <ListBox
-        header="Select Database"
+        header="Select Community"
         loading={result.loading}
         items={items}
       />

@@ -14,6 +14,7 @@ import {
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
+import { appPath } from '~/lib/app-path';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
@@ -66,7 +67,7 @@ export const Header: React.FC<Props> = ({}) => {
               height={36}
             />
             <Link
-              href="/"
+              href={appPath('home')}
               color="foreground"
               className="pl-2 flex-col text-center font-bold leading-5"
             >

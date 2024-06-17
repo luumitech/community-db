@@ -4,6 +4,7 @@ import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 
 interface MenuItemEntry extends BreadcrumbItemProps {
   id: string;
@@ -17,7 +18,7 @@ export function useTopMenu() {
   const pathname = usePathname();
   const [menuItems, { set }] = useList<MenuItemEntry>([]);
 
-  const getItems = React.useCallback(async () => {
+  const getItems = React.useCallback(() => {
     const items: MenuItemEntry[] = [];
     // could've used useSelectedLayoutSegments, but it's not
     // memoized
@@ -28,51 +29,67 @@ export function useTopMenu() {
     const segment = segments.shift();
     switch (segment) {
       case 'community': {
-        await handleCommunity();
+        items.push({
+          id: 'welcome',
+          href: appPath('communityWelcome'),
+          children: 'Welcome',
+        });
+        handleCommunity();
         break;
       }
     }
     return items;
 
-    async function handleCommunity() {
+    function handleCommunity() {
       const op = segments.shift();
       switch (op) {
         case 'create':
-        case 'select':
+          items.push({
+            id: 'create',
+            href: appPath('communityCreate'),
+            children: 'Create Community',
+          });
           break;
-
+        case 'select':
+          items.push({
+            id: 'create',
+            href: appPath('communitySelect'),
+            children: 'Select Community',
+          });
+          break;
         default:
           if (op != null) {
             const communityId = op;
+            items.pop();
             items.push({
               id: 'community-editor',
-              href: `/community/${communityId}/editor/property-list`,
+              href: appPath('propertyList', { communityId }),
               children: <CommunityName communityId={communityId} />,
             });
-            await handleSingleCommunity(communityId);
+            handleSingleCommunity(communityId);
           }
           break;
       }
     }
 
-    async function handleSingleCommunity(communityId: string) {
+    function handleSingleCommunity(communityId: string) {
       const op = segments.shift();
       switch (op) {
         case 'editor':
-          await handleCommunityEditor(communityId);
+          handleCommunityEditor(communityId);
           break;
 
         case 'management':
-          await handleCommunityManagement(communityId);
+          handleCommunityManagement(communityId);
           break;
 
         case 'tool':
-          await handleCommunityTool(communityId);
+          handleCommunityTool(communityId);
           break;
       }
     }
 
-    async function handleCommunityEditor(communityId: string) {
+    function handleCommunityEditor(communityId: string) {
       const op = segments.shift();
       switch (op) {
         case 'property': {
@@ -80,7 +97,7 @@ export function useTopMenu() {
           if (propertyId) {
             items.push({
               id: 'property-editor',
-              href: `/community/${communityId}/editor/property/${propertyId}`,
+              href: appPath('property', { communityId, propertyId }),
               children: (
                 <PropertyAddress
                   communityId={communityId}
@@ -94,13 +111,13 @@ export function useTopMenu() {
       }
     }
 
-    async function handleCommunityManagement(communityId: string) {
+    function handleCommunityManagement(communityId: string) {
       const op = segments.shift();
       switch (op) {
         case 'import-xlsx':
           items.push({
             id: 'import-xlsx',
-            href: `/community/${communityId}/management/import-xlsx`,
+            href: appPath('communityImport', { communityId }),
             children: 'Import',
           });
           break;
@@ -108,20 +125,20 @@ export function useTopMenu() {
         case 'export-xlsx':
           items.push({
             id: 'export-xlsx',
-            href: `/community/${communityId}/management/export-xlsx`,
+            href: appPath('communityExport', { communityId }),
             children: 'Export',
           });
           break;
       }
     }
 
-    async function handleCommunityTool(communityId: string) {
+    function handleCommunityTool(communityId: string) {
       const op = segments.shift();
       switch (op) {
         case 'dashboard':
           items.push({
             id: 'tool-dashboard',
-            href: `/community/${communityId}/tool/dashboard`,
+            href: appPath('communityDashboard', { communityId }),
             children: 'Dashboard',
           });
           break;
@@ -130,10 +147,8 @@ export function useTopMenu() {
   }, [pathname]);
 
   React.useEffect(() => {
-    (async () => {
-      const items = await getItems();
-      set(items);
-    })();
+    const items = getItems();
+    set(items);
   }, [getItems, set]);
 
   return menuItems;

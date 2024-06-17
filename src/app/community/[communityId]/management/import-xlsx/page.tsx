@@ -2,6 +2,7 @@
 import { Button, Link } from '@nextui-org/react';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appPath } from '~/lib/app-path';
 import { importCommunity } from '~/server-action/import-community';
 import { toast } from '~/view/base/toastify';
 import { ImportForm } from './import-form';
@@ -41,7 +42,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
                     size="sm"
                     as={Link}
                     color="primary"
-                    href={`/community/${communityId}/editor/property-list`}
+                    href={appPath('propertyList', { communityId })}
                   >
                     View
                   </Button>

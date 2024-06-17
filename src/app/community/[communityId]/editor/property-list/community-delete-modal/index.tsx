@@ -3,6 +3,7 @@ import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { DeleteModal } from './delete-modal';
 
@@ -36,7 +37,7 @@ export const CommunityDeleteModal: React.FC<Props> = (props) => {
       deleteCommunity({
         variables: { id: entry.id },
         onCompleted: () => {
-          router.push(`/community/select`);
+          router.push(appPath('communitySelect'));
         },
         // update: (cache) => {
         //   const normalizedId = cache.identify({

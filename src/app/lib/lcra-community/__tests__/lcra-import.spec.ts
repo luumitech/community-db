@@ -111,17 +111,17 @@ describe('import community xlsx', () => {
     const result = await testUtil.graphql.executeSingle({ document });
     const accessList = result.data?.userCurrent.accessList ?? [];
     expect(accessList).toHaveLength(1);
-    const firstProperty = accessList[0].community.propertyList.edges[1].node;
-    expect(firstProperty).toEqual({
+    const adventure = accessList[0].community.propertyList.edges[0].node;
+    const fortune = accessList[0].community.propertyList.edges[1].node;
+    expect(adventure.updatedBy?.email).toBe('testuser');
+    expect(fortune).toEqual({
       address: '99 Fortune Drive',
       streetNo: '99',
       streetName: 'Fortune Drive',
       postalCode: 'A0A0A0',
       notes: 'Notes',
       updatedAt: '2023-02-23T03:19:09.000Z',
-      updatedBy: {
-        email: 'testuser',
-      },
+      updatedBy: null,
       occupantList: [
         {
           firstName: 'First1',

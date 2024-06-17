@@ -1,4 +1,5 @@
 import React from 'react';
+import { appPath } from '~/lib/app-path';
 import { ListBox } from '~/view/base/list-box';
 
 export default function CommunityLanding() {
@@ -8,12 +9,12 @@ export default function CommunityLanding() {
       items={[
         {
           key: 'select-community',
-          href: '/community/select',
+          href: appPath('communitySelect'),
           children: 'Select Community',
         },
         {
           key: 'create-community',
-          href: '/community/create',
+          href: appPath('communityCreate'),
           children: 'Create New Community',
         },
       ]}

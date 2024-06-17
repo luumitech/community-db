@@ -39,7 +39,7 @@ export async function exportCommunityAsBase64(communityId: string) {
     email: session.user.email,
     communityId,
   });
-  const community = await communityData(form.communityId, form.email);
+  const community = await communityData(session.user, form.communityId);
   const helper = new ExportHelper(community.propertyList);
   const xlsxBuf = helper.toXlsx();
   return {

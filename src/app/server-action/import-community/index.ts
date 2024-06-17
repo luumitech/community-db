@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
+import { getCommunityEntry } from '~/graphql/types/community/util';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import prisma from '~/lib/prisma';
 import { schema } from './_type';
@@ -24,11 +25,13 @@ export async function importCommunity(formData: FormData) {
   const workbook = XLSX.read(xlsxBuf);
   const { propertyList, eventList } = importLcraDB(workbook);
 
-  const { eventList: existingEventList } =
-    await prisma.community.findFirstOrThrow({
-      where: { id: form.communityId },
-      select: { eventList: true },
-    });
+  const community = await getCommunityEntry(session.user, form.communityId, {
+    select: {
+      id: true,
+      eventList: true,
+    },
+  });
+  const existingEventList = community.eventList;
   // Only keep existing event list, if imported event list
   // has exact same event (but can be in different order)
   const keepExistingEventList =
@@ -36,16 +39,14 @@ export async function importCommunity(formData: FormData) {
     R.difference.multiset(existingEventList, eventList).length === 0;
 
   await prisma.community.update({
-    where: { id: form.communityId },
+    where: { id: community.id },
     data: {
       ...(!keepExistingEventList && { eventList }),
       propertyList: {
         // Remove existing property list
         deleteMany: {},
         // Add new imported property list
-        createMany: {
-          data: propertyList,
-        },
+        create: propertyList,
       },
     },
   });

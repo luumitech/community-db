@@ -19,6 +19,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { MoreMenu } from './more-menu';
 import { useTableData } from './use-table-data';
@@ -126,7 +127,9 @@ export default function PropertyList({ params }: RouteArgs) {
           <Button
             as={Link}
             color="primary"
-            href={`/community/${communityFromId.id}/management/import-xlsx`}
+            href={appPath('communityImport', {
+              communityId: communityFromId.id,
+            })}
           >
             Import from Excel
           </Button>
