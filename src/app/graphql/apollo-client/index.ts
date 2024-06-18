@@ -11,6 +11,7 @@ import {
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { getMainDefinition } from '@apollo/client/utilities';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { print } from 'graphql';
 import { Client, ClientOptions, createClient } from 'graphql-sse';
 import { typePolicies } from './type-policies';
@@ -65,7 +66,8 @@ const errorLink = onError((response) => {
 });
 
 // Non-subscription enabled link
-const httpLink = new HttpLink({
+// const httpLink = new HttpLink({
+const httpLink = createUploadLink({
   uri: '/api/graphql',
 });
 

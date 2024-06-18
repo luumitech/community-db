@@ -1,7 +1,7 @@
 import { Property, SupportedEvent } from '@prisma/client';
 import { EJSON } from 'bson';
-import prisma from '../../../lib/prisma';
-import { builder } from '../../builder';
+import { builder } from '~/graphql/builder';
+import prisma from '~/lib/prisma';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { propertyRef } from '../property/object';
 

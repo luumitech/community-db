@@ -4,9 +4,9 @@ import {
 } from '@graphql-tools/executor-http';
 import { AsyncExecutor, ExecutionRequest } from '@graphql-tools/utils';
 import { createYoga } from 'graphql-yoga';
+import type { Context } from '~/graphql/context';
 import { pubSub } from '~/graphql/pubsub';
-import type { Context } from '../context';
-import { schema } from '../schema';
+import { schema } from '~/graphql/schema';
 
 /**
  * Helper test utility class for invoking graphQL query/mutation

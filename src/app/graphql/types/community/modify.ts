@@ -1,9 +1,12 @@
 import { Community, SupportedEvent } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import { extractEventList } from '../../../lib/lcra-community/import/event-list-util';
-import prisma from '../../../lib/prisma';
-import { builder } from '../../builder';
-import { MutationType } from '../../pubsub';
+import * as R from 'remeda';
+import * as XLSX from 'xlsx';
+import { builder } from '~/graphql/builder';
+import { MutationType } from '~/graphql/pubsub';
+import { importLcraDB } from '~/lib/lcra-community/import';
+import { extractEventList } from '~/lib/lcra-community/import/event-list-util';
+import prisma from '~/lib/prisma';
 import { UpdateInput } from '../common';
 import { getCommunityEntry } from './util';
 
@@ -98,6 +101,71 @@ builder.mutationField('communityModify', (t) =>
             eventList: await getCompleteEventList(entry, eventList),
           }),
           ...optionalInput,
+        },
+      });
+
+      // broadcast modification to community
+      pubSub.publish(`community/${shortId}/`, {
+        broadcasterId: user.email,
+        mutationType: MutationType.UPDATED,
+        community,
+      });
+
+      return community;
+    },
+  })
+);
+
+const CommunityImportInput = builder.inputType('CommunityImportInput', {
+  fields: (t) => ({
+    id: t.id({ description: 'community ID', required: true }),
+    xlsx: t.field({
+      description: 'xlsx containing community information',
+      type: 'File',
+      required: true,
+    }),
+  }),
+});
+
+builder.mutationField('communityImport', (t) =>
+  t.prismaField({
+    type: 'Community',
+    args: {
+      input: t.arg({ type: CommunityImportInput, required: true }),
+    },
+    resolve: async (query, _parent, args, ctx) => {
+      const { user, pubSub } = await ctx;
+      const { xlsx } = args.input;
+      const bytes = await xlsx.arrayBuffer();
+      const xlsxBuf = Buffer.from(bytes);
+      const workbook = XLSX.read(xlsxBuf);
+      const { propertyList, eventList } = importLcraDB(workbook);
+
+      const shortId = args.input.id.toString();
+      const existing = await getCommunityEntry(user, shortId, {
+        select: {
+          id: true,
+          eventList: true,
+        },
+      });
+      const existingEventList = existing.eventList;
+      // Only keep existing event list, if imported event list
+      // has exact same event (but can be in different order)
+      const keepExistingEventList =
+        eventList.length === existingEventList.length &&
+        R.difference.multiset(existingEventList, eventList).length === 0;
+
+      const community = await prisma.community.update({
+        ...query,
+        where: { id: existing.id },
+        data: {
+          ...(!keepExistingEventList && { eventList }),
+          propertyList: {
+            // Remove existing property list
+            deleteMany: {},
+            // Add new imported property list
+            create: propertyList,
+          },
         },
       });
 

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import prisma from '../../../lib/prisma';
-import { type Context } from '../../context';
+import { type Context } from '~/graphql/context';
+import prisma from '~/lib/prisma';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
@@ -20,18 +20,19 @@ export async function getPropertyEntry<T extends FindArgs>(
   args?: Prisma.SelectSubset<T, FindArgs>
 ) {
   try {
-    const entry = await prisma.property.findFirstOrThrow<T>({
-      ...args!,
-      where: {
-        shortId,
-        community: {
-          accessList: {
-            some: {
-              user: { email: user.email },
-            },
+    const where: Prisma.PropertyWhereInput = {
+      shortId,
+      community: {
+        accessList: {
+          some: {
+            user: { email: user.email },
           },
         },
-      } satisfies Prisma.PropertyWhereInput,
+      },
+    };
+    const entry = await prisma.property.findFirstOrThrow<T>({
+      ...args!,
+      where,
     });
     return entry;
   } catch (err) {

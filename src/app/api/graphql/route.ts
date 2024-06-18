@@ -26,4 +26,9 @@ const yoga = createYoga<{
 
 const { handleRequest } = yoga;
 
-export { handleRequest as POST };
+export {
+  // Required for graphiql to work
+  handleRequest as GET,
+  handleRequest as OPTIONS,
+  handleRequest as POST,
+};

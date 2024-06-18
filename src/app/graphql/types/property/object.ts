@@ -1,5 +1,5 @@
 import type { Event, Membership, Occupant } from '@prisma/client';
-import { builder } from '../../builder';
+import { builder } from '~/graphql/builder';
 
 const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
   fields: (t) => ({

@@ -2,26 +2,40 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { graphql } from '~/graphql/generated';
 
 function schema() {
   return yup.object({
-    communityId: yup.string().required(),
-    xlsx: yup
-      .mixed<FileList>()
-      .required()
-      .test('required', 'Please upload a valid xlsx file', (files) => {
-        return files.length > 0;
-      }),
+    id: yup.string().required(),
+    hidden: yup.object({
+      // To be mapped to xlsx argument later
+      importList: yup
+        .mixed<FileList>()
+        .required()
+        .test('required', 'Please upload a valid xlsx file', (files) => {
+          return files.length > 0;
+        }),
+    }),
   });
 }
+
+export const CommunityImportMutation = graphql(/* GraphQL */ `
+  mutation communityImport($input: CommunityImportInput!) {
+    communityImport(input: $input) {
+      id
+    }
+  }
+`);
 
 export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(communityId: string): DefaultData {
   return {
-    communityId,
-    xlsx: [] as unknown as FileList,
+    id: communityId,
+    hidden: {
+      importList: [] as unknown as FileList,
+    },
   };
 }
 

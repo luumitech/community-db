@@ -1,5 +1,5 @@
-import prisma from '../../../lib/prisma';
-import { builder } from '../../builder';
+import { builder } from '~/graphql/builder';
+import prisma from '~/lib/prisma';
 import { getCommunityEntry } from './util';
 
 builder.queryField('communityFromId', (t) =>

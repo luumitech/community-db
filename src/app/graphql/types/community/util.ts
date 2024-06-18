@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import prisma from '../../../lib/prisma';
-import { type Context } from '../../context';
+import { type Context } from '~/graphql/context';
+import prisma from '~/lib/prisma';
 
 type FindArgs = Omit<Prisma.CommunityFindFirstOrThrowArgs, 'where'>;
 
@@ -11,7 +11,7 @@ type FindArgs = Omit<Prisma.CommunityFindFirstOrThrowArgs, 'where'>;
  *
  * @param user context user performing search
  * @param shortId community shortID
- * @param args prisma findFirstOrThrow arguments
+ * @param args prisma findFirstOrThrow arguments (sans where)
  * @returns
  */
 export async function getCommunityEntry<T extends FindArgs>(
@@ -20,16 +20,17 @@ export async function getCommunityEntry<T extends FindArgs>(
   args?: Prisma.SelectSubset<T, FindArgs>
 ) {
   try {
+    const where: Prisma.CommunityWhereInput = {
+      shortId,
+      accessList: {
+        some: {
+          user: { email: user.email },
+        },
+      },
+    };
     const entry = await prisma.community.findFirstOrThrow<T>({
       ...args!,
-      where: {
-        shortId,
-        accessList: {
-          some: {
-            user: { email: user.email },
-          },
-        },
-      } satisfies Prisma.CommunityWhereInput,
+      where,
     });
     return entry;
   } catch (err) {

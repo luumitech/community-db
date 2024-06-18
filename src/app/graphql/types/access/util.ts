@@ -1,7 +1,7 @@
 import { Prisma, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import prisma from '../../../lib/prisma';
-import { type Context } from '../../context';
+import { type Context } from '~/graphql/context';
+import prisma from '~/lib/prisma';
 
 /**
  * Create Access document for a particular user

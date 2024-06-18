@@ -1,5 +1,5 @@
 import { filter, pipe } from 'graphql-yoga';
-import prisma from '../../lib/prisma';
+import prisma from '~/lib/prisma';
 import { builder } from '../builder';
 import {
   MutationType,

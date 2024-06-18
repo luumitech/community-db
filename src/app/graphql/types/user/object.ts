@@ -1,4 +1,4 @@
-import { builder } from '../../builder';
+import { builder } from '~/graphql/builder';
 
 // const Preference = builder.objectRef<Preference>('Preference').implement({
 //   fields: (t) => ({

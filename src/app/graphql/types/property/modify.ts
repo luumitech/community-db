@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
-import prisma from '../../../lib/prisma';
-import { builder } from '../../builder';
-import { MutationType } from '../../pubsub';
+import { builder } from '~/graphql/builder';
+import { MutationType } from '~/graphql/pubsub';
+import prisma from '~/lib/prisma';
 import { UpdateInput } from '../common';
 import { getPropertyEntry } from './util';
 

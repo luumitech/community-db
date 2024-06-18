@@ -1,6 +1,6 @@
-import prisma from '../../../lib/prisma';
-import { builder } from '../../builder';
-import { MutationType } from '../../pubsub';
+import { builder } from '~/graphql/builder';
+import { MutationType } from '~/graphql/pubsub';
+import prisma from '~/lib/prisma';
 import { getCommunityEntry } from './util';
 
 const communityDeletePayloadRef = builder

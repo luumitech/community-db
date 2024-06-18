@@ -36,15 +36,14 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={clsx(className, 'flex flex-col h-full')}>
-      <input type="hidden" {...register('communityId')} />
       <div className="flex items-center">
         <FileInput
           label="Upload xlsx file"
           isRequired
-          errorMessage={errors.xlsx?.message}
-          isInvalid={errors.xlsx?.message != null}
+          errorMessage={errors.hidden?.importList?.message}
+          isInvalid={errors.hidden?.importList?.message != null}
           onClear={() => clear()}
-          {...register('xlsx', {
+          {...register('hidden.importList', {
             onChange: onXlsxSelect,
           })}
         />
