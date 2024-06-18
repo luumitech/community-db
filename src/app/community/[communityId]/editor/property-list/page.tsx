@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import { useDebounce } from '@uidotdev/usehooks';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
@@ -63,7 +63,6 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
 `);
 
 export default function PropertyList({ params }: RouteArgs) {
-  const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
   const searchText = useSelector((state) => state.ui.propertyListSearch);
@@ -183,7 +182,12 @@ export default function PropertyList({ params }: RouteArgs) {
             {(columnKey) => (
               <TableCell
                 onClick={() =>
-                  router.push(`${pathname}/../property/${entry.id}`)
+                  router.push(
+                    appPath('property', {
+                      communityId: params.communityId,
+                      propertyId: entry.id,
+                    })
+                  )
                 }
               >
                 <div className="h-6">{renderCell(entry, columnKey)}</div>

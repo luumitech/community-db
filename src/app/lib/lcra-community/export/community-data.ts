@@ -1,5 +1,5 @@
 import { type Context } from '~/graphql/context';
-import { getCommunityEntry } from '~/graphql/types/community/util';
+import { getCommunityEntry } from '~/graphql/schema/community/util';
 
 /**
  * Get property list for a given community from database

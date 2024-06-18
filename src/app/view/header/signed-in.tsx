@@ -6,8 +6,8 @@ import {
   User,
 } from '@nextui-org/react';
 import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import React from 'react';
+import { appPath } from '~/lib/app-path';
 
 /**
  * Extract the first letter of each word
@@ -25,7 +25,6 @@ interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
   const { status, data } = useSession({ required: true });
-  const router = useRouter();
   if (status === 'loading') {
     return null;
   }
@@ -52,10 +51,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         <DropdownItem key="profile" textValue="user email" isReadOnly>
           <p className="font-semibold">{email}</p>
         </DropdownItem>
-        <DropdownItem
-          key="preference"
-          onClick={() => router.push('/preference')}
-        >
+        <DropdownItem key="preference" href={appPath('preference')}>
           Preference
         </DropdownItem>
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>

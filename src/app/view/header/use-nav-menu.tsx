@@ -112,6 +112,11 @@ export function useNavMenu() {
           children: indentMenuItem('Export', 1),
         },
         {
+          id: 'share',
+          ...pathMenuArg(appPath('communityShare', { communityId })),
+          children: indentMenuItem('Share', 1),
+        },
+        {
           id: 'tools',
           ...pathMenuArg(appPath('communityToolMenu', { communityId })),
           children: 'Tools',

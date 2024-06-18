@@ -5,11 +5,13 @@ import { compile } from 'path-to-regexp';
  */
 const supportedPathTemplates = {
   home: '/',
+  preference: '/preference',
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
   communityImport: '/community/:communityId/management/import-xlsx',
   communityExport: '/community/:communityId/management/export-xlsx',
+  communityShare: '/community/:communityId/management/share',
   propertyList: '/community/:communityId/editor/property-list',
   property: '/community/:communityId/editor/property/:propertyId',
   communityToolMenu: '/community/:communityId/tool/menu',
@@ -25,12 +27,18 @@ type SupportedPath = typeof supportedPathTemplates;
  * @returns
  */
 export function appPath(
-  template: 'home' | 'communityWelcome' | 'communitySelect' | 'communityCreate'
+  template:
+    | 'home'
+    | 'preference'
+    | 'communityWelcome'
+    | 'communitySelect'
+    | 'communityCreate'
 ): string;
 export function appPath(
   template:
     | 'communityImport'
     | 'communityExport'
+    | 'communityShare'
     | 'propertyList'
     | 'communityToolMenu'
     | 'communityDashboard',

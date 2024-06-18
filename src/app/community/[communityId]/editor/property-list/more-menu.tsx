@@ -4,12 +4,13 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Link,
   useDisclosure,
 } from '@nextui-org/react';
-import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { CommunityDeleteModal } from './community-delete-modal';
 import {
@@ -22,8 +23,6 @@ interface Props {
 }
 
 export const MoreMenu: React.FC<Props> = ({ community }) => {
-  const pathname = usePathname();
-  const router = useRouter();
   const communityModify = useHookFormWithDisclosure(community);
   const communityDeleteDisclosure = useDisclosure();
 
@@ -50,20 +49,23 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           </DropdownItem>
           <DropdownItem
             key="import"
-            onClick={() =>
-              router.push(`${pathname}/../../management/import-xlsx`)
-            }
+            href={appPath('communityImport', { communityId: community.id })}
           >
             Import from Excel
           </DropdownItem>
           <DropdownItem
             key="export"
-            onClick={() =>
-              router.push(`${pathname}/../../management/export-xlsx`)
-            }
-            showDivider
+            href={appPath('communityExport', { communityId: community.id })}
           >
             Export to Excel
+          </DropdownItem>
+          <DropdownItem
+            key="share"
+            href={appPath('communityShare', { communityId: community.id })}
+            endContent={<Icon icon="share" />}
+            showDivider
+          >
+            Share
           </DropdownItem>
           <DropdownItem
             key="delete"

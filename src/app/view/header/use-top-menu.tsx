@@ -129,6 +129,14 @@ export function useTopMenu() {
             children: 'Export',
           });
           break;
+
+        case 'share':
+          items.push({
+            id: 'share',
+            href: appPath('communityShare', { communityId }),
+            children: 'Share',
+          });
+          break;
       }
     }
 

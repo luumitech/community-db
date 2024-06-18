@@ -9,6 +9,7 @@ import { IoCheckmark, IoPersonAdd } from 'react-icons/io5';
 import {
   MdDragIndicator,
   MdEmail,
+  MdIosShare,
   MdOutlineClear,
   MdOutlineThumbDown,
   MdOutlineThumbUp,
@@ -31,7 +32,8 @@ type SupportedIcon =
   | 'checkmark'
   | 'person-add'
   | 'more'
-  | 'search';
+  | 'search'
+  | 'share';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -85,6 +87,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'search':
       IconElement = FaSearch;
+      break;
+    case 'share':
+      IconElement = MdIosShare;
       break;
     default:
       IconElement = MdQuestionMark;
