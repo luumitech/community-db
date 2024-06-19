@@ -5,7 +5,7 @@ import { builder } from '../builder';
  */
 export const UpdateInput = builder.inputType('UpdateInput', {
   fields: (t) => ({
-    id: t.id({ required: true }),
+    id: t.string({ required: true }),
     updatedAt: t.string({ required: true }),
   }),
 });

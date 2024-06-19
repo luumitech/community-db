@@ -3,19 +3,13 @@ import { useMutation } from '@apollo/client';
 import { Button, Input } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { InputData, useHookForm } from './use-hook-form';
-
-const CommunityCreateMutation = graphql(/* GraphQL */ `
-  mutation communityCreate($name: String!) {
-    communityCreate(name: $name) {
-      id
-      name
-    }
-  }
-`);
+import {
+  CommunityCreateMutation,
+  InputData,
+  useHookForm,
+} from './use-hook-form';
 
 export default function CommunityCreate() {
   const router = useRouter();
@@ -24,10 +18,10 @@ export default function CommunityCreate() {
   const { errors } = formState;
 
   const createCommunity = React.useCallback(
-    async (form: InputData) => {
-      toast.promise(
+    async (input: InputData) => {
+      await toast.promise(
         async () => {
-          const newCommunity = await create({ variables: form });
+          const newCommunity = await create({ variables: { input } });
           const newId = newCommunity.data?.communityCreate.id;
           if (newId) {
             router.push(appPath('propertyList', { communityId: newId }));

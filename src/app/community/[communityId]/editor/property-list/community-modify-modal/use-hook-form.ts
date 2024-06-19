@@ -10,6 +10,29 @@ import {
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 
+const EntryFragment = graphql(/* GraphQL */ `
+  fragment CommunityId_CommunityModifyModal on Community {
+    id
+    name
+    eventList {
+      name
+      hidden
+    }
+    updatedAt
+    updatedBy {
+      ...User
+    }
+  }
+`);
+
+export const CommunityMutation = graphql(/* GraphQL */ `
+  mutation communityModify($input: CommunityModifyInput!) {
+    communityModify(input: $input) {
+      ...CommunityId_CommunityModifyModal
+    }
+  }
+`);
+
 function schema() {
   return yup.object({
     self: yup.object({
@@ -36,29 +59,6 @@ function schema() {
 
 export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
-
-const EntryFragment = graphql(/* GraphQL */ `
-  fragment CommunityId_CommunityModifyModal on Community {
-    id
-    name
-    eventList {
-      name
-      hidden
-    }
-    updatedAt
-    updatedBy {
-      ...User
-    }
-  }
-`);
-
-export const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityModify($input: CommunityModifyInput!) {
-    communityModify(input: $input) {
-      ...CommunityId_CommunityModifyModal
-    }
-  }
-`);
 
 function defaultInputData(
   item: GQL.CommunityId_CommunityModifyModalFragment

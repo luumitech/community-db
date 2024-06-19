@@ -163,7 +163,7 @@ export function useTopMenu() {
 }
 
 const CommunityNameQuery = graphql(/* GraphQL */ `
-  query communityName($id: ID!) {
+  query communityName($id: String!) {
     communityFromId(id: $id) {
       id
       name
@@ -184,7 +184,7 @@ const CommunityName: React.FC<{ communityId: string }> = ({ communityId }) => {
 };
 
 const PropertyNameQuery = graphql(/* GraphQL */ `
-  query propertyName($communityId: ID!, $propertyId: ID!) {
+  query propertyName($communityId: String!, $propertyId: String!) {
     communityFromId(id: $communityId) {
       id
       propertyFromId(id: $propertyId) {

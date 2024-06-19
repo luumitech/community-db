@@ -70,7 +70,7 @@ builder.mutationField('communityModify', (t) =>
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
-      const shortId = self.id.toString();
+      const shortId = self.id;
       const entry = await getCommunityEntry(user, shortId, {
         select: {
           id: true,
@@ -118,7 +118,7 @@ builder.mutationField('communityModify', (t) =>
 
 const CommunityImportInput = builder.inputType('CommunityImportInput', {
   fields: (t) => ({
-    id: t.id({ description: 'community ID', required: true }),
+    id: t.string({ description: 'community ID', required: true }),
     xlsx: t.field({
       description: 'xlsx containing community information',
       type: 'File',
@@ -141,7 +141,7 @@ builder.mutationField('communityImport', (t) =>
       const workbook = XLSX.read(xlsxBuf);
       const { propertyList, eventList } = importLcraDB(workbook);
 
-      const shortId = args.input.id.toString();
+      const shortId = args.input.id;
       const existing = await getCommunityEntry(user, shortId, {
         select: {
           id: true,

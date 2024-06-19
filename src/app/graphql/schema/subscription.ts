@@ -72,11 +72,11 @@ builder.subscriptionType({
       type: communityEventRef,
       nullable: true,
       args: {
-        id: t.arg.id({ description: 'Community short ID', required: true }),
+        id: t.arg.string({ description: 'Community short ID', required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
         const { user, pubSub } = await ctx;
-        const communityId = args.id.toString();
+        const communityId = args.id;
         return pipe(
           pubSub.subscribe(`community/${communityId}/`),
           // Don't subscribe to events that context user publish themselves
@@ -90,12 +90,12 @@ builder.subscriptionType({
       type: propertyEventRef,
       nullable: true,
       args: {
-        communityId: t.arg.id({ required: true }),
+        communityId: t.arg.string({ required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
         const { user, pubSub } = await ctx;
         return pipe(
-          pubSub.subscribe(`community/${args.communityId.toString()}/property`),
+          pubSub.subscribe(`community/${args.communityId}/property`),
           // Don't subscribe to events that context user publish themselves
           filter((event) => event.broadcasterId !== user.email)
         );

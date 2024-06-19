@@ -34,7 +34,7 @@ interface RouteArgs {
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
   query communityFromId(
-    $id: ID!
+    $id: String!
     $first: Int! = 10
     $after: String
     $search: String

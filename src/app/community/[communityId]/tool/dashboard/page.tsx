@@ -16,7 +16,7 @@ interface RouteArgs {
 }
 
 const DashboardQuery = graphql(/* GraphQL */ `
-  query communityFromIdDashboard($id: ID!) {
+  query communityFromIdDashboard($id: String!) {
     communityFromId(id: $id) {
       id
       communityStat {

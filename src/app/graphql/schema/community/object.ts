@@ -1,7 +1,8 @@
-import { Property, SupportedEvent } from '@prisma/client';
+import { Property, Role, SupportedEvent } from '@prisma/client';
 import { EJSON } from 'bson';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
+import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { propertyRef } from '../property/object';
 
@@ -88,6 +89,23 @@ builder.prismaObject('Community', {
       type: [supportedEventRef],
       resolve: (entry) => entry.eventList,
     }),
+    accessList: t.relation('accessList'),
+    /**
+     * Return context user's access document
+     */
+    ownAccess: t.prismaField({
+      type: 'Access',
+      resolve: async (query, parent, args, ctx) => {
+        const { user } = await ctx;
+        const ownAccess = await verifyAccess(
+          user,
+          { id: parent.id },
+          // skip role verification
+          Object.values(Role)
+        );
+        return ownAccess;
+      },
+    }),
     /**
      * Generate relay style pagination using
      * offset/limit arguments
@@ -168,13 +186,13 @@ builder.prismaObject('Community', {
     propertyFromId: t.prismaField({
       type: 'Property',
       args: {
-        id: t.arg.id({ required: true }),
+        id: t.arg.string({ required: true }),
       },
       resolve: async (query, parent, args, ctx) => {
         const entry = await prisma.property.findFirstOrThrow({
           ...query,
           where: {
-            shortId: args.id.toString(),
+            shortId: args.id,
             communityId: parent.id,
           },
         });

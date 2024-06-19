@@ -6,7 +6,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 
 const CommunitySubscription = graphql(/* GraphQL */ `
-  subscription communitySubscription($id: ID!) {
+  subscription communitySubscription($id: String!) {
     communityFromId(id: $id) {
       broadcaster {
         email
@@ -21,7 +21,7 @@ const CommunitySubscription = graphql(/* GraphQL */ `
 `);
 
 const PropertySubscription = graphql(/* GraphQL */ `
-  subscription propertySubscription($communityId: ID!) {
+  subscription propertySubscription($communityId: String!) {
     propertyInCommunity(communityId: $communityId) {
       broadcaster {
         email

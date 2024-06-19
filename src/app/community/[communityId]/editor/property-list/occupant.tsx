@@ -30,7 +30,7 @@ export const Occupant: React.FC<Props> = (props) => {
     .filter((name) => !R.isEmpty(name));
 
   return (
-    <div className={clsx(props.className, 'flex gap-2')}>
+    <div className={clsx(props.className, 'flex items-center gap-2')}>
       {nameList.map((name, idx) => (
         <Chip key={idx} size="sm">
           {name}

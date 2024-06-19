@@ -46,7 +46,7 @@ builder.queryField('userCurrent', (t) =>
           // See: https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-composite-ids-and-constraints
           await Promise.all(
             devAccessList.map(async (devAccess) =>
-              createAccess(user, devAccess.communityId)
+              createAccess(devAccess.communityId, user.email)
             )
           );
           // Get the new userEntry again (should contain new

@@ -15,7 +15,7 @@ const EntryFragment = graphql(/* GraphQL */ `
 `);
 
 const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityDelete($id: ID!) {
+  mutation communityDelete($id: String!) {
     communityDelete(id: $id) {
       id
     }

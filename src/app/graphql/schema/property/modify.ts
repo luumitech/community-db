@@ -52,7 +52,7 @@ builder.mutationField('propertyModify', (t) =>
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
-      const shortId = self.id.toString();
+      const shortId = self.id;
       const entry = await getPropertyEntry(user, shortId, {
         select: {
           id: true,

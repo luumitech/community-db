@@ -2,6 +2,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { graphql } from '~/graphql/generated';
+
+export const CommunityCreateMutation = graphql(/* GraphQL */ `
+  mutation communityCreate($input: CommunityCreateInput!) {
+    communityCreate(input: $input) {
+      id
+      name
+    }
+  }
+`);
 
 function schema() {
   return yup.object({

@@ -21,7 +21,7 @@ interface RouteArgs {
 }
 
 const PropertyFromIdQuery = graphql(/* GraphQL */ `
-  query propertyFromId($communityId: ID!, $propertyId: ID!) {
+  query propertyFromId($communityId: String!, $propertyId: String!) {
     communityFromId(id: $communityId) {
       id
       eventList {

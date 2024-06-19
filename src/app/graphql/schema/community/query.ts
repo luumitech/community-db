@@ -6,11 +6,11 @@ builder.queryField('communityFromId', (t) =>
   t.prismaField({
     type: 'Community',
     args: {
-      id: t.arg.id({ required: true }),
+      id: t.arg.string({ required: true }),
     },
     resolve: async (query, parent, args, ctx) => {
       const { user } = await ctx;
-      const entry = await getCommunityEntry(user, args.id.toString(), {
+      const entry = await getCommunityEntry(user, args.id, {
         ...query,
       });
       return entry;

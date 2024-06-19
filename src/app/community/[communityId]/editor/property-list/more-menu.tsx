@@ -4,7 +4,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Link,
   useDisclosure,
 } from '@nextui-org/react';
 import React from 'react';
@@ -76,9 +75,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <FormProvider {...communityModify.formMethods}>
-        <CommunityModifyModal hookForm={communityModify} />
-      </FormProvider>
+      <CommunityModifyModal hookForm={communityModify} />
       <CommunityDeleteModal
         disclosure={communityDeleteDisclosure}
         community={community}
