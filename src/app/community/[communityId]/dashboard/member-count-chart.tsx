@@ -5,6 +5,7 @@ import * as R from 'remeda';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
+import { type DashboardEntry } from './_type';
 
 interface ChartDataEntry {
   year: number;
@@ -12,7 +13,7 @@ interface ChartDataEntry {
   new: number;
 }
 
-const EntryFragment = graphql(/* GraphQL */ `
+const MemberCountFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MemberCount on Community {
     communityStat {
       minYear
@@ -27,7 +28,7 @@ const EntryFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
+export type MemberCountFragmentType = FragmentType<typeof MemberCountFragment>;
 type PropertyStat =
   GQL.Dashboard_MemberCountFragment['communityStat']['propertyStat'][0];
 
@@ -70,16 +71,16 @@ class ChartDataHelper {
 
 interface Props {
   className?: string;
-  entry: CommunityFragmentType;
+  fragment: DashboardEntry;
   onDataClick?: (datum: ChartDataEntry) => void;
 }
 
 export const MemberCountChart: React.FC<Props> = ({
   className,
+  fragment,
   onDataClick,
-  ...props
 }) => {
-  const entry = useFragment(EntryFragment, props.entry);
+  const entry = useFragment(MemberCountFragment, fragment);
 
   const chartData = React.useMemo(() => {
     const chartHelper = new ChartDataHelper(entry);

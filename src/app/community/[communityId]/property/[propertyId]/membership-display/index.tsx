@@ -1,9 +1,10 @@
 import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { PropertyEntry } from '../_type';
 import { RegisteredEventList } from './registered-event-list';
 
-const EntryFragment = graphql(/* GraphQL */ `
+const MembershipDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_MembershipDisplay on Property {
     notes
     membershipList {
@@ -15,14 +16,17 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+export type MembershipDisplayFragmentType = FragmentType<
+  typeof MembershipDisplayFragment
+>;
 
 interface Props {
   className?: string;
-  entry: FragmentType<typeof EntryFragment>;
+  fragment: PropertyEntry;
 }
 
-export const MembershipDisplay: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
+export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
+  const entry = useFragment(MembershipDisplayFragment, fragment);
   const currentYear = new Date().getFullYear();
 
   const membership = React.useMemo(() => {
@@ -31,7 +35,7 @@ export const MembershipDisplay: React.FC<Props> = (props) => {
   }, [entry, currentYear]);
 
   return (
-    <div className={props.className}>
+    <div className={className}>
       <Card>
         <CardHeader>{currentYear} Membership Info</CardHeader>
         <CardBody>

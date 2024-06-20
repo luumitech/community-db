@@ -7,20 +7,20 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
 import { Button } from '~/view/base/button';
+import { PropertyEntry } from '../_type';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { NotesEditor } from './notes-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
-  entry: GQL.PropertyId_MembershipEditorFragment;
+  fragment: PropertyEntry;
   disclosureProps: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
 export const ModalDialog: React.FC<Props> = ({
-  entry,
+  fragment,
   disclosureProps,
   onSave,
 }) => {

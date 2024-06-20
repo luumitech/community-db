@@ -4,6 +4,7 @@ import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
+import { type DashboardEntry } from './_type';
 
 interface ChartDataEntry {
   event: string;
@@ -12,7 +13,7 @@ interface ChartDataEntry {
   existing: number;
 }
 
-const EntryFragment = graphql(/* GraphQL */ `
+const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
     eventList {
       name
@@ -29,7 +30,7 @@ const EntryFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
+export type EventFragmentType = FragmentType<typeof EventFragment>;
 type DataMapEntry = Omit<ChartDataEntry, 'event'>;
 
 class ChartDataHelper {
@@ -69,16 +70,16 @@ class ChartDataHelper {
 
 interface Props {
   className?: string;
-  entry: CommunityFragmentType;
+  fragment: DashboardEntry;
   year: number;
 }
 
 export const EventParticipation: React.FC<Props> = ({
   className,
+  fragment,
   year,
-  ...props
 }) => {
-  const entry = useFragment(EntryFragment, props.entry);
+  const entry = useFragment(EventFragment, fragment);
 
   const chartData = React.useMemo(() => {
     const chartHelper = new ChartDataHelper(entry);

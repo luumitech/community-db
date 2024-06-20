@@ -1,11 +1,11 @@
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { PropertyEntry } from '../_type';
 import { OccupantEditor } from '../occupant-editor';
 import { OccupantTable } from './occupant-table';
 
-const EntryFragment = graphql(/* GraphQL */ `
+const OccupantDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantDisplay on Property {
-    ...PropertyId_OccupantEditor
     occupantList {
       firstName
       lastName
@@ -17,22 +17,25 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+export type OccupantDisplayFragmentType = FragmentType<
+  typeof OccupantDisplayFragment
+>;
 
 interface Props {
   className?: string;
-  entry: FragmentType<typeof EntryFragment>;
+  fragment: PropertyEntry;
 }
 
-export const OccupantDisplay: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
+export const OccupantDisplay: React.FC<Props> = ({ className, fragment }) => {
+  const entry = useFragment(OccupantDisplayFragment, fragment);
 
   const bottomContent = React.useMemo(() => {
-    return <OccupantEditor entry={entry} />;
-  }, [entry]);
+    return <OccupantEditor fragment={fragment} />;
+  }, [fragment]);
 
   return (
     <OccupantTable
-      className={props.className}
+      className={className}
       occupantList={entry.occupantList}
       bottomContent={bottomContent}
     />

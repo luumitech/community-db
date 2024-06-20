@@ -2,17 +2,20 @@ import { useMutation } from '@apollo/client';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { FragmentType, graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
+import { CommunityEntry } from '../_type';
 import { DeleteModal } from './delete-modal';
 
-const EntryFragment = graphql(/* GraphQL */ `
+export const DeleteFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityDeleteModal on Community {
     id
     name
   }
 `);
+
+export type CommunityDeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityDelete($id: String!) {
@@ -24,18 +27,20 @@ const CommunityMutation = graphql(/* GraphQL */ `
 
 interface Props {
   disclosure: UseDisclosureReturn;
-  community: FragmentType<typeof EntryFragment>;
+  fragment: CommunityEntry;
 }
 
-export const CommunityDeleteModal: React.FC<Props> = (props) => {
+export const CommunityDeleteModal: React.FC<Props> = ({
+  disclosure,
+  fragment,
+}) => {
   const router = useRouter();
-  const entry = useFragment(EntryFragment, props.community);
   const [deleteCommunity] = useMutation(CommunityMutation);
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
       deleteCommunity({
-        variables: { id: entry.id },
+        variables: { id: fragment.id },
         onCompleted: () => {
           router.push(appPath('communitySelect'));
         },
@@ -53,12 +58,12 @@ export const CommunityDeleteModal: React.FC<Props> = (props) => {
         success: 'Deleted',
       }
     );
-  }, [deleteCommunity, entry, router]);
+  }, [deleteCommunity, fragment, router]);
 
   return (
     <DeleteModal
-      community={entry}
-      disclosure={props.disclosure}
+      fragment={fragment}
+      disclosure={disclosure}
       onDelete={onDelete}
     />
   );

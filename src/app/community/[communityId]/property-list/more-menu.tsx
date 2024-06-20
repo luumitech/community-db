@@ -7,10 +7,9 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
-import * as GQL from '~/graphql/generated/graphql';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { CommunityEntry } from './_type';
 import { CommunityDeleteModal } from './community-delete-modal';
 import {
   CommunityModifyModal,
@@ -18,11 +17,11 @@ import {
 } from './community-modify-modal';
 
 interface Props {
-  community: GQL.CommunityFromIdQuery['communityFromId'];
+  fragment: CommunityEntry;
 }
 
-export const MoreMenu: React.FC<Props> = ({ community }) => {
-  const communityModify = useHookFormWithDisclosure(community);
+export const MoreMenu: React.FC<Props> = ({ fragment }) => {
+  const communityModify = useHookFormWithDisclosure(fragment);
   const communityDeleteDisclosure = useDisclosure();
 
   return (
@@ -48,19 +47,19 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           </DropdownItem>
           <DropdownItem
             key="import"
-            href={appPath('communityImport', { communityId: community.id })}
+            href={appPath('communityImport', { communityId: fragment.id })}
           >
             Import from Excel
           </DropdownItem>
           <DropdownItem
             key="export"
-            href={appPath('communityExport', { communityId: community.id })}
+            href={appPath('communityExport', { communityId: fragment.id })}
           >
             Export to Excel
           </DropdownItem>
           <DropdownItem
             key="share"
-            href={appPath('communityShare', { communityId: community.id })}
+            href={appPath('communityShare', { communityId: fragment.id })}
             endContent={<Icon icon="share" />}
             showDivider
           >
@@ -78,7 +77,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
       <CommunityModifyModal hookForm={communityModify} />
       <CommunityDeleteModal
         disclosure={communityDeleteDisclosure}
-        community={community}
+        fragment={fragment}
       />
     </>
   );

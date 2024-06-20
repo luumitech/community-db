@@ -17,20 +17,24 @@ export function useTableData() {
   ];
 
   const renderCell = React.useCallback(
-    (entry: PropertyEntry, columnKey: string | number) => {
+    (fragment: PropertyEntry, columnKey: string | number) => {
       switch (columnKey) {
         case 'address':
-          return <PropertyAddress entry={entry} />;
+          return <PropertyAddress fragment={fragment} />;
         case 'occupant':
-          return <Occupant entry={entry} />;
+          return <Occupant fragment={fragment} />;
         case 'curYear':
           return (
-            <Membership className="text-success" entry={entry} year={curYear} />
+            <Membership
+              className="text-success"
+              fragment={fragment}
+              year={curYear}
+            />
           );
         case 'prevYear':
-          return <Membership entry={entry} year={prevYear} />;
+          return <Membership fragment={fragment} year={prevYear} />;
         default:
-          return getKeyValue(entry, columnKey);
+          return getKeyValue(fragment, columnKey);
       }
     },
     [curYear, prevYear]

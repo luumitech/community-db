@@ -56,13 +56,13 @@ export default function Dashboard({ params }: RouteArgs) {
   return (
     <div className="flex flex-col gap-4 mb-4">
       <MemberCountChart
-        entry={community}
+        fragment={community}
         onDataClick={(datum) => setSelectedYear(datum.year)}
       />
       {selectedYear && (
         <div className="columns-2">
-          <MembershipSource entry={community} year={selectedYear} />
-          <EventParticipation entry={community} year={selectedYear} />
+          <MembershipSource fragment={community} year={selectedYear} />
+          <EventParticipation fragment={community} year={selectedYear} />
         </div>
       )}
     </div>

@@ -7,15 +7,16 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import { useFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
 import { LastModified } from '~/view/last-modified';
+import { ModifyFragment, type CommunityEntry } from '../_type';
 import { EventListEditor } from './event-list-editor';
 import { NameEditor } from './name-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
-  fragment: GQL.CommunityId_CommunityModifyModalFragment;
+  fragment: CommunityEntry;
   disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
@@ -25,6 +26,7 @@ export const ModifyModal: React.FC<Props> = ({
   disclosure,
   onSave,
 }) => {
+  const community = useFragment(ModifyFragment, fragment);
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();
@@ -62,8 +64,8 @@ export const ModifyModal: React.FC<Props> = ({
             <EventListEditor />
             <LastModified
               className="text-right"
-              updatedAt={fragment.updatedAt}
-              user={fragment.updatedBy}
+              updatedAt={community.updatedAt}
+              user={community.updatedBy}
             />
           </ModalBody>
           <ModalFooter>

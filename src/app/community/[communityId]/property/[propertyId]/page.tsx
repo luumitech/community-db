@@ -34,10 +34,11 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
         updatedBy {
           ...User
         }
-        ...PropertyId_PropertyDisplay
-        ...PropertyId_MembershipEditor
         ...PropertyId_MembershipDisplay
+        ...PropertyId_MembershipEditor
         ...PropertyId_OccupantDisplay
+        ...PropertyId_OccupantEditor
+        ...PropertyId_PropertyDisplay
       }
     }
   }
@@ -62,11 +63,11 @@ export default function Property({ params }: RouteArgs) {
   return (
     <div>
       <ContextProvider eventList={eventList}>
-        <PropertyDisplay entry={property} />
+        <PropertyDisplay fragment={property} />
         <Divider className="mb-4" />
-        <MembershipDisplay entry={property} />
-        <MembershipEditor className="mt-2" entry={property} />
-        <OccupantDisplay className="my-4" entry={property} />
+        <MembershipDisplay fragment={property} />
+        <MembershipEditor className="mt-2" fragment={property} />
+        <OccupantDisplay className="my-4" fragment={property} />
         <LastModified
           className="text-right"
           updatedAt={property.updatedAt}

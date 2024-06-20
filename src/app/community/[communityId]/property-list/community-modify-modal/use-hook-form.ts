@@ -8,9 +8,9 @@ import {
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import { CommunityEntry } from '../_type';
 
-const EntryFragment = graphql(/* GraphQL */ `
+export const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityModifyModal on Community {
     id
     name
@@ -24,6 +24,8 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+
+export type CommunityModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 export const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityModify($input: CommunityModifyInput!) {
@@ -60,9 +62,10 @@ function schema() {
 export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(
-  item: GQL.CommunityId_CommunityModifyModalFragment
-): DefaultData {
+function defaultInputData(fragment: CommunityEntry): DefaultData {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const item = useFragment(ModifyFragment, fragment);
+
   return {
     self: {
       id: item.id,
@@ -80,10 +83,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(
-  entry: FragmentType<typeof EntryFragment>
-) {
-  const fragment = useFragment(EntryFragment, entry);
+export function useHookFormWithDisclosure(fragment: CommunityEntry) {
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),

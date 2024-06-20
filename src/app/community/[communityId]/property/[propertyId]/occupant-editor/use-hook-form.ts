@@ -7,7 +7,31 @@ import {
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
+import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { type PropertyEntry } from '../_type';
+
+const OccupantEditorFragment = graphql(/* GraphQL */ `
+  fragment PropertyId_OccupantEditor on Property {
+    id
+    updatedAt
+    updatedBy {
+      ...User
+    }
+    occupantList {
+      firstName
+      lastName
+      optOut
+      email
+      cell
+      work
+      home
+    }
+  }
+`);
+export type OccupantEditorFragmentType = FragmentType<
+  typeof OccupantEditorFragment
+>;
 
 function schema() {
   return yup.object({
@@ -48,9 +72,10 @@ export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
   home: '',
 };
 
-function defaultInputData(
-  item: GQL.PropertyId_OccupantEditorFragment
-): DefaultData {
+function defaultInputData(fragment: PropertyEntry): DefaultData {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const item = useFragment(OccupantEditorFragment, fragment);
+
   return {
     self: {
       id: item.id,
@@ -68,9 +93,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(
-  fragment: GQL.PropertyId_OccupantEditorFragment
-) {
+export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),

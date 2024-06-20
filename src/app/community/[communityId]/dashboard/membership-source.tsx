@@ -4,6 +4,7 @@ import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
+import { type DashboardEntry } from './_type';
 
 interface ChartDataEntry {
   id: string;
@@ -13,7 +14,7 @@ interface ChartDataEntry {
   renew: number;
 }
 
-const EntryFragment = graphql(/* GraphQL */ `
+const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
     eventList {
       name
@@ -29,7 +30,9 @@ const EntryFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export type CommunityFragmentType = FragmentType<typeof EntryFragment>;
+export type MembershipSourceFragmentType = FragmentType<
+  typeof MembershipSourceFragment
+>;
 type DataMapEntry = Omit<ChartDataEntry, 'id' | 'label' | 'value'>;
 
 class ChartDataHelper {
@@ -78,16 +81,16 @@ class ChartDataHelper {
 
 interface Props {
   className?: string;
-  entry: CommunityFragmentType;
+  fragment: DashboardEntry;
   year: number;
 }
 
 export const MembershipSource: React.FC<Props> = ({
   className,
+  fragment,
   year,
-  ...props
 }) => {
-  const entry = useFragment(EntryFragment, props.entry);
+  const entry = useFragment(MembershipSourceFragment, fragment);
 
   const chartData = React.useMemo(() => {
     const chartHelper = new ChartDataHelper(entry);

@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { type PropertyEntry } from './_type';
 
 const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Address on Property {
@@ -12,15 +13,13 @@ export type PropertyAddressFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;
-  entry: PropertyAddressFragmentType;
+  fragment: PropertyEntry;
 }
 
-export const PropertyAddress: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
+export const PropertyAddress: React.FC<Props> = ({ className, fragment }) => {
+  const entry = useFragment(EntryFragment, fragment);
 
   return (
-    <div className={clsx(props.className, 'truncate')}>
-      {entry.address ?? ''}
-    </div>
+    <div className={clsx(className, 'truncate')}>{entry.address ?? ''}</div>
   );
 };

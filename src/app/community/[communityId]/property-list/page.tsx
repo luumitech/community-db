@@ -92,13 +92,13 @@ export default function PropertyList({ params }: RouteArgs) {
   });
   const { columns, renderCell } = useTableData();
 
-  const communityFromId = data?.communityFromId;
-  const rows = (communityFromId?.propertyList.edges ?? []).map(
-    (edge) => edge.node
-  );
+  const community = React.useMemo(() => data?.communityFromId, [data]);
+  const rows = React.useMemo(() => {
+    return (community?.propertyList.edges ?? []).map((edge) => edge.node);
+  }, [community]);
 
   const topContent = React.useMemo(() => {
-    const totalCount = communityFromId?.propertyList.totalCount ?? 0;
+    const totalCount = community?.propertyList.totalCount ?? 0;
     const setSearchText = (input?: string) => {
       dispatch(actions.ui.setPropertyListSearch(input));
     };
@@ -113,21 +113,21 @@ export default function PropertyList({ params }: RouteArgs) {
           onValueChange={setSearchText}
           onClear={() => setSearchText(undefined)}
         />
-        {communityFromId && <MoreMenu community={communityFromId} />}
+        {community && <MoreMenu fragment={community} />}
       </div>
     );
-  }, [communityFromId, searchText, dispatch]);
+  }, [community, searchText, dispatch]);
 
   const emptyContent = React.useMemo(() => {
     return (
       <div>
         <p className="mb-2">No data to display.</p>
-        {!!communityFromId?.id && !debouncedSearchText && (
+        {!!community?.id && !debouncedSearchText && (
           <Button
             as={Link}
             color="primary"
             href={appPath('communityImport', {
-              communityId: communityFromId.id,
+              communityId: community.id,
             })}
           >
             Import from Excel
@@ -135,7 +135,7 @@ export default function PropertyList({ params }: RouteArgs) {
         )}
       </div>
     );
-  }, [debouncedSearchText, communityFromId?.id]);
+  }, [debouncedSearchText, community?.id]);
 
   return (
     <Table

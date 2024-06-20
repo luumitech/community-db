@@ -2,32 +2,12 @@ import { useMutation } from '@apollo/client';
 import { Button } from '@nextui-org/react';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
+import { PropertyEntry } from '../_type';
 import { ModalDialog } from './modal-dialog';
 import { InputData, useHookFormWithDisclosure } from './use-hook-form';
-
-const EntryFragment = graphql(/* GraphQL */ `
-  fragment PropertyId_MembershipEditor on Property {
-    id
-    updatedAt
-    updatedBy {
-      ...User
-    }
-    notes
-    membershipList {
-      year
-      isMember
-      eventAttendedList {
-        eventName
-        eventDate
-      }
-      paymentMethod
-      paymentDeposited
-    }
-  }
-`);
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation membershipModify($input: PropertyModifyInput!) {
@@ -39,13 +19,12 @@ const PropertyMutation = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  entry: FragmentType<typeof EntryFragment>;
+  fragment: PropertyEntry;
 }
 
-export const MembershipEditor: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
+export const MembershipEditor: React.FC<Props> = ({ className, fragment }) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { formMethods, disclosure } = useHookFormWithDisclosure(entry);
+  const { formMethods, disclosure } = useHookFormWithDisclosure(fragment);
   const { formState } = formMethods;
   const onSave = async (input: InputData) => {
     if (!formState.isDirty) {
@@ -63,7 +42,7 @@ export const MembershipEditor: React.FC<Props> = (props) => {
   };
 
   return (
-    <div className={props.className}>
+    <div className={className}>
       <FormProvider {...formMethods}>
         <Button
           size="sm"
@@ -73,7 +52,7 @@ export const MembershipEditor: React.FC<Props> = (props) => {
           Edit Membership Info
         </Button>
         <ModalDialog
-          entry={entry}
+          fragment={fragment}
           disclosureProps={disclosure}
           onSave={onSave}
         />

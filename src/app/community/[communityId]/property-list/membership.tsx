@@ -2,6 +2,7 @@ import { Tooltip } from '@nextui-org/react';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
+import { type PropertyEntry } from './_type';
 
 const EntryFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Membership on Property {
@@ -20,12 +21,16 @@ export type MemberShipFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;
-  entry: MemberShipFragmentType;
+  fragment: PropertyEntry;
   year: number;
 }
 
-export const Membership: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
+export const Membership: React.FC<Props> = ({
+  className,
+  fragment,
+  ...props
+}) => {
+  const entry = useFragment(EntryFragment, fragment);
   const membership = entry.membershipList.find(
     ({ year }) => year === props.year
   );
@@ -35,7 +40,7 @@ export const Membership: React.FC<Props> = (props) => {
     : '';
 
   return (
-    <div className={props.className}>
+    <div className={className}>
       {!!membership?.isMember && (
         <Tooltip content={eventInfo}>
           <span className="text-xl">

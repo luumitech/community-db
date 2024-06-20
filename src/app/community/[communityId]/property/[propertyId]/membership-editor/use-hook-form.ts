@@ -3,7 +3,33 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { type PropertyEntry } from '../_type';
+
+const MembershipEditorFragment = graphql(/* GraphQL */ `
+  fragment PropertyId_MembershipEditor on Property {
+    id
+    updatedAt
+    updatedBy {
+      ...User
+    }
+    notes
+    membershipList {
+      year
+      isMember
+      eventAttendedList {
+        eventName
+        eventDate
+      }
+      paymentMethod
+      paymentDeposited
+    }
+  }
+`);
+export type MembershipEditorFragmentType = FragmentType<
+  typeof MembershipEditorFragment
+>;
 
 function schema() {
   return yup.object({
@@ -71,9 +97,10 @@ export function membershipDefault(
   };
 }
 
-function defaultInputData(
-  item: GQL.PropertyId_MembershipEditorFragment
-): DefaultData {
+function defaultInputData(fragment: PropertyEntry): DefaultData {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const item = useFragment(MembershipEditorFragment, fragment);
+
   return {
     self: {
       id: item.id,
@@ -94,9 +121,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(
-  fragment: GQL.PropertyId_MembershipEditorFragment
-) {
+export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),
