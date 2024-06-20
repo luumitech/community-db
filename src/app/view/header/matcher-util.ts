@@ -1,20 +1,17 @@
 import { match } from 'path-to-regexp';
-
-export function matchCommunity(pathname: string) {
-  const matcher = match<{ communityId: string }>(
-    '/community/:communityId/(.*)',
-    { decode: decodeURIComponent }
-  );
-  return matcher(pathname);
-}
+import { supportedPathTemplates } from '~/lib/app-path';
 
 /**
  * Check if pathname matches the community editor path
  */
 export function matchCommunityEditor(pathname: string) {
-  const matcher = match<{ communityId: string }>(
-    '/community/:communityId/editor/(.*)',
+  const isPropertyEditor = match<{ communityId: string; propertyId: string }>(
+    supportedPathTemplates.property,
     { decode: decodeURIComponent }
   );
-  return matcher(pathname);
+  const isPropertyList = match<{ communityId: string }>(
+    supportedPathTemplates.propertyList,
+    { decode: decodeURIComponent }
+  );
+  return isPropertyEditor(pathname) || isPropertyList(pathname);
 }

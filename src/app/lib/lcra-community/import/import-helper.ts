@@ -19,6 +19,7 @@ interface MProperty
   extends Omit<
     Property,
     | 'id'
+    | 'shortId'
     | 'createdAt'
     | 'occupantList'
     | 'membershipList'

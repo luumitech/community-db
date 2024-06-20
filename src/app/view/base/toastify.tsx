@@ -11,11 +11,15 @@ import {
  * Customize toast.promise to handle error condition automatically
  * @returns
  */
-function toastPromise<TData = unknown, TError = unknown, TPending = unknown>(
+async function toastPromise<
+  TData = unknown,
+  TError = unknown,
+  TPending = unknown,
+>(
   promise: Promise<TData> | (() => Promise<TData>),
   { pending, error, success }: ToastPromiseParams<TData, TError, TPending>,
   options?: ToastOptions<TData>
-): Promise<TData> {
+): Promise<TData | undefined> {
   // default error handler
   const customError: string | UpdateOptions<TError> = {
     // Don't close the error
@@ -27,15 +31,21 @@ function toastPromise<TData = unknown, TError = unknown, TPending = unknown>(
     },
   };
 
-  return toastify.promise(
-    promise,
-    {
-      pending,
-      error: error ?? customError,
-      success,
-    },
-    options
-  );
+  try {
+    const result = await toastify.promise(
+      promise,
+      {
+        pending,
+        error: error ?? customError,
+        success,
+      },
+      options
+    );
+    return result;
+  } catch (err) {
+    // ignore the error returned by the promise,
+    // since it is already handled by customError
+  }
 }
 
 /**

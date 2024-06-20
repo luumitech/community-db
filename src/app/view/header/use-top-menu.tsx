@@ -1,30 +1,10 @@
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps } from '@nextui-org/react';
 import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-
-const CommunityNameFromIdQuery = graphql(/* GraphQL */ `
-  query communityNameFromId($id: ID!) {
-    communityFromId(id: $id) {
-      id
-      name
-    }
-  }
-`);
-
-const PropertyNameFromIdQuery = graphql(/* GraphQL */ `
-  query propertyNameFromId($communityId: ID!, $propertyId: ID!) {
-    communityFromId(id: $communityId) {
-      id
-      propertyFromId(id: $propertyId) {
-        id
-        address
-      }
-    }
-  }
-`);
+import { appPath } from '~/lib/app-path';
 
 interface MenuItemEntry extends BreadcrumbItemProps {
   id: string;
@@ -36,11 +16,9 @@ interface MenuItemEntry extends BreadcrumbItemProps {
  */
 export function useTopMenu() {
   const pathname = usePathname();
-  const [communityNameQuery] = useLazyQuery(CommunityNameFromIdQuery);
-  const [propertyNameQuery] = useLazyQuery(PropertyNameFromIdQuery);
   const [menuItems, { set }] = useList<MenuItemEntry>([]);
 
-  const getItems = React.useCallback(async () => {
+  const getItems = React.useCallback(() => {
     const items: MenuItemEntry[] = [];
     // could've used useSelectedLayoutSegments, but it's not
     // memoized
@@ -51,86 +29,60 @@ export function useTopMenu() {
     const segment = segments.shift();
     switch (segment) {
       case 'community': {
-        await handleCommunity();
+        items.push({
+          id: 'welcome',
+          href: appPath('communityWelcome'),
+          children: 'Welcome',
+        });
+        handleCommunity();
         break;
       }
     }
     return items;
 
-    async function handleCommunity() {
+    function handleCommunity() {
       const op = segments.shift();
       switch (op) {
         case 'create':
-        case 'select':
+          items.push({
+            id: 'create',
+            href: appPath('communityCreate'),
+            children: 'Create Community',
+          });
           break;
-
+        case 'select':
+          items.push({
+            id: 'create',
+            href: appPath('communitySelect'),
+            children: 'Select Community',
+          });
+          break;
         default:
           if (op != null) {
             const communityId = op;
-            const result = await communityNameQuery({
-              variables: { id: communityId },
+            items.pop();
+            items.push({
+              id: 'community-editor',
+              href: appPath('propertyList', { communityId }),
+              children: <CommunityName communityId={communityId} />,
             });
-            const communityName = result.data?.communityFromId.name;
-            if (communityName) {
-              items.push({
-                id: 'community-editor',
-                href: `/community/${communityId}/editor/property-list`,
-                children: communityName,
-              });
-              await handleSingleCommunity(communityId);
-            }
+            handleSingleCommunity(communityId);
           }
           break;
       }
     }
 
-    async function handleSingleCommunity(communityId: string) {
+    function handleSingleCommunity(communityId: string) {
       const op = segments.shift();
       switch (op) {
-        case 'editor':
-          await handleCommunityEditor(communityId);
+        case 'property':
+          handlePropertyEditor(communityId);
           break;
 
-        case 'management':
-          await handleCommunityManagement(communityId);
-          break;
-
-        case 'tool':
-          await handleCommunityTool(communityId);
-          break;
-      }
-    }
-
-    async function handleCommunityEditor(communityId: string) {
-      const op = segments.shift();
-      switch (op) {
-        case 'property': {
-          const propertyId = segments.shift();
-          if (propertyId) {
-            const result = await propertyNameQuery({
-              variables: { communityId, propertyId },
-            });
-            const address = result.data?.communityFromId.propertyFromId.address;
-            if (address) {
-              items.push({
-                id: 'property-editor',
-                href: `/community/${communityId}/editor/property/${propertyId}`,
-                children: address,
-              });
-            }
-          }
-          break;
-        }
-      }
-    }
-
-    async function handleCommunityManagement(communityId: string) {
-      const op = segments.shift();
-      switch (op) {
         case 'import-xlsx':
           items.push({
             id: 'import-xlsx',
-            href: `/community/${communityId}/management/import-xlsx`,
+            href: appPath('communityImport', { communityId }),
             children: 'Import',
           });
           break;
@@ -138,33 +90,98 @@ export function useTopMenu() {
         case 'export-xlsx':
           items.push({
             id: 'export-xlsx',
-            href: `/community/${communityId}/management/export-xlsx`,
+            href: appPath('communityExport', { communityId }),
             children: 'Export',
           });
           break;
-      }
-    }
 
-    async function handleCommunityTool(communityId: string) {
-      const op = segments.shift();
-      switch (op) {
+        case 'share':
+          items.push({
+            id: 'share',
+            href: appPath('communityShare', { communityId }),
+            children: 'Share',
+          });
+          break;
+
         case 'dashboard':
           items.push({
             id: 'tool-dashboard',
-            href: `/community/${communityId}/tool/dashboard`,
+            href: appPath('communityDashboard', { communityId }),
             children: 'Dashboard',
           });
           break;
       }
     }
-  }, [pathname, communityNameQuery, propertyNameQuery]);
+
+    function handlePropertyEditor(communityId: string) {
+      const propertyId = segments.shift();
+      if (propertyId) {
+        items.push({
+          id: 'property-editor',
+          href: appPath('property', { communityId, propertyId }),
+          children: (
+            <PropertyAddress
+              communityId={communityId}
+              propertyId={propertyId}
+            />
+          ),
+        });
+      }
+    }
+  }, [pathname]);
 
   React.useEffect(() => {
-    (async () => {
-      const items = await getItems();
-      set(items);
-    })();
+    const items = getItems();
+    set(items);
   }, [getItems, set]);
 
   return menuItems;
 }
+
+const CommunityNameQuery = graphql(/* GraphQL */ `
+  query communityName($id: String!) {
+    communityFromId(id: $id) {
+      id
+      name
+    }
+  }
+`);
+
+/**
+ * Get community name from Id
+ */
+const CommunityName: React.FC<{ communityId: string }> = ({ communityId }) => {
+  const result = useQuery(CommunityNameQuery, {
+    variables: { id: communityId },
+  });
+  const communityName = result.data?.communityFromId.name;
+
+  return <div>{communityName ?? ''}</div>;
+};
+
+const PropertyNameQuery = graphql(/* GraphQL */ `
+  query propertyName($communityId: String!, $propertyId: String!) {
+    communityFromId(id: $communityId) {
+      id
+      propertyFromId(id: $propertyId) {
+        id
+        address
+      }
+    }
+  }
+`);
+
+/**
+ * Get property address from Id
+ */
+const PropertyAddress: React.FC<{
+  communityId: string;
+  propertyId: string;
+}> = ({ communityId, propertyId }) => {
+  const result = useQuery(PropertyNameQuery, {
+    variables: { communityId, propertyId },
+  });
+  const address = result.data?.communityFromId.propertyFromId.address;
+
+  return <div>{address ?? ''}</div>;
+};

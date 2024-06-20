@@ -1,6 +1,7 @@
 import {
   ResponsiveBar,
   type BarDatum,
+  type BarLegendProps,
   type ResponsiveBarSvgProps,
 } from '@nivo/bar';
 import { useMeasure } from '@uidotdev/usehooks';
@@ -12,14 +13,17 @@ export interface BarChartProps<T extends BarDatum>
   extends ResponsiveBarSvgProps<T> {
   className?: string;
   legendPos?: 'bottom-right' | 'bottom';
+  legendProp?: Partial<BarLegendProps>;
   onDataClick?: (datum: T) => void;
 }
 
 export function BarChart<T extends BarDatum>({
   className,
+  margin,
   axisLeft,
   axisBottom,
   legendPos = 'bottom-right',
+  legendProp,
   onClick,
   onDataClick,
   ...props
@@ -27,12 +31,12 @@ export function BarChart<T extends BarDatum>({
   const theme = useNivoTheme();
   const [ref, divMeasure] = useMeasure();
 
-  const margin = React.useMemo(() => {
+  const actualMargin = React.useMemo(() => {
     const result = {
       top: props.enableTotals ? 20 : 0,
       right: 0,
-      bottom: 50, // save space for x-axis label
-      left: 60, // save space for y-axis label
+      bottom: 50, // save space for under x-axis
+      left: 60, // save space for left of y-axis
     };
     switch (legendPos) {
       case 'bottom-right':
@@ -42,12 +46,15 @@ export function BarChart<T extends BarDatum>({
         result.bottom = 90;
         break;
     }
-    return result;
-  }, [props.enableTotals, legendPos]);
+    return {
+      ...result,
+      ...margin,
+    };
+  }, [props.enableTotals, legendPos, margin]);
 
   const graphWidth = React.useMemo(() => {
-    return divMeasure.width ?? 0 - margin.left - margin.right;
-  }, [divMeasure, margin]);
+    return divMeasure.width ?? 0 - actualMargin.left - actualMargin.right;
+  }, [divMeasure, actualMargin]);
 
   const customOnClick = React.useCallback<
     NonNullable<ResponsiveBarSvgProps<T>['onClick']>
@@ -64,7 +71,7 @@ export function BarChart<T extends BarDatum>({
       <ResponsiveBar
         onClick={customOnClick}
         theme={theme}
-        margin={margin}
+        margin={actualMargin}
         padding={0.3}
         valueScale={{ type: 'linear' }}
         indexScale={{ type: 'band', round: true }}
@@ -133,6 +140,7 @@ export function BarChart<T extends BarDatum>({
               translateY: 70,
               itemWidth: 70,
             }),
+            ...legendProp,
           },
         ]}
         {...props}

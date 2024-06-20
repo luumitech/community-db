@@ -15,6 +15,18 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      spacing: {
+        /**
+         * top margin of <main/>
+         */
+        'main-top': '0.5rem',
+        /**
+         * The available height in <main/>
+         * 64px is the height of header
+         * 0.5rem is main-top
+         */
+        'main-height': 'calc(100vh - 64px - 0.5rem)',
+      },
     },
   },
   darkMode: 'class',

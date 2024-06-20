@@ -39,7 +39,10 @@ export class XlsxCache extends GenMD5 {
 
   static async fromForm(form: InputData) {
     const container = await getBlobContainerTempCache();
-    const community = await communityData(form.communityId, form.email);
+    const community = await communityData(
+      { email: form.email },
+      form.communityId
+    );
     return new XlsxCache(container, community);
   }
 

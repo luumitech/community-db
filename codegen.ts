@@ -1,6 +1,6 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 import { printSchema } from 'graphql';
-import { schema } from './src/app/graphql/schema';
+import { schema } from '~/graphql/schema';
 
 const config: CodegenConfig = {
   schema: printSchema(schema),

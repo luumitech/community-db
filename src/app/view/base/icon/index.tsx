@@ -4,11 +4,12 @@ import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
 import { FaFolderOpen, FaSearch, FaTrashAlt } from 'react-icons/fa';
 import { GrUndo } from 'react-icons/gr';
-import { IoMdAdd, IoMdMore } from 'react-icons/io';
+import { IoMdAdd, IoMdLink, IoMdMore } from 'react-icons/io';
 import { IoCheckmark, IoPersonAdd } from 'react-icons/io5';
 import {
   MdDragIndicator,
   MdEmail,
+  MdIosShare,
   MdOutlineClear,
   MdOutlineThumbDown,
   MdOutlineThumbUp,
@@ -31,7 +32,9 @@ type SupportedIcon =
   | 'checkmark'
   | 'person-add'
   | 'more'
-  | 'search';
+  | 'search'
+  | 'share'
+  | 'link';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -85,6 +88,12 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'search':
       IconElement = FaSearch;
+      break;
+    case 'share':
+      IconElement = MdIosShare;
+      break;
+    case 'link':
+      IconElement = IoMdLink;
       break;
     default:
       IconElement = MdQuestionMark;

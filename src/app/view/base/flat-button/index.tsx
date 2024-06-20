@@ -1,6 +1,9 @@
 import { Tooltip } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
+import { useForwardRef } from '~/custom-hooks/forward-ref';
+import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
 import { Icon, type IconProps } from '~/view/base/icon';
 
 interface Props
@@ -14,33 +17,66 @@ interface Props
    * Tooltip description
    */
   tooltip?: string;
+  /**
+   * Pop up a modal dialog to serve as additional confirmation
+   * before calling the onPress action
+   */
+  confirmation?: boolean;
+  confirmationArg?: ConfirmationModalArg;
 }
 
-export const FlatButton: React.FC<Props> = ({
-  className,
-  tooltip,
-  ...props
-}) => {
-  const renderButton = React.useMemo(() => {
-    const { icon, ...other } = props;
+type OnClickFn = NonNullable<Props['onClick']>;
 
-    return (
-      <span
-        role="button"
-        className={clsx(
-          className,
-          'opacity-80 hover:opacity-100 active:opacity-50'
-        )}
-        {...other}
-      >
-        <Icon icon={icon} size={16} />
-      </span>
+export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
+  (
+    { className, tooltip, confirmation, confirmationArg, onClick, ...props },
+    ref
+  ) => {
+    const spanRef = useForwardRef<HTMLSpanElement>(ref);
+    const { confirmationModal } = useAppContext();
+    const { open } = confirmationModal;
+
+    const customOnClick = React.useCallback<OnClickFn>(
+      (evt) => {
+        if (confirmation) {
+          open({
+            ...confirmationArg,
+            onConfirm: () => {
+              onClick?.(evt);
+            },
+          });
+        } else {
+          onClick?.(evt);
+        }
+      },
+      [confirmation, confirmationArg, open, onClick]
     );
-  }, [className, props]);
 
-  return tooltip ? (
-    <Tooltip content={tooltip}>{renderButton}</Tooltip>
-  ) : (
-    renderButton
-  );
-};
+    const renderButton = React.useMemo(() => {
+      const { icon, ...other } = props;
+
+      return (
+        <span
+          ref={spanRef}
+          role="button"
+          className={clsx(
+            className,
+            'opacity-80 hover:opacity-100 active:opacity-50'
+          )}
+          onClick={customOnClick}
+          {...other}
+        >
+          <Icon icon={icon} size={16} />
+        </span>
+      );
+    }, [spanRef, className, props, customOnClick]);
+
+    return tooltip ? (
+      <Tooltip content={tooltip}>{renderButton}</Tooltip>
+    ) : (
+      renderButton
+    );
+  }
+);
+
+FlatButton.displayName = 'FlatButton';

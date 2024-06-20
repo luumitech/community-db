@@ -3,7 +3,8 @@ import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
-import * as matcherUtil from './matcher-util';
+import { appPath } from '~/lib/app-path';
+import { matchCommunityEditor } from './matcher-util';
 
 interface MenuItemEntry extends LinkProps {
   id: string;
@@ -29,60 +30,109 @@ export function useNavMenu() {
   const pathname = usePathname();
   const [menuItems, { set }] = useList<MenuItemEntry>([]);
 
-  const getItems = React.useCallback(async () => {
+  /**
+   * Return menu arg for a given pathname
+   */
+  const pathMenuArg = React.useCallback(
+    (href: string) => {
+      return {
+        href,
+        isActive: pathname === href,
+      };
+    },
+    [pathname]
+  );
+
+  const getItems = React.useCallback(() => {
     const items: MenuItemEntry[] = [];
-    const withinCommunity = matcherUtil.matchCommunity(pathname);
-    if (withinCommunity) {
-      const { communityId } = withinCommunity.params;
+    // could've used useSelectedLayoutSegments, but it's not
+    // memoized
+    // See: https://github.com/vercel/next.js/discussions/58944
+    const segments = pathname.split('/');
+    segments.shift(); // remove the first slash
+
+    const segment = segments.shift();
+    switch (segment) {
+      case 'community': {
+        items.push(
+          {
+            id: 'welcome',
+            ...pathMenuArg(appPath('communityWelcome')),
+            children: 'Welcome',
+          },
+          {
+            id: 'select-community',
+            ...pathMenuArg(appPath('communitySelect')),
+            children: indentMenuItem('Select Community', 1),
+          },
+          {
+            id: 'create-community',
+            ...pathMenuArg(appPath('communityCreate')),
+            children: indentMenuItem('Create Community', 1),
+          }
+        );
+        handleCommunity();
+        break;
+      }
+    }
+    return items;
+
+    function handleCommunity() {
+      const op = segments.shift();
+      switch (op) {
+        case 'create':
+        case 'select':
+          break;
+        default:
+          if (op != null) {
+            const communityId = op;
+            handleSingleCommunity(communityId);
+          }
+          break;
+      }
+    }
+
+    function handleSingleCommunity(communityId: string) {
+      const op = segments.shift();
       items.push(
         {
-          id: 'welcome',
-          isActive: pathname === '/',
-          href: '/',
-          children: 'Welcome',
+          id: 'Community',
+          isDisabled: true,
+          children: 'Community',
         },
         {
           id: 'membership-editor',
-          isActive: !!matcherUtil.matchCommunityEditor(pathname),
-          href: `/community/${communityId}/editor/property-list`,
-          children: 'Membership Editor',
+          isActive: !!matchCommunityEditor(pathname),
+          href: appPath('propertyList', { communityId }),
+          children: indentMenuItem('Membership Editor', 1),
         },
         {
           id: 'import-xlsx',
-          isActive:
-            pathname === `/community/${communityId}/management/import-xlsx`,
-          href: `/community/${communityId}/management/import-xlsx`,
+          ...pathMenuArg(appPath('communityImport', { communityId })),
           children: indentMenuItem('Import', 1),
         },
         {
           id: 'export-xlsx',
-          isActive:
-            pathname === `/community/${communityId}/management/export-xlsx`,
-          href: `/community/${communityId}/management/export-xlsx`,
+          ...pathMenuArg(appPath('communityExport', { communityId })),
           children: indentMenuItem('Export', 1),
         },
         {
-          id: 'tools',
-          isActive: pathname === `/community/${communityId}/tool/menu`,
-          href: `/community/${communityId}/tool/menu`,
-          children: 'Tools',
+          id: 'share',
+          ...pathMenuArg(appPath('communityShare', { communityId })),
+          children: indentMenuItem('Share', 1),
         },
         {
           id: 'dashboard',
-          isActive: pathname === `/community/${communityId}/tool/dashboard`,
-          href: `/community/${communityId}/tool/dashboard`,
+          ...pathMenuArg(appPath('communityDashboard', { communityId })),
           children: indentMenuItem('Dashboard', 1),
         }
       );
     }
-    return items;
-  }, [pathname]);
+  }, [pathname, pathMenuArg]);
 
   React.useEffect(() => {
-    (async () => {
-      const items = await getItems();
-      set(items);
-    })();
+    const items = getItems();
+    set(items);
   }, [getItems, set]);
 
   return menuItems;

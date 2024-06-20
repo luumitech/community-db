@@ -1,6 +1,6 @@
 import { CalendarDate } from '@internationalized/date';
 import { type Membership } from '@prisma/client';
-import { isValidDate } from '../../date-util';
+import { isValidDate } from '~/lib/date-util';
 
 export interface Property {
   membershipList: Pick<Membership, 'eventAttendedList'>[];
