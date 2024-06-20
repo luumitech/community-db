@@ -21,10 +21,11 @@ export const NewAccessModal: React.FC<Props> = ({ hookForm }) => {
   const { formMethods, disclosure } = hookForm;
 
   const onSave = React.useCallback(
-    async (input: InputData) => {
+    async (_input: InputData) => {
       if (!formMethods.formState.isDirty) {
         return;
       }
+      const { hidden, ...input } = _input;
 
       await toast.promise(
         createAccess({
@@ -34,7 +35,7 @@ export const NewAccessModal: React.FC<Props> = ({ hookForm }) => {
               const result = produce(prev, (draft) => {
                 const newEntry = mutationResult.data?.accessCreate;
                 if (newEntry) {
-                  draft.communityFromId.accessList.push(newEntry);
+                  draft.communityFromId.otherAccessList.push(newEntry);
                 }
               });
               return result;

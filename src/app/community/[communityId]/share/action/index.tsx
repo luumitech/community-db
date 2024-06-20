@@ -1,33 +1,19 @@
 import clsx from 'clsx';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
-import { FlatButton } from '~/view/base/flat-button';
+import { type AccessEntry } from '../_type';
+import { ModifyAccessButton } from './modify-access-button';
 import { RemoveAccess } from './remove-access';
-
-const EntryFragment = graphql(/* GraphQL */ `
-  fragment AccessList_Action on Access {
-    id
-    user {
-      email
-    }
-  }
-`);
-
-export type ActionFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;
-  entry: ActionFragmentType;
-  isSelf?: boolean;
+  fragment: AccessEntry;
 }
 
-export const Action: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
-
+export const Action: React.FC<Props> = ({ className, fragment }) => {
   return (
-    <div className={clsx(props.className, 'flex gap-2')}>
-      <FlatButton className="text-primary" icon="edit" tooltip="Modify Role" />
-      <RemoveAccess access={entry} isSelf={props.isSelf} />
+    <div className={clsx(className, 'flex gap-2')}>
+      <ModifyAccessButton fragment={fragment} />
+      <RemoveAccess fragment={fragment} />
     </div>
   );
 };

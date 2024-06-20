@@ -1,25 +1,26 @@
 import clsx from 'clsx';
 import React from 'react';
 import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { type AccessEntry } from './_type';
 
-const EntryFragment = graphql(/* GraphQL */ `
+const RoleFragment = graphql(/* GraphQL */ `
   fragment AccessList_Role on Access {
     role
   }
 `);
 
-export type RoleInfoFragmentType = FragmentType<typeof EntryFragment>;
+export type RoleInfoFragmentType = FragmentType<typeof RoleFragment>;
 
 interface Props {
   className?: string;
-  entry: RoleInfoFragmentType;
+  fragment: AccessEntry;
 }
 
-export const RoleInfo: React.FC<Props> = (props) => {
-  const entry = useFragment(EntryFragment, props.entry);
+export const RoleInfo: React.FC<Props> = ({ className, fragment }) => {
+  const entry = useFragment(RoleFragment, fragment);
 
   return (
-    <div className={clsx(props.className, 'truncate capitalize')}>
+    <div className={clsx(className, 'truncate capitalize')}>
       {entry.role.toLocaleLowerCase() ?? ''}
     </div>
   );

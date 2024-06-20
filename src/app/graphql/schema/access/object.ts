@@ -10,7 +10,11 @@ export const roleRef = builder.enumType('Role', {
 builder.prismaObject('Access', {
   fields: (t) => ({
     id: t.exposeID('id'),
-    role: t.exposeString('role'),
+    updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
+    role: t.field({
+      type: roleRef,
+      resolve: (entry) => entry.role,
+    }),
     user: t.relation('user'),
     community: t.relation('community'),
   }),

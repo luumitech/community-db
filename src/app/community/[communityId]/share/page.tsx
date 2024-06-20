@@ -35,15 +35,15 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
         role
         ...AccessList_User
         ...AccessList_Role
-        ...AccessList_Action
-        ...Share_NewAccessModal
+        ...AccessList_Modify
+        ...AccessList_Delete
       }
       otherAccessList {
         id
         ...AccessList_User
         ...AccessList_Role
-        ...AccessList_Action
-        ...Share_NewAccessModal
+        ...AccessList_Modify
+        ...AccessList_Delete
       }
     }
   }
@@ -57,10 +57,14 @@ export default function Share({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
-  const { columns, renderCell } = useTableData();
   const { data, loading } = result;
-
   const community = React.useMemo(() => data?.communityFromId, [data]);
+
+  const isAdmin = React.useMemo(() => {
+    return community?.access.role === GQL.Role.Admin;
+  }, [community]);
+
+  const { columns, renderCell } = useTableData(isAdmin);
 
   /**
    * Generate access list for all users (including self)
@@ -93,14 +97,15 @@ export default function Share({ params }: RouteArgs) {
     if (!community) {
       return null;
     }
-    const isAdmin = community.access.role === GQL.Role.Admin;
     return (
       <div className="flex gap-2 items-center">
         <span className="text-lg grow">Share {community.name} with:</span>
-        {isAdmin && <NewAccessButton communityId={community.id} />}
+        {isAdmin && (
+          <NewAccessButton communityId={community.id} accessList={accessList} />
+        )}
       </div>
     );
-  }, [community]);
+  }, [community, isAdmin, accessList]);
 
   const bottomContent = React.useMemo(() => {
     if (!community) {

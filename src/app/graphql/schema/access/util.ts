@@ -19,12 +19,24 @@ type DataArg = Pick<Prisma.AccessCreateArgs, 'data'>;
  * @param args optional args to pass into access.create
  * @returns access document
  */
-export function createAccess<T extends CreateArgs>(
+export async function createAccess<T extends CreateArgs>(
   communityId: string,
   email: string,
   role: Role = 'ADMIN',
   args?: Prisma.SelectSubset<T, CreateArgs>
 ) {
+  // Make sure access record doesn't already exist
+  const access = await prisma.access.findFirst({
+    where: {
+      user: { email },
+      communityId,
+    },
+    select: { id: true },
+  });
+  if (access != null) {
+    throw new GraphQLError(`Access entry for ${email} already exist`);
+  }
+
   return prisma.access.create<T & DataArg>({
     ...args!,
     data: {

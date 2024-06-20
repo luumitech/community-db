@@ -1,10 +1,21 @@
 import { useMutation } from '@apollo/client';
 import clsx from 'clsx';
 import React from 'react';
-import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import { FragmentType, graphql, useFragment } from '~/graphql/generated';
 import { FlatButton } from '~/view/base/flat-button';
 import { toast } from '~/view/base/toastify';
+import { type AccessEntry } from '../_type';
+
+export const DeleteFragment = graphql(/* GraphQL */ `
+  fragment AccessList_Delete on Access {
+    id
+    user {
+      email
+    }
+  }
+`);
+
+export type DeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
 const AccessDeleteMutation = graphql(/* GraphQL */ `
   mutation accessDelete($id: String!) {
@@ -16,15 +27,11 @@ const AccessDeleteMutation = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  access: GQL.AccessList_ActionFragment;
-  isSelf?: boolean;
+  fragment: AccessEntry;
 }
 
-export const RemoveAccess: React.FC<Props> = ({
-  className,
-  access,
-  isSelf,
-}) => {
+export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
+  const access = useFragment(DeleteFragment, fragment);
   const [deleteAccess] = useMutation(AccessDeleteMutation);
 
   const onDelete = React.useCallback(async () => {
@@ -55,7 +62,7 @@ export const RemoveAccess: React.FC<Props> = ({
       onClick={onDelete}
       confirmation
       confirmationArg={{
-        bodyText: isSelf ? (
+        bodyText: fragment.isSelf ? (
           <p>
             Are you sure you want to remove your own access? Once access is
             removed, you will no longer be able to view this database.
