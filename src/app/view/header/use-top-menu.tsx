@@ -75,45 +75,10 @@ export function useTopMenu() {
     function handleSingleCommunity(communityId: string) {
       const op = segments.shift();
       switch (op) {
-        case 'editor':
-          handleCommunityEditor(communityId);
+        case 'property':
+          handlePropertyEditor(communityId);
           break;
 
-        case 'management':
-          handleCommunityManagement(communityId);
-          break;
-
-        case 'tool':
-          handleCommunityTool(communityId);
-          break;
-      }
-    }
-
-    function handleCommunityEditor(communityId: string) {
-      const op = segments.shift();
-      switch (op) {
-        case 'property': {
-          const propertyId = segments.shift();
-          if (propertyId) {
-            items.push({
-              id: 'property-editor',
-              href: appPath('property', { communityId, propertyId }),
-              children: (
-                <PropertyAddress
-                  communityId={communityId}
-                  propertyId={propertyId}
-                />
-              ),
-            });
-          }
-          break;
-        }
-      }
-    }
-
-    function handleCommunityManagement(communityId: string) {
-      const op = segments.shift();
-      switch (op) {
         case 'import-xlsx':
           items.push({
             id: 'import-xlsx',
@@ -137,12 +102,7 @@ export function useTopMenu() {
             children: 'Share',
           });
           break;
-      }
-    }
 
-    function handleCommunityTool(communityId: string) {
-      const op = segments.shift();
-      switch (op) {
         case 'dashboard':
           items.push({
             id: 'tool-dashboard',
@@ -150,6 +110,22 @@ export function useTopMenu() {
             children: 'Dashboard',
           });
           break;
+      }
+    }
+
+    function handlePropertyEditor(communityId: string) {
+      const propertyId = segments.shift();
+      if (propertyId) {
+        items.push({
+          id: 'property-editor',
+          href: appPath('property', { communityId, propertyId }),
+          children: (
+            <PropertyAddress
+              communityId={communityId}
+              propertyId={propertyId}
+            />
+          ),
+        });
       }
     }
   }, [pathname]);

@@ -106,7 +106,7 @@ export default function Share({ params }: RouteArgs) {
     if (!community) {
       return null;
     }
-    return <CopyShareLink className="p-2" communityId={community.id} />;
+    return <CopyShareLink communityId={community.id} />;
   }, [community]);
 
   return (

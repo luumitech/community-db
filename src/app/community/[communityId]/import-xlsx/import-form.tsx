@@ -5,8 +5,8 @@ import * as XLSX from 'xlsx';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { Button } from '~/view/base/button';
 import { FileInput } from '~/view/base/file-input';
-import { useMakeXlsxData } from '../view/make-xlsx-data';
-import { XlsxView } from '../view/xlsx-view';
+import { useMakeXlsxData } from '../common/make-xlsx-data';
+import { XlsxView } from '../common/xlsx-view';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {

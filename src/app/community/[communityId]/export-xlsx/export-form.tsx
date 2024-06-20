@@ -6,8 +6,8 @@ import * as XLSX from 'xlsx';
 import { startDownloadBlob } from '~/lib/dom';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { exportCommunityAsBase64 } from '~/server-action/export-community';
-import { useMakeXlsxData } from '../view/make-xlsx-data';
-import { XlsxView } from '../view/xlsx-view';
+import { useMakeXlsxData } from '../common/make-xlsx-data';
+import { XlsxView } from '../common/xlsx-view';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {

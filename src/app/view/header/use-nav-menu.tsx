@@ -96,10 +96,15 @@ export function useNavMenu() {
       const op = segments.shift();
       items.push(
         {
+          id: 'Community',
+          isDisabled: true,
+          children: 'Community',
+        },
+        {
           id: 'membership-editor',
           isActive: !!matchCommunityEditor(pathname),
           href: appPath('propertyList', { communityId }),
-          children: 'Membership Editor',
+          children: indentMenuItem('Membership Editor', 1),
         },
         {
           id: 'import-xlsx',
@@ -115,11 +120,6 @@ export function useNavMenu() {
           id: 'share',
           ...pathMenuArg(appPath('communityShare', { communityId })),
           children: indentMenuItem('Share', 1),
-        },
-        {
-          id: 'tools',
-          ...pathMenuArg(appPath('communityToolMenu', { communityId })),
-          children: 'Tools',
         },
         {
           id: 'dashboard',

@@ -3,19 +3,18 @@ import { compile } from 'path-to-regexp';
 /**
  * List of supported URL within app
  */
-const supportedPathTemplates = {
+export const supportedPathTemplates = {
   home: '/',
   preference: '/preference',
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
-  communityImport: '/community/:communityId/management/import-xlsx',
-  communityExport: '/community/:communityId/management/export-xlsx',
-  communityShare: '/community/:communityId/management/share',
-  propertyList: '/community/:communityId/editor/property-list',
-  property: '/community/:communityId/editor/property/:propertyId',
-  communityToolMenu: '/community/:communityId/tool/menu',
-  communityDashboard: '/community/:communityId/tool/dashboard',
+  communityImport: '/community/:communityId/import-xlsx',
+  communityExport: '/community/:communityId/export-xlsx',
+  communityShare: '/community/:communityId/share',
+  propertyList: '/community/:communityId/property-list',
+  property: '/community/:communityId/property/:propertyId',
+  communityDashboard: '/community/:communityId/dashboard',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -40,7 +39,6 @@ export function appPath(
     | 'communityExport'
     | 'communityShare'
     | 'propertyList'
-    | 'communityToolMenu'
     | 'communityDashboard',
   sub: { communityId: string }
 ): string;
