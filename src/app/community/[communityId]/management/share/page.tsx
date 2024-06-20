@@ -1,9 +1,6 @@
 'use client';
-import { useMutation, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
-  Button,
-  Input,
-  Link,
   Spinner,
   Table,
   TableBody,
@@ -11,17 +8,11 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  getKeyValue,
 } from '@nextui-org/react';
-import { type RowElement } from '@react-types/table';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
-
-import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { appPath } from '~/lib/app-path';
-import { toast } from '~/view/base/toastify';
 import { CopyShareLink } from './copy-share-link';
 import { NewAccessButton } from './new-access-button';
 import { useTableData } from './use-table-data';
@@ -38,10 +29,16 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
   query communityAccessList($id: String!) {
     communityFromId(id: $id) {
       id
-      ownAccess {
+      name
+      access {
+        id
         role
+        ...AccessList_User
+        ...AccessList_Role
+        ...AccessList_Action
+        ...Share_NewAccessModal
       }
-      accessList {
+      otherAccessList {
         id
         ...AccessList_User
         ...AccessList_Role
@@ -63,14 +60,20 @@ export default function Share({ params }: RouteArgs) {
   const { columns, renderCell } = useTableData();
   const { data, loading } = result;
 
-  const accessList = React.useMemo(
-    () => data?.communityFromId.accessList ?? [],
-    [data]
-  );
+  const community = React.useMemo(() => data?.communityFromId, [data]);
 
-  const userRole = React.useMemo(() => {
-    return data?.communityFromId.ownAccess.role;
-  }, [data]);
+  /**
+   * Generate access list for all users (including self)
+   */
+  const accessList = React.useMemo(() => {
+    const others = community?.otherAccessList;
+    const self = community?.access;
+
+    if (self && others) {
+      return [{ isSelf: true, ...self }, ...others];
+    }
+    return [];
+  }, [community]);
 
   const renderRows = React.useCallback(() => {
     return accessList.map((entry) => (
@@ -87,23 +90,30 @@ export default function Share({ params }: RouteArgs) {
   }, [accessList, renderCell, columns]);
 
   const topContent = React.useMemo(() => {
-    return <CopyShareLink className="p-2" communityId={communityId} />;
-  }, [communityId]);
-
-  const bottomContent = React.useMemo(() => {
-    if (userRole !== GQL.Role.Admin) {
+    if (!community) {
       return null;
     }
-    return <NewAccessButton className="p-2" communityId={communityId} />;
-  }, [communityId, userRole]);
+    const isAdmin = community.access.role === GQL.Role.Admin;
+    return (
+      <div className="flex gap-2 items-center">
+        <span className="text-lg grow">Share {community.name} with:</span>
+        {isAdmin && <NewAccessButton communityId={community.id} />}
+      </div>
+    );
+  }, [community]);
+
+  const bottomContent = React.useMemo(() => {
+    if (!community) {
+      return null;
+    }
+    return <CopyShareLink className="p-2" communityId={community.id} />;
+  }, [community]);
 
   return (
     <Table
       aria-label="Community Access List"
       classNames={{
-        // 64px is the height of header
-        // 0.5rem is the top margin of the main div
-        base: [`max-h-[calc(100vh-64px-0.5rem)]`],
+        base: ['max-h-main-height'],
         // Don't use array here
         // See: https://github.com/nextui-org/nextui/issues/2304
         // replaces the removeWrapper attribute
@@ -113,7 +123,9 @@ export default function Share({ params }: RouteArgs) {
       // removeWrapper
       isHeaderSticky
       topContent={topContent}
+      topContentPlacement="outside"
       bottomContent={bottomContent}
+      bottomContentPlacement="outside"
     >
       <TableHeader columns={columns}>
         {(column) => (

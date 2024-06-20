@@ -141,9 +141,7 @@ export default function PropertyList({ params }: RouteArgs) {
     <Table
       aria-label="Property Table"
       classNames={{
-        // 64px is the height of header
-        // 0.5rem is the top margin of the main div
-        base: [`max-h-[calc(100vh-64px-0.5rem)]`],
+        base: ['max-h-main-height'],
         // Don't use array here
         // See: https://github.com/nextui-org/nextui/issues/2304
         // replaces the removeWrapper attribute

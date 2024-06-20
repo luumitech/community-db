@@ -4,6 +4,7 @@ import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
+import { toast } from '~/view/base/toastify';
 
 interface Props {
   className?: string;
@@ -11,36 +12,40 @@ interface Props {
 }
 
 export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
-  const [copiedText, copyToClipboard] = useCopyToClipboard();
-  const [hasCopiedText, setHasCopiedText] = React.useState(false);
+  // const [copiedText, copyToClipboard] = useCopyToClipboard();
 
-  React.useEffect(() => {
-    if (copiedText) {
-      setHasCopiedText(true);
-      setTimeout(() => {
-        setHasCopiedText(false);
-      }, 5000);
-    }
-  }, [copiedText]);
+  // Use local copyToClipboard implementation
+  // until this is fixed:
+  // https://github.com/uidotdev/usehooks/issues/312
+  const copyToClipboard = React.useCallback((value: string) => {
+    const handleCopy = async () => {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        throw new Error('writeText not supported');
+      }
+    };
+
+    return handleCopy();
+  }, []);
 
   return (
     <div className={clsx(className)}>
       <div className="flex items-center gap-2">
         <Button
-          color="primary"
-          endContent={<Icon icon="share" />}
+          variant="bordered"
+          endContent={<Icon icon="link" />}
           onClick={() => {
             const path = appPath('propertyList', { communityId });
             const url = `${process.env.NEXT_PUBLIC_HOSTNAME}${path}`;
-            copyToClipboard(url);
+
+            toast.promise(copyToClipboard(url), {
+              success: 'Copied',
+            });
           }}
         >
-          Copy Share Link
+          Copy Link
         </Button>
-        {hasCopiedText && <span>copied!</span>}
-      </div>
-      <div className="text-xs">
-        The share link is only applicable to users in the access list.
       </div>
     </div>
   );

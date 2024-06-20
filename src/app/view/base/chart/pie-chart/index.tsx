@@ -15,7 +15,7 @@ export function PieChart<T extends MayHaveLabel>({
   const theme = useNivoTheme();
   const margin = React.useMemo(() => {
     const result = {
-      top: 0,
+      top: 25, // save space for pie labels
       right: 80, // save space for pie labels
       bottom: 80, // save space for legend
       left: 80, // save space for pie labels

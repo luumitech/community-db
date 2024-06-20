@@ -36,7 +36,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <Providers sessionProviderProps={{ session }}>
             <div className="flex flex-col min-h-screen">
               <Header />
-              <main className="flex flex-col mt-2 mx-2">{children}</main>
+              <main className="flex flex-col mt-main-top mx-2">{children}</main>
             </div>
           </Providers>
         </ThemeProvider>

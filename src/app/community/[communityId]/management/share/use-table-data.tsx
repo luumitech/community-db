@@ -7,7 +7,7 @@ import { UserInfo } from './user-info';
 
 export function useTableData() {
   const columns = [
-    { key: 'user', label: 'User', className: undefined },
+    { key: 'user', label: 'User with access', className: undefined },
     { key: 'role', label: 'Role' },
     { key: 'action', label: 'Action' },
   ];
@@ -16,11 +16,11 @@ export function useTableData() {
     (entry: AccessEntry, columnKey: string | number) => {
       switch (columnKey) {
         case 'user':
-          return <UserInfo entry={entry} />;
+          return <UserInfo entry={entry} isSelf={entry.isSelf} />;
         case 'role':
           return <RoleInfo entry={entry} />;
         case 'action':
-          return <Action entry={entry} />;
+          return <Action entry={entry} isSelf={entry.isSelf} />;
 
         default:
           return getKeyValue(entry, columnKey);

@@ -18,6 +18,7 @@ export type ActionFragmentType = FragmentType<typeof EntryFragment>;
 interface Props {
   className?: string;
   entry: ActionFragmentType;
+  isSelf?: boolean;
 }
 
 export const Action: React.FC<Props> = (props) => {
@@ -26,7 +27,7 @@ export const Action: React.FC<Props> = (props) => {
   return (
     <div className={clsx(props.className, 'flex gap-2')}>
       <FlatButton className="text-primary" icon="edit" tooltip="Modify Role" />
-      <RemoveAccess access={entry} />
+      <RemoveAccess access={entry} isSelf={props.isSelf} />
     </div>
   );
 };

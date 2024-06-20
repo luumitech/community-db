@@ -3,9 +3,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { Button } from '~/view/base/button';
 import { FlatButton } from '~/view/base/flat-button';
-import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
 
 const AccessDeleteMutation = graphql(/* GraphQL */ `
@@ -19,9 +17,14 @@ const AccessDeleteMutation = graphql(/* GraphQL */ `
 interface Props {
   className?: string;
   access: GQL.AccessList_ActionFragment;
+  isSelf?: boolean;
 }
 
-export const RemoveAccess: React.FC<Props> = ({ className, access }) => {
+export const RemoveAccess: React.FC<Props> = ({
+  className,
+  access,
+  isSelf,
+}) => {
   const [deleteAccess] = useMutation(AccessDeleteMutation);
 
   const onDelete = React.useCallback(async () => {
@@ -52,7 +55,12 @@ export const RemoveAccess: React.FC<Props> = ({ className, access }) => {
       onClick={onDelete}
       confirmation
       confirmationArg={{
-        bodyText: (
+        bodyText: isSelf ? (
+          <p>
+            Are you sure you want to remove your own access? Once access is
+            removed, you will no longer be able to view this database.
+          </p>
+        ) : (
           <p>
             Are you sure you want to remove access for{' '}
             <span className="text-primary">{access.user.email}</span>?

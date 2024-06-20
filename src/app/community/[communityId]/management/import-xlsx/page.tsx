@@ -76,9 +76,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
   return (
     <FormProvider {...formMethods}>
       <form
-        // 64px is height of header bar
-        // 0.5rem is the top padding within <main/>, see layout.tsx
-        className="flex flex-col h-[calc(100vh_-_64px_-_0.5rem)]"
+        className="flex flex-col h-main-height"
         onSubmit={handleSubmit(onImport)}
       >
         <ImportForm />

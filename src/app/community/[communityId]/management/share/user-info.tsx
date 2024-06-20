@@ -15,14 +15,16 @@ export type UserInfoFragmentType = FragmentType<typeof EntryFragment>;
 interface Props {
   className?: string;
   entry: UserInfoFragmentType;
+  isSelf?: boolean;
 }
 
 export const UserInfo: React.FC<Props> = (props) => {
   const entry = useFragment(EntryFragment, props.entry);
 
   return (
-    <div className={clsx(props.className, 'truncate')}>
-      {entry.user.email ?? ''}
+    <div className={clsx(props.className, 'flex truncate gap-1')}>
+      <span>{entry.user.email ?? ''}</span>
+      {!!props.isSelf && <span>(you)</span>}
     </div>
   );
 };

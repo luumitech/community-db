@@ -112,15 +112,22 @@ export const EventParticipation: React.FC<Props> = ({
           data={chartData}
           keys={['renew', 'new', 'existing']}
           indexBy="event"
+          margin={{
+            bottom: 100,
+          }}
           axisBottom={{
             legend: 'Event',
             tickRotation: -15,
+            legendOffset: 55,
           }}
           axisLeft={{
             legend: 'Member Count',
           }}
           enableTotals
           legendPos="bottom"
+          legendProp={{
+            translateY: 90,
+          }}
         />
       </CardBody>
     </Card>

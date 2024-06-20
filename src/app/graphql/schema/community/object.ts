@@ -89,21 +89,36 @@ builder.prismaObject('Community', {
       type: [supportedEventRef],
       resolve: (entry) => entry.eventList,
     }),
-    accessList: t.relation('accessList'),
     /**
      * Return context user's access document
      */
-    ownAccess: t.prismaField({
+    access: t.prismaField({
       type: 'Access',
       resolve: async (query, parent, args, ctx) => {
         const { user } = await ctx;
-        const ownAccess = await verifyAccess(
+        const access = await verifyAccess(
           user,
           { id: parent.id },
           // skip role verification
           Object.values(Role)
         );
-        return ownAccess;
+        return access;
+      },
+    }),
+    /**
+     * Return other user's access documents
+     */
+    otherAccessList: t.prismaField({
+      type: ['Access'],
+      resolve: async (query, parent, args, ctx) => {
+        const { user } = await ctx;
+        const accessList = await prisma.access.findMany({
+          where: {
+            communityId: parent.id,
+            user: { NOT: { email: user.email } },
+          },
+        });
+        return accessList;
       },
     }),
     /**
