@@ -1,5 +1,24 @@
+import { useQuery } from '@apollo/client';
+import { useParams } from 'next/navigation';
 import React from 'react';
+import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+
+const CommunityLayoutQuery = graphql(/* GraphQL */ `
+  query communityLayout($communityId: String!) {
+    communityFromId(id: $communityId) {
+      id
+      eventList {
+        name
+        hidden
+      }
+      access {
+        role
+      }
+    }
+  }
+`);
 
 interface EventSelectItem {
   label: string;
@@ -21,6 +40,15 @@ type State = Readonly<{
    * selection items for 'Select event'
    */
   selectEventSections: EventSelectSection[];
+  /**
+   * Current user's role in this community
+   */
+  role: GQL.Role;
+  /**
+   * Base on current user's role, can user modify content within
+   * this community?
+   */
+  canEdit: boolean;
 }>;
 
 interface ContextT extends State {}
@@ -30,11 +58,24 @@ const Context = React.createContext<ContextT>();
 
 interface Props {
   children: React.ReactNode;
-  eventList: GQL.SupportedEvent[];
 }
 
-export function ContextProvider({ eventList, ...props }: Props) {
+export function ContextProvider(props: Props) {
+  const params = useParams<{ communityId?: string }>();
+  const communityId = params.communityId;
+  const result = useQuery(CommunityLayoutQuery, {
+    variables: {
+      communityId: params.communityId!,
+    },
+    skip: communityId == null,
+  });
+  useGraphqlErrorHandler(result);
+  const community = result.data?.communityFromId;
+
   const value = React.useMemo<ContextT>(() => {
+    const eventList = community?.eventList ?? [];
+    const role = community?.access.role ?? GQL.Role.Viewer;
+
     const visibleEventItems: EventSelectItem[] = [];
     const hiddenEventItems: EventSelectItem[] = [];
     eventList.forEach((entry) => {
@@ -57,8 +98,10 @@ export function ContextProvider({ eventList, ...props }: Props) {
       eventList,
       addEventItems: visibleEventItems,
       selectEventSections,
+      role,
+      canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
     };
-  }, [eventList]);
+  }, [community]);
   return <Context.Provider value={value} {...props} />;
 }
 

@@ -7,6 +7,7 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import React from 'react';
+import { useContext } from '~/community/[communityId]/context';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { CommunityEntry } from './_type';
@@ -21,8 +22,15 @@ interface Props {
 }
 
 export const MoreMenu: React.FC<Props> = ({ fragment }) => {
+  const { canEdit } = useContext();
   const communityModify = useHookFormWithDisclosure(fragment);
   const communityDeleteDisclosure = useDisclosure();
+
+  const disabledKeys = React.useMemo(() => {
+    if (!canEdit) {
+      return ['modify', 'import', 'delete'];
+    }
+  }, [canEdit]);
 
   return (
     <>
@@ -37,7 +45,11 @@ export const MoreMenu: React.FC<Props> = ({ fragment }) => {
             <Icon icon="more" />
           </Button>
         </DropdownTrigger>
-        <DropdownMenu aria-label="Profile Actions" variant="flat">
+        <DropdownMenu
+          aria-label="Profile Actions"
+          variant="flat"
+          disabledKeys={disabledKeys}
+        >
           <DropdownItem
             key="modify"
             {...communityModify.disclosure.getButtonProps()}

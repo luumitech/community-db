@@ -1,6 +1,8 @@
+import { Role } from '@prisma/client';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
+import { verifyAccess } from '../access/util';
 import { getCommunityEntry } from './util';
 
 const communityDeletePayloadRef = builder
@@ -19,6 +21,10 @@ builder.mutationField('communityDelete', (t) =>
     },
     resolve: async (_parent, args, ctx) => {
       const { user, pubSub } = await ctx;
+
+      // Make sure user has permission to delete
+      await verifyAccess(user, { shortId: args.id }, [Role.ADMIN, Role.EDITOR]);
+
       // Verify access to community
       const entry = await getCommunityEntry(user, args.id);
 
