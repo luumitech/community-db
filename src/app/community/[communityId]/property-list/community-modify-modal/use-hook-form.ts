@@ -7,7 +7,7 @@ import {
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import { CommunityEntry } from '../_type';
 
 export const ModifyFragment = graphql(/* GraphQL */ `
@@ -24,8 +24,6 @@ export const ModifyFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-
-export type CommunityModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 export const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityModify($input: CommunityModifyInput!) {

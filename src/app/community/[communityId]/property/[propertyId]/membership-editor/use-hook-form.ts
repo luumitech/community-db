@@ -3,7 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { type PropertyEntry } from '../_type';
 
@@ -27,9 +27,6 @@ const MembershipEditorFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-export type MembershipEditorFragmentType = FragmentType<
-  typeof MembershipEditorFragment
->;
 
 function schema() {
   return yup.object({

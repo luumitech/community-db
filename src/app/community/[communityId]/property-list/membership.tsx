@@ -1,6 +1,6 @@
 import { Tooltip } from '@nextui-org/react';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
 import { type PropertyEntry } from './_type';
 
@@ -16,8 +16,6 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-
-export type MemberShipFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;

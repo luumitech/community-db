@@ -65,7 +65,7 @@ export const ModifyModal: React.FC<Props> = ({
             <LastModified
               className="text-right"
               updatedAt={community.updatedAt}
-              user={community.updatedBy}
+              userFragment={community.updatedBy}
             />
           </ModalBody>
           <ModalFooter>

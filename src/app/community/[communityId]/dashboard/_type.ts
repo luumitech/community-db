@@ -1,7 +1,3 @@
-import { type EventFragmentType } from './event-participation';
-import { type MemberCountFragmentType } from './member-count-chart';
-import { type MembershipSourceFragmentType } from './membership-source';
+import { type CommunityFromIdDashboardQuery } from '~/graphql/generated/graphql';
 
-export type DashboardEntry = EventFragmentType &
-  MemberCountFragmentType &
-  MembershipSourceFragmentType;
+export type DashboardEntry = CommunityFromIdDashboardQuery['communityFromId'];

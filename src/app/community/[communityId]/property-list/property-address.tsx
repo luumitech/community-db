@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import { type PropertyEntry } from './_type';
 
 const EntryFragment = graphql(/* GraphQL */ `
@@ -8,8 +8,6 @@ const EntryFragment = graphql(/* GraphQL */ `
     address
   }
 `);
-
-export type PropertyAddressFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;

@@ -71,7 +71,7 @@ export default function Property({ params }: RouteArgs) {
         <LastModified
           className="text-right"
           updatedAt={property.updatedAt}
-          user={property.updatedBy}
+          userFragment={property.updatedBy}
         />
       </ContextProvider>
     </div>

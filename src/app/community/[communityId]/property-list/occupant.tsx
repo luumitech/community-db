@@ -2,7 +2,7 @@ import { Chip } from '@nextui-org/chip';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import { type PropertyEntry } from './_type';
 
 const EntryFragment = graphql(/* GraphQL */ `
@@ -13,8 +13,6 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-
-export type OccupantFragmentType = FragmentType<typeof EntryFragment>;
 
 interface Props {
   className?: string;

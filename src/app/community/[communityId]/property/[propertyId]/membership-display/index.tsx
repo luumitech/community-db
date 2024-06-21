@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import { PropertyEntry } from '../_type';
 import { RegisteredEventList } from './registered-event-list';
 
@@ -16,9 +16,6 @@ const MembershipDisplayFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-export type MembershipDisplayFragmentType = FragmentType<
-  typeof MembershipDisplayFragment
->;
 
 interface Props {
   className?: string;

@@ -1,7 +1,7 @@
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { type DashboardEntry } from './_type';
@@ -30,9 +30,6 @@ const MembershipSourceFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export type MembershipSourceFragmentType = FragmentType<
-  typeof MembershipSourceFragment
->;
 type DataMapEntry = Omit<ChartDataEntry, 'id' | 'label' | 'value'>;
 
 class ChartDataHelper {
