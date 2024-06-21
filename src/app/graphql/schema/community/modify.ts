@@ -1,4 +1,4 @@
-import { Community, SupportedEvent } from '@prisma/client';
+import { Community, Role, SupportedEvent } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
@@ -7,6 +7,7 @@ import { MutationType } from '~/graphql/pubsub';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import { extractEventList } from '~/lib/lcra-community/import/event-list-util';
 import prisma from '~/lib/prisma';
+import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { getCommunityEntry } from './util';
 
@@ -84,6 +85,9 @@ builder.mutationField('communityModify', (t) =>
         );
       }
 
+      // Make sure user has permission to modify
+      await verifyAccess(user, { id: entry.id }, [Role.ADMIN, Role.EDITOR]);
+
       const { name, eventList, ...optionalInput } = input;
 
       const community = await prisma.community.update({
@@ -135,13 +139,16 @@ builder.mutationField('communityImport', (t) =>
     },
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
-      const { xlsx } = args.input;
+      const { id: shortId, xlsx } = args.input;
+
+      // Make sure user has permission to modify
+      await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
+
       const bytes = await xlsx.arrayBuffer();
       const xlsxBuf = Buffer.from(bytes);
       const workbook = XLSX.read(xlsxBuf);
       const { propertyList, eventList } = importLcraDB(workbook);
 
-      const shortId = args.input.id;
       const existing = await getCommunityEntry(user, shortId, {
         select: {
           id: true,

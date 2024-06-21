@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { FragmentType, graphql } from '~/graphql/generated';
+import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { CommunityEntry } from '../_type';
@@ -14,8 +14,6 @@ export const DeleteFragment = graphql(/* GraphQL */ `
     name
   }
 `);
-
-export type CommunityDeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityDelete($id: String!) {

@@ -1,7 +1,9 @@
+import { Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
+import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { getPropertyEntry } from './util';
 
@@ -53,6 +55,7 @@ builder.mutationField('propertyModify', (t) =>
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
       const shortId = self.id;
+
       const entry = await getPropertyEntry(user, shortId, {
         select: {
           id: true,
@@ -69,6 +72,12 @@ builder.mutationField('propertyModify', (t) =>
           `Attempting to update a stale property ${shortId}, please refresh browser.`
         );
       }
+
+      // Make sure user has permission to modify
+      await verifyAccess(user, { shortId: entry.community.shortId }, [
+        Role.ADMIN,
+        Role.EDITOR,
+      ]);
 
       const property = await prisma.property.update({
         ...query,

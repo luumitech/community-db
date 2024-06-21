@@ -15,13 +15,13 @@ import {
 import { type RowElement } from '@react-types/table';
 import clsx from 'clsx';
 import React from 'react';
+import { useContext } from '~/community/[communityId]/context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { Button } from '~/view/base/button';
 import { DatePicker } from '~/view/base/date-picker';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
-import { useContext } from '../context';
 import { EventDefaultSelect } from './event-default-select';
 import { useHookFormContext } from './use-hook-form';
 

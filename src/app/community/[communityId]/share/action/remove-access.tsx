@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import clsx from 'clsx';
 import React from 'react';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import { FlatButton } from '~/view/base/flat-button';
 import { toast } from '~/view/base/toastify';
 import { type AccessEntry } from '../_type';
@@ -14,8 +14,6 @@ export const DeleteFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-
-export type DeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
 const AccessDeleteMutation = graphql(/* GraphQL */ `
   mutation accessDelete($id: String!) {

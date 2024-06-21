@@ -7,7 +7,7 @@ import {
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
-import { FragmentType, graphql, useFragment } from '~/graphql/generated';
+import { graphql, useFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { type PropertyEntry } from '../_type';
 
@@ -29,9 +29,6 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-export type OccupantEditorFragmentType = FragmentType<
-  typeof OccupantEditorFragment
->;
 
 function schema() {
   return yup.object({

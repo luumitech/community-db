@@ -1,9 +1,8 @@
-import { Chip } from '@nextui-org/chip';
 import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
+import { useContext } from '~/community/[communityId]/context';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
-import { useContext } from '../context';
 
 interface Props {
   className?: string;

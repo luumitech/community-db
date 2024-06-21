@@ -106,16 +106,23 @@ export function useNavMenu() {
           href: appPath('propertyList', { communityId }),
           children: indentMenuItem('Membership Editor', 1),
         },
-        {
-          id: 'import-xlsx',
-          ...pathMenuArg(appPath('communityImport', { communityId })),
-          children: indentMenuItem('Import', 1),
-        },
-        {
-          id: 'export-xlsx',
-          ...pathMenuArg(appPath('communityExport', { communityId })),
-          children: indentMenuItem('Export', 1),
-        },
+        /**
+         * Don't want to include import/export because:
+         * - These are not frequently used operations
+         * - Import should be disabled for user with Viewer Role, but
+         *   it is not easy to determine at header level, what
+         *   role the user have
+         */
+        // {
+        //   id: 'import-xlsx',
+        //   ...pathMenuArg(appPath('communityImport', { communityId })),
+        //   children: indentMenuItem('Import', 1),
+        // },
+        // {
+        //   id: 'export-xlsx',
+        //   ...pathMenuArg(appPath('communityExport', { communityId })),
+        //   children: indentMenuItem('Export', 1),
+        // },
         {
           id: 'share',
           ...pathMenuArg(appPath('communityShare', { communityId })),

@@ -2,13 +2,14 @@
 import { useQuery } from '@apollo/client';
 import { Divider } from '@nextui-org/react';
 import React from 'react';
+import { useContext } from '~/community/[communityId]/context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { LastModified } from '~/view/last-modified';
-import { ContextProvider } from './context';
 import { MembershipDisplay } from './membership-display';
 import { MembershipEditor } from './membership-editor';
 import { OccupantDisplay } from './occupant-display';
+import { OccupantEditor } from './occupant-editor';
 import { PropertyDisplay } from './property-display';
 
 interface Params {
@@ -24,10 +25,6 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
   query propertyFromId($communityId: String!, $propertyId: String!) {
     communityFromId(id: $communityId) {
       id
-      eventList {
-        name
-        hidden
-      }
       propertyFromId(id: $propertyId) {
         id
         updatedAt
@@ -52,28 +49,27 @@ export default function Property({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
+  const { canEdit } = useContext();
   const community = result.data?.communityFromId;
   if (!community) {
     return null;
   }
 
   const property = community.propertyFromId;
-  const { eventList } = community;
 
   return (
-    <div>
-      <ContextProvider eventList={eventList}>
-        <PropertyDisplay fragment={property} />
-        <Divider className="mb-4" />
-        <MembershipDisplay fragment={property} />
-        <MembershipEditor className="mt-2" fragment={property} />
-        <OccupantDisplay className="my-4" fragment={property} />
-        <LastModified
-          className="text-right"
-          updatedAt={property.updatedAt}
-          user={property.updatedBy}
-        />
-      </ContextProvider>
+    <div className="flex flex-col gap-3">
+      <PropertyDisplay fragment={property} />
+      <Divider />
+      <MembershipDisplay fragment={property} />
+      {canEdit && <MembershipEditor fragment={property} />}
+      <OccupantDisplay fragment={property} />
+      {canEdit && <OccupantEditor fragment={property} />}
+      <LastModified
+        className="text-right"
+        updatedAt={property.updatedAt}
+        userFragment={property.updatedBy}
+      />
     </div>
   );
 }

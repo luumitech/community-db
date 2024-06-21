@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { ContextProvider } from './context';
 import { useSetupSubscription } from './setup-subscription';
 
 interface LayoutProps {
@@ -9,5 +10,5 @@ interface LayoutProps {
 export default function CommunityFromIdLayout({ children }: LayoutProps) {
   useSetupSubscription();
 
-  return children;
+  return <ContextProvider>{children}</ContextProvider>;
 }
