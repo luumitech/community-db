@@ -31,8 +31,8 @@ const schema = yup.object({
   }),
 
   // Mongo configuration
-  database: yup.object({
-    url: yup.string().required(),
+  mongodb: yup.object({
+    uri: yup.string().required(),
   }),
 
   // Azure configuration

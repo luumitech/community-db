@@ -15,5 +15,5 @@ export default async function globalSetup() {
   });
   const uri = instance.getUri(DB_NAME);
   (global as any).__MONGOINSTANCE = instance;
-  process.env.DATABASE_URL = uri;
+  process.env.MONGODB_URI = uri;
 }
