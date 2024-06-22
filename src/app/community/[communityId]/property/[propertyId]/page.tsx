@@ -2,7 +2,7 @@
 import { useQuery } from '@apollo/client';
 import { Divider } from '@nextui-org/react';
 import React from 'react';
-import { useContext } from '~/community/[communityId]/context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { LastModified } from '~/view/last-modified';
@@ -49,7 +49,7 @@ export default function Property({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
-  const { canEdit } = useContext();
+  const { canEdit } = useAppContext();
   const community = result.data?.communityFromId;
   if (!community) {
     return null;

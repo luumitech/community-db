@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps } from '@nextui-org/react';
-import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
@@ -16,9 +15,8 @@ interface MenuItemEntry extends BreadcrumbItemProps {
  */
 export function useTopMenu() {
   const pathname = usePathname();
-  const [menuItems, { set }] = useList<MenuItemEntry>([]);
 
-  const getItems = React.useCallback(() => {
+  const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
     // could've used useSelectedLayoutSegments, but it's not
     // memoized
@@ -129,11 +127,6 @@ export function useTopMenu() {
       }
     }
   }, [pathname]);
-
-  React.useEffect(() => {
-    const items = getItems();
-    set(items);
-  }, [getItems, set]);
 
   return menuItems;
 }
