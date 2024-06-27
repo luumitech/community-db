@@ -1,4 +1,7 @@
-import NextAuth, { type DefaultSession } from 'next-auth';
+import NextAuth, {
+  type DefaultSession,
+  type Profile as NextProfile,
+} from 'next-auth';
 
 declare module 'next-auth' {
   /**
@@ -12,5 +15,12 @@ declare module 'next-auth' {
        */
       email: string;
     } & DefaultSession['user'];
+  }
+
+  interface Profile extends NextProfile {
+    /**
+     * Google returns a email_verified to indicate if email is verified
+     */
+    email_verified?: boolean;
   }
 }
