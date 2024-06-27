@@ -20,6 +20,11 @@ const schema = yup.object({
   // protocol://hostname:port
   NEXT_PUBLIC_HOSTNAME: yup.string().required(),
 
+  // App version information
+  NEXT_PUBLIC_APP_VERSION: yup.string(),
+  NEXT_PUBLIC_GIT_BRANCH: yup.string(),
+  NEXT_PUBLIC_GIT_COMMIT_HASH: yup.string(),
+
   // See: https://next-auth.js.org/configuration/options#nextauth_secret
   NEXTAUTH_SECRET: yup.string().required(),
 

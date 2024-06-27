@@ -24,9 +24,9 @@ COPY . ./
 
 # yarn build uses APP_VERSION to upload source map to Sentry
 # These args are used by NextJS build
-ENV APP_VERSION=${APP_VERSION} \
-    GIT_BRANCH=${GIT_BRANCH} \
-    GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
+ENV NEXT_PUBLIC_APP_VERSION=${APP_VERSION} \
+    NEXT_PUBLIC_GIT_BRANCH=${GIT_BRANCH} \
+    NEXT_PUBLIC_GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
 
 RUN yarn build
 

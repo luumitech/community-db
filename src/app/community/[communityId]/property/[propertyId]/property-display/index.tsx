@@ -1,10 +1,13 @@
 import {
+  Spinner,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  type SlotsToClasses,
+  type TableSlots,
 } from '@nextui-org/react';
 import React from 'react';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
@@ -21,17 +24,30 @@ const PropertyDisplayFragment = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: string;
-  fragment: PropertyEntry;
+  className?: SlotsToClasses<TableSlots>;
+  fragment?: PropertyEntry;
+  isLoading?: boolean;
 }
 
-export const PropertyDisplay: React.FC<Props> = ({ className, fragment }) => {
+export const PropertyDisplay: React.FC<Props> = ({
+  className,
+  fragment,
+  isLoading,
+}) => {
   const entry = useFragment(PropertyDisplayFragment, fragment);
   const { columns, renderCell } = useTableData();
-  const rows = [{ key: entry.id, ...entry }];
+  const rows = entry ? [{ key: entry.id, ...entry }] : [];
 
   return (
-    <Table className={className} aria-label="Property Info" removeWrapper>
+    <Table
+      classNames={{
+        // Leave enough space for one row of data only
+        emptyWrapper: 'h-[40px]',
+        ...className,
+      }}
+      aria-label="Property Info"
+      removeWrapper
+    >
       <TableHeader columns={columns}>
         {(column) => (
           <TableColumn key={column.key} className={column.className}>
@@ -39,7 +55,11 @@ export const PropertyDisplay: React.FC<Props> = ({ className, fragment }) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={rows}>
+      <TableBody
+        items={rows}
+        isLoading={isLoading}
+        loadingContent={<Spinner />}
+      >
         {(item) => (
           <TableRow key={item.key}>
             {(columnKey) => (

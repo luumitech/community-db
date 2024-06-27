@@ -51,25 +51,25 @@ export default function Property({ params }: RouteArgs) {
   useGraphqlErrorHandler(result);
   const { canEdit } = useAppContext();
   const community = result.data?.communityFromId;
-  if (!community) {
-    return null;
-  }
-
-  const property = community.propertyFromId;
+  const property = community?.propertyFromId;
 
   return (
     <div className="flex flex-col gap-3">
-      <PropertyDisplay fragment={property} />
+      <PropertyDisplay fragment={property} isLoading={result.loading} />
       <Divider />
-      <MembershipDisplay fragment={property} />
-      {canEdit && <MembershipEditor fragment={property} />}
-      <OccupantDisplay fragment={property} />
-      {canEdit && <OccupantEditor fragment={property} />}
-      <LastModified
-        className="text-right"
-        updatedAt={property.updatedAt}
-        userFragment={property.updatedBy}
-      />
+      {property && (
+        <>
+          <MembershipDisplay fragment={property} />
+          {canEdit && <MembershipEditor fragment={property} />}
+          <OccupantDisplay fragment={property} />
+          {canEdit && <OccupantEditor fragment={property} />}
+          <LastModified
+            className="text-right"
+            updatedAt={property.updatedAt}
+            userFragment={property.updatedBy}
+          />
+        </>
+      )}
     </div>
   );
 }
