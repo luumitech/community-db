@@ -9,7 +9,7 @@ on:
 
 env:
   NODE_VERSION: '20'
-  MONGODB_VERISON: '4.2'
+  MONGODB_VERSION: '4.2'
 
 jobs:
   unit-test:
@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
@@ -28,7 +28,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.3.0
         with:
-          mongodb-version: ${{ env.MONGODB_VERISON }}
+          mongodb-version: ${{ env.MONGODB_VERSION }}
 
       # Main logic
       - name: Install dependencies

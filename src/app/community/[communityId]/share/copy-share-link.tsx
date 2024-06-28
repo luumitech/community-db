@@ -1,5 +1,6 @@
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 import clsx from 'clsx';
+import { env } from 'next-runtime-env';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
@@ -37,7 +38,8 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
           endContent={<Icon icon="link" />}
           onClick={() => {
             const path = appPath('propertyList', { communityId });
-            const url = `${process.env.NEXT_PUBLIC_HOSTNAME}${path}`;
+            const hostname = env('NEXT_PUBLIC_HOSTNAME');
+            const url = `${hostname}${path}`;
 
             toast.promise(copyToClipboard(url), {
               success: 'Copied',

@@ -77,7 +77,7 @@ export default function Share({ params }: RouteArgs) {
       return [{ isSelf: true, ...self }, ...others];
     }
     return [];
-  }, [community]);
+  }, [community?.otherAccessList, community?.access]);
 
   const renderRows = React.useCallback(() => {
     return accessList.map((entry) => (

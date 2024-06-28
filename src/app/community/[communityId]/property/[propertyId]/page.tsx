@@ -2,7 +2,7 @@
 import { useQuery } from '@apollo/client';
 import { Divider } from '@nextui-org/react';
 import React from 'react';
-import { useContext } from '~/community/[communityId]/context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { LastModified } from '~/view/last-modified';
@@ -49,27 +49,27 @@ export default function Property({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
-  const { canEdit } = useContext();
+  const { canEdit } = useAppContext();
   const community = result.data?.communityFromId;
-  if (!community) {
-    return null;
-  }
-
-  const property = community.propertyFromId;
+  const property = community?.propertyFromId;
 
   return (
     <div className="flex flex-col gap-3">
-      <PropertyDisplay fragment={property} />
+      <PropertyDisplay fragment={property} isLoading={result.loading} />
       <Divider />
-      <MembershipDisplay fragment={property} />
-      {canEdit && <MembershipEditor fragment={property} />}
-      <OccupantDisplay fragment={property} />
-      {canEdit && <OccupantEditor fragment={property} />}
-      <LastModified
-        className="text-right"
-        updatedAt={property.updatedAt}
-        userFragment={property.updatedBy}
-      />
+      {property && (
+        <>
+          <MembershipDisplay fragment={property} />
+          {canEdit && <MembershipEditor fragment={property} />}
+          <OccupantDisplay fragment={property} />
+          {canEdit && <OccupantEditor fragment={property} />}
+          <LastModified
+            className="text-right"
+            updatedAt={property.updatedAt}
+            userFragment={property.updatedBy}
+          />
+        </>
+      )}
     </div>
   );
 }

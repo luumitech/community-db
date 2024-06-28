@@ -1,9 +1,9 @@
 /**
  * This is for server use only
  */
+import { env } from 'next-runtime-env';
 import pino from 'pino';
 import pretty from 'pino-pretty';
-import { env } from '~/lib/env-cfg';
 import { isProduction } from '~/lib/env-var';
 
 // Standard set of serializers
@@ -34,7 +34,8 @@ function errorSerializer(err: Error) {
  *   debugEnabled('flow');  // false
  */
 function debugEnabled(flag: string) {
-  const flagEnv = env.log.debug;
+  // Not using ~/lib/env-cfg because it also reference this file
+  const flagEnv = env('LOG_DEBUG');
 
   if (!flagEnv) {
     return false;

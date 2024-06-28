@@ -30,7 +30,7 @@ interface EventSelectSection {
   showDivider?: boolean;
 }
 
-type State = Readonly<{
+export type CommunityState = Readonly<{
   eventList: GQL.SupportedEvent[];
   /**
    * selection items for 'Add new event'
@@ -51,16 +51,7 @@ type State = Readonly<{
   canEdit: boolean;
 }>;
 
-interface ContextT extends State {}
-
-// @ts-expect-error: intentionally leaving default value to be empty
-const Context = React.createContext<ContextT>();
-
-interface Props {
-  children: React.ReactNode;
-}
-
-export function ContextProvider(props: Props) {
+export function useCommunityContext() {
   const params = useParams<{ communityId?: string }>();
   const communityId = params.communityId;
   const result = useQuery(CommunityLayoutQuery, {
@@ -72,7 +63,7 @@ export function ContextProvider(props: Props) {
   useGraphqlErrorHandler(result);
   const community = result.data?.communityFromId;
 
-  const value = React.useMemo<ContextT>(() => {
+  const contextValue = React.useMemo<CommunityState>(() => {
     const eventList = community?.eventList ?? [];
     const role = community?.access.role ?? GQL.Role.Viewer;
 
@@ -102,13 +93,6 @@ export function ContextProvider(props: Props) {
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
     };
   }, [community]);
-  return <Context.Provider value={value} {...props} />;
-}
 
-export function useContext() {
-  const context = React.useContext(Context);
-  if (!context) {
-    throw new Error(`useContext must be used within a ContextProvider`);
-  }
-  return context;
+  return contextValue;
 }

@@ -15,7 +15,7 @@ import {
 import { type RowElement } from '@react-types/table';
 import clsx from 'clsx';
 import React from 'react';
-import { useContext } from '~/community/[communityId]/context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { Button } from '~/view/base/button';
@@ -34,7 +34,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   className,
   yearIdx,
 }) => {
-  const { selectEventSections } = useContext();
+  const { selectEventSections } = useAppContext();
   const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
   const { control, register, formState, setValue, clearErrors } =
     useHookFormContext();

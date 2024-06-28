@@ -1,8 +1,8 @@
 import { LinkProps } from '@nextui-org/react';
-import { useList } from '@uidotdev/usehooks';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { appPath } from '~/lib/app-path';
 import { matchCommunityEditor } from './matcher-util';
 
@@ -28,7 +28,7 @@ function indentMenuItem(label: string, indentLevel = 0) {
  */
 export function useNavMenu() {
   const pathname = usePathname();
-  const [menuItems, { set }] = useList<MenuItemEntry>([]);
+  const { canEdit } = useAppContext();
 
   /**
    * Return menu arg for a given pathname
@@ -43,7 +43,7 @@ export function useNavMenu() {
     [pathname]
   );
 
-  const getItems = React.useCallback(() => {
+  const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
     // could've used useSelectedLayoutSegments, but it's not
     // memoized
@@ -105,24 +105,23 @@ export function useNavMenu() {
           isActive: !!matchCommunityEditor(pathname),
           href: appPath('propertyList', { communityId }),
           children: indentMenuItem('Membership Editor', 1),
+        }
+      );
+
+      if (canEdit) {
+        items.push({
+          id: 'import-xlsx',
+          ...pathMenuArg(appPath('communityImport', { communityId })),
+          children: indentMenuItem('Import', 1),
+        });
+      }
+
+      items.push(
+        {
+          id: 'export-xlsx',
+          ...pathMenuArg(appPath('communityExport', { communityId })),
+          children: indentMenuItem('Export', 1),
         },
-        /**
-         * Don't want to include import/export because:
-         * - These are not frequently used operations
-         * - Import should be disabled for user with Viewer Role, but
-         *   it is not easy to determine at header level, what
-         *   role the user have
-         */
-        // {
-        //   id: 'import-xlsx',
-        //   ...pathMenuArg(appPath('communityImport', { communityId })),
-        //   children: indentMenuItem('Import', 1),
-        // },
-        // {
-        //   id: 'export-xlsx',
-        //   ...pathMenuArg(appPath('communityExport', { communityId })),
-        //   children: indentMenuItem('Export', 1),
-        // },
         {
           id: 'share',
           ...pathMenuArg(appPath('communityShare', { communityId })),
@@ -135,12 +134,7 @@ export function useNavMenu() {
         }
       );
     }
-  }, [pathname, pathMenuArg]);
-
-  React.useEffect(() => {
-    const items = getItems();
-    set(items);
-  }, [getItems, set]);
+  }, [pathname, pathMenuArg, canEdit]);
 
   return menuItems;
 }

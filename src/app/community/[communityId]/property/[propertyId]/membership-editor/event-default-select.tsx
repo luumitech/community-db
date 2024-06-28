@@ -1,7 +1,7 @@
 import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
-import { useContext } from '~/community/[communityId]/context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
   const dispatch = useDispatch();
   const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
-  const { addEventItems } = useContext();
+  const { addEventItems } = useAppContext();
 
   return (
     <Select

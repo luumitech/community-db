@@ -274,7 +274,7 @@ export class BlobContainer {
       permissions: BlobSASPermissions.parse('r'),
       // If using local azurite emulator, then it's likely http
       protocol:
-        env.azure.storageMode === 'local'
+        env().azure.storageMode === 'local'
           ? SASProtocol.HttpsAndHttp
           : SASProtocol.Https,
       expiresOn: addMinutes(Date.now(), 10),

@@ -1,16 +1,29 @@
+import { unstable_noStore } from 'next/cache';
 import OmniConfig from 'omniconfig.js';
 import * as yup from 'yup';
+import { Logger } from '~/lib/logger';
+
+const logger = Logger('env-cfg');
 
 /**
  * Check a list of env variables that must be present
  * for the application to work properly
  *
- * These are mapped from enviroment variables in `process.env`
+ * These are mapped from environment variables in `process.env`
  * And snake case names can be automatically mapped to object
  * form.
  */
 const schema = yup.object({
   NODE_ENV: yup.string().oneOf(['development', 'production']).required(),
+
+  // Basepath used by client to construct URL (do not add slash at end)
+  // protocol://hostname:port
+  NEXT_PUBLIC_HOSTNAME: yup.string().required(),
+
+  // App version information
+  NEXT_PUBLIC_APP_VERSION: yup.string(),
+  NEXT_PUBLIC_GIT_BRANCH: yup.string(),
+  NEXT_PUBLIC_GIT_COMMIT_HASH: yup.string(),
 
   // See: https://next-auth.js.org/configuration/options#nextauth_secret
   NEXTAUTH_SECRET: yup.string().required(),
@@ -21,6 +34,10 @@ const schema = yup.object({
   // Log configuration
   log: yup.object({
     debug: yup.string(),
+  }),
+
+  config: yup.object({
+    debug: yup.boolean(),
   }),
 
   // For google login
@@ -70,6 +87,28 @@ const schema = yup.object({
   }),
 });
 
-export const env = OmniConfig.withYup(schema)
-  .useEnvironmentVariables({ processEnv: true })
-  .resolveSync();
+/**
+ * Copy of env that has gone through schema validation
+ */
+let verifiedEnv: (typeof schema)['__outputType'] | undefined;
+
+/**
+ * Return environment variables
+ * - check with schema to ensure all env var values adhere to schema
+ */
+export function env() {
+  // Prevent NextJs from caching this function
+  unstable_noStore();
+
+  if (verifiedEnv == null) {
+    verifiedEnv = OmniConfig.withYup(schema)
+      .useEnvironmentVariables({ processEnv: true })
+      .resolveSync();
+  }
+
+  if (verifiedEnv.config.debug) {
+    logger.info(JSON.stringify(verifiedEnv, undefined, 2));
+  }
+
+  return verifiedEnv;
+}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth/next';
+import { PublicEnvScript } from 'next-runtime-env';
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
@@ -7,7 +8,6 @@ import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 
-import '~/lib/env-cfg';
 import './yup-extended';
 
 import './globals.css';
@@ -27,6 +27,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const session = await getServerSession(authOptions);
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <PublicEnvScript />
+      </head>
       <body className={`${inter.className} text-foreground bg-background`}>
         {/**
          * light/dark theme can be customized
