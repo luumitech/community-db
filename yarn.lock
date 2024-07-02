@@ -1878,6 +1878,11 @@
   dependencies:
     tslib "^2.5.2"
 
+"@graphql-yoga/plugin-persisted-operations@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@graphql-yoga/plugin-persisted-operations/-/plugin-persisted-operations-3.4.0.tgz#450427dd15d907e3a9b434c729b13f1f0935151f"
+  integrity sha512-TkAvDdFKbpuP7/P3ktPZlc5W41YbnhKxJDN7puzX1iU7CHgGvDmwu0M4Mp9yFbikMGho1CrLmAyDiXGav5WsRQ==
+
 "@graphql-yoga/subscription@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@graphql-yoga/subscription/-/subscription-5.0.0.tgz#c0aedd3f7c0c0564a2fe687e9f45c16f70bdffc5"

@@ -10,11 +10,14 @@ import {
   split,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { getMainDefinition } from '@apollo/client/utilities';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { print } from 'graphql';
 import { Client, ClientOptions, createClient } from 'graphql-sse';
 import { typePolicies } from './type-policies';
+
+const GRAPHQL_URL = '/api/graphql';
 
 const cache = new InMemoryCache({
   typePolicies,
@@ -65,16 +68,17 @@ const errorLink = onError((response) => {
   console.warn('operation: %o', operation);
 });
 
-// Non-subscription enabled link
-// const httpLink = new HttpLink({
-const httpLink = createUploadLink({
-  uri: '/api/graphql',
+const persistedQuerylink = createPersistedQueryLink({
+  // @ts-expect-error __meta__ inserted by graphql yoga
+  generateHash: (document) => document.__meta__.hash,
 });
 
+// Non-subscription enabled link
+// const httpLink = new HttpLink({
+const httpLink = createUploadLink({ uri: GRAPHQL_URL });
+
 // Subscription enabled link
-const sseLink = new SSELink({
-  url: '/api/graphql',
-});
+const sseLink = new SSELink({ url: GRAPHQL_URL });
 
 const splitLink = split(
   ({ query }) => {
@@ -84,8 +88,8 @@ const splitLink = split(
       definition.operation === 'subscription'
     );
   },
-  sseLink,
-  from([errorLink, httpLink])
+  from([sseLink]),
+  from([errorLink, persistedQuerylink, httpLink])
 );
 
 const apolloClient = new ApolloClient({

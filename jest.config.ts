@@ -1,4 +1,6 @@
-module.exports = {
+import type { Config } from 'jest';
+
+const config: Config = {
   setupFiles: ['<rootDir>/.jest/set-env-vars.ts'],
   globalSetup: '<rootDir>/.jest/global-setup.ts',
   globalTeardown: '<rootDir>/.jest/global-teardown.ts',
@@ -16,3 +18,5 @@ module.exports = {
   // Reset all mocks usage data
   clearMocks: true,
 };
+
+export default config;

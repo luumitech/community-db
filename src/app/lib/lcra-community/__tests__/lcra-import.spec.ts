@@ -115,6 +115,7 @@ describe('import community xlsx', () => {
     const fortune = accessList[0].community.propertyList.edges[1].node;
     expect(adventure.updatedBy?.email).toBe('testuser');
     expect(fortune).toEqual({
+      __typename: 'Property',
       address: '99 Fortune Drive',
       streetNo: '99',
       streetName: 'Fortune Drive',
@@ -124,6 +125,7 @@ describe('import community xlsx', () => {
       updatedBy: null,
       occupantList: [
         {
+          __typename: 'Occupant',
           firstName: 'First1',
           lastName: 'Last1',
           email: 'Email1',
@@ -133,6 +135,7 @@ describe('import community xlsx', () => {
           work: '4162345678',
         },
         {
+          __typename: 'Occupant',
           firstName: 'First2',
           lastName: 'Last2',
           email: 'Email2',
@@ -142,6 +145,7 @@ describe('import community xlsx', () => {
           work: null,
         },
         {
+          __typename: 'Occupant',
           firstName: 'First3',
           lastName: 'Last3',
           email: 'Email3',
@@ -153,6 +157,7 @@ describe('import community xlsx', () => {
       ],
       membershipList: [
         {
+          __typename: 'Membership',
           eventAttendedList: [],
           isMember: false,
           paymentDeposited: false,
@@ -160,9 +165,18 @@ describe('import community xlsx', () => {
           year: 2024,
         },
         {
+          __typename: 'Membership',
           eventAttendedList: [
-            { eventName: 'Summer Festival', eventDate: '2023-06-11' },
-            { eventName: 'Corn Roast', eventDate: '2023-08-20' },
+            {
+              __typename: 'Event',
+              eventName: 'Summer Festival',
+              eventDate: '2023-06-11',
+            },
+            {
+              __typename: 'Event',
+              eventName: 'Corn Roast',
+              eventDate: '2023-08-20',
+            },
           ],
           isMember: true,
           paymentDeposited: true,
@@ -170,8 +184,13 @@ describe('import community xlsx', () => {
           year: 2023,
         },
         {
+          __typename: 'Membership',
           eventAttendedList: [
-            { eventName: 'Membership Carry Forward', eventDate: '2022-02-10' },
+            {
+              __typename: 'Event',
+              eventName: 'Membership Carry Forward',
+              eventDate: '2022-02-10',
+            },
           ],
           isMember: true,
           paymentDeposited: false,
@@ -179,8 +198,13 @@ describe('import community xlsx', () => {
           year: 2022,
         },
         {
+          __typename: 'Membership',
           eventAttendedList: [
-            { eventName: 'Membership Carry Forward', eventDate: '2021-01-23' },
+            {
+              __typename: 'Event',
+              eventName: 'Membership Carry Forward',
+              eventDate: '2021-01-23',
+            },
           ],
           isMember: true,
           paymentDeposited: false,
