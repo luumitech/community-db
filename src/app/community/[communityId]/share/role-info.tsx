@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { type AccessEntry } from './_type';
 
 const RoleFragment = graphql(/* GraphQL */ `
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const RoleInfo: React.FC<Props> = ({ className, fragment }) => {
-  const entry = useFragment(RoleFragment, fragment);
+  const entry = getFragment(RoleFragment, fragment);
 
   return (
     <div className={clsx(className, 'truncate capitalize')}>

@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { insertIf } from '~/lib/insert-if';
 import { PropertyEntry } from '../_type';
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
-  const entry = useFragment(MembershipDisplayFragment, fragment);
+  const entry = getFragment(MembershipDisplayFragment, fragment);
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = React.useState(currentYear);
 

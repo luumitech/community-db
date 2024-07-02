@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { type UserFragmentType } from './_type';
 
 export const UserFragment = graphql(/* GraphQL */ `
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const UserName: React.FC<Props> = ({ className, userFragment }) => {
-  const user = useFragment(UserFragment, userFragment);
+  const user = getFragment(UserFragment, userFragment);
   const displayName = user?.name?.split(' ')?.[0] ?? user?.email ?? 'n/a';
 
   return <span className={className}>{displayName}</span>;

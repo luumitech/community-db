@@ -7,7 +7,7 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { useFragment } from '~/graphql/generated';
+import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
 import { LastModified } from '~/view/last-modified';
 import { ModifyFragment, type CommunityEntry } from '../_type';
@@ -26,7 +26,7 @@ export const ModifyModal: React.FC<Props> = ({
   disclosure,
   onSave,
 }) => {
-  const community = useFragment(ModifyFragment, fragment);
+  const community = getFragment(ModifyFragment, fragment);
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

@@ -7,7 +7,7 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { useFragment } from '~/graphql/generated';
+import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
 import { DeleteFragment, type CommunityEntry } from '../_type';
 
@@ -22,7 +22,7 @@ export const DeleteModal: React.FC<Props> = ({
   disclosure,
   onDelete,
 }) => {
-  const community = useFragment(DeleteFragment, fragment);
+  const community = getFragment(DeleteFragment, fragment);
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
 

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { BreadcrumbItemProps } from '@nextui-org/react';
+import { BreadcrumbItemProps, Skeleton } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
@@ -149,7 +149,11 @@ const CommunityName: React.FC<{ communityId: string }> = ({ communityId }) => {
   });
   const communityName = result.data?.communityFromId.name;
 
-  return <div>{communityName ?? ''}</div>;
+  return (
+    <Skeleton className="rounded-lg" isLoaded={!result.loading}>
+      <div>{communityName ?? 'placeholder'}</div>
+    </Skeleton>
+  );
 };
 
 const PropertyNameQuery = graphql(/* GraphQL */ `
@@ -176,5 +180,9 @@ const PropertyAddress: React.FC<{
   });
   const address = result.data?.communityFromId.propertyFromId.address;
 
-  return <div>{address ?? ''}</div>;
+  return (
+    <Skeleton className="rounded-lg" isLoaded={!result.loading}>
+      <div>{address ?? 'placeholder'}</div>
+    </Skeleton>
+  );
 };

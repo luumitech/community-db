@@ -76,6 +76,7 @@
     "@babel/preset-typescript": "^7.24.1",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/client-preset": "^4.2.5",
+    "@graphql-codegen/client-preset-swc-plugin": "^0.2.0",
     "@graphql-codegen/schema-ast": "^4.0.2",
     "@graphql-codegen/typescript-apollo-client-helpers": "^3.0.0",
     "@parcel/watcher": "^2.4.1",

@@ -7,7 +7,7 @@ import {
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { CommunityEntry } from '../_type';
 
 export const ModifyFragment = graphql(/* GraphQL */ `
@@ -62,7 +62,7 @@ type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: CommunityEntry): DefaultData {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const item = useFragment(ModifyFragment, fragment);
+  const item = getFragment(ModifyFragment, fragment);
 
   return {
     self: {

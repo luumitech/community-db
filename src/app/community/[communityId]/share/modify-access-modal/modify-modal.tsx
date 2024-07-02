@@ -7,7 +7,7 @@ import {
 } from '@nextui-org/react';
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { useFragment } from '~/graphql/generated';
+import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
 import { ModifyFragment, type AccessEntry } from '../_type';
 import { RoleEditor } from './role-editor';
@@ -24,7 +24,7 @@ export const ModifyModal: React.FC<Props> = ({
   onSave,
   fragment,
 }) => {
-  const access = useFragment(ModifyFragment, fragment);
+  const access = getFragment(ModifyFragment, fragment);
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

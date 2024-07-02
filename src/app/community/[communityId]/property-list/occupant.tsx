@@ -2,7 +2,7 @@ import { Chip } from '@nextui-org/chip';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { type PropertyEntry } from './_type';
 
 const EntryFragment = graphql(/* GraphQL */ `
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const Occupant: React.FC<Props> = ({ className, fragment }) => {
-  const entry = useFragment(EntryFragment, fragment);
+  const entry = getFragment(EntryFragment, fragment);
   const nameList = entry.occupantList
     .map(({ firstName, lastName }) => {
       const name = `${firstName ?? ''} ${lastName ?? ''}`;

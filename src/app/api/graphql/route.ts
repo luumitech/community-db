@@ -5,6 +5,17 @@ import { createContext } from '~/graphql/context';
 import persistedOperations from '~/graphql/generated/persisted-documents.json';
 import { schema } from '~/graphql/schema';
 
+/**
+ * Allow only persisted graphQL queries
+ */
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const persistedQueryPlugin = usePersistedOperations({
+  getPersistedOperation(sha256Hash: string) {
+    // @ts-expect-error: imported JSON should have Record type
+    return persistedOperations[sha256Hash];
+  },
+});
+
 const yoga = createYoga<{
   req: NextApiRequest;
   res: NextApiResponse;
@@ -20,15 +31,7 @@ const yoga = createYoga<{
     Response: Response,
     Request: Request,
   },
-  plugins: [
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    usePersistedOperations({
-      getPersistedOperation(sha256Hash: string) {
-        // @ts-expect-error: imported JSON should have Record type
-        return persistedOperations[sha256Hash];
-      },
-    }),
-  ],
+  plugins: [persistedQueryPlugin],
   /**
    * See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking
    */

@@ -37,7 +37,13 @@ class SSELink extends ApolloLink {
   public request(operation: Operation): Observable<FetchResult> {
     return new Observable((sink) => {
       return this.client.subscribe<FetchResult>(
-        { ...operation, query: print(operation.query) },
+        {
+          ...operation,
+          // query: print(operation.query)
+          // When using persisted query, information is embedded in
+          // extension object
+          query: '',
+        },
         {
           next: sink.next.bind(sink),
           complete: sink.complete.bind(sink),
@@ -89,11 +95,11 @@ const splitLink = split(
     );
   },
   from([sseLink]),
-  from([errorLink, persistedQuerylink, httpLink])
+  from([errorLink, httpLink])
 );
 
 const apolloClient = new ApolloClient({
-  link: splitLink,
+  link: from([persistedQuerylink, splitLink]),
   cache,
 });
 
