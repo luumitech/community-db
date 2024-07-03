@@ -11,7 +11,7 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { type PropertyEntry } from '../_type';
 
 const PropertyDisplayFragment = graphql(/* GraphQL */ `
@@ -34,7 +34,7 @@ export const PropertyDisplay: React.FC<Props> = ({
   fragment,
   isLoading,
 }) => {
-  const entry = useFragment(PropertyDisplayFragment, fragment);
+  const entry = getFragment(PropertyDisplayFragment, fragment);
   const { columns, renderCell } = useTableData();
   const rows = entry ? [{ key: entry.id, ...entry }] : [];
 

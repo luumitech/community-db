@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth/next';
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 
 interface FetchEvent {
@@ -8,8 +8,14 @@ interface FetchEvent {
   };
 }
 
+/**
+ * For more details, see:
+ * See https://nextjs.org/docs/app/building-your-application/routing/route-handlers
+ */
 export async function GET(request: NextRequest, { params }: FetchEvent) {
   const session = await getServerSession(authOptions);
+  // const { searchParams } = req.nextUrl;
+  // const query = searchParams.get('arg');
 
-  return Response.json({ success: true });
+  return NextResponse.json({ success: true });
 }

@@ -1,7 +1,7 @@
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { type DashboardEntry } from './_type';
@@ -87,7 +87,7 @@ export const MembershipSource: React.FC<Props> = ({
   fragment,
   year,
 }) => {
-  const entry = useFragment(MembershipSourceFragment, fragment);
+  const entry = getFragment(MembershipSourceFragment, fragment);
 
   const chartData = React.useMemo(() => {
     const chartHelper = new ChartDataHelper(entry);

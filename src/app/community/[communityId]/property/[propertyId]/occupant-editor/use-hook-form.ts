@@ -7,7 +7,7 @@ import {
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { type PropertyEntry } from '../_type';
 
@@ -71,7 +71,7 @@ export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
 
 function defaultInputData(fragment: PropertyEntry): DefaultData {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const item = useFragment(OccupantEditorFragment, fragment);
+  const item = getFragment(OccupantEditorFragment, fragment);
 
   return {
     self: {

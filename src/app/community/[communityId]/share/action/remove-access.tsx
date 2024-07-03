@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import clsx from 'clsx';
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { FlatButton } from '~/view/base/flat-button';
 import { toast } from '~/view/base/toastify';
 import { type AccessEntry } from '../_type';
@@ -29,7 +29,7 @@ interface Props {
 }
 
 export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
-  const access = useFragment(DeleteFragment, fragment);
+  const access = getFragment(DeleteFragment, fragment);
   const [deleteAccess] = useMutation(AccessDeleteMutation);
 
   const onDelete = React.useCallback(async () => {

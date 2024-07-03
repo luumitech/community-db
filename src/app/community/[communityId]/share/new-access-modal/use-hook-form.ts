@@ -3,7 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { UserInfoFragment, type AccessEntry } from '../_type';
 
@@ -32,7 +32,7 @@ function schema() {
         (val, { parent }) => {
           const accessList: AccessEntry[] = parent.hidden.accessList;
           const exist = accessList.find((fragment) => {
-            const entry = useFragment(UserInfoFragment, fragment);
+            const entry = getFragment(UserInfoFragment, fragment);
             return entry.user.email === val;
           });
           return !exist;

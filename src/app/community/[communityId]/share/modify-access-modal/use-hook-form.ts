@@ -3,7 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { type AccessEntry } from '../_type';
 
@@ -41,7 +41,7 @@ type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: AccessEntry): DefaultData {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const access = useFragment(ModifyFragment, fragment);
+  const access = getFragment(ModifyFragment, fragment);
   return {
     self: {
       id: access.id,

@@ -1,6 +1,6 @@
 import { Tooltip } from '@nextui-org/react';
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
 import { type PropertyEntry } from './_type';
 
@@ -28,7 +28,7 @@ export const Membership: React.FC<Props> = ({
   fragment,
   ...props
 }) => {
-  const entry = useFragment(EntryFragment, fragment);
+  const entry = getFragment(EntryFragment, fragment);
   const membership = entry.membershipList.find(
     ({ year }) => year === props.year
   );

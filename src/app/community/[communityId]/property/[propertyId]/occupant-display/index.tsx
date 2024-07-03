@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, useFragment } from '~/graphql/generated';
+import { getFragment, graphql } from '~/graphql/generated';
 import { PropertyEntry } from '../_type';
 import { OccupantTable } from './occupant-table';
 
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const OccupantDisplay: React.FC<Props> = ({ className, fragment }) => {
-  const entry = useFragment(OccupantDisplayFragment, fragment);
+  const entry = getFragment(OccupantDisplayFragment, fragment);
 
   return (
     <OccupantTable className={className} occupantList={entry.occupantList} />

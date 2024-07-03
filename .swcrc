@@ -1,0 +1,19 @@
+{
+  "jsc": {
+    "experimental": {
+      "plugins": [
+        /**
+         * Reducing persisted query document bundle size
+         * See: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
+         */
+        [
+          "@graphql-codegen/client-preset-swc-plugin",
+          {
+            "artifactDirectory": "./src/app/graphql/generated",
+            "gqlTagName": "graphql"
+          }
+        ]
+      ]
+    }
+  }
+}
