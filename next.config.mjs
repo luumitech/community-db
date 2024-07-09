@@ -8,6 +8,8 @@ const nextConfig = {
     serverComponentsExternalPackages: ['omniconfig.js'],
     serverActions: { allowedOrigins: ['localhost:3443'] },
   },
+  // Pull all dependencies into .next build
+  output: 'standalone',
 };
 
-module.exports = nextConfig;
+export default nextConfig;
