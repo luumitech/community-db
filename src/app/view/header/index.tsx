@@ -15,6 +15,8 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
+import { appTitle } from '~/lib/env-var';
+import logoImg from './community-db-logo.png';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
@@ -57,10 +59,10 @@ export const Header: React.FC<Props> = ({}) => {
           />
         )}
         <NavbarContent className="pr-3" justify="center">
-          <NavbarBrand>
+          <NavbarBrand className="flex gap-2">
             <Image
-              className="object-fit"
-              src="/luumitech-logo.png"
+              className="object-fit rounded-md"
+              src={logoImg}
               alt="LummiTech Logo"
               priority
               width={36}
@@ -69,10 +71,9 @@ export const Header: React.FC<Props> = ({}) => {
             <Link
               href={appPath('home')}
               color="foreground"
-              className="pl-2 flex-col text-center font-bold leading-5"
+              className="leading-5 max-w-min whitespace-normal text-center text-balance font-bold"
             >
-              <div>Community</div>
-              <div>Database</div>
+              {appTitle}
             </Link>
           </NavbarBrand>
         </NavbarContent>

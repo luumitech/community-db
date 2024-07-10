@@ -7,7 +7,7 @@
     "prebuild": "yarn generate",
     "build": "next build",
     "start": "next start",
-    "lint": "yarn eslint",
+    "lint": "next lint",
     "lint-and-fix": "yarn eslint --fix",
     "eslint": "eslint . --ext .ts,.tsx,.js --no-error-on-unmatched-pattern --max-warnings=0",
     "ts-check": "tsc --noEmit",

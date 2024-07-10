@@ -11,7 +11,7 @@ interface RouteArgs {
 
 export default function Preference({ params }: RouteArgs) {
   return (
-    <Card>
+    <Card className="mt-page-top mx-page-x">
       <CardHeader className="text-2xl">Preference</CardHeader>
       <Divider />
       <CardBody>

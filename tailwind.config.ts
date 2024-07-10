@@ -17,15 +17,15 @@ const config: Config = {
       },
       spacing: {
         /**
-         * top margin of <main/>
-         */
-        'main-top': '0.5rem',
-        /**
          * The available height in <main/>
-         * 64px is the height of header
-         * 0.5rem is main-top
+         * 64px is the height of header - page-top (assuming it is used)
          */
         'main-height': 'calc(100vh - 64px - 0.5rem)',
+        /**
+         * Default spacing used below header
+         */
+        'page-top': '0.5rem',
+        'page-x': '0.5rem',
       },
     },
   },
