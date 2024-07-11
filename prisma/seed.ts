@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { importLcraDB } from '~/lib/lcra-community/import';
-import { seedCommunityData } from './lcra-community-data';
+import { seedCommunityData } from '~/lib/lcra-community/random-seed';
 
 function generateWorkbook() {
   // const workbook = XLSX.readFile(

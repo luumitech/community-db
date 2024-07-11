@@ -130,7 +130,7 @@ export default function PropertyList({ params }: RouteArgs) {
               communityId: community.id,
             })}
           >
-            Import from Excel
+            Import Community
           </Button>
         )}
       </div>
