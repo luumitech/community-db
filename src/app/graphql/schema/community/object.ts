@@ -154,7 +154,7 @@ builder.prismaObject('Community', {
                     items: [
                       // Sort must come before limit/skip, in order to sort all
                       // the matched results
-                      { $sort: { _id: 1 } },
+                      { $sort: { streetName: 1, streetNo: 1 } },
                       { $limit: offset + limit },
                       { $skip: offset },
                       // map _id to id

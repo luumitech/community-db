@@ -16,18 +16,7 @@ describe('export community xlsx', () => {
   beforeAll(async () => {
     await testUtil.initialize();
 
-    const workbook = XLSX.readFile(
-      path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        '..',
-        '..',
-        'prisma',
-        'lcra-db.xlsx'
-      )
-    );
+    const workbook = XLSX.readFile(path.join(__dirname, 'lcra-db.xlsx'));
 
     expectedImportResult = importLcraDB(workbook);
     const communitySeed: Prisma.CommunityCreateInput[] = [

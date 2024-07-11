@@ -18,6 +18,7 @@ export async function communityData(
         include: {
           updatedBy: true,
         },
+        orderBy: [{ streetName: 'asc' }, { streetNo: 'asc' }],
       },
     },
   });
