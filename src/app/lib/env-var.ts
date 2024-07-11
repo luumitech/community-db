@@ -1,3 +1,5 @@
+export const appTitle = 'Community Database';
+
 /**
  * Is the app running in production mode?
  */

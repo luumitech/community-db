@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
+import { appTitle } from '~/lib/env-var';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 
@@ -15,8 +16,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Community DB',
-  description: 'Community Household Database',
+  title: appTitle,
+  description: 'Community Membership Database',
 };
 
 interface RootLayoutProps {
@@ -39,7 +40,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <Providers sessionProviderProps={{ session }}>
             <div className="flex flex-col min-h-screen">
               <Header />
-              <main className="flex flex-col mt-main-top mx-2">{children}</main>
+              <main>{children}</main>
             </div>
           </Providers>
         </ThemeProvider>

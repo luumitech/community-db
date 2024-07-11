@@ -34,7 +34,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         {
           key: 'import',
           href: appPath('communityImport', { communityId }),
-          children: 'Import from Excel',
+          children: 'Import Community',
         }
       );
     }

@@ -6,6 +6,7 @@ import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import { extractEventList } from '~/lib/lcra-community/import/event-list-util';
+import { seedCommunityData } from '~/lib/lcra-community/random-seed';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
@@ -120,13 +121,21 @@ builder.mutationField('communityModify', (t) =>
   })
 );
 
+export const ImportMethod = builder.enumType('ImportMethod', {
+  values: ['random', 'xlsx'] as const,
+});
+
 const CommunityImportInput = builder.inputType('CommunityImportInput', {
   fields: (t) => ({
     id: t.string({ description: 'community ID', required: true }),
+    method: t.field({
+      description: 'Import Method',
+      type: ImportMethod,
+      required: true,
+    }),
     xlsx: t.field({
       description: 'xlsx containing community information',
       type: 'File',
-      required: true,
     }),
   }),
 });
@@ -139,14 +148,42 @@ builder.mutationField('communityImport', (t) =>
     },
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
-      const { id: shortId, xlsx } = args.input;
+      const { id: shortId, method, xlsx } = args.input;
 
       // Make sure user has permission to modify
       await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
 
-      const bytes = await xlsx.arrayBuffer();
-      const xlsxBuf = Buffer.from(bytes);
-      const workbook = XLSX.read(xlsxBuf);
+      let workbook;
+      switch (method) {
+        case 'random':
+          {
+            const seedJson = seedCommunityData(20);
+            const worksheet = XLSX.utils.json_to_sheet(seedJson);
+            workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(
+              workbook,
+              worksheet,
+              'LCRA membership'
+            );
+          }
+          break;
+
+        case 'xlsx':
+          {
+            if (!xlsx) {
+              throw new GraphQLError(
+                'When Import Method is Excel, you must upload a valid xlsx file.'
+              );
+            }
+            const bytes = await xlsx.arrayBuffer();
+            const xlsxBuf = Buffer.from(bytes);
+            workbook = XLSX.read(xlsxBuf);
+          }
+          break;
+
+        default:
+          throw new GraphQLError(`Unrecognized import method ${method}`);
+      }
       const { propertyList, eventList } = importLcraDB(workbook);
 
       const existing = await getCommunityEntry(user, shortId, {

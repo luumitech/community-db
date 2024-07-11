@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx';
 import { startDownloadBlob } from '~/lib/dom';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { exportCommunityAsBase64 } from '~/server-action/export-community';
+import { Icon } from '~/view/base/icon';
 import { useMakeXlsxData } from '../common/make-xlsx-data';
 import { XlsxView } from '../common/xlsx-view';
 import { useHookFormContext } from './use-hook-form';
@@ -54,7 +55,12 @@ export const ExportForm: React.FC<Props> = ({ className }) => {
   return (
     <div className={clsx(className, 'flex flex-col h-full')}>
       <div className="flex items-center">
-        <Button onPress={onDownload} isDisabled={!previewActive}>
+        <Button
+          onPress={onDownload}
+          endContent={<Icon icon="download" />}
+          color="primary"
+          isDisabled={!previewActive}
+        >
           Download {exportResult?.fn}
         </Button>
       </div>

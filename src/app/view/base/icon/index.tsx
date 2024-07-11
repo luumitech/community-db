@@ -3,6 +3,7 @@ import React from 'react';
 import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
 import { FaFolderOpen, FaSearch, FaTrashAlt } from 'react-icons/fa';
+import { FaDownload } from 'react-icons/fa6';
 import { GrUndo } from 'react-icons/gr';
 import { IoMdAdd, IoMdLink, IoMdMore } from 'react-icons/io';
 import { IoCheckmark, IoPersonAdd } from 'react-icons/io5';
@@ -34,7 +35,8 @@ type SupportedIcon =
   | 'more'
   | 'search'
   | 'share'
-  | 'link';
+  | 'link'
+  | 'download';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -94,6 +96,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'link':
       IconElement = IoMdLink;
+      break;
+    case 'download':
+      IconElement = FaDownload;
       break;
     default:
       IconElement = MdQuestionMark;
