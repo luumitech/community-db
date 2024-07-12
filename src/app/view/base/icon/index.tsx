@@ -5,7 +5,7 @@ import { BiEditAlt } from 'react-icons/bi';
 import { FaFolderOpen, FaSearch, FaTrashAlt } from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa6';
 import { GrUndo } from 'react-icons/gr';
-import { IoMdAdd, IoMdLink, IoMdMore } from 'react-icons/io';
+import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
 import { IoCheckmark, IoPersonAdd } from 'react-icons/io5';
 import {
   MdDragIndicator,
@@ -56,7 +56,7 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       IconElement = MdOutlineClear;
       break;
     case 'add':
-      IconElement = IoMdAdd;
+      IconElement = IoMdAddCircleOutline;
       break;
     case 'drag-handle':
       IconElement = MdDragIndicator;

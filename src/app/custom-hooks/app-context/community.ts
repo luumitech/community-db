@@ -4,12 +4,17 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { insertIf } from '~/lib/insert-if';
 
 const CommunityLayoutQuery = graphql(/* GraphQL */ `
   query communityLayout($communityId: String!) {
     communityFromId(id: $communityId) {
       id
       eventList {
+        name
+        hidden
+      }
+      paymentMethodList {
         name
         hidden
       }
@@ -20,26 +25,33 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
   }
 `);
 
-interface EventSelectItem {
+interface SelectItem {
   label: string;
   value: string;
 }
-interface EventSelectSection {
+interface SelectSection {
   title: string;
-  items: EventSelectItem[];
+  items: SelectItem[];
   showDivider?: boolean;
 }
 
 export type CommunityState = Readonly<{
-  eventList: GQL.SupportedEvent[];
   /**
-   * selection items for 'Add new event'
+   * access role items
    */
-  addEventItems: EventSelectItem[];
+  roleItems: SelectItem[];
   /**
-   * selection items for 'Select event'
+   * visible event items (suitable for 'Add new event')
    */
-  selectEventSections: EventSelectSection[];
+  visibleEventItems: SelectItem[];
+  /**
+   * all event items (including hidden, suitable for event selection)
+   */
+  selectEventSections: SelectSection[];
+  /**
+   * all payment method items (including hidden)
+   */
+  selectPaymentMethodSections: SelectSection[];
   /**
    * Current user's role in this community
    */
@@ -50,6 +62,41 @@ export type CommunityState = Readonly<{
    */
   canEdit: boolean;
 }>;
+
+/**
+ * Given a list of SupportedSelectItem, group all visible
+ * items into `visibleItems`, and create selection sections
+ * that contains all visible and hidden items
+ *
+ * @param list list of SupportedSelectItem
+ * @returns
+ */
+function createSelectionItems(list: GQL.SupportedSelectItem[]) {
+  const visibleItems: SelectItem[] = [];
+  const hiddenItems: SelectItem[] = [];
+  list.forEach((entry) => {
+    if (entry.hidden) {
+      hiddenItems.push({ label: entry.name, value: entry.name });
+    } else {
+      visibleItems.push({ label: entry.name, value: entry.name });
+    }
+  });
+  const selectSections = [
+    {
+      title: '',
+      items: visibleItems,
+      showDivider: hiddenItems.length > 0,
+    },
+    ...insertIf(hiddenItems.length > 0, {
+      title: 'Deprecated Items',
+      items: hiddenItems,
+    }),
+  ];
+  return {
+    visibleItems,
+    selectSections,
+  };
+}
 
 export function useCommunityContext() {
   const params = useParams<{ communityId?: string }>();
@@ -65,30 +112,22 @@ export function useCommunityContext() {
 
   const contextValue = React.useMemo<CommunityState>(() => {
     const eventList = community?.eventList ?? [];
+    const paymentMethodList = community?.paymentMethodList ?? [];
     const role = community?.access.role ?? GQL.Role.Viewer;
 
-    const visibleEventItems: EventSelectItem[] = [];
-    const hiddenEventItems: EventSelectItem[] = [];
-    eventList.forEach((entry) => {
-      if (entry.hidden) {
-        hiddenEventItems.push({ label: entry.name, value: entry.name });
-      } else {
-        visibleEventItems.push({ label: entry.name, value: entry.name });
-      }
-    });
-    const selectEventSections = [
-      {
-        title: '',
-        items: visibleEventItems,
-        showDivider: hiddenEventItems.length > 0,
-      },
-      { title: 'Deprecated Items', items: hiddenEventItems },
+    const roleItems: SelectItem[] = [
+      { label: 'Admin', value: GQL.Role.Admin },
+      { label: 'Editor', value: GQL.Role.Editor },
+      { label: 'Viewer', value: GQL.Role.Viewer },
     ];
+    const eventSelect = createSelectionItems(eventList);
+    const paymentMethodSelect = createSelectionItems(paymentMethodList);
 
     return {
-      eventList,
-      addEventItems: visibleEventItems,
-      selectEventSections,
+      roleItems,
+      visibleEventItems: eventSelect.visibleItems,
+      selectEventSections: eventSelect.selectSections,
+      selectPaymentMethodSections: paymentMethodSelect.selectSections,
       role,
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
     };

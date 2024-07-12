@@ -7,7 +7,6 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { Button } from '~/view/base/button';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
@@ -18,16 +17,16 @@ interface Props {
   className?: string;
 }
 
-export const EventListEditor: React.FC<Props> = ({ className }) => {
+export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
   const [newItem, setNewItem] = React.useState<string>('');
   const { control } = useHookFormContext();
-  const eventList = useFieldArray({
+  const paymentMethods = useFieldArray({
     control,
-    name: 'eventList',
+    name: 'paymentMethodList',
   });
-  const hiddenEventList = useFieldArray({
+  const hiddenPaymentMethods = useFieldArray({
     control,
-    name: 'hidden.eventList',
+    name: 'hidden.paymentMethodList',
   });
 
   /**
@@ -36,21 +35,24 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
    */
   const isItemValid = React.useCallback(
     (itemName: string) => {
-      const allEvents = [...eventList.fields, ...hiddenEventList.fields];
+      const allEvents = [
+        ...paymentMethods.fields,
+        ...hiddenPaymentMethods.fields,
+      ];
       const found = allEvents.find(
         ({ name }) =>
           !name.localeCompare(itemName, undefined, { sensitivity: 'accent' })
       );
       return !found;
     },
-    [eventList.fields, hiddenEventList.fields]
+    [paymentMethods.fields, hiddenPaymentMethods.fields]
   );
 
   const addVisibleItem = React.useCallback(
     (itemName: string) => {
-      eventList.append({ name: itemName });
+      paymentMethods.append({ name: itemName });
     },
-    [eventList]
+    [paymentMethods]
   );
 
   const addIsDisabled = React.useMemo(() => {
@@ -66,31 +68,34 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
 
   const addHiddenItem = React.useCallback(
     (itemName: string) => {
-      hiddenEventList.append({ name: itemName });
+      hiddenPaymentMethods.append({ name: itemName });
     },
-    [hiddenEventList]
+    [hiddenPaymentMethods]
   );
 
   return (
     <Card shadow="none" className="border-2">
       <CardHeader>
         <div className="flex flex-col text-foreground-500">
-          <p className="text-small">Event List</p>
+          <p className="text-small">Payment Methods</p>
         </div>
       </CardHeader>
       <CardBody>
         <div className="flex items-start gap-4">
-          <VisibleList fieldArray={eventList} onRemove={addHiddenItem} />
-          <HiddenList fieldArray={hiddenEventList} onRemove={addVisibleItem} />
+          <VisibleList fieldArray={paymentMethods} onRemove={addHiddenItem} />
+          <HiddenList
+            fieldArray={hiddenPaymentMethods}
+            onRemove={addVisibleItem}
+          />
         </div>
       </CardBody>
       <CardFooter>
         <Input
-          aria-label="New event name"
-          placeholder="Add new event name"
+          aria-label="New payment method"
+          placeholder="Add new payment method"
           value={newItem}
           onValueChange={setNewItem}
-          errorMessage="Event name must be unique"
+          errorMessage="Method name must be unique"
           isInvalid={!isItemValid(newItem)}
           endContent={
             <FlatButton
@@ -98,7 +103,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
               onClick={addNewItem}
               {...(addIsDisabled && {
                 disabled: true,
-                tooltip: 'Enter new event name',
+                tooltip: 'Enter new payment method',
               })}
             />
           }

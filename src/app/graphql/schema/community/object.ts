@@ -1,4 +1,4 @@
-import { Property, Role, SupportedEvent } from '@prisma/client';
+import { Property, Role, SupportedSelectItem } from '@prisma/client';
 import { EJSON } from 'bson';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
@@ -6,8 +6,8 @@ import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { propertyRef } from '../property/object';
 
-const supportedEventRef = builder
-  .objectRef<SupportedEvent>('SupportedEvent')
+const supportedSelectItemRef = builder
+  .objectRef<SupportedSelectItem>('SupportedSelectItem')
   .implement({
     fields: (t) => ({
       name: t.exposeString('name', { nullable: false }),
@@ -86,8 +86,12 @@ builder.prismaObject('Community', {
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
     eventList: t.field({
-      type: [supportedEventRef],
+      type: [supportedSelectItemRef],
       resolve: (entry) => entry.eventList,
+    }),
+    paymentMethodList: t.field({
+      type: [supportedSelectItemRef],
+      resolve: (entry) => entry.paymentMethodList,
     }),
     /**
      * Return context user's access document

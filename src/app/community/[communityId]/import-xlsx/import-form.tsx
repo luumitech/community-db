@@ -12,7 +12,7 @@ interface ImportMethodSelectItem {
 }
 const importMethodSelectionList: ImportMethodSelectItem[] = [
   {
-    label: 'Generate random values for trial run',
+    label: 'Randomly generate sample data',
     value: GQL.ImportMethod.Random,
   },
   { label: 'Excel', value: GQL.ImportMethod.Xlsx },

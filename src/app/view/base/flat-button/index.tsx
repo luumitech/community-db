@@ -13,6 +13,7 @@ interface Props
   > {
   className?: string;
   icon: IconProps['icon'];
+  disabled?: boolean;
   /**
    * Tooltip description
    */
@@ -53,7 +54,7 @@ export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
     );
 
     const renderButton = React.useMemo(() => {
-      const { icon, ...other } = props;
+      const { icon, disabled, ...other } = props;
 
       return (
         <span
@@ -61,7 +62,7 @@ export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
           role="button"
           className={clsx(
             className,
-            'opacity-80 hover:opacity-100 active:opacity-50'
+            disabled ? 'opacity-disabled cursor-default' : 'hover:opacity-hover'
           )}
           onClick={customOnClick}
           {...other}

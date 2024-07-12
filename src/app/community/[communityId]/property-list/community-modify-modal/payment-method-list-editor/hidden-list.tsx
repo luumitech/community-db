@@ -1,10 +1,10 @@
 import React from 'react';
-import { type HiddenEventListFieldArray } from '../use-hook-form';
+import { type HiddenPaymentMethodListFieldArray } from '../use-hook-form';
 import { HiddenListItem } from './hidden-list-item';
 
 interface Props {
   className?: string;
-  fieldArray: HiddenEventListFieldArray;
+  fieldArray: HiddenPaymentMethodListFieldArray;
   onRemove?: (label: string) => void;
 }
 
@@ -29,7 +29,7 @@ export const HiddenList: React.FC<Props> = ({
 
   return (
     <div className={className}>
-      <p className="text-sm mb-4">Removed event list items:</p>
+      <p className="text-sm mb-4">Removed payment methods:</p>
       <ul className="grid auto-cols-max gap-1">
         {fields.map((field, index) => (
           <HiddenListItem

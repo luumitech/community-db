@@ -1,16 +1,9 @@
-import { Select, SelectItem } from '@nextui-org/select';
+import { Select, SelectItem, SelectSection } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { Controller } from '~/custom-hooks/hook-form';
 import { useHookFormContext } from './use-hook-form';
-
-const supportedPaymentType = [
-  'cash',
-  'cheque',
-  'paypal',
-  'e-Transfer',
-  'free',
-].map((entry) => ({ label: entry, value: entry }));
 
 interface Props {
   className?: string;
@@ -18,6 +11,7 @@ interface Props {
 }
 
 export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
+  const { selectPaymentMethodSections } = useAppContext();
   const { control, formState } = useHookFormContext();
   const { errors } = formState;
 
@@ -30,7 +24,7 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
           <Select
             className={'max-w-sm'}
             label="Payment Method"
-            items={supportedPaymentType}
+            items={selectPaymentMethodSections}
             placeholder="Select a payment method"
             errorMessage={
               errors.membershipList?.[yearIdx]?.paymentMethod?.message
@@ -42,10 +36,20 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
             selectionMode="single"
             onChange={field.onChange}
           >
-            {(entry) => (
-              <SelectItem key={entry.value} textValue={entry.label}>
-                {entry.label}
-              </SelectItem>
+            {(section) => (
+              <SelectSection
+                key={section.title}
+                title={section.title}
+                items={section.items}
+                showDivider={section.showDivider}
+              >
+                {/* @ts-expect-error: NextUI typing is not supporting dynamic section */}
+                {(item) => (
+                  <SelectItem key={item.value} textValue={item.label}>
+                    {item.label}
+                  </SelectItem>
+                )}
+              </SelectSection>
             )}
           </Select>
         )}

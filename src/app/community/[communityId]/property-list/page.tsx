@@ -106,7 +106,7 @@ export default function PropertyList({ params }: RouteArgs) {
       <div className="flex gap-2">
         <Input
           isClearable
-          placeholder="Search ..."
+          placeholder="Search Address or Member Name"
           description={`${totalCount} entries found`}
           startContent={<Icon icon="search" />}
           defaultValue={searchText}

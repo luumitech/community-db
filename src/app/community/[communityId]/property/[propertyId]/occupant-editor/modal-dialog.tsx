@@ -52,7 +52,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       placement="top-center"
-      scrollBehavior="inside"
+      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
       hideCloseButton

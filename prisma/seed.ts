@@ -3,6 +3,7 @@ import path from 'path';
 import * as XLSX from 'xlsx';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import { seedCommunityData } from '~/lib/lcra-community/random-seed';
+import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 function generateWorkbook() {
   // const workbook = XLSX.readFile(
@@ -20,23 +21,20 @@ function generateWorkbook() {
 
   // Randomly create a workbook containing address with membership info
   const seedJson = seedCommunityData(100);
-  const worksheet = XLSX.utils.json_to_sheet(seedJson);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'LCRA membership');
-
-  return workbook;
+  const wsHelper = WorksheetHelper.fromJson(seedJson, 'Membership');
+  return wsHelper.wb;
 }
 
 const prisma = new PrismaClient();
 
 async function main() {
   const workbook = generateWorkbook();
-  const { eventList, propertyList } = importLcraDB(workbook);
+  const { propertyList, ...others } = importLcraDB(workbook);
 
   const communitySeed: Prisma.CommunityCreateInput[] = [
     {
       name: 'Test Community',
-      eventList,
+      ...others,
       propertyList: {
         create: propertyList,
       },
