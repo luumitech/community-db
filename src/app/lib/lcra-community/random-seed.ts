@@ -95,7 +95,7 @@ function newMembershipYear(year: number) {
   }
 
   // Create a membership year
-  const numEvent = faker.number.int(5);
+  const numEvent = faker.number.int({ min: 1, max: 5 });
   return {
     [`${pfx}`]: 1,
     [`${pfx}-event`]: genEvent(numEvent).join(';'),
