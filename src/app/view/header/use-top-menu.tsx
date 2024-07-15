@@ -16,7 +16,7 @@ interface MenuItemEntry extends BreadcrumbItemProps {
  */
 export function useTopMenu() {
   const pathname = usePathname();
-  const { communityId: contextCommunityId } = useAppContext();
+  const { communityId: ctxCommunityId, communityName } = useAppContext();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -59,15 +59,15 @@ export function useTopMenu() {
           break;
         default:
           items.pop();
-          if (op != null && op === contextCommunityId) {
+          if (op != null && op === ctxCommunityId) {
             items.push({
               id: 'community-editor',
               href: appPath('propertyList', {
-                communityId: contextCommunityId,
+                communityId: ctxCommunityId,
               }),
-              children: <CommunityName communityId={contextCommunityId} />,
+              children: <CommunityName communityName={communityName} />,
             });
-            handleSingleCommunity(contextCommunityId);
+            handleSingleCommunity(ctxCommunityId);
           }
           break;
       }
@@ -129,32 +129,20 @@ export function useTopMenu() {
         });
       }
     }
-  }, [pathname, contextCommunityId]);
+  }, [pathname, ctxCommunityId, communityName]);
 
   return menuItems;
 }
 
-const CommunityNameQuery = graphql(/* GraphQL */ `
-  query communityName($id: String!) {
-    communityFromId(id: $id) {
-      id
-      name
-    }
-  }
-`);
-
 /**
  * Get community name from Id
  */
-const CommunityName: React.FC<{ communityId: string }> = ({ communityId }) => {
-  const result = useQuery(CommunityNameQuery, {
-    variables: { id: communityId },
-  });
-  const communityName = result.data?.communityFromId.name;
-
+const CommunityName: React.FC<{ communityName: string | undefined }> = ({
+  communityName,
+}) => {
   return (
-    <Skeleton className="rounded-lg" isLoaded={!result.loading}>
-      <div>{communityName ?? 'placeholder'}</div>
+    <Skeleton className="rounded-lg" isLoaded={communityName != null}>
+      <div className="px-1">{communityName ?? ''}</div>
     </Skeleton>
   );
 };
@@ -185,7 +173,7 @@ const PropertyAddress: React.FC<{
 
   return (
     <Skeleton className="rounded-lg" isLoaded={!result.loading}>
-      <div>{address ?? 'placeholder'}</div>
+      <div className="px-1">{address ?? ''}</div>
     </Skeleton>
   );
 };

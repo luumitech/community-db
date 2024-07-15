@@ -13,6 +13,7 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
   query communityLayout($communityId: String!) {
     communityFromId(id: $communityId) {
       id
+      name
       eventList {
         name
         hidden
@@ -43,6 +44,10 @@ export type CommunityState = Readonly<{
    * community short ID
    */
   communityId?: string;
+  /**
+   * community name
+   */
+  communityName?: string;
   /**
    * access role items
    */
@@ -163,6 +168,7 @@ export function useCommunityContext() {
 
     return {
       communityId: community?.id,
+      communityName: community?.name,
       roleItems,
       visibleEventItems: eventSelect.visibleItems,
       selectEventSections: eventSelect.selectSections,
