@@ -66,6 +66,14 @@ The mongo DB must be configured with replication set:
     rs.reconfig({_id: 'rs0', members: [{_id: 0, host: '127.0.0.1:27017'}]}, {force:true});
     ```
 
+## Updating mongo schema
+
+When indexes in the mongo schema are modified, you will need to run:
+
+```sh
+update-prisma-db
+```
+
 ## Prerequiste for deploying to Microsoft Azure
 
 In [Azure Portal](https://portal.azure.com):
