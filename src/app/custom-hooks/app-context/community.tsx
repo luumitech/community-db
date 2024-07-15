@@ -1,10 +1,13 @@
-import { useQuery } from '@apollo/client';
+import { ApolloError, useQuery } from '@apollo/client';
+import { Button, Link } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { appPath } from '~/lib/app-path';
 import { insertIf } from '~/lib/insert-if';
+import { toast } from '~/view/base/toastify';
 
 const CommunityLayoutQuery = graphql(/* GraphQL */ `
   query communityLayout($communityId: String!) {
@@ -36,6 +39,10 @@ interface SelectSection {
 }
 
 export type CommunityState = Readonly<{
+  /**
+   * community short ID
+   */
+  communityId?: string;
   /**
    * access role items
    */
@@ -98,16 +105,47 @@ function createSelectionItems(list: GQL.SupportedSelectItem[]) {
   };
 }
 
+function communityLayoutOnError(err: ApolloError) {
+  const { extensions } = err.graphQLErrors[0];
+  // prisma error code are defined in
+  // See: https://www.prisma.io/docs/orm/reference/error-reference
+  switch (extensions?.errCode) {
+    case 'P2025':
+      // This means community is not found
+      toast.error(({ closeToast }) => (
+        <div className="flex items-center gap-2">
+          <div>Community Not Found</div>
+          <Button
+            className="flex-shrink-0"
+            size="sm"
+            as={Link}
+            color="primary"
+            href={appPath('communitySelect')}
+            onClick={() => closeToast()}
+          >
+            Select Community
+          </Button>
+        </div>
+      ));
+      return;
+  }
+
+  // Let default error handler handle the error
+  return err;
+}
+
 export function useCommunityContext() {
   const params = useParams<{ communityId?: string }>();
   const communityId = params.communityId;
   const result = useQuery(CommunityLayoutQuery, {
+    skip: communityId == null,
     variables: {
       communityId: params.communityId!,
     },
-    skip: communityId == null,
   });
-  useGraphqlErrorHandler(result);
+  useGraphqlErrorHandler(result, {
+    onError: communityLayoutOnError,
+  });
   const community = result.data?.communityFromId;
 
   const contextValue = React.useMemo<CommunityState>(() => {
@@ -124,6 +162,7 @@ export function useCommunityContext() {
     const paymentMethodSelect = createSelectionItems(paymentMethodList);
 
     return {
+      communityId: community?.id,
       roleItems,
       visibleEventItems: eventSelect.visibleItems,
       selectEventSections: eventSelect.selectSections,

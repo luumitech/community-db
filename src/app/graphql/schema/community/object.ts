@@ -5,6 +5,7 @@ import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { propertyRef } from '../property/object';
+import { getPropertyEntryWithinCommunity } from '../property/util';
 
 const supportedSelectItemRef = builder
   .objectRef<SupportedSelectItem>('SupportedSelectItem')
@@ -208,13 +209,11 @@ builder.prismaObject('Community', {
         id: t.arg.string({ required: true }),
       },
       resolve: async (query, parent, args, ctx) => {
-        const entry = await prisma.property.findFirstOrThrow({
-          ...query,
-          where: {
-            shortId: args.id,
-            communityId: parent.id,
-          },
-        });
+        const entry = await getPropertyEntryWithinCommunity(
+          parent.id,
+          args.id,
+          query
+        );
         return entry;
       },
     }),

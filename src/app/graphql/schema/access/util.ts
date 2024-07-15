@@ -88,7 +88,12 @@ export async function verifyAccess(
          */
         case 'P2025':
           throw new GraphQLError(
-            `Access entry for community ${JSON.stringify(community)} Not Found`
+            `Access entry for community ${JSON.stringify(community)} Not Found`,
+            {
+              extensions: {
+                errCode: err.code,
+              },
+            }
           );
       }
     }

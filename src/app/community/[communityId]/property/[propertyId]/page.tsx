@@ -42,9 +42,11 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
 `);
 
 export default function Property({ params }: RouteArgs) {
+  const { communityId } = useAppContext();
   const result = useQuery(PropertyFromIdQuery, {
+    skip: communityId == null,
     variables: {
-      communityId: params.communityId,
+      communityId: communityId!,
       propertyId: params.propertyId,
     },
   });

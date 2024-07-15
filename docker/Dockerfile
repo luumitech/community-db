@@ -47,7 +47,8 @@ RUN adduser --system --uid 1001 ${USER}
 
 # Copy from build image
 COPY --from=BUILD_IMAGE --chown=${USER}:${GROUP} /app/.next/standalone ./
-COPY --from=BUILD_IMAGE --chown=${USER}:${GROUP} /app/public ./public
+# Uncomment if there are files in /public
+# COPY --from=BUILD_IMAGE --chown=${USER}:${GROUP} /app/public ./public
 COPY --from=BUILD_IMAGE --chown=${USER}:${GROUP} /app/.next/static ./.next/static
 COPY --from=BUILD_IMAGE --chown=${USER}:${GROUP} /app/docker/entrypoint.sh ./docker/entrypoint.sh
 

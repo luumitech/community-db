@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps, Skeleton } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 
@@ -15,6 +16,7 @@ interface MenuItemEntry extends BreadcrumbItemProps {
  */
 export function useTopMenu() {
   const pathname = usePathname();
+  const { communityId: contextCommunityId } = useAppContext();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -56,15 +58,16 @@ export function useTopMenu() {
           });
           break;
         default:
-          if (op != null) {
-            const communityId = op;
-            items.pop();
+          items.pop();
+          if (op != null && op === contextCommunityId) {
             items.push({
               id: 'community-editor',
-              href: appPath('propertyList', { communityId }),
-              children: <CommunityName communityId={communityId} />,
+              href: appPath('propertyList', {
+                communityId: contextCommunityId,
+              }),
+              children: <CommunityName communityId={contextCommunityId} />,
             });
-            handleSingleCommunity(communityId);
+            handleSingleCommunity(contextCommunityId);
           }
           break;
       }
@@ -126,7 +129,7 @@ export function useTopMenu() {
         });
       }
     }
-  }, [pathname]);
+  }, [pathname, contextCommunityId]);
 
   return menuItems;
 }

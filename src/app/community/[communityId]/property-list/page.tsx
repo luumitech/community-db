@@ -16,6 +16,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
@@ -63,13 +64,15 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
 `);
 
 export default function PropertyList({ params }: RouteArgs) {
+  const { communityId } = useAppContext();
   const router = useRouter();
   const dispatch = useDispatch();
   const searchText = useSelector((state) => state.ui.propertyListSearch);
   const debouncedSearchText = useDebounce(searchText, 300);
   const result = useQuery(CommunityFromIdQuery, {
+    skip: communityId == null,
     variables: {
-      id: params.communityId,
+      id: communityId!,
       first: 10, // load 10 entries initally
       search: debouncedSearchText,
     },
