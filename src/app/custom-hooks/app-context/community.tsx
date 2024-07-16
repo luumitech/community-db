@@ -5,7 +5,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { insertIf } from '~/lib/insert-if';
 import { toast } from '~/view/base/toastify';
 
@@ -128,7 +128,7 @@ function communityLayoutOnError(err: ApolloError) {
             href={appPath('communitySelect')}
             onClick={() => closeToast()}
           >
-            Select Community
+            {appLabel('communitySelect')}
           </Button>
         </div>
       ));

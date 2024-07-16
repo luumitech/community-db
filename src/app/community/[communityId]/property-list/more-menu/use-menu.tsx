@@ -2,7 +2,7 @@ import { DropdownItemProps } from '@nextui-org/react';
 import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 
 interface MenuItemEntry extends DropdownItemProps {}
@@ -34,7 +34,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         {
           key: 'import',
           href: appPath('communityImport', { communityId }),
-          children: 'Import Community',
+          children: appLabel('communityImport'),
         }
       );
     }
@@ -43,14 +43,20 @@ export function useMoreMenu(opt: MoreMenuOpt) {
       {
         key: 'export',
         href: appPath('communityExport', { communityId }),
-        children: 'Export to Excel',
+        children: appLabel('communityExport'),
       },
       {
         key: 'share',
         href: appPath('communityShare', { communityId }),
         endContent: <Icon icon="share" />,
+        children: appLabel('communityShare'),
+      },
+      {
+        key: 'dashboard',
+        href: appPath('communityDashboard', { communityId }),
+        endContent: <Icon icon="dashboard" />,
         showDivider: canEdit,
-        children: 'Share',
+        children: appLabel('communityDashboard'),
       }
     );
 

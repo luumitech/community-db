@@ -20,7 +20,7 @@ import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { MoreMenu } from './more-menu';
 import { useTableData } from './use-table-data';
@@ -133,7 +133,7 @@ export default function PropertyList({ params }: RouteArgs) {
               communityId: community.id,
             })}
           >
-            Import Community
+            {appLabel('communityImport')}
           </Button>
         )}
       </div>

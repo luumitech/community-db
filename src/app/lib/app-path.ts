@@ -58,3 +58,39 @@ export function appPath(
   });
   return toPath(sub);
 }
+
+/**
+ * Label for various UI endpoints within the app
+ *
+ * @param template template name
+ * @returns
+ */
+export function appLabel(template: keyof SupportedPath) {
+  switch (template) {
+    case 'home':
+      return 'Home';
+    case 'preference':
+      return 'Preference';
+    case 'communityWelcome':
+      return 'Welcome';
+    case 'communitySelect':
+      return 'Select Community';
+    case 'communityCreate':
+      return 'Create New Community';
+    case 'communityImport':
+      return 'Import Community';
+    case 'communityExport':
+      return 'Export to Excel';
+    case 'communityShare':
+      return 'Share';
+    case 'propertyList':
+      return 'Property List';
+    case 'communityDashboard':
+      return 'Dashboard';
+    case 'property':
+      return 'Property';
+
+    default:
+      throw new Error(`unhandled app template ${template}`);
+  }
+}

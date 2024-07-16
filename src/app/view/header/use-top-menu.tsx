@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 
 interface MenuItemEntry extends BreadcrumbItemProps {
   id: string;
@@ -32,7 +32,7 @@ export function useTopMenu() {
         items.push({
           id: 'welcome',
           href: appPath('communityWelcome'),
-          children: 'Welcome',
+          children: appLabel('communityWelcome'),
         });
         handleCommunity();
         break;
@@ -47,14 +47,14 @@ export function useTopMenu() {
           items.push({
             id: 'create',
             href: appPath('communityCreate'),
-            children: 'Create Community',
+            children: appLabel('communityCreate'),
           });
           break;
         case 'select':
           items.push({
             id: 'create',
             href: appPath('communitySelect'),
-            children: 'Select Community',
+            children: appLabel('communitySelect'),
           });
           break;
         default:
@@ -84,7 +84,7 @@ export function useTopMenu() {
           items.push({
             id: 'import-xlsx',
             href: appPath('communityImport', { communityId }),
-            children: 'Import',
+            children: appLabel('communityImport'),
           });
           break;
 
@@ -92,7 +92,7 @@ export function useTopMenu() {
           items.push({
             id: 'export-xlsx',
             href: appPath('communityExport', { communityId }),
-            children: 'Export',
+            children: appLabel('communityExport'),
           });
           break;
 
@@ -100,7 +100,7 @@ export function useTopMenu() {
           items.push({
             id: 'share',
             href: appPath('communityShare', { communityId }),
-            children: 'Share',
+            children: appLabel('communityShare'),
           });
           break;
 
@@ -108,7 +108,7 @@ export function useTopMenu() {
           items.push({
             id: 'tool-dashboard',
             href: appPath('communityDashboard', { communityId }),
-            children: 'Dashboard',
+            children: appLabel('communityDashboard'),
           });
           break;
       }

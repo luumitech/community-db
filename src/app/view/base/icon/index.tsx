@@ -6,7 +6,7 @@ import { FaFolderOpen, FaSearch, FaTrashAlt } from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa6';
 import { GrUndo } from 'react-icons/gr';
 import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
-import { IoCheckmark, IoPersonAdd } from 'react-icons/io5';
+import { IoBarChart, IoCheckmark, IoPersonAdd } from 'react-icons/io5';
 import {
   MdDragIndicator,
   MdEmail,
@@ -36,7 +36,8 @@ type SupportedIcon =
   | 'search'
   | 'share'
   | 'link'
-  | 'download';
+  | 'download'
+  | 'dashboard';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -99,6 +100,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'download':
       IconElement = FaDownload;
+      break;
+    case 'dashboard':
+      IconElement = IoBarChart;
       break;
     default:
       IconElement = MdQuestionMark;

@@ -251,8 +251,8 @@ builder.prismaObject('Community', {
           return byYear;
         });
         return {
-          minYear,
-          maxYear,
+          minYear: isFinite(minYear) ? minYear : 0,
+          maxYear: isFinite(maxYear) ? maxYear : 0,
           propertyStat,
         };
       },
