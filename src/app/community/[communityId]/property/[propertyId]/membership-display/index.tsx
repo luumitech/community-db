@@ -28,7 +28,9 @@ interface Props {
 export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(MembershipDisplayFragment, fragment);
   const currentYear = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = React.useState(currentYear);
+  const [selectedYear, setSelectedYear] = React.useState(
+    currentYear.toString()
+  );
 
   // If currentYear is not in the list of membership, add it
   const membershipList = React.useMemo(() => {
@@ -44,7 +46,7 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
   }, [entry, currentYear]);
 
   const membership = React.useMemo(() => {
-    return membershipList.find(({ year }) => selectedYear === year);
+    return membershipList.find(({ year }) => selectedYear === year.toString());
   }, [membershipList, selectedYear]);
 
   return (

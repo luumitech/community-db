@@ -1,6 +1,5 @@
 import { Community, Role, SupportedSelectItem } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
@@ -228,26 +227,19 @@ builder.mutationField('communityImport', (t) =>
         default:
           throw new GraphQLError(`Unrecognized import method ${method}`);
       }
-      const { propertyList, eventList } = importLcraDB(workbook);
+      const { propertyList, ...others } = importLcraDB(workbook);
 
       const existing = await getCommunityEntry(user, shortId, {
         select: {
           id: true,
-          eventList: true,
         },
       });
-      const existingEventList = existing.eventList;
-      // Only keep existing event list, if imported event list
-      // has exact same event (but can be in different order)
-      const keepExistingEventList =
-        eventList.length === existingEventList.length &&
-        R.difference.multiset(existingEventList, eventList).length === 0;
 
       const community = await prisma.community.update({
         ...query,
         where: { id: existing.id },
         data: {
-          ...(!keepExistingEventList && { eventList }),
+          ...others,
           propertyList: {
             // Remove existing property list
             deleteMany: {},
