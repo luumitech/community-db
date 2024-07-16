@@ -70,7 +70,6 @@ export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
 };
 
 function defaultInputData(fragment: PropertyEntry): DefaultData {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const item = getFragment(OccupantEditorFragment, fragment);
 
   return {

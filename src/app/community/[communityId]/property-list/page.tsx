@@ -18,7 +18,6 @@ import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
-import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
@@ -64,10 +63,9 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
 `);
 
 export default function PropertyList({ params }: RouteArgs) {
-  const { communityId } = useAppContext();
+  const { communityId, communityUi } = useAppContext();
   const router = useRouter();
-  const dispatch = useDispatch();
-  const searchText = useSelector((state) => state.ui.propertyListSearch);
+  const searchText = communityUi.propertyListSearch;
   const debouncedSearchText = useDebounce(searchText, 300);
   const result = useQuery(CommunityFromIdQuery, {
     skip: communityId == null,
@@ -103,7 +101,7 @@ export default function PropertyList({ params }: RouteArgs) {
   const topContent = React.useMemo(() => {
     const totalCount = community?.propertyList.totalCount ?? 0;
     const setSearchText = (input?: string) => {
-      dispatch(actions.ui.setPropertyListSearch(input));
+      communityUi.actions.setPropertyListSearch(input);
     };
     return (
       <div className="flex gap-2">
@@ -119,7 +117,7 @@ export default function PropertyList({ params }: RouteArgs) {
         {community && <MoreMenu fragment={community} />}
       </div>
     );
-  }, [community, searchText, dispatch]);
+  }, [community, searchText, communityUi.actions]);
 
   const emptyContent = React.useMemo(() => {
     return (

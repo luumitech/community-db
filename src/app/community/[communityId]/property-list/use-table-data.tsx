@@ -1,12 +1,13 @@
 import { getKeyValue } from '@nextui-org/react';
 import React from 'react';
+import { getCurrentYear } from '~/lib/date-util';
 import { PropertyEntry } from './_type';
 import { Membership } from './membership';
 import { Occupant } from './occupant';
 import { PropertyAddress } from './property-address';
 
 export function useTableData() {
-  const curYear = new Date().getFullYear();
+  const curYear = getCurrentYear();
   const prevYear = curYear - 1;
 
   const columns = [

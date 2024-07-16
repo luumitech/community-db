@@ -51,3 +51,11 @@ export function parseAsDate(input: GQLDate | null | undefined) {
     return null;
   }
 }
+
+/**
+ * Get the current year (i.e. 2024)
+ * @returns
+ */
+export function getCurrentYear() {
+  return new Date().getFullYear();
+}

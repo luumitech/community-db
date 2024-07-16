@@ -40,7 +40,6 @@ export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: AccessEntry): DefaultData {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const access = getFragment(ModifyFragment, fragment);
   return {
     self: {
