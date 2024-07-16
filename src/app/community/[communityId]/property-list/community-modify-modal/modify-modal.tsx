@@ -13,6 +13,7 @@ import { LastModified } from '~/view/last-modified';
 import { ModifyFragment, type CommunityEntry } from '../_type';
 import { EventListEditor } from './event-list-editor';
 import { NameEditor } from './name-editor';
+import { PaymentMethodListEditor } from './payment-method-list-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -51,7 +52,7 @@ export const ModifyModal: React.FC<Props> = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       placement="top-center"
-      scrollBehavior="inside"
+      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
       hideCloseButton
@@ -62,6 +63,7 @@ export const ModifyModal: React.FC<Props> = ({
           <ModalBody>
             <NameEditor />
             <EventListEditor />
+            <PaymentMethodListEditor />
             <LastModified
               className="text-right"
               updatedAt={community.updatedAt}

@@ -16,10 +16,11 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { MoreMenu } from './more-menu';
 import { useTableData } from './use-table-data';
@@ -63,13 +64,15 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
 `);
 
 export default function PropertyList({ params }: RouteArgs) {
+  const { communityId } = useAppContext();
   const router = useRouter();
   const dispatch = useDispatch();
   const searchText = useSelector((state) => state.ui.propertyListSearch);
   const debouncedSearchText = useDebounce(searchText, 300);
   const result = useQuery(CommunityFromIdQuery, {
+    skip: communityId == null,
     variables: {
-      id: params.communityId,
+      id: communityId!,
       first: 10, // load 10 entries initally
       search: debouncedSearchText,
     },
@@ -106,7 +109,7 @@ export default function PropertyList({ params }: RouteArgs) {
       <div className="flex gap-2">
         <Input
           isClearable
-          placeholder="Search ..."
+          placeholder="Search Address or Member Name"
           description={`${totalCount} entries found`}
           startContent={<Icon icon="search" />}
           defaultValue={searchText}
@@ -130,7 +133,7 @@ export default function PropertyList({ params }: RouteArgs) {
               communityId: community.id,
             })}
           >
-            Import Community
+            {appLabel('communityImport')}
           </Button>
         )}
       </div>

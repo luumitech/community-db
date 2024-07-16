@@ -8,12 +8,12 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import React from 'react';
-import { type EventListFieldArray } from '../use-hook-form';
+import { type PaymentMethodListFieldArray } from '../use-hook-form';
 import { VisibleListItem } from './visible-list-item';
 
 interface Props {
   className?: string;
-  fieldArray: EventListFieldArray;
+  fieldArray: PaymentMethodListFieldArray;
   onRemove?: (label: string) => void;
 }
 

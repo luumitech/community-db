@@ -18,6 +18,10 @@ export const ModifyFragment = graphql(/* GraphQL */ `
       name
       hidden
     }
+    paymentMethodList {
+      name
+      hidden
+    }
     updatedAt
     updatedBy {
       ...User
@@ -45,10 +49,22 @@ function schema() {
         name: yup.string().required(),
       })
     ),
+    paymentMethodList: yup.array(
+      yup.object({
+        name: yup.string().required(),
+      })
+    ),
     // Used for rendering UI only, not submitted
     // to server
     hidden: yup.object({
+      // list of events items that should be hidden
       eventList: yup.array(
+        yup.object({
+          name: yup.string().required(),
+        })
+      ),
+      // list of payment methods items that should be hidden
+      paymentMethodList: yup.array(
         yup.object({
           name: yup.string().required(),
         })
@@ -71,12 +87,18 @@ function defaultInputData(fragment: CommunityEntry): DefaultData {
     },
     name: item.name,
     eventList: item.eventList
-      .filter((event) => !event.hidden)
-      .map((event) => ({ name: event.name })),
+      .filter((entry) => !entry.hidden)
+      .map((entry) => ({ name: entry.name })),
+    paymentMethodList: item.paymentMethodList
+      .filter((entry) => !entry.hidden)
+      .map((entry) => ({ name: entry.name })),
     hidden: {
       eventList: item.eventList
-        .filter((event) => !!event.hidden)
-        .map((event) => ({ name: event.name })),
+        .filter((entry) => !!entry.hidden)
+        .map((entry) => ({ name: entry.name })),
+      paymentMethodList: item.paymentMethodList
+        .filter((entry) => !!entry.hidden)
+        .map((entry) => ({ name: entry.name })),
     },
   };
 }
@@ -115,6 +137,15 @@ export type EventListFieldArray = UseFieldArrayReturn<InputData, 'eventList'>;
 export type HiddenEventListFieldArray = UseFieldArrayReturn<
   InputData,
   'hidden.eventList'
+>;
+
+export type PaymentMethodListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'paymentMethodList'
+>;
+export type HiddenPaymentMethodListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'hidden.paymentMethodList'
 >;
 
 export function useHookFormContext() {

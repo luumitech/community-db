@@ -1,18 +1,19 @@
-import { Community, Role, SupportedEvent } from '@prisma/client';
+import { Community, Role, SupportedSelectItem } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import { extractEventList } from '~/lib/lcra-community/import/event-list-util';
+import { extractPaymentMethodList } from '~/lib/lcra-community/import/payment-method-list-util';
 import { seedCommunityData } from '~/lib/lcra-community/random-seed';
 import prisma from '~/lib/prisma';
+import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { getCommunityEntry } from './util';
 
-const SupportedEventInput = builder.inputType('SupportedEventInput', {
+const NameInput = builder.inputType('NameInput', {
   fields: (t) => ({
     name: t.string({ required: true }),
   }),
@@ -22,7 +23,8 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     name: t.string(),
-    eventList: t.field({ type: [SupportedEventInput] }),
+    eventList: t.field({ type: [NameInput] }),
+    paymentMethodList: t.field({ type: [NameInput] }),
   }),
 });
 
@@ -41,9 +43,9 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
  */
 async function getCompleteEventList(
   community: Pick<Community, 'id' | 'eventList'>,
-  eventList: (typeof SupportedEventInput.$inferInput)[]
+  eventList: (typeof NameInput.$inferInput)[]
 ) {
-  const result: SupportedEvent[] = [];
+  const result: SupportedSelectItem[] = [];
   eventList.forEach(({ name }) => {
     result.push({ name, hidden: false });
   });
@@ -56,6 +58,43 @@ async function getCompleteEventList(
   const completeEventList = extractEventList(propertyList);
   completeEventList.forEach((name) => {
     if (!eventList.find((entry) => entry.name === name)) {
+      result.push({ name, hidden: true });
+    }
+  });
+
+  return result;
+}
+
+/**
+ * Generate paymentMethodList entry for database
+ *
+ * User may want a reduced list of payment methods to show when selecting
+ * in the UI, but the database may contain methods that are still being
+ * referenced, and they need to be maintained in this list.
+ * We'll mark these entries as hidden, so they would still show up
+ * properly in the selection UI
+ *
+ * @param community community entry in database
+ * @param paymentMethodList new event list as requested by user
+ * @returns
+ */
+async function getCompletePaymentMethodList(
+  community: Pick<Community, 'id' | 'paymentMethodList'>,
+  paymentMethodList: (typeof NameInput.$inferInput)[]
+) {
+  const result: SupportedSelectItem[] = [];
+  paymentMethodList.forEach(({ name }) => {
+    result.push({ name, hidden: false });
+  });
+
+  // mark any events missing in the input eventList as hidden
+  const propertyList = await prisma.property.findMany({
+    where: { communityId: community.id },
+    select: { membershipList: true },
+  });
+  const completePaymentMethodList = extractPaymentMethodList(propertyList);
+  completePaymentMethodList.forEach((name) => {
+    if (!paymentMethodList.find((entry) => entry.name === name)) {
       result.push({ name, hidden: true });
     }
   });
@@ -78,6 +117,7 @@ builder.mutationField('communityModify', (t) =>
           id: true,
           updatedAt: true,
           eventList: true,
+          paymentMethodList: true,
         },
       });
       if (entry.updatedAt.toISOString() !== self.updatedAt) {
@@ -89,7 +129,7 @@ builder.mutationField('communityModify', (t) =>
       // Make sure user has permission to modify
       await verifyAccess(user, { id: entry.id }, [Role.ADMIN, Role.EDITOR]);
 
-      const { name, eventList, ...optionalInput } = input;
+      const { name, eventList, paymentMethodList, ...optionalInput } = input;
 
       const community = await prisma.community.update({
         ...query,
@@ -104,6 +144,14 @@ builder.mutationField('communityModify', (t) =>
           // every event used within the community database
           ...(!!eventList && {
             eventList: await getCompleteEventList(entry, eventList),
+          }),
+          // If paymentMethodList is provided, make sure paymentMethodList contains
+          // every payment method used within the community database
+          ...(!!paymentMethodList && {
+            paymentMethodList: await getCompletePaymentMethodList(
+              entry,
+              paymentMethodList
+            ),
           }),
           ...optionalInput,
         },
@@ -158,13 +206,8 @@ builder.mutationField('communityImport', (t) =>
         case 'random':
           {
             const seedJson = seedCommunityData(20);
-            const worksheet = XLSX.utils.json_to_sheet(seedJson);
-            workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(
-              workbook,
-              worksheet,
-              'LCRA membership'
-            );
+            const wsHelper = WorksheetHelper.fromJson(seedJson, 'Membership');
+            workbook = wsHelper.wb;
           }
           break;
 
@@ -184,26 +227,19 @@ builder.mutationField('communityImport', (t) =>
         default:
           throw new GraphQLError(`Unrecognized import method ${method}`);
       }
-      const { propertyList, eventList } = importLcraDB(workbook);
+      const { propertyList, ...others } = importLcraDB(workbook);
 
       const existing = await getCommunityEntry(user, shortId, {
         select: {
           id: true,
-          eventList: true,
         },
       });
-      const existingEventList = existing.eventList;
-      // Only keep existing event list, if imported event list
-      // has exact same event (but can be in different order)
-      const keepExistingEventList =
-        eventList.length === existingEventList.length &&
-        R.difference.multiset(existingEventList, eventList).length === 0;
 
       const community = await prisma.community.update({
         ...query,
         where: { id: existing.id },
         data: {
-          ...(!keepExistingEventList && { eventList }),
+          ...others,
           propertyList: {
             // Remove existing property list
             deleteMany: {},

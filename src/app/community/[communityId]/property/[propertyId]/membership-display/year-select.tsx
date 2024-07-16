@@ -7,8 +7,8 @@ import * as GQL from '~/graphql/generated/graphql';
 interface Props {
   className?: string;
   membershipList: GQL.PropertyId_MembershipDisplayFragment['membershipList'];
-  selectedYear: number;
-  onChange: (year: number) => void;
+  selectedYear: string;
+  onChange: (year: string) => void;
 }
 
 export const YearSelect: React.FC<React.PropsWithChildren<Props>> = ({
@@ -30,7 +30,7 @@ export const YearSelect: React.FC<React.PropsWithChildren<Props>> = ({
         selectionMode="single"
         onSelectionChange={(keys) => {
           const [firstKey] = keys;
-          const yearSelected = parseInt(firstKey as string, 10);
+          const yearSelected = firstKey as string;
           year.clear();
           year.add(yearSelected);
           onChange(yearSelected);

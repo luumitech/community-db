@@ -42,14 +42,14 @@ export const CommunityDeleteModal: React.FC<Props> = ({
         onCompleted: () => {
           router.push(appPath('communitySelect'));
         },
-        // update: (cache) => {
-        //   const normalizedId = cache.identify({
-        //     id: entry.id,
-        //     __typename: 'Community',
-        //   });
-        //   cache.evict({ id: normalizedId });
-        //   cache.gc();
-        // },
+        update: (cache) => {
+          const normalizedId = cache.identify({
+            id: fragment.id,
+            __typename: 'Community',
+          });
+          cache.evict({ id: normalizedId });
+          cache.gc();
+        },
       }),
       {
         pending: 'Deleting...',

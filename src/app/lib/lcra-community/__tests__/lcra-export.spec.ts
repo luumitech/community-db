@@ -19,12 +19,13 @@ describe('export community xlsx', () => {
     const workbook = XLSX.readFile(path.join(__dirname, 'lcra-db.xlsx'));
 
     expectedImportResult = importLcraDB(workbook);
+    const { propertyList, ...others } = expectedImportResult;
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
-        eventList: expectedImportResult.eventList,
+        ...others,
         propertyList: {
-          create: expectedImportResult.propertyList,
+          create: propertyList,
         },
       },
     ];
@@ -53,7 +54,7 @@ describe('export community xlsx', () => {
   });
 
   test('verify export workbook', async () => {
-    const community = await prisma.community.findFirst({
+    const community = await prisma.community.findFirstOrThrow({
       include: {
         propertyList: {
           include: {
@@ -62,13 +63,14 @@ describe('export community xlsx', () => {
         },
       },
     });
-    const helper = new ExportHelper(community!.propertyList);
+    const helper = new ExportHelper(community.propertyList);
     const xlsxBuf = helper.toXlsx();
 
     // Compare exported XLSX against original XLSX
     const actualwb = XLSX.read(xlsxBuf);
-    const { propertyList } = importLcraDB(actualwb);
+    const { propertyList, paymentMethodList } = importLcraDB(actualwb);
 
     expect(propertyList).toEqual(expectedImportResult.propertyList);
+    expect(paymentMethodList).toEqual(expectedImportResult.paymentMethodList);
   });
 });

@@ -69,7 +69,7 @@ export const Header: React.FC<Props> = ({}) => {
               height={36}
             />
             <Link
-              href={appPath('home')}
+              href={appPath('communityWelcome')}
               color="foreground"
               className="leading-5 max-w-min whitespace-normal text-center text-balance font-bold"
             >

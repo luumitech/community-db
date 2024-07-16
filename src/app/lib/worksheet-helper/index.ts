@@ -55,6 +55,18 @@ export class WorksheetHelper {
   }
 
   /**
+   * Construct a worksheet helper object using JSON data
+   * @param json json data
+   * @param sheetName worksheet name
+   */
+  static fromJson(json: unknown[], sheetName: string) {
+    const worksheet = XLSX.utils.json_to_sheet(json);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    return new WorksheetHelper(workbook, sheetName);
+  }
+
+  /**
    * Iterator for looping through all worksheet within workbook
    */
   static *iter(wb: XLSX.WorkBook, options?: IterOptions) {

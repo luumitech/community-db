@@ -40,7 +40,11 @@ export async function getCommunityEntry<T extends FindArgs>(
          * https://www.prisma.io/docs/orm/reference/error-reference#p2025
          */
         case 'P2025':
-          throw new GraphQLError(`Community ${shortId} Not Found`);
+          throw new GraphQLError(`Community ${shortId} Not Found`, {
+            extensions: {
+              errCode: err.code,
+            },
+          });
       }
     }
     throw err;

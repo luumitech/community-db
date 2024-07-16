@@ -1,13 +1,14 @@
-import { Property, Role, SupportedEvent } from '@prisma/client';
+import { Property, Role, SupportedSelectItem } from '@prisma/client';
 import { EJSON } from 'bson';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { propertyRef } from '../property/object';
+import { getPropertyEntryWithinCommunity } from '../property/util';
 
-const supportedEventRef = builder
-  .objectRef<SupportedEvent>('SupportedEvent')
+const supportedSelectItemRef = builder
+  .objectRef<SupportedSelectItem>('SupportedSelectItem')
   .implement({
     fields: (t) => ({
       name: t.exposeString('name', { nullable: false }),
@@ -86,8 +87,12 @@ builder.prismaObject('Community', {
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
     eventList: t.field({
-      type: [supportedEventRef],
+      type: [supportedSelectItemRef],
       resolve: (entry) => entry.eventList,
+    }),
+    paymentMethodList: t.field({
+      type: [supportedSelectItemRef],
+      resolve: (entry) => entry.paymentMethodList,
     }),
     /**
      * Return context user's access document
@@ -204,13 +209,11 @@ builder.prismaObject('Community', {
         id: t.arg.string({ required: true }),
       },
       resolve: async (query, parent, args, ctx) => {
-        const entry = await prisma.property.findFirstOrThrow({
-          ...query,
-          where: {
-            shortId: args.id,
-            communityId: parent.id,
-          },
-        });
+        const entry = await getPropertyEntryWithinCommunity(
+          parent.id,
+          args.id,
+          query
+        );
         return entry;
       },
     }),
@@ -248,8 +251,8 @@ builder.prismaObject('Community', {
           return byYear;
         });
         return {
-          minYear,
-          maxYear,
+          minYear: isFinite(minYear) ? minYear : 0,
+          maxYear: isFinite(maxYear) ? maxYear : 0,
           propertyStat,
         };
       },

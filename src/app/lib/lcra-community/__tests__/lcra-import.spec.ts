@@ -13,11 +13,11 @@ describe('import community xlsx', () => {
     await testUtil.initialize();
 
     const workbook = XLSX.readFile(path.join(__dirname, 'lcra-db.xlsx'));
-    const { eventList, propertyList } = importLcraDB(workbook);
+    const { propertyList, ...others } = importLcraDB(workbook);
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
-        eventList,
+        ...others,
         propertyList: {
           create: propertyList,
         },

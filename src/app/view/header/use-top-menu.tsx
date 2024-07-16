@@ -2,8 +2,9 @@ import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps, Skeleton } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 
 interface MenuItemEntry extends BreadcrumbItemProps {
   id: string;
@@ -15,6 +16,7 @@ interface MenuItemEntry extends BreadcrumbItemProps {
  */
 export function useTopMenu() {
   const pathname = usePathname();
+  const { communityId: ctxCommunityId, communityName } = useAppContext();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -30,7 +32,7 @@ export function useTopMenu() {
         items.push({
           id: 'welcome',
           href: appPath('communityWelcome'),
-          children: 'Welcome',
+          children: appLabel('communityWelcome'),
         });
         handleCommunity();
         break;
@@ -45,26 +47,27 @@ export function useTopMenu() {
           items.push({
             id: 'create',
             href: appPath('communityCreate'),
-            children: 'Create Community',
+            children: appLabel('communityCreate'),
           });
           break;
         case 'select':
           items.push({
             id: 'create',
             href: appPath('communitySelect'),
-            children: 'Select Community',
+            children: appLabel('communitySelect'),
           });
           break;
         default:
-          if (op != null) {
-            const communityId = op;
-            items.pop();
+          items.pop();
+          if (op != null && op === ctxCommunityId) {
             items.push({
               id: 'community-editor',
-              href: appPath('propertyList', { communityId }),
-              children: <CommunityName communityId={communityId} />,
+              href: appPath('propertyList', {
+                communityId: ctxCommunityId,
+              }),
+              children: <CommunityName communityName={communityName} />,
             });
-            handleSingleCommunity(communityId);
+            handleSingleCommunity(ctxCommunityId);
           }
           break;
       }
@@ -81,7 +84,7 @@ export function useTopMenu() {
           items.push({
             id: 'import-xlsx',
             href: appPath('communityImport', { communityId }),
-            children: 'Import',
+            children: appLabel('communityImport'),
           });
           break;
 
@@ -89,7 +92,7 @@ export function useTopMenu() {
           items.push({
             id: 'export-xlsx',
             href: appPath('communityExport', { communityId }),
-            children: 'Export',
+            children: appLabel('communityExport'),
           });
           break;
 
@@ -97,7 +100,7 @@ export function useTopMenu() {
           items.push({
             id: 'share',
             href: appPath('communityShare', { communityId }),
-            children: 'Share',
+            children: appLabel('communityShare'),
           });
           break;
 
@@ -105,7 +108,7 @@ export function useTopMenu() {
           items.push({
             id: 'tool-dashboard',
             href: appPath('communityDashboard', { communityId }),
-            children: 'Dashboard',
+            children: appLabel('communityDashboard'),
           });
           break;
       }
@@ -126,32 +129,20 @@ export function useTopMenu() {
         });
       }
     }
-  }, [pathname]);
+  }, [pathname, ctxCommunityId, communityName]);
 
   return menuItems;
 }
 
-const CommunityNameQuery = graphql(/* GraphQL */ `
-  query communityName($id: String!) {
-    communityFromId(id: $id) {
-      id
-      name
-    }
-  }
-`);
-
 /**
  * Get community name from Id
  */
-const CommunityName: React.FC<{ communityId: string }> = ({ communityId }) => {
-  const result = useQuery(CommunityNameQuery, {
-    variables: { id: communityId },
-  });
-  const communityName = result.data?.communityFromId.name;
-
+const CommunityName: React.FC<{ communityName: string | undefined }> = ({
+  communityName,
+}) => {
   return (
-    <Skeleton className="rounded-lg" isLoaded={!result.loading}>
-      <div>{communityName ?? 'placeholder'}</div>
+    <Skeleton className="rounded-lg" isLoaded={communityName != null}>
+      <div className="px-1">{communityName ?? ''}</div>
     </Skeleton>
   );
 };
@@ -182,7 +173,7 @@ const PropertyAddress: React.FC<{
 
   return (
     <Skeleton className="rounded-lg" isLoaded={!result.loading}>
-      <div>{address ?? 'placeholder'}</div>
+      <div className="px-1">{address ?? ''}</div>
     </Skeleton>
   );
 };

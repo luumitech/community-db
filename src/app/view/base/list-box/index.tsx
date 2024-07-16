@@ -7,6 +7,7 @@ import {
   Listbox,
   ListboxItem,
   ListboxItemProps,
+  ListboxProps,
   Skeleton,
 } from '@nextui-org/react';
 import clsx from 'clsx';
@@ -14,7 +15,7 @@ import React from 'react';
 
 export { type ListboxItemProps } from '@nextui-org/react';
 
-interface Props {
+interface Props extends Omit<ListboxProps, 'children'> {
   className?: string;
   header?: string;
   items: ListboxItemProps[];
@@ -26,6 +27,7 @@ export const ListBox: React.FC<Props> = ({
   header,
   items,
   loading,
+  ...listBoxProps
 }) => {
   return (
     <div
@@ -46,7 +48,7 @@ export const ListBox: React.FC<Props> = ({
               <div className="h-8 rounded-lg bg-default-300" />
             </Skeleton>
           ) : (
-            <Listbox aria-label="main menu">
+            <Listbox aria-label="main menu" {...listBoxProps}>
               {items.map(({ key, ...itemProps }) => (
                 <ListboxItem key={key} {...itemProps} />
               ))}

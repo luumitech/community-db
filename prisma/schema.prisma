@@ -49,23 +49,25 @@ model Access {
 }
 
 model Community {
-  id           String           @id @default(auto()) @map("_id") @db.ObjectId
-  shortId      String           @default(nanoid(6))
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  updatedById  String?          @db.ObjectId
-  updatedBy    User?            @relation(fields: [updatedById], references: [id], onDelete: Cascade)
-  name         String
+  id                String                @id @default(auto()) @map("_id") @db.ObjectId
+  shortId           String                @default(nanoid(6))
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  updatedById       String?               @db.ObjectId
+  updatedBy         User?                 @relation(fields: [updatedById], references: [id], onDelete: Cascade)
+  name              String
   /// List of events supported (can be sorted)
-  eventList    SupportedEvent[]
-  accessList   Access[]
-  propertyList Property[]
+  eventList         SupportedSelectItem[]
+  /// List of payment method supported (can be sorted)
+  paymentMethodList SupportedSelectItem[]
+  accessList        Access[]
+  propertyList      Property[]
 }
 
-type SupportedEvent {
-  /// Event name
+type SupportedSelectItem {
+  /// select item name
   name   String
-  /// Should event name be visible in the event select list
+  /// Should select item name be visible in selection list
   hidden Boolean?
 }
 

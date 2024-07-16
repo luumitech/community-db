@@ -1,5 +1,5 @@
 import { useSubscription } from '@apollo/client';
-import { useParams } from 'next/navigation';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -47,8 +47,7 @@ function mutationVerb(mutationType: GQL.MutationType) {
 }
 
 export function useSetupSubscription() {
-  const params = useParams<{ communityId?: string }>();
-  const communityId = params.communityId;
+  const { communityId } = useAppContext();
 
   // Subscribe to changes within community
   useSubscription(CommunitySubscription, {

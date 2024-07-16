@@ -11,13 +11,13 @@ interface Props {
 export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
   const dispatch = useDispatch();
   const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
-  const { addEventItems } = useAppContext();
+  const { visibleEventItems } = useAppContext();
 
   return (
     <Select
       className={clsx(className, 'max-w-sm')}
       aria-label="Event Name"
-      items={addEventItems}
+      items={visibleEventItems}
       variant="underlined"
       placeholder="Select event to add"
       defaultSelectedKeys={lastEventSelected ? [lastEventSelected] : []}

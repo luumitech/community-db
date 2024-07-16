@@ -54,16 +54,18 @@ export default function Dashboard({ params }: RouteArgs) {
   }
 
   return (
-    <div className="flex flex-col gap-4 mb-4">
+    <div className="grid md:grid-cols-2 gap-4 mb-4">
       <MemberCountChart
+        // Top chart always occupy first row
+        className="col-span-full"
         fragment={community}
         onDataClick={(datum) => setSelectedYear(datum.year)}
       />
       {selectedYear && (
-        <div className="columns-2">
+        <>
           <MembershipSource fragment={community} year={selectedYear} />
           <EventParticipation fragment={community} year={selectedYear} />
-        </div>
+        </>
       )}
     </div>
   );

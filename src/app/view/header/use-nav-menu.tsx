@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { matchCommunityEditor } from './matcher-util';
 
 interface MenuItemEntry extends LinkProps {
@@ -58,17 +58,17 @@ export function useNavMenu() {
           {
             id: 'welcome',
             ...pathMenuArg(appPath('communityWelcome')),
-            children: 'Welcome',
+            children: appLabel('communityWelcome'),
           },
           {
             id: 'select-community',
             ...pathMenuArg(appPath('communitySelect')),
-            children: indentMenuItem('Select Community', 1),
+            children: indentMenuItem(appLabel('communitySelect'), 1),
           },
           {
             id: 'create-community',
             ...pathMenuArg(appPath('communityCreate')),
-            children: indentMenuItem('Create Community', 1),
+            children: indentMenuItem(appLabel('communityCreate'), 1),
           }
         );
         handleCommunity();
@@ -104,7 +104,7 @@ export function useNavMenu() {
           id: 'membership-editor',
           isActive: !!matchCommunityEditor(pathname),
           href: appPath('propertyList', { communityId }),
-          children: indentMenuItem('Membership Editor', 1),
+          children: indentMenuItem(appLabel('propertyList'), 1),
         }
       );
 
@@ -112,7 +112,7 @@ export function useNavMenu() {
         items.push({
           id: 'import-xlsx',
           ...pathMenuArg(appPath('communityImport', { communityId })),
-          children: indentMenuItem('Import', 1),
+          children: indentMenuItem(appLabel('communityImport'), 1),
         });
       }
 
@@ -120,17 +120,17 @@ export function useNavMenu() {
         {
           id: 'export-xlsx',
           ...pathMenuArg(appPath('communityExport', { communityId })),
-          children: indentMenuItem('Export', 1),
+          children: indentMenuItem(appLabel('communityExport'), 1),
         },
         {
           id: 'share',
           ...pathMenuArg(appPath('communityShare', { communityId })),
-          children: indentMenuItem('Share', 1),
+          children: indentMenuItem(appLabel('communityShare'), 1),
         },
         {
           id: 'dashboard',
           ...pathMenuArg(appPath('communityDashboard', { communityId })),
-          children: indentMenuItem('Dashboard', 1),
+          children: indentMenuItem(appLabel('communityDashboard'), 1),
         }
       );
     }

@@ -2,7 +2,7 @@
 
 # Build docker image and tag it with a name
 usage() {
-  echo "Build docker image in azure registry"
+  echo "Build docker image in docker hub registry"
   echo ""
   echo "Usage: $0 [option]"
   echo "  options:"
@@ -63,20 +63,20 @@ source ${SCRIPT_DIR}/set-env.sh
 APP_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
 GIT_BRANCH=$(git symbolic-ref --short HEAD)
 GIT_COMMIT_HASH=$(git log -n 1 --pretty=format:"%H")
-echo "Deploying to Azure container registry - ${CONTAINER_REGISTRY}"
+echo "Deploying to Dockerhub container registry - ${CONTAINER_REGISTRY}"
 echo "  IMAGE=${DOCKER_IMAGE}:${TAG}"
 echo "  APP_VERSION=${APP_VERSION}"
 echo "  GIT_BRANCH=${GIT_BRANCH}"
 echo "  GIT_COMMIT_HASH=${GIT_COMMIT_HASH}"
 
 (
-  set -x
-  az acr build \
-    --subscription ${SUBSCRIPTION} \
-    --registry ${CONTAINER_REGISTRY} \
-    --image ${DOCKER_IMAGE}:${TAG} \
+  set -ex
+  docker buildx build \
+    --platform linux/amd64 \
+    -t ${CONTAINER_REGISTRY}/${DOCKER_IMAGE}:${TAG} \
     --build-arg APP_VERSION=${APP_VERSION} \
     --build-arg GIT_BRANCH=${GIT_BRANCH} \
     --build-arg GIT_COMMIT_HASH=${GIT_COMMIT_HASH} \
     -f docker/Dockerfile .
+  docker push ${CONTAINER_REGISTRY}/${DOCKER_IMAGE}:${TAG}
 )

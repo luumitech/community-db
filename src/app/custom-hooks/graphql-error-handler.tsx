@@ -10,7 +10,7 @@ interface ErrorHandlerOptions {
    * return it, and it will be handled by the default
    * error handler
    */
-  onError?: (err?: ApolloError | undefined) => ApolloError | undefined | void;
+  onError?: (err: ApolloError) => ApolloError | undefined | void;
 }
 
 /**

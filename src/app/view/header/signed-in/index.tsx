@@ -8,7 +8,7 @@ import {
 } from '@nextui-org/react';
 import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { AboutModal } from './about-modal';
 
 /**
@@ -65,7 +65,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
             About
           </DropdownItem>
           <DropdownItem key="preference" href={appPath('preference')}>
-            Preference
+            {appLabel('preference')}
           </DropdownItem>
           <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
             Log Out

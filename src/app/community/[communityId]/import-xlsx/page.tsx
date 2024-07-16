@@ -4,7 +4,7 @@ import { Button, Link } from '@nextui-org/react';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { ImportForm } from './import-form';
 import {
@@ -56,12 +56,13 @@ export default function ImportXlsx({ params }: RouteArgs) {
                 <div className="flex items-center gap-2">
                   Imported Successfully
                   <Button
+                    className="flex-shrink-0"
                     size="sm"
                     as={Link}
                     color="primary"
                     href={appPath('propertyList', { communityId: input.id })}
                   >
-                    View
+                    {appLabel('propertyList')}
                   </Button>
                 </div>
               );

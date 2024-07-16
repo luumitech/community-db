@@ -42,7 +42,52 @@ export async function getPropertyEntry<T extends FindArgs>(
          * https://www.prisma.io/docs/orm/reference/error-reference#p2025
          */
         case 'P2025':
-          throw new GraphQLError(`Property ${shortId} Not Found`);
+          throw new GraphQLError(`Property ${shortId} Not Found`, {
+            extensions: {
+              errCode: err.code,
+            },
+          });
+      }
+    }
+    throw err;
+  }
+}
+
+/**
+ * Get property database entry within a community
+ *
+ * @param communityShortId community shortID
+ * @param shortId property shortID
+ * @param args prisma findFirstOrThrow arguments
+ * @returns
+ */
+export async function getPropertyEntryWithinCommunity<T extends FindArgs>(
+  communityShortId: string,
+  shortId: string,
+  args?: Prisma.SelectSubset<T, FindArgs>
+) {
+  try {
+    const where: Prisma.PropertyWhereInput = {
+      shortId,
+      communityId: communityShortId,
+    };
+    const entry = await prisma.property.findFirstOrThrow<T>({
+      ...args!,
+      where,
+    });
+    return entry;
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (err.code) {
+        /**
+         * https://www.prisma.io/docs/orm/reference/error-reference#p2025
+         */
+        case 'P2025':
+          throw new GraphQLError(`Property ${shortId} Not Found`, {
+            extensions: {
+              errCode: err.code,
+            },
+          });
       }
     }
     throw err;

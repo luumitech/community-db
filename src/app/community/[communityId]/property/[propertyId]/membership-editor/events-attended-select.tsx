@@ -174,6 +174,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
                   className="text-primary"
                   endContent={<Icon icon="add" />}
                   variant="faded"
+                  isDisabled={!lastEventSelected}
                   onClick={() =>
                     append({
                       eventName: lastEventSelected ?? '',
