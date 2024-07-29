@@ -2,10 +2,13 @@ import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 
+export type YearItem = ReturnType<typeof yearSelectItems>[0];
+
 /**
- * Return list of SelectItems that include all the years within
- * membershipList, as well as:
- *   - given yearToInlcude
+ * Return list of SelectItems that contains every year (increment by 1)
+ * using the years in:
+ *   - membershipList (in input argument)
+ *   - yearToInclude (in input argument)
  *   - currentYear
  *
  * @param membershipList
@@ -13,7 +16,7 @@ import { getCurrentYear } from '~/lib/date-util';
  * @returns selectItems with years in descending order
  */
 export function yearSelectItems(
-  membershipList: Pick<GQL.Membership, 'year'>[],
+  membershipList: Pick<GQL.Membership, 'year' | 'isMember'>[],
   yearToInclude: string
 ) {
   const currentYear = getCurrentYear();
@@ -25,6 +28,10 @@ export function yearSelectItems(
     maxYear = Math.max(maxYear, entry.year);
   });
   return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
-    return { label: yr.toString(), value: yr };
+    return {
+      label: yr.toString(),
+      value: yr,
+      isMember: !!membershipList.find((entry) => entry.year === yr)?.isMember,
+    };
   });
 }

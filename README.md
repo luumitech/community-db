@@ -42,10 +42,12 @@ The mongo DB must be configured with replication set:
     ```sh
     systemLog:
       destination: file
-      path: /usr/local/var/log/mongodb/mongo.log
+      # Change /opt/homebrew/var to /usr/local/var (if on intel)
+      path: /opt/homebrew/var/log/mongodb/mongo.log
       logAppend: true
     storage:
-      dbPath: /usr/local/var/mongodb
+      # Change /opt/homebrew/var to /usr/local/var (if on intel)
+      dbPath: /opt/homebrew/var/mongodb
     net:
       bindIp: 127.0.0.1
     replication:

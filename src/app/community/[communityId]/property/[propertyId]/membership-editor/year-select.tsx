@@ -58,6 +58,7 @@ export const YearSelect: React.FC<Props> = ({
       label="Membership Year"
       labelPlacement="outside-left"
       placeholder="Select a year to view in detail"
+      disallowEmptySelection
       items={yearItems}
       selectedKeys={[selectedYear.toString()]}
       selectionMode="single"

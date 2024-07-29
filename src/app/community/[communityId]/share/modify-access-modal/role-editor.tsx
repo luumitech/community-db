@@ -17,6 +17,7 @@ export const RoleEditor: React.FC<Props> = ({ className }) => {
     <Select
       label="Role"
       items={roleItems}
+      disallowEmptySelection
       placeholder="Select a role"
       errorMessage={errors.role?.message}
       isInvalid={!!errors.role?.message}

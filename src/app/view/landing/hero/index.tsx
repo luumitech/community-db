@@ -17,7 +17,13 @@ export const Hero: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={clsx(className, 'flex items-center justify-center')}>
-      <Image src={heroImg} alt="Community With People" priority />
+      <Image
+        // Makes sure min width/height can contain the hero text
+        className="h-main-height w-full min-h-[400px] min-w-[300px] object-cover"
+        src={heroImg}
+        alt="Community With People"
+        priority
+      />
       <div
         className={clsx(
           'absolute bg-opacity-50 bg-background rounded-xl m-5 p-5',

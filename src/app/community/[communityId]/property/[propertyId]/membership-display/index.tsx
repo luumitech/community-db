@@ -53,7 +53,7 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
             selectedYear={yearSelected}
             onChange={(year) => communityUi.actions.setYearSelected(year)}
           >
-            Membership Info
+            Membership Info For Year
           </YearSelect>
         </CardHeader>
         <CardBody>
