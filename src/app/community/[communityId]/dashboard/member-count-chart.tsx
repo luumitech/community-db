@@ -1,94 +1,50 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
+import { useQuery } from '@apollo/client';
+import { Card, CardBody, CardHeader, Skeleton } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
-import * as R from 'remeda';
-import { getFragment, graphql } from '~/graphql/generated';
+import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
-import { type DashboardEntry } from './_type';
 
-interface ChartDataEntry {
-  year: number;
-  renew: number;
-  new: number;
-}
-
-const MemberCountFragment = graphql(/* GraphQL */ `
-  fragment Dashboard_MemberCount on Community {
-    communityStat {
-      minYear
-      maxYear
-      propertyStat {
-        year
-        joinEvent
-        otherEvents
-        renew
+const MemberCountStatQuery = graphql(/* GraphQL */ `
+  query memberCountStat($id: String!) {
+    communityFromId(id: $id) {
+      id
+      communityStat {
+        memberCountStat {
+          year
+          renew
+          new
+        }
       }
     }
   }
 `);
 
-type PropertyStat =
-  GQL.Dashboard_MemberCountFragment['communityStat']['propertyStat'][0];
-
-class ChartDataHelper {
-  private dataMap = new Map<number, Omit<PropertyStat, 'year'>[]>();
-
-  constructor(fragment: GQL.Dashboard_MemberCountFragment) {
-    const { minYear, maxYear } = fragment.communityStat;
-    // Year should be in descending order
-    R.range(minYear, maxYear + 1)
-      .reverse()
-      .forEach((year) => {
-        this.dataMap.set(year, []);
-      });
-  }
-
-  getYear(year: number) {
-    const result = this.dataMap.get(year);
-    if (result == null) {
-      throw new Error(`Unexpected year ${year} requested`);
-    }
-    return result;
-  }
-
-  getChartData() {
-    // propagate to chart data
-    const chartData: Readonly<ChartDataEntry>[] = [];
-    this.dataMap.forEach((entries, year) => {
-      const renewList = entries.filter((entry) => entry.renew);
-      chartData.push({
-        year,
-        renew: renewList.length,
-        new: entries.length - renewList.length,
-      });
-    });
-
-    return chartData;
-  }
-}
-
 interface Props {
   className?: string;
-  fragment: DashboardEntry;
-  onDataClick?: (datum: ChartDataEntry) => void;
+  communityId: string;
+  onDataClick?: (datum: GQL.MemberCountStat) => void;
 }
 
 export const MemberCountChart: React.FC<Props> = ({
   className,
-  fragment,
+  communityId,
   onDataClick,
 }) => {
-  const entry = getFragment(MemberCountFragment, fragment);
+  const result = useQuery(MemberCountStatQuery, {
+    variables: { id: communityId },
+  });
+  useGraphqlErrorHandler(result);
 
   const chartData = React.useMemo(() => {
-    const chartHelper = new ChartDataHelper(entry);
-    const { propertyStat } = entry.communityStat;
-    propertyStat.forEach(({ year, ...stat }) => {
-      chartHelper.getYear(year).push(stat);
-    });
-    return chartHelper.getChartData();
-  }, [entry]);
+    if (!result.data) {
+      return [];
+    }
+    const { memberCountStat } = result.data.communityFromId.communityStat;
+    return memberCountStat;
+  }, [result.data]);
 
   return (
     <Card className={clsx(className)}>
@@ -101,21 +57,23 @@ export const MemberCountChart: React.FC<Props> = ({
         </div>
       </CardHeader>
       <CardBody>
-        <BarChart
-          className="h-[400px]"
-          data={chartData}
-          onDataClick={onDataClick}
-          keys={['renew', 'new']}
-          indexBy="year"
-          axisBottom={{
-            legend: 'Year',
-            // Only show even number year on x-axis
-            format: (v) => (v % 2 ? '' : v),
-          }}
-          axisLeft={{
-            legend: 'Member Count',
-          }}
-        />
+        <Skeleton className="rounded-lg" isLoaded={!result.loading}>
+          <BarChart
+            className="h-[400px]"
+            data={chartData}
+            onDataClick={onDataClick}
+            keys={['renew', 'new']}
+            indexBy="year"
+            axisBottom={{
+              legend: 'Year',
+              // Only show even number year on x-axis
+              format: (v) => (v % 2 ? '' : v),
+            }}
+            axisLeft={{
+              legend: 'Member Count',
+            }}
+          />
+        </Skeleton>
       </CardBody>
     </Card>
   );

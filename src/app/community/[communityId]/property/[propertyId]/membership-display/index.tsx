@@ -1,4 +1,5 @@
 import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
+import { ScrollShadow } from '@nextui-org/scroll-shadow';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
@@ -60,7 +61,9 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
           <RegisteredEventList membership={membership} />
           <Divider className="my-2" />
           <p className="font-light">Notes:</p>
-          <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
+          <ScrollShadow className="h-28">
+            <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
+          </ScrollShadow>
         </CardBody>
       </Card>
     </div>
