@@ -6,12 +6,6 @@ import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { type DashboardEntry } from './_type';
 
-interface ChartDataEntry {
-  id: string;
-  label: string;
-  value: number;
-}
-
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
     communityStat {
@@ -23,6 +17,12 @@ const MembershipSourceFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+
+interface ChartDataEntry {
+  id: string;
+  label: string;
+  value: number;
+}
 
 class ChartDataHelper {
   private eventStat: Pick<GQL.EventStat, 'eventName' | 'new' | 'renew'>[];

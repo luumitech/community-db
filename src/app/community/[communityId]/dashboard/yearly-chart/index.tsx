@@ -7,9 +7,12 @@ import { EventParticipation } from './event-participation';
 import { MembershipSource } from './membership-source';
 
 const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
-  query dashboardYearlyChart($id: String!, $year: Int) {
+  query dashboardYearlyChart($id: String!, $year: Int!) {
     communityFromId(id: $id) {
       id
+      communityStat {
+        id
+      }
       ...Dashboard_EventParticipation
       ...Dashboard_MembershipSource
     }

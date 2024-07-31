@@ -1,6 +1,7 @@
 import { Property, Role, SupportedSelectItem } from '@prisma/client';
 import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
+import hash from 'object-hash';
 import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
@@ -34,6 +35,11 @@ interface MemberCountStat {
    * Number of households who joined this year as new member
    */
   new: number;
+  /**
+   * Number of households who were member last year, but did
+   * not renew this year
+   */
+  noRenewal: number;
 }
 
 /**
@@ -59,31 +65,14 @@ interface EventStat {
 }
 
 /**
- * Statistic for one address
- */
-interface PropertyStat {
-  /**
-   * membership year associated to this entry
-   */
-  year: number;
-  /**
-   * event name where this address pays membership
-   */
-  joinEvent: string;
-  /**
-   * Other events this address participated in
-   */
-  otherEvents: string[];
-  /**
-   * Was this address also a member last year?
-   */
-  renew: boolean;
-}
-
-/**
  * Statistic for the community
  */
 interface CommunityStat {
+  /**
+   * unique id representing membership information for all properties
+   * within this community
+   */
+  id: string;
   /**
    * Minimum year represented in membership information
    */
@@ -102,25 +91,6 @@ interface CommunityStat {
   eventList: SupportedSelectItem[];
 }
 
-const propertyStatRef = builder
-  .objectRef<PropertyStat>('PropertyStat')
-  .implement({
-    fields: (t) => ({
-      year: t.exposeInt('year', {
-        description: 'membership year associated to this entry',
-      }),
-      joinEvent: t.exposeString('joinEvent', {
-        description: 'event name where this address pays membership',
-      }),
-      otherEvents: t.exposeStringList('otherEvents', {
-        description: 'other events this address participated in',
-      }),
-      renew: t.exposeBoolean('renew', {
-        description: 'was this address also a member last year?',
-      }),
-    }),
-  });
-
 const memberCountStatRef = builder
   .objectRef<MemberCountStat>('MemberCountStat')
   .implement({
@@ -129,10 +99,15 @@ const memberCountStatRef = builder
         description: 'membership year associated to this entry',
       }),
       renew: t.exposeInt('renew', {
-        description: 'number of households who renewed this year',
+        description:
+          'member count who were member last year and renewed this year',
       }),
       new: t.exposeInt('new', {
-        description: 'number of households who joined this year as new member',
+        description: 'member count who joined this year as new member',
+      }),
+      noRenewal: t.exposeInt('noRenewal', {
+        description:
+          'member count who were member last year but did not renew this year',
       }),
     }),
   });
@@ -158,6 +133,7 @@ const communityStatRef = builder
   .objectRef<CommunityStat>('CommunityStat')
   .implement({
     fields: (t) => ({
+      id: t.exposeID('id'),
       minYear: t.exposeInt('minYear', {
         description: 'Minimum year represented in membership information',
       }),
@@ -173,23 +149,25 @@ const communityStatRef = builder
           R.range(minYear, maxYear + 1)
             .reverse()
             .forEach((year) => {
-              map.set(year, { year, renew: 0, new: 0 });
+              map.set(year, { year, renew: 0, new: 0, noRenewal: 0 });
             });
           propertyList.forEach(({ membershipList }) => {
             membershipList.forEach(({ year, isMember }, idx) => {
-              if (isMember) {
-                const mapEntry = map.get(year);
-                if (!mapEntry) {
-                  throw new GraphQLError(
-                    `year ${year} in propertyStat entry fell outside min/maxYear`
-                  );
-                }
-                const renew = !!membershipList[idx + 1]?.isMember;
-                if (renew) {
+              const mapEntry = map.get(year);
+              if (!mapEntry) {
+                throw new GraphQLError(
+                  `year ${year} in propertyStat entry fell outside min/maxYear`
+                );
+              }
+              const isMemberLastYear = !!membershipList[idx + 1]?.isMember;
+              if (isMemberLastYear) {
+                if (isMember) {
                   mapEntry.renew++;
                 } else {
-                  mapEntry.new++;
+                  mapEntry.noRenewal++;
                 }
+              } else if (isMember) {
+                mapEntry.new++;
               }
             });
           });
@@ -199,15 +177,21 @@ const communityStatRef = builder
       eventStat: t.field({
         description: 'Event statistics for a given year',
         args: {
-          year: t.arg.int(),
+          year: t.arg.int({
+            required: true,
+            description: 'year to retrieve statistics for',
+          }),
+          showHidden: t.arg.boolean({
+            description: 'return events that have been removed by user',
+          }),
         },
         type: [eventStatRef],
         resolve: (parent, args, ctx) => {
           const { propertyList, eventList } = parent;
-          const { year } = args;
+          const { year, showHidden } = args;
           const map = new Map<string, EventStat>();
           eventList.forEach(({ name, hidden }) => {
-            if (!hidden) {
+            if (!!showHidden || !hidden) {
               map.set(name, { eventName: name, new: 0, renew: 0, existing: 0 });
             }
           });
@@ -406,7 +390,9 @@ builder.prismaObject('Community', {
             maxYear = Math.max(maxYear, entry.year);
           });
         });
+
         return {
+          id: hash(propertyList),
           minYear: isFinite(minYear) ? minYear : 0,
           maxYear: isFinite(maxYear) ? maxYear : 0,
           eventList: parent.eventList,

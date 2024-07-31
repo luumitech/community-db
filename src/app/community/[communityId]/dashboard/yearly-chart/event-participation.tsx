@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader, Skeleton } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
 import { type DashboardEntry } from './_type';
 
@@ -17,6 +18,30 @@ const EventFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+
+interface ChartDataEntry {
+  eventName: string;
+  new: number;
+  renewed: number;
+  existing: number;
+}
+
+class ChartDataHelper {
+  constructor(private stat: GQL.EventStat[]) {}
+
+  getChartData() {
+    const chartData: Readonly<ChartDataEntry>[] = [];
+    this.stat.forEach((entry) => {
+      chartData.push({
+        eventName: entry.eventName,
+        new: entry.new,
+        renewed: entry.renew,
+        existing: entry.existing,
+      });
+    });
+    return chartData;
+  }
+}
 
 interface Props {
   className?: string;
@@ -34,7 +59,12 @@ export const EventParticipation: React.FC<Props> = ({
   const entry = getFragment(EventFragment, fragment);
 
   const chartData = React.useMemo(() => {
-    return entry?.communityStat.eventStat ?? [];
+    const eventStat = entry?.communityStat.eventStat;
+    if (!eventStat) {
+      return [];
+    }
+    const chartHelper = new ChartDataHelper(eventStat);
+    return chartHelper.getChartData();
   }, [entry]);
 
   return (
@@ -49,7 +79,7 @@ export const EventParticipation: React.FC<Props> = ({
           <BarChart
             className="h-[400px]"
             data={chartData}
-            keys={['renew', 'new', 'existing']}
+            keys={['existing', 'renewed', 'new']}
             indexBy="eventName"
             margin={{
               bottom: 100,

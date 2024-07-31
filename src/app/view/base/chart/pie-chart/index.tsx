@@ -1,6 +1,7 @@
 import { ResponsivePie, type MayHaveLabel, type PieSvgProps } from '@nivo/pie';
 import clsx from 'clsx';
 import React from 'react';
+import { COLOR_SCHEME } from '../item-color';
 import { useNivoTheme } from '../theme';
 
 export interface PieChartProps<T extends MayHaveLabel>
@@ -28,7 +29,7 @@ export function PieChart<T extends MayHaveLabel>({
       <ResponsivePie
         margin={margin}
         theme={theme}
-        colors={{ scheme: 'pastel1' }}
+        colors={{ scheme: COLOR_SCHEME }}
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}
