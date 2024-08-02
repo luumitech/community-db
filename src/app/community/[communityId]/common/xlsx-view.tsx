@@ -5,8 +5,19 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import {
+  Range,
+  defaultRangeExtractor,
+  useVirtualizer,
+} from '@tanstack/react-virtual';
+import clsx from 'clsx';
 import React from 'react';
+
+/**
+ * Classes to be applied to sticky column
+ * Since we want to make first column sticky to the left
+ */
+const pinningClass = 'sticky left-0 bg-background';
 
 interface Props<TData> {
   data: TData[];
@@ -36,6 +47,12 @@ export function XlsxView<T>({ data, columns }: Props<T>) {
     getScrollElement: () => tableContainerRef.current,
     horizontal: true,
     overscan: 3, //how many columns to render on each side off screen each way (adjust this for performance)
+    rangeExtractor: React.useCallback((range: Range) => {
+      const normalRange = defaultRangeExtractor(range);
+      // Freeze first column (makes it always visible)
+      const set = new Set([0, ...normalRange]);
+      return [...set];
+    }, []),
   });
 
   /**
@@ -62,7 +79,11 @@ export function XlsxView<T>({ data, columns }: Props<T>) {
   let virtualPaddingRight: number | undefined;
 
   if (columnVirtualizer && virtualColumns?.length) {
-    virtualPaddingLeft = virtualColumns[0]?.start ?? 0;
+    virtualPaddingLeft =
+      (virtualColumns[1]?.start ?? 0) - (virtualColumns[0]?.start ?? 0) >
+      visibleColumns[0].getSize()
+        ? virtualColumns[1]?.start ?? 0
+        : 0;
     virtualPaddingRight =
       columnVirtualizer.getTotalSize() -
       (virtualColumns[virtualColumns.length - 1]?.end ?? 0);
@@ -83,7 +104,7 @@ export function XlsxView<T>({ data, columns }: Props<T>) {
                 return (
                   <th
                     key={header.id}
-                    className="flex"
+                    className={clsx('flex', vc.index === 0 && pinningClass)}
                     style={{ width: header.getSize() }}
                   >
                     <div>
@@ -132,7 +153,10 @@ export function XlsxView<T>({ data, columns }: Props<T>) {
                   return (
                     <td
                       key={cell.id}
-                      className="truncate whitespace-break-spaces"
+                      className={clsx(
+                        'truncate whitespace-break-spaces',
+                        vc.index === 0 && pinningClass
+                      )}
                       style={{ width: cell.column.getSize() }}
                     >
                       {flexRender(
