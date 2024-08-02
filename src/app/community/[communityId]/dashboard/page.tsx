@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
+import { GenerateEmailList } from './generate-email-list';
 import { MemberCountChart } from './member-count-chart';
-import { MissingRenewal } from './missing-renewal';
 import { YearlyChart } from './yearly-chart';
 
 interface Params {
@@ -25,9 +25,16 @@ export default function Dashboard({ params }: RouteArgs) {
         onYearSelect={setSelectedYear}
       />
       {selectedYear && (
-        <YearlyChart communityId={communityId} year={selectedYear} />
+        <>
+          <YearlyChart communityId={communityId} year={selectedYear} />
+          <GenerateEmailList
+            // occupy entire row
+            className="col-span-full"
+            communityId={communityId}
+            year={selectedYear}
+          />
+        </>
       )}
-      <MissingRenewal className="col-span-full" />
     </div>
   );
 }

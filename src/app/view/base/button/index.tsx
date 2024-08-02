@@ -1,10 +1,13 @@
-import { ButtonProps, Button as NextUIButton } from '@nextui-org/react';
+import {
+  Button as NextUIButton,
+  ButtonProps as NextUIButtonProps,
+} from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
 
-interface Props extends ButtonProps {
+export interface ButtonProps extends NextUIButtonProps {
   /**
    * Pop up a modal dialog to serve as additional confirmation
    * before calling the onPress action
@@ -13,9 +16,9 @@ interface Props extends ButtonProps {
   confirmationArg?: ConfirmationModalArg;
 }
 
-type OnPressFn = NonNullable<ButtonProps['onPress']>;
+type OnPressFn = NonNullable<NextUIButtonProps['onPress']>;
 
-export const Button = React.forwardRef<HTMLButtonElement, Props>(
+export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
   ({ confirmation, confirmationArg, onPress, ...props }, ref) => {
     const buttonRef = useForwardRef<HTMLButtonElement>(ref);
     const { confirmationModal } = useAppContext();

@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { Property, Role, SupportedSelectItem } from '@prisma/client';
 import { EJSON } from 'bson';
 import { GraphQLError } from 'graphql';
@@ -84,7 +85,7 @@ interface CommunityStat {
   /**
    * List of all properties within this community
    */
-  propertyList: Pick<Property, 'membershipList'>[];
+  propertyList: Pick<Property, 'id' | 'membershipList'>[];
   /**
    * List of all events
    */
@@ -227,6 +228,85 @@ const communityStatRef = builder
             });
           });
           return Array.from(map, ([, mapEntry]) => mapEntry);
+        },
+      }),
+      noRenewalPropertyList: t.field({
+        description:
+          'Properties that did not renew membership in the current year',
+        args: {
+          year: t.arg.int({
+            required: true,
+            description: 'membership year of interest',
+          }),
+        },
+        type: [propertyRef],
+        resolve: (parent, args, ctx) => {
+          const { propertyList } = parent;
+          const propertyIdList = propertyList
+            .map(({ id, membershipList }) => {
+              const isMemberCurrentYear = !!membershipList.find(
+                ({ year }) => year === args.year
+              )?.isMember;
+              const isMemberPrevYear = !!membershipList.find(
+                ({ year }) => year === args.year - 1
+              )?.isMember;
+              if (isMemberPrevYear && !isMemberCurrentYear) {
+                return id;
+              }
+              return null;
+            })
+            .filter((id): id is string => id != null);
+          return prisma.property.findMany({
+            where: { id: { in: propertyIdList } },
+          });
+        },
+      }),
+      nonMemberPropertyList: t.field({
+        description: 'Properties that did not join membership this year',
+        args: {
+          year: t.arg.int({
+            required: true,
+            description: 'membership year of interest',
+          }),
+        },
+        type: [propertyRef],
+        resolve: (parent, args, ctx) => {
+          const { propertyList } = parent;
+          const propertyIdList = propertyList
+            .map(({ id, membershipList }) => {
+              const isMemberCurrentYear = !!membershipList.find(
+                ({ year }) => year === args.year
+              )?.isMember;
+              return isMemberCurrentYear ? null : id;
+            })
+            .filter((id): id is string => id != null);
+          return prisma.property.findMany({
+            where: { id: { in: propertyIdList } },
+          });
+        },
+      }),
+      memberPropertyList: t.field({
+        description: 'Properties that joined membership this year',
+        args: {
+          year: t.arg.int({
+            required: true,
+            description: 'membership year of interest',
+          }),
+        },
+        type: [propertyRef],
+        resolve: (parent, args, ctx) => {
+          const { propertyList } = parent;
+          const propertyIdList = propertyList
+            .map(({ id, membershipList }) => {
+              const isMemberCurrentYear = !!membershipList.find(
+                ({ year }) => year === args.year
+              )?.isMember;
+              return isMemberCurrentYear ? id : null;
+            })
+            .filter((id): id is string => id != null);
+          return prisma.property.findMany({
+            where: { id: { in: propertyIdList } },
+          });
         },
       }),
     }),
@@ -378,7 +458,7 @@ builder.prismaObject('Community', {
       resolve: async (parent, args, ctx) => {
         const propertyList = await prisma.property.findMany({
           where: { communityId: parent.id },
-          select: { membershipList: true },
+          select: { id: true, membershipList: true },
         });
         let minYear = Infinity;
         let maxYear = -Infinity;
