@@ -7,17 +7,9 @@ import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 function generateWorkbook() {
   // const workbook = XLSX.readFile(
-  //   path.join(
-  //     __dirname,
-  //     '..',
-  //     'src',
-  //     'app',
-  //     'lib',
-  //     'lcra-community',
-  //     '__tests__',
-  //     'lcra-db.xlsx'
-  //   )
+  //   path.join(process.cwd(), '__fixtures__', 'lcra-db.xlsx')
   // );
+  // return workbook;
 
   // Randomly create a workbook containing address with membership info
   const seedJson = seedCommunityData(100);
