@@ -7,6 +7,7 @@ import {
 import { useMeasure } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import React from 'react';
+import { COLOR_SCHEME } from '../item-color';
 import { useNivoTheme } from '../theme';
 
 export interface BarChartProps<T extends BarDatum>
@@ -75,7 +76,7 @@ export function BarChart<T extends BarDatum>({
         padding={0.3}
         valueScale={{ type: 'linear' }}
         indexScale={{ type: 'band', round: true }}
-        colors={{ scheme: 'pastel1' }}
+        colors={{ scheme: COLOR_SCHEME }}
         borderColor={{
           from: 'color',
           modifiers: [['darker', 1.6]],

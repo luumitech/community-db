@@ -41,8 +41,9 @@ export const HiddenList: React.FC<Props> = ({
         ))}
       </ul>
       <p className="text-sm mt-4">
-        NOTE: Removed items will be removed when they are no longer being
-        referenced within the database
+        NOTE: Removed payment methods will not be shown in payment selection
+        list. The removed methods will remain in the database until they are no
+        longer being referenced.
       </p>
     </div>
   );

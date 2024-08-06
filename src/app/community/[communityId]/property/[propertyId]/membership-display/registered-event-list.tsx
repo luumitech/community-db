@@ -22,15 +22,11 @@ export const RegisteredEventList: React.FC<Props> = ({
           variant="flat"
           radius="md"
           color={isMember ? 'success' : 'secondary'}
-          endContent={
-            isMember ? (
-              <Icon icon="thumb-up" size={18} />
-            ) : (
-              <Icon icon="thumb-down" size={18} />
-            )
-          }
         >
-          {isMember ? 'member' : 'non-member'}
+          <div className="flex items-center gap-2">
+            {isMember ? 'member' : 'non-member'}
+            <Icon icon={isMember ? 'thumb-up' : 'thumb-down'} size={16} />
+          </div>
         </Chip>
         {eventAttendedList?.map((entry) => (
           <Chip key={entry.eventName} variant="faded" radius="sm">

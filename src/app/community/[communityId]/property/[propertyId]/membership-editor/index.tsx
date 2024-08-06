@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { Button } from '@nextui-org/react';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
@@ -23,8 +24,13 @@ interface Props {
 }
 
 export const MembershipEditor: React.FC<Props> = ({ className, fragment }) => {
+  const { communityUi } = useAppContext();
+  const { yearSelected } = communityUi;
   const [updateProperty] = useMutation(PropertyMutation);
-  const { formMethods, disclosure } = useHookFormWithDisclosure(fragment);
+  const { formMethods, disclosure } = useHookFormWithDisclosure(
+    fragment,
+    yearSelected
+  );
   const { formState } = formMethods;
   const onSave = async (input: InputData) => {
     if (!formState.isDirty) {

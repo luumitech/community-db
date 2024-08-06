@@ -36,6 +36,7 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
           label="Import Method"
           items={importMethodSelectionList}
           placeholder="Select an import method"
+          disallowEmptySelection
           errorMessage={errors.method?.message}
           isInvalid={!!errors.method?.message}
           {...register('method')}

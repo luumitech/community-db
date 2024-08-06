@@ -8,6 +8,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
 import { insertIf } from '~/lib/insert-if';
 import { toast } from '~/view/base/toastify';
+import { useCommunityUi, type UseCommunityUiReturn } from './community-ui';
 
 const CommunityLayoutQuery = graphql(/* GraphQL */ `
   query communityLayout($communityId: String!) {
@@ -48,6 +49,11 @@ export type CommunityState = Readonly<{
    * community name
    */
   communityName?: string;
+  /**
+   * UI states like:
+   * - property search bar text
+   */
+  communityUi: UseCommunityUiReturn;
   /**
    * access role items
    */
@@ -151,7 +157,14 @@ export function useCommunityContext() {
   useGraphqlErrorHandler(result, {
     onError: communityLayoutOnError,
   });
+  const communityUi = useCommunityUi();
+
   const community = result.data?.communityFromId;
+
+  React.useEffect(() => {
+    // Reset ui state whenever community changes
+    communityUi.actions.reset();
+  }, [communityUi.actions, community?.id]);
 
   const contextValue = React.useMemo<CommunityState>(() => {
     const eventList = community?.eventList ?? [];
@@ -169,6 +182,7 @@ export function useCommunityContext() {
     return {
       communityId: community?.id,
       communityName: community?.name,
+      communityUi,
       roleItems,
       visibleEventItems: eventSelect.visibleItems,
       selectEventSections: eventSelect.selectSections,
@@ -176,7 +190,7 @@ export function useCommunityContext() {
       role,
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
     };
-  }, [community]);
+  }, [community, communityUi]);
 
   return contextValue;
 }

@@ -77,7 +77,6 @@ export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: CommunityEntry): DefaultData {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const item = getFragment(ModifyFragment, fragment);
 
   return {

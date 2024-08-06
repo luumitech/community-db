@@ -2,16 +2,14 @@ import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 
 interface Props {
   className?: string;
 }
 
 export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
-  const dispatch = useDispatch();
-  const lastEventSelected = useSelector((state) => state.ui.lastEventSelected);
-  const { visibleEventItems } = useAppContext();
+  const { visibleEventItems, communityUi } = useAppContext();
+  const { lastEventSelected } = communityUi;
 
   return (
     <Select
@@ -23,8 +21,8 @@ export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
       defaultSelectedKeys={lastEventSelected ? [lastEventSelected] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
-        dispatch(
-          actions.ui.setLastEventSelected(firstKey?.toString() ?? undefined)
+        communityUi.actions.setLastEventSelected(
+          firstKey?.toString() ?? undefined
         );
       }}
     >

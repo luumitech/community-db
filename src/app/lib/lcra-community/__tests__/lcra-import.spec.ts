@@ -1,46 +1,15 @@
-import { Prisma } from '@prisma/client';
 import path from 'path';
-import * as XLSX from 'xlsx';
 import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
-import { importLcraDB } from '~/lib/lcra-community/import';
-import prisma from '~/lib/prisma';
 
 describe('import community xlsx', () => {
   const testUtil = new TestUtil();
 
   beforeAll(async () => {
     await testUtil.initialize();
-
-    const workbook = XLSX.readFile(path.join(__dirname, 'lcra-db.xlsx'));
-    const { propertyList, ...others } = importLcraDB(workbook);
-    const communitySeed: Prisma.CommunityCreateInput[] = [
-      {
-        name: 'Test Community',
-        ...others,
-        propertyList: {
-          create: propertyList,
-        },
-      },
-    ];
-
-    const accessSeed: Prisma.AccessCreateWithoutUserInput[] = communitySeed.map(
-      (community) => ({
-        role: 'ADMIN',
-        community: {
-          create: community,
-        },
-      })
+    await testUtil.database.seed(
+      path.join(process.cwd(), '__fixtures__', 'lcra-db.xlsx')
     );
-
-    await prisma.user.create({
-      data: {
-        email: 'jest@email.com',
-        accessList: {
-          create: accessSeed,
-        },
-      },
-    });
   });
 
   afterAll(async () => {
@@ -49,7 +18,7 @@ describe('import community xlsx', () => {
 
   test('verify property lists', async () => {
     const document = graphql(/* GraphQL */ `
-      query SampleUserCurrent {
+      query LcraImport_UserCurrent {
         userCurrent {
           email
           accessList {

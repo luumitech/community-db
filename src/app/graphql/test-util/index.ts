@@ -1,3 +1,4 @@
+import { DatabaseUtil } from './datatbase-util';
 import { GraphQLUtil } from './graphql-util';
 
 /**
@@ -6,9 +7,11 @@ import { GraphQLUtil } from './graphql-util';
  */
 export class TestUtil {
   public graphql: GraphQLUtil;
+  public database: DatabaseUtil;
 
   constructor() {
     this.graphql = new GraphQLUtil();
+    this.database = new DatabaseUtil();
   }
 
   /**
@@ -28,4 +31,6 @@ export class TestUtil {
    * to terminate the mongoose connection
    */
   async terminate() {}
+
+  async seedDatabase(fixturePath: string) {}
 }
