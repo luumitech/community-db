@@ -28,7 +28,9 @@ export const SelectTheme: React.FC<Props> = ({ className }) => {
     [setTheme]
   );
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className={className}>

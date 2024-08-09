@@ -27,7 +27,9 @@ export const VisibleList: React.FC<Props> = ({
   const reorderList = React.useCallback(
     (evt: DragEndEvent) => {
       const { active, over } = evt;
-      if (!over) return;
+      if (!over) {
+        return;
+      }
 
       if (active.id !== over.id) {
         const activeIndex = active.data.current?.sortable?.index;

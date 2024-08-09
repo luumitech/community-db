@@ -10,7 +10,9 @@ export const useDotButton = (emblaApi: EmblaApi) => {
 
   const onDotButtonClick = React.useCallback(
     (index: number) => {
-      if (!emblaApi) return;
+      if (!emblaApi) {
+        return;
+      }
       emblaApi.scrollTo(index);
     },
     [emblaApi]
@@ -25,7 +27,9 @@ export const useDotButton = (emblaApi: EmblaApi) => {
   }, []);
 
   React.useEffect(() => {
-    if (!emblaApi) return;
+    if (!emblaApi) {
+      return;
+    }
 
     onInit(emblaApi);
     onSelect(emblaApi);

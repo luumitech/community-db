@@ -10,6 +10,7 @@ module.exports = {
     'react/self-closing-comp': ['error', { component: true, html: true }],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'prefer-const': ['error'],
+    curly: 'error',
   },
   overrides: [
     {
