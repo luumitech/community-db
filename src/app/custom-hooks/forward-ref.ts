@@ -12,7 +12,9 @@ export function useForwardRef<T>(
   const targetRef = React.useRef<T>(initialValue);
 
   React.useEffect(() => {
-    if (!ref) return;
+    if (!ref) {
+      return;
+    }
 
     if (typeof ref === 'function') {
       ref(targetRef.current);

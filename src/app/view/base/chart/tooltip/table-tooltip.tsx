@@ -10,7 +10,9 @@ interface Props {
 export const TableTooltip: React.FC<Props> = ({ className, title, rows }) => {
   const theme = useTheme();
 
-  if (!rows?.length) return null;
+  if (!rows?.length) {
+    return null;
+  }
   const numCol = Math.max(...rows.map((row) => row.length));
 
   return (

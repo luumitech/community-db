@@ -12,7 +12,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
 import { getItemColor } from '~/view/base/chart/item-color';
-import { TableTooltip } from '~/view/base/chart/tooltip';
+import { TableTooltip, useTooltip } from '~/view/base/chart/tooltip';
 import { type MemberCountEntry } from './_type';
 
 const MemberCountFragment = graphql(/* GraphQL */ `
@@ -77,35 +77,75 @@ function noRenewalLine(helper: ChartDataHelper) {
     bars,
     xScale,
     yScale,
+    innerHeight,
   }) => {
-    const barWidth = bars.find(({ width }) => width != null)?.width ?? 0;
-    const lineCoord = helper.chartData.map((datum) => ({
-      year: datum.year,
-      x: xScale(datum.year) + barWidth / 2,
-      y: yScale(datum['no renewal']),
-    }));
+    const tip = useTooltip();
+    const CustomTooltip = React.useMemo(() => customTooltip(helper), []);
+
+    const renderTooltip = React.useCallback(
+      (evt: React.MouseEvent, datum: ChartDataEntry) => {
+        return tip.showTooltipFromEvent(<CustomTooltip data={datum} />, evt);
+      },
+      [tip, CustomTooltip]
+    );
+
+    /**
+     * Gather necessary information to plot the line graph
+     * (as well as implementing custom tooltip)
+     */
+    const chartData = React.useMemo(() => {
+      return helper.chartData.map((datum) => {
+        const bar = bars.find(
+          ({ data: { indexValue } }) => indexValue === datum.year
+        );
+        if (!bar) {
+          throw new Error(
+            'Unexpected error. Cannot find bar associated with chartData'
+          );
+        }
+        return {
+          year: datum.year,
+          lineX: xScale(datum.year) + bar.width / 2,
+          lineY: yScale(datum['no renewal']),
+          barX: xScale(datum.year),
+          barWidth: bar.width,
+          data: datum,
+        };
+      });
+    }, [bars, xScale, yScale]);
     const lineColor = helper.getDataColor('no renewal');
-    const lineGenerator = line<(typeof lineCoord)[0]>()
-      .x(({ x }) => x)
-      .y(({ y }) => y);
+    const lineGenerator = line<(typeof chartData)[0]>()
+      .x(({ lineX }) => lineX)
+      .y(({ lineY }) => lineY);
 
     return (
       <>
         <path
-          d={lineGenerator(lineCoord) ?? undefined}
+          d={lineGenerator(chartData) ?? undefined}
           className="fill-none"
           stroke={lineColor}
           strokeWidth={2}
         />
-        {lineCoord.map(({ x, y, year }) => (
-          <circle
-            key={year}
-            className={clsx('fill-background')}
-            cx={x}
-            cy={y}
-            r={4}
-            stroke={lineColor}
-          />
+        {chartData.map((datum) => (
+          <React.Fragment key={datum.year}>
+            <circle
+              className={clsx('fill-background')}
+              cx={datum.lineX}
+              cy={datum.lineY}
+              r={4}
+              stroke={lineColor}
+            />
+            <rect
+              className={clsx('fill-transparent')}
+              x={datum.barX}
+              y={0}
+              height={innerHeight}
+              width={datum.barWidth}
+              onMouseEnter={(evt) => renderTooltip(evt, datum.data)}
+              onMouseMove={(evt) => renderTooltip(evt, datum.data)}
+              onMouseLeave={tip.hideTooltip}
+            />
+          </React.Fragment>
         ))}
       </>
     );
@@ -163,7 +203,8 @@ function customLegend(helper: ChartDataHelper) {
  * Custom tool tip when hovering over bars
  */
 function customTooltip(helper: ChartDataHelper) {
-  const Tooltip: React.FC<BarTooltipProps<ChartDataEntry>> = ({ data }) => {
+  // const Tooltip: React.FC<BarTooltipProps<ChartDataEntry>> = ({ data }) => {
+  const Tooltip: React.FC<{ data: ChartDataEntry }> = ({ data }) => {
     const dataValue = React.useCallback(
       (labelKey: keyof ChartDataEntry) => {
         const entry = helper.chartData.find(({ year }) => year === data.year);
@@ -238,10 +279,6 @@ export const MemberCountBarChart: React.FC<Props> = ({
     () => noRenewalLine(chartHelper),
     [chartHelper]
   );
-  const CustomTooltip = React.useMemo(
-    () => customTooltip(chartHelper),
-    [chartHelper]
-  );
   const barLegend = React.useMemo(
     () => customLegend(chartHelper),
     [chartHelper]
@@ -272,7 +309,10 @@ export const MemberCountBarChart: React.FC<Props> = ({
       axisLeft={{
         legend: 'Member Count',
       }}
-      tooltip={CustomTooltip}
+      // These tooltip would only show if you hover over the bar
+      // We want to show tooltip as long as we are hovering over the column
+      // containing the bar, so we implement the tooltip in NoRenewalLine
+      // tooltip={CustomTooltip}
       legends={[barLegend]}
       layers={['grid', 'axes', 'bars', NoRenewalLine, 'markers', 'legends']}
     />
