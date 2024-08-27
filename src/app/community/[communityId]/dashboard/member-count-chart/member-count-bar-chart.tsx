@@ -73,7 +73,10 @@ const CHART_KEYS = ['renewed', 'new'];
  *
  * For members who have not renewed this year
  */
-function noRenewalLine(helper: ChartDataHelper) {
+function noRenewalLine(
+  helper: ChartDataHelper,
+  onYearSelect?: (year: number) => void
+) {
   const Line: React.FC<BarCustomLayerProps<ChartDataEntry>> = ({
     bars,
     xScale,
@@ -145,6 +148,7 @@ function noRenewalLine(helper: ChartDataHelper) {
               onMouseEnter={(evt) => renderTooltip(evt, datum.data)}
               onMouseMove={(evt) => renderTooltip(evt, datum.data)}
               onMouseLeave={tip.hideTooltip}
+              onClick={() => onYearSelect?.(datum.year)}
             />
           </React.Fragment>
         ))}
@@ -271,8 +275,8 @@ export const MemberCountBarChart: React.FC<Props> = ({
   }, [communityStat, yearRange]);
 
   const NoRenewalLine = React.useMemo(
-    () => noRenewalLine(chartHelper),
-    [chartHelper]
+    () => noRenewalLine(chartHelper, onYearSelect),
+    [chartHelper, onYearSelect]
   );
   const barLegend = React.useMemo(
     () => customLegend(chartHelper),
@@ -286,7 +290,8 @@ export const MemberCountBarChart: React.FC<Props> = ({
       className={clsx(className, 'h-[400px]')}
       data={chartData}
       colors={(datum) => chartHelper.getDataColor(datum.id)}
-      onDataClick={(data) => onYearSelect?.(data.year as number)}
+      // This is being hidden by the bars rendered by NoRenewalLine
+      // onDataClick={(data) => onYearSelect?.(data.year as number)}
       keys={CHART_KEYS}
       indexBy="year"
       valueFormat={(v) => v.toString()}

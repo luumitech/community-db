@@ -13,6 +13,7 @@ const MemberPropertyListQuery = graphql(/* GraphQL */ `
           id
           occupantList {
             email
+            optOut
           }
         }
       }

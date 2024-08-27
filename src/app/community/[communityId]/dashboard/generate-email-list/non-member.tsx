@@ -13,6 +13,7 @@ const NonMemberPropertyListQuery = graphql(/* GraphQL */ `
           id
           occupantList {
             email
+            optOut
           }
         }
       }
