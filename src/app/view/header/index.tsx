@@ -16,7 +16,6 @@ import Image from 'next/image';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
-import logoImg from './community-db-logo.png';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
@@ -62,7 +61,7 @@ export const Header: React.FC<Props> = ({}) => {
           <NavbarBrand className="flex gap-2">
             <Image
               className="object-fit rounded-md"
-              src={logoImg}
+              src="/image/community-db-logo.png"
               alt="LummiTech Logo"
               priority
               width={36}

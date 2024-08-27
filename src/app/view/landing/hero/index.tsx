@@ -6,7 +6,7 @@ import Image from 'next/image';
 import React from 'react';
 import { appTitle } from '~/lib/env-var';
 import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
-import heroImg from './community-with-people-2.jpeg';
+import heroImg from './community-with-people.png';
 
 interface Props {
   className?: string;
@@ -26,10 +26,19 @@ export const Hero: React.FC<Props> = ({ className }) => {
       />
       <div
         className={clsx(
-          'absolute bg-opacity-50 bg-background rounded-xl m-5 p-5',
-          'text-center text-wrap space-y-4'
+          'absolute bg-opacity-80 bg-background rounded-xl m-5 p-5',
+          'flex flex-col items-center text-center text-wrap space-y-4'
         )}
       >
+        <Image
+          // Makes sure min width/height can contain the hero text
+          className="object-fit rounded-md"
+          src="/image/community-db-logo.png"
+          alt="Community DB Logo"
+          priority
+          width={72}
+          height={72}
+        />
         <div className="text-5xl font-extrabold">{appTitle}</div>
         <div className="text-2xl">
           A safe and secure way to manage your community membership information

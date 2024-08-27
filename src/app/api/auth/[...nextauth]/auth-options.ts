@@ -21,4 +21,10 @@ export const authOptions: AuthOptions = {
       return session;
     },
   },
+  // pages: {
+  //   signIn: '/sign-in',
+  // },
+  theme: {
+    logo: '/image/community-db-logo.png',
+  },
 };

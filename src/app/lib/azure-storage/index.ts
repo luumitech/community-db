@@ -10,9 +10,9 @@ export { BlobContainer, BlobService };
  * In Azure portal, see 'Lifecycle management' for the blob service to
  * setup appropriate rules
  */
-export async function getBlobContainerTempCache() {
+export async function getBlobContainer() {
   const service = new BlobService();
-  const container = await service.getContainer('cdb-temp-cache', {
+  const container = await service.getContainer('community-db', {
     createIfMissing: true,
   });
   return container;

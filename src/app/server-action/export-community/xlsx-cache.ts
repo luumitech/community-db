@@ -1,4 +1,4 @@
-import { BlobContainer, getBlobContainerTempCache } from '~/lib/azure-storage';
+import { BlobContainer, getBlobContainer } from '~/lib/azure-storage';
 import { GenMD5 } from '~/lib/cache/gen-md5';
 import {
   ExportHelper,
@@ -29,7 +29,7 @@ export class XlsxCache extends GenMD5 {
     private community: Community
   ) {
     super();
-    this.rootDir = `community/${community.id}`;
+    this.rootDir = `temp-cache/community/${community.id}`;
     this.md5 = GenMD5.genMD5(community);
     this.xlsxDir = `${this.rootDir}/xlsx`;
 
@@ -38,7 +38,7 @@ export class XlsxCache extends GenMD5 {
   }
 
   static async fromForm(form: InputData) {
-    const container = await getBlobContainerTempCache();
+    const container = await getBlobContainer();
     const community = await communityData(
       { email: form.email },
       form.communityId
