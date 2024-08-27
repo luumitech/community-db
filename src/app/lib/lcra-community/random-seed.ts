@@ -4,32 +4,35 @@ import { faker } from '@faker-js/faker';
  * Generate Community data in "LCRA" format
  *
  * Basic fields:
- *  - Address: '123 Adventure Drive',
- *  - StreetNo: 123,
- *  - StreetName: 'Adventure Drive',
- *  - PostalCode: 'A0A0A0',
- *  - LastModDate: '2023-02-23T03:19:09+00:00',
- *  - LastModBy: 'testuser',
- *  - Notes: '2nd entry',
+ *
+ * - Address: '123 Adventure Drive',
+ * - StreetNo: 123,
+ * - StreetName: 'Adventure Drive',
+ * - PostalCode: 'A0A0A0',
+ * - LastModDate: '2023-02-23T03:19:09+00:00',
+ * - LastModBy: 'testuser',
+ * - Notes: '2nd entry',
  *
  * Each occupant has fields:
- *  - FirstName1: 'Kevin',
- *  - LastName1: 'Smith',
- *  - EMail1: 'ksmith@email.com',
- *  - EMail1Facebook: 0,
- *  - EMail1OptOut: 0,
- *  - WorkPhone1: '123-456-7777',
- *  - HomePhone1: '123-456-7777',
- *  - CellPhone1: '123-456-7777',
  *
- *  Each membership year has fields:
- *  - Y23: 1,
- *  - 'Y23-event': 'Summer Festival;Corn Roast',
- *  - 'Y23-date': '2023-06-12T12:07:25-04:00;2023-08-20T17:07:25-04:00',
- *  - 'Y23-payment': 'cash',
- *  - 'Y23-deposited': 1,
+ * - FirstName1: 'Kevin',
+ * - LastName1: 'Smith',
+ * - EMail1: 'ksmith@email.com',
+ * - EMail1Facebook: 0,
+ * - EMail1OptOut: 0,
+ * - WorkPhone1: '123-456-7777',
+ * - HomePhone1: '123-456-7777',
+ * - CellPhone1: '123-456-7777',
  *
- * @param numEntries number of address to generate
+ * Each membership year has fields:
+ *
+ * - Y23: 1,
+ * - 'Y23-event': 'Summer Festival;Corn Roast',
+ * - 'Y23-date': '2023-06-12T12:07:25-04:00;2023-08-20T17:07:25-04:00',
+ * - 'Y23-payment': 'cash',
+ * - 'Y23-deposited': 1,
+ *
+ * @param numEntries Number of address to generate
  * @returns
  */
 export function seedCommunityData(numEntries: number) {
@@ -45,7 +48,8 @@ export function seedCommunityData(numEntries: number) {
 
 /**
  * Generate an array of random event names
- * @param count number of events to generate
+ *
+ * @param count Number of events to generate
  * @returns
  */
 function genEvent(count: number) {
@@ -65,8 +69,9 @@ function genEvent(count: number) {
 
 /**
  * Generate an array of random dates within the given year
- * @param count number of dates to generate
- * @param year year (last two digits) to generate dates in
+ *
+ * @param count Number of dates to generate
+ * @param year Year (last two digits) to generate dates in
  * @returns
  */
 function genDate(count: number, year: number) {
@@ -83,7 +88,7 @@ function genDate(count: number, year: number) {
 /**
  * Generate fields for a single membership year
  *
- * @param year two digit year (i.e. 21)
+ * @param year Two digit year (i.e. 21)
  */
 function newMembershipYear(year: number) {
   const pfx = `Y${year}`;
@@ -111,6 +116,7 @@ function newMembershipYear(year: number) {
 
 /**
  * Generate fields for a single person
+ *
  * @param num The index number for the person to be generated
  * @returns
  */
@@ -129,6 +135,7 @@ function newPerson(num: number) {
 
 /**
  * Generate fields for a single address
+ *
  * @returns
  */
 function newAddress() {

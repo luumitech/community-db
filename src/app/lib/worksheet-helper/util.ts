@@ -3,8 +3,8 @@ import { WorkSheet, utils } from 'xlsx';
 /**
  * Get the range containing data for the specified sheet.
  *
- * @param sheet sheet to get range for
- * @returns range containing data
+ * @param sheet Sheet to get range for
+ * @returns Range containing data
  */
 export function getSheetRange(sheet: WorkSheet) {
   let range;

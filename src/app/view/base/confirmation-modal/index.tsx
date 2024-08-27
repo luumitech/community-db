@@ -11,9 +11,8 @@ import { useAppContext } from '~/custom-hooks/app-context';
 interface Props {}
 
 /**
- * A confirmation modal that is supposed to be installed
- * in the AppContext and controlled by its helper hook
- * useConfirmationModal
+ * A confirmation modal that is supposed to be installed in the AppContext and
+ * controlled by its helper hook useConfirmationModal
  */
 export const ConfirmationModal: React.FC<Props> = () => {
   const { confirmationModal } = useAppContext();

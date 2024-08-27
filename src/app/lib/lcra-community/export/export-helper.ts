@@ -3,9 +3,7 @@ import * as XLSX from 'xlsx';
 import { isValidDate } from '~/lib/date-util';
 import { type Property } from './community-data';
 
-/**
- * Convert Date to xlsx cell value (ISO date string)
- */
+/** Convert Date to xlsx cell value (ISO date string) */
 function toDate(input?: Date | null) {
   if (!isValidDate(input)) {
     return '';
@@ -13,10 +11,7 @@ function toDate(input?: Date | null) {
   return input.toISOString();
 }
 
-/**
- * Convert database boolean (true/false/null) to
- * xlsx cell value (1/0/undefined)
- */
+/** Convert database boolean (true/false/null) to xlsx cell value (1/0/undefined) */
 function toBool(input?: boolean | null) {
   if (input == null) {
     return undefined;
@@ -24,9 +19,7 @@ function toBool(input?: boolean | null) {
   return input ? 1 : 0;
 }
 
-/**
- * Export community using LCRA db format
- */
+/** Export community using LCRA db format */
 export class ExportHelper {
   private maxOccupantCount = 0;
   private maxYear = 0;
@@ -99,6 +92,7 @@ export class ExportHelper {
 
   /**
    * Get community as xlsx buffer
+   *
    * @returns
    */
   public toXlsx() {
@@ -107,8 +101,8 @@ export class ExportHelper {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'membership');
     /**
-     * For option descriptions
-     * See: https://docs.sheetjs.com/docs/api/write-options
+     * For option descriptions See:
+     * https://docs.sheetjs.com/docs/api/write-options
      */
     const xlsxBuf: Buffer = XLSX.write(workbook, {
       type: 'buffer',

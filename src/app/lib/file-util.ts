@@ -1,6 +1,4 @@
-/**
- * This is for server use only
- */
+/** This is for server use only */
 import fs from 'fs';
 import path from 'path';
 import { Duplex } from 'stream';
@@ -8,7 +6,7 @@ import { Duplex } from 'stream';
 /**
  * Create directory if not already exists (can create nested directory)
  *
- * @param dir directory to create
+ * @param dir Directory to create
  */
 export function mkdir(dirname: string) {
   if (!fs.existsSync(dirname)) {
@@ -19,7 +17,7 @@ export function mkdir(dirname: string) {
 /**
  * Remove directory
  *
- * @param dir directory to remove
+ * @param dir Directory to remove
  */
 export function rmdir(dirname: string) {
   if (fs.existsSync(dirname)) {
@@ -29,8 +27,9 @@ export function rmdir(dirname: string) {
 
 /**
  * Write readable stream to a destination files
- * @param stream readable stream
- * @param destFile destination file name
+ *
+ * @param stream Readable stream
+ * @param destFile Destination file name
  */
 export async function writeStream(
   stream: NodeJS.ReadableStream,
@@ -43,11 +42,11 @@ export async function writeStream(
 }
 
 /**
- * Recurse directory in breath first search order,
- * and invoke callback for each file/directory encountered
+ * Recurse directory in breath first search order, and invoke callback for each
+ * file/directory encountered
  *
- * @param dir input directory name
- * @param cb callback to invoke for each file/directory
+ * @param dir Input directory name
+ * @param cb Callback to invoke for each file/directory
  */
 export async function listDir(
   dir: string,
@@ -67,12 +66,11 @@ export async function listDir(
 }
 
 /**
- * Convert readable stream into a string
- * NOTE: Be extra careful when using this, only use this when you KNOW
- * the size of the stream is going to be small.  Otherwise, it will blow
- * up the memory footprint.
+ * Convert readable stream into a string NOTE: Be extra careful when using this,
+ * only use this when you KNOW the size of the stream is going to be small.
+ * Otherwise, it will blow up the memory footprint.
  *
- * @param stream readable stream
+ * @param stream Readable stream
  */
 export async function streamToString(
   stream: NodeJS.ReadableStream
@@ -87,12 +85,11 @@ export async function streamToString(
 }
 
 /**
- * Convert readable stream into a node buffer
- * NOTE: Be extra careful when using this, only use this when you KNOW
- * the size of the stream is going to be small.  Otherwise, it will blow
- * up the memory footprint.
+ * Convert readable stream into a node buffer NOTE: Be extra careful when using
+ * this, only use this when you KNOW the size of the stream is going to be
+ * small. Otherwise, it will blow up the memory footprint.
  *
- * @param stream readable stream
+ * @param stream Readable stream
  */
 export async function streamToBuffer(
   stream: NodeJS.ReadableStream
@@ -109,7 +106,7 @@ export async function streamToBuffer(
 /**
  * Convert node buffer into readable stream
  *
- * @param buffer node buffer
+ * @param buffer Node buffer
  */
 export function bufferToStream(buffer: Buffer) {
   const stream = new Duplex();

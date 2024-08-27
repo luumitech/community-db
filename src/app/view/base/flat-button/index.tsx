@@ -14,13 +14,11 @@ interface Props
   className?: string;
   icon: IconProps['icon'];
   disabled?: boolean;
-  /**
-   * Tooltip description
-   */
+  /** Tooltip description */
   tooltip?: string;
   /**
-   * Pop up a modal dialog to serve as additional confirmation
-   * before calling the onPress action
+   * Pop up a modal dialog to serve as additional confirmation before calling
+   * the onPress action
    */
   confirmation?: boolean;
   confirmationArg?: ConfirmationModalArg;

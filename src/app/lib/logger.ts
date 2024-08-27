@@ -1,6 +1,4 @@
-/**
- * This is for server use only
- */
+/** This is for server use only */
 import { env } from 'next-runtime-env';
 import pino from 'pino';
 import pretty from 'pino-pretty';
@@ -22,16 +20,20 @@ function errorSerializer(err: Error) {
 }
 
 /**
- * Any logger from 'debug' level or below is controlled by the
- * 'LOG_DEBUG' environment variable.
+ * Any logger from 'debug' level or below is controlled by the 'LOG_DEBUG'
+ * environment variable.
  *
- * @param flag debug flag to check
  * @example
- *   // if the LOG_DEBUG env var contains the string:
- *   //   'mail, passport-.*'
- *   debugEnabled('mail');  // true
- *   debugEnabled('passport-init');  // true
- *   debugEnabled('flow');  // false
+ *
+ * ```js
+ * // if the LOG_DEBUG env var contains the string:
+ * //   'mail, passport-.*'
+ * debugEnabled('mail'); // true
+ * debugEnabled('passport-init'); // true
+ * debugEnabled('flow'); // false
+ * ```
+ *
+ * @param flag Debug flag to check
  */
 function debugEnabled(flag: string) {
   // Not using ~/lib/env-cfg because it also reference this file
@@ -48,9 +50,7 @@ function debugEnabled(flag: string) {
   return flagList.includes(true);
 }
 
-/**
- * Logger for server component
- */
+/** Logger for server component */
 function logger(src: string, opts: pino.LoggerOptions = {}) {
   //   Prettier stream, only used in development
   const prettyStream: pino.DestinationStream = pretty({

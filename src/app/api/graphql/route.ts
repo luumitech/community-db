@@ -5,9 +5,7 @@ import { createContext } from '~/graphql/context';
 import persistedOperations from '~/graphql/generated/persisted-documents.json';
 import { schema } from '~/graphql/schema';
 
-/**
- * Allow only persisted graphQL queries
- */
+/** Allow only persisted graphQL queries */
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const persistedQueryPlugin = usePersistedOperations({
   getPersistedOperation(sha256Hash: string) {
@@ -22,6 +20,7 @@ const yoga = createYoga<{
 }>({
   /**
    * GraphiQL is enabled only in development and served under this endpoint
+   *
    * See: https://the-guild.dev/graphql/yoga-server/docs/features/graphiql
    */
   graphqlEndpoint: '/api/graphql',
@@ -32,9 +31,7 @@ const yoga = createYoga<{
     Request: Request,
   },
   plugins: [persistedQueryPlugin],
-  /**
-   * See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking
-   */
+  /** See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking */
   // maskedErrors: false,
 });
 

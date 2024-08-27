@@ -5,15 +5,16 @@ import { getCurrentYear } from '~/lib/date-util';
 export type YearItem = ReturnType<typeof yearSelectItems>[0];
 
 /**
- * Return list of SelectItems that contains every year (increment by 1)
- * using the years in:
- *   - membershipList (in input argument)
- *   - yearToInclude (in input argument)
- *   - currentYear
+ * Return list of SelectItems that contains every year (increment by 1) using
+ * the years in:
+ *
+ * - MembershipList (in input argument)
+ * - YearToInclude (in input argument)
+ * - CurrentYear
  *
  * @param membershipList
  * @param yearToInclude
- * @returns selectItems with years in descending order
+ * @returns SelectItems with years in descending order
  */
 export function yearSelectItems(
   membershipList: Pick<GQL.Membership, 'year' | 'isMember'>[],

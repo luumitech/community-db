@@ -3,14 +3,13 @@ import * as XLSX from 'xlsx';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import prisma from '~/lib/prisma';
 
-/**
- * Database related utilities for testing purpose
- */
+/** Database related utilities for testing purpose */
 export class DatabaseUtil {
   /**
    * Seed database with excel file in `fixturePath`
-   * @param fixturePath excel workbook
-   * @returns database entries returned
+   *
+   * @param fixturePath Excel workbook
+   * @returns Database entries returned
    */
   async seed(fixturePath: string) {
     const workbook = XLSX.readFile(fixturePath);

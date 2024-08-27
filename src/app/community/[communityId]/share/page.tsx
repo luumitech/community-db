@@ -9,12 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react';
+import { Role } from '@prisma/client';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { CopyShareLink } from './copy-share-link';
 import { NewAccessButton } from './new-access-button';
+import { RoleDescription } from './role-description';
 import { useTableData } from './use-table-data';
 
 interface Params {
@@ -66,9 +68,7 @@ export default function Share({ params }: RouteArgs) {
 
   const { columns, renderCell } = useTableData(isAdmin);
 
-  /**
-   * Generate access list for all users (including self)
-   */
+  /** Generate access list for all users (including self) */
   const accessList = React.useMemo(() => {
     const others = community?.otherAccessList;
     const self = community?.access;
@@ -115,37 +115,40 @@ export default function Share({ params }: RouteArgs) {
   }, [community]);
 
   return (
-    <Table
-      aria-label="Community Access List"
-      classNames={{
-        base: ['max-h-main-height'],
-        // Don't use array here
-        // See: https://github.com/nextui-org/nextui/issues/2304
-        // replaces the removeWrapper attribute
-        // use this to keep scroll bar within table
-        wrapper: 'p-0',
-      }}
-      // removeWrapper
-      isHeaderSticky
-      topContent={topContent}
-      topContentPlacement="outside"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-    >
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.key} className={column.className}>
-            {column.label}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody
-        isLoading={loading}
-        loadingContent={<Spinner />}
-        items={accessList}
+    <>
+      <Table
+        aria-label="Community Access List"
+        classNames={{
+          base: ['max-h-main-height'],
+          // Don't use array here
+          // See: https://github.com/nextui-org/nextui/issues/2304
+          // replaces the removeWrapper attribute
+          // use this to keep scroll bar within table
+          wrapper: 'p-0',
+        }}
+        // removeWrapper
+        isHeaderSticky
+        topContent={topContent}
+        topContentPlacement="outside"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
       >
-        {renderRows()}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key} className={column.className}>
+              {column.label}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          isLoading={loading}
+          loadingContent={<Spinner />}
+          items={accessList}
+        >
+          {renderRows()}
+        </TableBody>
+      </Table>
+      <RoleDescription className="mt-3" />
+    </>
   );
 }

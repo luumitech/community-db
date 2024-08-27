@@ -7,9 +7,8 @@ export interface Property {
 }
 
 /**
- * Extract the Month/Day from UTC date and create a
- * CalendarDate object on year 2000.  So we can compare
- * two date object by distance to Jan 1, 2000
+ * Extract the Month/Day from UTC date and create a CalendarDate object on year
+ * 2000. So we can compare two date object by distance to Jan 1, 2000
  */
 function toCalendarDate(input: Date | null) {
   if (!isValidDate(input)) {
@@ -24,9 +23,9 @@ function toCalendarDate(input: Date | null) {
 }
 
 /**
- * Process property list and extract ALL event names from
- * eventAttendedList of all membership information, and
- * sort them in ascending order (base on existing event day/month info)
+ * Process property list and extract ALL event names from eventAttendedList of
+ * all membership information, and sort them in ascending order (base on
+ * existing event day/month info)
  */
 export function extractEventList(propertyList: Property[]): string[] {
   const eventMap = new Map<string, CalendarDate>();

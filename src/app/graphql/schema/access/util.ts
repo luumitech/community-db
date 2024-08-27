@@ -8,16 +8,15 @@ type CreateArgs = Omit<Prisma.AccessCreateArgs, 'data'>;
 type DataArg = Pick<Prisma.AccessCreateArgs, 'data'>;
 
 /**
- * Create Access document for a particular user
- * i.e. giving access to a community database for a given user
- * if the context user is not in the database, one will be
- * created
+ * Create Access document for a particular user i.e. giving access to a
+ * community database for a given user if the context user is not in the
+ * database, one will be created
  *
- * @param user context user
- * @param communityId community ID to give access for
- * @param role permission (default to ADMIN)
- * @param args optional args to pass into access.create
- * @returns access document
+ * @param user Context user
+ * @param communityId Community ID to give access for
+ * @param role Permission (default to ADMIN)
+ * @param args Optional args to pass into access.create
+ * @returns Access document
  */
 export async function createAccess<T extends CreateArgs>(
   communityId: string,
@@ -55,13 +54,12 @@ export async function createAccess<T extends CreateArgs>(
 }
 
 /**
- * Check access for the context user, and verify
- * if user has the correct access
+ * Check access for the context user, and verify if user has the correct access
  *
- * @param user context user
- * @param community community 'where' input
- * @param roleList list of roles to check
- * @returns access document
+ * @param user Context user
+ * @param community Community 'where' input
+ * @param roleList List of roles to check
+ * @returns Access document
  */
 export async function verifyAccess(
   user: Context['user'],
@@ -83,9 +81,7 @@ export async function verifyAccess(
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       switch (err.code) {
-        /**
-         * https://www.prisma.io/docs/orm/reference/error-reference#p2025
-         */
+        /** https://www.prisma.io/docs/orm/reference/error-reference#p2025 */
         case 'P2025':
           throw new GraphQLError(
             `Access entry for community ${JSON.stringify(community)} Not Found`,

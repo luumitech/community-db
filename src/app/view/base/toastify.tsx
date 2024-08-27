@@ -9,6 +9,7 @@ import {
 
 /**
  * Customize toast.promise to handle error condition automatically
+ *
  * @returns
  */
 async function toastPromise<
@@ -50,7 +51,9 @@ async function toastPromise<
 
 /**
  * Customize toast.error:
- * - should not automatically dismiss
+ *
+ * - Should not automatically dismiss
+ *
  * @returns
  */
 function toastError<TData = unknown>(
@@ -64,8 +67,9 @@ function toastError<TData = unknown>(
 }
 
 /**
- * customize react-toastify toast object
- * - toast.promise will display error message automatically
+ * Customize react-toastify toast object
+ *
+ * - Toast.promise will display error message automatically
  */
 export const toast = {
   ...toastify,

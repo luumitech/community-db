@@ -11,9 +11,7 @@ import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { AboutModal } from './about-modal';
 
-/**
- * Extract the first letter of each word
- */
+/** Extract the first letter of each word */
 function acronym(input?: string | null) {
   if (!input) {
     return 'n/a';

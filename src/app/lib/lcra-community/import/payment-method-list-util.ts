@@ -5,8 +5,8 @@ export interface Property {
 }
 
 /**
- * Process property list and extract ALL payment methods from
- * all membership information
+ * Process property list and extract ALL payment methods from all membership
+ * information
  */
 export function extractPaymentMethodList(propertyList: Property[]): string[] {
   const methodSet = new Set<string>();

@@ -4,8 +4,8 @@ import { getCommunityEntry } from '~/graphql/schema/community/util';
 /**
  * Get property list for a given community from database
  *
- * @param user context user performing search
- * @param communityId community shortID
+ * @param user Context user performing search
+ * @param communityId Community shortID
  * @returns
  */
 export async function communityData(
@@ -25,8 +25,6 @@ export async function communityData(
   return data;
 }
 
-/**
- * Data type returned from communityData
- */
+/** Data type returned from communityData */
 export type Community = Awaited<ReturnType<typeof communityData>>;
 export type Property = Community['propertyList'][0];

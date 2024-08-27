@@ -1,6 +1,4 @@
-/**
- * Graphql-Yoga pubsub
- */
+/** Graphql-Yoga pubsub */
 import { createPubSub } from '@graphql-yoga/subscription';
 import type { Community, Property } from '@prisma/client';
 
@@ -12,9 +10,7 @@ export enum MutationType {
 }
 
 export interface PubSubEvent {
-  /**
-   * email (AuthContext) of broadcaster
-   */
+  /** Email (AuthContext) of broadcaster */
   broadcasterId: string;
   mutationType: MutationType;
 }

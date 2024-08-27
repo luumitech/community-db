@@ -4,16 +4,14 @@ import { isValidDate } from '~/lib/date-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 export interface ImportHelperConfig {
-  /**
-   * column containing header labels (row index, 0-based)
-   */
+  /** Column containing header labels (row index, 0-based) */
   headerCol: number;
 }
 
 /**
- * These data structures defines cell values that can be mapped from
- * the input spreadsheet. (i.e each property in the data structure) should
- * correspond to exactly one column in the spreadsheet
+ * These data structures defines cell values that can be mapped from the input
+ * spreadsheet. (i.e each property in the data structure) should correspond to
+ * exactly one column in the spreadsheet
  */
 interface MProperty
   extends Omit<
@@ -40,24 +38,19 @@ interface MMembership extends Omit<Membership, 'year' | 'eventAttendedList'> {
   eventDates: string | null;
 }
 
-/**
- * Type of value being mapped (to be stored in database)
- */
+/** Type of value being mapped (to be stored in database) */
 type MappingType = 'string' | 'number' | 'date' | 'boolean';
 
 interface MappingEntry {
-  /**
-   * Contains column index (0-based) that contains the value
-   * of the spreadsheet
-   */
+  /** Contains column index (0-based) that contains the value of the spreadsheet */
   colIdx: number;
   type: MappingType;
 }
 
 /**
- * For each of the property in the 'M' structure defined above,
- * get mapping information to where each property map to the
- * spreadsheet.  (i.e. 'address' field maps to column 0)
+ * For each of the property in the 'M' structure defined above, get mapping
+ * information to where each property map to the spreadsheet. (i.e. 'address'
+ * field maps to column 0)
  */
 type PropertyMapping = {
   [Key in keyof Required<MProperty>]: MappingEntry;
@@ -87,10 +80,7 @@ export class ImportHelper {
     }
   }
 
-  /**
-   * Return value of a given cell,
-   * undefined is value is not available
-   */
+  /** Return value of a given cell, undefined is value is not available */
   private cellValue(col: number, row: number) {
     if (col === -1) {
       return undefined;
@@ -103,9 +93,7 @@ export class ImportHelper {
     }
   }
 
-  /**
-   * Return cell value and convert it to a given type
-   */
+  /** Return cell value and convert it to a given type */
   cellAs(col: number, row: number, type: 'string'): string | null;
   cellAs(col: number, row: number, type: 'number'): number | null;
   cellAs(col: number, row: number, type: 'boolean'): boolean | null;
@@ -146,24 +134,21 @@ export class ImportHelper {
   }
 
   /**
-   * Return column index (0-based) corresponding with the given
-   * header column label
+   * Return column index (0-based) corresponding with the given header column
+   * label
    */
   labelColumn(label: string) {
     return this.headerLabels.findIndex((entry) => entry === label);
   }
 
-  /**
-   * Return all header column labels that matches the given regex
-   */
+  /** Return all header column labels that matches the given regex */
   labelMatch(regex: RegExp) {
     return this.headerLabels.filter((entry) => entry.match(regex));
   }
 
   /**
-   * Given the mapping information, read the property information
-   * from the spreadsheet, and propagate the information into the
-   * returned object
+   * Given the mapping information, read the property information from the
+   * spreadsheet, and propagate the information into the returned object
    */
   property(
     rowIdx: number,
@@ -188,9 +173,8 @@ export class ImportHelper {
   }
 
   /**
-   * Given the mapping information, read the occupant information
-   * from the spreadsheet, and propagate the information into the
-   * returned object
+   * Given the mapping information, read the occupant information from the
+   * spreadsheet, and propagate the information into the returned object
    */
   occupant(rowIdx: number, mapping: OccupantMapping): MOccupant {
     return {
@@ -208,9 +192,8 @@ export class ImportHelper {
   }
 
   /**
-   * Given the mapping information, read the membership information
-   * from the spreadsheet, and propagate the information into the
-   * returned object
+   * Given the mapping information, read the membership information from the
+   * spreadsheet, and propagate the information into the returned object
    */
   membership(rowIdx: number, mapping: MembershipMapping): MMembership {
     return {

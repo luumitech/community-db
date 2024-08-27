@@ -102,8 +102,8 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   }, [reset, fragment]);
 
   /**
-   * When modal is closed, reset form value with
-   * default values derived from fragment
+   * When modal is closed, reset form value with default values derived from
+   * fragment
    */
   const onModalClose = React.useCallback(() => {
     reset(defaultInputData(fragment));

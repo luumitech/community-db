@@ -10,10 +10,7 @@ interface MenuItemEntry extends BreadcrumbItemProps {
   id: string;
 }
 
-/**
- * Controls content of breadcrumb menu located on the top
- * of the header
- */
+/** Controls content of breadcrumb menu located on the top of the header */
 export function useTopMenu() {
   const pathname = usePathname();
   const { communityId: ctxCommunityId, communityName } = useAppContext();
@@ -134,9 +131,7 @@ export function useTopMenu() {
   return menuItems;
 }
 
-/**
- * Get community name from Id
- */
+/** Get community name from Id */
 const CommunityName: React.FC<{ communityName: string | undefined }> = ({
   communityName,
 }) => {
@@ -159,9 +154,7 @@ const PropertyNameQuery = graphql(/* GraphQL */ `
   }
 `);
 
-/**
- * Get property address from Id
- */
+/** Get property address from Id */
 const PropertyAddress: React.FC<{
   communityId: string;
   propertyId: string;

@@ -12,32 +12,32 @@ export interface ListBlobHierarchyOpt {
   delimiter?: string;
   /**
    * A version ID that will only return those files whose versionID startsWith
-   * the specified versionId
-   * If not specified, only current version of the files will be returned
+   * the specified versionId If not specified, only current version of the files
+   * will be returned
    */
   versionId?: string;
   /**
-   * Filters the results to return only blobs whose names
-   * with the specified prefix. If no prefix is specified,
-   * then only blobs at the root of the container are returned.
+   * Filters the results to return only blobs whose names with the specified
+   * prefix. If no prefix is specified, then only blobs at the root of the
+   * container are returned.
    *
    * For example, for a container with the following content:
-   * - blob1
-   * - blob2
-   * - folder1/blob3
-   * - folder1/blob4
-   * - folder1/subfolder/blob5
-   * - folder1/subfolder/blob6
    *
-   * If no prefix is specified or an empty string is specified as prefix, then only
-   * blob1 and blob2 are returned.
+   * - Blob1
+   * - Blob2
+   * - Folder1/blob3
+   * - Folder1/blob4
+   * - Folder1/subfolder/blob5
+   * - Folder1/subfolder/blob6
    *
-   * If the prefix is specified as `folder1` or `folder1/`, then only blob3 and blob4
-   * are returned.
+   * If no prefix is specified or an empty string is specified as prefix, then
+   * only blob1 and blob2 are returned.
    *
-   * If the prefix is specified as `folder1/subfolder` or `folder1/subfolder/`, then
-   * only blob5 and blob6 are returned.
+   * If the prefix is specified as `folder1` or `folder1/`, then only blob3 and
+   * blob4 are returned.
    *
+   * If the prefix is specified as `folder1/subfolder` or `folder1/subfolder/`,
+   * then only blob5 and blob6 are returned.
    */
   prefix?: string;
 }
@@ -76,8 +76,9 @@ export class BlobHierarchyIterator {
   }
 
   /**
-   * Async iterator for looping through all blobs within container.
-   * Blobs within (virtual) "folders" are not included.
+   * Async iterator for looping through all blobs within container. Blobs within
+   * (virtual) "folders" are not included.
+   *
    * Specify a preix to list blobs within a (virtual) "folder"
    */
   async *iter() {

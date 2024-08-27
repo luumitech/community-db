@@ -22,17 +22,12 @@ function indentMenuItem(label: string, indentLevel = 0) {
   );
 }
 
-/**
- * Controls content of hamburger menu located on the left
- * of the header
- */
+/** Controls content of hamburger menu located on the left of the header */
 export function useNavMenu() {
   const pathname = usePathname();
   const { canEdit } = useAppContext();
 
-  /**
-   * Return menu arg for a given pathname
-   */
+  /** Return menu arg for a given pathname */
   const pathMenuArg = React.useCallback(
     (href: string) => {
       return {

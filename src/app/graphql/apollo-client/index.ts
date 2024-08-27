@@ -23,9 +23,7 @@ const cache = new InMemoryCache({
   typePolicies,
 });
 
-/**
- * GraphQL over SSE, for handling subscription
- */
+/** GraphQL over SSE, for handling subscription */
 class SSELink extends ApolloLink {
   private client: Client;
 
@@ -54,9 +52,7 @@ class SSELink extends ApolloLink {
   }
 }
 
-/**
- * Unified error handling for apollo
- */
+/** Unified error handling for apollo */
 const errorLink = onError((response) => {
   const { graphQLErrors, networkError, operation } = response;
   if (graphQLErrors) {

@@ -18,12 +18,11 @@ const config: Config = {
       spacing: {
         /**
          * The available height in <main/>
+         *
          * 64px is the height of header - page-top (assuming it is used)
          */
         'main-height': 'calc(100vh - 64px - 0.5rem)',
-        /**
-         * Default spacing used below header
-         */
+        /** Default spacing used below header */
         'page-top': '0.5rem',
         'page-x': '0.5rem',
       },
@@ -34,8 +33,8 @@ const config: Config = {
     nextui({
       themes: {
         /**
-         * See https://nextui.org/docs/customization/colors
-         * on customizing various themes
+         * See https://nextui.org/docs/customization/colors on customizing
+         * various themes
          */
         // light: {
         //   colors: {

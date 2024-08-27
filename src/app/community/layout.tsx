@@ -10,6 +10,8 @@ export default async function CommunityLayout({ children }: LayoutProps) {
 
 /**
  * Protect all the pages below this route
- * See: https://next-auth.js.org/getting-started/client#custom-client-session-handling
+ *
+ * See:
+ * https://next-auth.js.org/getting-started/client#custom-client-session-handling
  */
 CommunityLayout.auth = true;

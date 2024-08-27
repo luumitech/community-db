@@ -8,25 +8,15 @@ export interface IterOptions {
 export class WorksheetHelper {
   public ws: XLSX.WorkSheet;
 
-  /**
-   * Range of cell values within the worksheet
-   */
+  /** Range of cell values within the worksheet */
   public range: XLSX.Range;
-  /**
-   * First cell with value in worksheet (i.e. "A1")
-   */
+  /** First cell with value in worksheet (i.e. "A1") */
   public rangeStart: string;
-  /**
-   * Last cell with value in worksheet (i.e. "Q50")
-   */
+  /** Last cell with value in worksheet (i.e. "Q50") */
   public rangeEnd: string;
-  /**
-   * Number of columns in the sheet
-   */
+  /** Number of columns in the sheet */
   public colCount: number;
-  /**
-   * Number of rows in the sheet
-   */
+  /** Number of rows in the sheet */
   public rowCount: number;
 
   constructor(
@@ -45,10 +35,7 @@ export class WorksheetHelper {
     this.rowCount = WorksheetHelper.decodeRow(this.rangeEnd) + 1;
   }
 
-  /**
-   * Construct a worksheet helper object using the first
-   * sheet in the workbook
-   */
+  /** Construct a worksheet helper object using the first sheet in the workbook */
   static fromFirstSheet(wb: XLSX.WorkBook) {
     const firstSheetName = wb.SheetNames[0];
     return new WorksheetHelper(wb, firstSheetName);
@@ -56,8 +43,9 @@ export class WorksheetHelper {
 
   /**
    * Construct a worksheet helper object using JSON data
-   * @param json json data
-   * @param sheetName worksheet name
+   *
+   * @param json Json data
+   * @param sheetName Worksheet name
    */
   static fromJson(json: unknown[], sheetName: string) {
     const worksheet = XLSX.utils.json_to_sheet(json);
@@ -66,9 +54,7 @@ export class WorksheetHelper {
     return new WorksheetHelper(workbook, sheetName);
   }
 
-  /**
-   * Iterator for looping through all worksheet within workbook
-   */
+  /** Iterator for looping through all worksheet within workbook */
   static *iter(wb: XLSX.WorkBook, options?: IterOptions) {
     for (const sheetName of wb.SheetNames) {
       const ws = new WorksheetHelper(wb, sheetName);
@@ -79,16 +65,12 @@ export class WorksheetHelper {
     }
   }
 
-  /**
-   * Convert excel row name or row index into row index
-   */
+  /** Convert excel row name or row index into row index */
   static decodeRow(row: number | string): number {
     return typeof row === 'string' ? XLSX.utils.decode_cell(row).r : row;
   }
 
-  /**
-   * Convert excel column name or column index into column index
-   */
+  /** Convert excel column name or column index into column index */
   static decodeCol(col: number | string): number {
     return typeof col === 'string' ? XLSX.utils.decode_cell(col).c : col;
   }
@@ -97,14 +79,18 @@ export class WorksheetHelper {
    * Encode cell address to excel cell coordiante format (i.e. 'A1')
    *
    * @example
-   * // The following are equivalent to 'A1'
-   * encodeCell('A', '1')
-   * encodeCell(0, 0)
-   * encodeCell('A1')
-   * encodeCell({c: 0, r: 0})
    *
-   * @param col column index (0-based number) or excel column name (string) or excel cell address
-   * @param row row index (0-based number) or excel row name (string)
+   * ```js
+   * // The following are equivalent to 'A1'
+   * encodeCell('A', '1');
+   * encodeCell(0, 0);
+   * encodeCell('A1');
+   * encodeCell({ c: 0, r: 0 });
+   * ```
+   *
+   * @param col Column index (0-based number) or excel column name (string) or
+   *   excel cell address
+   * @param row Row index (0-based number) or excel row name (string)
    */
   static encodeCell(
     col: number | XLSX.CellAddress | string,
@@ -131,16 +117,12 @@ export class WorksheetHelper {
     return cellAddr;
   }
 
-  /**
-   * Decode cell address to numeric row/column index format
-   */
+  /** Decode cell address to numeric row/column index format */
   static decodeCell(addr: XLSX.CellAddress | string): XLSX.CellAddress {
     return typeof addr === 'string' ? XLSX.utils.decode_cell(addr) : addr;
   }
 
-  /**
-   * Iterator for looping through columns of worksheet
-   */
+  /** Iterator for looping through columns of worksheet */
   *iterColumn(row: number | string) {
     const rowIdx = WorksheetHelper.decodeRow(row);
     for (let colIdx = 0; colIdx < this.colCount; colIdx++) {
@@ -153,14 +135,16 @@ export class WorksheetHelper {
    * Retrieve the cell object at a given cell coordinate
    *
    * @example
-   * // The following are equivalent
-   * cell('A', '1')
-   * cell(0, 0)
-   * cell('A1')
-   * cell({c: 0, r: 0})
    *
-   * @param col column index (0-based number) or excel column name (string)
-   * @param row row index (0-based number) or excel row name (string)
+   * ```js
+   * // The following are equivalent cell('A', '1')
+   * cell(0, 0);
+   * cell('A1');
+   * cell({ c: 0, r: 0 });
+   * ```
+   *
+   * @param col Column index (0-based number) or excel column name (string)
+   * @param row Row index (0-based number) or excel row name (string)
    */
   cell(
     col: number | XLSX.CellAddress | string,
@@ -174,14 +158,8 @@ export class WorksheetHelper {
   /**
    * Returns array of array of cell values (string) from this worksheet
    *
-   * @param rangeStr range of cells to return (i.e. 'A1:E10')
-   * @returns array of array of string
-   * @example
-   *   [
-   *     ["1", "2022", "40"], // row 1
-   *     ["2", "2023", "41"], // row 2
-   *     ["3", "2024", "42"]  // row 3
-   *   ]
+   * @param rangeStr Range of cells to return (i.e. 'A1:E10')
+   * @returns Array of array of string
    */
   getCellValues(rangeStr: string) {
     // If raw: true, then return type would be XLSX.CellObject['v'][][]

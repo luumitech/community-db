@@ -6,9 +6,7 @@ import { schema } from './_type';
 import { getDefaultXlsxFn } from './util';
 import { XlsxCache } from './xlsx-cache';
 
-/**
- * Export community information
- */
+/** Export community information */
 export async function exportCommunityAsUrl(communityId: string) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -27,8 +25,8 @@ export async function exportCommunityAsUrl(communityId: string) {
 /**
  * Export community information
  *
- * @param input form input for generating xlsx
- * @returns xlsx buffer encoded in base64
+ * @param input Form input for generating xlsx
+ * @returns Xlsx buffer encoded in base64
  */
 export async function exportCommunityAsBase64(communityId: string) {
   const session = await getServerSession(authOptions);

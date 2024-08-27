@@ -5,9 +5,10 @@ import { isValidDate } from '~/lib/date-util';
 declare module 'yup' {
   interface StringSchema<TType> extends yup.Schema<TType> {
     /**
-     * Interpret date/datetime string as a Date string (i.e. no timestamp)
-     * the transformed result is a ISO date string that look like:
-     *   2024-05-23T00:00:00.000Z
+     * Interpret date/datetime string as a Date string (i.e. no timestamp) the
+     * transformed result is a ISO date string that look like:
+     *
+     *     2024-05-23T00:00:00.000Z
      */
     asDate(): StringSchema<TType>;
   }
@@ -23,8 +24,8 @@ declare module 'yup' {
 
   interface NumberSchema<TType> extends yup.Schema<TType> {
     /**
-     * Accept empty string/NaN, and interpret it as null.
-     * Useful for handling input(type=number) when no value is entered
+     * Accept empty string/NaN, and interpret it as null. Useful for handling
+     * input(type=number) when no value is entered
      */
     canBeEmpty(): NumberSchema<TType | null>;
   }
@@ -34,9 +35,8 @@ declare module 'yup' {
     /**
      * Validate if array contains unique entries
      *
-     * @param message message when validation fails
-     * @param mapper callback for returning value to use as
-     *   uniqueness check
+     * @param message Message when validation fails
+     * @param mapper Callback for returning value to use as uniqueness check
      */
     unique(
       message: string,

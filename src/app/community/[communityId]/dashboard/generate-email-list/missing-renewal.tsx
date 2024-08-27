@@ -13,6 +13,7 @@ const NoRenewalPropertyListQuery = graphql(/* GraphQL */ `
           id
           occupantList {
             email
+            optOut
           }
         }
       }

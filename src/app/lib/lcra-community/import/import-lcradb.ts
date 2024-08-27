@@ -9,8 +9,8 @@ import { extractPaymentMethodList } from './payment-method-list-util';
 /**
  * Import LCRA Database spreadsheet
  *
- * @param wb xlsx workbook object
- * @returns list of properties with information
+ * @param wb Xlsx workbook object
+ * @returns List of properties with information
  */
 export function importLcraDB(wb: XLSX.WorkBook) {
   const wsHelper = WorksheetHelper.fromFirstSheet(wb);
@@ -190,7 +190,5 @@ export function importLcraDB(wb: XLSX.WorkBook) {
   };
 }
 
-/**
- * Data type returned from importLcraDB
- */
+/** Data type returned from importLcraDB */
 export type ImportResult = Awaited<ReturnType<typeof importLcraDB>>;

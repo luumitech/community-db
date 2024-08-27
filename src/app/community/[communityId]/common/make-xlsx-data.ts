@@ -48,9 +48,7 @@ export function useMakeXlsxData() {
     [makeColumns]
   );
 
-  /**
-   * Clear all data, return empty columns/data
-   */
+  /** Clear all data, return empty columns/data */
   const clear = React.useCallback(() => {
     _setData(undefined);
     _setColumns(undefined);

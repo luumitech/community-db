@@ -33,8 +33,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className={`${inter.className} text-foreground bg-background`}>
         {/**
-         * light/dark theme can be customized
-         * see: https://nextui.org/docs/customization/customize-theme
+         * Light/dark theme can be customized
+         *
+         * See: https://nextui.org/docs/customization/customize-theme
          */}
         <ThemeProvider defaultTheme="system" attribute="class">
           <Providers sessionProviderProps={{ session }}>

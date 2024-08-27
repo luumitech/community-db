@@ -15,7 +15,8 @@ import { OptOut } from './opt-out';
 
 /**
  * Converts a 10 digit phone number to (xxx)xxx-xxxx format
- * @param {*} phoneNumber
+ *
+ * @param {any} phoneNumber
  */
 function formatPhoneNumber(phoneNumber: string) {
   if (!phoneNumber) {

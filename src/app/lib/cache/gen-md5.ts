@@ -3,35 +3,28 @@ import hash from 'object-hash';
 import { BlobContainer } from '~/lib/azure-storage';
 
 export interface GenMD5Opt {
-  /**
-   * List of keys to exclude from hashing
-   */
+  /** List of keys to exclude from hashing */
   excludeKeys?: string[];
 }
 
 /**
- * Abstract class for handling generation and management of
- * MD5 signature storage in blob container
+ * Abstract class for handling generation and management of MD5 signature
+ * storage in blob container
  */
 export abstract class GenMD5 {
-  /**
-   * container containing cache
-   */
+  /** Container containing cache */
   protected abstract container: BlobContainer;
-  /**
-   * root directory for storing cache information
-   */
+  /** Root directory for storing cache information */
   protected abstract rootDir: string;
-  /**
-   * MD5 signature for data in cache
-   */
+  /** MD5 signature for data in cache */
   public abstract md5: string; // cache MD5 signature
 
   /**
    * Generate a MD5 signature for arbitrary object
+   *
    * - Keys that do not alter actual data are excluded
    *
-   * @param input plain object
+   * @param input Plain object
    * @returns MD5 signature
    */
   static genMD5(input: object, opt?: GenMD5Opt) {
@@ -54,29 +47,25 @@ export abstract class GenMD5 {
     return md5Str;
   }
 
-  /**
-   * Directory for storing MD5 signature
-   */
+  /** Directory for storing MD5 signature */
   private getMd5Dir() {
     return `${this.rootDir}/md5`;
   }
 
-  /**
-   * blob name for MD5 signature
-   */
+  /** Blob name for MD5 signature */
   private getMd5Fn() {
     return `${this.getMd5Dir()}/${this.md5}.md5`;
   }
 
   /**
-   * Remove cache artifacts created by this Cache object, but
-   * leaves the md5 signature intact.
+   * Remove cache artifacts created by this Cache object, but leaves the md5
+   * signature intact.
    */
   abstract cleanCacheArtifacts(): Promise<void>;
 
   /**
-   * Verify if the cache contains up-to-date information
-   * to the associated database content
+   * Verify if the cache contains up-to-date information to the associated
+   * database content
    */
   async isCacheUpToDate() {
     // Check if md5 signature matches current scenario
@@ -85,8 +74,8 @@ export abstract class GenMD5 {
   }
 
   /**
-   * Add MD5 signature to container, so we can check if scenario in
-   * database matches the cache
+   * Add MD5 signature to container, so we can check if scenario in database
+   * matches the cache
    */
   protected async saveCacheMD5() {
     const isUpdated = await this.isCacheUpToDate();
@@ -96,16 +85,14 @@ export abstract class GenMD5 {
     }
   }
 
-  /**
-   * Remove MD5 signature, (i.e. invalidates cache)
-   */
+  /** Remove MD5 signature, (i.e. invalidates cache) */
   async removeCacheMD5() {
     await this.container.deleteAll(`${this.getMd5Dir()}`);
   }
 
   /**
-   * Remove all cache content stored within the root directory
-   * This function removes all resources within cache (including MD5)
+   * Remove all cache content stored within the root directory This function
+   * removes all resources within cache (including MD5)
    */
   async removeCache() {
     await this.container.deleteAll(`${this.rootDir}`);

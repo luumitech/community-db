@@ -31,7 +31,9 @@ export const EmailGenerator: React.FC<Props> = ({
       if (navigator?.clipboard?.writeText) {
         const propertyList = await listGenerator();
         const emailList = propertyList
-          .flatMap(({ occupantList }) => occupantList.map(({ email }) => email))
+          .flatMap(({ occupantList }) =>
+            occupantList.map(({ email, optOut }) => (optOut ? null : email))
+          )
           .filter((email): email is string => email != null);
         setPropertyCount(propertyList.length);
         setEmailCount(emailList.length);

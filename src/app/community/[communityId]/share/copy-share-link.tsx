@@ -46,7 +46,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
             });
           }}
         >
-          Copy Link
+          Copy Database URL
         </Button>
       </div>
     </div>

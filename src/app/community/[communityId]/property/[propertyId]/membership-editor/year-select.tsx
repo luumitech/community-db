@@ -7,13 +7,9 @@ import { MembershipListFieldArray, membershipDefault } from './use-hook-form';
 interface Props {
   className?: string;
   membershipMethods: MembershipListFieldArray;
-  /**
-   * currently selected year in Select
-   */
+  /** Currently selected year in Select */
   selectedYear: string;
-  /**
-   * handler when user selects a year
-   */
+  /** Handler when user selects a year */
   onChange: (year: string) => void;
 }
 
