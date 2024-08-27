@@ -70,7 +70,8 @@ const CHART_KEYS = ['renewed', 'new'];
 
 /**
  * Custom line plot
- * for members who have not renewed this year
+ *
+ * For members who have not renewed this year
  */
 function noRenewalLine(helper: ChartDataHelper) {
   const Line: React.FC<BarCustomLayerProps<ChartDataEntry>> = ({
@@ -90,8 +91,8 @@ function noRenewalLine(helper: ChartDataHelper) {
     );
 
     /**
-     * Gather necessary information to plot the line graph
-     * (as well as implementing custom tooltip)
+     * Gather necessary information to plot the line graph (as well as
+     * implementing custom tooltip)
      */
     const chartData = React.useMemo(() => {
       return helper.chartData.map((datum) => {
@@ -153,9 +154,7 @@ function noRenewalLine(helper: ChartDataHelper) {
   return Line;
 }
 
-/**
- * Custom legend for bar chart
- */
+/** Custom legend for bar chart */
 function customLegend(helper: ChartDataHelper) {
   const CustomSymbolShape: React.FC<SymbolProps> = ({
     id,
@@ -199,9 +198,7 @@ function customLegend(helper: ChartDataHelper) {
   return legendProps;
 }
 
-/**
- * Custom tool tip when hovering over bars
- */
+/** Custom tool tip when hovering over bars */
 function customTooltip(helper: ChartDataHelper) {
   // const Tooltip: React.FC<BarTooltipProps<ChartDataEntry>> = ({ data }) => {
   const Tooltip: React.FC<{ data: ChartDataEntry }> = ({ data }) => {
@@ -251,9 +248,7 @@ function customTooltip(helper: ChartDataHelper) {
 interface Props {
   className?: string;
   fragment?: MemberCountEntry;
-  /**
-   * Number of years to show on the chart
-   */
+  /** Number of years to show on the chart */
   yearRange: number;
   onYearSelect?: (year: number) => void;
 }

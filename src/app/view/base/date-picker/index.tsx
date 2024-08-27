@@ -8,9 +8,9 @@ import { parseAsDate } from '~/lib/date-util';
 
 interface Props extends Omit<DatePickerProps, 'onChange' | 'onBlur'> {
   /**
-   * The onChange/onBlur from the react-hook-form register method
-   * is not compatible with the onChange/onBlur onNextUIDatePicker,
-   * so we override it with the react-hook-form Controller version
+   * The onChange/onBlur from the react-hook-form register method is not
+   * compatible with the onChange/onBlur onNextUIDatePicker, so we override it
+   * with the react-hook-form Controller version
    */
   onChange?: unknown;
   onBlur?: unknown;
@@ -21,9 +21,9 @@ export const DatePicker = React.forwardRef<HTMLDivElement, Props>(
     const { control } = useFormContext();
 
     /**
-     * ref is not being used right now, so we are
-     * introducing a react-hook-form Controller to transform the
-     * react-hook-form register values into a uncontrolled component
+     * Ref is not being used right now, so we are introducing a react-hook-form
+     * Controller to transform the react-hook-form register values into a
+     * uncontrolled component
      */
     return (
       <Controller

@@ -59,9 +59,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   }, [register, yearIdx, eventAttendedListError]);
 
   React.useEffect(() => {
-    /**
-     * Set isMember flag if at least one event has been registered
-     */
+    /** Set isMember flag if at least one event has been registered */
     setValue(`membershipList.${yearIdx}.isMember`, fields.length !== 0);
   }, [setValue, fields, yearIdx]);
 

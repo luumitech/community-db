@@ -41,52 +41,36 @@ interface SelectSection {
 }
 
 export type CommunityState = Readonly<{
-  /**
-   * community short ID
-   */
+  /** Community short ID */
   communityId?: string;
-  /**
-   * community name
-   */
+  /** Community name */
   communityName?: string;
   /**
    * UI states like:
-   * - property search bar text
+   *
+   * - Property search bar text
    */
   communityUi: UseCommunityUiReturn;
-  /**
-   * access role items
-   */
+  /** Access role items */
   roleItems: SelectItem[];
-  /**
-   * visible event items (suitable for 'Add new event')
-   */
+  /** Visible event items (suitable for 'Add new event') */
   visibleEventItems: SelectItem[];
-  /**
-   * all event items (including hidden, suitable for event selection)
-   */
+  /** All event items (including hidden, suitable for event selection) */
   selectEventSections: SelectSection[];
-  /**
-   * all payment method items (including hidden)
-   */
+  /** All payment method items (including hidden) */
   selectPaymentMethodSections: SelectSection[];
-  /**
-   * Current user's role in this community
-   */
+  /** Current user's role in this community */
   role: GQL.Role;
-  /**
-   * Base on current user's role, can user modify content within
-   * this community?
-   */
+  /** Base on current user's role, can user modify content within this community? */
   canEdit: boolean;
 }>;
 
 /**
- * Given a list of SupportedSelectItem, group all visible
- * items into `visibleItems`, and create selection sections
- * that contains all visible and hidden items
+ * Given a list of SupportedSelectItem, group all visible items into
+ * `visibleItems`, and create selection sections that contains all visible and
+ * hidden items
  *
- * @param list list of SupportedSelectItem
+ * @param list List of SupportedSelectItem
  * @returns
  */
 function createSelectionItems(list: GQL.SupportedSelectItem[]) {

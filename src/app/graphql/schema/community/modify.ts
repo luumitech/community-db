@@ -31,14 +31,13 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
 /**
  * Generate eventList entry for database
  *
- * User may want a reduced list of events to show when selecting
- * in the UI, but the database may contain events that are still being
- * referenced, and they need to be maintained in this list.
- * We'll mark these entries as hidden, so they would still show up
- * properly in the selection UI
+ * User may want a reduced list of events to show when selecting in the UI, but
+ * the database may contain events that are still being referenced, and they
+ * need to be maintained in this list. We'll mark these entries as hidden, so
+ * they would still show up properly in the selection UI
  *
- * @param community community entry in database
- * @param eventList new event list as requested by user
+ * @param community Community entry in database
+ * @param eventList New event list as requested by user
  * @returns
  */
 async function getCompleteEventList(
@@ -68,14 +67,13 @@ async function getCompleteEventList(
 /**
  * Generate paymentMethodList entry for database
  *
- * User may want a reduced list of payment methods to show when selecting
- * in the UI, but the database may contain methods that are still being
- * referenced, and they need to be maintained in this list.
- * We'll mark these entries as hidden, so they would still show up
- * properly in the selection UI
+ * User may want a reduced list of payment methods to show when selecting in the
+ * UI, but the database may contain methods that are still being referenced, and
+ * they need to be maintained in this list. We'll mark these entries as hidden,
+ * so they would still show up properly in the selection UI
  *
- * @param community community entry in database
- * @param paymentMethodList new event list as requested by user
+ * @param community Community entry in database
+ * @param paymentMethodList New event list as requested by user
  * @returns
  */
 async function getCompletePaymentMethodList(

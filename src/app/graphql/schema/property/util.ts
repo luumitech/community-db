@@ -6,12 +6,11 @@ import prisma from '~/lib/prisma';
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
 /**
- * Get property database entry of a given ID
- * and verify if user has access to it
+ * Get property database entry of a given ID and verify if user has access to it
  *
- * @param user context user performing search
- * @param shortId property shortID
- * @param args prisma findFirstOrThrow arguments
+ * @param user Context user performing search
+ * @param shortId Property shortID
+ * @param args Prisma findFirstOrThrow arguments
  * @returns
  */
 export async function getPropertyEntry<T extends FindArgs>(
@@ -38,9 +37,7 @@ export async function getPropertyEntry<T extends FindArgs>(
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       switch (err.code) {
-        /**
-         * https://www.prisma.io/docs/orm/reference/error-reference#p2025
-         */
+        /** https://www.prisma.io/docs/orm/reference/error-reference#p2025 */
         case 'P2025':
           throw new GraphQLError(`Property ${shortId} Not Found`, {
             extensions: {
@@ -56,9 +53,9 @@ export async function getPropertyEntry<T extends FindArgs>(
 /**
  * Get property database entry within a community
  *
- * @param communityShortId community shortID
- * @param shortId property shortID
- * @param args prisma findFirstOrThrow arguments
+ * @param communityShortId Community shortID
+ * @param shortId Property shortID
+ * @param args Prisma findFirstOrThrow arguments
  * @returns
  */
 export async function getPropertyEntryWithinCommunity<T extends FindArgs>(
@@ -79,9 +76,7 @@ export async function getPropertyEntryWithinCommunity<T extends FindArgs>(
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       switch (err.code) {
-        /**
-         * https://www.prisma.io/docs/orm/reference/error-reference#p2025
-         */
+        /** https://www.prisma.io/docs/orm/reference/error-reference#p2025 */
         case 'P2025':
           throw new GraphQLError(`Property ${shortId} Not Found`, {
             extensions: {

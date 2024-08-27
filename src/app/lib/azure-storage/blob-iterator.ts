@@ -8,8 +8,8 @@ import * as blobInfoUtil from './blob-info';
 export interface ListBlobOpt extends ContainerListBlobsOptions {
   /**
    * A version ID that will only return those files whose versionID startsWith
-   * the specified versionId
-   * If not specified, only current version of the files will be returned
+   * the specified versionId If not specified, only current version of the files
+   * will be returned
    */
   versionId?: string;
 }
@@ -36,17 +36,15 @@ export class BlobIterator {
     });
   }
 
-  /**
-   * Async iterator for looping through all blobs within container
-   */
+  /** Async iterator for looping through all blobs within container */
   async *iter() {
     let item = await this.blobIter.next();
     while (!item.done) {
       const blob = item.value;
 
       /**
-       * If versionId is specified, then only return blob items
-       * whose versionId has the same prefix as the specified versionId
+       * If versionId is specified, then only return blob items whose versionId
+       * has the same prefix as the specified versionId
        *
        * If versionId is not specified, only return current version
        */

@@ -14,8 +14,8 @@ import clsx from 'clsx';
 import React from 'react';
 
 /**
- * Classes to be applied to sticky column
- * Since we want to make first column sticky to the left
+ * Classes to be applied to sticky column Since we want to make first column
+ * sticky to the left
  */
 const pinningClass = 'sticky left-0 bg-background';
 
@@ -56,8 +56,8 @@ export function XlsxView<T>({ data, columns }: Props<T>) {
   });
 
   /**
-   * Dynamic row height virtualization - alternatively you could use a simpler fixed
-   * row height strategy without the need for `measureElement`
+   * Dynamic row height virtualization - alternatively you could use a simpler
+   * fixed row height strategy without the need for `measureElement`
    */
   const rowVirtualizer = useVirtualizer({
     count: rows.length,

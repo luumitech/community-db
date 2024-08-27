@@ -6,12 +6,11 @@ import { Logger } from '~/lib/logger';
 const logger = Logger('env-cfg');
 
 /**
- * Check a list of env variables that must be present
- * for the application to work properly
+ * Check a list of env variables that must be present for the application to
+ * work properly
  *
- * These are mapped from environment variables in `process.env`
- * And snake case names can be automatically mapped to object
- * form.
+ * These are mapped from environment variables in `process.env` And snake case
+ * names can be automatically mapped to object form.
  */
 const schema = yup.object({
   NODE_ENV: yup.string().oneOf(['development', 'production']).required(),
@@ -55,9 +54,7 @@ const schema = yup.object({
   // Azure configuration
   azure: yup.object({
     storageMode: yup.string().oneOf(['local', 'remote', 'none']),
-    /**
-     * Local azurite configuration
-     */
+    /** Local azurite configuration */
     localStorage: yup
       .object({
         host: yup.string().required(),
@@ -71,9 +68,7 @@ const schema = yup.object({
         then: (_schema) => _schema.default({}),
       }),
 
-    /**
-     * Remote azure blob storage configuration
-     */
+    /** Remote azure blob storage configuration */
     storage: yup
       .object({
         account: yup.string().required(),
@@ -87,14 +82,13 @@ const schema = yup.object({
   }),
 });
 
-/**
- * Copy of env that has gone through schema validation
- */
+/** Copy of env that has gone through schema validation */
 let verifiedEnv: (typeof schema)['__outputType'] | undefined;
 
 /**
  * Return environment variables
- * - check with schema to ensure all env var values adhere to schema
+ *
+ * - Check with schema to ensure all env var values adhere to schema
  */
 export function env() {
   // Prevent NextJs from caching this function

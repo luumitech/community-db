@@ -11,17 +11,11 @@ import { getDefaultXlsxFn } from './util';
 export class XlsxCache extends GenMD5 {
   protected rootDir: string;
   public md5: string;
-  /**
-   * directory for storing exported xlsx
-   */
+  /** Directory for storing exported xlsx */
   private xlsxDir: string;
-  /**
-   * filename for storing exported xlsx
-   */
+  /** Filename for storing exported xlsx */
   private xlsxFn: string;
-  /**
-   * blobname for storing exported xlsx
-   */
+  /** Blobname for storing exported xlsx */
   private xlsxBlobName: string;
 
   private constructor(
@@ -47,17 +41,18 @@ export class XlsxCache extends GenMD5 {
   }
 
   /**
-   * Remove cache artifacts related to this object, but
-   * leaves the md5 signature intact.
+   * Remove cache artifacts related to this object, but leaves the md5 signature
+   * intact.
    */
   async cleanCacheArtifacts() {
     await this.container.deleteAll(this.xlsxDir);
   }
 
   /**
-   * convert community data into xlsx and cache it
-   * - removes current zip directory if MD5 mismatches
-   * - generates MD5 signature if not already saved
+   * Convert community data into xlsx and cache it
+   *
+   * - Removes current zip directory if MD5 mismatches
+   * - Generates MD5 signature if not already saved
    */
   async cacheAsXlsx() {
     // If existing MD5 is not current, remove artifact and regenerate
@@ -77,7 +72,7 @@ export class XlsxCache extends GenMD5 {
   /**
    * Construct a URL that user can use to download the blob
    *
-   * @param filename suggested filename for user to save the file as
+   * @param filename Suggested filename for user to save the file as
    * @returns
    */
   async downloadUrl(filename?: string) {

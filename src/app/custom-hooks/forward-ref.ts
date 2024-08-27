@@ -1,8 +1,8 @@
 import React from 'react';
 
 /**
- * Useful for copying a forwardref, so you can access/manipulate
- * the content of the forwardref
+ * Useful for copying a forwardref, so you can access/manipulate the content of
+ * the forwardref
  */
 export function useForwardRef<T>(
   ref: React.ForwardedRef<T>,

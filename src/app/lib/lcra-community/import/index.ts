@@ -1,4 +1,2 @@
-/**
- * Can be used on client side
- */
+/** Can be used on client side */
 export { importLcraDB, type ImportResult } from './import-lcradb';

@@ -16,9 +16,7 @@ export const SignInButton: React.FC<Props> = ({ className }) => {
       className={className}
       color="primary"
       onClick={() => {
-        /**
-         * You can optionally force provider to google
-         */
+        /** You can optionally force provider to google */
         signIn(undefined, { callbackUrl: query.get('callbackUrl') ?? '/' });
       }}
     >

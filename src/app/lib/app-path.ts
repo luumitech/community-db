@@ -1,8 +1,6 @@
 import { compile } from 'path-to-regexp';
 
-/**
- * List of supported URL within app
- */
+/** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
   preference: '/preference',
@@ -21,8 +19,8 @@ type SupportedPath = typeof supportedPathTemplates;
 /**
  * Generate URL for various UI endpoints within the app
  *
- * @param template template name
- * @param sub path substitution variable
+ * @param template Template name
+ * @param sub Path substitution variable
  * @returns
  */
 export function appPath(
@@ -62,7 +60,7 @@ export function appPath(
 /**
  * Label for various UI endpoints within the app
  *
- * @param template template name
+ * @param template Template name
  * @returns
  */
 export function appLabel(template: keyof SupportedPath) {

@@ -1,5 +1,5 @@
 module.exports = {
-  plugins: ['prettier-plugin-organize-imports'],
+  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-jsdoc'],
   arrowParens: 'always',
   singleQuote: true,
   trailingComma: 'es5',
@@ -8,4 +8,10 @@ module.exports = {
    * Don't want destructive code actions (like removing unused imports)
    */
   organizeImportsSkipDestructiveCodeActions: true,
+  /**
+   * Prettier-plugin-jsdoc
+   *
+   * See: https://www.npmjs.com/package/prettier-plugin-jsdoc
+   */
+  tsdoc: true,
 };

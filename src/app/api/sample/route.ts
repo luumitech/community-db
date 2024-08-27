@@ -10,7 +10,8 @@ interface FetchEvent {
 
 /**
  * For more details, see:
- * See https://nextjs.org/docs/app/building-your-application/routing/route-handlers
+ *
+ * https://nextjs.org/docs/app/building-your-application/routing/route-handlers
  */
 export async function GET(request: NextRequest, { params }: FetchEvent) {
   const session = await getServerSession(authOptions);

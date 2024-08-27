@@ -8,9 +8,7 @@ import type { Context } from '~/graphql/context';
 import { pubSub } from '~/graphql/pubsub';
 import { schema } from '~/graphql/schema';
 
-/**
- * Helper test utility class for invoking graphQL query/mutation
- */
+/** Helper test utility class for invoking graphQL query/mutation */
 export class GraphQLUtil {
   private _executor: AsyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -28,16 +26,12 @@ export class GraphQLUtil {
     this._executor = buildHTTPExecutor({ fetch: yoga.fetch });
   }
 
-  /**
-   * Convenience method to return apollo context
-   */
+  /** Convenience method to return apollo context */
   get context(): Context {
     return this._context;
   }
 
-  /**
-   * Set the authorized user in the context
-   */
+  /** Set the authorized user in the context */
   setAuthUser(user: Context['user']) {
     this._context = {
       ...this._context,
@@ -45,10 +39,7 @@ export class GraphQLUtil {
     };
   }
 
-  /**
-   * Execute the graphql query and expect the result to be
-   * non iteratable
-   */
+  /** Execute the graphql query and expect the result to be non iteratable */
   async executeSingle<
     TVariables extends Record<string, unknown> = Record<string, unknown>,
     TRootValue = unknown,

@@ -31,8 +31,8 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
   });
 
   /**
-   * Item can only be added if it is different than
-  // the ones on the visible list
+   * Item can only be added if it is different than // the ones on the visible
+   * list
    */
   const isItemValid = React.useCallback(
     (itemName: string) => {

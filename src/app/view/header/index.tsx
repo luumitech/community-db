@@ -76,9 +76,7 @@ export const Header: React.FC<Props> = ({}) => {
             </Link>
           </NavbarBrand>
         </NavbarContent>
-        {/**
-         * Top breadcrumb menu
-         */}
+        {/** Top breadcrumb menu */}
         <Breadcrumbs>
           {breadcrumbItems.map(({ id, ...entry }) => (
             <BreadcrumbItem key={id} {...entry} />
@@ -93,9 +91,7 @@ export const Header: React.FC<Props> = ({}) => {
             <NotSignedIn />
           )}
         </NavbarContent>
-        {/**
-         * Menu items for burger menu
-         */}
+        {/** Menu items for burger menu */}
         <NavbarMenu>
           {menuItems.map(({ id, isActive, ...entry }) => (
             <NavbarMenuItem key={id} className="flex" isActive={isActive}>

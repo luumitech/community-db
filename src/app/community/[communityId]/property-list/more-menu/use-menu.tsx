@@ -13,9 +13,7 @@ interface MoreMenuOpt {
   deleteButtonProps: UseDisclosureReturn['getButtonProps'];
 }
 
-/**
- * Controls content of menu items within more menu
- */
+/** Controls content of menu items within more menu */
 export function useMoreMenu(opt: MoreMenuOpt) {
   const { canEdit } = useAppContext();
 

@@ -8,18 +8,13 @@ import { getCurrentYear } from '~/lib/date-util';
 
 type State = Readonly<{
   /**
-   * Search bar text in community/[id]/property-list
-   * Persist this in redux so it won't disappear when search bar unmounts
+   * Search bar text in community/[id]/property-list Persist this in redux so it
+   * won't disappear when search bar unmounts
    */
   propertyListSearch?: string;
-  /**
-   * Last event selected while editing membership detail
-   */
+  /** Last event selected while editing membership detail */
   lastEventSelected?: string;
-  /**
-   * Year selected
-   * In membership editor/membership display
-   */
+  /** Year selected In membership editor/membership display */
   yearSelected: string;
 }>;
 

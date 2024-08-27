@@ -4,7 +4,7 @@ import { type Community } from '~/lib/lcra-community/export';
 /**
  * Get default xlsx filename when exporting a community
  *
- * @param community community database content
+ * @param community Community database content
  * @returns
  */
 export function getDefaultXlsxFn(community: Community) {

@@ -7,9 +7,10 @@ import { GraphQLError } from 'graphql';
 import { builder } from '../builder';
 
 /**
- * Implement additional properties to default pothos offset/limit
- * connection (i.e. resolveOffsetConnection):
- * - total number pages
+ * Implement additional properties to default pothos offset/limit connection
+ * (i.e. resolveOffsetConnection):
+ *
+ * - Total number pages
  */
 builder.globalConnectionField('totalCount', (t) =>
   t.int({

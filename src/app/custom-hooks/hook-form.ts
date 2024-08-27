@@ -16,6 +16,7 @@ export {
 
 /**
  * Find the first FieldError in the errors object
+ *
  * @param errors
  * @returns
  */
@@ -31,10 +32,10 @@ function findFirstError(errors?: FieldErrors): FieldError | undefined {
 }
 
 /**
- * Custom react-hook-form useForm, that would monitor errors, and scroll
- * to the first element containing error
+ * Custom react-hook-form useForm, that would monitor errors, and scroll to the
+ * first element containing error
  *
- * @param args useForm arguments
+ * @param args UseForm arguments
  * @returns
  */
 export function useForm<

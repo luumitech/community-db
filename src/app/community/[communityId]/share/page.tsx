@@ -68,9 +68,7 @@ export default function Share({ params }: RouteArgs) {
 
   const { columns, renderCell } = useTableData(isAdmin);
 
-  /**
-   * Generate access list for all users (including self)
-   */
+  /** Generate access list for all users (including self) */
   const accessList = React.useMemo(() => {
     const others = community?.otherAccessList;
     const self = community?.access;

@@ -6,17 +6,13 @@ type ApolloResult = Pick<QueryResult, 'loading' | 'error'>;
 
 interface ErrorHandlerOptions {
   /**
-   * handle error on your own, if the error is not handled,
-   * return it, and it will be handled by the default
-   * error handler
+   * Handle error on your own, if the error is not handled, return it, and it
+   * will be handled by the default error handler
    */
   onError?: (err: ApolloError) => ApolloError | undefined | void;
 }
 
-/**
- * Handling loading and error coming from
- * graphQL query/mutation
- */
+/** Handling loading and error coming from graphQL query/mutation */
 export function useGraphqlErrorHandler(
   result: ApolloResult,
   opt?: ErrorHandlerOptions

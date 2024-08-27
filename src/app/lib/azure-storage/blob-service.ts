@@ -10,41 +10,29 @@ import { BlobInfo } from './blob-info';
 import { ListBlobOpt } from './blob-iterator';
 
 export interface ServiceOpt {
-  /**
-   * Use local Azurite storage
-   */
+  /** Use local Azurite storage */
   useLocal?: boolean;
 }
 
 interface ContainerOpt {
-  /**
-   * Create container if it doesn't exists
-   */
+  /** Create container if it doesn't exists */
   createIfMissing?: boolean;
 }
 
 export interface ListDirOpt extends ListBlobOpt {
-  /**
-   * When specified, will only list blobs within specified container
-   */
+  /** When specified, will only list blobs within specified container */
   container?: string;
-  /**
-   * callback when blob is being read from container
-   */
+  /** Callback when blob is being read from container */
   onList?: (container: BlobContainer, arg: BlobInfo) => Promise<void>;
 }
 
 export interface CopyOpt extends ListDirOpt {
-  /**
-   * callback when resource is being downloaded from source blob storage
-   */
+  /** Callback when resource is being downloaded from source blob storage */
   downloadOnProgress?: (
     container: BlobContainer,
     args: BlobInfo & { bytes: number }
   ) => void;
-  /**
-   * callback when resource is being uploaded to destination blob storage
-   */
+  /** Callback when resource is being uploaded to destination blob storage */
   uploadOnProgress?: (
     container: BlobContainer,
     args: BlobInfo & { bytes: number }
@@ -52,13 +40,13 @@ export interface CopyOpt extends ListDirOpt {
 }
 
 /**
- * Copy a blob item from source container to destination
- * It will copy blob from srcContainer to the same container name/blob name in destination
+ * Copy a blob item from source container to destination It will copy blob from
+ * srcContainer to the same container name/blob name in destination
  *
- * @param dest destination blob service object
- * @param srcContainer source blob container object
- * @param blobInfo source blob item to copy
- * @param opt copy options
+ * @param dest Destination blob service object
+ * @param srcContainer Source blob container object
+ * @param blobInfo Source blob item to copy
+ * @param opt Copy options
  */
 async function copyBlob(
   dest: BlobService,
@@ -146,18 +134,14 @@ export class BlobService {
     }
   }
 
-  /**
-   * Check if Azure Blob Container of a specific name exists
-   */
+  /** Check if Azure Blob Container of a specific name exists */
   async hasContainer(containerName: string) {
     const client = this.serviceClient.getContainerClient(containerName);
     const exists = await client.exists();
     return exists;
   }
 
-  /**
-   * Get Azure Blob Container of a specific name
-   */
+  /** Get Azure Blob Container of a specific name */
   async getContainer(containerName: string, opt?: ContainerOpt) {
     const client = this.serviceClient.getContainerClient(containerName);
     const exists = await client.exists();
@@ -177,9 +161,7 @@ export class BlobService {
     return new BlobContainer(containerName, client);
   }
 
-  /**
-   * Remove Azure Blob Container of a specific name
-   */
+  /** Remove Azure Blob Container of a specific name */
   async deleteContainer(containerName: string) {
     const exists = await this.hasContainer(containerName);
     if (exists) {
@@ -193,7 +175,7 @@ export class BlobService {
   /**
    * List all files within this blob storage
    *
-   * @param opt options to pass to listDir operation
+   * @param opt Options to pass to listDir operation
    */
   async listDir(opt?: ListDirOpt) {
     const sourceContainers = this.serviceClient.listContainers();
@@ -215,8 +197,8 @@ export class BlobService {
    * Copy all containers from this blob storage to a destination blob storage
    * The destination blob container will be cleared before accepting new files
    *
-   * @param dest destination blob storage
-   * @param opt options to pass to copy operation
+   * @param dest Destination blob storage
+   * @param opt Options to pass to copy operation
    */
   async copyTo(dest: BlobService, opt?: CopyOpt) {
     await this.listDir({

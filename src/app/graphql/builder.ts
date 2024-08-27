@@ -15,9 +15,7 @@ export const builder = new SchemaBuilder<{
     File: { Input: File; Output: never };
   };
   DefaultEdgesNullability: false;
-  /**
-   * Additional connection fields added
-   */
+  /** Additional connection fields added */
   Connection: {
     totalCount: number;
   };

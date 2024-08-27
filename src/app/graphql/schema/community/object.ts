@@ -20,75 +20,44 @@ const supportedSelectItemRef = builder
     }),
   });
 
-/**
- * Member count statistic for each year
- */
+/** Member count statistic for each year */
 interface MemberCountStat {
-  /**
-   * membership year associated to this entry
-   */
+  /** Membership year associated to this entry */
   year: number;
-  /**
-   * Number of households who renewed this year
-   */
+  /** Number of households who renewed this year */
   renew: number;
-  /**
-   * Number of households who joined this year as new member
-   */
+  /** Number of households who joined this year as new member */
   new: number;
-  /**
-   * Number of households who were member last year, but did
-   * not renew this year
-   */
+  /** Number of households who were member last year, but did not renew this year */
   noRenewal: number;
 }
 
-/**
- * Event statistics for a given year
- */
+/** Event statistics for a given year */
 interface EventStat {
-  /**
-   * Event name associated to this entry
-   */
+  /** Event name associated to this entry */
   eventName: string;
-  /**
-   * members who renewed via this event
-   */
+  /** Members who renewed via this event */
   renew: number;
-  /**
-   * members who newly joined member via this event
-   */
+  /** Members who newly joined member via this event */
   new: number;
-  /**
-   * members who have already joined
-   */
+  /** Members who have already joined */
   existing: number;
 }
 
-/**
- * Statistic for the community
- */
+/** Statistic for the community */
 interface CommunityStat {
   /**
-   * unique id representing membership information for all properties
-   * within this community
+   * Unique id representing membership information for all properties within
+   * this community
    */
   id: string;
-  /**
-   * Minimum year represented in membership information
-   */
+  /** Minimum year represented in membership information */
   minYear: number;
-  /**
-   * Maximum year represented in membership information
-   */
+  /** Maximum year represented in membership information */
   maxYear: number;
-  /**
-   * List of all properties within this community
-   */
+  /** List of all properties within this community */
   propertyList: Pick<Property, 'id' | 'membershipList'>[];
-  /**
-   * List of all events
-   */
+  /** List of all events */
   eventList: SupportedSelectItem[];
 }
 
@@ -326,9 +295,7 @@ builder.prismaObject('Community', {
       type: [supportedSelectItemRef],
       resolve: (entry) => entry.paymentMethodList,
     }),
-    /**
-     * Return context user's access document
-     */
+    /** Return context user's access document */
     access: t.prismaField({
       type: 'Access',
       resolve: async (query, parent, args, ctx) => {
@@ -342,9 +309,7 @@ builder.prismaObject('Community', {
         return access;
       },
     }),
-    /**
-     * Return other user's access documents
-     */
+    /** Return other user's access documents */
     otherAccessList: t.prismaField({
       type: ['Access'],
       resolve: async (query, parent, args, ctx) => {
@@ -359,8 +324,7 @@ builder.prismaObject('Community', {
       },
     }),
     /**
-     * Generate relay style pagination using
-     * offset/limit arguments
+     * Generate relay style pagination using offset/limit arguments
      *
      * Use custom implementation to enable text search
      */
@@ -425,16 +389,14 @@ builder.prismaObject('Community', {
       },
     }),
     /**
-     * Relay cursor pagination for propertyList
-     * easy to implement, but does not support full text search
+     * Relay cursor pagination for propertyList easy to implement, but does not
+     * support full text search
      */
     // propertyConnectionList: t.relatedConnection('propertyList', {
     //   cursor: 'id',
     //   totalCount: true,
     // }),
-    /**
-     * Select a property by ID
-     */
+    /** Select a property by ID */
     propertyFromId: t.prismaField({
       type: 'Property',
       args: {
@@ -450,8 +412,8 @@ builder.prismaObject('Community', {
       },
     }),
     /**
-     * Return statistics for community
-     * Primary purpose is for rendering dashboard information
+     * Return statistics for community Primary purpose is for rendering
+     * dashboard information
      */
     communityStat: t.field({
       type: communityStatRef,

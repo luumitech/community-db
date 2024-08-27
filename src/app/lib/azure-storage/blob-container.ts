@@ -23,9 +23,7 @@ import { streamToBuffer, streamToString } from '~/lib/file-util';
 export { type TransferProgressEvent } from '@azure/core-http';
 export { type BlobItem } from '@azure/storage-blob';
 
-/**
- * Return name of blob or blob item
- */
+/** Return name of blob or blob item */
 export function getBlobName(blob: string | BlobItem) {
   if (typeof blob === 'string') {
     return blob;
@@ -52,11 +50,14 @@ export class BlobContainer {
    * Can optionally list a specific version of blob items
    *
    * @example
-   *   const listBlobOpt = { versionId: "2022-01-01" };
-   *   for await (const blobInfo of container.listBlobs(listBlobOpt)) {
-   *      // blob with versionId with prefix "2022-01-01"
-   *      const { blob, versionId } = blobInfo;
-   *   }
+   *
+   * ```js
+   * const listBlobOpt = { versionId: '2022-01-01' };
+   * for await (const blobInfo of container.listBlobs(listBlobOpt)) {
+   *   // blob with versionId with prefix "2022-01-01"
+   *   const { blob, versionId } = blobInfo;
+   * }
+   * ```
    */
   listBlobsFlat(opt?: ListBlobOpt) {
     const blobIterator = new BlobIterator(this.client, opt);
@@ -66,20 +67,23 @@ export class BlobContainer {
   /**
    * Async iterator for looping through all blobs by hierarchy within container.
    *
-   * {@link BLOB_HIERARCHY_DELIMITER} is the default delimiter.
-   * Can optionally specify a different delimiter in {@link ListBlobHierarchyOpt}
+   * {@link BLOB_HIERARCHY_DELIMITER} is the default delimiter. Can optionally
+   * specify a different delimiter in {@link ListBlobHierarchyOpt}
    *
    * Can optionally list a specific version of blob items
    *
    * For example, for a container with the following content:
-   * - blob1
-   * - blob2
-   * - folder1/blob3
-   * - folder1/blob4
-   * - folder1/subfolder/blob5
-   * - folder1/subfolder/blob6
+   *
+   * - Blob1
+   * - Blob2
+   * - Folder1/blob3
+   * - Folder1/blob4
+   * - Folder1/subfolder/blob5
+   * - Folder1/subfolder/blob6
    *
    * @example
+   *
+   * ```js
    *  let blobNames: string[] = [];
    *  const blobs = container.listBlobsByHierarchy()
    *  for await (const blobInfo of blobs) {
@@ -93,8 +97,9 @@ export class BlobContainer {
    *    blobNames.push(blobInfo.blobName);
    *  }
    *  expect(blobNames).toIncludeSameMembers(['blob5', 'blob6']);
+   * ```
    *
-   * @param opt list options
+   * @param opt List options
    * @returns
    */
   listBlobsByHierarchy(opt?: ListBlobHierarchyOpt) {
@@ -102,9 +107,7 @@ export class BlobContainer {
     return blobIterator.iter();
   }
 
-  /**
-   * Get Blob client for download purpose
-   */
+  /** Get Blob client for download purpose */
   private getBlobClient(input: string | BlobItem) {
     if (typeof input === 'string') {
       return this.client.getBlobClient(input);
@@ -122,8 +125,9 @@ export class BlobContainer {
 
   /**
    * Check if blob name exists
-   * @param input blob name
-   * @returns blob client if exists, null otherwise
+   *
+   * @param input Blob name
+   * @returns Blob client if exists, null otherwise
    */
   async exists(input: string | BlobItem) {
     const blobClient = this.getBlobClient(input);
@@ -134,7 +138,7 @@ export class BlobContainer {
   /**
    * Check if specified directory exists
    *
-   * @returns true if directory exists, false otherwise
+   * @returns True if directory exists, false otherwise
    */
   async dirExists(dir: string) {
     const iter = this.listBlobsByHierarchy({ prefix: dir });
@@ -156,9 +160,9 @@ export class BlobContainer {
   /**
    * Upload content to blob storage
    *
-   * @param blobName blob name
-   * @param content blob content
-   * @param contentLength content length
+   * @param blobName Blob name
+   * @param content Blob content
+   * @param contentLength Content length
    */
   async upload(
     blobName: string,
@@ -176,8 +180,8 @@ export class BlobContainer {
   /**
    * Upload stream to blob storage
    *
-   * @param blobName blob name
-   * @param stream readable stream
+   * @param blobName Blob name
+   * @param stream Readable stream
    */
   async uploadStream(
     blobName: string,
@@ -200,9 +204,9 @@ export class BlobContainer {
   /**
    * Get readable stream from blob
    *
-   * @param blob blob name or blob item
-   * @param opt additional download option (i.e. progress)
-   * @returns readable stream
+   * @param blob Blob name or blob item
+   * @param opt Additional download option (i.e. progress)
+   * @returns Readable stream
    */
   async getAsStream(blob: string | BlobItem, opt?: BlobDownloadOptions) {
     const blobClient = await this.exists(blob);
@@ -224,8 +228,8 @@ export class BlobContainer {
   /**
    * Get Node Buffer from blob
    *
-   * @param blob blob name or blob item
-   * @param opt additional download option (i.e. progress)
+   * @param blob Blob name or blob item
+   * @param opt Additional download option (i.e. progress)
    * @returns Node buffer
    */
   async getAsBuffer(blob: string | BlobItem, opt?: BlobDownloadOptions) {
@@ -236,8 +240,8 @@ export class BlobContainer {
   /**
    * Get String from blob
    *
-   * @param blob blob name or blob item
-   * @param opt additional download option (i.e. progress)
+   * @param blob Blob name or blob item
+   * @param opt Additional download option (i.e. progress)
    * @returns Node buffer
    */
   async getAsString(blob: string | BlobItem, opt?: BlobDownloadOptions) {
@@ -246,12 +250,12 @@ export class BlobContainer {
   }
 
   /**
-   * Get a SAS Url for accessing blob
-   * By default:
-   * - URL will be available for 10 minutes
-   * - permission is set to read only
+   * Get a SAS Url for accessing blob By default:
    *
-   * @param blob blob name or blob item
+   * - URL will be available for 10 minutes
+   * - Permission is set to read only
+   *
+   * @param blob Blob name or blob item
    * @param options BlobGenerateSasUrlOptions
    * @returns URL to access blob
    */
@@ -286,16 +290,14 @@ export class BlobContainer {
   /**
    * Remove a blob
    *
-   * @param blob blob name or blob item
+   * @param blob Blob name or blob item
    */
   async delete(blob: string | BlobItem) {
     const blobClient = this.getBlobClient(blob);
     return blobClient.deleteIfExists();
   }
 
-  /**
-   * Delete all blobs within container
-   */
+  /** Delete all blobs within container */
   async deleteAll(prefix?: string) {
     // List all blobs within the container matching prefix
     const blobs = this.listBlobsFlat({ prefix });

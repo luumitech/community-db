@@ -9,8 +9,8 @@ import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
 
 export interface ButtonProps extends NextUIButtonProps {
   /**
-   * Pop up a modal dialog to serve as additional confirmation
-   * before calling the onPress action
+   * Pop up a modal dialog to serve as additional confirmation before calling
+   * the onPress action
    */
   confirmation?: boolean;
   confirmationArg?: ConfirmationModalArg;
@@ -51,8 +51,8 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
         onPress={customOnPress}
         {...props}
         /**
-         * When confirmation dialog is enabled, need to handle
-         * submit/reset type manually
+         * When confirmation dialog is enabled, need to handle submit/reset type
+         * manually
          */
         {...(confirmation && { type: 'button' })}
       />
