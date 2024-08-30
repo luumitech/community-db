@@ -20,13 +20,13 @@ export const RoleDescription: React.FC<Props> = ({ className }) => {
           </RoleItem>
           <RoleItem role="Editor">
             <span>
-              Grant <span className="font-bold">Viewer</span> access
+              In addition to <span className="font-bold">Viewer</span> role:
             </span>
             <span>Modify data within database</span>
           </RoleItem>
           <RoleItem role="Admin">
             <span>
-              Grant <span className="font-bold">Editor</span> access
+              In addition to <span className="font-bold">Editor</span> role:
             </span>
             <span>Add or remove user access</span>
           </RoleItem>

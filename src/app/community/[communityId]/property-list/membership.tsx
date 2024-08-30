@@ -40,11 +40,11 @@ export const Membership: React.FC<Props> = ({
   return (
     <div className={className}>
       {!!membership?.isMember && (
-        <Tooltip content={eventInfo}>
-          <span className="text-xl">
-            <Icon icon="checkmark" />
-          </span>
-        </Tooltip>
+        // <Tooltip content={eventInfo}>
+        <span className="text-xl">
+          <Icon icon="checkmark" />
+        </span>
+        // </Tooltip>
       )}
     </div>
   );

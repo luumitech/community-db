@@ -112,8 +112,12 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     onClose: onModalClose,
   });
 
-  return { disclosure, formMethods };
+  return { disclosure, formMethods, fragment };
 }
+
+export type UseHookFormWithDisclosureResult = ReturnType<
+  typeof useHookFormWithDisclosure
+>;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();

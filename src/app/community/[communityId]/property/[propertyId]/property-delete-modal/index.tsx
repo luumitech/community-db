@@ -5,19 +5,19 @@ import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { CommunityEntry } from '../_type';
+import { PropertyEntry } from '../_type';
 import { DeleteModal } from './delete-modal';
 
 export const DeleteFragment = graphql(/* GraphQL */ `
-  fragment CommunityId_CommunityDeleteModal on Community {
+  fragment PropertyId_PropertyDelete on Property {
     id
-    name
+    address
   }
 `);
 
-const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityDelete($id: String!) {
-    communityDelete(id: $id) {
+const PropertyMutation = graphql(/* GraphQL */ `
+  mutation propertyDelete($id: String!) {
+    propertyDelete(id: $id) {
       id
     }
   }
@@ -25,27 +25,29 @@ const CommunityMutation = graphql(/* GraphQL */ `
 
 interface Props {
   disclosure: UseDisclosureReturn;
-  fragment: CommunityEntry;
+  communityId: string;
+  fragment: PropertyEntry;
 }
 
-export const CommunityDeleteModal: React.FC<Props> = ({
+export const PropertyDeleteModal: React.FC<Props> = ({
   disclosure,
+  communityId,
   fragment,
 }) => {
   const router = useRouter();
-  const [deleteCommunity] = useMutation(CommunityMutation);
+  const [deleteProperty] = useMutation(PropertyMutation);
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
-      deleteCommunity({
+      deleteProperty({
         variables: { id: fragment.id },
         onCompleted: () => {
-          router.push(appPath('communitySelect'));
+          router.push(appPath('propertyList', { communityId }));
         },
         update: (cache) => {
           const normalizedId = cache.identify({
             id: fragment.id,
-            __typename: 'Community',
+            __typename: 'Property',
           });
           /** Add timeout to make sure route is changed before updating the cache */
           setTimeout(() => {
@@ -59,7 +61,7 @@ export const CommunityDeleteModal: React.FC<Props> = ({
         success: 'Deleted',
       }
     );
-  }, [deleteCommunity, fragment, router]);
+  }, [deleteProperty, fragment, router]);
 
   return (
     <DeleteModal

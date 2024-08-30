@@ -1,13 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { Button } from '@nextui-org/react';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
-import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
-import { type PropertyEntry } from '../_type';
 import { ModalDialog } from './modal-dialog';
-import { InputData, useHookFormWithDisclosure } from './use-hook-form';
+import { InputData, UseHookFormWithDisclosureResult } from './use-hook-form';
+
+export { useHookFormWithDisclosure } from './use-hook-form';
+export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
 const OccupantMutation = graphql(/* GraphQL */ `
   mutation occupantModify($input: PropertyModifyInput!) {
@@ -19,11 +19,14 @@ const OccupantMutation = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment: PropertyEntry;
+  hookForm: UseHookFormWithDisclosureResult;
 }
 
-export const OccupantEditor: React.FC<Props> = ({ className, fragment }) => {
-  const { formMethods, disclosure } = useHookFormWithDisclosure(fragment);
+export const OccupantEditorModal: React.FC<Props> = ({
+  className,
+  hookForm,
+}) => {
+  const { formMethods, disclosure } = hookForm;
   const { formState } = formMethods;
   const [updateProperty] = useMutation(OccupantMutation);
 
@@ -45,13 +48,6 @@ export const OccupantEditor: React.FC<Props> = ({ className, fragment }) => {
   return (
     <div className={className}>
       <FormProvider {...formMethods}>
-        <Button
-          size="sm"
-          endContent={<Icon icon="edit" />}
-          {...disclosure.getButtonProps()}
-        >
-          Edit Member Details
-        </Button>
         <ModalDialog disclosureProps={disclosure} onSave={onSave} />
       </FormProvider>
     </div>
