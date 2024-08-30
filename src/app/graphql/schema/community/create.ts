@@ -1,5 +1,6 @@
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
+import { verifyAccess } from '../access/util';
 
 const CommunityCreateInput = builder.inputType('CommunityCreateInput', {
   fields: (t) => ({

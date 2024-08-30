@@ -8,35 +8,40 @@ import { DeleteModal } from './delete-modal';
 import { type UseHookFormWithDisclosureResult } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
+export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
-const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityDelete($id: String!) {
-    communityDelete(id: $id) {
+const PropertyMutation = graphql(/* GraphQL */ `
+  mutation propertyDelete($id: String!) {
+    propertyDelete(id: $id) {
       id
     }
   }
 `);
 
 interface Props {
+  communityId: string;
   hookForm: UseHookFormWithDisclosureResult;
 }
 
-export const CommunityDeleteModal: React.FC<Props> = ({ hookForm }) => {
+export const PropertyDeleteModal: React.FC<Props> = ({
+  communityId,
+  hookForm,
+}) => {
   const router = useRouter();
-  const [deleteCommunity] = useMutation(CommunityMutation);
-  const { community } = hookForm;
+  const [deleteProperty] = useMutation(PropertyMutation);
+  const { property, disclosure } = hookForm;
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
-      deleteCommunity({
-        variables: { id: community.id },
+      deleteProperty({
+        variables: { id: property.id },
         onCompleted: () => {
-          router.push(appPath('communitySelect'));
+          router.push(appPath('propertyList', { communityId }));
         },
         update: (cache) => {
           const normalizedId = cache.identify({
-            id: community.id,
-            __typename: 'Community',
+            id: property.id,
+            __typename: 'Property',
           });
           /** Add timeout to make sure route is changed before updating the cache */
           setTimeout(() => {
@@ -50,7 +55,7 @@ export const CommunityDeleteModal: React.FC<Props> = ({ hookForm }) => {
         success: 'Deleted',
       }
     );
-  }, [deleteCommunity, community, router]);
+  }, [deleteProperty, property, communityId, router]);
 
   return <DeleteModal hookForm={hookForm} onDelete={onDelete} />;
 };

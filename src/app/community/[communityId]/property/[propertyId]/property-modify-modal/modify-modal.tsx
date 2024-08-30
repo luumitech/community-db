@@ -5,26 +5,23 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
-import type { AccessEntry } from '../_type';
-import { RoleEditor } from './role-editor';
-import { InputData, ModifyFragment, useHookFormContext } from './use-hook-form';
+import { LastModified } from '~/view/last-modified';
+import { AddressEditor } from './address-editor';
+import {
+  useHookFormContext,
+  type InputData,
+  type UseHookFormWithDisclosureResult,
+} from './use-hook-form';
 
 interface Props {
-  disclosure: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
-  fragment: AccessEntry;
 }
 
-export const ModifyModal: React.FC<Props> = ({
-  disclosure,
-  onSave,
-  fragment,
-}) => {
-  const access = getFragment(ModifyFragment, fragment);
+export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
+  const { disclosure, property } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();
@@ -56,9 +53,14 @@ export const ModifyModal: React.FC<Props> = ({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
+          <ModalHeader>Edit Property</ModalHeader>
           <ModalBody>
-            <RoleEditor />
+            <AddressEditor />
+            <LastModified
+              className="text-right"
+              updatedAt={property.updatedAt}
+              userFragment={property.updatedBy}
+            />
           </ModalBody>
           <ModalFooter>
             <Button variant="bordered" confirmation={isDirty} onPress={onClose}>

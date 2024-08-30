@@ -90,6 +90,7 @@ function defaultInputData(fragment: PropertyEntry): DefaultData {
 }
 
 export function useHookFormWithDisclosure(fragment: PropertyEntry) {
+  const property = getFragment(OccupantEditorFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),
@@ -112,8 +113,12 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     onClose: onModalClose,
   });
 
-  return { disclosure, formMethods };
+  return { disclosure, formMethods, property };
 }
+
+export type UseHookFormWithDisclosureResult = ReturnType<
+  typeof useHookFormWithDisclosure
+>;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();

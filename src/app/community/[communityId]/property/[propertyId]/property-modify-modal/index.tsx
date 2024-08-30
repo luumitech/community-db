@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
+import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { ModifyModal } from './modify-modal';
 import {
@@ -10,34 +11,42 @@ import {
 } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
+export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
-const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityModify($input: CommunityModifyInput!) {
-    communityModify(input: $input) {
-      ...CommunityId_CommunityModifyModal
+const PropertyMutation = graphql(/* GraphQL */ `
+  mutation propertyModify($input: PropertyModifyInput!) {
+    propertyModify(input: $input) {
+      ...PropertyId_PropertyEditor
     }
   }
 `);
 
 interface Props {
+  communityId: string;
   hookForm: UseHookFormWithDisclosureResult;
 }
 
-export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
-  const [updateCommunity] = useMutation(CommunityMutation);
+export const PropertyModifyModal: React.FC<Props> = ({
+  communityId,
+  hookForm,
+}) => {
+  const [updateProperty] = useMutation(PropertyMutation);
   const { formMethods } = hookForm;
 
   const onSave = React.useCallback(
-    async (_input: InputData) => {
+    async (input: InputData) => {
       if (!formMethods.formState.isDirty) {
         return;
       }
 
-      // hidden is not saved in server
-      const { hidden, ...input } = _input;
       await toast.promise(
-        updateCommunity({
+        updateProperty({
           variables: { input },
+          refetchQueries: [
+            // Updating property address may cause property to change order within
+            // the property list
+            { query: CommunityFromIdDocument, variables: { id: communityId } },
+          ],
         }),
         {
           pending: 'Saving...',
@@ -45,7 +54,7 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, updateCommunity]
+    [formMethods.formState, updateProperty, communityId]
   );
 
   return (

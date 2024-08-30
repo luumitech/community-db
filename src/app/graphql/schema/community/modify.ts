@@ -197,7 +197,7 @@ builder.mutationField('communityImport', (t) =>
       const { id: shortId, method, xlsx } = args.input;
 
       // Make sure user has permission to modify
-      await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
+      await verifyAccess(user, { shortId }, [Role.ADMIN]);
 
       let workbook;
       switch (method) {

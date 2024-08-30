@@ -25,7 +25,7 @@ function indentMenuItem(label: string, indentLevel = 0) {
 /** Controls content of hamburger menu located on the left of the header */
 export function useNavMenu() {
   const pathname = usePathname();
-  const { canEdit } = useAppContext();
+  const { isAdmin } = useAppContext();
 
   /** Return menu arg for a given pathname */
   const pathMenuArg = React.useCallback(
@@ -103,7 +103,7 @@ export function useNavMenu() {
         }
       );
 
-      if (canEdit) {
+      if (isAdmin) {
         items.push({
           id: 'import-xlsx',
           ...pathMenuArg(appPath('communityImport', { communityId })),
@@ -129,7 +129,7 @@ export function useNavMenu() {
         }
       );
     }
-  }, [pathname, pathMenuArg, canEdit]);
+  }, [pathname, pathMenuArg, isAdmin]);
 
   return menuItems;
 }

@@ -5,26 +5,24 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
-import { PropertyEntry } from '../_type';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { NotesEditor } from './notes-editor';
-import { InputData, useHookFormContext } from './use-hook-form';
+import {
+  InputData,
+  UseHookFormWithDisclosureResult,
+  useHookFormContext,
+} from './use-hook-form';
 
 interface Props {
-  fragment: PropertyEntry;
-  disclosureProps: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({
-  fragment,
-  disclosureProps,
-  onSave,
-}) => {
-  const { isOpen, onOpenChange, onClose } = disclosureProps;
+export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
+  const { disclosure } = hookForm;
+  const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();
   const { isDirty } = formState;

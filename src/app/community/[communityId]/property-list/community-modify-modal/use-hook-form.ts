@@ -10,7 +10,7 @@ import {
 import { getFragment, graphql } from '~/graphql/generated';
 import { CommunityEntry } from '../_type';
 
-export const ModifyFragment = graphql(/* GraphQL */ `
+const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityModifyModal on Community {
     id
     name
@@ -25,14 +25,6 @@ export const ModifyFragment = graphql(/* GraphQL */ `
     updatedAt
     updatedBy {
       ...User
-    }
-  }
-`);
-
-export const CommunityMutation = graphql(/* GraphQL */ `
-  mutation communityModify($input: CommunityModifyInput!) {
-    communityModify(input: $input) {
-      ...CommunityId_CommunityModifyModal
     }
   }
 `);
@@ -103,6 +95,7 @@ function defaultInputData(fragment: CommunityEntry): DefaultData {
 }
 
 export function useHookFormWithDisclosure(fragment: CommunityEntry) {
+  const community = getFragment(ModifyFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),
@@ -125,7 +118,7 @@ export function useHookFormWithDisclosure(fragment: CommunityEntry) {
     onClose: onModalClose,
   });
 
-  return { disclosure, formMethods, fragment };
+  return { disclosure, formMethods, community };
 }
 
 export type UseHookFormWithDisclosureResult = ReturnType<

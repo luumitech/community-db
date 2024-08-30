@@ -5,29 +5,25 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
 import { LastModified } from '~/view/last-modified';
-import { ModifyFragment, type CommunityEntry } from '../_type';
 import { EventListEditor } from './event-list-editor';
 import { NameEditor } from './name-editor';
 import { PaymentMethodListEditor } from './payment-method-list-editor';
-import { InputData, useHookFormContext } from './use-hook-form';
+import {
+  InputData,
+  useHookFormContext,
+  type UseHookFormWithDisclosureResult,
+} from './use-hook-form';
 
 interface Props {
-  fragment: CommunityEntry;
-  disclosure: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModifyModal: React.FC<Props> = ({
-  fragment,
-  disclosure,
-  onSave,
-}) => {
-  const community = getFragment(ModifyFragment, fragment);
+export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
+  const { community, disclosure } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

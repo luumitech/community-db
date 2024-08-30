@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const DeleteModal: React.FC<Props> = ({ hookForm, onDelete }) => {
-  const { disclosure, community } = hookForm;
+  const { disclosure, property } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
 
@@ -44,11 +44,11 @@ export const DeleteModal: React.FC<Props> = ({ hookForm, onDelete }) => {
       hideCloseButton
     >
       <ModalContent>
-        <ModalHeader>Delete Community</ModalHeader>
+        <ModalHeader>Delete Property</ModalHeader>
         <ModalBody>
           <div>
-            This will delete community &apos;{community.name}&apos; and all data
-            within it.
+            This will delete property &apos;{property.address}&apos; and all
+            data within it.
           </div>
         </ModalBody>
         <ModalFooter>

@@ -1,16 +1,11 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import { Divider } from '@nextui-org/react';
+import { Skeleton, Spinner } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
-import { LastModified } from '~/view/last-modified';
-import { MembershipDisplay } from './membership-display';
-import { MembershipEditor } from './membership-editor';
-import { OccupantDisplay } from './occupant-display';
-import { OccupantEditor } from './occupant-editor';
-import { PropertyDisplay } from './property-display';
+import { PageContent } from './page-content';
 
 interface Params {
   communityId: string;
@@ -31,11 +26,13 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
         updatedBy {
           ...User
         }
+        ...PropertyId_PropertyEditor
         ...PropertyId_MembershipDisplay
         ...PropertyId_MembershipEditor
         ...PropertyId_OccupantDisplay
         ...PropertyId_OccupantEditor
         ...PropertyId_PropertyDisplay
+        ...PropertyId_PropertyDelete
       }
     }
   }
@@ -51,27 +48,11 @@ export default function Property({ params }: RouteArgs) {
     },
   });
   useGraphqlErrorHandler(result);
-  const { canEdit } = useAppContext();
   const community = result.data?.communityFromId;
   const property = community?.propertyFromId;
 
-  return (
-    <div className="flex flex-col gap-3">
-      <PropertyDisplay fragment={property} isLoading={result.loading} />
-      <Divider />
-      {property && (
-        <>
-          <MembershipDisplay fragment={property} />
-          {canEdit && <MembershipEditor fragment={property} />}
-          <OccupantDisplay fragment={property} />
-          {canEdit && <OccupantEditor fragment={property} />}
-          <LastModified
-            className="text-right"
-            updatedAt={property.updatedAt}
-            userFragment={property.updatedBy}
-          />
-        </>
-      )}
-    </div>
-  );
+  if (!community || !property) {
+    return <Skeleton className="h-main-height" />;
+  }
+  return <PageContent community={community} property={property} />;
 }

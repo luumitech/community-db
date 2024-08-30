@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Property, Role, SupportedSelectItem } from '@prisma/client';
-import { EJSON } from 'bson';
+import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import hash from 'object-hash';
 import * as R from 'remeda';
@@ -51,6 +51,8 @@ interface CommunityStat {
    * this community
    */
   id: string;
+  /** Community Id */
+  communityId: string;
   /** Minimum year represented in membership information */
   minYear: number;
   /** Maximum year represented in membership information */
@@ -109,6 +111,27 @@ const communityStatRef = builder
       }),
       maxYear: t.exposeInt('maxYear', {
         description: 'Maximum year represented in membership information',
+      }),
+      dbSize: t.field({
+        description: 'bytes used to store all properties within community',
+        type: 'Int',
+        resolve: async (parent, args, ctx) => {
+          const { communityId } = parent;
+          const aggr = await prisma.property.aggregateRaw({
+            pipeline: [
+              { $match: { communityId: { $oid: communityId } } },
+              {
+                $group: { _id: null, size: { $sum: { $bsonSize: '$$ROOT' } } },
+              },
+            ],
+          });
+          // aggregateRaw returns items encoded in EJSON format
+          // So it's necessary to convert it back to normal JSON
+          const result: {
+            size: number;
+          }[] = EJSON.parse(EJSON.stringify(aggr));
+          return result[0].size;
+        },
       }),
       memberCountStat: t.field({
         description: 'Member count statistic for each year',
@@ -418,8 +441,9 @@ builder.prismaObject('Community', {
     communityStat: t.field({
       type: communityStatRef,
       resolve: async (parent, args, ctx) => {
+        const communityId = parent.id;
         const propertyList = await prisma.property.findMany({
-          where: { communityId: parent.id },
+          where: { communityId },
           select: { id: true, membershipList: true },
         });
         let minYear = Infinity;
@@ -435,6 +459,7 @@ builder.prismaObject('Community', {
 
         return {
           id: hash(propertyList),
+          communityId,
           minYear: isFinite(minYear) ? minYear : 0,
           maxYear: isFinite(maxYear) ? maxYear : 0,
           eventList: parent.eventList,

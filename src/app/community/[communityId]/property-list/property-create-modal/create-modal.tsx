@@ -5,33 +5,25 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
-import { Icon } from '~/view/base/icon';
-import { Editor } from './editor';
+import { AddressEditor } from './address-editor';
 import {
-  InputData,
-  occupantDefault,
   useHookFormContext,
+  type InputData,
+  type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
 interface Props {
-  disclosureProps: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
-  const { isOpen, onOpenChange, onClose } = disclosureProps;
+export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
+  const { disclosure } = hookForm;
+  const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { control, formState, handleSubmit } = useHookFormContext();
-
-  const { isDirty } = formState;
-  const occupantMethods = useFieldArray({
-    control,
-    name: 'occupantList',
-  });
+  const { handleSubmit, formState } = useHookFormContext();
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -52,34 +44,27 @@ export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       placement="top-center"
-      scrollBehavior="outside"
+      scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
       hideCloseButton
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Member Details</ModalHeader>
+          <ModalHeader>Create Property</ModalHeader>
           <ModalBody>
-            <Editor fieldArrayMethods={occupantMethods} />
+            <AddressEditor />
           </ModalBody>
           <ModalFooter>
-            <Button
-              endContent={<Icon icon="person-add" />}
-              onPress={() => occupantMethods.append(occupantDefault)}
-            >
-              Add Member
-            </Button>
-            <div className="flex-grow" />
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
+            <Button variant="bordered" onPress={onClose}>
               Cancel
             </Button>
             <Button
-              type="submit"
               color="primary"
+              type="submit"
               isDisabled={!formState.isDirty || pending}
             >
-              Save
+              Create
             </Button>
           </ModalFooter>
         </ModalContent>
