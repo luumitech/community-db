@@ -43,6 +43,7 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
       id
       ...CommunityId_CommunityModifyModal
       ...CommunityId_CommunityDeleteModal
+      ...CommunityId_PropertyCreateModal
       propertyList(first: $first, after: $after, search: $search) {
         pageInfo {
           hasNextPage

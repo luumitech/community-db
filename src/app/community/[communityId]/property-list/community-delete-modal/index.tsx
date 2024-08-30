@@ -1,19 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { CommunityEntry } from '../_type';
 import { DeleteModal } from './delete-modal';
+import { type UseHookFormWithDisclosureResult } from './use-hook-form';
 
-export const DeleteFragment = graphql(/* GraphQL */ `
-  fragment CommunityId_CommunityDeleteModal on Community {
-    id
-    name
-  }
-`);
+export { useHookFormWithDisclosure } from './use-hook-form';
 
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityDelete($id: String!) {
@@ -24,27 +18,24 @@ const CommunityMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  disclosure: UseDisclosureReturn;
-  fragment: CommunityEntry;
+  hookForm: UseHookFormWithDisclosureResult;
 }
 
-export const CommunityDeleteModal: React.FC<Props> = ({
-  disclosure,
-  fragment,
-}) => {
+export const CommunityDeleteModal: React.FC<Props> = ({ hookForm }) => {
   const router = useRouter();
   const [deleteCommunity] = useMutation(CommunityMutation);
+  const { community } = hookForm;
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
       deleteCommunity({
-        variables: { id: fragment.id },
+        variables: { id: community.id },
         onCompleted: () => {
           router.push(appPath('communitySelect'));
         },
         update: (cache) => {
           const normalizedId = cache.identify({
-            id: fragment.id,
+            id: community.id,
             __typename: 'Community',
           });
           /** Add timeout to make sure route is changed before updating the cache */
@@ -59,13 +50,7 @@ export const CommunityDeleteModal: React.FC<Props> = ({
         success: 'Deleted',
       }
     );
-  }, [deleteCommunity, fragment, router]);
+  }, [deleteCommunity, community, router]);
 
-  return (
-    <DeleteModal
-      fragment={fragment}
-      disclosure={disclosure}
-      onDelete={onDelete}
-    />
-  );
+  return <DeleteModal hookForm={hookForm} onDelete={onDelete} />;
 };

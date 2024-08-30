@@ -39,7 +39,6 @@ builder.mutationField('propertyDelete', (t) =>
       // Make sure user has permission to delete
       await verifyAccess(user, { shortId: entry.community.shortId }, [
         Role.ADMIN,
-        Role.EDITOR,
       ]);
 
       const property = await prisma.property.delete({

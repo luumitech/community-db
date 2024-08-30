@@ -1,19 +1,14 @@
 import { useMutation } from '@apollo/client';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { PropertyEntry } from '../_type';
 import { DeleteModal } from './delete-modal';
+import { type UseHookFormWithDisclosureResult } from './use-hook-form';
 
-export const DeleteFragment = graphql(/* GraphQL */ `
-  fragment PropertyId_PropertyDelete on Property {
-    id
-    address
-  }
-`);
+export { useHookFormWithDisclosure } from './use-hook-form';
+export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyDelete($id: String!) {
@@ -24,29 +19,28 @@ const PropertyMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  disclosure: UseDisclosureReturn;
   communityId: string;
-  fragment: PropertyEntry;
+  hookForm: UseHookFormWithDisclosureResult;
 }
 
 export const PropertyDeleteModal: React.FC<Props> = ({
-  disclosure,
   communityId,
-  fragment,
+  hookForm,
 }) => {
   const router = useRouter();
   const [deleteProperty] = useMutation(PropertyMutation);
+  const { property, disclosure } = hookForm;
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
       deleteProperty({
-        variables: { id: fragment.id },
+        variables: { id: property.id },
         onCompleted: () => {
           router.push(appPath('propertyList', { communityId }));
         },
         update: (cache) => {
           const normalizedId = cache.identify({
-            id: fragment.id,
+            id: property.id,
             __typename: 'Property',
           });
           /** Add timeout to make sure route is changed before updating the cache */
@@ -61,13 +55,7 @@ export const PropertyDeleteModal: React.FC<Props> = ({
         success: 'Deleted',
       }
     );
-  }, [deleteProperty, fragment, router]);
+  }, [deleteProperty, property, communityId, router]);
 
-  return (
-    <DeleteModal
-      fragment={fragment}
-      disclosure={disclosure}
-      onDelete={onDelete}
-    />
-  );
+  return <DeleteModal hookForm={hookForm} onDelete={onDelete} />;
 };

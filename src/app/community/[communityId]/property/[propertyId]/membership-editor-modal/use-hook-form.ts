@@ -142,6 +142,7 @@ export function useHookFormWithDisclosure(
   fragment: PropertyEntry,
   yearSelected: string
 ) {
+  const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(fragment, yearSelected),
     [fragment, yearSelected]
@@ -168,7 +169,7 @@ export function useHookFormWithDisclosure(
     onClose: onModalClose,
   });
 
-  return { disclosure, formMethods, fragment };
+  return { disclosure, formMethods, property };
 }
 
 export type UseHookFormWithDisclosureResult = ReturnType<

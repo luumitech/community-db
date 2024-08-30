@@ -4,31 +4,20 @@ import React from 'react';
 import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
-import { PropertyEntry } from '../_type';
+import { CommunityEntry } from '../_type';
 
-const PropertyEditorFragment = graphql(/* GraphQL */ `
-  fragment PropertyId_PropertyEditor on Property {
+const CreateFragment = graphql(/* GraphQL */ `
+  fragment CommunityId_PropertyCreateModal on Community {
     id
-    updatedAt
-    updatedBy {
-      ...User
-    }
-    address
-    streetNo
-    streetName
-    postalCode
   }
 `);
 
 function schema() {
   return yup.object({
-    self: yup.object({
-      id: yup.string().required(),
-      updatedAt: yup.string().required(),
-    }),
-    address: yup.string(),
-    streetNo: yup.string(),
-    streetName: yup.string(),
+    communityId: yup.string().required(),
+    address: yup.string().required('Please provide an address'),
+    streetNo: yup.string().required('Please provide a street number'),
+    streetName: yup.string().required('Please provide a street name'),
     postalCode: yup.string(),
   });
 }
@@ -36,23 +25,18 @@ function schema() {
 export type InputData = ReturnType<typeof schema>['__outputType'];
 type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(fragment: PropertyEntry): DefaultData {
-  const item = getFragment(PropertyEditorFragment, fragment);
-
+function defaultInputData(fragment: CommunityEntry): DefaultData {
   return {
-    self: {
-      id: item.id,
-      updatedAt: item.updatedAt,
-    },
-    address: item.address,
-    streetNo: item.streetNo ?? '',
-    streetName: item.streetName ?? '',
-    postalCode: item.postalCode ?? '',
+    communityId: fragment.id,
+    address: '',
+    streetNo: '',
+    streetName: '',
+    postalCode: '',
   };
 }
 
-export function useHookFormWithDisclosure(fragment: PropertyEntry) {
-  const property = getFragment(PropertyEditorFragment, fragment);
+export function useHookFormWithDisclosure(fragment: CommunityEntry) {
+  const community = getFragment(CreateFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
     resolver: yupResolver(schema()),
@@ -75,7 +59,7 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     onClose: onModalClose,
   });
 
-  return { disclosure, formMethods, property };
+  return { disclosure, formMethods, community };
 }
 
 export type UseHookFormWithDisclosureResult = ReturnType<

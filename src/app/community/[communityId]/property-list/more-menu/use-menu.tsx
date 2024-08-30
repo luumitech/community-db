@@ -9,33 +9,18 @@ interface MenuItemEntry extends DropdownItemProps {}
 
 interface MoreMenuOpt {
   communityId: string;
-  modifyButtonProps: UseDisclosureReturn['getButtonProps'];
-  deleteButtonProps: UseDisclosureReturn['getButtonProps'];
+  communityModifyButtonProps: UseDisclosureReturn['getButtonProps'];
+  communityDeleteButtonProps: UseDisclosureReturn['getButtonProps'];
+  propertyCreateButtonProps: UseDisclosureReturn['getButtonProps'];
 }
 
 /** Controls content of menu items within more menu */
 export function useMoreMenu(opt: MoreMenuOpt) {
-  const { canEdit } = useAppContext();
+  const { canEdit, isAdmin } = useAppContext();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
-    const { communityId, modifyButtonProps, deleteButtonProps } = opt;
-
-    if (canEdit) {
-      items.push(
-        {
-          key: 'modify',
-          ...modifyButtonProps(),
-          showDivider: true,
-          children: 'Modify Community',
-        },
-        {
-          key: 'import',
-          href: appPath('communityImport', { communityId }),
-          children: appLabel('communityImport'),
-        }
-      );
-    }
+    const { communityId } = opt;
 
     items.push(
       {
@@ -60,15 +45,38 @@ export function useMoreMenu(opt: MoreMenuOpt) {
 
     if (canEdit) {
       items.push({
-        key: 'delete',
+        key: 'community-modify',
+        ...opt.communityModifyButtonProps(),
+        children: 'Modify Community',
+      });
+    }
+
+    if (isAdmin) {
+      items.push(
+        {
+          key: 'import',
+          href: appPath('communityImport', { communityId }),
+          children: appLabel('communityImport'),
+        },
+        {
+          key: 'property-create',
+          ...opt.propertyCreateButtonProps(),
+          children: 'Create Property',
+        }
+      );
+    }
+
+    if (isAdmin) {
+      items.push({
+        key: 'community-delete',
         className: 'text-danger',
-        ...deleteButtonProps(),
+        ...opt.communityDeleteButtonProps(),
         children: 'Delete Community',
       });
     }
 
     return items;
-  }, [opt, canEdit]);
+  }, [opt, canEdit, isAdmin]);
 
   return menuItems;
 }

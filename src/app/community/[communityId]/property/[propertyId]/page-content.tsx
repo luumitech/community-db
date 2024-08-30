@@ -10,6 +10,7 @@ import { ModalButton } from './modal-button';
 import { MoreMenu } from './more-menu';
 import { OccupantDisplay } from './occupant-display';
 import * as occupantEditorModal from './occupant-editor-modal';
+import * as propertyDeleteModal from './property-delete-modal';
 import { PropertyDisplay } from './property-display';
 import * as propertyModifyModal from './property-modify-modal';
 
@@ -29,6 +30,8 @@ export const PageContent: React.FC<Props> = ({ community, property }) => {
     property,
     yearSelected
   );
+  const propertyDelete =
+    propertyDeleteModal.useHookFormWithDisclosure(property);
 
   return (
     <div className="flex flex-col gap-3">
@@ -38,6 +41,7 @@ export const PageContent: React.FC<Props> = ({ community, property }) => {
           community={community}
           property={property}
           propertyModify={propertyModify}
+          propertyDelete={propertyDelete}
           membershipEditor={membershipEditor}
           occupantEditor={occupantEditor}
         />
@@ -60,11 +64,18 @@ export const PageContent: React.FC<Props> = ({ community, property }) => {
         updatedAt={property.updatedAt}
         userFragment={property.updatedBy}
       />
-      <propertyModifyModal.PropertyModifyModal hookForm={propertyModify} />
+      <propertyModifyModal.PropertyModifyModal
+        communityId={community.id}
+        hookForm={propertyModify}
+      />
       <membershipEditorModal.MembershipEditorModal
         hookForm={membershipEditor}
       />
       <occupantEditorModal.OccupantEditorModal hookForm={occupantEditor} />
+      <propertyDeleteModal.PropertyDeleteModal
+        communityId={community.id}
+        hookForm={propertyDelete}
+      />
     </div>
   );
 };

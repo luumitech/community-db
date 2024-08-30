@@ -5,24 +5,17 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
-import { DeleteFragment, type CommunityEntry } from '../_type';
+import { type UseHookFormWithDisclosureResult } from './use-hook-form';
 
 interface Props {
-  fragment: CommunityEntry;
-  disclosure: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onDelete: () => Promise<void>;
 }
 
-export const DeleteModal: React.FC<Props> = ({
-  fragment,
-  disclosure,
-  onDelete,
-}) => {
-  const community = getFragment(DeleteFragment, fragment);
+export const DeleteModal: React.FC<Props> = ({ hookForm, onDelete }) => {
+  const { disclosure, community } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
 

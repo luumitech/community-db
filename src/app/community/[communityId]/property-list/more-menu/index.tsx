@@ -4,16 +4,13 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  useDisclosure,
 } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { CommunityEntry } from '../_type';
-import { CommunityDeleteModal } from '../community-delete-modal';
-import {
-  CommunityModifyModal,
-  useHookFormWithDisclosure,
-} from '../community-modify-modal';
+import * as communityDeleteModal from '../community-delete-modal';
+import * as communityModifyModal from '../community-modify-modal';
+import * as propertyCreateModal from '../property-create-modal';
 import { useMoreMenu } from './use-menu';
 
 interface Props {
@@ -21,12 +18,17 @@ interface Props {
 }
 
 export const MoreMenu: React.FC<Props> = ({ fragment }) => {
-  const communityModify = useHookFormWithDisclosure(fragment);
-  const communityDeleteDisclosure = useDisclosure();
+  const communityModify =
+    communityModifyModal.useHookFormWithDisclosure(fragment);
+  const communityDelete =
+    communityDeleteModal.useHookFormWithDisclosure(fragment);
+  const propertyCreate =
+    propertyCreateModal.useHookFormWithDisclosure(fragment);
   const menuItems = useMoreMenu({
     communityId: fragment.id,
-    modifyButtonProps: communityModify.disclosure.getButtonProps,
-    deleteButtonProps: communityDeleteDisclosure.getButtonProps,
+    communityModifyButtonProps: communityModify.disclosure.getButtonProps,
+    communityDeleteButtonProps: communityDelete.disclosure.getButtonProps,
+    propertyCreateButtonProps: propertyCreate.disclosure.getButtonProps,
   });
 
   return (
@@ -48,11 +50,9 @@ export const MoreMenu: React.FC<Props> = ({ fragment }) => {
           ))}
         </DropdownMenu>
       </Dropdown>
-      <CommunityModifyModal hookForm={communityModify} />
-      <CommunityDeleteModal
-        disclosure={communityDeleteDisclosure}
-        fragment={fragment}
-      />
+      <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
+      <communityDeleteModal.CommunityDeleteModal hookForm={communityDelete} />
+      <propertyCreateModal.PropertyCreateModal hookForm={propertyCreate} />
     </>
   );
 };

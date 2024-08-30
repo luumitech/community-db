@@ -5,7 +5,6 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
@@ -13,17 +12,19 @@ import { Icon } from '~/view/base/icon';
 import { Editor } from './editor';
 import {
   InputData,
+  UseHookFormWithDisclosureResult,
   occupantDefault,
   useHookFormContext,
 } from './use-hook-form';
 
 interface Props {
-  disclosureProps: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ disclosureProps, onSave }) => {
-  const { isOpen, onOpenChange, onClose } = disclosureProps;
+export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
+  const { disclosure } = hookForm;
+  const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { control, formState, handleSubmit } = useHookFormContext();
 

@@ -8,29 +8,24 @@ import { Icon } from '~/view/base/icon';
 interface MenuItemEntry extends DropdownItemProps {}
 
 interface MoreMenuOpt {
+  communityId: string;
   propertyId: string;
   propertyModifyButtonProps: UseDisclosureReturn['getButtonProps'];
+  propertyDeleteButtonProps: UseDisclosureReturn['getButtonProps'];
   membershipEditorButtonProps: UseDisclosureReturn['getButtonProps'];
   occupantEditorButtonProps: UseDisclosureReturn['getButtonProps'];
-  deleteButtonProps: UseDisclosureReturn['getButtonProps'];
 }
 
 /** Controls content of menu items within more menu */
 export function useMoreMenu(opt: MoreMenuOpt) {
-  const { canEdit } = useAppContext();
+  const { canEdit, isAdmin } = useAppContext();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
-    const { propertyId } = opt;
+    const { communityId } = opt;
 
     if (canEdit) {
       items.push(
-        {
-          key: 'modify',
-          ...opt.propertyModifyButtonProps(),
-          showDivider: true,
-          children: 'Modify Property',
-        },
         {
           key: 'membership-editor',
           ...opt.membershipEditorButtonProps(),
@@ -39,20 +34,34 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         {
           key: 'occupant-editor',
           ...opt.occupantEditorButtonProps(),
-          showDivider: true,
           children: 'Edit Member Details',
         },
         {
-          key: 'delete',
-          className: 'text-danger',
-          ...opt.deleteButtonProps(),
-          children: 'Delete Property',
+          key: 'property-list',
+          href: appPath('propertyList', { communityId }),
+          endContent: <Icon icon="list" />,
+          showDivider: true,
+          children: appLabel('propertyList'),
+        },
+        {
+          key: 'modify',
+          ...opt.propertyModifyButtonProps(),
+          children: 'Modify Property',
         }
       );
     }
 
+    if (isAdmin) {
+      items.push({
+        key: 'delete',
+        className: 'text-danger',
+        ...opt.propertyDeleteButtonProps(),
+        children: 'Delete Property',
+      });
+    }
+
     return items;
-  }, [opt, canEdit]);
+  }, [opt, canEdit, isAdmin]);
 
   return menuItems;
 }

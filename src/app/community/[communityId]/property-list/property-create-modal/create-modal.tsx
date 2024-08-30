@@ -7,12 +7,11 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { Button } from '~/view/base/button';
-import { MembershipInfoEditor } from './membership-info-editor';
-import { NotesEditor } from './notes-editor';
+import { AddressEditor } from './address-editor';
 import {
-  InputData,
-  UseHookFormWithDisclosureResult,
   useHookFormContext,
+  type InputData,
+  type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
 interface Props {
@@ -20,12 +19,11 @@ interface Props {
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
+export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
   const { disclosure } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formState, handleSubmit } = useHookFormContext();
-  const { isDirty } = formState;
+  const { handleSubmit, formState } = useHookFormContext();
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -46,28 +44,27 @@ export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       placement="top-center"
-      scrollBehavior="outside"
+      scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
       hideCloseButton
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Membership Info</ModalHeader>
+          <ModalHeader>Create Property</ModalHeader>
           <ModalBody>
-            <MembershipInfoEditor />
-            <NotesEditor />
+            <AddressEditor />
           </ModalBody>
           <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
+            <Button variant="bordered" onPress={onClose}>
               Cancel
             </Button>
             <Button
-              type="submit"
               color="primary"
+              type="submit"
               isDisabled={!formState.isDirty || pending}
             >
-              Save
+              Create
             </Button>
           </ModalFooter>
         </ModalContent>

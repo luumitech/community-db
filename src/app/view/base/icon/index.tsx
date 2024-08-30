@@ -2,7 +2,13 @@ import clsx from 'clsx';
 import React from 'react';
 import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
-import { FaFolderOpen, FaRegCopy, FaSearch, FaTrashAlt } from 'react-icons/fa';
+import {
+  FaFolderOpen,
+  FaList,
+  FaRegCopy,
+  FaSearch,
+  FaTrashAlt,
+} from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa6';
 import { GrUndo } from 'react-icons/gr';
 import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
@@ -38,7 +44,8 @@ type SupportedIcon =
   | 'link'
   | 'download'
   | 'dashboard'
-  | 'copy';
+  | 'copy'
+  | 'list';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -107,6 +114,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'copy':
       IconElement = FaRegCopy;
+      break;
+    case 'list':
+      IconElement = FaList;
       break;
     default:
       IconElement = MdQuestionMark;

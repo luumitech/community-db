@@ -5,31 +5,23 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
-import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
 import { LastModified } from '~/view/last-modified';
-import { type PropertyEntry } from '../_type';
 import { AddressEditor } from './address-editor';
 import {
-  InputData,
-  PropertyEditorFragment,
   useHookFormContext,
+  type InputData,
+  type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
 interface Props {
-  fragment: PropertyEntry;
-  disclosure: UseDisclosureReturn;
+  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModifyModal: React.FC<Props> = ({
-  fragment,
-  disclosure,
-  onSave,
-}) => {
-  const property = getFragment(PropertyEditorFragment, fragment);
+export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
+  const { disclosure, property } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

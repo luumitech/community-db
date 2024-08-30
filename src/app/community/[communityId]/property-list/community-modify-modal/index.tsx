@@ -1,15 +1,23 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { ModifyModal } from './modify-modal';
 import {
-  CommunityMutation,
   InputData,
   type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
+
+const CommunityMutation = graphql(/* GraphQL */ `
+  mutation communityModify($input: CommunityModifyInput!) {
+    communityModify(input: $input) {
+      ...CommunityId_CommunityModifyModal
+    }
+  }
+`);
 
 interface Props {
   hookForm: UseHookFormWithDisclosureResult;
@@ -17,7 +25,7 @@ interface Props {
 
 export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
   const [updateCommunity] = useMutation(CommunityMutation);
-  const { formMethods, disclosure, fragment } = hookForm;
+  const { formMethods } = hookForm;
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -42,11 +50,7 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
 
   return (
     <FormProvider {...formMethods}>
-      <ModifyModal
-        fragment={fragment}
-        disclosure={disclosure}
-        onSave={onSave}
-      />
+      <ModifyModal hookForm={hookForm} onSave={onSave} />
     </FormProvider>
   );
 };

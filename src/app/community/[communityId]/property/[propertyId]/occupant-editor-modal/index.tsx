@@ -48,7 +48,7 @@ export const OccupantEditorModal: React.FC<Props> = ({
   return (
     <div className={className}>
       <FormProvider {...formMethods}>
-        <ModalDialog disclosureProps={disclosure} onSave={onSave} />
+        <ModalDialog hookForm={hookForm} onSave={onSave} />
       </FormProvider>
     </div>
   );

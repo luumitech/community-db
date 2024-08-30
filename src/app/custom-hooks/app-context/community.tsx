@@ -63,6 +63,8 @@ export type CommunityState = Readonly<{
   role: GQL.Role;
   /** Base on current user's role, can user modify content within this community? */
   canEdit: boolean;
+  /** Is user an admin? */
+  isAdmin: boolean;
 }>;
 
 /**
@@ -173,6 +175,7 @@ export function useCommunityContext() {
       selectPaymentMethodSections: paymentMethodSelect.selectSections,
       role,
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
+      isAdmin: role === GQL.Role.Admin,
     };
   }, [community, communityUi]);
 

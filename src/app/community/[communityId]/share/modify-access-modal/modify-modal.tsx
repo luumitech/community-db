@@ -9,9 +9,9 @@ import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
-import { ModifyFragment, type AccessEntry } from '../_type';
+import type { AccessEntry } from '../_type';
 import { RoleEditor } from './role-editor';
-import { InputData, useHookFormContext } from './use-hook-form';
+import { InputData, ModifyFragment, useHookFormContext } from './use-hook-form';
 
 interface Props {
   disclosure: UseDisclosureReturn;

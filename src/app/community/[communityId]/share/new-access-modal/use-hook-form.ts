@@ -5,7 +5,8 @@ import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { UserInfoFragment, type AccessEntry } from '../_type';
+import type { AccessEntry } from '../_type';
+import { UserInfoFragment } from '../user-info';
 
 export const AccessCreateMutation = graphql(/* GraphQL */ `
   mutation accessCreate($input: AccessCreateInput!) {

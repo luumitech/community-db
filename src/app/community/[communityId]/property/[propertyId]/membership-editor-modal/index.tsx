@@ -27,7 +27,7 @@ export const MembershipEditorModal: React.FC<Props> = ({
   hookForm,
 }) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { formMethods, disclosure, fragment } = hookForm;
+  const { formMethods } = hookForm;
   const { formState } = formMethods;
   const onSave = async (input: InputData) => {
     if (!formState.isDirty) {
@@ -47,11 +47,7 @@ export const MembershipEditorModal: React.FC<Props> = ({
   return (
     <div className={className}>
       <FormProvider {...formMethods}>
-        <ModalDialog
-          fragment={fragment}
-          disclosureProps={disclosure}
-          onSave={onSave}
-        />
+        <ModalDialog hookForm={hookForm} onSave={onSave} />
       </FormProvider>
     </div>
   );
