@@ -26,9 +26,9 @@ function schema() {
       id: yup.string().required(),
       updatedAt: yup.string().required(),
     }),
-    address: yup.string(),
-    streetNo: yup.string(),
-    streetName: yup.string(),
+    address: yup.string().required(),
+    streetNo: yup.string().required(),
+    streetName: yup.string().required(),
     postalCode: yup.string(),
   });
 }

@@ -89,7 +89,7 @@ model Property {
   community      Community    @relation(fields: [communityId], references: [id], onDelete: Cascade)
 
   // Add text index on fields that are searchable
-  @@fulltext([address, occupantList.firstName, occupantList.lastName])
+  @@fulltext([address, streetNo, streetName, occupantList.firstName, occupantList.lastName])
 }
 
 /// Occupant information within a property

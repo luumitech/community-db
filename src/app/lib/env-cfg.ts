@@ -80,6 +80,12 @@ const schema = yup.object({
         then: (_schema) => _schema.default({}),
       }),
   }),
+
+  // Geoapify
+  geoapify: yup.object({
+    url: yup.string().required(),
+    key: yup.string().required(),
+  }),
 });
 
 /** Copy of env that has gone through schema validation */

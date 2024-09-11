@@ -64,7 +64,7 @@ export const PropertyCreateModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, createProperty]
+    [formMethods.formState, createProperty, router, community.id]
   );
 
   return (

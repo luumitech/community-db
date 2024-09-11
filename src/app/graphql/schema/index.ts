@@ -2,6 +2,7 @@ import { builder } from '../builder';
 
 import './access';
 import './community';
+import './geocode';
 import './offset-pagination';
 import './property';
 import './subscription';

@@ -43,6 +43,32 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     name: `membershipList.${yearIdx}.eventAttendedList`,
   });
 
+  const emptyContent = React.useMemo(() => {
+    return <p>No data to display.</p>;
+  }, []);
+
+  const topContent = React.useMemo(() => {
+    return (
+      <div className="flex items-center gap-4">
+        <EventDefaultSelect />
+        <Button
+          className="text-primary"
+          endContent={<Icon icon="add" />}
+          variant="faded"
+          isDisabled={!lastEventSelected}
+          onClick={() =>
+            append({
+              eventName: lastEventSelected ?? '',
+              eventDate: new Date(Date.now()).toISOString(),
+            })
+          }
+        >
+          Add Event
+        </Button>
+      </div>
+    );
+  }, [append, lastEventSelected]);
+
   const eventAttendedListError =
     errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
   const bottomContent = React.useMemo(() => {
@@ -153,43 +179,19 @@ export const EventsAttendedSelect: React.FC<Props> = ({
       <Table
         aria-label="Membership year editor"
         removeWrapper
+        classNames={{
+          // Leave enough space for one row of data only
+          emptyWrapper: 'h-[40px]',
+        }}
+        topContent={topContent}
         bottomContent={bottomContent}
       >
         <TableHeader>
-          <TableColumn>Event</TableColumn>
+          <TableColumn>Event Attended</TableColumn>
           <TableColumn>Event Date</TableColumn>
           <TableColumn>Action</TableColumn>
         </TableHeader>
-        <TableBody>
-          {/* Cannot resolve strange typescript error */}
-          {renderRows() as unknown as RowElement<unknown>}
-          <TableRow>
-            <TableCell colSpan={3}>
-              <div className="flex items-center gap-4">
-                <EventDefaultSelect />
-                <Button
-                  className="text-primary"
-                  endContent={<Icon icon="add" />}
-                  variant="faded"
-                  isDisabled={!lastEventSelected}
-                  onClick={() =>
-                    append({
-                      eventName: lastEventSelected ?? '',
-                      eventDate: new Date(Date.now()).toISOString(),
-                    })
-                  }
-                >
-                  Add Event
-                </Button>
-              </div>
-            </TableCell>
-            {/* This hidden cell is needed to workaround an error
-             * https://github.com/nextui-org/nextui/issues/1779
-             */}
-            <TableCell className="hidden">{null}</TableCell>
-            <TableCell className="hidden">{null}</TableCell>
-          </TableRow>
-        </TableBody>
+        <TableBody emptyContent={emptyContent}>{renderRows()}</TableBody>
       </Table>
     </div>
   );
