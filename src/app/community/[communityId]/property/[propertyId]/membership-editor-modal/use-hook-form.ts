@@ -69,7 +69,7 @@ function schema() {
               !!eventAttendedList?.length,
             then: (_schema) =>
               _schema.required(
-                'Must specify a value when event has been added'
+                'Must specify payment method to indicate how membership fee is processsed'
               ),
           }),
           paymentDeposited: yup.boolean(),

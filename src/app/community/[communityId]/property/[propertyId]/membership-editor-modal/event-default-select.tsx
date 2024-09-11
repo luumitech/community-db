@@ -16,8 +16,9 @@ export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
       className={clsx(className, 'max-w-sm')}
       aria-label="Event Name"
       items={visibleEventItems}
-      variant="underlined"
-      placeholder="Select event to add"
+      label="Select Current Event"
+      placeholder="Select an event"
+      selectionMode="single"
       defaultSelectedKeys={lastEventSelected ? [lastEventSelected] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
