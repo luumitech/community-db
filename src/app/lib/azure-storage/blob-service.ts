@@ -4,7 +4,7 @@ import {
 } from '@azure/storage-blob';
 
 import { env } from '~/lib/env-cfg';
-import { isRunningUnitTest } from '~/lib/env-var';
+import { isRunningTest } from '~/lib/env-var';
 import { BlobContainer, TransferProgressEvent } from './blob-container';
 import { BlobInfo } from './blob-info';
 import { ListBlobOpt } from './blob-iterator';
@@ -103,7 +103,7 @@ export class BlobService {
         }
 
         // Always use Azurite when running Jest tests
-        if (isRunningUnitTest()) {
+        if (isRunningTest()) {
           useLocal = true;
         }
       } catch (e) {

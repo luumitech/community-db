@@ -47,15 +47,17 @@ jobs:
         run: |
           yarn jest --ci --runInBand --env=node
 
-      # - name: Cypress tests
-      #   uses: cypress-io/github-action@v4
-      #   with:
-      #     start: yarn start:test
-      #     wait-on: 'http://localhost:3000/admin'
-      #     record: false
-      #     parallel: false
-      #   env:
-      #     NODE_ENV: test
+      - name: Build production driver for cypress test
+        run: |
+          yarn build
+
+      - name: Cypress tests
+        uses: cypress-io/github-action@v4
+        with:
+          start: yarn start:cypress
+          wait-on: 'http://localhost:3000'
+          record: false
+          parallel: false
 
       # After the test run completes, store videos and any screenshots
       # - name: Cypress upload artifacts

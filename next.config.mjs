@@ -2,8 +2,8 @@
 const nextConfig = {
   experimental: {
     /**
-     * omniconfig.js has a too complex require statement which
-     * cannot be analyzed for bundling
+     * Omniconfig.js has a too complex require statement which cannot be
+     * analyzed for bundling
      */
     serverComponentsExternalPackages: ['omniconfig.js'],
     serverActions: { allowedOrigins: ['localhost:3443'] },

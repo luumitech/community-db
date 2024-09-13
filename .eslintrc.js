@@ -42,5 +42,21 @@ module.exports = {
         'jest/globals': true,
       },
     },
+    {
+      files: [
+        'cypress.config.ts',
+        'cypress/**/*.ts',
+        'cypress/**/*.tsx',
+        'cypress/**/*.d.ts',
+      ],
+      parserOptions: {
+        project: './cypress/tsconfig.json',
+      },
+      extends: ['plugin:cypress/recommended'],
+      rules: {
+        // Want to allow `expect(value).to.be.true`
+        '@babel/no-unused-expressions': 'off',
+      },
+    },
   ],
 };

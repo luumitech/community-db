@@ -10,7 +10,7 @@ import { faker } from '@faker-js/faker';
  * - StreetName: 'Adventure Drive',
  * - PostalCode: 'A0A0A0',
  * - LastModDate: '2023-02-23T03:19:09+00:00',
- * - LastModBy: 'testuser',
+ * - LastModBy: 'test@email.com',
  * - Notes: '2nd entry',
  *
  * Each occupant has fields:
@@ -150,7 +150,7 @@ function newAddress() {
     PostalCode: faker.location.zipCode(),
     Notes: faker.lorem.sentences({ min: 1, max: 5 }, '\n'),
     LastModDate: faker.date.past().toISOString(),
-    LastModBy: 'mockeduser',
+    LastModBy: 'test@email.com',
   };
 
   const numPerson = faker.number.int(4);
