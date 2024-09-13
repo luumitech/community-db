@@ -8,7 +8,7 @@ describe('import community xlsx', () => {
   beforeAll(async () => {
     await testUtil.initialize();
     await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'lcra-db.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
     );
   });
 
@@ -71,7 +71,7 @@ describe('import community xlsx', () => {
     expect(accessList).toHaveLength(1);
     const adventure = accessList[0].community.propertyList.edges[0].node;
     const fortune = accessList[0].community.propertyList.edges[1].node;
-    expect(adventure.updatedBy?.email).toBe('testuser');
+    expect(adventure.updatedBy?.email).toBe('test@email.com');
     expect(fortune).toEqual({
       __typename: 'Property',
       address: '99 Fortune Drive',

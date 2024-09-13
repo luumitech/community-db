@@ -12,7 +12,7 @@ describe('export community xlsx', () => {
   beforeAll(async () => {
     await testUtil.initialize();
     expectedImportResult = await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'lcra-db.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
     );
   });
 

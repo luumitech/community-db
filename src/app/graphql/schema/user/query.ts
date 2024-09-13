@@ -27,9 +27,9 @@ builder.queryField('userCurrent', (t) =>
 
       // In development mode, if context user does not have access
       // to any community, then add all document accessible under
-      // 'devuser@email.com' to the current context user
+      // 'test@email.com' to the current context user
       // This will ensure that context user see everything that `yarn seed-db` has
-      // created for devuser@email.com'
+      // created for test@email.com'
       if (!isProduction()) {
         const ownAccess = await prisma.access.findFirst({
           select: { id: true },
@@ -37,7 +37,7 @@ builder.queryField('userCurrent', (t) =>
         });
         if (ownAccess == null) {
           const devAccessList = await prisma.access.findMany({
-            where: { user: { email: 'devuser@email.com' } },
+            where: { user: { email: 'test@email.com' } },
           });
           // clone devAccessList to context user
           // We can't create access directly in user.update because

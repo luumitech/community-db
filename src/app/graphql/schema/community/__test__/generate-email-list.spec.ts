@@ -8,7 +8,7 @@ describe('NoRenewalPropertyList', () => {
   beforeAll(async () => {
     await testUtil.initialize();
     await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'lcra-db.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
     );
   });
 
