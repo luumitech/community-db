@@ -57,9 +57,6 @@ RUN adduser --system --uid 1001 ${USER}
 
 # Copy from build layer
 COPY --from=build-layer --chown=${USER}:${GROUP} /app/.next/standalone ./
-COPY --from=build-layer --chown=${USER}:${GROUP} /app/.next/static ./.next/static
-# Uncomment if there are files in /public
-COPY --from=build-layer --chown=${USER}:${GROUP} /app/public ./public
 COPY --from=build-layer --chown=${USER}:${GROUP} /app/docker/entrypoint.sh ./docker/entrypoint.sh
 
 # Setup SSH server
