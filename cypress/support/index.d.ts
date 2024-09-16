@@ -17,6 +17,13 @@ declare namespace Cypress {
      */
     clickMenuItem(itemLabel: string): void;
 
+    /**
+     * Click a button
+     *
+     * @param buttonText A regular expression for button label
+     */
+    clickButton(buttonText: string): void;
+
     /** Navigate to property list */
     navigatePropertyList(): Chainable<void>;
     // drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>

@@ -33,6 +33,8 @@ async function encode(token: JWTPayload, secret: string) {
 
 /** Create session token to simulate the action of user logging in */
 Cypress.Commands.add('login', () => {
+  // Set theme to light theme
+  window.localStorage.setItem('theme', 'light');
   cy.wrap(null)
     .then(() =>
       encode(
@@ -40,7 +42,7 @@ Cypress.Commands.add('login', () => {
         Cypress.env('NEXTAUTH_SECRET')
       )
     )
-    .then((sessionToken) =>
-      cy.setCookie('next-auth.session-token', sessionToken)
-    );
+    .then((sessionToken) => {
+      cy.setCookie('next-auth.session-token', sessionToken);
+    });
 });
