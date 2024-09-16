@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
-import CommunityDataImg from './community-data.png';
 import DashboardImg from './dashboard.png';
 import ExportToXlsxImg from './export-to-xlsx.png';
-import OccupantEditorImg from './occupant-editor.png';
+import MembershipEditorImg from './membership-editor.png';
 import PropertyDetailImg from './property-detail.png';
+import propertyListImg from './property-list.png';
 import { Slide } from './slide';
 import { DotButton, useDotButton } from './slide-button';
 
@@ -27,8 +27,8 @@ export const GettingStarted: React.FC<Props> = ({ className }) => {
     >
       <div className="flex">
         <Slide
-          alt="community-data"
-          src={CommunityDataImg}
+          alt="property-list"
+          src={propertyListImg}
           caption="Address searchable by address or member name"
         />
         <Slide
@@ -37,8 +37,8 @@ export const GettingStarted: React.FC<Props> = ({ className }) => {
           caption="Membership information at a glance"
         />
         <Slide
-          alt="occupant-editor"
-          src={OccupantEditorImg}
+          alt="membership-editor"
+          src={MembershipEditorImg}
           caption="Easy to modify any information"
         />
         <Slide

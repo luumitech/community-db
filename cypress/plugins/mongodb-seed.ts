@@ -1,13 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import path from 'path';
-import * as XLSX from 'xlsx';
-import { seedFromWorkbook } from '../../prisma/seed-from-workbook';
-
-function generateWorkbook(fixture: string) {
-  const fixturePath = path.join(process.cwd(), '__fixtures__', fixture);
-  const workbook = XLSX.readFile(fixturePath);
-  return workbook;
-}
+import { MongoSeeder } from '../../prisma/mongo-seeder';
 
 /**
  * Seed Mongo database with fixture located in the `/__fixtures__` directory
@@ -20,12 +12,27 @@ function generateWorkbook(fixture: string) {
  *   ```
  * @returns True if successful
  */
-export async function mongodbSeed(fixture: string) {
+export async function mongodbSeedFromFixture(fixture: string) {
   const prisma = new PrismaClient();
-  const workbook = generateWorkbook(fixture);
   try {
+    const seeder = MongoSeeder.fromXlsx(fixture);
     await prisma.$runCommandRaw({ dropDatabase: 1 });
-    await seedFromWorkbook(prisma, workbook);
+    await seeder.seed(prisma);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
+  return true;
+}
+
+export async function mongodbSeedRandom(count: number) {
+  const prisma = new PrismaClient();
+  try {
+    const seeder = MongoSeeder.fromRandom(count);
+    await prisma.$runCommandRaw({ dropDatabase: 1 });
+    await seeder.seed(prisma);
   } catch (err) {
     console.error(err);
     process.exit(1);
