@@ -33,7 +33,13 @@ export function useTableData() {
             />
           );
         case 'prevYear':
-          return <Membership fragment={fragment} year={prevYear} />;
+          return (
+            <Membership
+              className="text-success"
+              fragment={fragment}
+              year={prevYear}
+            />
+          );
         default:
           return getKeyValue(fragment, columnKey);
       }

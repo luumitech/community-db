@@ -1,10 +1,13 @@
-import { Chip, Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@nextui-org/react';
 import { useSet } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { Icon } from '~/view/base/icon';
-import { yearSelectItems, type YearItem } from '../year-select-items';
+import {
+  SelectedYearItem,
+  YearItemLabel,
+  yearSelectItems,
+} from '../year-select-items';
 
 interface Props {
   className?: string;
@@ -38,15 +41,7 @@ export const YearSelect: React.FC<React.PropsWithChildren<Props>> = ({
         selectedKeys={year.values()}
         selectionMode="single"
         disallowEmptySelection
-        renderValue={(items) => {
-          return (
-            <div className="flex flex-wrap gap-2">
-              {items.map((item) => (
-                <YearItemLabel key={item.key} item={item.data!} />
-              ))}
-            </div>
-          );
-        }}
+        renderValue={(items) => <SelectedYearItem items={items} />}
         onSelectionChange={(keys) => {
           const [firstKey] = keys;
           const yearSelected = firstKey as string;
@@ -61,26 +56,6 @@ export const YearSelect: React.FC<React.PropsWithChildren<Props>> = ({
           </SelectItem>
         )}
       </Select>
-    </div>
-  );
-};
-
-interface ItemLabelProps {
-  item: YearItem;
-}
-
-const YearItemLabel: React.FC<ItemLabelProps> = ({ item }) => {
-  return (
-    <div className="flex gap-2 items-center">
-      {item.label}
-      <Chip
-        variant="flat"
-        radius="md"
-        size="sm"
-        color={item.isMember ? 'success' : 'secondary'}
-      >
-        <Icon icon={item.isMember ? 'thumb-up' : 'thumb-down'} size={14} />
-      </Chip>
     </div>
   );
 };

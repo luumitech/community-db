@@ -5,6 +5,7 @@ import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PropertyEntry } from '../_type';
+import { MemberStatusChip } from './member-status-chip';
 import { RegisteredEventList } from './registered-event-list';
 import { YearSelect } from './year-select';
 
@@ -48,7 +49,7 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
   return (
     <div className={className}>
       <Card>
-        <CardHeader>
+        <CardHeader className="gap-2">
           <YearSelect
             membershipList={entry.membershipList}
             selectedYear={yearSelected}
@@ -56,6 +57,8 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
           >
             Membership Info For Year
           </YearSelect>
+          <div className="grow" />
+          <MemberStatusChip membership={membership} />
         </CardHeader>
         <CardBody>
           <RegisteredEventList membership={membership} />

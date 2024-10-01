@@ -1,7 +1,11 @@
 import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
-import { yearSelectItems } from '../year-select-items';
+import {
+  SelectedYearItem,
+  YearItemLabel,
+  yearSelectItems,
+} from '../year-select-items';
 import { MembershipListFieldArray, membershipDefault } from './use-hook-form';
 
 interface Props {
@@ -27,7 +31,7 @@ export const YearSelect: React.FC<Props> = ({
 
     return [
       // Add an option to add future years
-      { label: `Add Year ${maxYear + 1}`, value: maxYear + 1 },
+      { label: `Add Year ${maxYear + 1}`, value: maxYear + 1, isMember: null },
       ...items,
     ];
   }, [fields, selectedYear]);
@@ -59,10 +63,11 @@ export const YearSelect: React.FC<Props> = ({
       selectedKeys={[selectedYear.toString()]}
       selectionMode="single"
       onChange={handleSelectionChange}
+      renderValue={(items) => <SelectedYearItem items={items} />}
     >
       {(item) => (
         <SelectItem key={item.value} textValue={item.label}>
-          {item.label}
+          <YearItemLabel item={item} />
         </SelectItem>
       )}
     </Select>
