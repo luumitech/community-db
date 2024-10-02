@@ -7,7 +7,7 @@
     "dev:cypress": "dotenv -e .env.cypress -- next dev",
     "prebuild": "yarn generate",
     "build": "next build",
-    "postbuild": "cp -r public .next/standalone/public; cp -r .next/static .next/standalone/.next/static",
+    "postbuild": "shx --verbose cp -r public .next/standalone/public && shx --verbose cp -r .next/static .next/standalone/.next/static",
     "start": "node .next/standalone/server.js",
     "start:cypress": "dotenv -e .env.cypress -- node .next/standalone/server.js",
     "lint": "next lint --max-warnings=0",
@@ -120,6 +120,7 @@
     "prettier-plugin-organize-imports": "^3.2.4",
     "prisma": "^5.16.2",
     "semantic-release": "^23.0.8",
+    "shx": "^0.3.4",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"

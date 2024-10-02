@@ -66,16 +66,10 @@ export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
       <div className="grow" />
       {item.isMember != null && (
         <Chip
-          classNames={{
-            base: clsx(
-              'border-small border-white/50',
-              item.isMember ? 'bg-success-200' : 'bg-gray-200'
-            ),
-            content: 'drop-shadow shadow-black text-gray-600',
-          }}
-          variant="flat"
+          variant="bordered"
           radius="md"
           size="sm"
+          color={item.isMember ? 'success' : 'default'}
         >
           <Icon icon={item.isMember ? 'thumb-up' : 'thumb-down'} size={14} />
         </Chip>

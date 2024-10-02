@@ -18,12 +18,9 @@ export const MemberStatusChip: React.FC<Props> = ({
   return (
     <div className={clsx(className, 'flex gap-2')}>
       <Chip
-        classNames={{
-          base: clsx(isMember ? 'bg-success-200' : 'bg-gray-200'),
-          content: 'drop-shadow shadow-black text-gray-600',
-        }}
-        variant="flat"
+        variant="bordered"
         radius="md"
+        color={isMember ? 'success' : 'default'}
       >
         <div className="flex items-center gap-2">
           {isMember ? 'member' : 'non-member'}
