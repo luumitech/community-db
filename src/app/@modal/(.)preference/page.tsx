@@ -1,0 +1,36 @@
+'use client';
+import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { appLabel } from '~/lib/app-path';
+import { SelectTheme } from './select-theme';
+
+interface Params {}
+
+interface RouteArgs {
+  params: Params;
+}
+
+export default function Preference({ params }: RouteArgs) {
+  const router = useRouter();
+  return (
+    <Modal
+      size="xl"
+      scrollBehavior="outside"
+      isOpen
+      onOpenChange={() => router.back()}
+      isDismissable
+      // isKeyboardDismissDisabled
+    >
+      <ModalContent>
+        <ModalHeader>{appLabel('preference')}</ModalHeader>
+        <ModalBody>
+          <div className="grid grid-cols-2 gap-4 items-center">
+            <div>Theme</div>
+            <SelectTheme />
+          </div>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+}

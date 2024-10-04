@@ -22,9 +22,10 @@ export const metadata: Metadata = {
 
 interface RootLayoutProps {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }
 
-export default async function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children, modal }: RootLayoutProps) {
   const session = await getServerSession(authOptions);
   return (
     <html lang="en" suppressHydrationWarning>
@@ -50,6 +51,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <Header />
               <main>{children}</main>
             </div>
+            {modal}
           </Providers>
         </ThemeProvider>
       </body>

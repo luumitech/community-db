@@ -1,25 +1,3 @@
-'use client';
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
-import React from 'react';
-import { SelectTheme } from './select-theme';
+import Preference from '~/@modal/(.)preference/page';
 
-interface Params {}
-
-interface RouteArgs {
-  params: Params;
-}
-
-export default function Preference({ params }: RouteArgs) {
-  return (
-    <Card className="mt-page-top mx-page-x">
-      <CardHeader className="text-2xl">Preference</CardHeader>
-      <Divider />
-      <CardBody>
-        <div className="grid grid-cols-2 gap-4 items-center">
-          <div>Theme</div>
-          <SelectTheme />
-        </div>
-      </CardBody>
-    </Card>
-  );
-}
+export default Preference;

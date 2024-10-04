@@ -56,7 +56,7 @@ export const MemberCountChart: React.FC<Props> = ({
             </p>
           </div>
           <YearRangeSelect
-            defaultSelectedKeys={[yearRange]}
+            defaultSelectedKeys={[yearRange.toString()]}
             onSelectionChange={(keys) => {
               const [firstKey] = keys;
               setYearRange(parseInt(firstKey as string, 10));

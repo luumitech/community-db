@@ -43,7 +43,6 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
                 items={section.items}
                 showDivider={section.showDivider}
               >
-                {/* @ts-expect-error: NextUI typing is not supporting dynamic section */}
                 {(item) => (
                   <SelectItem key={item.value} textValue={item.label}>
                     {item.label}

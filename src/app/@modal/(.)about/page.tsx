@@ -1,22 +1,18 @@
+'use client';
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
-interface Props {
-  disclosureProps: UseDisclosureReturn;
-}
-
-export const AboutModal: React.FC<Props> = ({ disclosureProps }) => {
-  const { isOpen, onOpenChange, onClose } = disclosureProps;
-
+export default function About() {
+  const router = useRouter();
   return (
     <Modal
       size="lg"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-      placement="top-center"
       scrollBehavior="inside"
-      isKeyboardDismissDisabled={true}
+      isOpen
+      onOpenChange={() => router.back()}
+      isDismissable
+      // isKeyboardDismissDisabled
     >
       <ModalContent>
         <ModalHeader>Community Database</ModalHeader>
@@ -44,4 +40,4 @@ export const AboutModal: React.FC<Props> = ({ disclosureProps }) => {
       </ModalContent>
     </Modal>
   );
-};
+}

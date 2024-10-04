@@ -9,6 +9,7 @@ import { withAuth } from 'next-auth/middleware';
 export const config = {
   matcher: [
     // UI routes
+    '/pricing(.*)',
     '/community(.*)',
     '/preference(.*)',
     // API route handlers

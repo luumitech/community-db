@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps, Skeleton } from '@nextui-org/react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { graphql } from '~/graphql/generated';
@@ -12,8 +12,25 @@ interface MenuItemEntry extends BreadcrumbItemProps {
 
 /** Controls content of breadcrumb menu located on the top of the header */
 export function useTopMenu() {
+  const router = useRouter();
   const pathname = usePathname();
   const { communityId: ctxCommunityId, communityName } = useAppContext();
+
+  /** Create link attribute for the top menu items */
+  const linkTo = React.useCallback(
+    (href: string) => {
+      return {
+        /**
+         * Breadcrumb item cannot use href to perform nextjs navigation
+         *
+         * See: https://github.com/luumitech/community-db/issues/42
+         */
+        // href,
+        onPress: () => router.push(href),
+      };
+    },
+    [router]
+  );
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -28,7 +45,7 @@ export function useTopMenu() {
       case 'community': {
         items.push({
           id: 'welcome',
-          href: appPath('communityWelcome'),
+          ...linkTo(appPath('communityWelcome')),
           children: appLabel('communityWelcome'),
         });
         handleCommunity();
@@ -43,14 +60,14 @@ export function useTopMenu() {
         case 'create':
           items.push({
             id: 'create',
-            href: appPath('communityCreate'),
+            ...linkTo(appPath('communityCreate')),
             children: appLabel('communityCreate'),
           });
           break;
         case 'select':
           items.push({
             id: 'create',
-            href: appPath('communitySelect'),
+            ...linkTo(appPath('communitySelect')),
             children: appLabel('communitySelect'),
           });
           break;
@@ -59,9 +76,9 @@ export function useTopMenu() {
           if (op != null && op === ctxCommunityId) {
             items.push({
               id: 'community-editor',
-              href: appPath('propertyList', {
-                communityId: ctxCommunityId,
-              }),
+              ...linkTo(
+                appPath('propertyList', { communityId: ctxCommunityId })
+              ),
               children: <CommunityName communityName={communityName} />,
             });
             handleSingleCommunity(ctxCommunityId);
@@ -80,7 +97,7 @@ export function useTopMenu() {
         case 'import-xlsx':
           items.push({
             id: 'import-xlsx',
-            href: appPath('communityImport', { communityId }),
+            ...linkTo(appPath('communityImport', { communityId })),
             children: appLabel('communityImport'),
           });
           break;
@@ -88,7 +105,7 @@ export function useTopMenu() {
         case 'export-xlsx':
           items.push({
             id: 'export-xlsx',
-            href: appPath('communityExport', { communityId }),
+            ...linkTo(appPath('communityExport', { communityId })),
             children: appLabel('communityExport'),
           });
           break;
@@ -96,7 +113,7 @@ export function useTopMenu() {
         case 'share':
           items.push({
             id: 'share',
-            href: appPath('communityShare', { communityId }),
+            ...linkTo(appPath('communityShare', { communityId })),
             children: appLabel('communityShare'),
           });
           break;
@@ -104,7 +121,7 @@ export function useTopMenu() {
         case 'dashboard':
           items.push({
             id: 'tool-dashboard',
-            href: appPath('communityDashboard', { communityId }),
+            ...linkTo(appPath('communityDashboard', { communityId })),
             children: appLabel('communityDashboard'),
           });
           break;
@@ -116,7 +133,7 @@ export function useTopMenu() {
       if (propertyId) {
         items.push({
           id: 'property-editor',
-          href: appPath('property', { communityId, propertyId }),
+          ...linkTo(appPath('property', { communityId, propertyId })),
           children: (
             <PropertyAddress
               communityId={communityId}
@@ -126,7 +143,7 @@ export function useTopMenu() {
         });
       }
     }
-  }, [pathname, ctxCommunityId, communityName]);
+  }, [pathname, ctxCommunityId, communityName, linkTo]);
 
   return menuItems;
 }
