@@ -18,7 +18,9 @@ interface SearchFreeFormOutput {
   };
 }
 
-export class Geocode extends Resource {
+export class Geocode {
+  constructor(private res: Resource) {}
+
   /**
    * The Geocoder API accepts both structured and free-form addresses as an
    * input and returns JSON, GeoJSON, and XML objects as a response. In
@@ -32,7 +34,7 @@ export class Geocode extends Resource {
     // + and geoapify doesn't recognize it properly
     const query = new URLSearchParams(`text=${encodeURIComponent(text)}`);
     query.append('format', 'json');
-    const output: SearchFreeFormOutput = await this.call(
+    const output: SearchFreeFormOutput = await this.res.call(
       'geocode/search',
       query,
       { method: 'GET' }

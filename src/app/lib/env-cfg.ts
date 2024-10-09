@@ -86,6 +86,13 @@ const schema = yup.object({
     url: yup.string().required(),
     key: yup.string().required(),
   }),
+
+  // Payment
+  payment: yup.object({
+    apiKey: yup.object({
+      helcim: yup.string().required(),
+    }),
+  }),
 });
 
 /** Copy of env that has gone through schema validation */

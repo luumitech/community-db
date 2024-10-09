@@ -1,10 +1,10 @@
 import { GraphQLError } from 'graphql';
 import path from 'path';
-import { GeoapifyCredential } from '~/lib/geoapify/geoapify-credential';
+import { GeoapifyCredential } from '~/lib/geoapify-api/credential';
 
 const DEFAULT_API_VERSION = 'v1';
 
-export abstract class Resource {
+export class Resource {
   private baseUrl: string;
   private headers: HeadersInit;
   private query: URLSearchParams;
@@ -23,7 +23,7 @@ export abstract class Resource {
    * @param init Arguments to pass into fetch call
    * @returns
    */
-  protected async call(
+  public async call(
     requestPath: string,
     queryParm: URLSearchParams | null,
     init?: RequestInit
