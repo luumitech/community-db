@@ -73,7 +73,7 @@ The mongo DB must be configured with replication set:
 When indexes in the mongo schema are modified, you will need to run:
 
 ```sh
-update-prisma-db
+yarn update-prisma-db
 ```
 
 ## Updating landing page screenshots

@@ -1,5 +1,9 @@
+import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
+import { getUserEntry } from '~/graphql/schema/user/util';
+import { env } from '~/lib/env-cfg';
 import { HelcimApi } from '~/lib/helcim-api';
+import prisma from '~/lib/prisma';
 import {
   helcimPayInitializeOutputRef,
   helcimPurchaseOutputRef,
@@ -20,7 +24,15 @@ builder.mutationField('helcimPayInitialize', (t) =>
       input: t.arg({ type: HelcimPayInitializeInput, required: true }),
     },
     resolve: async (parent, args, ctx) => {
+      const { user } = await ctx;
       const { paymentType, amount, currency } = args.input;
+
+      // Check if user has an ongoing subscription already
+      const userEntry = await getUserEntry(user);
+      if (userEntry.subscriptionId != null) {
+        throw new GraphQLError('You have already paid for a subscription');
+      }
+
       const api = await HelcimApi.fromConfig();
       const result = await api.helcimPay.initialize({
         paymentType,
@@ -35,6 +47,7 @@ builder.mutationField('helcimPayInitialize', (t) =>
 interface HelcimPurchaseInput {
   ipAddress: string;
   cardToken: string;
+  customerCode: string;
   idempotentKey: string;
 }
 
@@ -44,6 +57,7 @@ const HelcimPurchaseInputRef = builder
     fields: (t) => ({
       ipAddress: t.string({ required: true }),
       cardToken: t.string({ required: true }),
+      customerCode: t.string({ required: true }),
       idempotentKey: t.string({ required: true }),
     }),
   });
@@ -58,23 +72,45 @@ builder.mutationField('helcimPurchase', (t) =>
       }),
     },
     resolve: async (parent, args, ctx) => {
-      const { ipAddress, cardToken, idempotentKey } = args.input;
+      const { user } = await ctx;
+      const { customerCode, idempotentKey } = args.input;
+
+      // Check if user has an ongoing subscription already
+      const userDoc = await getUserEntry(user);
+      if (userDoc.subscriptionId != null) {
+        throw new GraphQLError('You have already paid for a subscription');
+      }
 
       // Process subscription payment
       const api = await HelcimApi.fromConfig();
-      const result = await api.payment.purchase(
+      const subResult = await api.subscriptions.create(
         {
-          ipAddress,
-          currency: 'CAD',
-          amount: 5.99,
-          cardData: {
-            cardToken,
-          },
+          customerCode,
+          dateActivated: '2024-10-10',
+          paymentPlanId: env().payment.helcim.planId,
+          recurringAmount: env().nextPublic.plan.cost,
+          paymentMethod: 'card',
         },
         idempotentKey
       );
 
-      return result;
+      const subEntry = subResult.data[0];
+      if (!subEntry?.id) {
+        throw new GraphQLError(
+          'Registering payment in subscription plan failed'
+        );
+      }
+
+      // Record subscription plan ID into user document
+      const userEntry = await prisma.user.update({
+        where: { id: userDoc.id },
+        data: { subscriptionId: subEntry.id },
+      });
+
+      return {
+        subscription: subEntry,
+        user: userEntry,
+      };
     },
   })
 );

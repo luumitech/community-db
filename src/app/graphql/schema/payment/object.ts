@@ -2,8 +2,9 @@ import { randomUUID } from 'crypto';
 import { builder } from '~/graphql/builder';
 import type {
   HelcimPayInitializeOutput,
-  HelcimPaymentPurchaseOutput,
+  HelcimSubscriptionEntry,
 } from '~/lib/helcim-api/_type';
+import { userRef } from '../user/object';
 
 export const helcimPayInitializeOutputRef = builder
   .objectRef<HelcimPayInitializeOutput>('HelcimPayInitializeOutput')
@@ -39,12 +40,33 @@ export const helcimPayInitializeOutputRef = builder
     }),
   });
 
-export const helcimPurchaseOutputRef = builder
-  .objectRef<HelcimPaymentPurchaseOutput>('HelcimPurchaseOutput')
+interface HelcimPurchaseOutput {
+  subscription: HelcimSubscriptionEntry;
+  user: typeof userRef.$inferType;
+}
+
+export const helcimSubscriptionEntryRef = builder
+  .objectRef<HelcimSubscriptionEntry>('HelcimSubscriptionEntry')
   .implement({
     fields: (t) => ({
-      transactionId: t.exposeInt('transactionId'),
+      id: t.exposeID('id'),
       status: t.exposeString('status'),
-      type: t.exposeString('type'),
+      dateActivated: t.exposeString('dateActivated'),
+      dateBilling: t.exposeString('dateBilling'),
+    }),
+  });
+
+export const helcimPurchaseOutputRef = builder
+  .objectRef<HelcimPurchaseOutput>('HelcimPurchaseOutput')
+  .implement({
+    fields: (t) => ({
+      subscription: t.field({
+        type: helcimSubscriptionEntryRef,
+        resolve: (_parent) => _parent.subscription,
+      }),
+      user: t.field({
+        type: userRef,
+        resolve: (_parent) => _parent.user,
+      }),
     }),
   });

@@ -28,11 +28,8 @@ export class Resource {
     const json = await res.json();
 
     if (json.errors) {
-      throw new HttpError(
-        JSON.stringify(json.errors, null, 2),
-        StatusCodes.BAD_REQUEST,
-        json.errors
-      );
+      const errorStr = JSON.stringify(json.errors, null, 2);
+      throw new HttpError(errorStr, StatusCodes.BAD_REQUEST, json.errors);
     }
     return json;
   }

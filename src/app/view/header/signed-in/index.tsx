@@ -74,7 +74,9 @@ export const SignedIn: React.FC<Props> = ({}) => {
           <DropdownItem
             key="pricing"
             href={appPath('pricing')}
-            startContent={<Icon icon="pricing" />}
+            startContent={
+              <Icon className="text-yellow-600" icon="premium-plan" />
+            }
             showDivider
           >
             {appLabel('pricing')}

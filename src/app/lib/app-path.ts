@@ -76,7 +76,7 @@ export function appLabel(template: keyof SupportedPath) {
     case 'preference':
       return 'Preference';
     case 'pricing':
-      return 'Upgrade your plan';
+      return 'Change your plan';
     case 'communityWelcome':
       return 'Welcome';
     case 'communitySelect':

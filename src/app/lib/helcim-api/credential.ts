@@ -20,7 +20,7 @@ export class HelcimCredential {
   static async fromConfig() {
     const cred = {
       serverUrl: 'https://api.helcim.com',
-      apiKey: env().payment.apiKey.helcim,
+      apiKey: env().payment.helcim.apiKey,
     };
     return new HelcimCredential(cred);
   }
