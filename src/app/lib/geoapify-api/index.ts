@@ -1,11 +1,12 @@
-import { GeoapifyCredential } from '../geoapify-credential';
-import { Geocode } from './resource';
+import { GeoapifyCredential } from './credential';
+import { Geocode, Resource } from './resource';
 
 export class GeoapifyApi {
   public geocode: Geocode;
 
   constructor(credential: GeoapifyCredential) {
-    this.geocode = new Geocode(credential);
+    const resource = new Resource(credential);
+    this.geocode = new Geocode(resource);
   }
 
   static async fromConfig() {

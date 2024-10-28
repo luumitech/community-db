@@ -19,6 +19,7 @@ export class GraphQLUtil {
       name: 'jest tester',
     },
     pubSub,
+    clientIp: '127.0.0.1',
   };
 
   constructor() {

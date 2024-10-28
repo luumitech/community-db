@@ -1,4 +1,5 @@
 import { parseDate } from '@internationalized/date';
+import { format } from 'date-fns';
 import * as GQL from '~/graphql/generated/graphql';
 
 type GQLDateTime = GQL.Scalars['DateTime']['output'];
@@ -30,7 +31,7 @@ export function isValidDate(date: Date | undefined | null): date is Date {
 }
 
 /**
- * Extract the YYYY-MM-DD portion of the input string supports DateTime and Date
+ * Extract the yyyy-MM-dd portion of the input string supports DateTime and Date
  * (in prisma context) string ignores the time portion of the input (skips
  * processing time string)
  *
@@ -57,4 +58,18 @@ export function parseAsDate(input: GQLDate | null | undefined) {
  */
 export function getCurrentYear() {
   return new Date().getFullYear();
+}
+
+/**
+ * Format date as yyyy-MM-dd
+ *
+ * ```js
+ * expect(formatAsDate(new Date(2000, 0, 1)).toBe("2000-01-01")
+ * ```
+ *
+ * @param input Input Date
+ * @returns Date string in "yyyy-MM-dd" format
+ */
+export function formatAsDate(input: Date) {
+  return format(input, 'yyyy-MM-dd');
 }

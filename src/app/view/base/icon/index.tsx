@@ -3,6 +3,7 @@ import React from 'react';
 import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
 import {
+  FaAward,
   FaFolderOpen,
   FaList,
   FaRegCopy,
@@ -10,13 +11,26 @@ import {
   FaTrashAlt,
 } from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa6';
+import { FcDonate } from 'react-icons/fc';
 import { GrUndo } from 'react-icons/gr';
-import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
-import { IoBarChart, IoCheckmark, IoPersonAdd } from 'react-icons/io5';
+import {
+  IoIosSettings,
+  IoMdAddCircleOutline,
+  IoMdLink,
+  IoMdMore,
+} from 'react-icons/io';
+import {
+  IoArrowBack,
+  IoBarChart,
+  IoCheckmark,
+  IoInformation,
+  IoPersonAdd,
+} from 'react-icons/io5';
 import {
   MdDragIndicator,
   MdEmail,
   MdIosShare,
+  MdLogout,
   MdOutlineClear,
   MdOutlineThumbDown,
   MdOutlineThumbUp,
@@ -45,7 +59,13 @@ type SupportedIcon =
   | 'download'
   | 'dashboard'
   | 'copy'
-  | 'list';
+  | 'list'
+  | 'logout'
+  | 'settings'
+  | 'about'
+  | 'pricing'
+  | 'premium-plan'
+  | 'back';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -117,6 +137,24 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'list':
       IconElement = FaList;
+      break;
+    case 'logout':
+      IconElement = MdLogout;
+      break;
+    case 'settings':
+      IconElement = IoIosSettings;
+      break;
+    case 'about':
+      IconElement = IoInformation;
+      break;
+    case 'pricing':
+      IconElement = FcDonate;
+      break;
+    case 'premium-plan':
+      IconElement = FaAward;
+      break;
+    case 'back':
+      IconElement = IoArrowBack;
       break;
     default:
       IconElement = MdQuestionMark;

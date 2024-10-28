@@ -15,14 +15,31 @@ const logger = Logger('env-cfg');
 const schema = yup.object({
   NODE_ENV: yup.string().oneOf(['development', 'production']).required(),
 
-  // Basepath used by client to construct URL (do not add slash at end)
-  // protocol://hostname:port
-  NEXT_PUBLIC_HOSTNAME: yup.string().required(),
-
-  // App version information
-  NEXT_PUBLIC_APP_VERSION: yup.string(),
-  NEXT_PUBLIC_GIT_BRANCH: yup.string(),
-  NEXT_PUBLIC_GIT_COMMIT_HASH: yup.string(),
+  /**
+   * Env vars that are exposed to UI
+   *
+   * NOTE: Do not expose anything sensitive information here
+   */
+  nextPublic: yup.object({
+    /**
+     * Basepath used by client to construct URL (do not add slash at end)
+     * `protocol://hostname:port`
+     */
+    hostname: yup.string().required(),
+    /**
+     * App version information
+     *
+     * Used in About modal
+     */
+    appVersion: yup.string(),
+    gitBranch: yup.string(),
+    gitCommitHash: yup.string(),
+    /** Subscription Plan details */
+    plan: yup.object({
+      name: yup.string().required(),
+      cost: yup.number().required(),
+    }),
+  }),
 
   // See: https://next-auth.js.org/configuration/options#nextauth_secret
   NEXTAUTH_SECRET: yup.string().required(),
@@ -85,6 +102,14 @@ const schema = yup.object({
   geoapify: yup.object({
     url: yup.string().required(),
     key: yup.string().required(),
+  }),
+
+  // Payment
+  payment: yup.object({
+    helcim: yup.object({
+      planId: yup.number().required(),
+      apiKey: yup.string().required(),
+    }),
   }),
 });
 

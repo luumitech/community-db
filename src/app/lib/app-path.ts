@@ -3,7 +3,9 @@ import { compile } from 'path-to-regexp';
 /** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
+  about: '/about',
   preference: '/preference',
+  pricing: '/pricing',
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
@@ -26,7 +28,9 @@ type SupportedPath = typeof supportedPathTemplates;
 export function appPath(
   template:
     | 'home'
+    | 'about'
     | 'preference'
+    | 'pricing'
     | 'communityWelcome'
     | 'communitySelect'
     | 'communityCreate'
@@ -67,8 +71,12 @@ export function appLabel(template: keyof SupportedPath) {
   switch (template) {
     case 'home':
       return 'Home';
+    case 'about':
+      return 'About';
     case 'preference':
       return 'Preference';
+    case 'pricing':
+      return 'Change your plan';
     case 'communityWelcome':
       return 'Welcome';
     case 'communitySelect':

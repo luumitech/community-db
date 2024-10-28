@@ -1,1 +1,0 @@
-export { Geocode } from './geocode';

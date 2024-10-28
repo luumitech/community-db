@@ -4,12 +4,11 @@ import {
   DropdownMenu,
   DropdownTrigger,
   User,
-  useDisclosure,
 } from '@nextui-org/react';
 import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
-import { AboutModal } from './about-modal';
+import { Icon } from '~/view/base/icon';
 
 /** Extract the first letter of each word */
 function acronym(input?: string | null) {
@@ -25,7 +24,6 @@ interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
   const { status, data } = useSession({ required: true });
-  const aboutDisclosure = useDisclosure();
 
   if (status === 'loading') {
     return null;
@@ -59,18 +57,40 @@ export const SignedIn: React.FC<Props> = ({}) => {
           >
             <p className="font-semibold">{email}</p>
           </DropdownItem>
-          <DropdownItem key="about" {...aboutDisclosure.getButtonProps()}>
-            About
+          <DropdownItem
+            key="about"
+            href={appPath('about')}
+            startContent={<Icon icon="about" />}
+          >
+            {appLabel('about')}
           </DropdownItem>
-          <DropdownItem key="preference" href={appPath('preference')}>
+          <DropdownItem
+            key="preference"
+            href={appPath('preference')}
+            startContent={<Icon icon="settings" />}
+          >
             {appLabel('preference')}
           </DropdownItem>
-          <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
+          {/* <DropdownItem
+            key="pricing"
+            href={appPath('pricing')}
+            startContent={
+              <Icon className="text-yellow-600" icon="premium-plan" />
+            }
+            showDivider
+          >
+            {appLabel('pricing')}
+          </DropdownItem> */}
+          <DropdownItem
+            key="logout"
+            color="danger"
+            onClick={() => signOut()}
+            startContent={<Icon icon="logout" />}
+          >
             Log Out
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <AboutModal disclosureProps={aboutDisclosure} />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { builder } from '~/graphql/builder';
-import { GeoapifyApi } from '~/lib/geoapify/geoapify-api';
+import { GeoapifyApi } from '~/lib/geoapify-api';
 import { geocodeRef } from './object';
 
 const GeocodeFromTextInput = builder.inputType('GeocodeFromTextInput', {
