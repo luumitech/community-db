@@ -2,7 +2,13 @@ export interface HelcimSubscriptionEntry {
   id: number;
   dateCreated: string;
   dateUpdated: string;
+  /**
+   * The date (in yyyy-MM-dd format) on which the subscription activates. Any
+   * free trial applied to the subscription begins on this date and this date
+   * determines when the first recurring billing date occurs.
+   */
   dateActivated: string;
+  /** The date (in yyyy-MM-dd format) on which the next billing is collected. */
   dateBilling: string;
   status: string;
   paymentPlanId: number;

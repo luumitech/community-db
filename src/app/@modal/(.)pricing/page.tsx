@@ -1,5 +1,4 @@
 'use client';
-import { useQuery } from '@apollo/client';
 import {
   Modal,
   ModalBody,
@@ -7,36 +6,36 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
-import { graphql } from '~/graphql/generated';
 import { appLabel } from '~/lib/app-path';
-import styles from './styles.module.css';
-import { FreePlan, PremiumPlan } from './view-plan';
+import type { PlanT } from './_type';
+import { FreePlan } from './free-plan';
+import { PremiumPlan } from './premium-plan';
+import { SelectPlan } from './select-plan';
+import { useSubscriptionPlan } from './use-subscription-plan';
 
-const UserSubscriptionQuery = graphql(/* GraphQL */ `
-  query userSubscription {
-    userCurrent {
-      id
-      subscription {
-        id
-        status
-        dateActivated
-        dateBilling
-      }
-    }
-  }
-`);
+type Direction = 'back' | 'forward';
+
+const variants = {
+  initial: (direction: Direction) => ({
+    x: direction === 'forward' ? '130%' : '-130%',
+  }),
+  animate: {
+    x: '0',
+  },
+  exit: (direction: Direction) => ({
+    x: direction === 'forward' ? '-130%' : '130%',
+  }),
+};
 
 export default function Pricing() {
   const router = useRouter();
-  const result = useQuery(UserSubscriptionQuery, {
-    fetchPolicy: 'cache-and-network',
-  });
-  useGraphqlErrorHandler(result);
+  const plan = useSubscriptionPlan();
+  const [selectedPlan, setSelectedPlan] = React.useState<PlanT>('none');
 
-  const plan = result.data?.userCurrent.subscription;
+  const direction = selectedPlan === 'none' ? 'backward' : 'forward';
 
   return (
     <Modal
@@ -47,13 +46,33 @@ export default function Pricing() {
       isDismissable={false}
       // isKeyboardDismissDisabled
     >
-      <ModalContent>
+      <ModalContent className="overflow-hidden">
         <ModalHeader>{appLabel('pricing')}</ModalHeader>
         <ModalBody>
-          <div className="grid grid-cols-2 gap-4 items-start p-2">
-            <FreePlan className={styles['item-with-border']} plan={plan} />
-            <PremiumPlan plan={plan} />
-          </div>
+          <AnimatePresence initial={false} mode="popLayout" custom={direction}>
+            <motion.div
+              key={selectedPlan}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ type: 'tween', duration: 0.5 }}
+              variants={variants}
+              custom={direction}
+            >
+              {selectedPlan == 'none' && (
+                <SelectPlan plan={plan} onSelect={setSelectedPlan} />
+              )}
+              {!!plan && selectedPlan == 'free' && (
+                <FreePlan plan={plan} onBack={() => setSelectedPlan('none')} />
+              )}
+              {!!plan && selectedPlan == 'premium' && (
+                <PremiumPlan
+                  plan={plan}
+                  onBack={() => setSelectedPlan('none')}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </ModalBody>
         <ModalFooter className="justify-center">
           Need more capabilities? Contact our team

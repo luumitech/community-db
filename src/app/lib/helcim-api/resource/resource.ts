@@ -24,6 +24,10 @@ export class Resource {
       ...(arg?.body && { body: JSON.stringify(arg.body) }),
     });
 
+    if (res.status === StatusCodes.NO_CONTENT) {
+      return {};
+    }
+
     // Handle error condition returned from JSON-RPC call
     const json = await res.json();
 

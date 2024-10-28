@@ -40,7 +40,7 @@ export const helcimPayInitializeOutputRef = builder
     }),
   });
 
-interface HelcimPurchaseOutput {
+interface HelcimSubscriptionOutput {
   subscription: HelcimSubscriptionEntry;
   user: typeof userRef.$inferType;
 }
@@ -53,11 +53,12 @@ export const helcimSubscriptionEntryRef = builder
       status: t.exposeString('status'),
       dateActivated: t.exposeString('dateActivated'),
       dateBilling: t.exposeString('dateBilling'),
+      recurringAmount: t.exposeInt('recurringAmount'),
     }),
   });
 
-export const helcimPurchaseOutputRef = builder
-  .objectRef<HelcimPurchaseOutput>('HelcimPurchaseOutput')
+export const helcimSubscriptionOutputRef = builder
+  .objectRef<HelcimSubscriptionOutput>('HelcimSubscriptionOutput')
   .implement({
     fields: (t) => ({
       subscription: t.field({

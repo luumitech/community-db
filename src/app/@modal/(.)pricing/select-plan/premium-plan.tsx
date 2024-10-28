@@ -2,26 +2,29 @@ import { Button } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { SubscriptionPlan } from '../_type';
-import { ProcessPaymentButton } from '../process-payment-button';
-import { PricePlan } from './price-plan';
+import { PricePlan } from '../price-plan';
 
 interface Props {
   className?: string;
   plan?: SubscriptionPlan;
+  onSelect?: () => void;
 }
 
-export const PremiumPlan: React.FC<Props> = ({ className, plan }) => {
+export const PremiumPlan: React.FC<Props> = ({ className, plan, onSelect }) => {
   const SwitchPlan = React.useCallback(() => {
-    if (plan?.status === 'active') {
+    if (plan == null) {
+      return <Button isLoading />;
+    } else if (plan.isActive) {
       // Already subscribed to a plan
       return <Button isDisabled>Your current plan</Button>;
+    } else {
+      return (
+        <Button onClick={onSelect}>
+          Upgrade to {process.env.NEXT_PUBLIC_PLAN_NAME}
+        </Button>
+      );
     }
-    return (
-      <ProcessPaymentButton color="primary">
-        Upgrade to {process.env.NEXT_PUBLIC_PLAN_NAME}
-      </ProcessPaymentButton>
-    );
-  }, [plan]);
+  }, [plan, onSelect]);
 
   return (
     <PricePlan

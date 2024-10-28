@@ -3,8 +3,11 @@ import { HttpError } from '~/lib/http-error';
 import type {
   HelcimSubscriptionsCreateInput,
   HelcimSubscriptionsCreateOutput,
+  HelcimSubscriptionsDeleteInput,
   HelcimSubscriptionsGetSingleInput,
   HelcimSubscriptionsGetSingleOutput,
+  HelcimSubscriptionsPatchInput,
+  HelcimSubscriptionsPatchOutput,
 } from '../_type';
 import { Resource, type CallArg } from './resource';
 
@@ -61,6 +64,35 @@ export class Subscriptions {
     if (result.status != 'ok') {
       throw new HttpError('Subscription not found', StatusCodes.BAD_REQUEST);
     }
+    return result;
+  }
+
+  /**
+   * Patch subscription
+   *
+   * https://devdocs.helcim.com/v2.2/reference/subscription-patch
+   *
+   * TODO: patching does not work, getting subscription Id malformed error
+   */
+  async patch(
+    input: HelcimSubscriptionsPatchInput
+  ): Promise<HelcimSubscriptionsPatchOutput> {
+    const result = await this.call('', 'PATCH', {
+      body: {
+        subscriptions: [input],
+      },
+    });
+
+    return result;
+  }
+
+  /**
+   * Delete subscription
+   *
+   * https://devdocs.helcim.com/v2.2/reference/subscription-delete
+   */
+  async delete(input: HelcimSubscriptionsDeleteInput): Promise<void> {
+    const result = await this.call(`/${input.subscriptionId}`, 'DELETE');
     return result;
   }
 }

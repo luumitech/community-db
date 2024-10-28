@@ -1,6 +1,6 @@
 import { builder } from '~/graphql/builder';
-import { HelcimApi } from '~/lib/helcim-api';
 import { helcimSubscriptionEntryRef } from '../payment/object';
+import { getSubscriptionEntry } from '../payment/util';
 
 // const Preference = builder.objectRef<Preference>('Preference').implement({
 //   fields: (t) => ({
@@ -18,13 +18,8 @@ export const userRef = builder.prismaObject('User', {
       type: helcimSubscriptionEntryRef,
       nullable: true,
       resolve: async (_parent) => {
-        const { subscriptionId } = _parent;
-        if (!subscriptionId) {
-          return null;
-        }
-        const api = await HelcimApi.fromConfig();
-        const subResult = await api.subscriptions.getSingle({ subscriptionId });
-        return subResult.data;
+        const entry = await getSubscriptionEntry(_parent);
+        return entry;
       },
     }),
     // preference: t.field({

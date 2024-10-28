@@ -4,7 +4,7 @@ import type { HelcimSubscriptionEntry } from './entry';
 
 export interface HelcimSubscriptionsCreateInput {
   /**
-   * The date (in YYYY-MM-DD format) on which the subscription activates. Any
+   * The date (in yyyy-MM-dd format) on which the subscription activates. Any
    * free trial applied to the subscription begins on this date and this date
    * determines when the first recurring billing date occurs.
    */

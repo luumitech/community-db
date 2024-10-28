@@ -6,7 +6,7 @@ interface Props {
   className?: string;
   planName: React.ReactNode;
   price: string;
-  button: React.ReactNode;
+  button?: React.ReactNode;
 }
 
 export const PricePlan: React.FC<React.PropsWithChildren<Props>> = ({
@@ -20,7 +20,7 @@ export const PricePlan: React.FC<React.PropsWithChildren<Props>> = ({
     <Card className={className} shadow="none">
       <CardHeader>
         <div>
-          <p className="text-xl font-bold">{planName}</p>
+          <div className="text-xl font-bold">{planName}</div>
           <div className="flex items-end">
             <span className="text-xl text-foreground-500 self-start">$</span>
             <span className="text-5xl">{price}</span>
@@ -34,7 +34,7 @@ export const PricePlan: React.FC<React.PropsWithChildren<Props>> = ({
       </CardHeader>
       <CardBody>
         {button}
-        <Spacer y={4} />
+        {!!button && <Spacer y={4} />}
         {children}
       </CardBody>
     </Card>

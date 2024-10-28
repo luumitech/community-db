@@ -20,6 +20,7 @@ import {
   IoMdMore,
 } from 'react-icons/io';
 import {
+  IoArrowBack,
   IoBarChart,
   IoCheckmark,
   IoInformation,
@@ -34,7 +35,6 @@ import {
   MdOutlineThumbDown,
   MdOutlineThumbUp,
   MdQuestionMark,
-  MdWorkspacePremium,
 } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
 
@@ -64,7 +64,8 @@ type SupportedIcon =
   | 'settings'
   | 'about'
   | 'pricing'
-  | 'premium-plan';
+  | 'premium-plan'
+  | 'back';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -151,6 +152,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'premium-plan':
       IconElement = FaAward;
+      break;
+    case 'back':
+      IconElement = IoArrowBack;
       break;
     default:
       IconElement = MdQuestionMark;

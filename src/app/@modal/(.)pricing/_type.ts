@@ -1,4 +1,9 @@
-import * as GQL from '~/graphql/generated/graphql';
+/** Subscription Plan information returned from useSubscriptionPlan hook */
+export interface SubscriptionPlan {
+  isActive: boolean;
+  recurringAmount: string;
+  nextBillingDate?: string;
+}
 
-export type SubscriptionPlan =
-  GQL.UserSubscriptionQuery['userCurrent']['subscription'];
+/** Available subscription plan type */
+export type PlanT = 'free' | 'premium' | 'none';

@@ -71,7 +71,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
           >
             {appLabel('preference')}
           </DropdownItem>
-          <DropdownItem
+          {/* <DropdownItem
             key="pricing"
             href={appPath('pricing')}
             startContent={
@@ -80,7 +80,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
             showDivider
           >
             {appLabel('pricing')}
-          </DropdownItem>
+          </DropdownItem> */}
           <DropdownItem
             key="logout"
             color="danger"

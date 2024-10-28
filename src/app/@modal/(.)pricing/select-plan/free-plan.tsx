@@ -2,21 +2,25 @@ import { Button } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { SubscriptionPlan } from '../_type';
-import { PricePlan } from './price-plan';
+import { PricePlan } from '../price-plan';
 
 interface Props {
   className?: string;
   plan?: SubscriptionPlan;
+  onSelect?: () => void;
 }
 
-export const FreePlan: React.FC<Props> = ({ className, plan }) => {
+export const FreePlan: React.FC<Props> = ({ className, plan, onSelect }) => {
   const SwitchPlan = React.useCallback(() => {
-    if (plan?.status === 'active') {
+    if (plan == null) {
+      return <Button isLoading />;
+    } else if (plan.isActive) {
       // Already subscribed to a plan
-      return <Button>Downgrade to Free</Button>;
+      return <Button onClick={onSelect}>Downgrade to Free</Button>;
+    } else {
+      return <Button isDisabled>Your current plan</Button>;
     }
-    return <Button isDisabled>Your current plan</Button>;
-  }, [plan]);
+  }, [plan, onSelect]);
 
   return (
     <PricePlan
