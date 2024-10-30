@@ -32,11 +32,13 @@ export const PricePlan: React.FC<React.PropsWithChildren<Props>> = ({
           </div>
         </div>
       </CardHeader>
-      <CardBody>
-        {button}
-        {!!button && <Spacer y={4} />}
-        {children}
-      </CardBody>
+      {(!!button || !!children) && (
+        <CardBody>
+          {button}
+          {!!button && <Spacer y={4} />}
+          {children}
+        </CardBody>
+      )}
     </Card>
   );
 };

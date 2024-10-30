@@ -70,13 +70,11 @@ const HelcimPayInitialize = graphql(/* GraphQL */ `
 const HelcimPurchase = graphql(/* GraphQL */ `
   mutation helcimPurchase($input: HelcimPurchaseInput!) {
     helcimPurchase(input: $input) {
-      user {
+      id
+      subscription {
         id
-        email
-        subscription {
-          id
-          status
-        }
+        paymentType
+        status
       }
     }
   }
@@ -251,6 +249,7 @@ export const ProcessPaymentButton: React.FC<Props> = ({
     <>
       <Script src="https://secure.helcim.app/helcim-pay/services/start.js" />
       <Button
+        className={className}
         onClick={gatherPaymentInfo}
         isLoading={payInitializeResult.loading || purchaseResult.loading}
         {...buttonProps}

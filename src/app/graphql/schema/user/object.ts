@@ -1,8 +1,8 @@
 import { builder } from '~/graphql/builder';
-import { helcimSubscriptionEntryRef } from '../payment/object';
+import { subscriptionEntryRef } from '../payment/object';
 import { getSubscriptionEntry } from '../payment/util';
 
-// const Preference = builder.objectRef<Preference>('Preference').implement({
+// const preferenceRef = builder.objectRef<Preference>('Preference').implement({
 //   fields: (t) => ({
 //     theme: t.exposeString('theme'),
 //   }),
@@ -15,15 +15,15 @@ export const userRef = builder.prismaObject('User', {
     name: t.exposeString('name', { nullable: true }),
     accessList: t.relation('accessList'),
     subscription: t.field({
-      type: helcimSubscriptionEntryRef,
+      type: subscriptionEntryRef,
       nullable: true,
-      resolve: async (_parent) => {
-        const entry = await getSubscriptionEntry(_parent);
-        return entry;
+      resolve: async (entry) => {
+        const subEntry = await getSubscriptionEntry(entry);
+        return subEntry;
       },
     }),
     // preference: t.field({
-    //   type: Preference,
+    //   type: preferenceRef,
     //   select: { preference: true },
     //   resolve: (entry) => entry.preference,
     // }),

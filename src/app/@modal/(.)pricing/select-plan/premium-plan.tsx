@@ -1,16 +1,16 @@
 import { Button } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
-import { SubscriptionPlan } from '../_type';
+import { usePlanContext } from '../plan-context';
 import { PricePlan } from '../price-plan';
 
 interface Props {
   className?: string;
-  plan?: SubscriptionPlan;
-  onSelect?: () => void;
 }
 
-export const PremiumPlan: React.FC<Props> = ({ className, plan, onSelect }) => {
+export const PremiumPlan: React.FC<Props> = ({ className }) => {
+  const { plan, goToPanel } = usePlanContext();
+
   const SwitchPlan = React.useCallback(() => {
     if (plan == null) {
       return <Button isLoading />;
@@ -19,12 +19,12 @@ export const PremiumPlan: React.FC<Props> = ({ className, plan, onSelect }) => {
       return <Button isDisabled>Your current plan</Button>;
     } else {
       return (
-        <Button onClick={onSelect}>
+        <Button onClick={() => goToPanel('premium')}>
           Upgrade to {process.env.NEXT_PUBLIC_PLAN_NAME}
         </Button>
       );
     }
-  }, [plan, onSelect]);
+  }, [plan, goToPanel]);
 
   return (
     <PricePlan

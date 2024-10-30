@@ -11,6 +11,7 @@ const UserSubscriptionQuery = graphql(/* GraphQL */ `
       id
       subscription {
         id
+        paymentType
         status
         dateActivated
         dateBilling

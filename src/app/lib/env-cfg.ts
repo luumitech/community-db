@@ -36,7 +36,11 @@ const schema = yup.object({
     gitCommitHash: yup.string(),
     /** Subscription Plan details */
     plan: yup.object({
+      /** Is Subscription plan enabled */
+      enable: yup.string().required(),
+      /** Name of paid subscription plan */
       name: yup.string().required(),
+      /** Cost of paid subscription plan */
       cost: yup.number().required(),
     }),
   }),

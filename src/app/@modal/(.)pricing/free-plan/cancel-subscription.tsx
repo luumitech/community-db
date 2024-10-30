@@ -9,15 +9,11 @@ import { toast } from '~/view/base/toastify';
 const HelcimCancelSubscription = graphql(/* GraphQL */ `
   mutation helcimCancelSubscription {
     helcimCancelSubscription {
+      id
       subscription {
         id
+        paymentType
         status
-      }
-      user {
-        id
-        subscription {
-          id
-        }
       }
     }
   }
@@ -57,13 +53,11 @@ export const CancelSubscriptionButton: React.FC<Props> = ({
   }, [cancelSub, onSuccess]);
 
   return (
-    <div className={className}>
-      <Button
-        className="w-full"
-        onClick={cancel}
-        isLoading={cancelSubResult.loading}
-        {...buttonProps}
-      />
-    </div>
+    <Button
+      className={className}
+      onClick={cancel}
+      isLoading={cancelSubResult.loading}
+      {...buttonProps}
+    />
   );
 };

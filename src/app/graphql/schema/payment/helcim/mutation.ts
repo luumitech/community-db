@@ -1,15 +1,13 @@
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
+import { userRef } from '~/graphql/schema/user/object';
 import { getUserEntry } from '~/graphql/schema/user/util';
 import { formatAsDate } from '~/lib/date-util';
 import { env } from '~/lib/env-cfg';
 import { HelcimApi } from '~/lib/helcim-api';
 import prisma from '~/lib/prisma';
-import {
-  helcimPayInitializeOutputRef,
-  helcimSubscriptionOutputRef,
-} from './object';
-import { getSubscriptionEntry } from './util';
+import { getSubscriptionEntry } from '../util';
+import { helcimPayInitializeOutputRef } from './object';
 
 const HelcimPayInitializeInput = builder.inputType('HelcimPayInitializeInput', {
   fields: (t) => ({
@@ -67,7 +65,7 @@ const HelcimPurchaseInputRef = builder
 
 builder.mutationField('helcimPurchase', (t) =>
   t.field({
-    type: helcimSubscriptionOutputRef,
+    type: userRef,
     args: {
       input: t.arg({
         type: HelcimPurchaseInputRef,
@@ -108,36 +106,40 @@ builder.mutationField('helcimPurchase', (t) =>
       // Record subscription plan ID into user document
       const userEntry = await prisma.user.update({
         where: { id: userDoc.id },
-        data: { subscriptionId: subEntry.id },
+        data: {
+          subscription: {
+            paymentType: 'HELCIM',
+            subscriptionId: subEntry.id.toString(),
+          },
+        },
       });
 
-      return {
-        subscription: subEntry,
-        user: userEntry,
-      };
+      return userEntry;
     },
   })
 );
 
 builder.mutationField('helcimCancelSubscription', (t) =>
   t.field({
-    type: helcimSubscriptionOutputRef,
+    type: userRef,
     resolve: async (parent, args, ctx) => {
       const { user } = await ctx;
 
       // Check if user has an ongoing subscription already
       const userDoc = await getUserEntry(user);
       const existingSub = await getSubscriptionEntry(userDoc);
-      if (existingSub == null) {
+      const subscriptionIdStr = userDoc.subscription?.subscriptionId;
+      if (!subscriptionIdStr || existingSub == null) {
         throw new GraphQLError('You do not have a subscription');
       }
+      const subscriptionId = parseInt(subscriptionIdStr, 10);
 
       // Process subscription payment
       const api = await HelcimApi.fromConfig();
 
       // TODO: patch doesn't work, so we remove the subscription directly
       // const subResult = await api.subscriptions.patch({
-      //   id: existingSub.id,
+      //   id: subscriptionId,
       //   status: 'cancelled',
       // });
 
@@ -146,17 +148,12 @@ builder.mutationField('helcimCancelSubscription', (t) =>
       //   throw new GraphQLError('Cancelling subscription plan failed');
       // }
 
-      const deleteResult = await api.subscriptions.delete({
-        subscriptionId: existingSub.id,
-      });
+      const deleteResult = await api.subscriptions.delete({ subscriptionId });
 
       return {
-        subscription: existingSub,
-        user: {
-          ...userDoc,
-          // Subscription ID removed
-          subscriptionId: null,
-        },
+        ...userDoc,
+        // Subscription removed
+        subscription: null,
       };
     },
   })

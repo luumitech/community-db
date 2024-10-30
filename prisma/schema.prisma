@@ -18,17 +18,31 @@ datasource db {
 
 /// Describe a user in the system
 model User {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   /// unique email identifying user document
-  email          String      @unique
-  name           String?
-  /// Helcim payment subscription ID
-  subscriptionId Int?
-  accessList     Access[]
-  Property       Property[]
-  Community      Community[]
+  email        String        @unique
+  name         String?
+  /// Subscription (paid customer) information
+  subscription Subscription?
+  accessList   Access[]
+  Property     Property[]
+  Community    Community[]
+}
+
+/// Type of payment processor supported by the app
+enum PaymentProcessor {
+  /// granted life-time license
+  GRANTED
+  HELCIM
+}
+
+/// Paid customer subscription information
+type Subscription {
+  paymentType    PaymentProcessor
+  /// Subscription ID associated with the PaymentProcessor
+  subscriptionId String
 }
 
 enum Role {
