@@ -34,6 +34,10 @@ const schema = yup.object({
     appVersion: yup.string(),
     gitBranch: yup.string(),
     gitCommitHash: yup.string(),
+    /** Website contact information */
+    contact: yup.object({
+      info: yup.string().required(),
+    }),
     /** Subscription Plan details */
     plan: yup.object({
       /** Is Subscription plan enabled */
