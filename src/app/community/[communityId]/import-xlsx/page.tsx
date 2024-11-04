@@ -60,7 +60,9 @@ export default function ImportXlsx({ params }: RouteArgs) {
                     size="sm"
                     as={Link}
                     color="primary"
-                    href={appPath('propertyList', { communityId: input.id })}
+                    href={appPath('propertyList', {
+                      path: { communityId: input.id },
+                    })}
                   >
                     {appLabel('propertyList')}
                   </Button>

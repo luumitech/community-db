@@ -77,7 +77,9 @@ export function useTopMenu() {
             items.push({
               id: 'community-editor',
               ...linkTo(
-                appPath('propertyList', { communityId: ctxCommunityId })
+                appPath('propertyList', {
+                  path: { communityId: ctxCommunityId },
+                })
               ),
               children: <CommunityName communityName={communityName} />,
             });
@@ -97,7 +99,7 @@ export function useTopMenu() {
         case 'import-xlsx':
           items.push({
             id: 'import-xlsx',
-            ...linkTo(appPath('communityImport', { communityId })),
+            ...linkTo(appPath('communityImport', { path: { communityId } })),
             children: appLabel('communityImport'),
           });
           break;
@@ -105,7 +107,7 @@ export function useTopMenu() {
         case 'export-xlsx':
           items.push({
             id: 'export-xlsx',
-            ...linkTo(appPath('communityExport', { communityId })),
+            ...linkTo(appPath('communityExport', { path: { communityId } })),
             children: appLabel('communityExport'),
           });
           break;
@@ -113,7 +115,7 @@ export function useTopMenu() {
         case 'share':
           items.push({
             id: 'share',
-            ...linkTo(appPath('communityShare', { communityId })),
+            ...linkTo(appPath('communityShare', { path: { communityId } })),
             children: appLabel('communityShare'),
           });
           break;
@@ -121,7 +123,7 @@ export function useTopMenu() {
         case 'dashboard':
           items.push({
             id: 'tool-dashboard',
-            ...linkTo(appPath('communityDashboard', { communityId })),
+            ...linkTo(appPath('communityDashboard', { path: { communityId } })),
             children: appLabel('communityDashboard'),
           });
           break;
@@ -133,7 +135,7 @@ export function useTopMenu() {
       if (propertyId) {
         items.push({
           id: 'property-editor',
-          ...linkTo(appPath('property', { communityId, propertyId })),
+          ...linkTo(appPath('property', { path: { communityId, propertyId } })),
           children: (
             <PropertyAddress
               communityId={communityId}

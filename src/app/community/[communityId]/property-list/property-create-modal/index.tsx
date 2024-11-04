@@ -52,8 +52,10 @@ export const PropertyCreateModal: React.FC<Props> = ({ hookForm }) => {
           onCompleted: (result) => {
             router.push(
               appPath('property', {
-                communityId: community.id,
-                propertyId: result.propertyCreate.id,
+                path: {
+                  communityId: community.id,
+                  propertyId: result.propertyCreate.id,
+                },
               })
             );
           },

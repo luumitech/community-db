@@ -24,7 +24,9 @@ export default function CommunityCreate() {
           const newCommunity = await create({ variables: { input } });
           const newId = newCommunity.data?.communityCreate.id;
           if (newId) {
-            router.push(appPath('propertyList', { communityId: newId }));
+            router.push(
+              appPath('propertyList', { path: { communityId: newId } })
+            );
           }
         },
         {

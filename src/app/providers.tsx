@@ -10,6 +10,7 @@ import { AppProvider } from '~/custom-hooks/app-context';
 import apolloClient from '~/graphql/apollo-client';
 import { ConfirmationModal } from '~/view/base/confirmation-modal';
 import { ReduxProviders } from './redux-providers';
+import { TsrProviders } from './tsr';
 
 interface Props {
   sessionProviderProps: Omit<SessionProviderProps, 'children'>;
@@ -27,11 +28,14 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
       <ApolloProvider client={apolloClient}>
         <NextUIProvider navigate={router.push}>
           <ReduxProviders>
-            <AppProvider>
-              {children}
-              <ConfirmationModal />
-              <ToastContainer position="bottom-right" theme={resolvedTheme} />
-            </AppProvider>
+            <TsrProviders>
+              <AppProvider>
+                {children}
+
+                <ConfirmationModal />
+                <ToastContainer position="bottom-right" theme={resolvedTheme} />
+              </AppProvider>
+            </TsrProviders>
           </ReduxProviders>
         </NextUIProvider>
       </ApolloProvider>

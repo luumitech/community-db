@@ -2,6 +2,8 @@ import { Link } from '@nextui-org/react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import React from 'react';
+import { appLabel, appPath } from '~/lib/app-path';
+import { Icon } from '~/view/base/icon';
 import logoImg from './luumitech-logo.png';
 
 interface Props {
@@ -26,6 +28,15 @@ export const Footer: React.FC<Props> = ({ className }) => {
             LuumiTech
           </Link>
         </div>
+        <div className="grow" />
+        <Link
+          href={appPath('contactUs')}
+          isBlock
+          showAnchorIcon
+          anchorIcon={<Icon className="mx-1" icon="email" />}
+        >
+          {appLabel('contactUs')}
+        </Link>
       </div>
     </div>
   );

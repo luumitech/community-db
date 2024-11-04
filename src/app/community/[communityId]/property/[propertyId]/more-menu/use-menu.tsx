@@ -38,7 +38,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         },
         {
           key: 'property-list',
-          href: appPath('propertyList', { communityId }),
+          href: appPath('propertyList', { path: { communityId } }),
           endContent: <Icon icon="list" />,
           showDivider: true,
           children: appLabel('propertyList'),

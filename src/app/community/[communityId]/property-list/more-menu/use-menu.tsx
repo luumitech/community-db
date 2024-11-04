@@ -25,18 +25,18 @@ export function useMoreMenu(opt: MoreMenuOpt) {
     items.push(
       {
         key: 'export',
-        href: appPath('communityExport', { communityId }),
+        href: appPath('communityExport', { path: { communityId } }),
         children: appLabel('communityExport'),
       },
       {
         key: 'share',
-        href: appPath('communityShare', { communityId }),
+        href: appPath('communityShare', { path: { communityId } }),
         endContent: <Icon icon="share" />,
         children: appLabel('communityShare'),
       },
       {
         key: 'dashboard',
-        href: appPath('communityDashboard', { communityId }),
+        href: appPath('communityDashboard', { path: { communityId } }),
         endContent: <Icon icon="dashboard" />,
         showDivider: canEdit,
         children: appLabel('communityDashboard'),
@@ -55,7 +55,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
       items.push(
         {
           key: 'import',
-          href: appPath('communityImport', { communityId }),
+          href: appPath('communityImport', { path: { communityId } }),
           children: appLabel('communityImport'),
         },
         {

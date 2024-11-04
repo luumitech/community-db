@@ -34,10 +34,6 @@ const schema = yup.object({
     appVersion: yup.string(),
     gitBranch: yup.string(),
     gitCommitHash: yup.string(),
-    /** Website contact information */
-    contact: yup.object({
-      info: yup.string().required(),
-    }),
     /** Subscription Plan details */
     plan: yup.object({
       /** Is Subscription plan enabled */
@@ -117,6 +113,23 @@ const schema = yup.object({
     helcim: yup.object({
       planId: yup.number().required(),
       apiKey: yup.string().required(),
+    }),
+  }),
+
+  email: yup.object({
+    /** Website contact information */
+    contactInfo: yup.string().required(),
+
+    mailjet: yup.object({
+      /** Mailjet credential */
+      api: yup.object({
+        key: yup.string().required(),
+        secret: yup.string().required(),
+      }),
+      /** Call the API, but not actually sanding mail */
+      sandboxMode: yup.boolean(),
+      /** Mailjet verified sender email */
+      sender: yup.string().required(),
     }),
   }),
 });

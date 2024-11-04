@@ -129,7 +129,9 @@ export default function PropertyList({ params }: RouteArgs) {
             as={Link}
             color="primary"
             href={appPath('communityImport', {
-              communityId: community.id,
+              path: {
+                communityId: community.id,
+              },
             })}
           >
             {appLabel('communityImport')}
@@ -184,8 +186,10 @@ export default function PropertyList({ params }: RouteArgs) {
                 onClick={() =>
                   router.push(
                     appPath('property', {
-                      communityId: params.communityId,
-                      propertyId: entry.id,
+                      path: {
+                        communityId: params.communityId,
+                        propertyId: entry.id,
+                      },
                     })
                   )
                 }

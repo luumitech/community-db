@@ -98,7 +98,7 @@ export function useNavMenu() {
         {
           id: 'membership-editor',
           isActive: !!matchCommunityEditor(pathname),
-          href: appPath('propertyList', { communityId }),
+          href: appPath('propertyList', { path: { communityId } }),
           children: indentMenuItem(appLabel('propertyList'), 1),
         }
       );
@@ -106,7 +106,7 @@ export function useNavMenu() {
       if (isAdmin) {
         items.push({
           id: 'import-xlsx',
-          ...pathMenuArg(appPath('communityImport', { communityId })),
+          ...pathMenuArg(appPath('communityImport', { path: { communityId } })),
           children: indentMenuItem(appLabel('communityImport'), 1),
         });
       }
@@ -114,17 +114,19 @@ export function useNavMenu() {
       items.push(
         {
           id: 'export-xlsx',
-          ...pathMenuArg(appPath('communityExport', { communityId })),
+          ...pathMenuArg(appPath('communityExport', { path: { communityId } })),
           children: indentMenuItem(appLabel('communityExport'), 1),
         },
         {
           id: 'share',
-          ...pathMenuArg(appPath('communityShare', { communityId })),
+          ...pathMenuArg(appPath('communityShare', { path: { communityId } })),
           children: indentMenuItem(appLabel('communityShare'), 1),
         },
         {
           id: 'dashboard',
-          ...pathMenuArg(appPath('communityDashboard', { communityId })),
+          ...pathMenuArg(
+            appPath('communityDashboard', { path: { communityId } })
+          ),
           children: indentMenuItem(appLabel('communityDashboard'), 1),
         }
       );

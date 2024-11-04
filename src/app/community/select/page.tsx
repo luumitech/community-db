@@ -32,7 +32,9 @@ export default function CommunitySelect() {
   const accessList = result.data?.userCurrent.accessList ?? [];
   const items: ListboxItemProps[] = accessList.map((entry) => ({
     key: entry.community.id,
-    href: appPath('propertyList', { communityId: entry.community.id }),
+    href: appPath('propertyList', {
+      path: { communityId: entry.community.id },
+    }),
     children: entry.community.name,
   }));
 

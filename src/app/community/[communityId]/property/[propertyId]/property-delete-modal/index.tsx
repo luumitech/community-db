@@ -36,7 +36,7 @@ export const PropertyDeleteModal: React.FC<Props> = ({
       deleteProperty({
         variables: { id: property.id },
         onCompleted: () => {
-          router.push(appPath('propertyList', { communityId }));
+          router.push(appPath('propertyList', { path: { communityId } }));
         },
         update: (cache) => {
           const normalizedId = cache.identify({
