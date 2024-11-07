@@ -98,7 +98,7 @@ export class BlobService {
       // if useLocal is not specified, then check env var for recommended settings
       try {
         // set env var AZURE_USE_LOCAL_STORAGE to true to force usage of local Azurite
-        if (env().azure.storageMode === 'local') {
+        if (env().AZURE_STORAGE_MODE === 'local') {
           useLocal = true;
         }
 
@@ -113,7 +113,10 @@ export class BlobService {
 
     if (useLocal) {
       // Development Azurite connection
-      const { host, port, account, accountKey } = env().azure.localStorage;
+      const host = env().AZURE_LOCAL_STORAGE_HOST!;
+      const port = env().AZURE_LOCAL_STORAGE_PORT!;
+      const account = env().AZURE_LOCAL_STORAGE_ACCOUNT!;
+      const accountKey = env().AZURE_LOCAL_STORAGE_ACCOUNT_KEY!;
       const credential = new StorageSharedKeyCredential(account, accountKey);
       this.serviceClient = new BlobServiceClient(
         `http://${host}:${port}/${account}`,
@@ -121,7 +124,8 @@ export class BlobService {
       );
     } else {
       // Connect to remote Azure blob
-      const { account, accountKey } = env().azure.storage;
+      const account = env().AZURE_STORAGE_ACCOUNT!;
+      const accountKey = env().AZURE_STORAGE_ACCOUNT_KEY!;
       // connection string
       if (!accountKey) {
         throw new Error('Azure storage accountKey not provided');

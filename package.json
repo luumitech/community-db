@@ -72,7 +72,6 @@
     "next-themes": "^0.3.0",
     "node-mailjet": "^6.0.6",
     "object-hash": "^3.0.0",
-    "omniconfig.js": "^1.2.0",
     "path-to-regexp": "^6.2.2",
     "pino": "^8.19.0",
     "pino-pretty": "^11.0.0",

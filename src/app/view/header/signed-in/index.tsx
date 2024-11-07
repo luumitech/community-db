@@ -6,6 +6,7 @@ import {
   User,
 } from '@nextui-org/react';
 import { signOut, useSession } from 'next-auth/react';
+import { env } from 'next-runtime-env';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { insertIf } from '~/lib/insert-if';
@@ -34,7 +35,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
   // useSession guarantees user to be authenticated
   const { name, email, image } = data!.user!;
 
-  const subscriptionPlanEnable = process.env.NEXT_PUBLIC_PLAN_ENABLE === 'true';
+  const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
 
   return (
     <Dropdown placement="bottom-end">

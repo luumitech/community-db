@@ -1,7 +1,6 @@
 import { unstable_noStore } from 'next/cache';
-import OmniConfig from 'omniconfig.js';
-import * as yup from 'yup';
 import { Logger } from '~/lib/logger';
+import { z, zNonEmptyStr, zStrToBoolean } from '~/lib/zod';
 
 const logger = Logger('env-cfg');
 
@@ -12,130 +11,135 @@ const logger = Logger('env-cfg');
  * These are mapped from environment variables in `process.env` And snake case
  * names can be automatically mapped to object form.
  */
-const schema = yup.object({
-  NODE_ENV: yup.string().oneOf(['development', 'production']).required(),
+const schema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'production']),
 
-  /**
-   * Env vars that are exposed to UI
-   *
-   * NOTE: Do not expose anything sensitive information here
-   */
-  nextPublic: yup.object({
+    /**
+     * Env vars that are exposed to UI
+     *
+     * NOTE: Do not expose anything sensitive information here
+     */
     /**
      * Basepath used by client to construct URL (do not add slash at end)
      * `protocol://hostname:port`
      */
-    hostname: yup.string().required(),
+    NEXT_PUBLIC_HOSTNAME: zNonEmptyStr(),
     /**
      * App version information
      *
      * Used in About modal
      */
-    appVersion: yup.string(),
-    gitBranch: yup.string(),
-    gitCommitHash: yup.string(),
+    NEXT_PUBLIC_APP_VERSION: z.string().optional(),
+    NEXT_PUBLIC_GIT_BRANCH: z.string().optional(),
+    NEXT_PUBLIC_GIT_COMMIT_HASH: z.string().optional(),
     /** Subscription Plan details */
-    plan: yup.object({
-      /** Is Subscription plan enabled */
-      enable: yup.string().required(),
-      /** Name of paid subscription plan */
-      name: yup.string().required(),
-      /** Cost of paid subscription plan */
-      cost: yup.number().required(),
-    }),
-  }),
+    NEXT_PUBLIC_PLAN_ENABLE: zStrToBoolean().describe(
+      'Is Subscription plan enabled'
+    ),
+    NEXT_PUBLIC_PLAN_NAME: zNonEmptyStr().describe(
+      'Name of paid subscription plan'
+    ),
+    NEXT_PUBLIC_PLAN_COST: z.coerce
+      .number()
+      .describe('Cost of paid subscription plan'),
 
-  // See: https://next-auth.js.org/configuration/options#nextauth_secret
-  NEXTAUTH_SECRET: yup.string().required(),
+    // See: https://next-auth.js.org/configuration/options#nextauth_url
+    NEXTAUTH_URL: zNonEmptyStr(),
+    // See: https://next-auth.js.org/configuration/options#nextauth_secret
+    NEXTAUTH_SECRET: zNonEmptyStr(),
 
-  // Jest would set this to 'true' if jest is running
-  JEST_RUNNING: yup.string(),
+    JEST_RUNNING: zStrToBoolean().describe('true only if Jest is running'),
 
-  // Log configuration
-  log: yup.object({
-    debug: yup.string(),
-  }),
+    LOG_DEBUG: z
+      .string()
+      .optional()
+      .describe('logger output filtering, see README for details'),
+    CONFIG_DEBUG: zStrToBoolean().describe(
+      'Log environment variable values for debuggin purpose.'
+    ),
 
-  config: yup.object({
-    debug: yup.boolean(),
-  }),
+    /** Google related env vars */
+    /**
+     * For google login
+     *
+     * Options passed into GoogleProvider from 'next-auth/providers/google';
+     */
+    GOOGLE_CLIENT_ID: zNonEmptyStr().describe('google auth clientID'),
+    GOOGLE_CLIENT_SECRET: zNonEmptyStr().describe('google auth secret'),
 
-  // For google login
-  // Options passed into GoogleProvider from 'next-auth/providers/google';
-  google: yup.object({
-    clientId: yup.string().required(),
-    clientSecret: yup.string().required(),
-  }),
+    /** Mongo configurations */
+    MONGODB_URI: zNonEmptyStr().describe('Mongo Database URL'),
 
-  // Mongo configuration
-  mongodb: yup.object({
-    uri: yup.string().required(),
-  }),
-
-  // Azure configuration
-  azure: yup.object({
-    storageMode: yup.string().oneOf(['local', 'remote', 'none']),
+    /** Azure configuration */
+    AZURE_STORAGE_MODE: z.enum(['local', 'remote', 'none']),
     /** Local azurite configuration */
-    localStorage: yup
-      .object({
-        host: yup.string().required(),
-        port: yup.number().required(),
-        account: yup.string().required(),
-        accountKey: yup.string().required(),
-      })
-      .default(undefined)
-      .when('storageMode', {
-        is: 'local',
-        then: (_schema) => _schema.default({}),
-      }),
+    AZURE_LOCAL_STORAGE_HOST: z.string().optional(),
+    AZURE_LOCAL_STORAGE_PORT: z.coerce.number().optional(),
+    AZURE_LOCAL_STORAGE_ACCOUNT: z.string().optional(),
+    AZURE_LOCAL_STORAGE_ACCOUNT_KEY: z.string().optional(),
+    /** Remote azure storage configuration */
+    AZURE_STORAGE_ACCOUNT: z.string().optional(),
+    AZURE_STORAGE_ACCOUNT_KEY: z.string().optional(),
 
-    /** Remote azure blob storage configuration */
-    storage: yup
-      .object({
-        account: yup.string().required(),
-        accountKey: yup.string().required(),
-      })
-      .default(undefined)
-      .when('storageMode', {
-        is: 'remote',
-        then: (_schema) => _schema.default({}),
-      }),
-  }),
+    /** Geoapify */
+    GEOAPIFY_URL: zNonEmptyStr(),
+    GEOAPIFY_KEY: zNonEmptyStr(),
 
-  // Geoapify
-  geoapify: yup.object({
-    url: yup.string().required(),
-    key: yup.string().required(),
-  }),
+    /** Payment Configuration */
+    PAYMENT_HELCIM_PLAN_ID: z.coerce.number(),
+    PAYMENT_HELCIM_API_KEY: zNonEmptyStr(),
 
-  // Payment
-  payment: yup.object({
-    helcim: yup.object({
-      planId: yup.number().required(),
-      apiKey: yup.string().required(),
-    }),
-  }),
-
-  email: yup.object({
-    /** Website contact information */
-    contactInfo: yup.string().required(),
-
-    mailjet: yup.object({
-      /** Mailjet credential */
-      api: yup.object({
-        key: yup.string().required(),
-        secret: yup.string().required(),
-      }),
-      /** Call the API, but not actually sanding mail */
-      sandboxMode: yup.boolean(),
-      /** Mailjet verified sender email */
-      sender: yup.string().required(),
-    }),
-  }),
-});
+    /** Email configuration */
+    EMAIL_CONTACT_INFO: z.string().describe('Website contact information'),
+    EMAIL_MAILJET_API_KEY: z.string().describe('Mailjet credential apiKey'),
+    EMAIL_MAILJET_API_SECRET: z
+      .string()
+      .describe('Mailjet credential apiSecret'),
+    EMAIL_MAILJET_SANDBOX_MODE: zStrToBoolean().describe(
+      'Call the API, but not actually sanding mail'
+    ),
+    EMAIL_MAILJET_SENDER: z.string().describe('Mailjet verified sender email'),
+  })
+  .refine(
+    (cfg) => {
+      if (cfg.AZURE_STORAGE_MODE !== 'local') {
+        return true;
+      }
+      const localStorageSchema = z.object({
+        AZURE_LOCAL_STORAGE_HOST: zNonEmptyStr(),
+        AZURE_LOCAL_STORAGE_PORT: z.coerce.number(),
+        AZURE_LOCAL_STORAGE_ACCOUNT: zNonEmptyStr(),
+        AZURE_LOCAL_STORAGE_ACCOUNT_KEY: zNonEmptyStr(),
+      });
+      const validation = localStorageSchema.safeParse(cfg);
+      return validation.success;
+    },
+    {
+      message:
+        'When AZURE_STORAGE_MODE=local, AZURE_LOCAL_STORAGE_* configuration is required',
+    }
+  )
+  .refine(
+    (cfg) => {
+      if (cfg.AZURE_STORAGE_MODE !== 'remote') {
+        return true;
+      }
+      const storageSchema = z.object({
+        AZURE_STORAGE_ACCOUNT: zNonEmptyStr(),
+        AZURE_STORAGE_ACCOUNT_KEY: zNonEmptyStr(),
+      });
+      const validation = storageSchema.safeParse(cfg);
+      return validation.success;
+    },
+    {
+      message:
+        'When AZURE_STORAGE_MODE=renote, AZURE_STORAGE_* configuration is required',
+    }
+  );
 
 /** Copy of env that has gone through schema validation */
-let verifiedEnv: (typeof schema)['__outputType'] | undefined;
+let verifiedEnv: z.infer<typeof schema>;
 
 /**
  * Return environment variables
@@ -147,12 +151,10 @@ export function env() {
   unstable_noStore();
 
   if (verifiedEnv == null) {
-    verifiedEnv = OmniConfig.withYup(schema)
-      .useEnvironmentVariables({ processEnv: true })
-      .resolveSync();
+    verifiedEnv = schema.parse(process.env);
   }
 
-  if (verifiedEnv.config.debug) {
+  if (verifiedEnv.CONFIG_DEBUG) {
     logger.info(JSON.stringify(verifiedEnv, undefined, 2));
   }
 

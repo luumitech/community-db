@@ -1,21 +1,18 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { z, zNonEmptyStr } from '~/lib/zod';
 
 function schema() {
-  return yup.object({
-    subject: yup.string().required(),
-    contactEmail: yup
-      .string()
-      .email('Must be a valid email')
-      .required('Please enter a valid email'),
-    contactName: yup.string(),
-    message: yup.string().required('Please compose your message'),
+  return z.object({
+    subject: zNonEmptyStr({ message: 'Please enter a subject' }),
+    contactEmail: z.string().email('Must be a valid email'),
+    contactName: z.string().optional(),
+    message: zNonEmptyStr({ message: 'Please compose your message' }),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(subject?: string | null): DefaultData {
@@ -30,7 +27,7 @@ function defaultInputData(subject?: string | null): DefaultData {
 export function useHookForm(subject?: string | null) {
   const formMethods = useForm({
     defaultValues: defaultInputData(subject),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
 
   return { formMethods };

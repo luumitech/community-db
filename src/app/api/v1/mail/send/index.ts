@@ -20,7 +20,7 @@ export async function send(req: SInput): Promise<SOutput> {
   const mailjet = await Mailjet.fromConfig();
   mailjet.sendEmails([
     {
-      To: [{ Email: env().email.contactInfo }],
+      To: [{ Email: env().EMAIL_CONTACT_INFO }],
       Subject: subject,
       TextPart: [
         'Contact Info:',

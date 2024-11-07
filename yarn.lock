@@ -12359,14 +12359,6 @@ oidc-token-hash@^5.0.3:
   resolved "https://registry.yarnpkg.com/oidc-token-hash/-/oidc-token-hash-5.0.3.tgz#9a229f0a1ce9d4fc89bcaee5478c97a889e7b7b6"
   integrity sha512-IF4PcGgzAr6XXSff26Sk/+P4KZFJVuHAJZj3wgO3vX2bMdNVp/QXTP3P7CEm9V1IdG8lDLY3HhiqpsE/nOwpPw==
 
-omniconfig.js@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/omniconfig.js/-/omniconfig.js-1.2.0.tgz#06ba361a2bfd4db623a9ebe57c4a0e0ba0cf2047"
-  integrity sha512-dqJIXw1a0i8EJe6pRLTHA1uM+AA9I00cr84l96Jul+cuZ6CKxVuPORCrqYK1X5ZJHUckjLz33rUgL067LlKltQ==
-  dependencies:
-    callsites "^3.0.0"
-    lodash "^4.17.21"
-
 on-exit-leak-free@^2.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-2.1.2.tgz#fed195c9ebddb7d9e4c3842f93f281ac8dadd3b8"
