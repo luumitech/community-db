@@ -1,37 +1,34 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { z, zNonEmptyStr } from '~/lib/zod';
 
 function schema() {
-  return yup.object({
-    id: yup.string().required(),
-    method: yup.string().oneOf(Object.values(GQL.ImportMethod)).required(),
-    hidden: yup
-      .object({
+  return z
+    .object({
+      id: zNonEmptyStr(),
+      method: z.nativeEnum(GQL.ImportMethod),
+      hidden: z.object({
         // To be mapped to xlsx argument later
-        importList: yup
-          .mixed<FileList>()
-          .required()
-          .test(
-            'required',
-            'Please upload a valid xlsx file',
-            (files, context) => {
-              // Only need to check this if import method requires a excel file
-              // @ts-expect-error root should be parent's parent (root)
-              const [, root] = context.from;
-              const method: GQL.ImportMethod = root.value.method;
-              if (method === GQL.ImportMethod.Xlsx) {
-                return files.length > 0;
-              }
-              return true;
-            }
-          ),
-      })
-      .required(),
-  });
+        importList: z.instanceof(FileList, {
+          message: 'Please upload a valid xlsx file',
+        }),
+      }),
+    })
+    .refine(
+      (form) => {
+        if (form.method !== GQL.ImportMethod.Xlsx) {
+          return true;
+        }
+        return form.hidden.importList.length > 0;
+      },
+      {
+        message: 'Please upload a valid xlsx file',
+        path: ['hidden', 'importList'],
+      }
+    );
 }
 
 export const CommunityImportMutation = graphql(/* GraphQL */ `
@@ -42,7 +39,7 @@ export const CommunityImportMutation = graphql(/* GraphQL */ `
   }
 `);
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(communityId: string): DefaultData {
@@ -58,7 +55,7 @@ function defaultInputData(communityId: string): DefaultData {
 export function useHookForm(communityId: string) {
   const formMethods = useForm({
     defaultValues: defaultInputData(communityId),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

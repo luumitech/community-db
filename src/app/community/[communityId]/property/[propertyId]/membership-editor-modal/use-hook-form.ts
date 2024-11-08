@@ -1,7 +1,6 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -9,6 +8,7 @@ import {
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { z, zAsDate, zNonEmptyStr } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
 import { yearSelectItems } from '../year-select-items';
 
@@ -34,57 +34,65 @@ const MembershipEditorFragment = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    self: yup.object({
-      id: yup.string().required(),
-      updatedAt: yup.string().required(),
+  return z.object({
+    self: z.object({
+      id: zNonEmptyStr(),
+      updatedAt: zNonEmptyStr(),
     }),
-    notes: yup.string().nullable(),
-    membershipList: yup.array(
-      yup.object().shape(
-        {
-          year: yup.number().required(),
-          isMember: yup.boolean(),
-          eventAttendedList: yup
+    notes: zNonEmptyStr().nullable(),
+    membershipList: z.array(
+      z
+        .object({
+          year: z.coerce.number(),
+          isMember: z.boolean(),
+          eventAttendedList: z
             .array(
-              yup.object({
-                eventName: yup.string().required('Must specify a value'),
-                eventDate: yup
-                  .string()
-                  .asDate()
-                  .required('Must specify a value'),
+              z.object({
+                eventName: zNonEmptyStr({ message: 'Must specify a value' }),
+                eventDate: zAsDate(),
               })
             )
-            .unique('Event Name must be unique', (item) => item.eventName)
-            .when('paymentMethod', {
-              is: (paymentMethod?: string) => !!paymentMethod,
-              then: (_schema) =>
-                _schema.min(
-                  1,
-                  'Must add at least one event when Payment Method is specified'
-                ),
-            }),
-          paymentMethod: yup.string().when('eventAttendedList', {
-            is: (eventAttendedList?: GQL.EventInput[]) =>
-              !!eventAttendedList?.length,
-            then: (_schema) =>
-              _schema.required(
-                'Must specify payment method to indicate how membership fee is processsed'
-              ),
-          }),
-          paymentDeposited: yup.boolean(),
-        },
-        [
-          // Add dependency to avoid cyclic dependency error,
-          // see: https://github.com/jquense/yup/issues/79#issuecomment-274174656
-          ['eventAttendedList', 'paymentMethod'],
-        ]
-      )
+            .refine(
+              (items) => {
+                const eventNameList = items.map(({ eventName }) => eventName);
+                return new Set(eventNameList).size === eventNameList.length;
+              },
+              { message: 'Event Name must be unique', path: [''] }
+            ),
+          paymentMethod: z.string(),
+          paymentDeposited: z.boolean(),
+        })
+        .refine(
+          (form) => {
+            if (form.eventAttendedList.length === 0) {
+              return true;
+            }
+            return !!form.paymentMethod;
+          },
+          {
+            message:
+              'Must specify payment method to indicate how membership fee is processsed',
+            path: ['paymentMethod'],
+          }
+        )
+        .refine(
+          (form) => {
+            if (!form.paymentMethod) {
+              return true;
+            }
+            return form.eventAttendedList.length > 0;
+          },
+          {
+            message:
+              'Must add at least one event when Payment Method is specified',
+            path: ['eventAttendedList', ''],
+          }
+        )
     ),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 export function membershipDefault(
@@ -149,7 +157,7 @@ export function useHookFormWithDisclosure(
   );
   const formMethods = useForm({
     defaultValues,
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

@@ -15,6 +15,8 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   const { control, formState } = useHookFormContext();
   const { errors } = formState;
 
+  const error = errors.membershipList?.[yearIdx]?.paymentMethod?.message;
+
   return (
     <div className={clsx(className)}>
       <Controller
@@ -26,12 +28,8 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
             label="Payment Method"
             items={selectPaymentMethodSections}
             placeholder="Select a payment method"
-            errorMessage={
-              errors.membershipList?.[yearIdx]?.paymentMethod?.message
-            }
-            isInvalid={
-              !!errors.membershipList?.[yearIdx]?.paymentMethod?.message
-            }
+            errorMessage={error}
+            isInvalid={!!error}
             selectedKeys={field.value ? [field.value] : []}
             selectionMode="single"
             onChange={field.onChange}

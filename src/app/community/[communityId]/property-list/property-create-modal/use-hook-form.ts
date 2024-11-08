@@ -1,9 +1,9 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
+import { z, zNonEmptyStr } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
 
 const CreateFragment = graphql(/* GraphQL */ `
@@ -13,16 +13,16 @@ const CreateFragment = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    communityId: yup.string().required(),
-    address: yup.string().required('Please provide an address'),
-    streetNo: yup.string().required('Please provide a street number'),
-    streetName: yup.string().required('Please provide a street name'),
-    postalCode: yup.string(),
+  return z.object({
+    communityId: zNonEmptyStr(),
+    address: zNonEmptyStr({ message: 'Please provide an address' }),
+    streetNo: zNonEmptyStr({ message: 'Please provide a street number' }),
+    streetName: zNonEmptyStr({ message: 'Please provide a street name' }),
+    postalCode: z.string(),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: CommunityEntry): DefaultData {
@@ -39,7 +39,7 @@ export function useHookFormWithDisclosure(fragment: CommunityEntry) {
   const community = getFragment(CreateFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

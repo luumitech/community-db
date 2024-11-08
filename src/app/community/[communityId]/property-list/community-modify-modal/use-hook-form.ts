@@ -1,13 +1,13 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import {
   useForm,
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
+import { z, zNonEmptyStr } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
 
 const ModifyFragment = graphql(/* GraphQL */ `
@@ -30,42 +30,42 @@ const ModifyFragment = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    self: yup.object({
-      id: yup.string().required(),
-      updatedAt: yup.string().required(),
+  return z.object({
+    self: z.object({
+      id: zNonEmptyStr(),
+      updatedAt: zNonEmptyStr(),
     }),
-    name: yup.string().required(),
-    eventList: yup.array(
-      yup.object({
-        name: yup.string().required(),
+    name: zNonEmptyStr(),
+    eventList: z.array(
+      z.object({
+        name: zNonEmptyStr(),
       })
     ),
-    paymentMethodList: yup.array(
-      yup.object({
-        name: yup.string().required(),
+    paymentMethodList: z.array(
+      z.object({
+        name: zNonEmptyStr(),
       })
     ),
     // Used for rendering UI only, not submitted
     // to server
-    hidden: yup.object({
+    hidden: z.object({
       // list of events items that should be hidden
-      eventList: yup.array(
-        yup.object({
-          name: yup.string().required(),
+      eventList: z.array(
+        z.object({
+          name: zNonEmptyStr(),
         })
       ),
       // list of payment methods items that should be hidden
-      paymentMethodList: yup.array(
-        yup.object({
-          name: yup.string().required(),
+      paymentMethodList: z.array(
+        z.object({
+          name: zNonEmptyStr(),
         })
       ),
     }),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: CommunityEntry): DefaultData {
@@ -98,7 +98,7 @@ export function useHookFormWithDisclosure(fragment: CommunityEntry) {
   const community = getFragment(ModifyFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

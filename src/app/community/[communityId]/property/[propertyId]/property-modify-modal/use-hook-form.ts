@@ -1,9 +1,9 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
+import { z, zNonEmptyStr } from '~/lib/zod';
 import { PropertyEntry } from '../_type';
 
 const PropertyEditorFragment = graphql(/* GraphQL */ `
@@ -21,19 +21,19 @@ const PropertyEditorFragment = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    self: yup.object({
-      id: yup.string().required(),
-      updatedAt: yup.string().required(),
+  return z.object({
+    self: z.object({
+      id: zNonEmptyStr(),
+      updatedAt: zNonEmptyStr(),
     }),
-    address: yup.string().required(),
-    streetNo: yup.string().required(),
-    streetName: yup.string().required(),
-    postalCode: yup.string(),
+    address: zNonEmptyStr(),
+    streetNo: zNonEmptyStr(),
+    streetName: zNonEmptyStr(),
+    postalCode: z.string(),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: PropertyEntry): DefaultData {
@@ -55,7 +55,7 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const property = getFragment(PropertyEditorFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

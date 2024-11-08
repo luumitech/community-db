@@ -1,8 +1,8 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
+import { z, zNonEmptyStr } from '~/lib/zod';
 
 export const CommunityCreateMutation = graphql(/* GraphQL */ `
   mutation communityCreate($input: CommunityCreateInput!) {
@@ -14,12 +14,12 @@ export const CommunityCreateMutation = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    name: yup.string().required('Please provide a name'),
+  return z.object({
+    name: zNonEmptyStr({ message: 'Please provide a name' }),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(): DefaultData {
@@ -31,7 +31,7 @@ function defaultInputData(): DefaultData {
 export function useHookForm() {
   const formMethods = useForm({
     defaultValues: defaultInputData(),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 
