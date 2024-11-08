@@ -26,11 +26,11 @@ export class Mailjet {
   /** Instantiate a mailjet instance from env configuration */
   static async fromConfig() {
     const api = new Mailjet(
-      env().EMAIL_MAILJET_API_KEY,
-      env().EMAIL_MAILJET_API_SECRET,
+      env.EMAIL_MAILJET_API_KEY,
+      env.EMAIL_MAILJET_API_SECRET,
       {
-        fromEmail: env().EMAIL_MAILJET_SENDER,
-        sandboxMode: env().EMAIL_MAILJET_SANDBOX_MODE,
+        fromEmail: env.EMAIL_MAILJET_SENDER,
+        sandboxMode: env.EMAIL_MAILJET_SANDBOX_MODE,
       }
     );
     return api;

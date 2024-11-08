@@ -89,8 +89,8 @@ builder.mutationField('helcimPurchase', (t) =>
         {
           customerCode,
           dateActivated: formatAsDate(new Date(Date.now())),
-          paymentPlanId: env().PAYMENT_HELCIM_PLAN_ID,
-          recurringAmount: env().NEXT_PUBLIC_PLAN_COST,
+          paymentPlanId: env.PAYMENT_HELCIM_PLAN_ID,
+          recurringAmount: env.NEXT_PUBLIC_PLAN_COST,
           paymentMethod: 'card',
         },
         idempotentKey

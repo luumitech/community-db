@@ -18,9 +18,9 @@ export async function send(req: SInput): Promise<SOutput> {
   const { contactEmail, contactName, subject } = req.query;
 
   const mailjet = await Mailjet.fromConfig();
-  mailjet.sendEmails([
+  await mailjet.sendEmails([
     {
-      To: [{ Email: env().EMAIL_CONTACT_INFO }],
+      To: [{ Email: env.EMAIL_CONTACT_INFO }],
       Subject: subject,
       TextPart: [
         'Contact Info:',

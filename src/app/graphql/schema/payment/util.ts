@@ -26,7 +26,7 @@ export async function getSubscriptionEntry(
         status: 'active',
         dateActivated: '',
         dateBilling: '',
-        recurringAmount: env().NEXT_PUBLIC_PLAN_COST,
+        recurringAmount: env.NEXT_PUBLIC_PLAN_COST,
       };
 
     case 'HELCIM': {

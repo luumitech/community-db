@@ -1,5 +1,6 @@
 import { TsRestRequest, TsRestResponse } from '@ts-rest/serverless';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { jsonc } from 'jsonc';
 import { HttpError } from '~/lib/http-error';
 import { Logger } from '~/lib/logger';
 
@@ -14,12 +15,12 @@ export function errorHandler(err: unknown, request: TsRestRequest) {
   logger.error(err);
   if (err instanceof HttpError) {
     return TsRestResponse.fromJson(
-      { message: err.message, error: err },
+      { message: err.message, error: jsonc.normalize(err) },
       { status: err.statusCode }
     );
   } else if (err instanceof Error) {
     return TsRestResponse.fromJson(
-      { message: err.message, error: err },
+      { message: err.message, error: jsonc.normalize(err) },
       { status: StatusCodes.BAD_REQUEST }
     );
   } else {

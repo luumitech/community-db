@@ -1,5 +1,6 @@
 import { Prisma, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
+import { jsonc } from 'jsonc';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
 
@@ -84,7 +85,9 @@ export async function verifyAccess(
         /** https://www.prisma.io/docs/orm/reference/error-reference#p2025 */
         case 'P2025':
           throw new GraphQLError(
-            `Access entry for community ${JSON.stringify(community)} Not Found`,
+            `Access entry for community ${jsonc.stringify(
+              community
+            )} Not Found`,
             {
               extensions: {
                 errCode: err.code,

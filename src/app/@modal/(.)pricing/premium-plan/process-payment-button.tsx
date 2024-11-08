@@ -7,6 +7,7 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import type { HelcimPayJsCardInfoOutput } from '~/lib/helcim-api/_type';
 import { toast } from '~/view/base/toastify';
+
 /**
  * Convert arraybuffer to hex string
  *

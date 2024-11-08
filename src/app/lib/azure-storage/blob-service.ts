@@ -4,15 +4,11 @@ import {
 } from '@azure/storage-blob';
 
 import { env } from '~/lib/env-cfg';
-import { isRunningTest } from '~/lib/env-var';
 import { BlobContainer, TransferProgressEvent } from './blob-container';
 import { BlobInfo } from './blob-info';
 import { ListBlobOpt } from './blob-iterator';
 
-export interface ServiceOpt {
-  /** Use local Azurite storage */
-  useLocal?: boolean;
-}
+export interface ServiceOpt {}
 
 interface ContainerOpt {
   /** Create container if it doesn't exists */
@@ -93,39 +89,21 @@ export class BlobService {
   serviceClient: BlobServiceClient;
 
   constructor(opt?: ServiceOpt) {
-    let useLocal = !!opt?.useLocal;
-    if (opt?.useLocal == null) {
-      // if useLocal is not specified, then check env var for recommended settings
-      try {
-        // set env var AZURE_USE_LOCAL_STORAGE to true to force usage of local Azurite
-        if (env().AZURE_STORAGE_MODE === 'local') {
-          useLocal = true;
-        }
-
-        // Always use Azurite when running Jest tests
-        if (isRunningTest()) {
-          useLocal = true;
-        }
-      } catch (e) {
-        // Ignore missing configuration
-      }
-    }
-
-    if (useLocal) {
+    if (env.AZURE_STORAGE_MODE === 'local') {
       // Development Azurite connection
-      const host = env().AZURE_LOCAL_STORAGE_HOST!;
-      const port = env().AZURE_LOCAL_STORAGE_PORT!;
-      const account = env().AZURE_LOCAL_STORAGE_ACCOUNT!;
-      const accountKey = env().AZURE_LOCAL_STORAGE_ACCOUNT_KEY!;
+      const host = env.AZURE_LOCAL_STORAGE_HOST;
+      const port = env.AZURE_LOCAL_STORAGE_PORT;
+      const account = env.AZURE_LOCAL_STORAGE_ACCOUNT;
+      const accountKey = env.AZURE_LOCAL_STORAGE_ACCOUNT_KEY;
       const credential = new StorageSharedKeyCredential(account, accountKey);
       this.serviceClient = new BlobServiceClient(
         `http://${host}:${port}/${account}`,
         credential
       );
-    } else {
+    } else if (env.AZURE_STORAGE_MODE === 'remote') {
       // Connect to remote Azure blob
-      const account = env().AZURE_STORAGE_ACCOUNT!;
-      const accountKey = env().AZURE_STORAGE_ACCOUNT_KEY!;
+      const account = env.AZURE_STORAGE_ACCOUNT;
+      const accountKey = env.AZURE_STORAGE_ACCOUNT_KEY;
       // connection string
       if (!accountKey) {
         throw new Error('Azure storage accountKey not provided');
@@ -135,6 +113,8 @@ export class BlobService {
         `https://${account}.blob.core.windows.net`,
         credential
       );
+    } else {
+      throw new Error('AZURE_STORAGE_MODE has been set to none');
     }
   }
 

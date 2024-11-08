@@ -14,6 +14,7 @@ export function zStrToBoolean() {
     .transform((val) => val === 'true');
 }
 
+/** Verify that string is non empty */
 export function zNonEmptyStr(message?: CustomErrorParams) {
   return z.string().trim().min(1, message);
 }
