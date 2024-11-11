@@ -8,7 +8,7 @@ import {
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
 
 const OccupantEditorFragment = graphql(/* GraphQL */ `
@@ -33,8 +33,8 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
 function schema() {
   return z.object({
     self: z.object({
-      id: zNonEmptyStr(),
-      updatedAt: zNonEmptyStr(),
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
     occupantList: z.array(
       z.object({

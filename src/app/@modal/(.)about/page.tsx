@@ -1,6 +1,5 @@
 'use client';
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
-import { env } from 'next-runtime-env';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -26,13 +25,25 @@ export default function About() {
                * are only available during build time during docker
                * build
                */}
-              {env('NEXT_PUBLIC_APP_VERSION')}
+              {process.env.NEXT_PUBLIC_APP_VERSION}
             </div>
             <div className="italic">Branch</div>
-            <div className="font-mono">{env('NEXT_PUBLIC_GIT_BRANCH')}</div>
+            <div className="font-mono">
+              {/*
+               * Not using next-runtime-env because these variables
+               * are only available during build time during docker
+               * build
+               */}
+              {process.env.NEXT_PUBLIC_GIT_BRANCH}
+            </div>
             <div className="italic">Commit</div>
             <div className="font-mono text-ellipsis overflow-hidden">
-              {env('NEXT_PUBLIC_GIT_COMMIT_HASH')}
+              {/*
+               * Not using next-runtime-env because these variables
+               * are only available during build time during docker
+               * build
+               */}
+              {process.env.NEXT_PUBLIC_GIT_COMMIT_HASH}
             </div>
           </div>
         </ModalBody>

@@ -1,7 +1,7 @@
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 
 export const schema = z.object({
-  email: zNonEmptyStr({ message: 'You are not authorized' }),
-  communityId: zNonEmptyStr(),
+  email: zz.string.nonEmpty('You are not authorized'),
+  communityId: zz.string.nonEmpty(),
 });
 export type InputData = z.infer<typeof schema>;

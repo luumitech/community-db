@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 
 export const CommunityCreateMutation = graphql(/* GraphQL */ `
   mutation communityCreate($input: CommunityCreateInput!) {
@@ -15,7 +15,7 @@ export const CommunityCreateMutation = graphql(/* GraphQL */ `
 
 function schema() {
   return z.object({
-    name: zNonEmptyStr({ message: 'Please provide a name' }),
+    name: zz.string.nonEmpty('Please provide a name'),
   });
 }
 

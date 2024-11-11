@@ -1,7 +1,7 @@
 import { jsonc } from 'jsonc';
 import { unstable_noStore } from 'next/cache';
 import { Logger } from '~/lib/logger';
-import { z, zNonEmptyStr, zStrToBoolean } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 
 const logger = Logger('env-cfg');
 
@@ -27,31 +27,31 @@ const baseSchema = z.object({
    *
    * @example `protocol://hostname:port`
    */
-  NEXT_PUBLIC_HOSTNAME: zNonEmptyStr(),
+  NEXT_PUBLIC_HOSTNAME: zz.string.nonEmpty(),
   /** App version information (used in about modal) */
   NEXT_PUBLIC_APP_VERSION: z.string().optional(),
   NEXT_PUBLIC_GIT_BRANCH: z.string().optional(),
   NEXT_PUBLIC_GIT_COMMIT_HASH: z.string().optional(),
   /** Subscription Plan details */
   /** Is Subscription plan enabled? */
-  NEXT_PUBLIC_PLAN_ENABLE: zStrToBoolean(),
+  NEXT_PUBLIC_PLAN_ENABLE: zz.coerce.toBoolean(),
   /** Name of paid subscription plan */
-  NEXT_PUBLIC_PLAN_NAME: zNonEmptyStr(),
+  NEXT_PUBLIC_PLAN_NAME: zz.string.nonEmpty(),
   /** Cost of paid subscription plan */
   NEXT_PUBLIC_PLAN_COST: z.coerce.number(),
 
   /** See: https://next-auth.js.org/configuration/options#nextauth_url */
-  NEXTAUTH_URL: zNonEmptyStr(),
+  NEXTAUTH_URL: zz.string.nonEmpty(),
   /** See: https://next-auth.js.org/configuration/options#nextauth_secret */
-  NEXTAUTH_SECRET: zNonEmptyStr(),
+  NEXTAUTH_SECRET: zz.string.nonEmpty(),
 
   /** True only if Jest is running */
-  JEST_RUNNING: zStrToBoolean(),
+  JEST_RUNNING: zz.coerce.toBoolean(),
 
   /** Logger output filtering, see README for details */
   LOG_DEBUG: z.string().optional(),
   /** Log environment variable values for debuggin purpose */
-  CONFIG_DEBUG: zStrToBoolean(),
+  CONFIG_DEBUG: zz.coerce.toBoolean(),
 
   /** Google related env vars */
   /**
@@ -59,19 +59,19 @@ const baseSchema = z.object({
    *
    * Options passed into GoogleProvider from 'next-auth/providers/google';
    */
-  GOOGLE_CLIENT_ID: zNonEmptyStr(),
-  GOOGLE_CLIENT_SECRET: zNonEmptyStr(),
+  GOOGLE_CLIENT_ID: zz.string.nonEmpty(),
+  GOOGLE_CLIENT_SECRET: zz.string.nonEmpty(),
 
   /** Mongo configurations */
-  MONGODB_URI: zNonEmptyStr(),
+  MONGODB_URI: zz.string.nonEmpty(),
 
   /** Geoapify */
-  GEOAPIFY_URL: zNonEmptyStr(),
-  GEOAPIFY_KEY: zNonEmptyStr(),
+  GEOAPIFY_URL: zz.string.nonEmpty(),
+  GEOAPIFY_KEY: zz.string.nonEmpty(),
 
   /** Payment Configuration */
   PAYMENT_HELCIM_PLAN_ID: z.coerce.number(),
-  PAYMENT_HELCIM_API_KEY: zNonEmptyStr(),
+  PAYMENT_HELCIM_API_KEY: zz.string.nonEmpty(),
 
   /** Email configuration */
   /** Website contact information */
@@ -81,7 +81,7 @@ const baseSchema = z.object({
   /** Mailjet credential apiSecret */
   EMAIL_MAILJET_API_SECRET: z.string(),
   /** Call the API, but not actually sanding mail */
-  EMAIL_MAILJET_SANDBOX_MODE: zStrToBoolean(),
+  EMAIL_MAILJET_SANDBOX_MODE: zz.coerce.toBoolean(),
   /** Mailjet verified sender email */
   EMAIL_MAILJET_SENDER: z.string(),
 });
@@ -90,16 +90,16 @@ const azureStorageSchema = z.discriminatedUnion('AZURE_STORAGE_MODE', [
   z.object({
     /** Local Azurite configuration */
     AZURE_STORAGE_MODE: z.literal('local'),
-    AZURE_LOCAL_STORAGE_HOST: zNonEmptyStr(),
+    AZURE_LOCAL_STORAGE_HOST: zz.string.nonEmpty(),
     AZURE_LOCAL_STORAGE_PORT: z.coerce.number(),
-    AZURE_LOCAL_STORAGE_ACCOUNT: zNonEmptyStr(),
-    AZURE_LOCAL_STORAGE_ACCOUNT_KEY: zNonEmptyStr(),
+    AZURE_LOCAL_STORAGE_ACCOUNT: zz.string.nonEmpty(),
+    AZURE_LOCAL_STORAGE_ACCOUNT_KEY: zz.string.nonEmpty(),
   }),
   z.object({
     /** Remote Azure storage configuration */
     AZURE_STORAGE_MODE: z.literal('remote'),
-    AZURE_STORAGE_ACCOUNT: zNonEmptyStr(),
-    AZURE_STORAGE_ACCOUNT_KEY: zNonEmptyStr(),
+    AZURE_STORAGE_ACCOUNT: zz.string.nonEmpty(),
+    AZURE_STORAGE_ACCOUNT_KEY: zz.string.nonEmpty(),
   }),
   z.object({
     AZURE_STORAGE_MODE: z.literal('none'),

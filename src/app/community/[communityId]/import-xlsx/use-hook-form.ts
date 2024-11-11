@@ -3,12 +3,12 @@ import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 
 function schema() {
   return z
     .object({
-      id: zNonEmptyStr(),
+      id: zz.string.nonEmpty(),
       method: z.nativeEnum(GQL.ImportMethod),
       hidden: z.object({
         // To be mapped to xlsx argument later

@@ -3,7 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
 
 const CreateFragment = graphql(/* GraphQL */ `
@@ -14,10 +14,10 @@ const CreateFragment = graphql(/* GraphQL */ `
 
 function schema() {
   return z.object({
-    communityId: zNonEmptyStr(),
-    address: zNonEmptyStr({ message: 'Please provide an address' }),
-    streetNo: zNonEmptyStr({ message: 'Please provide a street number' }),
-    streetName: zNonEmptyStr({ message: 'Please provide a street name' }),
+    communityId: zz.string.nonEmpty(),
+    address: zz.string.nonEmpty('Please provide an address'),
+    streetNo: zz.string.nonEmpty('Please provide a street number'),
+    streetName: zz.string.nonEmpty('Please provide a street name'),
     postalCode: z.string(),
   });
 }

@@ -3,7 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import { PropertyEntry } from '../_type';
 
 const PropertyEditorFragment = graphql(/* GraphQL */ `
@@ -23,12 +23,12 @@ const PropertyEditorFragment = graphql(/* GraphQL */ `
 function schema() {
   return z.object({
     self: z.object({
-      id: zNonEmptyStr(),
-      updatedAt: zNonEmptyStr(),
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
-    address: zNonEmptyStr(),
-    streetNo: zNonEmptyStr(),
-    streetName: zNonEmptyStr(),
+    address: zz.string.nonEmpty(),
+    streetNo: zz.string.nonEmpty(),
+    streetName: zz.string.nonEmpty(),
     postalCode: z.string(),
   });
 }

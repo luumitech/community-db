@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import type { AccessEntry } from '../_type';
 import { UserInfoFragment } from '../user-info';
 
@@ -23,7 +23,7 @@ export const AccessCreateMutation = graphql(/* GraphQL */ `
 function schema() {
   return z
     .object({
-      communityId: zNonEmptyStr(),
+      communityId: zz.string.nonEmpty(),
       email: z.string().email(),
       role: z.nativeEnum(GQL.Role),
       hidden: z.object({

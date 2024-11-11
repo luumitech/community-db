@@ -7,7 +7,7 @@ import {
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
 
 const ModifyFragment = graphql(/* GraphQL */ `
@@ -32,18 +32,18 @@ const ModifyFragment = graphql(/* GraphQL */ `
 function schema() {
   return z.object({
     self: z.object({
-      id: zNonEmptyStr(),
-      updatedAt: zNonEmptyStr(),
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
-    name: zNonEmptyStr(),
+    name: zz.string.nonEmpty(),
     eventList: z.array(
       z.object({
-        name: zNonEmptyStr(),
+        name: zz.string.nonEmpty(),
       })
     ),
     paymentMethodList: z.array(
       z.object({
-        name: zNonEmptyStr(),
+        name: zz.string.nonEmpty(),
       })
     ),
     // Used for rendering UI only, not submitted
@@ -52,13 +52,13 @@ function schema() {
       // list of events items that should be hidden
       eventList: z.array(
         z.object({
-          name: zNonEmptyStr(),
+          name: zz.string.nonEmpty(),
         })
       ),
       // list of payment methods items that should be hidden
       paymentMethodList: z.array(
         z.object({
-          name: zNonEmptyStr(),
+          name: zz.string.nonEmpty(),
         })
       ),
     }),

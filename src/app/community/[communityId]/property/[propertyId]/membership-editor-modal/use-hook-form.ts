@@ -8,7 +8,7 @@ import {
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zAsDate, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
 import { yearSelectItems } from '../year-select-items';
 
@@ -36,10 +36,10 @@ const MembershipEditorFragment = graphql(/* GraphQL */ `
 function schema() {
   return z.object({
     self: z.object({
-      id: zNonEmptyStr(),
-      updatedAt: zNonEmptyStr(),
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
-    notes: zNonEmptyStr().nullable(),
+    notes: zz.string.nonEmpty().nullable(),
     membershipList: z.array(
       z
         .object({
@@ -48,8 +48,8 @@ function schema() {
           eventAttendedList: z
             .array(
               z.object({
-                eventName: zNonEmptyStr({ message: 'Must specify a value' }),
-                eventDate: zAsDate(),
+                eventName: zz.string.nonEmpty('Must specify a value'),
+                eventDate: zz.coerce.toIsoDate(),
               })
             )
             .refine(

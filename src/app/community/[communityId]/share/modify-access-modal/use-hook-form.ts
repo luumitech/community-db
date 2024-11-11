@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 import { type AccessEntry } from '../_type';
 
 export const ModifyFragment = graphql(/* GraphQL */ `
@@ -29,8 +29,8 @@ export const AccessModifyMutation = graphql(/* GraphQL */ `
 function schema() {
   return z.object({
     self: z.object({
-      id: zNonEmptyStr(),
-      updatedAt: zNonEmptyStr(),
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
     role: z.nativeEnum(GQL.Role),
   });

@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { z, zNonEmptyStr } from '~/lib/zod';
+import { z, zz } from '~/lib/zod';
 
 function schema() {
   return z.object({
-    communityId: zNonEmptyStr(),
+    communityId: zz.string.nonEmpty(),
   });
 }
 
