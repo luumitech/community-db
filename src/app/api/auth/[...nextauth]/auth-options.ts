@@ -22,7 +22,6 @@ export const authOptions: AuthOptions = {
       if (!session.user.email) {
         throw new Error('email missing in session');
       }
-
       return session;
     },
   },

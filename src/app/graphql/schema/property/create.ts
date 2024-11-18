@@ -1,8 +1,10 @@
 import { Role } from '@prisma/client';
+import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { getCommunityEntry } from '../community/util';
+import { getSubscriptionEntry } from '../payment/util';
 
 const PropertyCreateInput = builder.inputType('PropertyCreateInput', {
   fields: (t) => ({
@@ -33,8 +35,24 @@ builder.mutationField('propertyCreate', (t) =>
       // Cannot connect to community with shortId, so retrieve
       // the document directly
       const community = await getCommunityEntry(user, communityId, {
-        select: { id: true },
+        select: { id: true, owner: true },
       });
+
+      // Check community owner's subscription status to determine
+      // limitation
+      const existingSub = await getSubscriptionEntry(community.owner);
+      const { propertyLimit } = existingSub;
+      if (propertyLimit != null) {
+        const propertyCount = await prisma.property.count({
+          where: { community: { id: community.id } },
+        });
+        if (propertyCount >= propertyLimit) {
+          throw new GraphQLError(
+            `This community can at most have ${propertyLimit} properties.`
+          );
+        }
+      }
+
       const entry = await prisma.property.create({
         ...query,
         data: {

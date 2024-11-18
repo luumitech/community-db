@@ -58,6 +58,7 @@ export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
       icon="trash"
       tooltip="Remove Access"
       onClick={onDelete}
+      disabled={fragment.isOwner}
       confirmation
       confirmationArg={{
         bodyText: fragment.isSelf ? (

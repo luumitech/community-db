@@ -5,9 +5,12 @@ import { GraphQLError } from 'graphql';
 import hash from 'object-hash';
 import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
+import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
+import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
+import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
 import { propertyRef } from '../property/object';
 import { getPropertyEntryWithinCommunity } from '../property/util';
 
@@ -250,6 +253,7 @@ const communityStatRef = builder
             .filter((id): id is string => id != null);
           return prisma.property.findMany({
             where: { id: { in: propertyIdList } },
+            orderBy: DEFAULT_PROPERTY_ORDER_BY,
           });
         },
       }),
@@ -274,6 +278,7 @@ const communityStatRef = builder
             .filter((id): id is string => id != null);
           return prisma.property.findMany({
             where: { id: { in: propertyIdList } },
+            orderBy: DEFAULT_PROPERTY_ORDER_BY,
           });
         },
       }),
@@ -298,6 +303,7 @@ const communityStatRef = builder
             .filter((id): id is string => id != null);
           return prisma.property.findMany({
             where: { id: { in: propertyIdList } },
+            orderBy: DEFAULT_PROPERTY_ORDER_BY,
           });
         },
       }),
@@ -308,6 +314,7 @@ builder.prismaObject('Community', {
   fields: (t) => ({
     id: t.exposeString('shortId'),
     name: t.exposeString('name', { nullable: false }),
+    owner: t.relation('owner'),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
     eventList: t.field({
@@ -357,20 +364,50 @@ builder.prismaObject('Community', {
         search: t.arg.string(),
       },
       resolve: async (parent, args, ctx) => {
+        const { user } = await ctx;
         return await resolveCustomOffsetConnection(
           { args },
           async ({ limit, offset }) => {
+            // If search term is provided, construct $match query
+            // for returning matched entries
+            let searchQuery;
+            if (args.search) {
+              // See this to see why we add the surrounding quotes
+              // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
+              // searchQuery = {
+              //   $text: { $search: `\"${args.search}\"` },
+              // };
+              // Match only from start of word boundary
+              const operand = { $regex: `\\b${args.search}`, $options: 'i' };
+              searchQuery = {
+                $or: [
+                  { address: operand },
+                  { 'occupantList.firstName': operand },
+                  { 'occupantList.lastName': operand },
+                ],
+              };
+            }
+
+            /**
+             * Get application configuration base on community owner's
+             * subscription level
+             */
+            const subEntry = await getCommunityOwnerSubscriptionEntry(
+              parent.id
+            );
+            const { propertyLimit } = subEntry;
+            const limitQuery = insertIf(propertyLimit != null, {
+              $limit: propertyLimit,
+            });
+
             const aggr = await prisma.property.aggregateRaw({
               pipeline: [
+                ...limitQuery,
                 {
                   $match: {
                     // connection parameter
                     communityId: { $oid: parent.id },
-                    // See this to see why we add the surrounding quotes
-                    // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
-                    ...(args.search && {
-                      $text: { $search: `\"${args.search}\"` },
-                    }),
+                    ...searchQuery,
                   },
                 },
                 {

@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
-import { isProduction } from '~/lib/env-var';
 import prisma from '~/lib/prisma';
 
 export const roleRef = builder.enumType('Role', {

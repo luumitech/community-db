@@ -12,9 +12,7 @@ function schema() {
       method: z.nativeEnum(GQL.ImportMethod),
       hidden: z.object({
         // To be mapped to xlsx argument later
-        importList: z.instanceof(FileList, {
-          message: 'Please upload a valid xlsx file',
-        }),
+        importList: zz.coerce.toFileList('Please upload a valid xlsx file'),
       }),
     })
     .refine(
@@ -47,7 +45,7 @@ function defaultInputData(communityId: string): DefaultData {
     id: communityId,
     method: GQL.ImportMethod.Random,
     hidden: {
-      importList: [] as unknown as FileList,
+      importList: [],
     },
   };
 }

@@ -15,21 +15,43 @@ export async function getHelcimSubscriptionEntry(
   if (subscription == null) {
     return null;
   }
-  const { paymentType } = subscription;
-  if (paymentType !== 'HELCIM') {
+  const { paymentType, subscriptionId: subIdStr } = subscription;
+  if (paymentType !== 'HELCIM' || subIdStr == null) {
     return null;
   }
 
   // Helcim expects subscription ID to be numeric
-  const subscriptionId = parseInt(subscription.subscriptionId, 10);
+  const subscriptionId = parseInt(subIdStr, 10);
 
   try {
     const api = await HelcimApi.fromConfig();
     const subResult = await api.subscriptions.getSingle({ subscriptionId });
+    const { status, ...subData } = subResult.data;
+
+    let subStatus: SubscriptionEntry['status'];
+    switch (status) {
+      case 'active':
+        subStatus = 'ACTIVE';
+        break;
+
+      case 'cancelled':
+        /**
+         * TODO: Need to check dateBilling to see if subscription is currently
+         * active, if no dateBilling is already passed, the subscription status
+         * should be inactive
+         */
+        subStatus = 'CANCELLED';
+        break;
+
+      case 'paused':
+      default:
+        subStatus = 'INACTIVE';
+    }
     return {
-      ...subResult.data,
-      id: `helcim-${subscriptionId}`,
       paymentType,
+      subscriptionId: subIdStr,
+      status: subStatus,
+      ...subData,
     };
   } catch (err) {
     // Unable to find subscription entry

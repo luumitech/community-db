@@ -1,4 +1,5 @@
-import { z, type IssueData } from 'zod';
+import * as R from 'remeda';
+import { z } from 'zod';
 import { isValidDate } from '~/lib/date-util';
 
 export class Coerce {
@@ -28,13 +29,12 @@ export class Coerce {
    *
    * @example `2023-02-26T00:00:00.000Z`
    */
-  toIsoDate(issueData?: IssueData) {
+  toIsoDate(msg?: string) {
     return z.any().transform((val, ctx) => {
       const onError = () => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Not a valid date',
-          ...issueData,
+          message: msg ?? 'Not a valid date',
         });
         return z.NEVER;
       };
@@ -49,6 +49,36 @@ export class Coerce {
       // Remove timestamp portion of date
       date.setUTCHours(0, 0, 0, 0);
       return date.toISOString();
+    });
+  }
+
+  /**
+   * Coerce:
+   *
+   * - UI File Input
+   *
+   * Into:
+   *
+   * - Browser specific FileList object (if file is successfully uploaded)
+   * - Empty array if no file has been uploaded
+   */
+  toFileList(msg?: string) {
+    return z.any().transform((val, ctx) => {
+      const onError = () => {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: msg ?? 'Please upload a valid file object',
+        });
+        return z.NEVER;
+      };
+
+      if (R.isEmpty(val)) {
+        return [];
+      }
+      if (!(val instanceof FileList)) {
+        return onError();
+      }
+      return val;
     });
   }
 }

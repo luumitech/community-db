@@ -22,6 +22,7 @@ export const UserInfo: React.FC<Props> = ({ className, fragment }) => {
     <div className={clsx(className, 'flex truncate gap-1')}>
       <span>{entry.user.email ?? ''}</span>
       {!!fragment.isSelf && <span>(you)</span>}
+      {!!fragment.isOwner && <span>(owner)</span>}
     </div>
   );
 };

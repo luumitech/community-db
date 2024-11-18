@@ -5,6 +5,10 @@ import prisma from '~/lib/prisma';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
+/** Default sort order in property list */
+export const DEFAULT_PROPERTY_ORDER_BY: Prisma.PropertyFindManyArgs['orderBy'] =
+  [{ streetName: 'asc' }, { streetNo: 'asc' }];
+
 /**
  * Get property database entry of a given ID and verify if user has access to it
  *

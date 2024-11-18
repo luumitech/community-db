@@ -41,7 +41,7 @@ export const PremiumPlan: React.FC<Props> = ({ className }) => {
     >
       <ul className="list-disc pl-4">
         <li>Up to 5 databases</li>
-        <li>Up to 1000 addresses per database</li>
+        <li>Unlimited addresses per database</li>
       </ul>
     </PricePlan>
   );

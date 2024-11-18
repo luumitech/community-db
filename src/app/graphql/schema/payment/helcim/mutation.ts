@@ -30,8 +30,8 @@ builder.mutationField('helcimPayInitialize', (t) =>
       // Check if user has an ongoing subscription already
       const userDoc = await getUserEntry(user);
       const existingSub = await getSubscriptionEntry(userDoc);
-      if (existingSub != null) {
-        throw new GraphQLError('You have already paid for a subscription');
+      if (existingSub.status === 'ACTIVE') {
+        throw new GraphQLError('You are already in an active subscription');
       }
 
       const api = await HelcimApi.fromConfig();
@@ -79,8 +79,8 @@ builder.mutationField('helcimPurchase', (t) =>
       // Check if user has an ongoing subscription already
       const userDoc = await getUserEntry(user);
       const existingSub = await getSubscriptionEntry(userDoc);
-      if (existingSub != null) {
-        throw new GraphQLError('You have already paid for a subscription');
+      if (existingSub.status === 'ACTIVE') {
+        throw new GraphQLError('You are already in an active subscription');
       }
 
       // Process subscription payment
@@ -126,11 +126,11 @@ builder.mutationField('helcimCancelSubscription', (t) =>
       const { user } = await ctx;
 
       // Check if user has an ongoing subscription already
-      const userDoc = await getUserEntry(user);
+      let userDoc = await getUserEntry(user);
       const existingSub = await getSubscriptionEntry(userDoc);
       const subscriptionIdStr = userDoc.subscription?.subscriptionId;
-      if (!subscriptionIdStr || existingSub == null) {
-        throw new GraphQLError('You do not have a subscription');
+      if (!subscriptionIdStr || existingSub.status !== 'ACTIVE') {
+        throw new GraphQLError('You do not have an active subscription');
       }
       const subscriptionId = parseInt(subscriptionIdStr, 10);
 
@@ -149,11 +149,19 @@ builder.mutationField('helcimCancelSubscription', (t) =>
       // }
 
       const deleteResult = await api.subscriptions.delete({ subscriptionId });
+      /**
+       * Remove subscription plan from user document
+       *
+       * TODO: it might not be enough to update user document, we will also need
+       * to handle pending subscription cancellation
+       */
+      userDoc = await prisma.user.update({
+        where: { id: userDoc.id },
+        data: { subscription: null },
+      });
 
       return {
         ...userDoc,
-        // Subscription removed
-        subscription: null,
       };
     },
   })

@@ -44,10 +44,16 @@ export class MongoSeeder {
    */
   async seed(prisma: PrismaClient) {
     const { propertyList, ...others } = importLcraDB(this.workbook);
+    const ownerEmail = 'test@email.com';
 
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
+        owner: {
+          connect: {
+            email: ownerEmail,
+          },
+        },
         ...others,
         propertyList: {
           create: propertyList,
@@ -66,7 +72,7 @@ export class MongoSeeder {
 
     await prisma.user.create({
       data: {
-        email: 'test@email.com',
+        email: ownerEmail,
         accessList: {
           create: accessSeed,
         },

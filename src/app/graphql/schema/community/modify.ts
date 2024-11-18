@@ -11,6 +11,7 @@ import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
+import { getSubscriptionEntry } from '../payment/util';
 import { getCommunityEntry } from './util';
 
 const NameInput = builder.inputType('NameInput', {
@@ -203,7 +204,7 @@ builder.mutationField('communityImport', (t) =>
       switch (method) {
         case 'random':
           {
-            const seedJson = seedCommunityData(20);
+            const seedJson = seedCommunityData(10);
             const wsHelper = WorksheetHelper.fromJson(seedJson, 'Membership');
             workbook = wsHelper.wb;
           }
@@ -228,10 +229,20 @@ builder.mutationField('communityImport', (t) =>
       const { propertyList, ...others } = importLcraDB(workbook);
 
       const existing = await getCommunityEntry(user, shortId, {
-        select: {
-          id: true,
-        },
+        select: { id: true, owner: true },
       });
+
+      // Check community owner's subscription status to determine
+      // limitation
+      const existingSub = await getSubscriptionEntry(existing.owner);
+      const { propertyLimit } = existingSub;
+      if (propertyLimit != null) {
+        if (propertyList.length > propertyLimit) {
+          throw new GraphQLError(
+            `This community can at most have ${propertyLimit} properties.`
+          );
+        }
+      }
 
       const community = await prisma.community.update({
         ...query,

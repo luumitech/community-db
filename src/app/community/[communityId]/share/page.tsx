@@ -14,6 +14,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { type AccessEntry } from './_type';
 import { CopyShareLink } from './copy-share-link';
 import { NewAccessButton } from './new-access-button';
 import { RoleDescription } from './role-description';
@@ -32,9 +33,15 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
     communityFromId(id: $id) {
       id
       name
+      owner {
+        id
+      }
       access {
         id
         role
+        user {
+          id
+        }
         ...AccessList_User
         ...AccessList_Role
         ...AccessList_Modify
@@ -42,6 +49,9 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
       }
       otherAccessList {
         id
+        user {
+          id
+        }
         ...AccessList_User
         ...AccessList_Role
         ...AccessList_Modify
@@ -70,14 +80,20 @@ export default function Share({ params }: RouteArgs) {
 
   /** Generate access list for all users (including self) */
   const accessList = React.useMemo(() => {
-    const others = community?.otherAccessList;
-    const self = community?.access;
-
-    if (self && others) {
-      return [{ isSelf: true, ...self }, ...others];
+    if (!community) {
+      return [];
     }
-    return [];
-  }, [community?.otherAccessList, community?.access]);
+    const { otherAccessList, access, owner } = community;
+    return [
+      // Add isSelf flag for your own access entry
+      { isSelf: true, ...access },
+      // Other user's access list
+      ...otherAccessList,
+    ].map((entry) => ({
+      ...entry,
+      isOwner: entry.user.id === owner?.id,
+    }));
+  }, [community]);
 
   const renderRows = React.useCallback(() => {
     return accessList.map((entry) => (

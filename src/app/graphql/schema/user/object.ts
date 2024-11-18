@@ -16,7 +16,6 @@ export const userRef = builder.prismaObject('User', {
     accessList: t.relation('accessList'),
     subscription: t.field({
       type: subscriptionEntryRef,
-      nullable: true,
       resolve: async (entry) => {
         const subEntry = await getSubscriptionEntry(entry);
         return subEntry;

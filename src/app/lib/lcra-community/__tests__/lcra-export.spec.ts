@@ -1,5 +1,6 @@
 import path from 'path';
 import * as XLSX from 'xlsx';
+import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { TestUtil } from '~/graphql/test-util';
 import { ExportHelper } from '~/lib/lcra-community/export';
 import { importLcraDB } from '~/lib/lcra-community/import';
@@ -27,6 +28,7 @@ describe('export community xlsx', () => {
           include: {
             updatedBy: true,
           },
+          orderBy: DEFAULT_PROPERTY_ORDER_BY,
         },
       },
     });
