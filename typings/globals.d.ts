@@ -16,7 +16,13 @@
  */
 type DefaultInput<T> = {
   [P in keyof T]-?: NonNullable<
-    T[P] extends Date | FileList ? T[P] : DefaultInput<T[P]>
+    T[P] extends
+      | Date
+      | FileList
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      | Function
+      ? T[P]
+      : DefaultInput<T[P]>
   >;
 };
 

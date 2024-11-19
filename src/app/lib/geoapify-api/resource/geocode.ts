@@ -30,13 +30,12 @@ export class Geocode {
    * See: https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#api
    */
   async searchFreeForm(text: string) {
-    // Encode the text manually, because URLSearchParams replaces spaces with
-    // + and geoapify doesn't recognize it properly
-    const query = new URLSearchParams(`text=${encodeURIComponent(text)}`);
-    query.append('format', 'json');
     const output: SearchFreeFormOutput = await this.res.call(
       'geocode/search',
-      query,
+      {
+        text,
+        format: 'json',
+      },
       { method: 'GET' }
     );
 

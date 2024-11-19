@@ -1,0 +1,4 @@
+.drop-down [data-disabled='true'] {
+  /* Hide disabled menu items */
+  display: none;
+}

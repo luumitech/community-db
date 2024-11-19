@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import type { SubscriptionPlan } from './_type';
 
 const UserSubscriptionQuery = graphql(/* GraphQL */ `
@@ -11,6 +12,7 @@ const UserSubscriptionQuery = graphql(/* GraphQL */ `
       id
       subscription {
         id
+        paymentType
         status
         dateActivated
         dateBilling
@@ -40,7 +42,7 @@ export function useSubscriptionPlan() {
     }
 
     return {
-      isActive: plan.status === 'active',
+      isActive: plan.status !== GQL.SubscriptionStatus.Inactive,
       recurringAmount: plan.recurringAmount.toString(),
       nextBillingDate: plan.dateBilling,
     };

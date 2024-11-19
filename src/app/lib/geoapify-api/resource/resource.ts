@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import path from 'path';
+import queryString, { type StringifiableRecord } from 'query-string';
 import { GeoapifyCredential } from '~/lib/geoapify-api/credential';
 
 const DEFAULT_API_VERSION = 'v1';
@@ -7,13 +8,13 @@ const DEFAULT_API_VERSION = 'v1';
 export class Resource {
   private baseUrl: string;
   private headers: HeadersInit;
-  private query: URLSearchParams;
+  private query: StringifiableRecord;
 
   constructor(credential: GeoapifyCredential) {
     const { apiKey, serverUrl } = credential;
     this.baseUrl = path.join(serverUrl, DEFAULT_API_VERSION);
     this.headers = { 'Content-Type': 'application/json' };
-    this.query = new URLSearchParams({ apiKey });
+    this.query = { apiKey };
   }
 
   /**
@@ -25,14 +26,16 @@ export class Resource {
    */
   public async call(
     requestPath: string,
-    queryParm: URLSearchParams | null,
+    queryParm: StringifiableRecord | null,
     init?: RequestInit
   ) {
-    const queryStr = new URLSearchParams({
-      ...Object.fromEntries(this.query),
-      ...(queryParm && Object.fromEntries(queryParm)),
-    }).toString();
-    const url = `${path.join(this.baseUrl, requestPath)}?${queryStr}`;
+    const url = queryString.stringifyUrl({
+      url: `${path.join(this.baseUrl, requestPath)}`,
+      query: {
+        ...this.query,
+        ...queryParm,
+      },
+    });
     const resp = await fetch(url, {
       headers: { ...this.headers, ...init?.headers },
       ...init,

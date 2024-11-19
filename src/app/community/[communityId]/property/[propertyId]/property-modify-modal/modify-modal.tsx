@@ -7,6 +7,7 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import { LastModified } from '~/view/last-modified';
 import { AddressEditor } from './address-editor';
 import {
@@ -51,7 +52,7 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
       isKeyboardDismissDisabled={true}
       hideCloseButton
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
           <ModalHeader>Edit Property</ModalHeader>
           <ModalBody>
@@ -75,7 +76,7 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </form>
+      </Form>
     </Modal>
   );
 };

@@ -10,6 +10,15 @@ export interface HelcimSubscriptionEntry {
   dateActivated: string;
   /** The date (in yyyy-MM-dd format) on which the next billing is collected. */
   dateBilling: string;
+  /**
+   * Current subscription status
+   *
+   * One of:
+   *
+   * - Active (billed at `dateBilling`)
+   * - Paused (will not be billed at `dateBilling`)
+   * - Cancelled (will not be billed at `dateBilling`)
+   */
   status: string;
   paymentPlanId: number;
   customerCode: string;

@@ -28,10 +28,10 @@ import {
 } from 'react-icons/io5';
 import {
   MdDragIndicator,
-  MdEmail,
   MdIosShare,
   MdLogout,
   MdOutlineClear,
+  MdOutlineMail,
   MdOutlineThumbDown,
   MdOutlineThumbUp,
   MdQuestionMark,
@@ -100,7 +100,7 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       IconElement = BiEditAlt;
       break;
     case 'email':
-      IconElement = MdEmail;
+      IconElement = MdOutlineMail;
       break;
     case 'thumb-up':
       IconElement = MdOutlineThumbUp;

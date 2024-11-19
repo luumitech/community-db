@@ -24,7 +24,7 @@ interface Props {
 
 export const ImportForm: React.FC<Props> = ({ className }) => {
   const formMethods = useHookFormContext();
-  const { formState, register, watch } = formMethods;
+  const { formState, register, watch, trigger } = formMethods;
   const { errors } = formState;
   const importMethod = watch('method');
 
@@ -52,6 +52,10 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
           color="primary"
           type="submit"
           confirmation={true}
+          onConfirm={async () => {
+            const validated = await trigger();
+            return validated;
+          }}
           confirmationArg={{
             bodyText: (
               <p>

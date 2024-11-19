@@ -12,7 +12,7 @@ export async function exportCommunityAsUrl(communityId: string) {
   if (!session) {
     throw new Error('Not authorized');
   }
-  const form = await schema.validate({
+  const form = schema.parse({
     email: session.user.email,
     communityId,
   });
@@ -33,7 +33,7 @@ export async function exportCommunityAsBase64(communityId: string) {
   if (!session) {
     throw new Error('Not authorized');
   }
-  const form = await schema.validate({
+  const form = schema.parse({
     email: session.user.email,
     communityId,
   });

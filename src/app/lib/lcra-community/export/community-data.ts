@@ -1,5 +1,6 @@
 import { type Context } from '~/graphql/context';
 import { getCommunityEntry } from '~/graphql/schema/community/util';
+import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 
 /**
  * Get property list for a given community from database
@@ -18,7 +19,7 @@ export async function communityData(
         include: {
           updatedBy: true,
         },
-        orderBy: [{ streetName: 'asc' }, { streetNo: 'asc' }],
+        orderBy: DEFAULT_PROPERTY_ORDER_BY,
       },
     },
   });

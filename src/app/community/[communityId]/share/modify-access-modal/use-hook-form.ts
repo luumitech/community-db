@@ -1,10 +1,10 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { z, zz } from '~/lib/zod';
 import { type AccessEntry } from '../_type';
 
 export const ModifyFragment = graphql(/* GraphQL */ `
@@ -27,16 +27,16 @@ export const AccessModifyMutation = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    self: yup.object({
-      id: yup.string().required(),
-      updatedAt: yup.string().required(),
+  return z.object({
+    self: z.object({
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
-    role: yup.string().oneOf(Object.values(GQL.Role)).required(),
+    role: z.nativeEnum(GQL.Role),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(fragment: AccessEntry): DefaultData {
@@ -53,7 +53,7 @@ function defaultInputData(fragment: AccessEntry): DefaultData {
 export function useHookFormWithDisclosure(fragment: AccessEntry) {
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

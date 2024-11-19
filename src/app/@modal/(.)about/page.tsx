@@ -29,10 +29,20 @@ export default function About() {
             </div>
             <div className="italic">Branch</div>
             <div className="font-mono">
+              {/*
+               * Not using next-runtime-env because these variables
+               * are only available during build time during docker
+               * build
+               */}
               {process.env.NEXT_PUBLIC_GIT_BRANCH}
             </div>
             <div className="italic">Commit</div>
             <div className="font-mono text-ellipsis overflow-hidden">
+              {/*
+               * Not using next-runtime-env because these variables
+               * are only available during build time during docker
+               * build
+               */}
               {process.env.NEXT_PUBLIC_GIT_COMMIT_HASH}
             </div>
           </div>

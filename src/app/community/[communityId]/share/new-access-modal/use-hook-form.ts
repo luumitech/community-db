@@ -1,10 +1,10 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { z, zz } from '~/lib/zod';
 import type { AccessEntry } from '../_type';
 import { UserInfoFragment } from '../user-info';
 
@@ -21,34 +21,36 @@ export const AccessCreateMutation = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    communityId: yup.string().required(),
-    email: yup
-      .string()
-      .email()
-      .required()
-      .test(
-        'not-already-exist',
-        'Email already in access list',
-        (val, { parent }) => {
-          const accessList: AccessEntry[] = parent.hidden.accessList;
-          const exist = accessList.find((fragment) => {
-            const entry = getFragment(UserInfoFragment, fragment);
-            return entry.user.email === val;
+  return z
+    .object({
+      communityId: zz.string.nonEmpty(),
+      email: z.string().email(),
+      role: z.nativeEnum(GQL.Role),
+      hidden: z.object({
+        // Store accessList, so validator can use it to validate
+        // email field
+        accessList: z.array(z.unknown()),
+      }),
+    })
+    .refine(
+      (form) => {
+        const accessList = form.hidden.accessList as AccessEntry[];
+        const exist = accessList.find((fragment) => {
+          const entry = getFragment(UserInfoFragment, fragment);
+          return !entry.user.email.localeCompare(form.email, undefined, {
+            sensitivity: 'accent',
           });
-          return !exist;
-        }
-      ),
-    role: yup.string().oneOf(Object.values(GQL.Role)).required(),
-    hidden: yup.object({
-      // Store accessList, so validator can use it to validate
-      // email field
-      accessList: yup.array(),
-    }),
-  });
+        });
+        return !exist;
+      },
+      {
+        message: 'Email already in access list',
+        path: ['email'],
+      }
+    );
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(
@@ -69,7 +71,7 @@ export function useHookFormWithDisclosure(
 ) {
   const formMethods = useForm({
     defaultValues: defaultInputData(communityId, accessList),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import queryString from 'query-string';
 import { HttpError } from '~/lib/http-error';
 import type {
   HelcimSubscriptionsCreateInput,
@@ -54,11 +55,14 @@ export class Subscriptions {
   async getSingle(
     input: HelcimSubscriptionsGetSingleInput
   ): Promise<HelcimSubscriptionsGetSingleOutput> {
-    const queryStr = new URLSearchParams({
-      includeSubObjects: input.includeSubObjects ? 'true' : 'false',
-    }).toString();
+    const url = queryString.stringifyUrl({
+      url: `/${input.subscriptionId}`,
+      query: {
+        includeSubObjects: input.includeSubObjects ? 'true' : 'false',
+      },
+    });
     const result: HelcimSubscriptionsGetSingleOutput = await this.call(
-      `/${input.subscriptionId}?${queryStr}`,
+      url,
       'GET'
     );
     if (result.status != 'ok') {

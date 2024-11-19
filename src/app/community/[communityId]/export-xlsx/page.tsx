@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { Form } from '~/view/base/form';
 import { ExportForm } from './export-form';
 import { useHookForm } from './use-hook-form';
 
@@ -19,12 +20,12 @@ export default function ExportXlsx({ params }: RouteArgs) {
 
   return (
     <FormProvider {...formMethods}>
-      <form
+      <Form
         className="flex flex-col h-main-height"
         // onSubmit={handleSubmit(onExport)}
       >
         <ExportForm />
-      </form>
+      </Form>
     </FormProvider>
   );
 }

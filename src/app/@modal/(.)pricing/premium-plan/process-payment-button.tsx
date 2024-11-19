@@ -7,6 +7,7 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import type { HelcimPayJsCardInfoOutput } from '~/lib/helcim-api/_type';
 import { toast } from '~/view/base/toastify';
+
 /**
  * Convert arraybuffer to hex string
  *
@@ -70,13 +71,11 @@ const HelcimPayInitialize = graphql(/* GraphQL */ `
 const HelcimPurchase = graphql(/* GraphQL */ `
   mutation helcimPurchase($input: HelcimPurchaseInput!) {
     helcimPurchase(input: $input) {
-      user {
+      id
+      subscription {
         id
-        email
-        subscription {
-          id
-          status
-        }
+        paymentType
+        status
       }
     }
   }
@@ -251,6 +250,7 @@ export const ProcessPaymentButton: React.FC<Props> = ({
     <>
       <Script src="https://secure.helcim.app/helcim-pay/services/start.js" />
       <Button
+        className={className}
         onClick={gatherPaymentInfo}
         isLoading={payInitializeResult.loading || purchaseResult.loading}
         {...buttonProps}

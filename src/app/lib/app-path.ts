@@ -1,4 +1,5 @@
 import { compile } from 'path-to-regexp';
+import queryString from 'query-string';
 
 /** List of supported URL within app */
 export const supportedPathTemplates = {
@@ -6,6 +7,7 @@ export const supportedPathTemplates = {
   about: '/about',
   preference: '/preference',
   pricing: '/pricing',
+  contactUs: '/contact-us',
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
@@ -22,7 +24,7 @@ type SupportedPath = typeof supportedPathTemplates;
  * Generate URL for various UI endpoints within the app
  *
  * @param template Template name
- * @param sub Path substitution variable
+ * @param sub Path/query substitution variable(s)
  * @returns
  */
 export function appPath(
@@ -36,29 +38,53 @@ export function appPath(
     | 'communityCreate'
 ): string;
 export function appPath(
+  template: 'contactUs',
+  sub?: {
+    query?: {
+      title?: string;
+      subject?: string;
+      /** Additional helper text to help user compose message */
+      messageDescription?: string;
+    };
+  }
+): string;
+export function appPath(
   template:
     | 'communityImport'
     | 'communityExport'
     | 'communityShare'
     | 'propertyList'
     | 'communityDashboard',
-  sub: { communityId: string }
+  sub: {
+    path: {
+      communityId: string;
+    };
+  }
 ): string;
 export function appPath(
   template: 'property',
   sub: {
-    communityId: string;
-    propertyId: string;
+    path: {
+      communityId: string;
+      propertyId: string;
+    };
   }
 ): string;
 export function appPath(
   template: keyof SupportedPath,
-  sub?: Record<string, string>
+  sub?: {
+    query?: Record<string, string>;
+    path?: Record<string, string>;
+  }
 ) {
+  const { query, path } = sub ?? {};
   const toPath = compile(supportedPathTemplates[template], {
     encode: encodeURIComponent,
   });
-  return toPath(sub);
+  return queryString.stringifyUrl({
+    url: toPath(path),
+    query,
+  });
 }
 
 /**
@@ -77,6 +103,8 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Preference';
     case 'pricing':
       return 'Change your plan';
+    case 'contactUs':
+      return 'Contact Us';
     case 'communityWelcome':
       return 'Welcome';
     case 'communitySelect':

@@ -1,15 +1,15 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import * as yup from 'yup';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { z, zz } from '~/lib/zod';
 
 function schema() {
-  return yup.object({
-    communityId: yup.string().required(),
+  return z.object({
+    communityId: zz.string.nonEmpty(),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(communityId: string): DefaultData {
@@ -21,7 +21,7 @@ function defaultInputData(communityId: string): DefaultData {
 export function useHookForm(communityId: string) {
   const formMethods = useForm({
     defaultValues: defaultInputData(communityId),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
 
   const { reset } = formMethods;

@@ -1,7 +1,7 @@
-import * as yup from 'yup';
+import { z, zz } from '~/lib/zod';
 
-export const schema = yup.object({
-  email: yup.string().required('You are not authorized'),
-  communityId: yup.string().required(),
+export const schema = z.object({
+  email: zz.string.nonEmpty('You are not authorized'),
+  communityId: zz.string.nonEmpty(),
 });
-export type InputData = (typeof schema)['__outputType'];
+export type InputData = z.infer<typeof schema>;

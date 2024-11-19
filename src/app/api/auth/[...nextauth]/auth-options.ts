@@ -3,7 +3,12 @@ import GoogleProvider from 'next-auth/providers/google';
 import { env } from '~/lib/env-cfg';
 
 export const authOptions: AuthOptions = {
-  providers: [GoogleProvider(env().google)],
+  providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
   callbacks: {
     async signIn({ account, profile }) {
       switch (account?.provider) {
@@ -17,7 +22,6 @@ export const authOptions: AuthOptions = {
       if (!session.user.email) {
         throw new Error('email missing in session');
       }
-
       return session;
     },
   },

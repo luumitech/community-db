@@ -19,8 +19,8 @@ export class GeoapifyCredential {
 
   static async fromConfig() {
     return new GeoapifyCredential({
-      serverUrl: env().geoapify.url,
-      apiKey: env().geoapify.key,
+      serverUrl: env.GEOAPIFY_URL,
+      apiKey: env.GEOAPIFY_KEY,
     });
   }
 }

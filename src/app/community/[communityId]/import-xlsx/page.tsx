@@ -5,6 +5,7 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
 import { ImportForm } from './import-form';
 import {
@@ -60,7 +61,9 @@ export default function ImportXlsx({ params }: RouteArgs) {
                     size="sm"
                     as={Link}
                     color="primary"
-                    href={appPath('propertyList', { communityId: input.id })}
+                    href={appPath('propertyList', {
+                      path: { communityId: input.id },
+                    })}
                   >
                     {appLabel('propertyList')}
                   </Button>
@@ -76,12 +79,12 @@ export default function ImportXlsx({ params }: RouteArgs) {
 
   return (
     <FormProvider {...formMethods}>
-      <form
+      <Form
         className="flex flex-col h-main-height"
         onSubmit={handleSubmit(onImport)}
       >
         <ImportForm />
-      </form>
+      </Form>
     </FormProvider>
   );
 }

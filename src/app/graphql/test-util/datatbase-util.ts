@@ -15,9 +15,16 @@ export class DatabaseUtil {
     const workbook = XLSX.readFile(fixturePath);
     const importResult = importLcraDB(workbook);
     const { propertyList, ...others } = importResult;
+
+    const ownerEmail = 'jest@email.com';
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
         name: 'Test Community',
+        owner: {
+          connect: {
+            email: ownerEmail,
+          },
+        },
         ...others,
         propertyList: {
           create: propertyList,
@@ -36,7 +43,7 @@ export class DatabaseUtil {
 
     await prisma.user.create({
       data: {
-        email: 'jest@email.com',
+        email: ownerEmail,
         accessList: {
           create: accessSeed,
         },

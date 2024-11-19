@@ -9,8 +9,6 @@ import { appTitle } from '~/lib/env-var';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 
-import './yup-extended';
-
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });

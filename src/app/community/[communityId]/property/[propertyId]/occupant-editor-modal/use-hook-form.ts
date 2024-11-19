@@ -1,7 +1,6 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import * as yup from 'yup';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -9,6 +8,7 @@ import {
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { z, zz } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
 
 const OccupantEditorFragment = graphql(/* GraphQL */ `
@@ -31,26 +31,26 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
 `);
 
 function schema() {
-  return yup.object({
-    self: yup.object({
-      id: yup.string().required(),
-      updatedAt: yup.string().required(),
+  return z.object({
+    self: z.object({
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
     }),
-    occupantList: yup.array(
-      yup.object({
-        firstName: yup.string().nullable(),
-        lastName: yup.string().nullable(),
-        optOut: yup.boolean().nullable(),
-        email: yup.string().nullable(),
-        cell: yup.string().nullable(),
-        work: yup.string().nullable(),
-        home: yup.string().nullable(),
+    occupantList: z.array(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        optOut: z.boolean(),
+        email: z.string(),
+        cell: z.string(),
+        work: z.string(),
+        home: z.string(),
       })
     ),
   });
 }
 
-export type InputData = ReturnType<typeof schema>['__outputType'];
+export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
 export type OccupantFieldArrayReturn = UseFieldArrayReturn<
@@ -93,7 +93,7 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const property = getFragment(OccupantEditorFragment, fragment);
   const formMethods = useForm({
     defaultValues: defaultInputData(fragment),
-    resolver: yupResolver(schema()),
+    resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 

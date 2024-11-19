@@ -4,6 +4,3 @@ export interface SubscriptionPlan {
   recurringAmount: string;
   nextBillingDate?: string;
 }
-
-/** Available subscription plan type */
-export type PlanT = 'free' | 'premium' | 'none';

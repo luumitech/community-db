@@ -18,17 +18,36 @@ datasource db {
 
 /// Describe a user in the system
 model User {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   /// unique email identifying user document
-  email          String      @unique
-  name           String?
-  /// Helcim payment subscription ID
-  subscriptionId Int?
-  accessList     Access[]
-  Property       Property[]
-  Community      Community[]
+  email        String        @unique
+  name         String?
+  /// Subscription information (has client paid for subscription?)
+  subscription Subscription?
+
+  accessList             Access[]    @relation("accessUser")
+  communityOwnerList     Community[] @relation("communityOwner")
+  communityUpdatedByList Community[] @relation("communityUpdatedBy")
+  propertyUpdatedByList  Property[]  @relation("propertyUpdatedBy")
+}
+
+/// Type of payment processor supported by the app
+enum PaymentProcessor {
+  /// no payment has been made
+  NONE
+  /// granted life-time license
+  GRANTED
+  /// paid via helcim
+  HELCIM
+}
+
+/// Paid customer subscription information
+type Subscription {
+  paymentType    PaymentProcessor
+  /// Subscription ID associated with the PaymentProcessor
+  subscriptionId String?
 }
 
 enum Role {
@@ -45,9 +64,9 @@ model Access {
   updatedAt   DateTime  @updatedAt
   role        Role
   userId      String    @db.ObjectId
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(name: "accessUser", fields: [userId], references: [id], onDelete: Cascade)
   communityId String    @db.ObjectId
-  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  community   Community @relation(name: "accessCommunity", fields: [communityId], references: [id], onDelete: Cascade)
 }
 
 model Community {
@@ -56,14 +75,18 @@ model Community {
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
   updatedById       String?               @db.ObjectId
-  updatedBy         User?                 @relation(fields: [updatedById], references: [id], onDelete: Cascade)
+  updatedBy         User?                 @relation(name: "communityUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
+  /// Owner/Creator of community
+  ownerId           String                @db.ObjectId
+  owner             User                  @relation(name: "communityOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   name              String
   /// List of events supported (can be sorted)
   eventList         SupportedSelectItem[]
   /// List of payment method supported (can be sorted)
   paymentMethodList SupportedSelectItem[]
-  accessList        Access[]
-  propertyList      Property[]
+
+  accessList   Access[]   @relation("accessCommunity")
+  propertyList Property[] @relation("propertyCommunity")
 }
 
 type SupportedSelectItem {
@@ -79,7 +102,7 @@ model Property {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   updatedById    String?      @db.ObjectId
-  updatedBy      User?        @relation(fields: [updatedById], references: [id], onDelete: Cascade)
+  updatedBy      User?        @relation(name: "propertyUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
   address        String
   streetNo       String?
   streetName     String?
@@ -88,10 +111,7 @@ model Property {
   occupantList   Occupant[]
   membershipList Membership[]
   communityId    String       @db.ObjectId
-  community      Community    @relation(fields: [communityId], references: [id], onDelete: Cascade)
-
-  // Add text index on fields that are searchable
-  @@fulltext([address, streetNo, streetName, occupantList.firstName, occupantList.lastName])
+  community      Community    @relation(name: "propertyCommunity", fields: [communityId], references: [id], onDelete: Cascade)
 }
 
 /// Occupant information within a property
