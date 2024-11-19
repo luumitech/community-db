@@ -32,6 +32,14 @@ builder.mutationField('accessDelete', (t) =>
         Role.ADMIN,
       ]);
 
+      // If you are the owner of the community, then you are not allow to
+      // remove your own access
+      if (ownAccess.user.email === user.email) {
+        throw new GraphQLError(
+          'You can not remove the owner of community from the access list'
+        );
+      }
+
       // If removing your own access, make sure there is at least one
       // other admin in the access list for this community
       if (ownAccess.id === args.id) {

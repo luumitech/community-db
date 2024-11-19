@@ -62,7 +62,7 @@ export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
             className,
             disabled ? 'opacity-disabled cursor-default' : 'hover:opacity-hover'
           )}
-          onClick={customOnClick}
+          {...(!disabled && { onClick: customOnClick })}
           {...other}
         >
           <Icon icon={icon} size={16} />

@@ -14,35 +14,56 @@ export interface ButtonProps extends NextUIButtonProps {
    */
   confirmation?: boolean;
   confirmationArg?: ConfirmationModalArg;
+  /**
+   * This is only used when `confirmation` is true. Use this to run a custom
+   * function before the confirmation dialog is shown. This is useful, for
+   * example, when you want to validate form before deciding whether or not to
+   * show the confirmation dialog
+   *
+   * - If the callback returns true, the confirmation dialog will open
+   * - If the callback returns false, the confirmation dialog will not open
+   */
+  onConfirm?: () => Promise<boolean>;
 }
 
 type OnPressFn = NonNullable<NextUIButtonProps['onPress']>;
 
 export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
-  ({ confirmation, confirmationArg, onPress, ...props }, ref) => {
+  ({ confirmation, confirmationArg, onConfirm, onPress, ...props }, ref) => {
     const buttonRef = useForwardRef<HTMLButtonElement>(ref);
     const { confirmationModal } = useAppContext();
     const { open } = confirmationModal;
 
     const customOnPress = React.useCallback<OnPressFn>(
-      (evt) => {
+      async (evt) => {
         if (confirmation) {
-          open({
-            ...confirmationArg,
-            onConfirm: () => {
-              if (props.type != null && props.type !== 'button') {
-                buttonRef.current.type = props.type;
-                buttonRef.current.click();
-                buttonRef.current.type = 'button';
-              }
-              onPress?.(evt);
-            },
-          });
+          const showDialog = onConfirm ? await onConfirm() : true;
+          if (showDialog) {
+            open({
+              ...confirmationArg,
+              onConfirm: () => {
+                if (props.type != null && props.type !== 'button') {
+                  buttonRef.current.type = props.type;
+                  buttonRef.current.click();
+                  buttonRef.current.type = 'button';
+                }
+                onPress?.(evt);
+              },
+            });
+          }
         } else {
           onPress?.(evt);
         }
       },
-      [confirmation, confirmationArg, props.type, open, onPress, buttonRef]
+      [
+        confirmation,
+        confirmationArg,
+        props.type,
+        open,
+        onConfirm,
+        onPress,
+        buttonRef,
+      ]
     );
 
     return (

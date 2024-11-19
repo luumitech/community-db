@@ -52,6 +52,13 @@ function defaultInputData(communityId: string): DefaultData {
 
 export function useHookForm(communityId: string) {
   const formMethods = useForm({
+    /**
+     * Due to the way confirmation dialog handles submission, manual validation
+     * can happen before form submission. Because we don't know when manual
+     * validation may occur, attach 'onChange' event listeners will make the
+     * form more closely behave like 'onSubmit'
+     */
+    mode: 'onChange',
     defaultValues: defaultInputData(communityId),
     resolver: zodResolver(schema()),
   });

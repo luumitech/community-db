@@ -37,6 +37,23 @@ builder.mutationField('accessModify', (t) =>
         Role.ADMIN,
       ]);
 
+      // Make sure there is at least one admin after the modification
+      if (input.role !== 'ADMIN') {
+        try {
+          await prisma.access.findFirstOrThrow({
+            where: {
+              NOT: [{ id: self.id }],
+              communityId: accessToModify.communityId,
+              role: Role.ADMIN,
+            },
+          });
+        } catch (err) {
+          throw new GraphQLError(
+            'You can not remove the only Admin from the access list'
+          );
+        }
+      }
+
       const access = await prisma.access.update({
         ...query,
         where: { id: self.id },

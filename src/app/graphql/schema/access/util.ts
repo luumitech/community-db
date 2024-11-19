@@ -73,6 +73,7 @@ export async function verifyAccess(
         user: { email: user.email },
         community,
       },
+      include: { user: true },
     });
     if (!roleList.includes(access.role)) {
       throw new GraphQLError(`You are not authorized to perform this action`);
