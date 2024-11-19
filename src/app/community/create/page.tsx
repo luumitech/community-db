@@ -4,6 +4,7 @@ import { Button, Input } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
+import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
 import {
   CommunityCreateMutation,
@@ -39,7 +40,7 @@ export default function CommunityCreate() {
   );
 
   return (
-    <form onSubmit={handleSubmit(createCommunity)}>
+    <Form onSubmit={handleSubmit(createCommunity)}>
       <Input
         autoFocus
         label="Community name"
@@ -57,6 +58,6 @@ export default function CommunityCreate() {
       >
         Create
       </Button>
-    </form>
+    </Form>
   );
 }

@@ -8,6 +8,7 @@ import {
 import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import { EmailEditor } from './email-editor';
 import { RoleEditor } from './role-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
@@ -47,7 +48,7 @@ export const CreateModal: React.FC<Props> = ({ disclosure, onSave }) => {
       isKeyboardDismissDisabled={true}
       hideCloseButton
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
           <ModalHeader>Add User To Access List</ModalHeader>
           <ModalBody>
@@ -67,7 +68,7 @@ export const CreateModal: React.FC<Props> = ({ disclosure, onSave }) => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </form>
+      </Form>
     </Modal>
   );
 };

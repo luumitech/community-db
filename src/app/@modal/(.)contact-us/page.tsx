@@ -11,6 +11,7 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { tsr } from '~/tsr';
 import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
 import { EmailEditor } from './email-editor';
@@ -52,7 +53,7 @@ export default function ContactUs() {
       // isKeyboardDismissDisabled
     >
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSend)}>
+        <Form onSubmit={handleSubmit(onSend)}>
           <ModalContent>
             <ModalHeader>{title}</ModalHeader>
             <ModalBody>
@@ -69,7 +70,7 @@ export default function ContactUs() {
               </Button>
             </ModalFooter>
           </ModalContent>
-        </form>
+        </Form>
       </FormProvider>
     </Modal>
   );

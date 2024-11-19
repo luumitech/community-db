@@ -9,6 +9,7 @@ import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import type { AccessEntry } from '../_type';
 import { RoleEditor } from './role-editor';
 import { InputData, ModifyFragment, useHookFormContext } from './use-hook-form';
@@ -54,7 +55,7 @@ export const ModifyModal: React.FC<Props> = ({
       isKeyboardDismissDisabled={true}
       hideCloseButton
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
           <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
           <ModalBody>
@@ -73,7 +74,7 @@ export const ModifyModal: React.FC<Props> = ({
             </Button>
           </ModalFooter>
         </ModalContent>
-      </form>
+      </Form>
     </Modal>
   );
 };

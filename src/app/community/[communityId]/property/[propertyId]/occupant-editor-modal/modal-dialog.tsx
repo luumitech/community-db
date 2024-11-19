@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { Editor } from './editor';
 import {
@@ -58,7 +59,7 @@ export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
       isKeyboardDismissDisabled={true}
       hideCloseButton
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
           <ModalHeader>Edit Member Details</ModalHeader>
           <ModalBody>
@@ -84,7 +85,7 @@ export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </form>
+      </Form>
     </Modal>
   );
 };
