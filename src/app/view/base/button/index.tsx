@@ -41,11 +41,23 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
           if (showDialog) {
             open({
               ...confirmationArg,
-              onConfirm: () => {
-                if (props.type != null && props.type !== 'button') {
-                  buttonRef.current.type = props.type;
-                  buttonRef.current.click();
-                  buttonRef.current.type = 'button';
+              onConfirm: async () => {
+                switch (props.type) {
+                  case 'submit':
+                    {
+                      const form = buttonRef.current.closest('form');
+                      form?.requestSubmit();
+                    }
+                    break;
+                  case 'reset':
+                    {
+                      const form = buttonRef.current.closest('form');
+                      form?.reset();
+                    }
+                    break;
+                  case 'button':
+                  default:
+                    break;
                 }
                 onPress?.(evt);
               },
@@ -73,7 +85,7 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
         {...props}
         /**
          * When confirmation dialog is enabled, need to handle submit/reset type
-         * manually
+         * manually. See logic in `customOnPress` above.
          */
         {...(confirmation && { type: 'button' })}
       />

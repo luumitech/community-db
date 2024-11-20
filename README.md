@@ -109,9 +109,9 @@ brew install azure-cli
 az login
 ```
 
-## Build new docker image to Azure container registry
+## Building docker image
 
-### Building docker image
+### Build new docker image to Azure container registry
 
 ```shell
 # clone git repository
@@ -122,5 +122,17 @@ git clone git@github.com:luumitech/community-db.git --config core.autocrlf=input
 # To push a new image and tag it as `dev``
 # Tagging an image with 'dev' will trigger a webhook to deploy the image into dev slot
 ./script/azure/build-image.sh --tag=dev
+```
 
+### Build new docker image to Docker container registry
+
+```shell
+# clone git repository
+# On windows box, it's important to keep the CRLF of the repository file
+# because files like `docker/entrypoint.sh` need to have LF line ending (not CRLF)
+git clone git@github.com:luumitech/community-db.git --config core.autocrlf=input
+
+# To push a new image and tag it as `main``
+# Tagging an image with 'main' will trigger a webhook to deploy the image into main slot
+./script/docker-hub/build-image.sh --tag=main
 ```
