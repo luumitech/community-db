@@ -6,7 +6,7 @@ usage() {
   echo ""
   echo "Usage: $0 [option]"
   echo "  options:"
-  echo "    -t, --tag=<name> : tag name (i.e. dev or prod)"
+  echo "    -t, --tag=<name> : tag name (i.e. dev or main)"
   echo "    -h               : Show this help"
   echo ""
   exit
