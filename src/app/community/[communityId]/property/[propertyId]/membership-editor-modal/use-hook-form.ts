@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -39,7 +40,7 @@ function schema() {
       id: zz.string.nonEmpty(),
       updatedAt: zz.string.nonEmpty(),
     }),
-    notes: zz.string.nonEmpty().nullable(),
+    notes: z.string().nullable(),
     membershipList: z.array(
       z
         .object({
@@ -109,10 +110,15 @@ export function membershipDefault(
 
 function defaultInputData(
   fragment: PropertyEntry,
+  yearRange: [number, number],
   yearSelected: string
 ): DefaultData {
   const item = getFragment(MembershipEditorFragment, fragment);
-  const membershipList = yearSelectItems(item.membershipList, yearSelected);
+  const membershipList = yearSelectItems(
+    yearRange,
+    item.membershipList,
+    yearSelected
+  );
 
   return {
     self: {
@@ -150,10 +156,11 @@ export function useHookFormWithDisclosure(
   fragment: PropertyEntry,
   yearSelected: string
 ) {
+  const { minYear, maxYear } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(
-    () => defaultInputData(fragment, yearSelected),
-    [fragment, yearSelected]
+    () => defaultInputData(fragment, [minYear, maxYear], yearSelected),
+    [fragment, minYear, maxYear, yearSelected]
   );
   const formMethods = useForm({
     defaultValues,

@@ -6,6 +6,7 @@ import hash from 'object-hash';
 import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
+import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
@@ -109,12 +110,6 @@ const communityStatRef = builder
   .implement({
     fields: (t) => ({
       id: t.exposeID('id'),
-      minYear: t.exposeInt('minYear', {
-        description: 'Minimum year represented in membership information',
-      }),
-      maxYear: t.exposeInt('maxYear', {
-        description: 'Maximum year represented in membership information',
-      }),
       dbSize: t.field({
         description: 'bytes used to store all properties within community',
         type: 'Int',
@@ -317,6 +312,16 @@ builder.prismaObject('Community', {
     owner: t.relation('owner'),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
+    minYear: t.field({
+      type: 'Int',
+      description: 'Minimum year represented in membership information',
+      resolve: (entry) => entry.minYear ?? getCurrentYear(),
+    }),
+    maxYear: t.field({
+      type: 'Int',
+      description: 'Maximum year represented in membership information',
+      resolve: (entry) => entry.maxYear ?? getCurrentYear(),
+    }),
     eventList: t.field({
       type: [supportedSelectItemRef],
       resolve: (entry) => entry.eventList,
@@ -361,7 +366,15 @@ builder.prismaObject('Community', {
     propertyList: t.connection({
       type: propertyRef,
       args: {
-        search: t.arg.string(),
+        searchText: t.arg.string({
+          description: 'Match against property address/first name/last name',
+        }),
+        memberYear: t.arg.int({
+          description: 'Only property who is a member of the given year',
+        }),
+        memberEvent: t.arg.string({
+          description: 'Only property who attended this event',
+        }),
       },
       resolve: async (parent, args, ctx) => {
         const { user } = await ctx;
@@ -370,22 +383,40 @@ builder.prismaObject('Community', {
           async ({ limit, offset }) => {
             // If search term is provided, construct $match query
             // for returning matched entries
-            let searchQuery;
-            if (args.search) {
+            const searchQuery = [];
+            if (args.searchText) {
               // See this to see why we add the surrounding quotes
               // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
-              // searchQuery = {
-              //   $text: { $search: `\"${args.search}\"` },
-              // };
-              // Match only from start of word boundary
-              const operand = { $regex: `\\b${args.search}`, $options: 'i' };
-              searchQuery = {
+              // searchQuery.push({
+              //   $text: { $search: `\"${args.searchText}\"` },
+              // });
+              const operand = {
+                // Match only from start of word boundary
+                $regex: `\\b${args.searchText}`,
+                $options: 'i',
+              };
+              searchQuery.push({
                 $or: [
                   { address: operand },
                   { 'occupantList.firstName': operand },
                   { 'occupantList.lastName': operand },
                 ],
-              };
+              });
+            }
+
+            if (args.memberYear != null || args.memberEvent != null) {
+              const { memberYear, memberEvent } = args;
+              searchQuery.push({
+                membershipList: {
+                  $elemMatch: {
+                    isMember: true,
+                    ...(memberYear && { year: memberYear }),
+                    ...(memberEvent && {
+                      'eventAttendedList.eventName': memberEvent,
+                    }),
+                  },
+                },
+              });
             }
 
             /**
@@ -407,7 +438,7 @@ builder.prismaObject('Community', {
                   $match: {
                     // connection parameter
                     communityId: { $oid: parent.id },
-                    ...searchQuery,
+                    ...(searchQuery.length > 0 && { $and: searchQuery }),
                   },
                 },
                 {
@@ -483,22 +514,12 @@ builder.prismaObject('Community', {
           where: { communityId },
           select: { id: true, membershipList: true },
         });
-        let minYear = Infinity;
-        let maxYear = -Infinity;
-        propertyList.forEach(({ membershipList }) => {
-          // For each property, go through all membership information
-          // to determine min/max year
-          membershipList.forEach((entry) => {
-            minYear = Math.min(minYear, entry.year);
-            maxYear = Math.max(maxYear, entry.year);
-          });
-        });
 
         return {
           id: hash(propertyList),
+          minYear: parent.minYear ?? getCurrentYear(),
+          maxYear: parent.maxYear ?? getCurrentYear(),
           communityId,
-          minYear: isFinite(minYear) ? minYear : 0,
-          maxYear: isFinite(maxYear) ? maxYear : 0,
           eventList: parent.eventList,
           propertyList,
         };

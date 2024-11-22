@@ -8,7 +8,11 @@ import {
 export const typePolicies: TypedTypePolicies = {
   Community: {
     fields: {
-      propertyList: relayStylePagination(['search']),
+      propertyList: relayStylePagination([
+        'searchText',
+        'memberYear',
+        'memberEvent',
+      ]),
     },
   },
   Property: {

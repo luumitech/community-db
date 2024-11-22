@@ -6,7 +6,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { Icon } from '~/view/base/icon';
 
-interface YearItem {
+export interface YearItem {
   /** Label to appear in selection list */
   label: string;
   /** Value corresponding to the selection item (year) */
@@ -19,11 +19,11 @@ interface YearItem {
 }
 
 /**
- * Return list of SelectItems that contains every year (increment by 1) using
- * the years in:
+ * Construct list of SelectItems that includes every year (increment by 1). Year
+ * range should include the following:
  *
- * - MembershipList (in input argument)
- * - YearToInclude (in input argument)
+ * - Community min/max year information
+ * - YearToInclude (selected year)
  * - CurrentYear
  *
  * @param membershipList
@@ -31,17 +31,22 @@ interface YearItem {
  * @returns SelectItems with years in descending order
  */
 export function yearSelectItems(
+  yearRange: [number, number],
   membershipList: Pick<GQL.Membership, 'year' | 'isMember'>[],
   yearToInclude: string
 ) {
   const currentYear = getCurrentYear();
-  let minYear = Math.min(parseInt(yearToInclude, 10), currentYear);
-  let maxYear = Math.max(parseInt(yearToInclude, 10), currentYear);
+  const minYear = Math.min(
+    yearRange[0],
+    parseInt(yearToInclude, 10),
+    currentYear
+  );
+  const maxYear = Math.max(
+    yearRange[1],
+    parseInt(yearToInclude, 10),
+    currentYear
+  );
 
-  membershipList.forEach((entry) => {
-    minYear = Math.min(minYear, entry.year);
-    maxYear = Math.max(maxYear, entry.year);
-  });
   return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
     return {
       label: yr.toString(),

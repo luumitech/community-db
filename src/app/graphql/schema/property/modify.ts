@@ -67,6 +67,8 @@ builder.mutationField('propertyModify', (t) =>
           community: {
             select: {
               shortId: true,
+              minYear: true,
+              maxYear: true,
             },
           },
         },
@@ -83,6 +85,21 @@ builder.mutationField('propertyModify', (t) =>
         Role.EDITOR,
       ]);
 
+      // Check if community min/max year needs to be updated
+      let minYear: number | undefined;
+      let maxYear: number | undefined;
+      if (input.membershipList?.length) {
+        const len = input.membershipList.length;
+        const listMinYear = input.membershipList[len - 1].year;
+        const listMaxYear = input.membershipList[0].year;
+        if (!entry.community.minYear || listMinYear < entry.community.minYear) {
+          minYear = listMinYear;
+        }
+        if (!entry.community.maxYear || listMaxYear > entry.community.maxYear) {
+          maxYear = listMaxYear;
+        }
+      }
+
       const property = await prisma.property.update({
         ...query,
         where: {
@@ -93,6 +110,14 @@ builder.mutationField('propertyModify', (t) =>
         data: {
           updatedBy: { connect: { email: user.email } },
           ...input,
+          ...((minYear != null || maxYear != null) && {
+            community: {
+              update: {
+                ...(minYear != null && { minYear }),
+                ...(maxYear != null && { maxYear }),
+              },
+            },
+          }),
         },
       });
 

@@ -10,6 +10,7 @@ import { MembershipListFieldArray, membershipDefault } from './use-hook-form';
 
 interface Props {
   className?: string;
+  yearRange: [number, number];
   membershipMethods: MembershipListFieldArray;
   /** Currently selected year in Select */
   selectedYear: string;
@@ -19,6 +20,7 @@ interface Props {
 
 export const YearSelect: React.FC<Props> = ({
   className,
+  yearRange,
   membershipMethods,
   selectedYear,
   onChange,
@@ -26,7 +28,7 @@ export const YearSelect: React.FC<Props> = ({
   const { fields, prepend } = membershipMethods;
 
   const yearItems = React.useMemo(() => {
-    const items = yearSelectItems(fields, selectedYear);
+    const items = yearSelectItems(yearRange, fields, selectedYear);
     const maxYear = items[0].value;
 
     return [
@@ -34,7 +36,7 @@ export const YearSelect: React.FC<Props> = ({
       { label: `Add Year ${maxYear + 1}`, value: maxYear + 1, isMember: null },
       ...items,
     ];
-  }, [fields, selectedYear]);
+  }, [yearRange, fields, selectedYear]);
 
   const handleSelectionChange = React.useCallback<
     React.ChangeEventHandler<HTMLSelectElement>
@@ -54,7 +56,11 @@ export const YearSelect: React.FC<Props> = ({
 
   return (
     <Select
-      className={clsx(className, 'max-w-sm')}
+      classNames={{
+        base: clsx(className, 'items-center'),
+        label: 'whitespace-nowrap',
+        mainWrapper: 'max-w-[180px]',
+      }}
       label="Membership Year"
       labelPlacement="outside-left"
       placeholder="Select a year to view in detail"

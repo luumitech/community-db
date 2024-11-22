@@ -24,18 +24,18 @@ export function useMoreMenu(opt: MoreMenuOpt) {
 
     items.push(
       {
-        key: 'export',
+        key: 'communityExport',
         href: appPath('communityExport', { path: { communityId } }),
         children: appLabel('communityExport'),
       },
       {
-        key: 'share',
+        key: 'communityShare',
         href: appPath('communityShare', { path: { communityId } }),
         endContent: <Icon icon="share" />,
         children: appLabel('communityShare'),
       },
       {
-        key: 'dashboard',
+        key: 'communityDashboard',
         href: appPath('communityDashboard', { path: { communityId } }),
         endContent: <Icon icon="dashboard" />,
         showDivider: canEdit,
@@ -45,7 +45,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
 
     if (canEdit) {
       items.push({
-        key: 'community-modify',
+        key: 'communityModify',
         ...opt.communityModifyButtonProps(),
         children: 'Modify Community',
       });
@@ -54,12 +54,17 @@ export function useMoreMenu(opt: MoreMenuOpt) {
     if (isAdmin) {
       items.push(
         {
-          key: 'import',
+          key: 'communityImport',
           href: appPath('communityImport', { path: { communityId } }),
           children: appLabel('communityImport'),
         },
         {
-          key: 'property-create',
+          key: 'batchPropertyModify',
+          href: appPath('batchPropertyModify', { path: { communityId } }),
+          children: appLabel('batchPropertyModify'),
+        },
+        {
+          key: 'propertyCreate',
           ...opt.propertyCreateButtonProps(),
           children: 'Create Property',
         }
@@ -68,7 +73,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
 
     if (isAdmin) {
       items.push({
-        key: 'community-delete',
+        key: 'communityDelete',
         className: 'text-danger',
         ...opt.communityDeleteButtonProps(),
         children: 'Delete Community',

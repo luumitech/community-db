@@ -80,6 +80,10 @@ model Community {
   ownerId           String                @db.ObjectId
   owner             User                  @relation(name: "communityOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   name              String
+  /// minimum membership year represented in database
+  minYear           Int?
+  /// maximum membership year represented in database
+  maxYear           Int?
   /// List of events supported (can be sorted)
   eventList         SupportedSelectItem[]
   /// List of payment method supported (can be sorted)

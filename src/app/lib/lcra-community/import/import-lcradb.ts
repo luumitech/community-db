@@ -5,6 +5,7 @@ import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { extractEventList } from './event-list-util';
 import { ImportHelper } from './import-helper';
 import { extractPaymentMethodList } from './payment-method-list-util';
+import { extractYearRange } from './year-range-util';
 
 /**
  * Import LCRA Database spreadsheet
@@ -176,9 +177,11 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
   const eventNameList = extractEventList(propertyList);
   const paymentMethodList = extractPaymentMethodList(propertyList);
+  const yearRange = extractYearRange(propertyList);
 
   return {
     propertyList,
+    ...yearRange,
     eventList: eventNameList.map((eventName) => ({
       name: eventName,
       hidden: false,

@@ -1,68 +1,61 @@
 import { Select, SelectItem, SelectProps } from '@nextui-org/react';
-import { useSet } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
 import {
   SelectedYearItem,
   YearItemLabel,
   yearSelectItems,
   type YearItem,
-} from '../year-select-items';
+} from './year-select-items';
 
 type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
 
 interface Props extends CustomSelectProps {
   className?: string;
   yearRange: [number, number];
-  membershipList: GQL.PropertyId_MembershipDisplayFragment['membershipList'];
-  selectedYear: string;
-  onYearChange: (year: string) => void;
+  year: Set<string>;
 }
 
 export const YearSelect: React.FC<Props> = ({
   className,
   yearRange,
-  membershipList,
-  selectedYear,
-  onYearChange,
+  year,
   ...props
 }) => {
-  const year = useSet([selectedYear]);
+  const [selectedYear] = year;
   const yearItems = React.useMemo(() => {
-    return yearSelectItems(yearRange, membershipList, selectedYear);
-  }, [yearRange, membershipList, selectedYear]);
+    return yearSelectItems(yearRange, selectedYear);
+  }, [yearRange, selectedYear]);
 
   return (
     <Select
       classNames={{
-        base: clsx(className, 'items-center'),
-        label: 'whitespace-nowrap',
-        mainWrapper: 'max-w-[150px]',
+        base: className,
       }}
-      label="Membership Info For Year"
-      labelPlacement="outside-left"
+      size="sm"
+      label="Membership Year"
       aria-label="Membership Year"
-      placeholder="Select a year"
       items={yearItems}
+      isDisabled={!yearItems.length}
       selectedKeys={year.values()}
       selectionMode="single"
-      disallowEmptySelection
+      // disallowEmptySelection
       renderValue={(items) => <SelectedYearItem items={items} />}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
         const yearSelected = firstKey as string;
         year.clear();
         year.add(yearSelected);
-        onYearChange(yearSelected);
       }}
       {...props}
     >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          <YearItemLabel item={item} />
-        </SelectItem>
-      )}
+      {(item) => {
+        return (
+          <SelectItem key={item.value} textValue={item.label}>
+            <YearItemLabel item={item} />
+          </SelectItem>
+        );
+      }}
     </Select>
   );
 };
