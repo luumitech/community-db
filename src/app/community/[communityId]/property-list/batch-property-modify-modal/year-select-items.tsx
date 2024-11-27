@@ -2,6 +2,8 @@ import { type SelectedItems } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
+import * as GQL from '~/graphql/generated/graphql';
+import { getCurrentYear } from '~/lib/date-util';
 
 export interface YearItem {
   /** Label to appear in selection list */
@@ -11,30 +13,30 @@ export interface YearItem {
 }
 
 /**
- * Return list of SelectItems that contains every year (increment by 1) using
- * the years in:
+ * Construct list of SelectItems that includes every year (increment by 1). Year
+ * range should include the following:
  *
- * - YearRange (min/maxYear inclusive)
- * - YearToInclude (in input argument)
+ * - Community min/max year information
+ * - YearToInclude (selected year)
+ * - CurrentYear
  *
- * @param yearRange
+ * @param membershipList
  * @param yearToInclude
  * @returns SelectItems with years in descending order
  */
 export function yearSelectItems(
   yearRange: [number, number],
-  yearToIncludeStr?: string
+  yearToInclude: number
 ) {
-  const yearToInclude = parseInt(yearToIncludeStr ?? '', 10);
+  const currentYear = getCurrentYear();
   const minYear = Math.min(
-    ...[yearRange[0], yearToInclude].filter((v) => !isNaN(v))
+    ...[yearRange[0], yearToInclude, currentYear].filter((v) => !isNaN(v))
   );
   const maxYear = Math.max(
-    ...[yearRange[1], yearToInclude].filter((v) => !isNaN(v))
+    ...[yearRange[1], yearToInclude, currentYear].filter((v) => !isNaN(v))
   );
 
-  const range = R.range(minYear, maxYear + 1);
-  return R.reverse(range).map((yr) => {
+  return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
     return {
       label: yr.toString(),
       value: yr,

@@ -56,10 +56,10 @@ export function importLcraDB(wb: XLSX.WorkBook) {
   function addMembership(rowIdx: number, year: number) {
     const prefix = `Y${year}`;
     const _membership = importHelper.membership(rowIdx, {
-      isMember: {
-        colIdx: importHelper.labelColumn(`${prefix}`),
-        type: 'boolean',
-      },
+      // isMember: {
+      //   colIdx: importHelper.labelColumn(`${prefix}`),
+      //   type: 'boolean',
+      // },
       // event names separated by semi-colons
       eventNames: {
         colIdx: importHelper.labelColumn(`${prefix}-event`),

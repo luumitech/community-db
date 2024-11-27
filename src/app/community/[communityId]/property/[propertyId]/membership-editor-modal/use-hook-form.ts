@@ -109,11 +109,10 @@ export function membershipDefault(
 }
 
 function defaultInputData(
-  fragment: PropertyEntry,
+  item: GQL.PropertyId_MembershipEditorFragment,
   yearRange: [number, number],
   yearSelected: string
 ): DefaultData {
-  const item = getFragment(MembershipEditorFragment, fragment);
   const membershipList = yearSelectItems(
     yearRange,
     item.membershipList,
@@ -159,8 +158,8 @@ export function useHookFormWithDisclosure(
   const { minYear, maxYear } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(
-    () => defaultInputData(fragment, [minYear, maxYear], yearSelected),
-    [fragment, minYear, maxYear, yearSelected]
+    () => defaultInputData(property, [minYear, maxYear], yearSelected),
+    [minYear, maxYear, property, yearSelected]
   );
   const formMethods = useForm({
     defaultValues,

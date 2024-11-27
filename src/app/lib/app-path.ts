@@ -15,7 +15,6 @@ export const supportedPathTemplates = {
   communityExport: '/community/:communityId/export-xlsx',
   communityShare: '/community/:communityId/share',
   propertyList: '/community/:communityId/property-list',
-  batchPropertyModify: '/community/:communityId/batch-property-modify',
   property: '/community/:communityId/property/:propertyId',
   communityDashboard: '/community/:communityId/dashboard',
 };
@@ -55,7 +54,6 @@ export function appPath(
     | 'communityExport'
     | 'communityShare'
     | 'propertyList'
-    | 'batchPropertyModify'
     | 'communityDashboard',
   sub: {
     path: {
@@ -121,8 +119,6 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Share';
     case 'propertyList':
       return 'Property List';
-    case 'batchPropertyModify':
-      return 'Batch Property Modify';
     case 'communityDashboard':
       return 'Dashboard';
     case 'property':

@@ -12,7 +12,6 @@ import {
   SelectProps,
   SelectSection,
 } from '@nextui-org/select';
-import { type RowElement } from '@react-types/table';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
@@ -26,13 +25,9 @@ import { useHookFormContext } from './use-hook-form';
 
 interface Props {
   className?: string;
-  yearIdx: number;
 }
 
-export const EventsAttendedSelect: React.FC<Props> = ({
-  className,
-  yearIdx,
-}) => {
+export const EventsAttendedSelect: React.FC<Props> = ({ className }) => {
   const { selectEventSections, communityUi } = useAppContext();
   const { lastEventSelected } = communityUi;
   const { control, register, formState, setValue, clearErrors } =
@@ -40,7 +35,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   const { errors } = formState;
   const { fields, remove, append } = useFieldArray({
     control,
-    name: `membershipList.${yearIdx}.eventAttendedList`,
+    name: 'membership.eventAttendedList',
   });
 
   const emptyContent = React.useMemo(() => {
@@ -69,32 +64,31 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     );
   }, [append, lastEventSelected]);
 
-  const eventAttendedListError =
-    errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
+  const eventAttendedListError = errors.membership?.eventAttendedList?.message;
   const bottomContent = React.useMemo(() => {
     return (
       <div>
         <div
           className="mb-2 text-sm text-danger"
-          {...register(`membershipList.${yearIdx}.eventAttendedList`)}
+          {...register('membership.eventAttendedList')}
         >
           {eventAttendedListError}
         </div>
       </div>
     );
-  }, [register, yearIdx, eventAttendedListError]);
+  }, [register, eventAttendedListError]);
 
   React.useEffect(() => {
     /** Set isMember flag if at least one event has been registered */
-    setValue(`membershipList.${yearIdx}.isMember`, fields.length !== 0);
-  }, [setValue, fields, yearIdx]);
+    setValue(`membership.isMember`, fields.length !== 0);
+  }, [setValue, fields]);
 
   const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
     React.useCallback(
       (keys) => {
-        clearErrors(`membershipList.${yearIdx}.eventAttendedList`);
+        clearErrors(`membership.eventAttendedList`);
       },
-      [clearErrors, yearIdx]
+      [clearErrors]
     );
 
   const renderRows = React.useCallback(() => {
@@ -108,17 +102,13 @@ export const EventsAttendedSelect: React.FC<Props> = ({
             variant="underlined"
             placeholder="Select an event"
             errorMessage={
-              errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventName?.message
+              errors.membership?.eventAttendedList?.[idx]?.eventName?.message
             }
             isInvalid={
-              !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventName?.message
+              !!errors.membership?.eventAttendedList?.[idx]?.eventName?.message
             }
             onSelectionChange={onSelectionChange}
-            {...register(
-              `membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`
-            )}
+            {...register(`membership.eventAttendedList.${idx}.eventName`)}
           >
             {(section) => (
               <SelectSection
@@ -142,14 +132,12 @@ export const EventsAttendedSelect: React.FC<Props> = ({
             aria-label="Event Date"
             variant="underlined"
             granularity="day"
-            name={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
+            name={`membership.eventAttendedList.${idx}.eventDate`}
             errorMessage={
-              errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventDate?.message
+              errors.membership?.eventAttendedList?.[idx]?.eventDate?.message
             }
             isInvalid={
-              !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventDate?.message
+              !!errors.membership?.eventAttendedList?.[idx]?.eventDate?.message
             }
           />
         </TableCell>
@@ -164,12 +152,11 @@ export const EventsAttendedSelect: React.FC<Props> = ({
       </TableRow>
     ));
   }, [
-    errors.membershipList,
+    errors.membership,
     fields,
     onSelectionChange,
     register,
     remove,
-    yearIdx,
     selectEventSections,
   ]);
 

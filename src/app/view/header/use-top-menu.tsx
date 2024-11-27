@@ -127,16 +127,6 @@ export function useTopMenu() {
             children: appLabel('communityDashboard'),
           });
           break;
-
-        case 'batch-property-modify':
-          items.push({
-            id: 'batchPropertyModify',
-            ...linkTo(
-              appPath('batchPropertyModify', { path: { communityId } })
-            ),
-            children: appLabel('batchPropertyModify'),
-          });
-          break;
       }
     }
 

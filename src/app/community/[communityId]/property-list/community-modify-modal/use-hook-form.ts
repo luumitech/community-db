@@ -7,6 +7,7 @@ import {
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
 
@@ -68,9 +69,9 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(fragment: CommunityEntry): DefaultData {
-  const item = getFragment(ModifyFragment, fragment);
-
+function defaultInputData(
+  item: GQL.CommunityId_CommunityModifyModalFragment
+): DefaultData {
   return {
     self: {
       id: item.id,
@@ -96,24 +97,28 @@ function defaultInputData(fragment: CommunityEntry): DefaultData {
 
 export function useHookFormWithDisclosure(fragment: CommunityEntry) {
   const community = getFragment(ModifyFragment, fragment);
+  const defaultValues = React.useMemo(
+    () => defaultInputData(community),
+    [community]
+  );
   const formMethods = useForm({
-    defaultValues: defaultInputData(fragment),
+    defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 
   React.useEffect(() => {
     // After form is submitted, update the form with new default
-    reset(defaultInputData(fragment));
-  }, [reset, fragment]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   /**
    * When modal is closed, reset form value with default values derived from
    * fragment
    */
   const onModalClose = React.useCallback(() => {
-    reset(defaultInputData(fragment));
-  }, [reset, fragment]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
   const disclosure = useDisclosure({
     onClose: onModalClose,
   });

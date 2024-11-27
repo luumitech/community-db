@@ -27,24 +27,21 @@ export interface YearItem {
  * - CurrentYear
  *
  * @param membershipList
- * @param yearToInclude
+ * @param yearToIncludeStr
  * @returns SelectItems with years in descending order
  */
 export function yearSelectItems(
   yearRange: [number, number],
   membershipList: Pick<GQL.Membership, 'year' | 'isMember'>[],
-  yearToInclude: string
+  yearToIncludeStr: string
 ) {
+  const yearToInclude = parseInt(yearToIncludeStr ?? '', 10);
   const currentYear = getCurrentYear();
   const minYear = Math.min(
-    yearRange[0],
-    parseInt(yearToInclude, 10),
-    currentYear
+    ...[yearRange[0], yearToInclude, currentYear].filter((v) => !isNaN(v))
   );
   const maxYear = Math.max(
-    yearRange[1],
-    parseInt(yearToInclude, 10),
-    currentYear
+    ...[yearRange[1], yearToInclude, currentYear].filter((v) => !isNaN(v))
   );
 
   return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {

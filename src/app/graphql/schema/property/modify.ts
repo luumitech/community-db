@@ -1,11 +1,13 @@
 import { Role } from '@prisma/client';
+import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
-import { getPropertyEntry } from './util';
+import { getCommunityEntry } from '../community/util';
+import { getPropertyEntry, propertySearchQuery } from './util';
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -128,6 +130,67 @@ builder.mutationField('propertyModify', (t) =>
         property,
       });
       return property;
+    },
+  })
+);
+
+const BatchPropertyFilterInput = builder.inputType('BatchPropertyFilterInput', {
+  fields: (t) => ({
+    communityId: t.string({ required: true }),
+    // The properties below should match those in community.propertyList query
+    searchText: t.string(),
+    memberYear: t.int(),
+    memberEvent: t.string(),
+  }),
+});
+
+const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
+  fields: (t) => ({
+    filter: t.field({ type: BatchPropertyFilterInput, required: true }),
+    membership: t.field({ type: MembershipInput }),
+  }),
+});
+
+builder.mutationField('batchPropertyModify', (t) =>
+  t.prismaField({
+    type: ['Property'],
+    args: {
+      input: t.arg({ type: BatchPropertyModifyInput, required: true }),
+    },
+    resolve: async (query, _parent, args, ctx) => {
+      const { user, pubSub } = await ctx;
+      const { filter } = args.input;
+
+      // Make sure user has permission to modify
+      const shortId = filter.communityId;
+      await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
+
+      const community = await getCommunityEntry(user, shortId, {
+        select: { id: true },
+      });
+
+      const searchQuery = propertySearchQuery(filter);
+      const propertyListResult = await prisma.property.findRaw({
+        filter: {
+          communityId: { $oid: community.id },
+          ...searchQuery,
+        },
+        options: {
+          projection: { _id: true },
+        },
+      });
+      // findRaw returns propertyListResult encoded in EJSON format
+      // i.e.
+      // - [{"_id": {"$oid": "xxx" }}]
+      const propertyList: { _id: ObjectId }[] = EJSON.parse(
+        EJSON.stringify(propertyListResult)
+      );
+
+      const result = await prisma.property.findMany({
+        where: { id: { in: propertyList.map(({ _id }) => _id.toHexString()) } },
+      });
+
+      return result;
     },
   })
 );

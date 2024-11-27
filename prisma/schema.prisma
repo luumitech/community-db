@@ -139,7 +139,6 @@ type Event {
 /// Membership information within a property
 type Membership {
   year              Int
-  isMember          Boolean?
   /// List of events attended
   eventAttendedList Event[]
   paymentMethod     String?

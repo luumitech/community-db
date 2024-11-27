@@ -10,6 +10,7 @@ interface MenuItemEntry extends DropdownItemProps {}
 interface MoreMenuOpt {
   communityId: string;
   communityModifyButtonProps: UseDisclosureReturn['getButtonProps'];
+  batchPropertyModifyButtonProps: UseDisclosureReturn['getButtonProps'];
   communityDeleteButtonProps: UseDisclosureReturn['getButtonProps'];
   propertyCreateButtonProps: UseDisclosureReturn['getButtonProps'];
 }
@@ -44,11 +45,19 @@ export function useMoreMenu(opt: MoreMenuOpt) {
     );
 
     if (canEdit) {
-      items.push({
-        key: 'communityModify',
-        ...opt.communityModifyButtonProps(),
-        children: 'Modify Community',
-      });
+      items.push(
+        {
+          key: 'communityModify',
+          ...opt.communityModifyButtonProps(),
+          children: 'Modify Community',
+        },
+        {
+          key: 'batchPropertyyModify',
+          ...opt.batchPropertyModifyButtonProps(),
+          showDivider: isAdmin,
+          children: 'Batch Modify Property',
+        }
+      );
     }
 
     if (isAdmin) {
@@ -59,25 +68,17 @@ export function useMoreMenu(opt: MoreMenuOpt) {
           children: appLabel('communityImport'),
         },
         {
-          key: 'batchPropertyModify',
-          href: appPath('batchPropertyModify', { path: { communityId } }),
-          children: appLabel('batchPropertyModify'),
-        },
-        {
           key: 'propertyCreate',
           ...opt.propertyCreateButtonProps(),
           children: 'Create Property',
+        },
+        {
+          key: 'communityDelete',
+          className: 'text-danger',
+          ...opt.communityDeleteButtonProps(),
+          children: 'Delete Community',
         }
       );
-    }
-
-    if (isAdmin) {
-      items.push({
-        key: 'communityDelete',
-        className: 'text-danger',
-        ...opt.communityDeleteButtonProps(),
-        children: 'Delete Community',
-      });
     }
 
     return items;

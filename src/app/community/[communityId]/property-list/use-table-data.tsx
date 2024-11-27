@@ -6,8 +6,11 @@ import { Membership } from './membership';
 import { Occupant } from './occupant';
 import { PropertyAddress } from './property-address';
 
-export function useTableData() {
-  const curYear = getCurrentYear();
+export function useTableData(
+  /** What to show for the first column in memberyear */
+  currentYear?: number | null
+) {
+  const curYear = currentYear ?? getCurrentYear();
   const prevYear = curYear - 1;
 
   const columns = [

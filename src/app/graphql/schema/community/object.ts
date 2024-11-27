@@ -13,7 +13,12 @@ import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
 import { propertyRef } from '../property/object';
-import { getPropertyEntryWithinCommunity } from '../property/util';
+import {
+  getPropertyEntryWithinCommunity,
+  isMember,
+  isMemberInYear,
+  propertySearchQuery,
+} from '../property/util';
 
 const supportedSelectItemRef = builder
   .objectRef<SupportedSelectItem>('SupportedSelectItem')
@@ -143,21 +148,23 @@ const communityStatRef = builder
               map.set(year, { year, renew: 0, new: 0, noRenewal: 0 });
             });
           propertyList.forEach(({ membershipList }) => {
-            membershipList.forEach(({ year, isMember }, idx) => {
+            membershipList.forEach((entry, idx) => {
+              const { year } = entry;
+              const entryIsMember = isMember(entry);
               const mapEntry = map.get(year);
               if (!mapEntry) {
                 throw new GraphQLError(
                   `year ${year} in propertyStat entry fell outside min/maxYear`
                 );
               }
-              const isMemberLastYear = !!membershipList[idx + 1]?.isMember;
+              const isMemberLastYear = isMember(membershipList[idx + 1]);
               if (isMemberLastYear) {
-                if (isMember) {
+                if (entryIsMember) {
                   mapEntry.renew++;
                 } else {
                   mapEntry.noRenewal++;
                 }
-              } else if (isMember) {
+              } else if (entryIsMember) {
                 mapEntry.new++;
               }
             });
@@ -191,12 +198,8 @@ const communityStatRef = builder
             // For each address, go through all membership information
             // to collect statistic for each year
             membershipList.forEach((entry, idx) => {
-              if (
-                entry.year === year &&
-                entry.isMember &&
-                entry.eventAttendedList.length
-              ) {
-                const renew = !!membershipList[idx + 1]?.isMember;
+              if (entry.year === year && isMember(entry)) {
+                const renew = !!isMember(membershipList[idx + 1]);
                 const joinEvent = entry.eventAttendedList.shift()!;
                 const otherEvent = entry.eventAttendedList;
 
@@ -234,12 +237,14 @@ const communityStatRef = builder
           const { propertyList } = parent;
           const propertyIdList = propertyList
             .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = !!membershipList.find(
-                ({ year }) => year === args.year
-              )?.isMember;
-              const isMemberPrevYear = !!membershipList.find(
-                ({ year }) => year === args.year - 1
-              )?.isMember;
+              const isMemberCurrentYear = isMemberInYear(
+                membershipList,
+                args.year
+              );
+              const isMemberPrevYear = isMemberInYear(
+                membershipList,
+                args.year - 1
+              );
               if (isMemberPrevYear && !isMemberCurrentYear) {
                 return id;
               }
@@ -265,9 +270,10 @@ const communityStatRef = builder
           const { propertyList } = parent;
           const propertyIdList = propertyList
             .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = !!membershipList.find(
-                ({ year }) => year === args.year
-              )?.isMember;
+              const isMemberCurrentYear = isMemberInYear(
+                membershipList,
+                args.year
+              );
               return isMemberCurrentYear ? null : id;
             })
             .filter((id): id is string => id != null);
@@ -290,9 +296,10 @@ const communityStatRef = builder
           const { propertyList } = parent;
           const propertyIdList = propertyList
             .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = !!membershipList.find(
-                ({ year }) => year === args.year
-              )?.isMember;
+              const isMemberCurrentYear = isMemberInYear(
+                membershipList,
+                args.year
+              );
               return isMemberCurrentYear ? id : null;
             })
             .filter((id): id is string => id != null);
@@ -381,44 +388,6 @@ builder.prismaObject('Community', {
         return await resolveCustomOffsetConnection(
           { args },
           async ({ limit, offset }) => {
-            // If search term is provided, construct $match query
-            // for returning matched entries
-            const searchQuery = [];
-            if (args.searchText) {
-              // See this to see why we add the surrounding quotes
-              // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
-              // searchQuery.push({
-              //   $text: { $search: `\"${args.searchText}\"` },
-              // });
-              const operand = {
-                // Match only from start of word boundary
-                $regex: `\\b${args.searchText}`,
-                $options: 'i',
-              };
-              searchQuery.push({
-                $or: [
-                  { address: operand },
-                  { 'occupantList.firstName': operand },
-                  { 'occupantList.lastName': operand },
-                ],
-              });
-            }
-
-            if (args.memberYear != null || args.memberEvent != null) {
-              const { memberYear, memberEvent } = args;
-              searchQuery.push({
-                membershipList: {
-                  $elemMatch: {
-                    isMember: true,
-                    ...(memberYear && { year: memberYear }),
-                    ...(memberEvent && {
-                      'eventAttendedList.eventName': memberEvent,
-                    }),
-                  },
-                },
-              });
-            }
-
             /**
              * Get application configuration base on community owner's
              * subscription level
@@ -438,7 +407,9 @@ builder.prismaObject('Community', {
                   $match: {
                     // connection parameter
                     communityId: { $oid: parent.id },
-                    ...(searchQuery.length > 0 && { $and: searchQuery }),
+                    // If search term is provided, construct $match query
+                    // for returning matched entries
+                    ...propertySearchQuery(args),
                   },
                 },
                 {

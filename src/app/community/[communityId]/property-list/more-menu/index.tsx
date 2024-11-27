@@ -7,10 +7,11 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
-import { CommunityEntry } from '../../_type';
-import * as communityDeleteModal from '../../community-delete-modal';
-import * as communityModifyModal from '../../community-modify-modal';
-import * as propertyCreateModal from '../../property-create-modal';
+import { CommunityEntry } from '../_type';
+import * as batchPropertyModifyModal from '../batch-property-modify-modal';
+import * as communityDeleteModal from '../community-delete-modal';
+import * as communityModifyModal from '../community-modify-modal';
+import * as propertyCreateModal from '../property-create-modal';
 import { useMoreMenu } from './use-menu';
 
 interface Props {
@@ -20,15 +21,20 @@ interface Props {
 export const MoreMenu: React.FC<Props> = ({ community }) => {
   const communityModify =
     communityModifyModal.useHookFormWithDisclosure(community);
-  const communityDelete =
-    communityDeleteModal.useHookFormWithDisclosure(community);
+  const batchPropertyModify =
+    batchPropertyModifyModal.useHookFormWithDisclosure(community);
   const propertyCreate =
     propertyCreateModal.useHookFormWithDisclosure(community);
+  const communityDelete =
+    communityDeleteModal.useHookFormWithDisclosure(community);
+
   const menuItems = useMoreMenu({
     communityId: community.id,
     communityModifyButtonProps: communityModify.disclosure.getButtonProps,
-    communityDeleteButtonProps: communityDelete.disclosure.getButtonProps,
+    batchPropertyModifyButtonProps:
+      batchPropertyModify.disclosure.getButtonProps,
     propertyCreateButtonProps: propertyCreate.disclosure.getButtonProps,
+    communityDeleteButtonProps: communityDelete.disclosure.getButtonProps,
   });
 
   return (
@@ -51,6 +57,9 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
         </DropdownMenu>
       </Dropdown>
       <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
+      <batchPropertyModifyModal.BatchPropertyModifyModal
+        hookForm={batchPropertyModify}
+      />
       <communityDeleteModal.CommunityDeleteModal hookForm={communityDelete} />
       <propertyCreateModal.PropertyCreateModal hookForm={propertyCreate} />
     </>

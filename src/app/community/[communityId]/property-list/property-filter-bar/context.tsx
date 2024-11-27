@@ -37,7 +37,7 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
   const event = useSet<string>([]);
   const searchText = useDebounce(communityUi.propertyListSearch, 300);
 
-  const [selectedYear] = year;
+  const [selectedYearStr] = year;
   const [selectedEvent] = event;
 
   const filterArg = React.useMemo<FilterArgType>(() => {
@@ -45,14 +45,15 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
     if (searchText) {
       arg.searchText = searchText;
     }
-    if (selectedYear) {
-      arg.memberYear = parseInt(selectedYear, 10);
+    const selectedYear = parseInt(selectedYearStr, 10);
+    if (!isNaN(selectedYear)) {
+      arg.memberYear = selectedYear;
     }
     if (selectedEvent) {
       arg.memberEvent = selectedEvent;
     }
     return arg;
-  }, [searchText, selectedYear, selectedEvent]);
+  }, [searchText, selectedYearStr, selectedEvent]);
 
   return (
     <Context.Provider

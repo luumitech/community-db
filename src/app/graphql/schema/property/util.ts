@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Membership, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
@@ -91,4 +91,86 @@ export async function getPropertyEntryWithinCommunity<T extends FindArgs>(
     }
     throw err;
   }
+}
+
+/**
+ * Verify if a membership entry is considered to be a valid member
+ *
+ * @param entry Membership entry
+ * @returns
+ */
+export function isMember(entry?: Membership | null) {
+  if (!entry) {
+    return false;
+  }
+  return entry.eventAttendedList.length > 0;
+}
+
+/**
+ * Given a list of membership entries for every year, find if client has
+ * membership of a given year
+ *
+ * @param list List of membership entries
+ * @param year Year to look into
+ * @returns
+ */
+export function isMemberInYear(list: Membership[], year: number) {
+  const membershipEntry = list.find((entry) => entry.year === year);
+  return isMember(membershipEntry);
+}
+
+interface PropertySearchQueryArg {
+  searchText?: string | null;
+  memberYear?: number | null;
+  memberEvent?: string | null;
+}
+
+/**
+ * Construct mongo query filter to get results that matches the filter arguments
+ *
+ * @param args
+ * @returns Mongo filter query
+ */
+export function propertySearchQuery(args: PropertySearchQueryArg) {
+  // If search term is provided, construct $match query
+  // for returning matched entries
+  const searchQuery = [];
+  if (args.searchText) {
+    // See this to see why we add the surrounding quotes
+    // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
+    // searchQuery.push({
+    //   $text: { $search: `\"${args.searchText}\"` },
+    // });
+    const operand = {
+      // Match only from start of word boundary
+      $regex: `\\b${args.searchText}`,
+      $options: 'i',
+    };
+    searchQuery.push({
+      $or: [
+        { address: operand },
+        { 'occupantList.firstName': operand },
+        { 'occupantList.lastName': operand },
+      ],
+    });
+  }
+
+  if (args.memberYear != null || args.memberEvent != null) {
+    const { memberYear, memberEvent } = args;
+    searchQuery.push({
+      membershipList: {
+        $elemMatch: {
+          isMember: true,
+          ...(memberYear && { year: memberYear }),
+          ...(memberEvent && {
+            'eventAttendedList.eventName': memberEvent,
+          }),
+        },
+      },
+    });
+  }
+
+  return {
+    ...(searchQuery.length > 0 && { $and: searchQuery }),
+  };
 }

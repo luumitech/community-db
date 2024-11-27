@@ -35,6 +35,7 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
       ...CommunityId_CommunityModifyModal
       ...CommunityId_CommunityDeleteModal
       ...CommunityId_PropertyCreateModal
+      ...CommunityId_BatchPropertyModifyModal
       propertyList(
         first: $first
         after: $after
@@ -88,7 +89,7 @@ export const PageContent: React.FC<Props> = (props) => {
       });
     },
   });
-  const { columns, renderCell } = useTableData();
+  const { columns, renderCell } = useTableData(filterArg.memberYear);
 
   const community = React.useMemo(() => data?.communityFromId, [data]);
   const rows = React.useMemo(() => {

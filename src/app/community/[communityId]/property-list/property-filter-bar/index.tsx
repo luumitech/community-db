@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React from 'react';
 import { type CommunityEntry } from '../_type';
+import { MoreMenu } from '../more-menu';
 import { AdvanceFilter } from './advance-filter';
-import { MoreMenu } from './more-menu';
 import { SearchBar } from './search-bar';
 
 interface Props {
