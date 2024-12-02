@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
@@ -7,7 +7,11 @@ import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { getCommunityEntry } from '../community/util';
-import { getPropertyEntry, propertySearchQuery } from './util';
+import {
+  getPropertyEntry,
+  propertyListFilterArgs,
+  propertyListFindManyArgs,
+} from './util';
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -31,10 +35,8 @@ const EventInput = builder.inputType('EventInput', {
 const MembershipInput = builder.inputType('MembershipInput', {
   fields: (t) => ({
     year: t.int({ required: true }),
-    isMember: t.boolean(),
     eventAttendedList: t.field({ type: [EventInput] }),
     paymentMethod: t.string(),
-    paymentDeposited: t.boolean(),
   }),
 });
 
@@ -134,20 +136,33 @@ builder.mutationField('propertyModify', (t) =>
   })
 );
 
-const BatchPropertyFilterInput = builder.inputType('BatchPropertyFilterInput', {
+export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
   fields: (t) => ({
-    communityId: t.string({ required: true }),
-    // The properties below should match those in community.propertyList query
-    searchText: t.string(),
-    memberYear: t.int(),
-    memberEvent: t.string(),
+    searchText: t.string({
+      description: 'Match against property address/first name/last name',
+    }),
+    memberYear: t.int({
+      description: 'Only property who is a member of the given year',
+    }),
+    memberEvent: t.string({
+      description: 'Only property who attended this event',
+    }),
+  }),
+});
+
+const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
+  fields: (t) => ({
+    year: t.int({ required: true }),
+    eventAttended: t.field({ type: EventInput, required: true }),
+    paymentMethod: t.string({ required: true }),
   }),
 });
 
 const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
   fields: (t) => ({
-    filter: t.field({ type: BatchPropertyFilterInput, required: true }),
-    membership: t.field({ type: MembershipInput }),
+    communityId: t.string({ required: true }),
+    filter: t.field({ type: PropertyFilterInput }),
+    membership: t.field({ type: BatchMembershipInput, required: true }),
   }),
 });
 
@@ -159,38 +174,78 @@ builder.mutationField('batchPropertyModify', (t) =>
     },
     resolve: async (query, _parent, args, ctx) => {
       const { user, pubSub } = await ctx;
-      const { filter } = args.input;
+      const { input } = args;
+      const { communityId: shortId, filter } = input;
 
       // Make sure user has permission to modify
-      const shortId = filter.communityId;
       await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
 
       const community = await getCommunityEntry(user, shortId, {
         select: { id: true },
       });
 
-      const searchQuery = propertySearchQuery(filter);
-      const propertyListResult = await prisma.property.findRaw({
-        filter: {
-          communityId: { $oid: community.id },
-          ...searchQuery,
-        },
-        options: {
-          projection: { _id: true },
-        },
+      const findManyArgs = propertyListFindManyArgs(community.id);
+      const where = propertyListFilterArgs(community.id, filter);
+
+      let propertyList = await prisma.property.findMany({
+        ...findManyArgs,
+        where,
       });
-      // findRaw returns propertyListResult encoded in EJSON format
-      // i.e.
-      // - [{"_id": {"$oid": "xxx" }}]
-      const propertyList: { _id: ObjectId }[] = EJSON.parse(
-        EJSON.stringify(propertyListResult)
+
+      // Modify the propertyList in memory, and then write them to
+      // database afterwards
+      propertyList.forEach((property) => {
+        const membership = property.membershipList.find(
+          (entry) => entry.year === input.membership.year
+        );
+        if (membership) {
+          const event = membership.eventAttendedList.find(
+            (entry) =>
+              entry.eventName === input.membership.eventAttended.eventName
+          );
+          if (!event) {
+            membership.eventAttendedList.push({
+              eventName: input.membership.eventAttended.eventName,
+              eventDate: new Date(input.membership.eventAttended.eventDate),
+            });
+          }
+        } else {
+          property.membershipList.unshift({
+            year: 2024,
+            paymentMethod: input.membership.paymentMethod,
+            paymentDeposited: null,
+            eventAttendedList: [
+              {
+                eventName: input.membership.eventAttended.eventName,
+                eventDate: new Date(input.membership.eventAttended.eventDate),
+              },
+            ],
+          });
+        }
+      });
+
+      propertyList = await prisma.$transaction(
+        propertyList.map((property) =>
+          prisma.property.update({
+            ...query,
+            where: { id: property.id },
+            data: {
+              membershipList: property.membershipList,
+            },
+          })
+        )
       );
 
-      const result = await prisma.property.findMany({
-        where: { id: { in: propertyList.map(({ _id }) => _id.toHexString()) } },
+      // broadcast modification to property(s)
+      propertyList.forEach((property) => {
+        pubSub.publish(`community/${shortId}/property`, {
+          broadcasterId: user.email,
+          mutationType: MutationType.UPDATED,
+          property,
+        });
       });
 
-      return result;
+      return propertyList;
     },
   })
 );

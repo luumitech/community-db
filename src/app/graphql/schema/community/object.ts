@@ -12,12 +12,14 @@ import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
+import { PropertyFilterInput } from '../property/modify';
 import { propertyRef } from '../property/object';
 import {
   getPropertyEntryWithinCommunity,
   isMember,
   isMemberInYear,
-  propertySearchQuery,
+  propertyListFilterArgs,
+  propertyListFindManyArgs,
 } from '../property/util';
 
 const supportedSelectItemRef = builder
@@ -373,21 +375,16 @@ builder.prismaObject('Community', {
     propertyList: t.connection({
       type: propertyRef,
       args: {
-        searchText: t.arg.string({
-          description: 'Match against property address/first name/last name',
-        }),
-        memberYear: t.arg.int({
-          description: 'Only property who is a member of the given year',
-        }),
-        memberEvent: t.arg.string({
-          description: 'Only property who attended this event',
-        }),
+        filter: t.arg({ type: PropertyFilterInput }),
       },
       resolve: async (parent, args, ctx) => {
         const { user } = await ctx;
         return await resolveCustomOffsetConnection(
           { args },
           async ({ limit, offset }) => {
+            const { filter } = args;
+            const findManyArgs = propertyListFindManyArgs(parent.id);
+
             /**
              * Get application configuration base on community owner's
              * subscription level
@@ -395,56 +392,32 @@ builder.prismaObject('Community', {
             const subEntry = await getCommunityOwnerSubscriptionEntry(
               parent.id
             );
+
+            // Construct `where` clause using the arguments in filter
+            const where = propertyListFilterArgs(parent.id, filter);
+
+            // Add additional limiter if subscription level prevents
+            // querying more entries
             const { propertyLimit } = subEntry;
-            const limitQuery = insertIf(propertyLimit != null, {
-              $limit: propertyLimit,
-            });
+            if (propertyLimit != null) {
+              const list = await prisma.property.findMany({
+                ...findManyArgs,
+                take: propertyLimit,
+                select: { id: true },
+              });
+              where.id = { in: list.map(({ id }) => id) };
+            }
 
-            const aggr = await prisma.property.aggregateRaw({
-              pipeline: [
-                ...limitQuery,
-                {
-                  $match: {
-                    // connection parameter
-                    communityId: { $oid: parent.id },
-                    // If search term is provided, construct $match query
-                    // for returning matched entries
-                    ...propertySearchQuery(args),
-                  },
-                },
-                {
-                  $facet: {
-                    items: [
-                      // Sort must come before limit/skip, in order to sort all
-                      // the matched results
-                      { $sort: { streetName: 1, streetNo: 1 } },
-                      { $limit: offset + limit },
-                      { $skip: offset },
-                      // map _id to id
-                      { $addFields: { id: '$_id' } },
-                    ],
-                    info: [
-                      // total number of matched results
-                      { $count: 'totalCount' },
-                    ],
-                  },
-                },
-              ],
-            });
+            const [items, totalCount] = await prisma.$transaction([
+              prisma.property.findMany({
+                ...findManyArgs,
+                where,
+                skip: offset,
+                take: limit,
+              }),
+              prisma.property.count({ where }),
+            ]);
 
-            // aggregateRaw returns items encoded in EJSON format
-            // i.e.
-            // - {"updatedAt": {"$date": "2000-01-23T01:23:45.678+00:00"}}
-            // - {"id": {"$oid": "xxx" }}
-            // So it's necessary to convert it back to normal JSON
-            const result: {
-              items: Property[];
-              info: {
-                totalCount: number;
-              }[];
-            }[] = EJSON.parse(EJSON.stringify(aggr));
-            const { items, info } = result[0];
-            const totalCount = info[0]?.totalCount ?? 0;
             return { items, totalCount };
           }
         );

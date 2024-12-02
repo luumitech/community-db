@@ -1,16 +1,7 @@
 import { useDebounce, useSet } from '@uidotdev/usehooks';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { type CommunityFromIdQueryVariables } from '~/graphql/generated/graphql';
-
-/**
- * Arguments to CommunityFromIdQuery that are specific for filtering property
- * results
- */
-type FilterArgType = Pick<
-  CommunityFromIdQueryVariables,
-  'memberYear' | 'memberEvent' | 'searchText'
->;
+import * as GQL from '~/graphql/generated/graphql';
 
 type ContextT = Readonly<{
   /** CommunityId (read from route param) */
@@ -20,7 +11,7 @@ type ContextT = Readonly<{
   event: Set<string>;
 
   /** Property filter arguments */
-  filterArg: FilterArgType;
+  filterArg: GQL.PropertyFilterInput;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -40,8 +31,8 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
   const [selectedYearStr] = year;
   const [selectedEvent] = event;
 
-  const filterArg = React.useMemo<FilterArgType>(() => {
-    const arg: FilterArgType = {};
+  const filterArg = React.useMemo<GQL.PropertyFilterInput>(() => {
+    const arg: GQL.PropertyFilterInput = {};
     if (searchText) {
       arg.searchText = searchText;
     }

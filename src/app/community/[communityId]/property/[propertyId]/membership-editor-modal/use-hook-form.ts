@@ -44,7 +44,7 @@ function schema() {
     membershipList: z.array(
       z
         .object({
-          year: z.coerce.number(),
+          year: zz.coerce.toNumber('Must select a year'),
           isMember: z.boolean(),
           eventAttendedList: z
             .array(
@@ -61,7 +61,6 @@ function schema() {
               { message: 'Event Name must be unique', path: [''] }
             ),
           paymentMethod: z.string(),
-          paymentDeposited: z.boolean(),
         })
         .refine(
           (form) => {
@@ -98,13 +97,12 @@ type DefaultData = DefaultInput<InputData>;
 
 export function membershipDefault(
   year: number
-): DefaultInput<GQL.MembershipInput> {
+): DefaultInput<GQL.MembershipInput & { isMember: boolean }> {
   return {
     year,
     isMember: false,
     eventAttendedList: [],
     paymentMethod: '',
-    paymentDeposited: false,
   };
 }
 
@@ -144,8 +142,6 @@ function defaultInputData(
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
-        paymentDeposited:
-          membershipItem?.paymentDeposited ?? defaultItem.paymentDeposited,
       };
     }),
   };

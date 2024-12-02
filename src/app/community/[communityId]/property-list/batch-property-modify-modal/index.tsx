@@ -38,7 +38,6 @@ interface Props {
 }
 
 export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
-  const { communityId, filterArg } = useFilterBarContext();
   const [updateProperty] = useMutation(BatchPropertyMutation);
   const { formMethods } = hookForm;
 
@@ -50,12 +49,7 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
 
       await toast.promise(
         updateProperty({
-          variables: {
-            input: {
-              filter: { communityId, ...filterArg },
-              ...input,
-            },
-          },
+          variables: { input },
         }),
         {
           pending: 'Saving...',
@@ -63,7 +57,7 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, updateProperty, communityId, filterArg]
+    [formMethods.formState, updateProperty]
   );
 
   return (

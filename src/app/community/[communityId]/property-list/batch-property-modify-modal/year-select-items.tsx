@@ -1,4 +1,3 @@
-import { type SelectedItems } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
@@ -26,8 +25,10 @@ export interface YearItem {
  */
 export function yearSelectItems(
   yearRange: [number, number],
-  yearToInclude: number
+  _yearToInclude?: string | number
 ) {
+  const yearToIncludeNum = Number(_yearToInclude);
+  const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;
   const currentYear = getCurrentYear();
   const minYear = Math.min(
     ...[yearRange[0], yearToInclude, currentYear].filter((v) => !isNaN(v))
@@ -54,20 +55,4 @@ export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
   }
 
   return <div className="flex gap-2 items-center">{item.label}</div>;
-};
-
-interface SelectedYearItemProps {
-  items: SelectedItems<YearItem>;
-}
-
-export const SelectedYearItem: React.FC<SelectedYearItemProps> = ({
-  items,
-}) => {
-  return (
-    <div>
-      {items.map((item) => (
-        <YearItemLabel key={item.key} item={item.data} />
-      ))}
-    </div>
-  );
 };

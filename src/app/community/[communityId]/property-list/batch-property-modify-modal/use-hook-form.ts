@@ -7,6 +7,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { z, zz } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
+import { useFilterBarContext } from '../property-filter-bar/context';
 
 const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
@@ -17,71 +18,52 @@ const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
 
 function schema() {
   return z.object({
-    membership: z
-      .object({
-        year: z.coerce.number({ message: 'Must select a year' }),
-        isMember: z.boolean(),
-        eventAttendedList: z
-          .array(
-            z.object({
-              eventName: zz.string.nonEmpty('Must specify a value'),
-              eventDate: zz.coerce.toIsoDate(),
-            })
-          )
-          .refine(
-            (items) => {
-              const eventNameList = items.map(({ eventName }) => eventName);
-              return new Set(eventNameList).size === eventNameList.length;
-            },
-            { message: 'Event Name must be unique', path: [''] }
-          ),
-        paymentMethod: z.string(),
-      })
-      .refine(
-        (form) => {
-          if (form.eventAttendedList.length === 0) {
-            return true;
-          }
-          return !!form.paymentMethod;
-        },
-        {
-          message:
-            'Must specify payment method to indicate how membership fee is processsed',
-          path: ['paymentMethod'],
-        }
-      )
-      .refine(
-        (form) => {
-          if (!form.paymentMethod) {
-            return true;
-          }
-          return form.eventAttendedList.length > 0;
-        },
-        {
-          message:
-            'Must add at least one event when Payment Method is specified',
-          path: ['eventAttendedList', ''],
-        }
-      ),
+    communityId: zz.string.nonEmpty(),
+    filter: z.object({
+      memberYear: zz.coerce.toNumber('Must select a year'),
+      memberEvent: z.string(),
+    }),
+    membership: z.object({
+      year: zz.coerce.toNumber('Must select a year'),
+      eventAttended: z.object({
+        eventName: zz.string.nonEmpty('Must specify a value'),
+        eventDate: zz.coerce.toIsoDate(),
+      }),
+      paymentMethod: zz.string.nonEmpty('Must specify payment method'),
+    }),
   });
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(): DefaultData {
+function defaultInputData(
+  communityId: string,
+  filter: GQL.PropertyFilterInput
+): DefaultData {
   return {
+    communityId,
+    filter: {
+      memberEvent: filter.memberEvent ?? '',
+      memberYear: filter.memberYear ?? NaN,
+    },
     membership: {
       year: getCurrentYear(),
-      isMember: false,
-      eventAttendedList: [],
+      eventAttended: {
+        eventName: '',
+        eventDate: new Date(Date.now()).toISOString(),
+      },
       paymentMethod: '',
     },
   };
 }
 
 export function useHookFormWithDisclosure(community: CommunityEntry) {
-  const defaultValues = React.useMemo(() => defaultInputData(), []);
+  const { filterArg } = useFilterBarContext();
+  const defaultValues = React.useMemo(
+    () => defaultInputData(community.id, filterArg),
+    [community, filterArg]
+  );
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

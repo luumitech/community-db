@@ -15,12 +15,13 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={clsx(className)}>
-      <Card>
+      Specify new event to add:
+      <Card className="mt-2">
         <CardHeader className="gap-2">
           <YearSelect yearRange={[minYear, maxYear]} />
         </CardHeader>
-        <CardBody>
-          <PaymentInfoEditor className="pb-4" />
+        <CardBody className="gap-2">
+          <PaymentInfoEditor />
           <EventsAttendedSelect />
         </CardBody>
       </Card>

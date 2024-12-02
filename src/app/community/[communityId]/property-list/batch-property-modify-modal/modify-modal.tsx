@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import { FilterStatus } from './filter-status';
+import { FilterSelect } from './filter-select';
 import { MembershipInfoEditor } from './membership-info-editor';
 import {
   InputData,
@@ -56,7 +56,7 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
         <ModalContent>
           <ModalHeader>Batch Property Modify</ModalHeader>
           <ModalBody>
-            <FilterStatus />
+            <FilterSelect className="mb-4" />
             <MembershipInfoEditor />
           </ModalBody>
           <ModalFooter>

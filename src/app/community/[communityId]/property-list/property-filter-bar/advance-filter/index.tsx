@@ -45,14 +45,13 @@ export const AdvanceFilter: React.FC<Props> = ({ className, community }) => {
   }, [filterSpecified, selectedYear, selectedEvent]);
 
   return (
-    <Accordion variant="light">
+    <Accordion variant="light" isCompact>
       <AccordionItem
         classNames={{
           base: clsx(className),
           title: 'text-sm text-default-500',
         }}
         aria-label="advance filter"
-        isCompact
         startContent={<Icon className="self-center" icon="filter" />}
         title={title}
       >

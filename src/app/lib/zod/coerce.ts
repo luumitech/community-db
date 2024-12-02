@@ -18,6 +18,37 @@ export class Coerce {
   }
 
   /**
+   * Coerce input as number
+   *
+   * - Empty string is considered an error
+   * - NaN is an error
+   */
+  toNumber(msg?: string) {
+    return z
+      .string()
+      .trim()
+      .optional()
+      .transform((val, ctx) => {
+        const onError = () => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: msg ?? 'Not a valid number',
+          });
+          return z.NEVER;
+        };
+
+        if (val == null || val === '') {
+          return onError();
+        }
+        const asNum = Number(val);
+        if (isNaN(asNum)) {
+          return onError();
+        }
+        return asNum;
+      });
+  }
+
+  /**
    * Coerce:
    *
    * - Date object (returned by nextUI date component)

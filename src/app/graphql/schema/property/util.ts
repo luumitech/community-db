@@ -2,12 +2,25 @@ import { Membership, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
+import { PropertyFilterInput } from './modify';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
 /** Default sort order in property list */
-export const DEFAULT_PROPERTY_ORDER_BY: Prisma.PropertyFindManyArgs['orderBy'] =
-  [{ streetName: 'asc' }, { streetNo: 'asc' }];
+export const DEFAULT_PROPERTY_ORDER_BY: Prisma.PropertyOrderByWithRelationInput[] =
+  [
+    { streetName: 'asc' },
+    /**
+     * TODO: since streetNo is a string type, so the string sorting is not ideal
+     *
+     * - `1, 10, 11, ..., 2, 20, 21, ...`
+     *
+     * But we want
+     *
+     * - `i.e. 1, 2, 3, ..., 10, 11, ...`
+     */
+    { streetNo: 'asc' },
+  ];
 
 /**
  * Get property database entry of a given ID and verify if user has access to it
@@ -119,58 +132,69 @@ export function isMemberInYear(list: Membership[], year: number) {
   return isMember(membershipEntry);
 }
 
-interface PropertySearchQueryArg {
-  searchText?: string | null;
-  memberYear?: number | null;
-  memberEvent?: string | null;
+/**
+ * Construct the base propertyList arguments given a communityId
+ *
+ * @param communityId Community Id associated to property
+ * @returns
+ */
+export function propertyListFindManyArgs(communityId: string) {
+  const query: Required<
+    Pick<Prisma.PropertyFindManyArgs, 'where' | 'orderBy'>
+  > = {
+    where: { communityId },
+    orderBy: DEFAULT_PROPERTY_ORDER_BY,
+  };
+  return query;
 }
 
 /**
- * Construct mongo query filter to get results that matches the filter arguments
+ * Construct mongo query `WHERE` inputs to get results that matches the filter
+ * arguments
  *
- * @param args
+ * @param communityId Community ID
+ * @param args Property filter arguments
  * @returns Mongo filter query
  */
-export function propertySearchQuery(args: PropertySearchQueryArg) {
-  // If search term is provided, construct $match query
-  // for returning matched entries
-  const searchQuery = [];
-  if (args.searchText) {
-    // See this to see why we add the surrounding quotes
-    // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
-    // searchQuery.push({
-    //   $text: { $search: `\"${args.searchText}\"` },
-    // });
-    const operand = {
-      // Match only from start of word boundary
-      $regex: `\\b${args.searchText}`,
-      $options: 'i',
-    };
-    searchQuery.push({
-      $or: [
-        { address: operand },
-        { 'occupantList.firstName': operand },
-        { 'occupantList.lastName': operand },
-      ],
-    });
-  }
+export function propertyListFilterArgs(
+  communityId: string,
+  args?: typeof PropertyFilterInput.$inferInput | null
+) {
+  const query = propertyListFindManyArgs(communityId).where;
+  const { searchText, memberEvent, memberYear } = args ?? {};
 
-  if (args.memberYear != null || args.memberEvent != null) {
-    const { memberYear, memberEvent } = args;
-    searchQuery.push({
-      membershipList: {
-        $elemMatch: {
-          isMember: true,
-          ...(memberYear && { year: memberYear }),
-          ...(memberEvent && {
-            'eventAttendedList.eventName': memberEvent,
-          }),
+  if (searchText) {
+    if (!query.OR) {
+      query.OR = [];
+    }
+    query.OR.push(
+      { address: { mode: 'insensitive', contains: searchText } },
+      {
+        occupantList: {
+          some: {
+            OR: [
+              { firstName: { mode: 'insensitive', contains: searchText } },
+              { lastName: { mode: 'insensitive', contains: searchText } },
+            ],
+          },
         },
-      },
-    });
+      }
+    );
   }
 
-  return {
-    ...(searchQuery.length > 0 && { $and: searchQuery }),
-  };
+  // Construct filters within `membershipList`
+  if (memberYear != null || memberEvent != null) {
+    query.membershipList = {
+      some: {
+        // non-empty `eventAttendedList` implies user is a member
+        eventAttendedList: { isEmpty: false },
+        ...(memberYear && { year: memberYear }),
+        ...(memberEvent && {
+          eventAttendedList: { some: { eventName: memberEvent } },
+        }),
+      },
+    };
+  }
+
+  return query;
 }

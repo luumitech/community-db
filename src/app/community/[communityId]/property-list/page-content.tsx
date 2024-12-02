@@ -26,9 +26,7 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
     $id: String!
     $first: Int! = 10
     $after: String
-    $searchText: String
-    $memberYear: Int
-    $memberEvent: String
+    $filter: PropertyFilterInput
   ) {
     communityFromId(id: $id) {
       id
@@ -36,13 +34,7 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
       ...CommunityId_CommunityDeleteModal
       ...CommunityId_PropertyCreateModal
       ...CommunityId_BatchPropertyModifyModal
-      propertyList(
-        first: $first
-        after: $after
-        searchText: $searchText
-        memberYear: $memberYear
-        memberEvent: $memberEvent
-      ) {
+      propertyList(first: $first, after: $after, filter: $filter) {
         pageInfo {
           hasNextPage
           endCursor
@@ -70,7 +62,7 @@ export const PageContent: React.FC<Props> = (props) => {
     variables: {
       id: communityId,
       first: 10, // load 10 entries initally
-      ...filterArg,
+      filter: filterArg,
     },
   });
   useGraphqlErrorHandler(result);
@@ -84,7 +76,7 @@ export const PageContent: React.FC<Props> = (props) => {
       fetchMore({
         variables: {
           after: pageInfo?.endCursor,
-          ...filterArg,
+          filter: filterArg,
         },
       });
     },
