@@ -22,11 +22,6 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       return errObj?.message as string;
     }, [errObj]);
 
-    /**
-     * Ref is not being used right now, so we are introducing a react-hook-form
-     * Controller to transform the react-hook-form register values into a
-     * uncontrolled component
-     */
     return (
       <Controller
         control={control}
@@ -34,7 +29,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         render={({ field }) => (
           <NextUITextarea
             ref={ref}
-            value={field.value}
+            // Force component to be controlled, so setValue would
+            // work properly
+            value={field.value ?? null}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);

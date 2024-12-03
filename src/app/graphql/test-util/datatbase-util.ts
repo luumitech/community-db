@@ -5,6 +5,11 @@ import prisma from '~/lib/prisma';
 
 /** Database related utilities for testing purpose */
 export class DatabaseUtil {
+  /** Drop database (clear all database) */
+  async dropDatabase() {
+    await prisma.$runCommandRaw({ dropDatabase: 1 });
+  }
+
   /**
    * Seed database with excel file in `fixturePath`
    *

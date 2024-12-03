@@ -29,17 +29,13 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
       return errObj?.message as string;
     }, [errors, controlName]);
 
-    /**
-     * Ref is not being used right now, so we are introducing a react-hook-form
-     * Controller to transform the react-hook-form register values into a
-     * uncontrolled component
-     */
     return (
       <Controller
         control={control}
         name={controlName}
         render={({ field }) => (
           <NextUIDatePicker
+            ref={ref}
             defaultValue={parseAsDate(field.value)}
             onChange={(val) => {
               field.onChange(val ?? null);

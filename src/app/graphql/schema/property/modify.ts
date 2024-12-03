@@ -208,10 +208,14 @@ builder.mutationField('batchPropertyModify', (t) =>
               eventName: input.membership.eventAttended.eventName,
               eventDate: new Date(input.membership.eventAttended.eventDate),
             });
+            // Non empty event list require payment Method
+            if (membership.eventAttendedList.length === 1) {
+              membership.paymentMethod = input.membership.paymentMethod;
+            }
           }
         } else {
           property.membershipList.unshift({
-            year: 2024,
+            year: input.membership.year,
             paymentMethod: input.membership.paymentMethod,
             paymentDeposited: null,
             eventAttendedList: [

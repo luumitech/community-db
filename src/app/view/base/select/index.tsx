@@ -54,11 +54,6 @@ export function Select<T extends object>(props: SelectProps<T>) {
         []
       );
 
-      /**
-       * Ref is not being used right now, so we are introducing a
-       * react-hook-form Controller to transform the react-hook-form register
-       * values into a uncontrolled component
-       */
       return (
         <Controller
           control={control}
