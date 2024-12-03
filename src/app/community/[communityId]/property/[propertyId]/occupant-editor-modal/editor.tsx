@@ -5,10 +5,10 @@ import {
   CardFooter,
   CardHeader,
   Checkbox,
-  Input,
 } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
+import { Input } from '~/view/base/input';
 import { OccupantFieldArrayReturn, useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -17,8 +17,7 @@ interface Props {
 }
 
 export const Editor: React.FC<Props> = ({ className, fieldArrayMethods }) => {
-  const { register, formState } = useHookFormContext();
-  const { errors } = formState;
+  const { register } = useHookFormContext();
   const { fields, remove } = fieldArrayMethods;
 
   return (
@@ -29,31 +28,25 @@ export const Editor: React.FC<Props> = ({ className, fieldArrayMethods }) => {
           <CardBody>
             <div className="grid grid-cols-6 gap-2" role="rowgroup">
               <Input
+                className="col-span-3"
+                controlName={`occupantList.${idx}.firstName`}
                 role="cell"
                 label="First Name"
                 variant="underlined"
-                className="col-span-3"
-                errorMessage={errors.occupantList?.[idx]?.firstName?.message}
-                isInvalid={!!errors.occupantList?.[idx]?.firstName?.message}
-                {...register(`occupantList.${idx}.firstName`)}
               />
               <Input
+                className="col-span-3"
+                controlName={`occupantList.${idx}.lastName`}
                 role="cell"
                 label="Last Name"
                 variant="underlined"
-                className="col-span-3"
-                errorMessage={errors.occupantList?.[idx]?.lastName?.message}
-                isInvalid={!!errors.occupantList?.[idx]?.lastName?.message}
-                {...register(`occupantList.${idx}.lastName`)}
               />
               <Input
+                className="col-span-5"
+                controlName={`occupantList.${idx}.email`}
                 role="cell"
                 label="Email"
                 variant="underlined"
-                className="col-span-5"
-                errorMessage={errors.occupantList?.[idx]?.email?.message}
-                isInvalid={!!errors.occupantList?.[idx]?.email?.message}
-                {...register(`occupantList.${idx}.email`)}
               />
               <Checkbox
                 size="md"
@@ -63,31 +56,25 @@ export const Editor: React.FC<Props> = ({ className, fieldArrayMethods }) => {
                 Opt out
               </Checkbox>
               <Input
+                className="col-span-2"
                 role="cell"
                 label="Cell"
                 variant="underlined"
-                className="col-span-2"
-                errorMessage={errors.occupantList?.[idx]?.cell?.message}
-                isInvalid={!!errors.occupantList?.[idx]?.cell?.message}
-                {...register(`occupantList.${idx}.cell`)}
+                controlName={`occupantList.${idx}.cell`}
               />
               <Input
+                className="col-span-2"
+                controlName={`occupantList.${idx}.work`}
                 role="cell"
                 label="Work"
                 variant="underlined"
-                className="col-span-2"
-                errorMessage={errors.occupantList?.[idx]?.work?.message}
-                isInvalid={!!errors.occupantList?.[idx]?.work?.message}
-                {...register(`occupantList.${idx}.work`)}
               />
               <Input
+                className="col-span-2"
+                controlName={`occupantList.${idx}.home`}
                 role="cell"
                 label="Home"
                 variant="underlined"
-                className="col-span-2"
-                errorMessage={errors.occupantList?.[idx]?.home?.message}
-                isInvalid={!!errors.occupantList?.[idx]?.home?.message}
-                {...register(`occupantList.${idx}.home`)}
               />
             </div>
           </CardBody>

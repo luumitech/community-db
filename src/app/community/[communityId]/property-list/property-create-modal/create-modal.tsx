@@ -6,9 +6,9 @@ import {
   ModalHeader,
 } from '@nextui-org/react';
 import React from 'react';
+import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import { AddressEditor } from './address-editor';
 import {
   useHookFormContext,
   type InputData,
@@ -54,7 +54,7 @@ export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
         <ModalContent>
           <ModalHeader>Create Property</ModalHeader>
           <ModalBody>
-            <AddressEditor />
+            <AddressEditorForm />
           </ModalBody>
           <ModalFooter>
             <Button variant="bordered" onPress={onClose}>

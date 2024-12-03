@@ -35,10 +35,10 @@ export function Select<T extends object>(props: SelectProps<T>) {
       const { control, formState } = useFormContext();
       const { errors } = formState;
 
+      const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
       const error = React.useMemo<string | undefined>(() => {
-        const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
         return errObj?.message as string;
-      }, [errors, controlName]);
+      }, [errObj]);
 
       const selectedKeys = React.useCallback(
         (values: string | number | string[] | number[]) => {

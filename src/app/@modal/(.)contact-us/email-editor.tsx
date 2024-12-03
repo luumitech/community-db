@@ -1,7 +1,8 @@
-import { Divider, Input, Textarea } from '@nextui-org/react';
+import { Divider } from '@nextui-org/react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
-import { useHookFormContext } from './use-hook-form';
+import { Input } from '~/view/base/input';
+import { Textarea } from '~/view/base/textarea';
 
 interface Props {
   className?: string;
@@ -10,23 +11,20 @@ interface Props {
 export const EmailEditor: React.FC<Props> = ({ className }) => {
   const searchParams = useSearchParams();
   const messageDescription = searchParams.get('messageDescription');
-  const { register, formState } = useHookFormContext();
-  const { errors } = formState;
 
   return (
     <>
       <Input
         className={className}
+        controlName="subject"
         variant="bordered"
         label="Subject"
         isRequired
         placeholder="Enter email subject"
-        errorMessage={errors.subject?.message}
-        isInvalid={!!errors.subject?.message}
-        {...register('subject')}
       />
       <Input
         className={className}
+        controlName="contactEmail"
         variant="bordered"
         label="Email"
         isRequired
@@ -40,22 +38,18 @@ export const EmailEditor: React.FC<Props> = ({ className }) => {
         // type="email"
         placeholder="Your email address"
         description="We'll never share your email with anyone else."
-        errorMessage={errors.contactEmail?.message}
-        isInvalid={!!errors.contactEmail?.message}
-        {...register('contactEmail')}
       />
       <Input
         className={className}
+        controlName="contactName"
         variant="bordered"
         label="Name"
         placeholder="Your name"
-        errorMessage={errors.contactName?.message}
-        isInvalid={!!errors.contactName?.message}
-        {...register('contactName')}
       />
       <Divider />
       <Textarea
         className={className}
+        controlName="message"
         variant="bordered"
         label="Your Message"
         labelPlacement="outside"
@@ -69,9 +63,6 @@ export const EmailEditor: React.FC<Props> = ({ className }) => {
           )
         }
         isRequired
-        errorMessage={errors.message?.message}
-        isInvalid={!!errors.message?.message}
-        {...register('message')}
       />
     </>
   );

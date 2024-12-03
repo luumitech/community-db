@@ -1,6 +1,8 @@
 import { Input, InputProps } from '@nextui-org/react';
 import React from 'react';
+import * as R from 'remeda';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
+import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
 
 type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
@@ -9,11 +11,15 @@ type CustomInputProps = Omit<
   'readOnly' | 'endContent' | keyof ReactInputProps
 >;
 
-interface Props extends CustomInputProps, ReactInputProps {}
+export interface FileInputProps extends CustomInputProps, ReactInputProps {
+  controlName: string;
+}
 
-export const FileInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ name, onBlur, onChange, onClear, ...props }, ref) => {
+export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
+  ({ controlName, onBlur, onChange, onClear, ...props }, ref) => {
     const inputRef = useForwardRef<HTMLInputElement>(ref);
+    const { control, formState } = useFormContext();
+    const { errors } = formState;
     const [filename, setFilename] = React.useState<string>();
 
     const onFileChange = React.useCallback(
@@ -39,6 +45,11 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
       onClear?.();
     };
 
+    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
+    const error = React.useMemo<string | undefined>(() => {
+      return errObj?.message as string;
+    }, [errObj]);
+
     return (
       <>
         <Input
@@ -53,15 +64,28 @@ export const FileInput = React.forwardRef<HTMLInputElement, Props>(
           }
           value={filename ?? ''}
           onClick={onBrowse}
+          errorMessage={error}
+          isInvalid={!!error}
           {...(props as CustomInputProps)}
         />
-        <input
-          type="file"
-          hidden
-          ref={inputRef}
-          name={name}
-          onBlur={onBlur}
-          onChange={onFileChange}
+        <Controller
+          control={control}
+          name={controlName}
+          render={({ field }) => (
+            <input
+              type="file"
+              hidden
+              ref={inputRef}
+              onBlur={(evt) => {
+                field.onBlur();
+                onBlur?.(evt);
+              }}
+              onChange={(evt) => {
+                field.onChange(evt.currentTarget.files);
+                onFileChange(evt);
+              }}
+            />
+          )}
         />
       </>
     );

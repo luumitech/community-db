@@ -6,10 +6,10 @@ import {
   ModalHeader,
 } from '@nextui-org/react';
 import React from 'react';
+import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { LastModified } from '~/view/last-modified';
-import { AddressEditor } from './address-editor';
 import {
   useHookFormContext,
   type InputData,
@@ -56,7 +56,7 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
         <ModalContent>
           <ModalHeader>Edit Property</ModalHeader>
           <ModalBody>
-            <AddressEditor />
+            <AddressEditorForm />
             <LastModified
               className="text-right"
               updatedAt={property.updatedAt}
