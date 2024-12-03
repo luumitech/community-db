@@ -25,7 +25,7 @@ export interface YearItem {
  */
 export function yearSelectItems(
   yearRange: [number, number],
-  _yearToInclude?: string | number
+  _yearToInclude?: string | number | null
 ) {
   const yearToIncludeNum = Number(_yearToInclude);
   const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;

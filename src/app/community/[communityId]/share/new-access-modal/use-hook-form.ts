@@ -51,12 +51,11 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(
   communityId: string,
   accessList: AccessEntry[]
-): DefaultData {
+): InputData {
   return {
     communityId,
     email: '',

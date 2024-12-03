@@ -51,7 +51,6 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 export type OccupantFieldArrayReturn = UseFieldArrayReturn<
   InputData,
@@ -59,7 +58,7 @@ export type OccupantFieldArrayReturn = UseFieldArrayReturn<
   'id'
 >;
 
-export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
+export const occupantDefault: InputData['occupantList'][0] = {
   firstName: '',
   lastName: '',
   optOut: false,
@@ -71,7 +70,7 @@ export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
 
 function defaultInputData(
   item: GQL.PropertyId_OccupantEditorFragment
-): DefaultData {
+): InputData {
   return {
     self: {
       id: item.id,

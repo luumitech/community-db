@@ -24,11 +24,10 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(
   item: GQL.CommunityId_PropertyCreateModalFragment
-): DefaultData {
+): InputData {
   return {
     communityId: item.id,
     address: '',

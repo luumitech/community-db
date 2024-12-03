@@ -1,6 +1,6 @@
-import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
+import { Select, SelectItem } from '~/view/base/select';
 import { useHookFormContext } from './use-hook-form';
 import { YearItemLabel, yearSelectItems } from './year-select-items';
 
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
-  const { register, formState, watch } = useHookFormContext();
+  const { formState, watch } = useHookFormContext();
   const selectedYear = watch('membership.year');
 
   const yearItems = React.useMemo(() => {
@@ -24,25 +24,19 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
     ];
   }, [yearRange, selectedYear]);
 
-  const { errors } = formState;
-  const error = errors.membership?.year?.message;
-
   return (
     <Select
       classNames={{
-        base: clsx(className, 'items-center'),
-        label: 'whitespace-nowrap',
-        mainWrapper: 'max-w-[180px]',
+        base: clsx(className),
+        label: 'whitespace-nowrap self-center',
       }}
+      controlName="membership.year"
       label="Membership Year"
       labelPlacement="outside-left"
       placeholder="Select a year"
       disallowEmptySelection
       items={yearItems}
       selectionMode="single"
-      errorMessage={error}
-      isInvalid={!!error}
-      {...register('membership.year')}
     >
       {(item) => (
         <SelectItem key={item.value} textValue={item.label}>

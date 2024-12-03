@@ -1,8 +1,7 @@
-import { Select, SelectItem, SelectSection } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { Controller } from '~/custom-hooks/hook-form';
+import { Select, SelectItem, SelectSection } from '~/view/base/select';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -12,45 +11,33 @@ interface Props {
 
 export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   const { selectPaymentMethodSections } = useAppContext();
-  const { control, formState } = useHookFormContext();
-  const { errors } = formState;
-
-  const error = errors.membershipList?.[yearIdx]?.paymentMethod?.message;
+  const { formState } = useHookFormContext();
 
   return (
     <div className={clsx(className)}>
-      <Controller
-        control={control}
-        name={`membershipList.${yearIdx}.paymentMethod`}
-        render={({ field }) => (
-          <Select
-            className={'max-w-sm'}
-            label="Payment Method"
-            items={selectPaymentMethodSections}
-            placeholder="Select a payment method"
-            errorMessage={error}
-            isInvalid={!!error}
-            selectedKeys={field.value ? [field.value] : []}
-            selectionMode="single"
-            onChange={field.onChange}
+      <Select
+        className="max-w-sm"
+        controlName={`membershipList.${yearIdx}.paymentMethod`}
+        label="Payment Method"
+        items={selectPaymentMethodSections}
+        placeholder="Select a payment method"
+        selectionMode="single"
+      >
+        {(section) => (
+          <SelectSection
+            key={section.title}
+            title={section.title}
+            items={section.items}
+            showDivider={section.showDivider}
           >
-            {(section) => (
-              <SelectSection
-                key={section.title}
-                title={section.title}
-                items={section.items}
-                showDivider={section.showDivider}
-              >
-                {(item) => (
-                  <SelectItem key={item.value} textValue={item.label}>
-                    {item.label}
-                  </SelectItem>
-                )}
-              </SelectSection>
+            {(item) => (
+              <SelectItem key={item.value} textValue={item.label}>
+                {item.label}
+              </SelectItem>
             )}
-          </Select>
+          </SelectSection>
         )}
-      />
+      </Select>
     </div>
   );
 };

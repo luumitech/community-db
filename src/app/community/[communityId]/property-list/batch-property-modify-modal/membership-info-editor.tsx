@@ -18,7 +18,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
       Specify new event to add:
       <Card className="mt-2">
         <CardHeader className="gap-2">
-          <YearSelect yearRange={[minYear, maxYear]} />
+          <YearSelect className="max-w-sm" yearRange={[minYear, maxYear]} />
         </CardHeader>
         <CardBody className="gap-2">
           <PaymentInfoEditor />

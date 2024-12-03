@@ -1,7 +1,7 @@
-import { Select, SelectItem, SelectSection } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { Select, SelectItem, SelectSection } from '~/view/base/select';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -10,25 +10,19 @@ interface Props {
 
 export const PaymentInfoEditor: React.FC<Props> = ({ className }) => {
   const { selectPaymentMethodSections } = useAppContext();
-  const { register, formState, watch } = useHookFormContext();
-  const { errors } = formState;
+  const { watch } = useHookFormContext();
   const memberYear = watch('membership.year');
-
-  const error = errors.membership?.paymentMethod?.message;
 
   return (
     <div className={clsx(className)}>
       <Select
-        className={'max-w-sm'}
+        className="max-w-sm"
+        controlName="membership.paymentMethod"
         label="Payment Method"
         items={selectPaymentMethodSections}
         placeholder="Select a payment method"
-        errorMessage={error}
-        isInvalid={!!error}
         selectionMode="single"
-        isRequired
         description={`This field will be used only if the property does not have existing membership in year ${memberYear}`}
-        {...register('membership.paymentMethod')}
       >
         {(section) => (
           <SelectSection

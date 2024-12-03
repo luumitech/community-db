@@ -71,6 +71,7 @@ export class Mailjet {
         Messages: msgBlock,
         SandBoxMode: this.opt?.sandboxMode,
       };
+      logger.debug(request);
 
       // Mailjet API Overview
       // https:// dev.mailjet.com/email/guides/

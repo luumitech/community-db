@@ -1,6 +1,6 @@
-import { Select, SelectItem } from '@nextui-org/select';
 import clsx from 'clsx';
 import React from 'react';
+import { Select, SelectItem } from '~/view/base/select';
 import {
   SelectedYearItem,
   YearItemLabel,
@@ -28,7 +28,11 @@ export const YearSelect: React.FC<Props> = ({
   const { fields, prepend } = membershipMethods;
 
   const yearItems = React.useMemo(() => {
-    const items = yearSelectItems(yearRange, fields, selectedYear);
+    const membershipList = fields.map((entry) => ({
+      ...entry,
+      isMember: entry.eventAttendedList.length > 0,
+    }));
+    const items = yearSelectItems(yearRange, membershipList, selectedYear);
     const maxYear = items[0].value;
 
     return [
@@ -57,10 +61,10 @@ export const YearSelect: React.FC<Props> = ({
   return (
     <Select
       classNames={{
-        base: clsx(className, 'items-center'),
-        label: 'whitespace-nowrap',
-        mainWrapper: 'max-w-[180px]',
+        base: clsx(className, 'max-w-sm'),
+        label: 'whitespace-nowrap self-center',
       }}
+      controlName=""
       label="Membership Year"
       labelPlacement="outside-left"
       placeholder="Select a year to view in detail"

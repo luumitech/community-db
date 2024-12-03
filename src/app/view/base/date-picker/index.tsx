@@ -1,12 +1,15 @@
 import {
-  DatePickerProps,
   DatePicker as NextUIDatePicker,
+  DatePickerProps as NextUIDatePickerProps,
 } from '@nextui-org/react';
 import React from 'react';
+import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { parseAsDate } from '~/lib/date-util';
 
-interface Props extends Omit<DatePickerProps, 'onChange' | 'onBlur'> {
+interface DatePickerProps
+  extends Omit<NextUIDatePickerProps, 'onChange' | 'onBlur'> {
+  controlName: string;
   /**
    * The onChange/onBlur from the react-hook-form register method is not
    * compatible with the onChange/onBlur onNextUIDatePicker, so we override it
@@ -16,9 +19,15 @@ interface Props extends Omit<DatePickerProps, 'onChange' | 'onBlur'> {
   onBlur?: unknown;
 }
 
-export const DatePicker = React.forwardRef<HTMLDivElement, Props>(
-  ({ name, onChange, onBlur, ...props }, ref) => {
-    const { control } = useFormContext();
+export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
+  ({ controlName, onChange, onBlur, ...props }, ref) => {
+    const { control, formState } = useFormContext();
+    const { errors } = formState;
+
+    const error = React.useMemo<string | undefined>(() => {
+      const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
+      return errObj?.message as string;
+    }, [errors, controlName]);
 
     /**
      * Ref is not being used right now, so we are introducing a react-hook-form
@@ -28,13 +37,15 @@ export const DatePicker = React.forwardRef<HTMLDivElement, Props>(
     return (
       <Controller
         control={control}
-        name={name ?? ''}
+        name={controlName}
         render={({ field }) => (
           <NextUIDatePicker
             defaultValue={parseAsDate(field.value)}
             onChange={(val) => {
               field.onChange(val ?? null);
             }}
+            errorMessage={error}
+            isInvalid={!!error}
             {...props}
           />
         )}

@@ -42,8 +42,6 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
             selectedYear={selectedYear}
             onChange={setSelectedYear}
           />
-          <div className="grow" />
-          <MemberStatusChip membership={fields[idx]} />
         </CardHeader>
         {idx > -1 && (
           <CardBody key={selectedYear}>

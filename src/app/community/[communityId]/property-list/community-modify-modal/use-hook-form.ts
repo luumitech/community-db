@@ -67,11 +67,10 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(
   item: GQL.CommunityId_CommunityModifyModalFragment
-): DefaultData {
+): InputData {
   return {
     self: {
       id: item.id,

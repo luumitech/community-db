@@ -21,12 +21,12 @@ function schema() {
     communityId: zz.string.nonEmpty(),
     filter: z.object({
       memberYear: zz.coerce.toNumber('Must select a year'),
-      memberEvent: z.string(),
+      memberEvent: z.string().nullable(),
     }),
     membership: z.object({
       year: zz.coerce.toNumber('Must select a year'),
       eventAttended: z.object({
-        eventName: zz.string.nonEmpty('Must specify a value'),
+        eventName: zz.string.nonEmpty('Must select an event'),
         eventDate: zz.coerce.toIsoDate(),
       }),
       paymentMethod: zz.string.nonEmpty('Must specify payment method'),
@@ -35,12 +35,11 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 function defaultInputData(
   communityId: string,
   filter: GQL.PropertyFilterInput
-): DefaultData {
+): InputData {
   return {
     communityId,
     filter: {

@@ -6,16 +6,15 @@ import { z, zz } from '~/lib/zod';
 function schema() {
   return z.object({
     subject: zz.string.nonEmpty('Please enter a subject'),
-    contactEmail: z.string().email('Must be a valid email'),
-    contactName: z.string().optional(),
+    contactEmail: zz.string.nonEmpty().email('Must be a valid email'),
+    contactName: z.string(),
     message: zz.string.nonEmpty('Please compose your message'),
   });
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(subject?: string | null): DefaultData {
+function defaultInputData(subject?: string | null): InputData {
   return {
     subject: subject ?? '',
     contactEmail: '',

@@ -12,11 +12,11 @@ export const FilterSelect: React.FC<Props> = ({ className }) => {
   return (
     <div className={clsx(className, 'flex flex-col gap-2')}>
       Apply changes to all properties who are members in the year:
-      <YearSelect className="ml-4 w-[180px]" isRequired />
+      <YearSelect className="ml-4 max-w-sm" />
       Optional filters to apply:
       <div className="ml-4 flex gap-2 items-center">
         <Icon icon="filter" />
-        <EventSelect className="w-[180px]" />
+        <EventSelect className="max-w-sm" />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
+import * as R from 'remeda';
 import { env } from '~/lib/env-cfg';
 import { HttpError } from '~/lib/http-error';
 import { Logger } from '~/lib/logger';
@@ -24,7 +25,7 @@ export async function send(req: SInput): Promise<SOutput> {
       Subject: subject,
       TextPart: [
         'Contact Info:',
-        `Name: ${contactName}`,
+        `Name: ${R.isEmpty(contactName) ? '(n/a)' : contactName}`,
         `Email: ${contactEmail}`,
         '',
         message,

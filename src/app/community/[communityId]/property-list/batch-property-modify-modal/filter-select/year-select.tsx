@@ -1,7 +1,7 @@
-import { Select, SelectItem, SelectProps } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { Select, SelectItem, SelectProps } from '~/view/base/select';
 import { useHookFormContext } from '../use-hook-form';
 import {
   YearItemLabel,
@@ -9,7 +9,10 @@ import {
   type YearItem,
 } from '../year-select-items';
 
-type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
+type CustomSelectProps = Omit<
+  SelectProps<YearItem>,
+  'controlName' | 'children'
+>;
 
 interface Props extends CustomSelectProps {
   className?: string;
@@ -17,31 +20,25 @@ interface Props extends CustomSelectProps {
 
 export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
   const { minYear, maxYear } = useAppContext();
-  const { register, watch, formState } = useHookFormContext();
+  const { watch } = useHookFormContext();
   const selectedYear = watch('filter.memberYear');
-  const { errors } = formState;
 
   const yearItems = React.useMemo(() => {
     return yearSelectItems([minYear, maxYear], selectedYear);
   }, [minYear, maxYear, selectedYear]);
-
-  const error = errors.filter?.memberYear?.message;
 
   return (
     <Select
       classNames={{
         base: className,
       }}
-      size="sm"
+      controlName="filter.memberYear"
       label="Membership Year"
-      aria-label="Membership Year"
+      size="sm"
       items={yearItems}
       isDisabled={!yearItems.length}
       selectionMode="single"
       // disallowEmptySelection
-      errorMessage={error}
-      isInvalid={!!error}
-      {...register('filter.memberYear')}
       {...props}
     >
       {(item) => {
