@@ -23,7 +23,9 @@ export class TestUtil {
    * This is expected to be constructed in `beforeAll` of each test suite to
    * initialize the mongoose connection
    */
-  async initialize() {}
+  async initialize() {
+    await this.database.dropDatabase();
+  }
 
   /**
    * Termination routine to clean up services used during jest tests
@@ -32,6 +34,4 @@ export class TestUtil {
    * terminate the mongoose connection
    */
   async terminate() {}
-
-  async seedDatabase(fixturePath: string) {}
 }

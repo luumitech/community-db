@@ -23,6 +23,7 @@ import {
   IoArrowBack,
   IoBarChart,
   IoCheckmark,
+  IoFilter,
   IoInformation,
   IoPersonAdd,
 } from 'react-icons/io5';
@@ -65,7 +66,8 @@ type SupportedIcon =
   | 'about'
   | 'pricing'
   | 'premium-plan'
-  | 'back';
+  | 'back'
+  | 'filter';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -155,6 +157,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'back':
       IconElement = IoArrowBack;
+      break;
+    case 'filter':
+      IconElement = IoFilter;
       break;
     default:
       IconElement = MdQuestionMark;

@@ -1,5 +1,6 @@
 import type { Event, Membership, Occupant } from '@prisma/client';
 import { builder } from '~/graphql/builder';
+import { isMember } from './util';
 
 const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
   fields: (t) => ({
@@ -23,7 +24,10 @@ const eventRef = builder.objectRef<Event>('Event').implement({
 const membershipRef = builder.objectRef<Membership>('Membership').implement({
   fields: (t) => ({
     year: t.exposeInt('year'),
-    isMember: t.exposeBoolean('isMember', { nullable: true }),
+    isMember: t.field({
+      type: 'Boolean',
+      resolve: (entry) => isMember(entry),
+    }),
     eventAttendedList: t.field({
       type: [eventRef],
       resolve: (entry) => entry.eventAttendedList,

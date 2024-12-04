@@ -10,6 +10,7 @@ interface MenuItemEntry extends DropdownItemProps {}
 interface MoreMenuOpt {
   communityId: string;
   communityModifyButtonProps: UseDisclosureReturn['getButtonProps'];
+  batchPropertyModifyButtonProps: UseDisclosureReturn['getButtonProps'];
   communityDeleteButtonProps: UseDisclosureReturn['getButtonProps'];
   propertyCreateButtonProps: UseDisclosureReturn['getButtonProps'];
 }
@@ -24,18 +25,18 @@ export function useMoreMenu(opt: MoreMenuOpt) {
 
     items.push(
       {
-        key: 'export',
+        key: 'communityExport',
         href: appPath('communityExport', { path: { communityId } }),
         children: appLabel('communityExport'),
       },
       {
-        key: 'share',
+        key: 'communityShare',
         href: appPath('communityShare', { path: { communityId } }),
         endContent: <Icon icon="share" />,
         children: appLabel('communityShare'),
       },
       {
-        key: 'dashboard',
+        key: 'communityDashboard',
         href: appPath('communityDashboard', { path: { communityId } }),
         endContent: <Icon icon="dashboard" />,
         showDivider: canEdit,
@@ -44,35 +45,40 @@ export function useMoreMenu(opt: MoreMenuOpt) {
     );
 
     if (canEdit) {
-      items.push({
-        key: 'community-modify',
-        ...opt.communityModifyButtonProps(),
-        children: 'Modify Community',
-      });
-    }
-
-    if (isAdmin) {
       items.push(
         {
-          key: 'import',
-          href: appPath('communityImport', { path: { communityId } }),
-          children: appLabel('communityImport'),
+          key: 'communityModify',
+          ...opt.communityModifyButtonProps(),
+          children: 'Modify Community',
         },
         {
-          key: 'property-create',
-          ...opt.propertyCreateButtonProps(),
-          children: 'Create Property',
+          key: 'batchPropertyyModify',
+          ...opt.batchPropertyModifyButtonProps(),
+          showDivider: isAdmin,
+          children: 'Batch Modify Property',
         }
       );
     }
 
     if (isAdmin) {
-      items.push({
-        key: 'community-delete',
-        className: 'text-danger',
-        ...opt.communityDeleteButtonProps(),
-        children: 'Delete Community',
-      });
+      items.push(
+        {
+          key: 'communityImport',
+          href: appPath('communityImport', { path: { communityId } }),
+          children: appLabel('communityImport'),
+        },
+        {
+          key: 'propertyCreate',
+          ...opt.propertyCreateButtonProps(),
+          children: 'Create Property',
+        },
+        {
+          key: 'communityDelete',
+          className: 'text-danger',
+          ...opt.communityDeleteButtonProps(),
+          children: 'Delete Community',
+        }
+      );
     }
 
     return items;

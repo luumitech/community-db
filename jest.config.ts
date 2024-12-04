@@ -7,6 +7,7 @@ const customJestConfig: Config = {
   setupFiles: ['<rootDir>/.jest/set-env-vars.ts'],
   globalSetup: '<rootDir>/.jest/global-setup.ts',
   globalTeardown: '<rootDir>/.jest/global-teardown.ts',
+  setupFilesAfterEnv: ['jest-extended/all'],
   //   setupFilesAfterEnv: ['jest-extended/all', './src/custom-jest-extend.ts'],
   moduleNameMapper: {
     '~/([^${}]*)$': '<rootDir>/src/app/$1',

@@ -11,10 +11,7 @@ const MemberCountStatQuery = graphql(/* GraphQL */ `
   query memberCountStat($id: String!) {
     communityFromId(id: $id) {
       id
-      communityStat {
-        id
-        maxYear
-      }
+      maxYear
       ...Dashboard_MemberCount
     }
   }
@@ -41,7 +38,7 @@ export const MemberCountChart: React.FC<Props> = ({
   React.useEffect(() => {
     if (community) {
       // Whenever new statistics are loaded, show yearly chart for the maxYear
-      onYearSelect?.(community.communityStat.maxYear);
+      onYearSelect?.(community.maxYear);
     }
   }, [community, onYearSelect]);
 

@@ -37,9 +37,8 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(fragment: AccessEntry): DefaultData {
+function defaultInputData(fragment: AccessEntry): InputData {
   const access = getFragment(ModifyFragment, fragment);
   return {
     self: {

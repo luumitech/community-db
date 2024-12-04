@@ -6,13 +6,21 @@ import hash from 'object-hash';
 import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
+import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
+import { PropertyFilterInput } from '../property/modify';
 import { propertyRef } from '../property/object';
-import { getPropertyEntryWithinCommunity } from '../property/util';
+import {
+  getPropertyEntryWithinCommunity,
+  isMember,
+  isMemberInYear,
+  propertyListFilterArgs,
+  propertyListFindManyArgs,
+} from '../property/util';
 
 const supportedSelectItemRef = builder
   .objectRef<SupportedSelectItem>('SupportedSelectItem')
@@ -109,12 +117,6 @@ const communityStatRef = builder
   .implement({
     fields: (t) => ({
       id: t.exposeID('id'),
-      minYear: t.exposeInt('minYear', {
-        description: 'Minimum year represented in membership information',
-      }),
-      maxYear: t.exposeInt('maxYear', {
-        description: 'Maximum year represented in membership information',
-      }),
       dbSize: t.field({
         description: 'bytes used to store all properties within community',
         type: 'Int',
@@ -148,21 +150,23 @@ const communityStatRef = builder
               map.set(year, { year, renew: 0, new: 0, noRenewal: 0 });
             });
           propertyList.forEach(({ membershipList }) => {
-            membershipList.forEach(({ year, isMember }, idx) => {
+            membershipList.forEach((entry, idx) => {
+              const { year } = entry;
+              const entryIsMember = isMember(entry);
               const mapEntry = map.get(year);
               if (!mapEntry) {
                 throw new GraphQLError(
                   `year ${year} in propertyStat entry fell outside min/maxYear`
                 );
               }
-              const isMemberLastYear = !!membershipList[idx + 1]?.isMember;
+              const isMemberLastYear = isMember(membershipList[idx + 1]);
               if (isMemberLastYear) {
-                if (isMember) {
+                if (entryIsMember) {
                   mapEntry.renew++;
                 } else {
                   mapEntry.noRenewal++;
                 }
-              } else if (isMember) {
+              } else if (entryIsMember) {
                 mapEntry.new++;
               }
             });
@@ -196,12 +200,8 @@ const communityStatRef = builder
             // For each address, go through all membership information
             // to collect statistic for each year
             membershipList.forEach((entry, idx) => {
-              if (
-                entry.year === year &&
-                entry.isMember &&
-                entry.eventAttendedList.length
-              ) {
-                const renew = !!membershipList[idx + 1]?.isMember;
+              if (entry.year === year && isMember(entry)) {
+                const renew = !!isMember(membershipList[idx + 1]);
                 const joinEvent = entry.eventAttendedList.shift()!;
                 const otherEvent = entry.eventAttendedList;
 
@@ -239,12 +239,14 @@ const communityStatRef = builder
           const { propertyList } = parent;
           const propertyIdList = propertyList
             .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = !!membershipList.find(
-                ({ year }) => year === args.year
-              )?.isMember;
-              const isMemberPrevYear = !!membershipList.find(
-                ({ year }) => year === args.year - 1
-              )?.isMember;
+              const isMemberCurrentYear = isMemberInYear(
+                membershipList,
+                args.year
+              );
+              const isMemberPrevYear = isMemberInYear(
+                membershipList,
+                args.year - 1
+              );
               if (isMemberPrevYear && !isMemberCurrentYear) {
                 return id;
               }
@@ -270,9 +272,10 @@ const communityStatRef = builder
           const { propertyList } = parent;
           const propertyIdList = propertyList
             .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = !!membershipList.find(
-                ({ year }) => year === args.year
-              )?.isMember;
+              const isMemberCurrentYear = isMemberInYear(
+                membershipList,
+                args.year
+              );
               return isMemberCurrentYear ? null : id;
             })
             .filter((id): id is string => id != null);
@@ -295,9 +298,10 @@ const communityStatRef = builder
           const { propertyList } = parent;
           const propertyIdList = propertyList
             .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = !!membershipList.find(
-                ({ year }) => year === args.year
-              )?.isMember;
+              const isMemberCurrentYear = isMemberInYear(
+                membershipList,
+                args.year
+              );
               return isMemberCurrentYear ? id : null;
             })
             .filter((id): id is string => id != null);
@@ -317,6 +321,16 @@ builder.prismaObject('Community', {
     owner: t.relation('owner'),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
+    minYear: t.field({
+      type: 'Int',
+      description: 'Minimum year represented in membership information',
+      resolve: (entry) => entry.minYear ?? getCurrentYear(),
+    }),
+    maxYear: t.field({
+      type: 'Int',
+      description: 'Maximum year represented in membership information',
+      resolve: (entry) => entry.maxYear ?? getCurrentYear(),
+    }),
     eventList: t.field({
       type: [supportedSelectItemRef],
       resolve: (entry) => entry.eventList,
@@ -361,32 +375,15 @@ builder.prismaObject('Community', {
     propertyList: t.connection({
       type: propertyRef,
       args: {
-        search: t.arg.string(),
+        filter: t.arg({ type: PropertyFilterInput }),
       },
       resolve: async (parent, args, ctx) => {
         const { user } = await ctx;
         return await resolveCustomOffsetConnection(
           { args },
           async ({ limit, offset }) => {
-            // If search term is provided, construct $match query
-            // for returning matched entries
-            let searchQuery;
-            if (args.search) {
-              // See this to see why we add the surrounding quotes
-              // See: https://www.mongodb.com/docs/manual/reference/operator/query/text/
-              // searchQuery = {
-              //   $text: { $search: `\"${args.search}\"` },
-              // };
-              // Match only from start of word boundary
-              const operand = { $regex: `\\b${args.search}`, $options: 'i' };
-              searchQuery = {
-                $or: [
-                  { address: operand },
-                  { 'occupantList.firstName': operand },
-                  { 'occupantList.lastName': operand },
-                ],
-              };
-            }
+            const { filter } = args;
+            const findManyArgs = propertyListFindManyArgs(parent.id);
 
             /**
              * Get application configuration base on community owner's
@@ -395,54 +392,32 @@ builder.prismaObject('Community', {
             const subEntry = await getCommunityOwnerSubscriptionEntry(
               parent.id
             );
+
+            // Construct `where` clause using the arguments in filter
+            const where = propertyListFilterArgs(parent.id, filter);
+
+            // Add additional limiter if subscription level prevents
+            // querying more entries
             const { propertyLimit } = subEntry;
-            const limitQuery = insertIf(propertyLimit != null, {
-              $limit: propertyLimit,
-            });
+            if (propertyLimit != null) {
+              const list = await prisma.property.findMany({
+                ...findManyArgs,
+                take: propertyLimit,
+                select: { id: true },
+              });
+              where.id = { in: list.map(({ id }) => id) };
+            }
 
-            const aggr = await prisma.property.aggregateRaw({
-              pipeline: [
-                ...limitQuery,
-                {
-                  $match: {
-                    // connection parameter
-                    communityId: { $oid: parent.id },
-                    ...searchQuery,
-                  },
-                },
-                {
-                  $facet: {
-                    items: [
-                      // Sort must come before limit/skip, in order to sort all
-                      // the matched results
-                      { $sort: { streetName: 1, streetNo: 1 } },
-                      { $limit: offset + limit },
-                      { $skip: offset },
-                      // map _id to id
-                      { $addFields: { id: '$_id' } },
-                    ],
-                    info: [
-                      // total number of matched results
-                      { $count: 'totalCount' },
-                    ],
-                  },
-                },
-              ],
-            });
+            const [items, totalCount] = await prisma.$transaction([
+              prisma.property.findMany({
+                ...findManyArgs,
+                where,
+                skip: offset,
+                take: limit,
+              }),
+              prisma.property.count({ where }),
+            ]);
 
-            // aggregateRaw returns items encoded in EJSON format
-            // i.e.
-            // - {"updatedAt": {"$date": "2000-01-23T01:23:45.678+00:00"}}
-            // - {"id": {"$oid": "xxx" }}
-            // So it's necessary to convert it back to normal JSON
-            const result: {
-              items: Property[];
-              info: {
-                totalCount: number;
-              }[];
-            }[] = EJSON.parse(EJSON.stringify(aggr));
-            const { items, info } = result[0];
-            const totalCount = info[0]?.totalCount ?? 0;
             return { items, totalCount };
           }
         );
@@ -483,22 +458,12 @@ builder.prismaObject('Community', {
           where: { communityId },
           select: { id: true, membershipList: true },
         });
-        let minYear = Infinity;
-        let maxYear = -Infinity;
-        propertyList.forEach(({ membershipList }) => {
-          // For each property, go through all membership information
-          // to determine min/max year
-          membershipList.forEach((entry) => {
-            minYear = Math.min(minYear, entry.year);
-            maxYear = Math.max(maxYear, entry.year);
-          });
-        });
 
         return {
           id: hash(propertyList),
+          minYear: parent.minYear ?? getCurrentYear(),
+          maxYear: parent.maxYear ?? getCurrentYear(),
           communityId,
-          minYear: isFinite(minYear) ? minYear : 0,
-          maxYear: isFinite(maxYear) ? maxYear : 0,
           eventList: parent.eventList,
           propertyList,
         };

@@ -44,7 +44,7 @@ export function useTopMenu() {
     switch (segment) {
       case 'community': {
         items.push({
-          id: 'welcome',
+          id: 'communityWelcome',
           ...linkTo(appPath('communityWelcome')),
           children: appLabel('communityWelcome'),
         });
@@ -59,14 +59,14 @@ export function useTopMenu() {
       switch (op) {
         case 'create':
           items.push({
-            id: 'create',
+            id: 'communityCreate',
             ...linkTo(appPath('communityCreate')),
             children: appLabel('communityCreate'),
           });
           break;
         case 'select':
           items.push({
-            id: 'create',
+            id: 'communitySelect',
             ...linkTo(appPath('communitySelect')),
             children: appLabel('communitySelect'),
           });
@@ -75,7 +75,7 @@ export function useTopMenu() {
           items.pop();
           if (op != null && op === ctxCommunityId) {
             items.push({
-              id: 'community-editor',
+              id: 'propertyList',
               ...linkTo(
                 appPath('propertyList', {
                   path: { communityId: ctxCommunityId },
@@ -98,7 +98,7 @@ export function useTopMenu() {
 
         case 'import-xlsx':
           items.push({
-            id: 'import-xlsx',
+            id: 'communityImport',
             ...linkTo(appPath('communityImport', { path: { communityId } })),
             children: appLabel('communityImport'),
           });
@@ -106,7 +106,7 @@ export function useTopMenu() {
 
         case 'export-xlsx':
           items.push({
-            id: 'export-xlsx',
+            id: 'communityExport',
             ...linkTo(appPath('communityExport', { path: { communityId } })),
             children: appLabel('communityExport'),
           });
@@ -114,15 +114,15 @@ export function useTopMenu() {
 
         case 'share':
           items.push({
-            id: 'share',
-            ...linkTo(appPath('communityShare', { path: { communityId } })),
+            id: 'communityExport',
+            ...linkTo(appPath('communityExport', { path: { communityId } })),
             children: appLabel('communityShare'),
           });
           break;
 
         case 'dashboard':
           items.push({
-            id: 'tool-dashboard',
+            id: 'communityDashboard',
             ...linkTo(appPath('communityDashboard', { path: { communityId } })),
             children: appLabel('communityDashboard'),
           });
@@ -134,7 +134,7 @@ export function useTopMenu() {
       const propertyId = segments.shift();
       if (propertyId) {
         items.push({
-          id: 'property-editor',
+          id: 'property',
           ...linkTo(appPath('property', { path: { communityId, propertyId } })),
           children: (
             <PropertyAddress

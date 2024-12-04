@@ -1,10 +1,10 @@
 import { useLazyQuery } from '@apollo/client';
-import { Button, Divider, Input } from '@nextui-org/react';
+import { Button, Divider, Input as NInput } from '@nextui-org/react';
 import React from 'react';
-import { Controller } from 'react-hook-form';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
+import { Input } from '~/view/base/input';
 
 interface InputData {
   address: string;
@@ -12,8 +12,6 @@ interface InputData {
   streetName: string;
   postalCode: string;
 }
-
-type InputDataFormContext = ReturnType<typeof useFormContext<InputData>>;
 
 const GeocodeLookupAddress = graphql(/* GraphQL */ `
   query geocodeFromText($input: GeocodeFromTextInput!) {
@@ -29,21 +27,16 @@ const GeocodeLookupAddress = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props extends InputDataFormContext {
+interface Props {
   className?: string;
 }
 
-export const AddressEditorForm: React.FC<Props> = ({
-  className,
-  setValue,
-  control,
-  formState,
-}) => {
+export const AddressEditorForm: React.FC<Props> = ({ className }) => {
+  const { setValue } = useFormContext<InputData>();
   const [address, setAddress] = React.useState<string>();
   const [geocodeLookupAddress, lookupResult] =
     useLazyQuery(GeocodeLookupAddress);
   useGraphqlErrorHandler(lookupResult);
-  const { errors } = formState;
 
   const lookupAddress = React.useCallback(async () => {
     if (address) {
@@ -71,7 +64,7 @@ export const AddressEditorForm: React.FC<Props> = ({
     <>
       Enter full mailing address to propagate the fields automatically:
       <div className="flex flex-col gap-2 mx-4">
-        <Input
+        <NInput
           className={className}
           variant="bordered"
           label="Mailing Address"
@@ -95,69 +88,29 @@ export const AddressEditorForm: React.FC<Props> = ({
       </div>
       Enter the fields manually:
       <div className="flex flex-col gap-2 mx-4">
-        <Controller
-          control={control}
-          name="address"
-          render={({ field }) => (
-            <Input
-              className={className}
-              variant="bordered"
-              label="Display Address"
-              ref={field.ref}
-              value={field.value}
-              onChange={field.onChange}
-              errorMessage={errors.address?.message}
-              isInvalid={!!errors.address?.message}
-            />
-          )}
+        <Input
+          className={className}
+          controlName="address"
+          variant="bordered"
+          label="Display Address"
         />
-        <Controller
-          control={control}
-          name="streetNo"
-          render={({ field }) => (
-            <Input
-              className={className}
-              variant="bordered"
-              label="Street Number"
-              ref={field.ref}
-              value={field.value}
-              onChange={field.onChange}
-              errorMessage={errors.streetNo?.message}
-              isInvalid={!!errors.streetNo?.message}
-            />
-          )}
+        <Input
+          className={className}
+          controlName="streetNo"
+          variant="bordered"
+          label="Street Number"
         />
-        <Controller
-          control={control}
-          name="streetName"
-          render={({ field }) => (
-            <Input
-              className={className}
-              variant="bordered"
-              label="Street Name"
-              ref={field.ref}
-              value={field.value}
-              onChange={field.onChange}
-              errorMessage={errors.streetName?.message}
-              isInvalid={!!errors.streetName?.message}
-            />
-          )}
+        <Input
+          className={className}
+          controlName="streetName"
+          variant="bordered"
+          label="Street Name"
         />
-        <Controller
-          control={control}
-          name="postalCode"
-          render={({ field }) => (
-            <Input
-              className={className}
-              variant="bordered"
-              label="Postal Code"
-              ref={field.ref}
-              value={field.value}
-              onChange={field.onChange}
-              errorMessage={errors.postalCode?.message}
-              isInvalid={!!errors.postalCode?.message}
-            />
-          )}
+        <Input
+          className={className}
+          controlName="postalCode"
+          variant="bordered"
+          label="Postal Code"
         />
       </div>
     </>

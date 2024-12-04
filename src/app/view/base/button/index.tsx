@@ -15,21 +15,25 @@ export interface ButtonProps extends NextUIButtonProps {
   confirmation?: boolean;
   confirmationArg?: ConfirmationModalArg;
   /**
-   * This is only used when `confirmation` is true. Use this to run a custom
-   * function before the confirmation dialog is shown. This is useful, for
-   * example, when you want to validate form before deciding whether or not to
-   * show the confirmation dialog
+   * This option is only available when `confirmation` is true.
+   *
+   * When provided, this function is called to decide whether confirmation
+   * dialog should open:
    *
    * - If the callback returns true, the confirmation dialog will open
    * - If the callback returns false, the confirmation dialog will not open
+   * - If the callback is not provided, the confirmation dialog will open
    */
-  onConfirm?: () => Promise<boolean>;
+  beforeConfirm?: () => Promise<boolean>;
 }
 
 type OnPressFn = NonNullable<NextUIButtonProps['onPress']>;
 
 export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
-  ({ confirmation, confirmationArg, onConfirm, onPress, ...props }, ref) => {
+  (
+    { confirmation, confirmationArg, beforeConfirm, onPress, ...props },
+    ref
+  ) => {
     const buttonRef = useForwardRef<HTMLButtonElement>(ref);
     const { confirmationModal } = useAppContext();
     const { open } = confirmationModal;
@@ -37,7 +41,7 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
     const customOnPress = React.useCallback<OnPressFn>(
       async (evt) => {
         if (confirmation) {
-          const showDialog = onConfirm ? await onConfirm() : true;
+          const showDialog = (await beforeConfirm?.()) ?? true;
           if (showDialog) {
             open({
               ...confirmationArg,
@@ -72,7 +76,7 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
         confirmationArg,
         props.type,
         open,
-        onConfirm,
+        beforeConfirm,
         onPress,
         buttonRef,
       ]

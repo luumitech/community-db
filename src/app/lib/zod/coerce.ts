@@ -14,7 +14,38 @@ export class Coerce {
       .string()
       .trim()
       .optional()
+      .nullable()
       .transform((val) => val === 'true' || val === '1');
+  }
+
+  /**
+   * Coerce input as number
+   *
+   * Error condition:
+   *
+   * - Null (unless you append nullable())
+   * - Empty string
+   * - NaN
+   */
+  toNumber(msg?: string) {
+    return z.any().transform((val, ctx) => {
+      const onError = () => {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: msg ?? 'Not a valid number',
+        });
+        return z.NEVER;
+      };
+
+      if (val == null || val === '') {
+        return onError();
+      }
+      const asNum = Number(val);
+      if (isNaN(asNum)) {
+        return onError();
+      }
+      return asNum;
+    });
   }
 
   /**
@@ -26,6 +57,10 @@ export class Coerce {
    * Into:
    *
    * - ISOString format with time components zeroed out
+   *
+   * Error condition:
+   *
+   * - Null (unless you append nullable())
    *
    * @example `2023-02-26T00:00:00.000Z`
    */

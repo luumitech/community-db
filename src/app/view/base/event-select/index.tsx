@@ -7,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export const EventDefaultSelect: React.FC<Props> = ({ className }) => {
+export const EventSelect: React.FC<Props> = ({ className }) => {
   const { visibleEventItems, communityUi } = useAppContext();
   const { lastEventSelected } = communityUi;
 

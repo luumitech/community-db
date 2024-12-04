@@ -1,3 +1,4 @@
+'use client';
 import { ApolloError, useQuery } from '@apollo/client';
 import { Button, Link } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
@@ -6,6 +7,7 @@ import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
+import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
 import { toast } from '~/view/base/toastify';
 import { useCommunityUi, type UseCommunityUiReturn } from './community-ui';
@@ -15,6 +17,8 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
     communityFromId(id: $communityId) {
       id
       name
+      minYear
+      maxYear
       eventList {
         name
         hidden
@@ -53,6 +57,10 @@ export type CommunityState = Readonly<{
   communityUi: UseCommunityUiReturn;
   /** Access role items */
   roleItems: SelectItem[];
+  /** Minimum membership year recorded within membership */
+  minYear: number;
+  /** Maximum membership year recorded within membership */
+  maxYear: number;
   /** Visible event items (suitable for 'Add new event') */
   visibleEventItems: SelectItem[];
   /** All event items (including hidden, suitable for event selection) */
@@ -170,6 +178,8 @@ export function useCommunityContext() {
       communityName: community?.name,
       communityUi,
       roleItems,
+      minYear: community?.minYear ?? getCurrentYear(),
+      maxYear: community?.maxYear ?? getCurrentYear(),
       visibleEventItems: eventSelect.visibleItems,
       selectEventSections: eventSelect.selectSections,
       selectPaymentMethodSections: paymentMethodSelect.selectSections,

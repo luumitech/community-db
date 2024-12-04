@@ -6,22 +6,21 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react';
-import {
-  Select,
-  SelectItem,
-  SelectProps,
-  SelectSection,
-} from '@nextui-org/select';
-import { type RowElement } from '@react-types/table';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { DatePicker } from '~/view/base/date-picker';
+import { EventSelect } from '~/view/base/event-select';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
-import { EventDefaultSelect } from './event-default-select';
+import {
+  Select,
+  SelectItem,
+  SelectProps,
+  SelectSection,
+} from '~/view/base/select';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -50,7 +49,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   const topContent = React.useMemo(() => {
     return (
       <div className="flex items-center gap-4">
-        <EventDefaultSelect />
+        <EventSelect />
         <Button
           className="text-primary"
           endContent={<Icon icon="add" />}
@@ -84,11 +83,6 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     );
   }, [register, yearIdx, eventAttendedListError]);
 
-  React.useEffect(() => {
-    /** Set isMember flag if at least one event has been registered */
-    setValue(`membershipList.${yearIdx}.isMember`, fields.length !== 0);
-  }, [setValue, fields, yearIdx]);
-
   const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
     React.useCallback(
       (keys) => {
@@ -102,23 +96,13 @@ export const EventsAttendedSelect: React.FC<Props> = ({
       <TableRow key={field.id}>
         <TableCell>
           <Select
-            className={'max-w-sm'}
+            className="max-w-sm"
+            controlName={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`}
             aria-label="Event Name"
             items={selectEventSections}
             variant="underlined"
             placeholder="Select an event"
-            errorMessage={
-              errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventName?.message
-            }
-            isInvalid={
-              !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventName?.message
-            }
             onSelectionChange={onSelectionChange}
-            {...register(
-              `membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`
-            )}
           >
             {(section) => (
               <SelectSection
@@ -138,19 +122,11 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         </TableCell>
         <TableCell>
           <DatePicker
-            className={'max-w-sm'}
+            className="max-w-sm"
             aria-label="Event Date"
             variant="underlined"
             granularity="day"
-            name={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
-            errorMessage={
-              errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventDate?.message
-            }
-            isInvalid={
-              !!errors.membershipList?.[yearIdx]?.eventAttendedList?.[idx]
-                ?.eventDate?.message
-            }
+            controlName={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
           />
         </TableCell>
         <TableCell>
@@ -163,15 +139,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         </TableCell>
       </TableRow>
     ));
-  }, [
-    errors.membershipList,
-    fields,
-    onSelectionChange,
-    register,
-    remove,
-    yearIdx,
-    selectEventSections,
-  ]);
+  }, [fields, onSelectionChange, remove, yearIdx, selectEventSections]);
 
   return (
     <div className={clsx(className)}>

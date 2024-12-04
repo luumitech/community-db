@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
-  const { communityUi } = useAppContext();
+  const { communityUi, minYear, maxYear } = useAppContext();
   const [selectedYear, setSelectedYear] = React.useState(
     communityUi.yearSelected
   );
@@ -37,12 +37,11 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
       <Card>
         <CardHeader className="gap-2">
           <YearSelect
+            yearRange={[minYear, maxYear]}
             membershipMethods={membershipMethods}
             selectedYear={selectedYear}
             onChange={setSelectedYear}
           />
-          <div className="grow" />
-          <MemberStatusChip membership={fields[idx]} />
         </CardHeader>
         {idx > -1 && (
           <CardBody key={selectedYear}>

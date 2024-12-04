@@ -2,7 +2,7 @@ import path from 'path';
 import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
 
-describe('NoRenewalPropertyList', () => {
+describe('Generate Email List', () => {
   const testUtil = new TestUtil();
 
   beforeAll(async () => {

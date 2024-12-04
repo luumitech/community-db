@@ -1,5 +1,6 @@
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
+import { isMember } from '~/graphql/schema/property/util';
 import { isValidDate } from '~/lib/date-util';
 import { type Property } from './community-data';
 
@@ -76,7 +77,7 @@ export class ExportHelper {
           (entry) => entry.year === year
         );
         const prfx = `Y${year - 2000}`;
-        row[`${prfx}`] = toBool(membership?.isMember);
+        row[`${prfx}`] = toBool(isMember(membership));
         row[`${prfx}-event`] = membership?.eventAttendedList
           .map((event) => event.eventName)
           .join(';');

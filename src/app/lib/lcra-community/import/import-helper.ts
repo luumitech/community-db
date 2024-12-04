@@ -30,7 +30,8 @@ interface MProperty
   updatedByEmail: string | null;
 }
 interface MOccupant extends Omit<Occupant, ''> {}
-interface MMembership extends Omit<Membership, 'year' | 'eventAttendedList'> {
+interface MMembership
+  extends Omit<Membership, 'year' | 'isMember' | 'eventAttendedList'> {
   // Additional fields in excel spreadsheet that cannot be mapped
   // to membership database directly.  So store them as extra fields
   // and map them separately afterwards

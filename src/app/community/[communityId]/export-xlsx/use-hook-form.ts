@@ -10,9 +10,8 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(communityId: string): DefaultData {
+function defaultInputData(communityId: string): InputData {
   return {
     communityId,
   };

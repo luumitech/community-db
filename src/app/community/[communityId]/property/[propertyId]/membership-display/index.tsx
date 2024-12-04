@@ -29,7 +29,7 @@ interface Props {
 
 export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(MembershipDisplayFragment, fragment);
-  const { communityUi } = useAppContext();
+  const { communityUi, minYear, maxYear } = useAppContext();
   const { yearSelected } = communityUi;
   const { membershipList } = entry;
 
@@ -51,12 +51,11 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
       <Card>
         <CardHeader className="gap-2">
           <YearSelect
+            yearRange={[minYear, maxYear]}
             membershipList={entry.membershipList}
             selectedYear={yearSelected}
-            onChange={(year) => communityUi.actions.setYearSelected(year)}
-          >
-            Membership Info For Year
-          </YearSelect>
+            onYearChange={communityUi.actions.setYearSelected}
+          />
           <div className="grow" />
           <MemberStatusChip membership={membership} />
         </CardHeader>

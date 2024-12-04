@@ -8,27 +8,33 @@ import {
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { CommunityEntry } from '../_type';
+import * as batchPropertyModifyModal from '../batch-property-modify-modal';
 import * as communityDeleteModal from '../community-delete-modal';
 import * as communityModifyModal from '../community-modify-modal';
 import * as propertyCreateModal from '../property-create-modal';
 import { useMoreMenu } from './use-menu';
 
 interface Props {
-  fragment: CommunityEntry;
+  community: CommunityEntry;
 }
 
-export const MoreMenu: React.FC<Props> = ({ fragment }) => {
+export const MoreMenu: React.FC<Props> = ({ community }) => {
   const communityModify =
-    communityModifyModal.useHookFormWithDisclosure(fragment);
-  const communityDelete =
-    communityDeleteModal.useHookFormWithDisclosure(fragment);
+    communityModifyModal.useHookFormWithDisclosure(community);
+  const batchPropertyModify =
+    batchPropertyModifyModal.useHookFormWithDisclosure(community);
   const propertyCreate =
-    propertyCreateModal.useHookFormWithDisclosure(fragment);
+    propertyCreateModal.useHookFormWithDisclosure(community);
+  const communityDelete =
+    communityDeleteModal.useHookFormWithDisclosure(community);
+
   const menuItems = useMoreMenu({
-    communityId: fragment.id,
+    communityId: community.id,
     communityModifyButtonProps: communityModify.disclosure.getButtonProps,
-    communityDeleteButtonProps: communityDelete.disclosure.getButtonProps,
+    batchPropertyModifyButtonProps:
+      batchPropertyModify.disclosure.getButtonProps,
     propertyCreateButtonProps: propertyCreate.disclosure.getButtonProps,
+    communityDeleteButtonProps: communityDelete.disclosure.getButtonProps,
   });
 
   return (
@@ -51,6 +57,9 @@ export const MoreMenu: React.FC<Props> = ({ fragment }) => {
         </DropdownMenu>
       </Dropdown>
       <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
+      <batchPropertyModifyModal.BatchPropertyModifyModal
+        hookForm={batchPropertyModify}
+      />
       <communityDeleteModal.CommunityDeleteModal hookForm={communityDelete} />
       <propertyCreateModal.PropertyCreateModal hookForm={propertyCreate} />
     </>

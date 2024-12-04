@@ -51,7 +51,6 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 export type OccupantFieldArrayReturn = UseFieldArrayReturn<
   InputData,
@@ -59,7 +58,7 @@ export type OccupantFieldArrayReturn = UseFieldArrayReturn<
   'id'
 >;
 
-export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
+export const occupantDefault: InputData['occupantList'][0] = {
   firstName: '',
   lastName: '',
   optOut: false,
@@ -69,9 +68,9 @@ export const occupantDefault: DefaultInput<GQL.OccupantInput> = {
   home: '',
 };
 
-function defaultInputData(fragment: PropertyEntry): DefaultData {
-  const item = getFragment(OccupantEditorFragment, fragment);
-
+function defaultInputData(
+  item: GQL.PropertyId_OccupantEditorFragment
+): InputData {
   return {
     self: {
       id: item.id,
@@ -91,24 +90,28 @@ function defaultInputData(fragment: PropertyEntry): DefaultData {
 
 export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const property = getFragment(OccupantEditorFragment, fragment);
+  const defaultValues = React.useMemo(
+    () => defaultInputData(property),
+    [property]
+  );
   const formMethods = useForm({
-    defaultValues: defaultInputData(fragment),
+    defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 
   React.useEffect(() => {
     // After form is submitted, update the form with new default
-    reset(defaultInputData(fragment));
-  }, [reset, fragment]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   /**
    * When modal is closed, reset form value with default values derived from
    * fragment
    */
   const onModalClose = React.useCallback(() => {
-    reset(defaultInputData(fragment));
-  }, [reset, fragment]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
   const disclosure = useDisclosure({
     onClose: onModalClose,
   });

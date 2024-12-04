@@ -11,10 +11,9 @@ interface Props {}
 
 export const SelectXlsxFile: React.FC<Props> = ({}) => {
   const formMethods = useHookFormContext();
-  const { formState, register, setValue } = formMethods;
+  const { setValue } = formMethods;
   const [pending, startTransition] = React.useTransition();
   const { data, columns, updateWorksheet, clear } = useMakeXlsxData();
-  const { errors } = formState;
 
   React.useEffect(() => {
     setValue('hidden.importList', [] as unknown as FileList);
@@ -39,12 +38,9 @@ export const SelectXlsxFile: React.FC<Props> = ({}) => {
       <FileInput
         label="Upload xlsx file"
         isRequired
-        errorMessage={errors.hidden?.importList?.message}
-        isInvalid={errors.hidden?.importList?.message != null}
+        controlName="hidden.importList"
+        onChange={onXlsxSelect}
         onClear={() => clear()}
-        {...register('hidden.importList', {
-          onChange: onXlsxSelect,
-        })}
       />
       {pending ? (
         <div className="flex flex-col grow mb-4 gap-3">

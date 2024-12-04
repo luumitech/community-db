@@ -8,7 +8,6 @@ import {
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
-import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
 import { HiddenList } from './hidden-list';
@@ -84,25 +83,25 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
           <HiddenList fieldArray={hiddenEventList} onRemove={addVisibleItem} />
         </div>
       </CardBody>
-      <CardFooter>
+      <CardFooter className="gap-2 items-start">
         <Input
+          className="max-w-xs"
           aria-label="New event name"
-          placeholder="Add new event name"
+          placeholder="Enter new event name"
           value={newItem}
           onValueChange={setNewItem}
           errorMessage="Event name must be unique"
           isInvalid={!isItemValid(newItem)}
-          endContent={
-            <FlatButton
-              icon="add"
-              onClick={addNewItem}
-              {...(addIsDisabled && {
-                disabled: true,
-                tooltip: 'Enter new event name',
-              })}
-            />
-          }
         />
+        <Button
+          className="text-primary"
+          endContent={<Icon icon="add" />}
+          variant="faded"
+          onClick={addNewItem}
+          isDisabled={addIsDisabled}
+        >
+          Add Event
+        </Button>
       </CardFooter>
     </Card>
   );

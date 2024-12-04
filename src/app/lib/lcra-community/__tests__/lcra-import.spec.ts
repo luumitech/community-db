@@ -26,6 +26,8 @@ describe('import community xlsx', () => {
             community {
               id
               name
+              minYear
+              maxYear
               propertyList(first: 2) {
                 edges {
                   node {
@@ -69,8 +71,11 @@ describe('import community xlsx', () => {
     const result = await testUtil.graphql.executeSingle({ document });
     const accessList = result.data?.userCurrent.accessList ?? [];
     expect(accessList).toHaveLength(1);
-    const adventure = accessList[0].community.propertyList.edges[0].node;
-    const fortune = accessList[0].community.propertyList.edges[1].node;
+    const { community } = accessList[0];
+    expect(community.minYear).toBe(2021);
+    expect(community.maxYear).toBe(2024);
+    const adventure = community.propertyList.edges[0].node;
+    const fortune = community.propertyList.edges[1].node;
     expect(adventure.updatedBy?.email).toBe('test@email.com');
     expect(fortune).toEqual({
       __typename: 'Property',

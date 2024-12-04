@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -7,7 +8,6 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
 import { HiddenList } from './hidden-list';
@@ -86,25 +86,25 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
           />
         </div>
       </CardBody>
-      <CardFooter>
+      <CardFooter className="gap-2 items-start">
         <Input
+          className="max-w-xs"
           aria-label="New payment method"
-          placeholder="Add new payment method"
+          placeholder="Enter new payment method"
           value={newItem}
           onValueChange={setNewItem}
           errorMessage="Method name must be unique"
           isInvalid={!isItemValid(newItem)}
-          endContent={
-            <FlatButton
-              icon="add"
-              onClick={addNewItem}
-              {...(addIsDisabled && {
-                disabled: true,
-                tooltip: 'Enter new payment method',
-              })}
-            />
-          }
         />
+        <Button
+          className="text-primary"
+          endContent={<Icon icon="add" />}
+          variant="faded"
+          onClick={addNewItem}
+          isDisabled={addIsDisabled}
+        >
+          Add Payment Method
+        </Button>
       </CardFooter>
     </Card>
   );

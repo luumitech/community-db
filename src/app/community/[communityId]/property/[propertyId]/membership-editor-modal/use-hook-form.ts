@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -39,12 +40,11 @@ function schema() {
       id: zz.string.nonEmpty(),
       updatedAt: zz.string.nonEmpty(),
     }),
-    notes: zz.string.nonEmpty().nullable(),
+    notes: z.string().nullable(),
     membershipList: z.array(
       z
         .object({
-          year: z.coerce.number(),
-          isMember: z.boolean(),
+          year: zz.coerce.toNumber('Must select a year'),
           eventAttendedList: z
             .array(
               z.object({
@@ -59,8 +59,7 @@ function schema() {
               },
               { message: 'Event Name must be unique', path: [''] }
             ),
-          paymentMethod: z.string(),
-          paymentDeposited: z.boolean(),
+          paymentMethod: z.string().nullable(),
         })
         .refine(
           (form) => {
@@ -93,26 +92,27 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
 export function membershipDefault(
   year: number
-): DefaultInput<GQL.MembershipInput> {
+): InputData['membershipList'][0] {
   return {
     year,
-    isMember: false,
     eventAttendedList: [],
-    paymentMethod: '',
-    paymentDeposited: false,
+    paymentMethod: null,
   };
 }
 
 function defaultInputData(
-  fragment: PropertyEntry,
+  item: GQL.PropertyId_MembershipEditorFragment,
+  yearRange: [number, number],
   yearSelected: string
-): DefaultData {
-  const item = getFragment(MembershipEditorFragment, fragment);
-  const membershipList = yearSelectItems(item.membershipList, yearSelected);
+): InputData {
+  const membershipList = yearSelectItems(
+    yearRange,
+    item.membershipList,
+    yearSelected
+  );
 
   return {
     self: {
@@ -130,7 +130,6 @@ function defaultInputData(
 
       return {
         year: membershipItem?.year ?? defaultItem.year,
-        isMember: membershipItem?.isMember ?? defaultItem.isMember,
         eventAttendedList: (
           membershipItem?.eventAttendedList ?? defaultItem.eventAttendedList
         ).map((event) => ({
@@ -139,8 +138,6 @@ function defaultInputData(
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
-        paymentDeposited:
-          membershipItem?.paymentDeposited ?? defaultItem.paymentDeposited,
       };
     }),
   };
@@ -150,10 +147,11 @@ export function useHookFormWithDisclosure(
   fragment: PropertyEntry,
   yearSelected: string
 ) {
+  const { minYear, maxYear } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(
-    () => defaultInputData(fragment, yearSelected),
-    [fragment, yearSelected]
+    () => defaultInputData(property, [minYear, maxYear], yearSelected),
+    [minYear, maxYear, property, yearSelected]
   );
   const formMethods = useForm({
     defaultValues,

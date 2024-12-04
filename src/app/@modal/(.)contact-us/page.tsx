@@ -64,6 +64,7 @@ export default function ContactUs() {
                 type="submit"
                 color="primary"
                 isDisabled={!isDirty}
+                isLoading={mailSend.isPending}
                 endContent={<Icon icon="email" />}
               >
                 Send

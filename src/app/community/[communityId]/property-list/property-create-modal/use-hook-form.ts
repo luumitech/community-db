@@ -3,6 +3,7 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
 
@@ -23,11 +24,12 @@ function schema() {
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
-type DefaultData = DefaultInput<InputData>;
 
-function defaultInputData(fragment: CommunityEntry): DefaultData {
+function defaultInputData(
+  item: GQL.CommunityId_PropertyCreateModalFragment
+): InputData {
   return {
-    communityId: fragment.id,
+    communityId: item.id,
     address: '',
     streetNo: '',
     streetName: '',
@@ -37,16 +39,20 @@ function defaultInputData(fragment: CommunityEntry): DefaultData {
 
 export function useHookFormWithDisclosure(fragment: CommunityEntry) {
   const community = getFragment(CreateFragment, fragment);
+  const defaultValues = React.useMemo(
+    () => defaultInputData(community),
+    [community]
+  );
   const formMethods = useForm({
-    defaultValues: defaultInputData(fragment),
+    defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 
   React.useEffect(() => {
     // After form is submitted, update the form with new default
-    reset(defaultInputData(fragment));
-  }, [reset, fragment]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   /**
    * When modal is closed, reset form value with default values derived from
