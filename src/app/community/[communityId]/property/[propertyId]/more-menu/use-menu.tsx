@@ -1,39 +1,37 @@
 import { DropdownItemProps } from '@nextui-org/react';
-import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { usePageContext } from '../page-context';
 
 interface MenuItemEntry extends DropdownItemProps {}
 
-interface MoreMenuOpt {
-  communityId: string;
-  propertyId: string;
-  propertyModifyButtonProps: UseDisclosureReturn['getButtonProps'];
-  propertyDeleteButtonProps: UseDisclosureReturn['getButtonProps'];
-  membershipEditorButtonProps: UseDisclosureReturn['getButtonProps'];
-  occupantEditorButtonProps: UseDisclosureReturn['getButtonProps'];
-}
-
 /** Controls content of menu items within more menu */
-export function useMoreMenu(opt: MoreMenuOpt) {
+export function useMoreMenu() {
   const { canEdit, isAdmin } = useAppContext();
+  const {
+    community,
+    occupantEditor,
+    propertyModify,
+    membershipEditor,
+    propertyDelete,
+  } = usePageContext();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
-    const { communityId } = opt;
+    const communityId = community.id;
 
     if (canEdit) {
       items.push(
         {
           key: 'membership-editor',
-          ...opt.membershipEditorButtonProps(),
+          ...membershipEditor.disclosure.getButtonProps(),
           children: 'Edit Membership Info',
         },
         {
           key: 'occupant-editor',
-          ...opt.occupantEditorButtonProps(),
+          ...occupantEditor.disclosure.getButtonProps(),
           children: 'Edit Member Details',
         },
         {
@@ -45,7 +43,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         },
         {
           key: 'modify',
-          ...opt.propertyModifyButtonProps(),
+          ...propertyModify.disclosure.getButtonProps(),
           children: 'Modify Property',
         }
       );
@@ -55,13 +53,21 @@ export function useMoreMenu(opt: MoreMenuOpt) {
       items.push({
         key: 'delete',
         className: 'text-danger',
-        ...opt.propertyDeleteButtonProps(),
+        ...propertyDelete.disclosure.getButtonProps(),
         children: 'Delete Property',
       });
     }
 
     return items;
-  }, [opt, canEdit, isAdmin]);
+  }, [
+    canEdit,
+    isAdmin,
+    community,
+    occupantEditor,
+    propertyModify,
+    membershipEditor,
+    propertyDelete,
+  ]);
 
   return menuItems;
 }

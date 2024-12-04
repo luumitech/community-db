@@ -4,8 +4,8 @@ import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
+import { usePageContext } from '../page-context';
 import { DeleteModal } from './delete-modal';
-import { type UseHookFormWithDisclosureResult } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
 export type { UseHookFormWithDisclosureResult } from './use-hook-form';
@@ -18,25 +18,21 @@ const PropertyMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
-  communityId: string;
-  hookForm: UseHookFormWithDisclosureResult;
-}
+interface Props {}
 
-export const PropertyDeleteModal: React.FC<Props> = ({
-  communityId,
-  hookForm,
-}) => {
+export const PropertyDeleteModal: React.FC<Props> = (props) => {
   const router = useRouter();
   const [deleteProperty] = useMutation(PropertyMutation);
-  const { property, disclosure } = hookForm;
+  const { community, property } = usePageContext();
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
       deleteProperty({
         variables: { id: property.id },
         onCompleted: () => {
-          router.push(appPath('propertyList', { path: { communityId } }));
+          router.push(
+            appPath('propertyList', { path: { communityId: community.id } })
+          );
         },
         update: (cache) => {
           const normalizedId = cache.identify({
@@ -55,7 +51,7 @@ export const PropertyDeleteModal: React.FC<Props> = ({
         success: 'Deleted',
       }
     );
-  }, [deleteProperty, property, communityId, router]);
+  }, [deleteProperty, property, community, router]);
 
-  return <DeleteModal hookForm={hookForm} onDelete={onDelete} />;
+  return <DeleteModal onDelete={onDelete} />;
 };

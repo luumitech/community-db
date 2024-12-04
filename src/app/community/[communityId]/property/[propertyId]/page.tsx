@@ -1,11 +1,12 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import { Skeleton, Spinner } from '@nextui-org/react';
+import { Skeleton } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { PageContent } from './page-content';
+import { PageProvider } from './page-context';
 
 interface Params {
   communityId: string;
@@ -54,5 +55,9 @@ export default function Property({ params }: RouteArgs) {
   if (!community || !property) {
     return <Skeleton className="h-main-height" />;
   }
-  return <PageContent community={community} property={property} />;
+  return (
+    <PageProvider community={community} property={property}>
+      <PageContent />
+    </PageProvider>
+  );
 }

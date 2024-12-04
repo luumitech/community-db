@@ -7,15 +7,15 @@ import {
 } from '@nextui-org/react';
 import React from 'react';
 import { Button } from '~/view/base/button';
-import { type UseHookFormWithDisclosureResult } from './use-hook-form';
+import { usePageContext } from '../page-context';
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
   onDelete: () => Promise<void>;
 }
 
-export const DeleteModal: React.FC<Props> = ({ hookForm, onDelete }) => {
-  const { disclosure, property } = hookForm;
+export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
+  const { propertyDelete } = usePageContext();
+  const { disclosure, property } = propertyDelete;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
 

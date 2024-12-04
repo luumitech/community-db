@@ -62,7 +62,9 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
 export function useFilterBarContext() {
   const context = React.useContext(Context);
   if (!context) {
-    throw new Error(`useAppContext must be used within a FilterBarProvider`);
+    throw new Error(
+      `useFilterBarContext must be used within a FilterBarProvider`
+    );
   }
   return context;
 }

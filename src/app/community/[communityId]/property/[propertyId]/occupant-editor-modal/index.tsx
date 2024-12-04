@@ -3,8 +3,9 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
+import { usePageContext } from '../page-context';
 import { ModalDialog } from './modal-dialog';
-import { InputData, UseHookFormWithDisclosureResult } from './use-hook-form';
+import { InputData } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
 export type { UseHookFormWithDisclosureResult } from './use-hook-form';
@@ -19,14 +20,11 @@ const OccupantMutation = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  hookForm: UseHookFormWithDisclosureResult;
 }
 
-export const OccupantEditorModal: React.FC<Props> = ({
-  className,
-  hookForm,
-}) => {
-  const { formMethods, disclosure } = hookForm;
+export const OccupantEditorModal: React.FC<Props> = ({ className }) => {
+  const { occupantEditor } = usePageContext();
+  const { formMethods } = occupantEditor;
   const { formState } = formMethods;
   const [updateProperty] = useMutation(OccupantMutation);
 
@@ -48,7 +46,7 @@ export const OccupantEditorModal: React.FC<Props> = ({
   return (
     <div className={className}>
       <FormProvider {...formMethods}>
-        <ModalDialog hookForm={hookForm} onSave={onSave} />
+        <ModalDialog onSave={onSave} />
       </FormProvider>
     </div>
   );

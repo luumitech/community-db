@@ -8,21 +8,18 @@ import {
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
+import { usePageContext } from '../page-context';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { NotesEditor } from './notes-editor';
-import {
-  InputData,
-  UseHookFormWithDisclosureResult,
-  useHookFormContext,
-} from './use-hook-form';
+import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { disclosure } = hookForm;
+export const ModalDialog: React.FC<Props> = ({ onSave }) => {
+  const { membershipEditor } = usePageContext();
+  const { disclosure } = membershipEditor;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

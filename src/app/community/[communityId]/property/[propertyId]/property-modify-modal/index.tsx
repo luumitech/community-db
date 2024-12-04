@@ -4,11 +4,9 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
+import { usePageContext } from '../page-context';
 import { ModifyModal } from './modify-modal';
-import {
-  InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { InputData } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
 export type { UseHookFormWithDisclosureResult } from './use-hook-form';
@@ -21,17 +19,12 @@ const PropertyMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
-  communityId: string;
-  hookForm: UseHookFormWithDisclosureResult;
-}
+interface Props {}
 
-export const PropertyModifyModal: React.FC<Props> = ({
-  communityId,
-  hookForm,
-}) => {
+export const PropertyModifyModal: React.FC<Props> = (props) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { formMethods } = hookForm;
+  const { community, propertyModify } = usePageContext();
+  const { formMethods } = propertyModify;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
@@ -45,7 +38,7 @@ export const PropertyModifyModal: React.FC<Props> = ({
           refetchQueries: [
             // Updating property address may cause property to change order within
             // the property list
-            { query: CommunityFromIdDocument, variables: { id: communityId } },
+            { query: CommunityFromIdDocument, variables: { id: community.id } },
           ],
         }),
         {
@@ -54,12 +47,12 @@ export const PropertyModifyModal: React.FC<Props> = ({
         }
       );
     },
-    [formMethods.formState, updateProperty, communityId]
+    [formMethods.formState, updateProperty, community]
   );
 
   return (
     <FormProvider {...formMethods}>
-      <ModifyModal hookForm={hookForm} onSave={onSave} />
+      <ModifyModal onSave={onSave} />
     </FormProvider>
   );
 };

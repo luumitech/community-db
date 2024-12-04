@@ -1,10 +1,17 @@
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+} from '@nextui-org/react';
 import { ScrollShadow } from '@nextui-org/scroll-shadow';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { PropertyEntry } from '../_type';
+import { ModalButton } from '../modal-button';
+import { usePageContext } from '../page-context';
 import { MemberStatusChip } from './member-status-chip';
 import { RegisteredEventList } from './registered-event-list';
 import { YearSelect } from './year-select';
@@ -24,12 +31,12 @@ const MembershipDisplayFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment: PropertyEntry;
 }
 
-export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
-  const entry = getFragment(MembershipDisplayFragment, fragment);
-  const { communityUi, minYear, maxYear } = useAppContext();
+export const MembershipDisplay: React.FC<Props> = ({ className }) => {
+  const { canEdit, communityUi, minYear, maxYear } = useAppContext();
+  const { property, membershipEditor } = usePageContext();
+  const entry = getFragment(MembershipDisplayFragment, property);
   const { yearSelected } = communityUi;
   const { membershipList } = entry;
 
@@ -67,6 +74,13 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
             <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
           </ScrollShadow>
         </CardBody>
+        {canEdit && (
+          <CardFooter>
+            <ModalButton {...membershipEditor.disclosure.getButtonProps()}>
+              Edit Membership Info
+            </ModalButton>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );
