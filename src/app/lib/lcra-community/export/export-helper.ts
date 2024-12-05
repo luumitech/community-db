@@ -84,6 +84,9 @@ export class ExportHelper {
         row[`${prfx}-date`] = membership?.eventAttendedList
           .map((event) => toDate(event.eventDate))
           .join(';');
+        row[`${prfx}-ticket`] = membership?.eventAttendedList
+          .map((event) => event.ticket ?? '')
+          .join(';');
         row[`${prfx}-payment`] = membership?.paymentMethod;
         row[`${prfx}-deposited`] = toBool(membership?.paymentDeposited);
       });

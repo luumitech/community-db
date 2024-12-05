@@ -1,5 +1,4 @@
 import { Prisma, Role } from '@prisma/client';
-import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
@@ -29,6 +28,7 @@ const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
     eventDate: t.string({ required: true }),
+    ticket: t.int(),
   }),
 });
 
@@ -207,6 +207,7 @@ builder.mutationField('batchPropertyModify', (t) =>
             membership.eventAttendedList.push({
               eventName: input.membership.eventAttended.eventName,
               eventDate: new Date(input.membership.eventAttended.eventDate),
+              ticket: null,
             });
             // Non empty event list require payment Method
             if (membership.eventAttendedList.length === 1) {
@@ -222,6 +223,7 @@ builder.mutationField('batchPropertyModify', (t) =>
               {
                 eventName: input.membership.eventAttended.eventName,
                 eventDate: new Date(input.membership.eventAttended.eventDate),
+                ticket: null,
               },
             ],
           });

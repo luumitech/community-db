@@ -18,6 +18,11 @@ const eventRef = builder.objectRef<Event>('Event').implement({
   fields: (t) => ({
     eventName: t.exposeString('eventName'),
     eventDate: t.expose('eventDate', { type: 'Date', nullable: true }),
+    ticket: t.field({
+      type: 'Int',
+      description: 'Number of tickets given for the event',
+      resolve: (entry) => entry.ticket ?? 0,
+    }),
   }),
 });
 

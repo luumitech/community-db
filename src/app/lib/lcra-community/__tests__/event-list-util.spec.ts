@@ -1,25 +1,30 @@
 import { extractEventList, type Property } from '../import/event-list-util';
 
-const NO_DATE = { eventName: 'Missing Date', eventDate: null };
+const NO_DATE = { eventName: 'Missing Date', eventDate: null, ticket: null };
 const NEW_YEAR = {
   eventName: 'New Year',
   eventDate: new Date(Date.UTC(2012, 0, 1)),
+  ticket: null,
 };
 const CANADA_DAY = {
   eventName: 'Canada Day',
   eventDate: new Date(Date.UTC(2023, 6, 1)),
+  ticket: null,
 };
 const XMAS = {
   eventName: 'Christmas',
   eventDate: new Date(Date.UTC(1997, 11, 25)),
+  ticket: null,
 };
 const NEW_YEAR_EVE = {
   eventName: 'New Year Eve',
   eventDate: new Date(Date.UTC(2010, 11, 31)),
+  ticket: null,
 };
 const NEW_YEAR_EVE_CLONE = {
   eventName: 'Fake Year Eve',
   eventDate: new Date(Date.UTC(2020, 11, 31)),
+  ticket: null,
 };
 
 describe('Event List conversion', () => {

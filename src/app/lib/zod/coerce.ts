@@ -1,6 +1,7 @@
 import * as R from 'remeda';
 import { z } from 'zod';
 import { isValidDate } from '~/lib/date-util';
+import { parseAsNumber } from '~/lib/number-util';
 
 export class Coerce {
   /**
@@ -37,14 +38,11 @@ export class Coerce {
         return z.NEVER;
       };
 
-      if (val == null || val === '') {
+      const num = parseAsNumber(val);
+      if (num == null) {
         return onError();
       }
-      const asNum = Number(val);
-      if (isNaN(asNum)) {
-        return onError();
-      }
-      return asNum;
+      return num;
     });
   }
 

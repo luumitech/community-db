@@ -1,3 +1,4 @@
+import { type Event } from '@prisma/client';
 import path from 'path';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -174,11 +175,13 @@ describe('BatchPropertyModify', () => {
         expect(membership?.paymentMethod).not.toBe(newEvent.paymentMethod);
       }
       // Make sure the modified document contains the new event
+      const expectedEvent: Event = {
+        eventName: newEvent.eventName,
+        eventDate: newEvent.eventDate,
+        ticket: null,
+      };
       expect(membership?.eventAttendedList).toIncludeAnyMembers([
-        {
-          eventName: newEvent.eventName,
-          eventDate: newEvent.eventDate,
-        },
+        expectedEvent,
       ]);
     }
   });
