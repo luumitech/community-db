@@ -29,9 +29,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         render={({ field }) => (
           <NextUITextarea
             ref={ref}
-            // Force component to be controlled, so setValue would
-            // work properly
-            value={field.value ?? null}
+            defaultValue={field.value ?? ''}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);

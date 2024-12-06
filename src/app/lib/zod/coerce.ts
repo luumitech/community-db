@@ -20,12 +20,14 @@ export class Coerce {
   }
 
   /**
-   * Coerce input as number
+   * Coerce input as number. This is useful for used in a selection component,
+   * when you do not want empty selection (i.e. '') to be converted to 0.
+   * `z.coerce.number()` transforms '' to 0.
    *
    * Error condition:
    *
-   * - Null (unless you append nullable())
-   * - Empty string
+   * - Null/undefined
+   * - Empty string (useful for reject empty selection)
    * - NaN
    */
   toNumber(msg?: string) {
@@ -58,7 +60,7 @@ export class Coerce {
    *
    * Error condition:
    *
-   * - Null (unless you append nullable())
+   * - Null
    *
    * @example `2023-02-26T00:00:00.000Z`
    */

@@ -10,10 +10,15 @@ export { SelectItem, SelectSection } from '@nextui-org/react';
 
 export interface InputProps extends NextUIInputProps {
   controlName: string;
+  /**
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
+   */
+  isControlled?: boolean;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ controlName, onBlur, onChange, ...props }, ref) => {
+  ({ controlName, isControlled, onBlur, onChange, ...props }, ref) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
@@ -29,9 +34,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         render={({ field }) => (
           <NextUIInput
             ref={ref}
-            // Force component to be controlled, so setValue would
-            // work properly
-            value={field.value ?? null}
+            defaultValue={field.value ?? ''}
+            // Force component into a controlled component
+            {...(isControlled && { value: field.value ?? '' })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);

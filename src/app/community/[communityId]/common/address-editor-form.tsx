@@ -93,24 +93,28 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           controlName="address"
           variant="bordered"
           label="Display Address"
+          isControlled
         />
         <Input
           className={className}
           controlName="streetNo"
           variant="bordered"
           label="Street Number"
+          isControlled
         />
         <Input
           className={className}
           controlName="streetName"
           variant="bordered"
           label="Street Name"
+          isControlled
         />
         <Input
           className={className}
           controlName="postalCode"
           variant="bordered"
           label="Postal Code"
+          isControlled
         />
       </div>
     </>

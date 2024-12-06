@@ -21,6 +21,7 @@ import {
   SelectProps,
   SelectSection,
 } from '~/view/base/select';
+import { TicketInput } from './ticket-input';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -33,9 +34,8 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   yearIdx,
 }) => {
   const { selectEventSections, communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
-  const { control, register, formState, setValue, clearErrors } =
-    useHookFormContext();
+  const { lastEventSelected, defaultTicket } = communityUi;
+  const { control, formState, clearErrors } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove, append } = useFieldArray({
     control,
@@ -59,6 +59,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
             append({
               eventName: lastEventSelected ?? '',
               eventDate: new Date(Date.now()).toISOString(),
+              ticket: defaultTicket ?? 0,
             })
           }
         >
@@ -66,22 +67,15 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         </Button>
       </div>
     );
-  }, [append, lastEventSelected]);
+  }, [append, lastEventSelected, defaultTicket]);
 
   const eventAttendedListError =
     errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
   const bottomContent = React.useMemo(() => {
     return (
-      <div>
-        <div
-          className="mb-2 text-sm text-danger"
-          {...register(`membershipList.${yearIdx}.eventAttendedList`)}
-        >
-          {eventAttendedListError}
-        </div>
-      </div>
+      <div className="mb-2 text-sm text-danger">{eventAttendedListError}</div>
     );
-  }, [register, yearIdx, eventAttendedListError]);
+  }, [eventAttendedListError]);
 
   const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
     React.useCallback(
@@ -123,11 +117,14 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         <TableCell>
           <DatePicker
             className="max-w-sm"
+            controlName={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
             aria-label="Event Date"
             variant="underlined"
             granularity="day"
-            controlName={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
           />
+        </TableCell>
+        <TableCell>
+          <TicketInput className="max-w-sm" yearIdx={yearIdx} eventIdx={idx} />
         </TableCell>
         <TableCell>
           <FlatButton
@@ -156,6 +153,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         <TableHeader>
           <TableColumn>Event Attended</TableColumn>
           <TableColumn>Event Date</TableColumn>
+          <TableColumn>Ticket</TableColumn>
           <TableColumn>Action</TableColumn>
         </TableHeader>
         <TableBody emptyContent={emptyContent}>{renderRows()}</TableBody>

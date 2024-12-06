@@ -13,6 +13,7 @@ import {
 import { FaDownload } from 'react-icons/fa6';
 import { FcDonate } from 'react-icons/fc';
 import { GrUndo } from 'react-icons/gr';
+import { HiOutlineTicket } from 'react-icons/hi2';
 import {
   IoIosSettings,
   IoMdAddCircleOutline,
@@ -26,6 +27,7 @@ import {
   IoFilter,
   IoInformation,
   IoPersonAdd,
+  IoTicket,
 } from 'react-icons/io5';
 import {
   MdDragIndicator,
@@ -67,7 +69,8 @@ type SupportedIcon =
   | 'pricing'
   | 'premium-plan'
   | 'back'
-  | 'filter';
+  | 'filter'
+  | 'ticket';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -160,6 +163,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'filter':
       IconElement = IoFilter;
+      break;
+    case 'ticket':
+      IconElement = HiOutlineTicket;
       break;
     default:
       IconElement = MdQuestionMark;

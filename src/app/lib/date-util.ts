@@ -1,4 +1,5 @@
-import { parseDate } from '@internationalized/date';
+import { parseDate, toCalendarDate } from '@internationalized/date';
+import { type DateValue } from '@nextui-org/react';
 import { format } from 'date-fns';
 import * as GQL from '~/graphql/generated/graphql';
 
@@ -38,9 +39,14 @@ export function isValidDate(date: Date | undefined | null): date is Date {
  * @param input Any date string supported by javascript Date object
  * @returns CalendarDate object (useful for DatePicker)
  */
-export function parseAsDate(input: GQLDate | null | undefined) {
+export function parseAsDate(input: GQLDate | DateValue | null | undefined) {
   if (input == null) {
     return null;
+  }
+
+  if (typeof input === 'object') {
+    // Probably one of the supported DateValue object (i.e. CalendarDate)
+    return toCalendarDate(input);
   }
 
   try {

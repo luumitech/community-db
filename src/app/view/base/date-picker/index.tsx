@@ -7,16 +7,8 @@ import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { parseAsDate } from '~/lib/date-util';
 
-interface DatePickerProps
-  extends Omit<NextUIDatePickerProps, 'onChange' | 'onBlur'> {
+interface DatePickerProps extends NextUIDatePickerProps {
   controlName: string;
-  /**
-   * The onChange/onBlur from the react-hook-form register method is not
-   * compatible with the onChange/onBlur onNextUIDatePicker, so we override it
-   * with the react-hook-form Controller version
-   */
-  onChange?: unknown;
-  onBlur?: unknown;
 }
 
 export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
@@ -24,10 +16,10 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
+    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
     const error = React.useMemo<string | undefined>(() => {
-      const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
       return errObj?.message as string;
-    }, [errors, controlName]);
+    }, [errObj]);
 
     return (
       <Controller
@@ -37,8 +29,14 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
           <NextUIDatePicker
             ref={ref}
             defaultValue={parseAsDate(field.value)}
+            onBlur={(evt) => {
+              field.onBlur();
+              onBlur?.(evt);
+            }}
             onChange={(val) => {
-              field.onChange(val ?? null);
+              const date = val ?? null;
+              field.onChange(date);
+              onChange?.(date);
             }}
             errorMessage={error}
             isInvalid={!!error}

@@ -27,6 +27,7 @@ const MembershipEditorFragment = graphql(/* GraphQL */ `
       eventAttendedList {
         eventName
         eventDate
+        ticket
       }
       paymentMethod
       paymentDeposited
@@ -50,6 +51,10 @@ function schema() {
               z.object({
                 eventName: zz.string.nonEmpty('Must specify a value'),
                 eventDate: zz.coerce.toIsoDate(),
+                ticket: z.coerce
+                  .number({ message: 'Must be a number' })
+                  .int()
+                  .min(0),
               })
             )
             .refine(
@@ -135,6 +140,7 @@ function defaultInputData(
         ).map((event) => ({
           eventName: event.eventName ?? '',
           eventDate: event.eventDate ?? '',
+          ticket: event.ticket,
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,

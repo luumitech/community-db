@@ -31,7 +31,7 @@ function coerceToString(input: string | number) {
 
 export function Select<T extends object>(props: SelectProps<T>) {
   const SelectImpl = React.forwardRef<HTMLSelectElement, SelectProps<T>>(
-    ({ controlName, onSelectionChange, ...selectProps }, ref) => {
+    ({ controlName, onBlur, onChange, ...selectProps }, ref) => {
       const { control, formState } = useFormContext();
       const { errors } = formState;
 
@@ -61,14 +61,14 @@ export function Select<T extends object>(props: SelectProps<T>) {
           render={({ field }) => (
             <NextUISelect<T>
               ref={ref}
-              selectedKeys={selectedKeys(field.value)}
-              onSelectionChange={(keys) => {
-                field.onChange(
-                  selectProps.selectionMode === 'multiple'
-                    ? [...keys]
-                    : keys.currentKey ?? null
-                );
-                onSelectionChange?.(keys);
+              defaultSelectedKeys={selectedKeys(field.value)}
+              onBlur={(evt) => {
+                field.onBlur();
+                onBlur?.(evt);
+              }}
+              onChange={(evt) => {
+                field.onChange(evt);
+                onChange?.(evt);
               }}
               errorMessage={error}
               isInvalid={!!error}
