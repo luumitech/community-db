@@ -66,13 +66,15 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
           <div className="grow" />
           <MemberStatusChip membership={membership} />
         </CardHeader>
-        <CardBody>
+        <CardBody className="gap-2">
           <RegisteredEventList membership={membership} />
-          <Divider className="my-2" />
-          <p className="font-light">Notes:</p>
-          <ScrollShadow className="h-28">
-            <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
-          </ScrollShadow>
+          <Divider />
+          <div>
+            <p className="font-light">Notes:</p>
+            <ScrollShadow className="h-28">
+              <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
+            </ScrollShadow>
+          </div>
         </CardBody>
         {canEdit && (
           <CardFooter>

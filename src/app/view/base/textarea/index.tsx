@@ -1,7 +1,7 @@
 import {
   Textarea as NextUITextarea,
   TextAreaProps as NextUITextareaProps,
-} from '@nextui-org/react';
+} from '@nextui-org/input';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';

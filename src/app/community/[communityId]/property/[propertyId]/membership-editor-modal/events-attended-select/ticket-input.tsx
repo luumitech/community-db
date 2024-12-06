@@ -3,7 +3,7 @@ import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { FlatButton } from '~/view/base/flat-button';
 import { Input } from '~/view/base/input';
-import { useHookFormContext } from './use-hook-form';
+import { useHookFormContext } from '../use-hook-form';
 
 interface Props {
   className?: string;

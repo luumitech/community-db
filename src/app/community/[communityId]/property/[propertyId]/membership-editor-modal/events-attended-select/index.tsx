@@ -11,18 +11,13 @@ import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
-import { DatePicker } from '~/view/base/date-picker';
 import { EventSelect } from '~/view/base/event-select';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
-import {
-  Select,
-  SelectItem,
-  SelectProps,
-  SelectSection,
-} from '~/view/base/select';
+import { useHookFormContext } from '../use-hook-form';
+import { EventDatePicker } from './event-date-picker';
+import { EventNameSelect } from './event-name-select';
 import { TicketInput } from './ticket-input';
-import { useHookFormContext } from './use-hook-form';
 
 interface Props {
   className?: string;
@@ -33,9 +28,9 @@ export const EventsAttendedSelect: React.FC<Props> = ({
   className,
   yearIdx,
 }) => {
-  const { selectEventSections, communityUi } = useAppContext();
+  const { communityUi } = useAppContext();
   const { lastEventSelected, defaultTicket } = communityUi;
-  const { control, formState, clearErrors } = useHookFormContext();
+  const { control, formState } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove, append } = useFieldArray({
     control,
@@ -77,50 +72,21 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     );
   }, [eventAttendedListError]);
 
-  const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
-    React.useCallback(
-      (keys) => {
-        clearErrors(`membershipList.${yearIdx}.eventAttendedList`);
-      },
-      [clearErrors, yearIdx]
-    );
-
   const renderRows = React.useCallback(() => {
     return fields.map((field, idx) => (
       <TableRow key={field.id}>
         <TableCell>
-          <Select
+          <EventNameSelect
             className="max-w-sm"
-            controlName={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventName`}
-            aria-label="Event Name"
-            items={selectEventSections}
-            variant="underlined"
-            placeholder="Select an event"
-            onSelectionChange={onSelectionChange}
-          >
-            {(section) => (
-              <SelectSection
-                key={section.title}
-                title={section.title}
-                items={section.items}
-                showDivider={section.showDivider}
-              >
-                {(item) => (
-                  <SelectItem key={item.value} textValue={item.label}>
-                    {item.label}
-                  </SelectItem>
-                )}
-              </SelectSection>
-            )}
-          </Select>
+            yearIdx={yearIdx}
+            eventIdx={idx}
+          />
         </TableCell>
         <TableCell>
-          <DatePicker
+          <EventDatePicker
             className="max-w-sm"
-            controlName={`membershipList.${yearIdx}.eventAttendedList.${idx}.eventDate`}
-            aria-label="Event Date"
-            variant="underlined"
-            granularity="day"
+            yearIdx={yearIdx}
+            eventIdx={idx}
           />
         </TableCell>
         <TableCell>
@@ -136,7 +102,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         </TableCell>
       </TableRow>
     ));
-  }, [fields, onSelectionChange, remove, yearIdx, selectEventSections]);
+  }, [fields, remove, yearIdx]);
 
   return (
     <div className={clsx(className)}>
