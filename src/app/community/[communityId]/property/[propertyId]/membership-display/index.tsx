@@ -4,8 +4,8 @@ import {
   CardFooter,
   CardHeader,
   Divider,
+  Textarea,
 } from '@nextui-org/react';
-import { ScrollShadow } from '@nextui-org/scroll-shadow';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
@@ -13,6 +13,8 @@ import * as GQL from '~/graphql/generated/graphql';
 import { ModalButton } from '../modal-button';
 import { usePageContext } from '../page-context';
 import { MemberStatusChip } from './member-status-chip';
+import { NotesView } from './notes-view';
+import { QuickEventEditor } from './quick-event-editor';
 import { RegisteredEventList } from './registered-event-list';
 import { YearSelect } from './year-select';
 
@@ -69,12 +71,9 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
         <CardBody className="gap-2">
           <RegisteredEventList membership={membership} />
           <Divider />
-          <div>
-            <p className="font-light">Notes:</p>
-            <ScrollShadow className="h-28">
-              <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
-            </ScrollShadow>
-          </div>
+          <QuickEventEditor />
+          <Divider />
+          <NotesView notes={entry.notes} />
         </CardBody>
         {canEdit && (
           <CardFooter>

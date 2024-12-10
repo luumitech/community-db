@@ -22,7 +22,8 @@ export class Coerce {
   /**
    * Coerce input as number. This is useful for used in a selection component,
    * when you do not want empty selection (i.e. '') to be converted to 0.
-   * `z.coerce.number()` transforms '' to 0.
+   *
+   * In contrast, `z.coerce.number()` transforms '' to 0.
    *
    * Error condition:
    *

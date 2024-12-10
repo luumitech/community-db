@@ -1,4 +1,9 @@
-import { parseDate, toCalendarDate } from '@internationalized/date';
+import {
+  parseDate,
+  parseTime,
+  toCalendarDateTime,
+  toZoned,
+} from '@internationalized/date';
 import { type DateValue } from '@nextui-org/react';
 import { format } from 'date-fns';
 import * as GQL from '~/graphql/generated/graphql';
@@ -32,26 +37,29 @@ export function isValidDate(date: Date | undefined | null): date is Date {
 }
 
 /**
- * Extract the yyyy-MM-dd portion of the input string supports DateTime and Date
- * (in prisma context) string ignores the time portion of the input (skips
- * processing time string)
+ * Extract the yyyy-MM-dd portion of the input string, and turn it into a
+ * ZonedDateTime object.
+ *
+ * Supports DateTime and Date (in prisma context) string, ignores the time
+ * portion of the input (skips processing time string)
  *
  * @param input Any date string supported by javascript Date object
- * @returns CalendarDate object (useful for DatePicker)
+ * @returns ZonedDateTime object (useful for DatePicker)
  */
 export function parseAsDate(input: GQLDate | DateValue | null | undefined) {
   if (input == null) {
     return null;
   }
+  const midnight = parseTime('00:00');
 
   if (typeof input === 'object') {
     // Probably one of the supported DateValue object (i.e. CalendarDate)
-    return toCalendarDate(input);
+    return toZoned(toCalendarDateTime(input, midnight), 'UTC');
   }
 
   try {
     const dateObj = parseDate(input.slice(0, 10));
-    return dateObj;
+    return toZoned(toCalendarDateTime(dateObj, midnight), 'UTC');
   } catch (err) {
     return null;
   }

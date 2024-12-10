@@ -11,6 +11,11 @@ export { SelectItem, SelectSection } from '@nextui-org/react';
 export interface SelectProps<T extends object = object>
   extends NextUISelectProps<T> {
   controlName: string;
+  /**
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
+   */
+  isControlled?: boolean;
 }
 
 /**
@@ -31,7 +36,7 @@ function coerceToString(input: string | number) {
 
 export function Select<T extends object>(props: SelectProps<T>) {
   const SelectImpl = React.forwardRef<HTMLSelectElement, SelectProps<T>>(
-    ({ controlName, onBlur, onChange, ...selectProps }, ref) => {
+    ({ controlName, isControlled, onBlur, onChange, ...selectProps }, ref) => {
       const { control, formState } = useFormContext();
       const { errors } = formState;
 
@@ -61,6 +66,8 @@ export function Select<T extends object>(props: SelectProps<T>) {
           render={({ field }) => (
             <NextUISelect<T>
               ref={ref}
+              // Force component into a controlled component
+              {...(isControlled && { selectedKeys: selectedKeys(field.value) })}
               defaultSelectedKeys={selectedKeys(field.value)}
               onBlur={(evt) => {
                 field.onBlur();

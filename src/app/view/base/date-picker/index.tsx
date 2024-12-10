@@ -1,3 +1,4 @@
+import { toCalendarDate } from '@internationalized/date';
 import {
   DatePicker as NextUIDatePicker,
   DatePickerProps as NextUIDatePickerProps,
@@ -9,10 +10,15 @@ import { parseAsDate } from '~/lib/date-util';
 
 interface DatePickerProps extends NextUIDatePickerProps {
   controlName: string;
+  /**
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
+   */
+  isControlled?: boolean;
 }
 
 export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
-  ({ controlName, onChange, onBlur, ...props }, ref) => {
+  ({ controlName, isControlled, onChange, onBlur, ...props }, ref) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
@@ -25,24 +31,31 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => (
-          <NextUIDatePicker
-            ref={ref}
-            defaultValue={parseAsDate(field.value)}
-            onBlur={(evt) => {
-              field.onBlur();
-              onBlur?.(evt);
-            }}
-            onChange={(val) => {
-              const date = val ?? null;
-              field.onChange(date);
-              onChange?.(date);
-            }}
-            errorMessage={error}
-            isInvalid={!!error}
-            {...props}
-          />
-        )}
+        render={({ field }) => {
+          const dateVal = parseAsDate(field.value);
+          const value = dateVal ? toCalendarDate(dateVal) : null;
+
+          return (
+            <NextUIDatePicker
+              ref={ref}
+              // Force component into a controlled component
+              {...(isControlled && { value })}
+              defaultValue={value}
+              onBlur={(evt) => {
+                field.onBlur();
+                onBlur?.(evt);
+              }}
+              onChange={(val) => {
+                const date = val ?? null;
+                field.onChange(date);
+                onChange?.(date);
+              }}
+              errorMessage={error}
+              isInvalid={!!error}
+              {...props}
+            />
+          );
+        }}
       />
     );
   }

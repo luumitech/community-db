@@ -92,12 +92,12 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     const eventDateList = eventDates?.split(';') ?? [];
     const eventTicketList = eventTickets?.split(';') ?? [];
     const eventAttendedList = eventNameList.map((eventName, idx) => {
-      // intepret date string as CalendarDate
+      // intepret date string as ZonedDateTime
       const eventDateObj = parseAsDate(eventDateList[idx]);
       const ticket = parseAsNumber(eventTicketList[idx]);
       return {
         eventName,
-        eventDate: eventDateObj ? eventDateObj.toDate('UTC') : null,
+        eventDate: eventDateObj?.toDate() ?? null,
         ticket,
       };
     });

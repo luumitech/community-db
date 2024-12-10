@@ -3,7 +3,6 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { useFilterBarContext } from '../property-filter-bar/context';
 import { ModifyModal } from './modify-modal';
 import {
   InputData,

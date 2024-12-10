@@ -1,7 +1,7 @@
+import { Card, CardBody, CardFooter } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
-import { PropertyEntry } from '../_type';
 import { ModalButton } from '../modal-button';
 import { usePageContext } from '../page-context';
 import { OccupantTable } from './occupant-table';
@@ -30,16 +30,17 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const entry = getFragment(OccupantDisplayFragment, property);
 
   return (
-    <OccupantTable
-      className={className}
-      occupantList={entry.occupantList}
-      {...(canEdit && {
-        bottomContent: (
+    <Card className={className}>
+      <CardBody>
+        <OccupantTable occupantList={entry.occupantList} />
+      </CardBody>
+      {canEdit && (
+        <CardFooter>
           <ModalButton {...occupantEditor.disclosure.getButtonProps()}>
             Edit Member Details
           </ModalButton>
-        ),
-      })}
-    />
+        </CardFooter>
+      )}
+    </Card>
   );
 };

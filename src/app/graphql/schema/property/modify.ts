@@ -27,7 +27,7 @@ const OccupantInput = builder.inputType('OccupantInput', {
 const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
-    eventDate: t.string({ required: true }),
+    eventDate: t.string(),
     ticket: t.int(),
   }),
 });
@@ -176,6 +176,7 @@ builder.mutationField('batchPropertyModify', (t) =>
       const { user, pubSub } = await ctx;
       const { input } = args;
       const { communityId: shortId, filter } = input;
+      const { eventAttended } = input.membership;
 
       // Make sure user has permission to modify
       await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
@@ -200,13 +201,14 @@ builder.mutationField('batchPropertyModify', (t) =>
         );
         if (membership) {
           const event = membership.eventAttendedList.find(
-            (entry) =>
-              entry.eventName === input.membership.eventAttended.eventName
+            (entry) => entry.eventName === eventAttended.eventName
           );
           if (!event) {
             membership.eventAttendedList.push({
-              eventName: input.membership.eventAttended.eventName,
-              eventDate: new Date(input.membership.eventAttended.eventDate),
+              eventName: eventAttended.eventName,
+              eventDate: eventAttended.eventDate
+                ? new Date(eventAttended.eventDate)
+                : null,
               ticket: null,
             });
             // Non empty event list require payment Method
@@ -221,8 +223,10 @@ builder.mutationField('batchPropertyModify', (t) =>
             paymentDeposited: null,
             eventAttendedList: [
               {
-                eventName: input.membership.eventAttended.eventName,
-                eventDate: new Date(input.membership.eventAttended.eventDate),
+                eventName: eventAttended.eventName,
+                eventDate: eventAttended.eventDate
+                  ? new Date(eventAttended.eventDate)
+                  : null,
                 ticket: null,
               },
             ],

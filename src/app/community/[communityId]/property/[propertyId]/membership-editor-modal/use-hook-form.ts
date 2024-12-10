@@ -13,7 +13,7 @@ import { z, zz } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
 import { yearSelectItems } from '../year-select-items';
 
-const MembershipEditorFragment = graphql(/* GraphQL */ `
+export const MembershipEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_MembershipEditor on Property {
     id
     updatedAt

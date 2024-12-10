@@ -10,10 +10,15 @@ export { SelectItem, SelectSection } from '@nextui-org/react';
 
 export interface TextareaProps extends NextUITextareaProps {
   controlName: string;
+  /**
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
+   */
+  isControlled?: boolean;
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ controlName, onBlur, onChange, ...props }, ref) => {
+  ({ controlName, isControlled, onBlur, onChange, ...props }, ref) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
@@ -29,6 +34,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         render={({ field }) => (
           <NextUITextarea
             ref={ref}
+            // Force component into a controlled component
+            {...(isControlled && { value: field.value ?? '' })}
             defaultValue={field.value ?? ''}
             onBlur={(evt) => {
               field.onBlur();

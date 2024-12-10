@@ -11,7 +11,6 @@ import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
-import { EventSelect } from '~/view/base/event-select';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
@@ -41,15 +40,15 @@ export const EventsAttendedSelect: React.FC<Props> = ({
     return <p>No data to display.</p>;
   }, []);
 
-  const topContent = React.useMemo(() => {
+  const eventAttendedListError =
+    errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
+  const bottomContent = React.useMemo(() => {
     return (
       <div className="flex items-center gap-4">
-        <EventSelect />
         <Button
           className="text-primary"
           endContent={<Icon icon="add" />}
           variant="faded"
-          isDisabled={!lastEventSelected}
           onClick={() =>
             append({
               eventName: lastEventSelected ?? '',
@@ -60,17 +59,10 @@ export const EventsAttendedSelect: React.FC<Props> = ({
         >
           Add Event
         </Button>
+        <div className="mb-2 text-sm text-danger">{eventAttendedListError}</div>
       </div>
     );
-  }, [append, lastEventSelected, defaultTicket]);
-
-  const eventAttendedListError =
-    errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
-  const bottomContent = React.useMemo(() => {
-    return (
-      <div className="mb-2 text-sm text-danger">{eventAttendedListError}</div>
-    );
-  }, [eventAttendedListError]);
+  }, [eventAttendedListError, append, lastEventSelected, defaultTicket]);
 
   const renderRows = React.useCallback(() => {
     return fields.map((field, idx) => (
@@ -113,7 +105,6 @@ export const EventsAttendedSelect: React.FC<Props> = ({
           // Leave enough space for one row of data only
           emptyWrapper: 'h-[40px]',
         }}
-        topContent={topContent}
         bottomContent={bottomContent}
       >
         <TableHeader>
