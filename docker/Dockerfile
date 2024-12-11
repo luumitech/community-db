@@ -19,6 +19,10 @@ RUN yarn --frozen-lockfile --network-timeout 100000
 FROM base AS build-layer
 WORKDIR /app
 
+# latest alpine changes location of libssl which prisma relies on
+# See: https://github.com/nodejs/docker-node/issues/2175#issuecomment-2530593321
+RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
+
 # Copy node dependencies
 COPY --from=dep-layer /app/node_modules ./node_modules
 # Copy source code over, then perform build
@@ -47,6 +51,10 @@ RUN apk add --no-cache \
   # For SSH into Azure app service
   openssh \
   su-exec
+
+# latest alpine changes location of libssl which prisma relies on
+# See: https://github.com/nodejs/docker-node/issues/2175#issuecomment-2530593321
+RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
 
 # user/group created for running the server
 # (so Node server can be run without root priviledge)

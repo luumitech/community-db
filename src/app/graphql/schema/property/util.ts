@@ -8,19 +8,7 @@ type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
 /** Default sort order in property list */
 export const DEFAULT_PROPERTY_ORDER_BY: Prisma.PropertyOrderByWithRelationInput[] =
-  [
-    { streetName: 'asc' },
-    /**
-     * TODO: since streetNo is a string type, so the string sorting is not ideal
-     *
-     * - `1, 10, 11, ..., 2, 20, 21, ...`
-     *
-     * But we want
-     *
-     * - `i.e. 1, 2, 3, ..., 10, 11, ...`
-     */
-    { streetNo: 'asc' },
-  ];
+  [{ streetName: 'asc' }, { streetNo: 'asc' }];
 
 /**
  * Get property database entry of a given ID and verify if user has access to it

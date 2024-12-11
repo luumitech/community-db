@@ -17,7 +17,10 @@ function schema() {
   return z.object({
     communityId: zz.string.nonEmpty(),
     address: zz.string.nonEmpty('Please provide an address'),
-    streetNo: zz.string.nonEmpty('Please provide a street number'),
+    streetNo: z.coerce
+      .number({ message: 'Please provide a street number' })
+      .int()
+      .nullable(),
     streetName: zz.string.nonEmpty('Please provide a street name'),
     postalCode: z.string(),
   });
@@ -31,7 +34,7 @@ function defaultInputData(
   return {
     communityId: item.id,
     address: '',
-    streetNo: '',
+    streetNo: null,
     streetName: '',
     postalCode: '',
   };

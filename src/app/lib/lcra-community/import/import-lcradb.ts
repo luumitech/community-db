@@ -118,7 +118,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
       },
       streetNo: {
         colIdx: importHelper.labelColumn('StreetNo'),
-        type: 'string',
+        type: 'number',
       },
       streetName: {
         colIdx: importHelper.labelColumn('StreetName'),

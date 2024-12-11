@@ -108,7 +108,7 @@ model Property {
   updatedById    String?      @db.ObjectId
   updatedBy      User?        @relation(name: "propertyUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
   address        String
-  streetNo       String?
+  streetNo       Int?
   streetName     String?
   postalCode     String?
   notes          String?
