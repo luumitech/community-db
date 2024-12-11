@@ -35,8 +35,12 @@ function takeScreenshot(name: string) {
 }
 
 describe('take screenshots for landing screen', () => {
-  beforeEach(() => {
+  before(() => {
+    // Seed data if database doesn't exist
     // cy.task('mongodb:seed-random', 10);
+  });
+
+  beforeEach(() => {
     // Determine the dimension of the viewport and screenshot
     cy.viewport(1000, 700);
     cy.login();
@@ -61,7 +65,7 @@ describe('take screenshots for landing screen', () => {
       .click();
 
     // Wait for property detail page
-    cy.findByText('Membership Info For Year', { timeout });
+    cy.findByLabelText('Membership Info For Year', { timeout });
     takeScreenshot('property-detail');
 
     cy.clickButton('Edit Membership Info');
