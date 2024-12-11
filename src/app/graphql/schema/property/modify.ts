@@ -1,4 +1,4 @@
-import { Prisma, Role } from '@prisma/client';
+import { Community, Membership, Prisma, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
@@ -166,13 +166,33 @@ const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
   }),
 });
 
+interface BatchPropertyModifyPayload {
+  community: Community;
+  propertyList: Property[];
+}
+
+const batchPropertyModifyPayloadRef = builder
+  .objectRef<BatchPropertyModifyPayload>('BatchPropertyModifyPayload')
+  .implement({
+    fields: (t) => ({
+      community: t.prismaField({
+        type: 'Community',
+        resolve: (query, result, args, ctx) => result.community,
+      }),
+      propertyList: t.prismaField({
+        type: ['Property'],
+        resolve: (query, result, args, ctx) => result.propertyList,
+      }),
+    }),
+  });
+
 builder.mutationField('batchPropertyModify', (t) =>
-  t.prismaField({
-    type: ['Property'],
+  t.field({
+    type: batchPropertyModifyPayloadRef,
     args: {
       input: t.arg({ type: BatchPropertyModifyInput, required: true }),
     },
-    resolve: async (query, _parent, args, ctx) => {
+    resolve: async (_parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { input } = args;
       const { communityId: shortId, filter } = input;
@@ -182,13 +202,13 @@ builder.mutationField('batchPropertyModify', (t) =>
       await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
 
       const community = await getCommunityEntry(user, shortId, {
-        select: { id: true },
+        select: { id: true, minYear: true, maxYear: true },
       });
 
       const findManyArgs = propertyListFindManyArgs(community.id);
       const where = propertyListFilterArgs(community.id, filter);
 
-      let propertyList = await prisma.property.findMany({
+      const propertyList = await prisma.property.findMany({
         ...findManyArgs,
         where,
       });
@@ -234,20 +254,34 @@ builder.mutationField('batchPropertyModify', (t) =>
         }
       });
 
-      propertyList = await prisma.$transaction(
-        propertyList.map((property) =>
-          prisma.property.update({
-            ...query,
-            where: { id: property.id },
+      const [updatedCommunity, ...updatedPropertyList] =
+        await prisma.$transaction([
+          // Update minYear/maxYear when appropriate
+          prisma.community.update({
+            where: { id: community.id },
             data: {
-              membershipList: property.membershipList,
+              minYear: Math.min(
+                community.minYear ?? Infinity,
+                input.membership.year
+              ),
+              maxYear: Math.max(
+                community.maxYear ?? -Infinity,
+                input.membership.year
+              ),
             },
-          })
-        )
-      );
+          }),
+          ...propertyList.map((property) =>
+            prisma.property.update({
+              where: { id: property.id },
+              data: {
+                membershipList: property.membershipList,
+              },
+            })
+          ),
+        ]);
 
       // broadcast modification to property(s)
-      propertyList.forEach((property) => {
+      updatedPropertyList.forEach((property) => {
         pubSub.publish(`community/${shortId}/property`, {
           broadcasterId: user.email,
           mutationType: MutationType.UPDATED,
@@ -255,7 +289,10 @@ builder.mutationField('batchPropertyModify', (t) =>
         });
       });
 
-      return propertyList;
+      return {
+        community: updatedCommunity,
+        propertyList: updatedPropertyList,
+      };
     },
   })
 );

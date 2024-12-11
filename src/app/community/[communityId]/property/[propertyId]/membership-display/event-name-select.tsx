@@ -1,7 +1,7 @@
+import { Select, SelectItem, SelectSection } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { Select, SelectItem, SelectSection } from '~/view/base/select';
 
 interface Props {
   className?: string;
@@ -9,14 +9,16 @@ interface Props {
 
 export const EventNameSelect: React.FC<Props> = ({ className }) => {
   const { selectEventSections, communityUi } = useAppContext();
+  const { lastEventSelected } = communityUi;
 
   return (
     <Select
       className={clsx(className)}
-      controlName="event.eventName"
-      label="Event Name"
+      label="Current Event Name"
       items={selectEventSections}
       placeholder="Select an event"
+      color="primary"
+      selectedKeys={lastEventSelected ? [lastEventSelected] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
         communityUi.actions.setLastEventSelected(

@@ -14,19 +14,26 @@ export { useHookFormWithDisclosure } from './use-hook-form';
 const BatchPropertyMutation = graphql(/* GraphQL */ `
   mutation batchPropertyModify($input: BatchPropertyModifyInput!) {
     batchPropertyModify(input: $input) {
-      id
-      updatedAt
-      updatedBy {
-        ...User
+      community {
+        id
+        minYear
+        maxYear
       }
-      membershipList {
-        year
-        isMember
-        eventAttendedList {
-          eventName
-          eventDate
+      propertyList {
+        id
+        updatedAt
+        updatedBy {
+          ...User
         }
-        paymentMethod
+        membershipList {
+          year
+          isMember
+          eventAttendedList {
+            eventName
+            eventDate
+          }
+          paymentMethod
+        }
       }
     }
   }

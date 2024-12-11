@@ -22,13 +22,20 @@ const batchModifyDocument = graphql(/* GraphQL */ `
     $input: BatchPropertyModifyInput!
   ) {
     batchPropertyModify(input: $input) {
-      id
-      address
-      membershipList {
-        year
-        eventAttendedList {
-          eventName
-          eventDate
+      community {
+        id
+        minYear
+        maxYear
+      }
+      propertyList {
+        id
+        address
+        membershipList {
+          year
+          eventAttendedList {
+            eventName
+            eventDate
+          }
         }
       }
     }
@@ -45,6 +52,8 @@ interface NewEvent {
 interface Expected {
   /** Number of properties modified */
   matchCount: number;
+  minYear: number;
+  maxYear: number;
 }
 
 type TestCaseEntry = [
@@ -82,7 +91,7 @@ describe('BatchPropertyModify', () => {
 
   const cases: TestCaseEntry[] = [
     [
-      'modify 2021 membership',
+      'add 2024 membership for those with 2021 membership',
       { memberYear: 2021 },
       {
         year: 2024,
@@ -93,10 +102,12 @@ describe('BatchPropertyModify', () => {
       {
         // There is only 1 property matching 2021 membership
         matchCount: 1,
+        minYear: 2021,
+        maxYear: 2024,
       },
     ],
     [
-      'modify 2023 membership',
+      'modify 2023 membership for those with 2023 membership',
       { memberYear: 2023 },
       {
         year: 2023,
@@ -107,10 +118,12 @@ describe('BatchPropertyModify', () => {
       {
         // There are 2 properties matching 2023 membership
         matchCount: 2,
+        minYear: 2021,
+        maxYear: 2024,
       },
     ],
     [
-      'modify 2024 membership',
+      'modify 2024 membership for those with 2024 membership',
       { memberYear: 2024 },
       {
         year: 2024,
@@ -121,20 +134,40 @@ describe('BatchPropertyModify', () => {
       {
         // There are 0 properties matching 2024 membership
         matchCount: 0,
+        minYear: 2021,
+        maxYear: 2024,
       },
     ],
     [
-      'modify 2025 membership',
+      'add 2025 membership for those with 2023 membership',
       { memberYear: 2023 },
       {
         year: 2025,
         paymentMethod: 'custom-test-payment',
         eventName: 'New Years Eve',
-        eventDate: new Date(Date.UTC(2024, 11, 31)),
+        eventDate: new Date(Date.UTC(2025, 11, 31)),
       },
       {
         // There are 2 properties matching 2023 membership
         matchCount: 2,
+        minYear: 2021,
+        maxYear: 2025,
+      },
+    ],
+    [
+      'add 2020 membership for those with 2023 membership',
+      { memberYear: 2023 },
+      {
+        year: 2020,
+        paymentMethod: 'custom-test-payment',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2020, 11, 31)),
+      },
+      {
+        // There are 2 properties matching 2023 membership
+        matchCount: 2,
+        minYear: 2020,
+        maxYear: 2024,
       },
     ],
   ];
@@ -158,7 +191,9 @@ describe('BatchPropertyModify', () => {
       },
     });
 
-    const propertyList = result.data?.batchPropertyModify;
+    const { community, propertyList } = result.data?.batchPropertyModify ?? {};
+    expect(community?.minYear).toBe(expected.minYear);
+    expect(community?.maxYear).toBe(expected.maxYear);
     expect(propertyList).toHaveLength(expected.matchCount);
     for (const { id } of propertyList ?? []) {
       const property = await getPropertyEntry(

@@ -11,6 +11,7 @@ import { usePageContext } from './page-context';
 import * as propertyDeleteModal from './property-delete-modal';
 import { PropertyDisplay } from './property-display';
 import * as propertyModifyModal from './property-modify-modal';
+import * as registerEventModal from './register-event-modal';
 
 interface Props {}
 
@@ -35,6 +36,7 @@ export const PageContent: React.FC<Props> = (props) => {
       <membershipEditorModal.MembershipEditorModal />
       <occupantEditorModal.OccupantEditorModal />
       <propertyDeleteModal.PropertyDeleteModal />
+      <registerEventModal.RegisterEventModal />
     </div>
   );
 };

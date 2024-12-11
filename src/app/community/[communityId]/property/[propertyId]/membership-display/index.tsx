@@ -4,17 +4,16 @@ import {
   CardFooter,
   CardHeader,
   Divider,
-  Textarea,
 } from '@nextui-org/react';
 import React from 'react';
+import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { ModalButton } from '../modal-button';
 import { usePageContext } from '../page-context';
-import { MemberStatusChip } from './member-status-chip';
+import { EventNameSelect } from './event-name-select';
 import { NotesView } from './notes-view';
-import { QuickEventEditor } from './quick-event-editor';
 import { RegisteredEventList } from './registered-event-list';
 import { YearSelect } from './year-select';
 
@@ -37,9 +36,9 @@ interface Props {
 
 export const MembershipDisplay: React.FC<Props> = ({ className }) => {
   const { canEdit, communityUi, minYear, maxYear } = useAppContext();
-  const { property, membershipEditor } = usePageContext();
+  const { property, membershipEditor, registerEvent } = usePageContext();
   const entry = getFragment(MembershipDisplayFragment, property);
-  const { yearSelected } = communityUi;
+  const { yearSelected, lastEventSelected } = communityUi;
   const { membershipList } = entry;
 
   const membership = React.useMemo(() => {
@@ -66,12 +65,20 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
             onYearChange={communityUi.actions.setYearSelected}
           />
           <div className="grow" />
-          <MemberStatusChip membership={membership} />
+          <MemberStatusChip isMember={membership?.isMember} />
         </CardHeader>
         <CardBody className="gap-2">
           <RegisteredEventList membership={membership} />
-          <Divider />
-          <QuickEventEditor />
+          <div className="flex gap-2 items-center">
+            <EventNameSelect className="max-w-xs" />
+            <ModalButton
+              isDisabled={!lastEventSelected}
+              color="primary"
+              {...registerEvent.disclosure.getButtonProps()}
+            >
+              Register Event
+            </ModalButton>
+          </div>
           <Divider />
           <NotesView notes={entry.notes} />
         </CardBody>

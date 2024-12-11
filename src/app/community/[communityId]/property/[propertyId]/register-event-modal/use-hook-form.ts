@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
@@ -7,8 +8,8 @@ import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
-import { MembershipEditorFragment } from '../../membership-editor-modal/use-hook-form';
-import { usePageContext } from '../../page-context';
+import { type PropertyEntry } from '../_type';
+import { MembershipEditorFragment } from '../membership-editor-modal/use-hook-form';
 
 function schema() {
   return z.object({
@@ -16,6 +17,7 @@ function schema() {
       id: zz.string.nonEmpty(),
       updatedAt: zz.string.nonEmpty(),
     }),
+    notes: z.string().nullable(),
     membership: z.object({
       year: zz.coerce.toNumber('Must select a year'),
       paymentMethod: zz.string.nonEmpty('Must select a payment method'),
@@ -25,6 +27,8 @@ function schema() {
       eventDate: zz.coerce.toIsoDate(),
       ticket: z.coerce.number({ message: 'Must be a number' }).int().min(0),
     }),
+    /** Whether member is already a member when registering */
+    isMember: z.boolean(),
     /**
      * Determine if the register button should be enabled For example, if user
      * is already registered in the event previously, then the register button
@@ -47,7 +51,7 @@ function defaultInputData(
   const event = (membership?.eventAttendedList ?? []).find(
     (entry) => entry.eventName === lastEventSelected
   );
-  const isMember = (membership?.eventAttendedList ?? []).length > 0;
+  const isMember = !!membership?.isMember;
   const canRegister = !isMember || !event;
 
   return {
@@ -55,6 +59,7 @@ function defaultInputData(
       id: item.id,
       updatedAt: item.updatedAt,
     },
+    notes: item.notes ?? '',
     membership: {
       year,
       paymentMethod: membership?.paymentMethod ?? '',
@@ -64,13 +69,13 @@ function defaultInputData(
       eventDate: event?.eventDate ?? new Date(Date.now()).toISOString(),
       ticket: event?.ticket ?? defaultTicket,
     },
+    isMember,
     canRegister,
   };
 }
 
-export function useHookForm() {
+export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const { communityUi } = useAppContext();
-  const { property: fragment } = usePageContext();
   const { yearSelected, lastEventSelected, defaultTicket } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {
@@ -91,10 +96,23 @@ export function useHookForm() {
     reset(defaultValues);
   }, [reset, defaultValues]);
 
-  return { formMethods, property };
+  /**
+   * When modal is closed, reset form value with default values derived from
+   * fragment
+   */
+  const onModalClose = React.useCallback(() => {
+    reset(defaultValues);
+  }, [reset, defaultValues]);
+  const disclosure = useDisclosure({
+    onClose: onModalClose,
+  });
+
+  return { disclosure, formMethods, property };
 }
 
-export type UseHookFormResult = ReturnType<typeof useHookForm>;
+export type UseHookFormWithDisclosureResult = ReturnType<
+  typeof useHookFormWithDisclosure
+>;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();
