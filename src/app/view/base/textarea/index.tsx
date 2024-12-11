@@ -1,7 +1,7 @@
 import {
   Textarea as NextUITextarea,
   TextAreaProps as NextUITextareaProps,
-} from '@nextui-org/react';
+} from '@nextui-org/input';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
@@ -10,10 +10,15 @@ export { SelectItem, SelectSection } from '@nextui-org/react';
 
 export interface TextareaProps extends NextUITextareaProps {
   controlName: string;
+  /**
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
+   */
+  isControlled?: boolean;
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ controlName, onBlur, onChange, ...props }, ref) => {
+  ({ controlName, isControlled, onBlur, onChange, ...props }, ref) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
@@ -29,9 +34,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         render={({ field }) => (
           <NextUITextarea
             ref={ref}
-            // Force component to be controlled, so setValue would
-            // work properly
-            value={field.value ?? null}
+            // Force component into a controlled component
+            {...(isControlled && { value: field.value ?? '' })}
+            defaultValue={field.value ?? ''}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);

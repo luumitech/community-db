@@ -64,6 +64,11 @@ export const PageContent: React.FC<Props> = (props) => {
       first: 10, // load 10 entries initally
       filter: filterArg,
     },
+    context: {
+      // Requests get debounced together if they share the same debounceKey.
+      // Requests without a debounce key are passed to the next link unchanged.
+      debounceKey: 'CommunityFromIdQuery',
+    },
   });
   useGraphqlErrorHandler(result);
   const { data, loading, fetchMore } = result;

@@ -1,11 +1,19 @@
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
-import { ScrollShadow } from '@nextui-org/scroll-shadow';
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+} from '@nextui-org/react';
 import React from 'react';
+import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { PropertyEntry } from '../_type';
-import { MemberStatusChip } from './member-status-chip';
+import { ModalButton } from '../modal-button';
+import { usePageContext } from '../page-context';
+import { EventNameSelect } from './event-name-select';
+import { NotesView } from './notes-view';
 import { RegisteredEventList } from './registered-event-list';
 import { YearSelect } from './year-select';
 
@@ -24,13 +32,13 @@ const MembershipDisplayFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment: PropertyEntry;
 }
 
-export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
-  const entry = getFragment(MembershipDisplayFragment, fragment);
-  const { communityUi, minYear, maxYear } = useAppContext();
-  const { yearSelected } = communityUi;
+export const MembershipDisplay: React.FC<Props> = ({ className }) => {
+  const { canEdit, communityUi, minYear, maxYear } = useAppContext();
+  const { property, membershipEditor, registerEvent } = usePageContext();
+  const entry = getFragment(MembershipDisplayFragment, property);
+  const { yearSelected, lastEventSelected } = communityUi;
   const { membershipList } = entry;
 
   const membership = React.useMemo(() => {
@@ -57,16 +65,30 @@ export const MembershipDisplay: React.FC<Props> = ({ className, fragment }) => {
             onYearChange={communityUi.actions.setYearSelected}
           />
           <div className="grow" />
-          <MemberStatusChip membership={membership} />
+          <MemberStatusChip isMember={membership?.isMember} />
         </CardHeader>
-        <CardBody>
+        <CardBody className="gap-2">
           <RegisteredEventList membership={membership} />
-          <Divider className="my-2" />
-          <p className="font-light">Notes:</p>
-          <ScrollShadow className="h-28">
-            <span className="whitespace-pre-wrap text-sm">{entry.notes}</span>
-          </ScrollShadow>
+          <div className="flex gap-2 items-center">
+            <EventNameSelect className="max-w-xs" />
+            <ModalButton
+              isDisabled={!lastEventSelected}
+              color="primary"
+              {...registerEvent.disclosure.getButtonProps()}
+            >
+              Register Event
+            </ModalButton>
+          </div>
+          <Divider />
+          <NotesView notes={entry.notes} />
         </CardBody>
+        {canEdit && (
+          <CardFooter>
+            <ModalButton {...membershipEditor.disclosure.getButtonProps()}>
+              Edit Membership Info
+            </ModalButton>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );

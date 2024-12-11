@@ -55,6 +55,7 @@ describe('import community xlsx', () => {
                       eventAttendedList {
                         eventName
                         eventDate
+                        ticket
                       }
                       paymentMethod
                       paymentDeposited
@@ -134,11 +135,13 @@ describe('import community xlsx', () => {
               __typename: 'Event',
               eventName: 'Summer Festival',
               eventDate: '2023-06-11',
+              ticket: 2,
             },
             {
               __typename: 'Event',
               eventName: 'Corn Roast',
               eventDate: '2023-08-20',
+              ticket: 3,
             },
           ],
           isMember: true,
@@ -153,6 +156,7 @@ describe('import community xlsx', () => {
               __typename: 'Event',
               eventName: 'Membership Carry Forward',
               eventDate: '2022-02-10',
+              ticket: 0,
             },
           ],
           isMember: true,
@@ -167,6 +171,7 @@ describe('import community xlsx', () => {
               __typename: 'Event',
               eventName: 'Membership Carry Forward',
               eventDate: '2021-01-23',
+              ticket: 0,
             },
           ],
           isMember: true,

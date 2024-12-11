@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
-  const { formState, watch } = useHookFormContext();
+  const { watch } = useHookFormContext();
   const selectedYear = watch('membership.year');
 
   const yearItems = React.useMemo(() => {

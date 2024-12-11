@@ -12,7 +12,7 @@ import {
 import React from 'react';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
 import { getFragment, graphql } from '~/graphql/generated';
-import { type PropertyEntry } from '../_type';
+import { usePageContext } from '../page-context';
 
 const PropertyDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyDisplay on Property {
@@ -25,16 +25,12 @@ const PropertyDisplayFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: SlotsToClasses<TableSlots>;
-  fragment?: PropertyEntry;
   isLoading?: boolean;
 }
 
-export const PropertyDisplay: React.FC<Props> = ({
-  className,
-  fragment,
-  isLoading,
-}) => {
-  const entry = getFragment(PropertyDisplayFragment, fragment);
+export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
+  const { property } = usePageContext();
+  const entry = getFragment(PropertyDisplayFragment, property);
   const { columns, renderCell } = useTableData();
   const rows = entry ? [{ key: entry.id, ...entry }] : [];
 

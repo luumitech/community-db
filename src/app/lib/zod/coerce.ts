@@ -1,6 +1,7 @@
 import * as R from 'remeda';
 import { z } from 'zod';
 import { isValidDate } from '~/lib/date-util';
+import { parseAsNumber } from '~/lib/number-util';
 
 export class Coerce {
   /**
@@ -19,12 +20,15 @@ export class Coerce {
   }
 
   /**
-   * Coerce input as number
+   * Coerce input as number. This is useful for used in a selection component,
+   * when you do not want empty selection (i.e. '') to be converted to 0.
+   *
+   * In contrast, `z.coerce.number()` transforms '' to 0.
    *
    * Error condition:
    *
-   * - Null (unless you append nullable())
-   * - Empty string
+   * - Null/undefined
+   * - Empty string (useful for reject empty selection)
    * - NaN
    */
   toNumber(msg?: string) {
@@ -37,14 +41,11 @@ export class Coerce {
         return z.NEVER;
       };
 
-      if (val == null || val === '') {
+      const num = parseAsNumber(val);
+      if (num == null) {
         return onError();
       }
-      const asNum = Number(val);
-      if (isNaN(asNum)) {
-        return onError();
-      }
-      return asNum;
+      return num;
     });
   }
 
@@ -60,7 +61,7 @@ export class Coerce {
    *
    * Error condition:
    *
-   * - Null (unless you append nullable())
+   * - Null
    *
    * @example `2023-02-26T00:00:00.000Z`
    */

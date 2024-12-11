@@ -163,18 +163,19 @@ export function propertyListFilterArgs(
   const query = propertyListFindManyArgs(communityId).where;
   const { searchText, memberEvent, memberYear } = args ?? {};
 
-  if (searchText) {
+  const trimSearchText = searchText?.trim();
+  if (trimSearchText) {
     if (!query.OR) {
       query.OR = [];
     }
     query.OR.push(
-      { address: { mode: 'insensitive', contains: searchText } },
+      { address: { mode: 'insensitive', contains: trimSearchText } },
       {
         occupantList: {
           some: {
             OR: [
-              { firstName: { mode: 'insensitive', contains: searchText } },
-              { lastName: { mode: 'insensitive', contains: searchText } },
+              { firstName: { mode: 'insensitive', contains: trimSearchText } },
+              { lastName: { mode: 'insensitive', contains: trimSearchText } },
             ],
           },
         },

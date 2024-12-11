@@ -1,3 +1,4 @@
+import { toCalendarDate } from '@internationalized/date';
 import {
   DatePicker as NextUIDatePicker,
   DatePickerProps as NextUIDatePickerProps,
@@ -7,44 +8,54 @@ import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { parseAsDate } from '~/lib/date-util';
 
-interface DatePickerProps
-  extends Omit<NextUIDatePickerProps, 'onChange' | 'onBlur'> {
+interface DatePickerProps extends NextUIDatePickerProps {
   controlName: string;
   /**
-   * The onChange/onBlur from the react-hook-form register method is not
-   * compatible with the onChange/onBlur onNextUIDatePicker, so we override it
-   * with the react-hook-form Controller version
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
    */
-  onChange?: unknown;
-  onBlur?: unknown;
+  isControlled?: boolean;
 }
 
 export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
-  ({ controlName, onChange, onBlur, ...props }, ref) => {
+  ({ controlName, isControlled, onChange, onBlur, ...props }, ref) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
+    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
     const error = React.useMemo<string | undefined>(() => {
-      const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
       return errObj?.message as string;
-    }, [errors, controlName]);
+    }, [errObj]);
 
     return (
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => (
-          <NextUIDatePicker
-            ref={ref}
-            defaultValue={parseAsDate(field.value)}
-            onChange={(val) => {
-              field.onChange(val ?? null);
-            }}
-            errorMessage={error}
-            isInvalid={!!error}
-            {...props}
-          />
-        )}
+        render={({ field }) => {
+          const dateVal = parseAsDate(field.value);
+          const value = dateVal ? toCalendarDate(dateVal) : null;
+
+          return (
+            <NextUIDatePicker
+              ref={ref}
+              // Force component into a controlled component
+              {...(isControlled && { value })}
+              defaultValue={value}
+              onBlur={(evt) => {
+                field.onBlur();
+                onBlur?.(evt);
+              }}
+              onChange={(val) => {
+                const date = val ?? null;
+                field.onChange(date);
+                onChange?.(date);
+              }}
+              errorMessage={error}
+              isInvalid={!!error}
+              {...props}
+            />
+          );
+        }}
       />
     );
   }

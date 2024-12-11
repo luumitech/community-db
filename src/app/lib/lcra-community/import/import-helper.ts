@@ -37,6 +37,7 @@ interface MMembership
   // and map them separately afterwards
   eventNames: string | null;
   eventDates: string | null;
+  eventTickets: string | null;
 }
 
 /** Type of value being mapped (to be stored in database) */

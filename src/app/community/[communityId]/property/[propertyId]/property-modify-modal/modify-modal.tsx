@@ -10,19 +10,16 @@ import { AddressEditorForm } from '~/community/[communityId]/common/address-edit
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { LastModified } from '~/view/last-modified';
-import {
-  useHookFormContext,
-  type InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { usePageContext } from '../page-context';
+import { useHookFormContext, type InputData } from './use-hook-form';
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { disclosure, property } = hookForm;
+export const ModifyModal: React.FC<Props> = ({ onSave }) => {
+  const { propertyModify } = usePageContext();
+  const { disclosure, property } = propertyModify;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

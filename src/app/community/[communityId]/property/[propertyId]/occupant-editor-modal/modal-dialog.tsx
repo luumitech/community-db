@@ -10,21 +10,21 @@ import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
+import { usePageContext } from '../page-context';
 import { Editor } from './editor';
 import {
   InputData,
-  UseHookFormWithDisclosureResult,
   occupantDefault,
   useHookFormContext,
 } from './use-hook-form';
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { disclosure } = hookForm;
+export const ModalDialog: React.FC<Props> = ({ onSave }) => {
+  const { occupantEditor } = usePageContext();
+  const { disclosure } = occupantEditor;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { control, formState, handleSubmit } = useHookFormContext();

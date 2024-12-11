@@ -1,7 +1,12 @@
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { Select, SelectItem, SelectSection } from '~/view/base/select';
+import {
+  Select,
+  SelectItem,
+  SelectProps,
+  SelectSection,
+} from '~/view/base/select';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -11,7 +16,15 @@ interface Props {
 
 export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   const { selectPaymentMethodSections } = useAppContext();
-  const { formState } = useHookFormContext();
+  const { clearErrors } = useHookFormContext();
+
+  const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
+    React.useCallback(
+      (keys) => {
+        clearErrors(`membershipList.${yearIdx}.eventAttendedList`);
+      },
+      [clearErrors, yearIdx]
+    );
 
   return (
     <div className={clsx(className)}>
@@ -22,6 +35,7 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
         items={selectPaymentMethodSections}
         placeholder="Select a payment method"
         selectionMode="single"
+        onSelectionChange={onSelectionChange}
       >
         {(section) => (
           <SelectSection

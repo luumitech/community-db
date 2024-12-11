@@ -8,9 +8,10 @@ export interface ConfirmationModalArg {
 }
 
 /**
- * Helper hook for managing the confirmation Modal dialog The confirmation modal
- * is installed once in the app, and this hook is used by the AppContext to
- * control its behavior
+ * Helper hook for managing the confirmation Modal dialog
+ *
+ * The confirmation modal is installed once in the app, and this hook is used by
+ * the AppContext to control its behavior
  */
 export function useConfirmationModal() {
   const disclosure = useDisclosure();

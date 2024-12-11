@@ -1,6 +1,8 @@
+import { type Membership } from '@prisma/client';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { parseAsDate } from '~/lib/date-util';
+import { parseAsNumber } from '~/lib/number-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { extractEventList } from './event-list-util';
 import { ImportHelper } from './import-helper';
@@ -53,7 +55,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     return occupant;
   }
 
-  function addMembership(rowIdx: number, year: number) {
+  function addMembership(rowIdx: number, year: number): Membership {
     const prefix = `Y${year}`;
     const _membership = importHelper.membership(rowIdx, {
       // isMember: {
@@ -70,6 +72,10 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         colIdx: importHelper.labelColumn(`${prefix}-date`),
         type: 'string',
       },
+      eventTickets: {
+        colIdx: importHelper.labelColumn(`${prefix}-ticket`),
+        type: 'string',
+      },
       paymentMethod: {
         colIdx: importHelper.labelColumn(`${prefix}-payment`),
         type: 'string',
@@ -81,15 +87,18 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     });
     // Map eventNameList/eventDateList into the format of
     // eventAttendedList
-    const { eventNames, eventDates, ...membership } = _membership;
+    const { eventNames, eventDates, eventTickets, ...membership } = _membership;
     const eventNameList = eventNames?.split(';') ?? [];
     const eventDateList = eventDates?.split(';') ?? [];
+    const eventTicketList = eventTickets?.split(';') ?? [];
     const eventAttendedList = eventNameList.map((eventName, idx) => {
-      // intepret date string as CalendarDate
+      // intepret date string as ZonedDateTime
       const eventDateObj = parseAsDate(eventDateList[idx]);
+      const ticket = parseAsNumber(eventTicketList[idx]);
       return {
         eventName,
-        eventDate: eventDateObj ? eventDateObj.toDate('UTC') : null,
+        eventDate: eventDateObj?.toDate() ?? null,
+        ticket,
       };
     });
 

@@ -1,6 +1,9 @@
+import { Card, CardBody, CardFooter } from '@nextui-org/react';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
-import { PropertyEntry } from '../_type';
+import { ModalButton } from '../modal-button';
+import { usePageContext } from '../page-context';
 import { OccupantTable } from './occupant-table';
 
 const OccupantDisplayFragment = graphql(/* GraphQL */ `
@@ -19,13 +22,25 @@ const OccupantDisplayFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment: PropertyEntry;
 }
 
-export const OccupantDisplay: React.FC<Props> = ({ className, fragment }) => {
-  const entry = getFragment(OccupantDisplayFragment, fragment);
+export const OccupantDisplay: React.FC<Props> = ({ className }) => {
+  const { canEdit } = useAppContext();
+  const { property, occupantEditor } = usePageContext();
+  const entry = getFragment(OccupantDisplayFragment, property);
 
   return (
-    <OccupantTable className={className} occupantList={entry.occupantList} />
+    <Card className={className}>
+      <CardBody>
+        <OccupantTable occupantList={entry.occupantList} />
+      </CardBody>
+      {canEdit && (
+        <CardFooter>
+          <ModalButton {...occupantEditor.disclosure.getButtonProps()}>
+            Edit Member Details
+          </ModalButton>
+        </CardFooter>
+      )}
+    </Card>
   );
 };

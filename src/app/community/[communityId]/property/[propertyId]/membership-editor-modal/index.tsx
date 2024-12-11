@@ -3,13 +3,14 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
+import { usePageContext } from '../page-context';
 import { ModalDialog } from './modal-dialog';
-import { InputData, UseHookFormWithDisclosureResult } from './use-hook-form';
+import { InputData } from './use-hook-form';
 
 export { useHookFormWithDisclosure } from './use-hook-form';
 export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
-const PropertyMutation = graphql(/* GraphQL */ `
+export const PropertyMutation = graphql(/* GraphQL */ `
   mutation membershipModify($input: PropertyModifyInput!) {
     propertyModify(input: $input) {
       ...PropertyId_MembershipEditor
@@ -19,15 +20,12 @@ const PropertyMutation = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  hookForm: UseHookFormWithDisclosureResult;
 }
 
-export const MembershipEditorModal: React.FC<Props> = ({
-  className,
-  hookForm,
-}) => {
+export const MembershipEditorModal: React.FC<Props> = ({ className }) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { formMethods } = hookForm;
+  const { membershipEditor } = usePageContext();
+  const { formMethods } = membershipEditor;
   const { formState } = formMethods;
   const onSave = async (input: InputData) => {
     if (!formState.isDirty) {
@@ -47,7 +45,7 @@ export const MembershipEditorModal: React.FC<Props> = ({
   return (
     <div className={className}>
       <FormProvider {...formMethods}>
-        <ModalDialog hookForm={hookForm} onSave={onSave} />
+        <ModalDialog onSave={onSave} />
       </FormProvider>
     </div>
   );

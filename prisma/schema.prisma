@@ -134,6 +134,8 @@ type Occupant {
 type Event {
   eventName String
   eventDate DateTime?
+  /// Number of tickets given out for this event
+  ticket    Int?
 }
 
 /// Membership information within a property

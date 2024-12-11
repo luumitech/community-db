@@ -1,6 +1,7 @@
 import { Accordion, AccordionItem, Button, Chip } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { Icon } from '~/view/base/icon';
 import { type CommunityEntry } from '../../_type';
@@ -35,11 +36,7 @@ export const AdvanceFilter: React.FC<Props> = ({ className, community }) => {
             {selectedYear}
           </Chip>
         )}
-        {!!selectedEvent && (
-          <Chip variant="bordered" radius="sm" color={'primary'}>
-            {selectedEvent}
-          </Chip>
-        )}
+        {!!selectedEvent && <EventChip eventName={selectedEvent} />}
       </div>
     );
   }, [filterSpecified, selectedYear, selectedEvent]);
