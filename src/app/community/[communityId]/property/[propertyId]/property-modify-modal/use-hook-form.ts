@@ -27,7 +27,7 @@ function schema() {
       updatedAt: zz.string.nonEmpty(),
     }),
     address: zz.string.nonEmpty(),
-    streetNo: zz.string.nonEmpty(),
+    streetNo: z.coerce.number({ message: 'Must be a number' }).int().nullable(),
     streetName: zz.string.nonEmpty(),
     postalCode: z.string(),
   });
@@ -44,7 +44,7 @@ function defaultInputData(fragment: PropertyEntry): InputData {
       updatedAt: item.updatedAt,
     },
     address: item.address,
-    streetNo: item.streetNo ?? '',
+    streetNo: item.streetNo ?? null,
     streetName: item.streetName ?? '',
     postalCode: item.postalCode ?? '',
   };

@@ -1,5 +1,6 @@
 import { builder } from '~/graphql/builder';
 import { GeoapifyApi } from '~/lib/geoapify-api';
+import { parseAsNumber } from '~/lib/number-util';
 import { geocodeRef } from './object';
 
 const GeocodeFromTextInput = builder.inputType('GeocodeFromTextInput', {
@@ -21,7 +22,7 @@ builder.queryField('geocodeFromText', (t) =>
       return {
         addressLine1: result.address_line1,
         addressLine2: result.address_line2,
-        streetNo: result.housenumber,
+        streetNo: parseAsNumber(result.housenumber),
         streetName: result.street,
         postalCode: result.postcode,
         city: result.city,

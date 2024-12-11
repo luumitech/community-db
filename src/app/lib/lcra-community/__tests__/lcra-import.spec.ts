@@ -81,7 +81,7 @@ describe('import community xlsx', () => {
     expect(fortune).toEqual({
       __typename: 'Property',
       address: '99 Fortune Drive',
-      streetNo: '99',
+      streetNo: 99,
       streetName: 'Fortune Drive',
       postalCode: 'A0A0A0',
       notes: 'Notes',

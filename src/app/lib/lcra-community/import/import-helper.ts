@@ -1,6 +1,7 @@
 import type { Membership, Occupant, Property } from '@prisma/client';
 import * as R from 'remeda';
 import { isValidDate } from '~/lib/date-util';
+import { parseAsNumber } from '~/lib/number-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 export interface ImportHelperConfig {
@@ -114,7 +115,7 @@ export class ImportHelper {
         return val.toString() || null;
       case 'number':
         if (typeof val !== 'number') {
-          return parseFloat(val.toString());
+          return parseAsNumber(val.toString());
         } else {
           return val;
         }

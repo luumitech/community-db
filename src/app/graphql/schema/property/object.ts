@@ -46,7 +46,7 @@ export const propertyRef = builder.prismaObject('Property', {
   fields: (t) => ({
     id: t.exposeString('shortId'),
     address: t.exposeString('address'),
-    streetNo: t.exposeString('streetNo', { nullable: true }),
+    streetNo: t.exposeInt('streetNo', { nullable: true }),
     streetName: t.exposeString('streetName', { nullable: true }),
     postalCode: t.exposeString('postalCode', { nullable: true }),
     notes: t.exposeString('notes', { nullable: true }),

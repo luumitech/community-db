@@ -44,7 +44,7 @@ const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     address: t.string(),
-    streetNo: t.string(),
+    streetNo: t.int(),
     streetName: t.string(),
     postalCode: t.string(),
     notes: t.string(),

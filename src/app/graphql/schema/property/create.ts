@@ -13,7 +13,7 @@ const PropertyCreateInput = builder.inputType('PropertyCreateInput', {
       required: true,
     }),
     address: t.string({ description: 'property address', required: true }),
-    streetNo: t.string({ description: 'street number', required: true }),
+    streetNo: t.int({ description: 'street number' }),
     streetName: t.string({ description: 'street name', required: true }),
     postalCode: t.string({ description: 'postal code' }),
   }),

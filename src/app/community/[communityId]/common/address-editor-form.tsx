@@ -8,7 +8,7 @@ import { Input } from '~/view/base/input';
 
 interface InputData {
   address: string;
-  streetNo: string;
+  streetNo: number;
   streetName: string;
   postalCode: string;
 }
@@ -45,7 +45,10 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
       });
       const output = result.data?.geocodeFromText;
       if (output) {
-        const setFormValue = (name: keyof InputData, value?: string | null) => {
+        const setFormValue = (
+          name: keyof InputData,
+          value?: string | number | null
+        ) => {
           setValue(name, value ?? '', {
             shouldDirty: true,
             shouldValidate: true,
