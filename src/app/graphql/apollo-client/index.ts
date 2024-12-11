@@ -12,6 +12,7 @@ import {
 import { onError } from '@apollo/client/link/error';
 import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { getMainDefinition } from '@apollo/client/utilities';
+import DebounceLink from 'apollo-link-debounce';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { print } from 'graphql';
 import { Client, ClientOptions, createClient } from 'graphql-sse';
@@ -79,6 +80,14 @@ const persistedQuerylink = createPersistedQueryLink({
 // const httpLink = new HttpLink({
 const httpLink = createUploadLink({ uri: GRAPHQL_URL });
 
+/**
+ * Debounce graphQL calls
+ *
+ * See: https://github.com/helfer/apollo-link-debounce
+ */
+const DEFAULT_DEBOUNCE_TIMEOUT = 500;
+const debounceLink = new DebounceLink(DEFAULT_DEBOUNCE_TIMEOUT);
+
 // Subscription enabled link
 const sseLink = new SSELink({ url: GRAPHQL_URL });
 
@@ -91,7 +100,7 @@ const splitLink = split(
     );
   },
   from([sseLink]),
-  from([errorLink, httpLink])
+  from([errorLink, debounceLink, httpLink])
 );
 
 const apolloClient = new ApolloClient({
