@@ -1,5 +1,4 @@
 import { useSubscription } from '@apollo/client';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -46,13 +45,10 @@ function mutationVerb(mutationType: GQL.MutationType) {
   }
 }
 
-export function useSetupSubscription() {
-  const { communityId } = useAppContext();
-
+export function useSetupSubscription(communityId: string) {
   // Subscribe to changes within community
   useSubscription(CommunitySubscription, {
-    variables: { id: communityId! },
-    skip: communityId == null,
+    variables: { id: communityId },
     onData: ({ client, data }) => {
       const { cache } = client;
       const communityFromId = data.data?.communityFromId;
@@ -72,8 +68,7 @@ export function useSetupSubscription() {
   });
 
   useSubscription(PropertySubscription, {
-    variables: { communityId: communityId! },
-    skip: communityId == null,
+    variables: { communityId },
     onData: ({ client, data }) => {
       const { cache } = client;
       const propertyInCommunity = data.data?.propertyInCommunity;

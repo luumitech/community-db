@@ -18,7 +18,7 @@ export const EventSelect: React.FC<Props> = ({ className, event }) => {
       }}
       size="sm"
       label="Membership Event"
-      aria-label="Membership Event"
+      description="Show properties who registered at the specified event"
       items={visibleEventItems}
       selectedKeys={event.values()}
       selectionMode="single"

@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { z, zz } from '~/lib/zod';
 import { CommunityEntry } from '../_type';
-import { useFilterBarContext } from '../property-filter-bar/context';
 
 const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {

@@ -10,11 +10,7 @@ import {
   communityMinMaxYearUpdateArgs,
   getCommunityEntry,
 } from '../community/util';
-import {
-  getPropertyEntry,
-  propertyListFilterArgs,
-  propertyListFindManyArgs,
-} from './util';
+import { getPropertyEntry, propertyListFindManyArgs } from './util';
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -169,6 +165,9 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
     memberYear: t.int({
       description: 'Only property who is a member of the given year',
     }),
+    nonMemberYear: t.int({
+      description: 'Only property who is NOT a member of the given year',
+    }),
     memberEvent: t.string({
       description: 'Only property who attended this event',
     }),
@@ -230,13 +229,8 @@ builder.mutationField('batchPropertyModify', (t) =>
         select: { id: true, minYear: true, maxYear: true },
       });
 
-      const findManyArgs = propertyListFindManyArgs(community.id);
-      const where = propertyListFilterArgs(community.id, filter);
-
-      const propertyList = await prisma.property.findMany({
-        ...findManyArgs,
-        where,
-      });
+      const findManyArgs = await propertyListFindManyArgs(community.id, filter);
+      const propertyList = await prisma.property.findMany(findManyArgs);
 
       // Modify the propertyList in memory, and then write them to
       // database afterwards

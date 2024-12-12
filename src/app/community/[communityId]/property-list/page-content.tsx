@@ -14,11 +14,11 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import * as R from 'remeda';
+import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 import { PropertyFilterBar } from './property-filter-bar';
-import { useFilterBarContext } from './property-filter-bar/context';
 import { useTableData } from './use-table-data';
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `

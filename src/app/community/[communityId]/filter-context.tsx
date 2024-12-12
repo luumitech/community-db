@@ -7,7 +7,8 @@ type ContextT = Readonly<{
   /** CommunityId (read from route param) */
   communityId: string;
   /** Filter control: membership year */
-  year: Set<string>;
+  memberYear: Set<string>;
+  nonMemberYear: Set<string>;
   event: Set<string>;
 
   /** Property filter arguments */
@@ -24,11 +25,13 @@ interface Props {
 
 export function FilterBarProvider({ communityId, ...props }: Props) {
   const { communityUi } = useAppContext();
-  const year = useSet<string>([]);
+  const memberYear = useSet<string>([]);
+  const nonMemberYear = useSet<string>([]);
   const event = useSet<string>([]);
   const searchText = useDebounce(communityUi.propertyListSearch, 300);
 
-  const [selectedYearStr] = year;
+  const [selectedMemberYearStr] = memberYear;
+  const [selectedNonMemberYearStr] = nonMemberYear;
   const [selectedEvent] = event;
 
   const filterArg = React.useMemo<GQL.PropertyFilterInput>(() => {
@@ -36,21 +39,31 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
     if (searchText) {
       arg.searchText = searchText;
     }
-    const selectedYear = parseInt(selectedYearStr, 10);
-    if (!isNaN(selectedYear)) {
-      arg.memberYear = selectedYear;
+    const selectedMemberYear = parseInt(selectedMemberYearStr, 10);
+    if (!isNaN(selectedMemberYear)) {
+      arg.memberYear = selectedMemberYear;
+    }
+    const selectedNonMemberYear = parseInt(selectedNonMemberYearStr, 10);
+    if (!isNaN(selectedNonMemberYear)) {
+      arg.nonMemberYear = selectedNonMemberYear;
     }
     if (selectedEvent) {
       arg.memberEvent = selectedEvent;
     }
     return arg;
-  }, [searchText, selectedYearStr, selectedEvent]);
+  }, [
+    searchText,
+    selectedMemberYearStr,
+    selectedNonMemberYearStr,
+    selectedEvent,
+  ]);
 
   return (
     <Context.Provider
       value={{
         communityId,
-        year,
+        memberYear,
+        nonMemberYear,
         event,
         filterArg,
       }}
