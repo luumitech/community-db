@@ -1,11 +1,15 @@
-import { Community, Membership, Prisma, Property, Role } from '@prisma/client';
+import { Community, Prisma, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
+import { extractYearRange } from '~/lib/lcra-community/import/year-range-util';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
-import { getCommunityEntry } from '../community/util';
+import {
+  communityMinMaxYearUpdateArgs,
+  getCommunityEntry,
+} from '../community/util';
 import {
   getPropertyEntry,
   propertyListFilterArgs,
@@ -53,13 +57,33 @@ const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
   }),
 });
 
+interface PropertyModifyPayload {
+  community: Community;
+  property: Property;
+}
+
+const propertyModifyPayloadRef = builder
+  .objectRef<PropertyModifyPayload>('PropertyModifyPayload')
+  .implement({
+    fields: (t) => ({
+      community: t.prismaField({
+        type: 'Community',
+        resolve: (query, result, args, ctx) => result.community,
+      }),
+      property: t.prismaField({
+        type: 'Property',
+        resolve: (query, result, args, ctx) => result.property,
+      }),
+    }),
+  });
+
 builder.mutationField('propertyModify', (t) =>
-  t.prismaField({
-    type: 'Property',
+  t.field({
+    type: propertyModifyPayloadRef,
     args: {
       input: t.arg({ type: PropertyModifyInput, required: true }),
     },
-    resolve: async (query, _parent, args, ctx) => {
+    resolve: async (_parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { self, ...input } = args.input;
       const shortId = self.id;
@@ -70,6 +94,7 @@ builder.mutationField('propertyModify', (t) =>
           updatedAt: true,
           community: {
             select: {
+              id: true,
               shortId: true,
               minYear: true,
               maxYear: true,
@@ -90,48 +115,48 @@ builder.mutationField('propertyModify', (t) =>
       ]);
 
       // Check if community min/max year needs to be updated
-      let minYear: number | undefined;
-      let maxYear: number | undefined;
-      if (input.membershipList?.length) {
-        const len = input.membershipList.length;
-        const listMinYear = input.membershipList[len - 1].year;
-        const listMaxYear = input.membershipList[0].year;
-        if (!entry.community.minYear || listMinYear < entry.community.minYear) {
-          minYear = listMinYear;
-        }
-        if (!entry.community.maxYear || listMaxYear > entry.community.maxYear) {
-          maxYear = listMaxYear;
-        }
-      }
+      const yearRange = extractYearRange([input]);
+      const communityUpdateDataArgs = communityMinMaxYearUpdateArgs(
+        entry.community,
+        yearRange.minYear,
+        yearRange.maxYear
+      );
 
-      const property = await prisma.property.update({
-        ...query,
-        where: {
-          id: entry.id,
-        },
-        // @ts-expect-error: composite types like 'occupantList'
-        // is allowed to be undefined
-        data: {
-          updatedBy: { connect: { email: user.email } },
-          ...input,
-          ...((minYear != null || maxYear != null) && {
-            community: {
-              update: {
-                ...(minYear != null && { minYear }),
-                ...(maxYear != null && { maxYear }),
-              },
-            },
-          }),
-        },
-      });
+      const [updatedCommunity, updatedProperty] = await prisma.$transaction([
+        // Update community, if required
+        communityUpdateDataArgs == null
+          ? prisma.community.findUniqueOrThrow({
+              where: { id: entry.community.id },
+            })
+          : prisma.community.update({
+              where: { id: entry.community.id },
+              data: communityUpdateDataArgs,
+            }),
+
+        // Update property
+        prisma.property.update({
+          where: {
+            id: entry.id,
+          },
+          // @ts-expect-error: composite types like 'occupantList'
+          // is allowed to be undefined
+          data: {
+            updatedBy: { connect: { email: user.email } },
+            ...input,
+          },
+        }),
+      ]);
 
       // broadcast modification to property
       pubSub.publish(`community/${entry.community.shortId}/property`, {
         broadcasterId: user.email,
         mutationType: MutationType.UPDATED,
-        property,
+        property: updatedProperty,
       });
-      return property;
+      return {
+        community: updatedCommunity,
+        property: updatedProperty,
+      };
     },
   })
 );
@@ -254,26 +279,27 @@ builder.mutationField('batchPropertyModify', (t) =>
         }
       });
 
+      const communityUpdateDataArgs = communityMinMaxYearUpdateArgs(
+        community,
+        input.membership.year
+      );
+
       const [updatedCommunity, ...updatedPropertyList] =
         await prisma.$transaction([
           // Update minYear/maxYear when appropriate
-          prisma.community.update({
-            where: { id: community.id },
-            data: {
-              minYear: Math.min(
-                community.minYear ?? Infinity,
-                input.membership.year
-              ),
-              maxYear: Math.max(
-                community.maxYear ?? -Infinity,
-                input.membership.year
-              ),
-            },
-          }),
+          communityUpdateDataArgs == null
+            ? prisma.community.findUniqueOrThrow({
+                where: { id: community.id },
+              })
+            : prisma.community.update({
+                where: { id: community.id },
+                data: communityUpdateDataArgs,
+              }),
           ...propertyList.map((property) =>
             prisma.property.update({
               where: { id: property.id },
               data: {
+                updatedBy: { connect: { email: user.email } },
                 membershipList: property.membershipList,
               },
             })

@@ -13,7 +13,15 @@ export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 export const PropertyMutation = graphql(/* GraphQL */ `
   mutation membershipModify($input: PropertyModifyInput!) {
     propertyModify(input: $input) {
-      ...PropertyId_MembershipEditor
+      # Modifying membership may change minYear/maxYear
+      community {
+        id
+        minYear
+        maxYear
+      }
+      property {
+        ...PropertyId_MembershipEditor
+      }
     }
   }
 `);

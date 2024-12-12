@@ -1,5 +1,6 @@
-import { Prisma } from '@prisma/client';
+import { Community, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
+import * as R from 'remeda';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
 
@@ -47,4 +48,30 @@ export async function getCommunityEntry<T extends FindArgs>(
     }
     throw err;
   }
+}
+
+/**
+ * Generate update instruction for Community document so that `minYear` and
+ * `maxYear` contains the input `yearToCheck`
+ *
+ * @param community Original community document containing `minYear`/`maxYear`
+ * @param yearsToCheck Years to check if community `minYear`/`maxYear` should be
+ *   updated
+ * @returns Update instruction to community document
+ */
+export function communityMinMaxYearUpdateArgs(
+  community: Pick<Community, 'minYear' | 'maxYear'>,
+  ...yearsToCheck: number[]
+) {
+  const updateData: Prisma.CommunityUpdateArgs['data'] = {};
+  const minYear = Math.min(...yearsToCheck);
+  const maxYear = Math.max(...yearsToCheck);
+
+  if (community.minYear == null || minYear < community.minYear) {
+    updateData.minYear = minYear;
+  }
+  if (community.maxYear == null || maxYear > community.maxYear) {
+    updateData.maxYear = maxYear;
+  }
+  return updateData;
 }

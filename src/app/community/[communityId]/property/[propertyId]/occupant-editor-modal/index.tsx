@@ -13,7 +13,9 @@ export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 const OccupantMutation = graphql(/* GraphQL */ `
   mutation occupantModify($input: PropertyModifyInput!) {
     propertyModify(input: $input) {
-      ...PropertyId_OccupantEditor
+      property {
+        ...PropertyId_OccupantEditor
+      }
     }
   }
 `);
