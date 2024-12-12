@@ -100,7 +100,7 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
           className="text-primary"
           endContent={<Icon icon="add" />}
           variant="faded"
-          onClick={addNewItem}
+          onPress={addNewItem}
           isDisabled={addIsDisabled}
         >
           Add Payment Method

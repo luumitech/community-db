@@ -75,7 +75,7 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           onChange={(evt) => setAddress(evt.currentTarget.value)}
           endContent={
             <Button
-              onClick={lookupAddress}
+              onPress={lookupAddress}
               isLoading={lookupResult.loading}
               isDisabled={!address}
             >

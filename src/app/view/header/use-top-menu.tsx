@@ -16,22 +16,6 @@ export function useTopMenu() {
   const pathname = usePathname();
   const { communityId: ctxCommunityId, communityName } = useAppContext();
 
-  /** Create link attribute for the top menu items */
-  const linkTo = React.useCallback(
-    (href: string) => {
-      return {
-        /**
-         * Breadcrumb item cannot use href to perform nextjs navigation
-         *
-         * See: https://github.com/luumitech/community-db/issues/42
-         */
-        // href,
-        onPress: () => router.push(href),
-      };
-    },
-    [router]
-  );
-
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
     // could've used useSelectedLayoutSegments, but it's not
@@ -45,7 +29,7 @@ export function useTopMenu() {
       case 'community': {
         items.push({
           id: 'communityWelcome',
-          ...linkTo(appPath('communityWelcome')),
+          href: appPath('communityWelcome'),
           children: appLabel('communityWelcome'),
         });
         handleCommunity();
@@ -60,14 +44,14 @@ export function useTopMenu() {
         case 'create':
           items.push({
             id: 'communityCreate',
-            ...linkTo(appPath('communityCreate')),
+            href: appPath('communityCreate'),
             children: appLabel('communityCreate'),
           });
           break;
         case 'select':
           items.push({
             id: 'communitySelect',
-            ...linkTo(appPath('communitySelect')),
+            href: appPath('communitySelect'),
             children: appLabel('communitySelect'),
           });
           break;
@@ -76,11 +60,9 @@ export function useTopMenu() {
           if (op != null && op === ctxCommunityId) {
             items.push({
               id: 'propertyList',
-              ...linkTo(
-                appPath('propertyList', {
-                  path: { communityId: ctxCommunityId },
-                })
-              ),
+              href: appPath('propertyList', {
+                path: { communityId: ctxCommunityId },
+              }),
               children: <CommunityName communityName={communityName} />,
             });
             handleSingleCommunity(ctxCommunityId);
@@ -99,7 +81,7 @@ export function useTopMenu() {
         case 'import-xlsx':
           items.push({
             id: 'communityImport',
-            ...linkTo(appPath('communityImport', { path: { communityId } })),
+            href: appPath('communityImport', { path: { communityId } }),
             children: appLabel('communityImport'),
           });
           break;
@@ -107,7 +89,7 @@ export function useTopMenu() {
         case 'export-xlsx':
           items.push({
             id: 'communityExport',
-            ...linkTo(appPath('communityExport', { path: { communityId } })),
+            href: appPath('communityExport', { path: { communityId } }),
             children: appLabel('communityExport'),
           });
           break;
@@ -115,7 +97,7 @@ export function useTopMenu() {
         case 'share':
           items.push({
             id: 'communityExport',
-            ...linkTo(appPath('communityExport', { path: { communityId } })),
+            href: appPath('communityExport', { path: { communityId } }),
             children: appLabel('communityShare'),
           });
           break;
@@ -123,7 +105,7 @@ export function useTopMenu() {
         case 'dashboard':
           items.push({
             id: 'communityDashboard',
-            ...linkTo(appPath('communityDashboard', { path: { communityId } })),
+            href: appPath('communityDashboard', { path: { communityId } }),
             children: appLabel('communityDashboard'),
           });
           break;
@@ -135,7 +117,7 @@ export function useTopMenu() {
       if (propertyId) {
         items.push({
           id: 'property',
-          ...linkTo(appPath('property', { path: { communityId, propertyId } })),
+          href: appPath('property', { path: { communityId, propertyId } }),
           children: (
             <PropertyAddress
               communityId={communityId}
@@ -145,7 +127,7 @@ export function useTopMenu() {
         });
       }
     }
-  }, [pathname, ctxCommunityId, communityName, linkTo]);
+  }, [pathname, ctxCommunityId, communityName]);
 
   return menuItems;
 }

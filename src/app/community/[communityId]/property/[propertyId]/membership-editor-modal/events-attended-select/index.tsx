@@ -49,7 +49,7 @@ export const EventsAttendedSelect: React.FC<Props> = ({
           className="text-primary"
           endContent={<Icon icon="add" />}
           variant="faded"
-          onClick={() =>
+          onPress={() =>
             append({
               eventName: lastEventSelected ?? '',
               eventDate: new Date(Date.now()).toISOString(),

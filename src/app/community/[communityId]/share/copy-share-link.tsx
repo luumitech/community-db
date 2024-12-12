@@ -36,7 +36,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
         <Button
           variant="bordered"
           endContent={<Icon icon="link" />}
-          onClick={() => {
+          onPress={() => {
             const path = appPath('propertyList', { path: { communityId } });
             const hostname = env('NEXT_PUBLIC_HOSTNAME');
             const url = `${hostname}${path}`;

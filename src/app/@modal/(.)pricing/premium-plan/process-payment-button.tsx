@@ -210,52 +210,47 @@ export const ProcessPaymentButton: React.FC<Props> = ({
     // });
   };
 
-  const gatherPaymentInfo = React.useCallback<
-    React.MouseEventHandler<HTMLButtonElement>
-  >(
-    async (evt) => {
-      try {
-        const result = await payInitialize({
-          variables: {
-            input: { paymentType: 'verify', amount: 0, currency: 'CAD' },
-          },
-        });
-        const helcimPayInitialize = result.data?.helcimPayInitialize;
-        if (helcimPayInitialize?.checkoutToken) {
-          /**
-           * Once appendHelcimPayIframe() is called, the payment process is
-           * initiated. After the process finishes, the transaction response can
-           * be retrieved by listening to the response emitted by the iFrame as
-           * shown.
-           *
-           * See:
-           * https://devdocs.helcim.com/docs/helcimpayjs-implementation#listening-to-response-events
-           */
-          window.addEventListener('message', processPayment);
-          payInitializeResultRef.current = helcimPayInitialize;
-          // Display Helcim Pay payment model
-          //@ts-expect-error provided by helcim-pay script
-          appendHelcimPayIframe(helcimPayInitialize.checkoutToken);
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          toast.error(err.message);
-        }
+  const gatherPaymentInfo = React.useCallback(async () => {
+    try {
+      const result = await payInitialize({
+        variables: {
+          input: { paymentType: 'verify', amount: 0, currency: 'CAD' },
+        },
+      });
+      const helcimPayInitialize = result.data?.helcimPayInitialize;
+      if (helcimPayInitialize?.checkoutToken) {
+        /**
+         * Once appendHelcimPayIframe() is called, the payment process is
+         * initiated. After the process finishes, the transaction response can
+         * be retrieved by listening to the response emitted by the iFrame as
+         * shown.
+         *
+         * See:
+         * https://devdocs.helcim.com/docs/helcimpayjs-implementation#listening-to-response-events
+         */
+        window.addEventListener('message', processPayment);
+        payInitializeResultRef.current = helcimPayInitialize;
+        // Display Helcim Pay payment model
+        //@ts-expect-error provided by helcim-pay script
+        appendHelcimPayIframe(helcimPayInitialize.checkoutToken);
       }
-    },
-    [payInitialize, processPayment]
-  );
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      }
+    }
+  }, [payInitialize, processPayment]);
 
   return (
     <>
       <Script src="https://secure.helcim.app/helcim-pay/services/start.js" />
       <Button
         className={className}
-        onClick={gatherPaymentInfo}
+        onPress={gatherPaymentInfo}
         isLoading={payInitializeResult.loading || purchaseResult.loading}
         {...buttonProps}
       />
-      {/* <Button onClick={myPurchase} isLoading={purchaseResult.loading}>
+      {/* <Button onPress={myPurchase} isLoading={purchaseResult.loading}>
         Test
       </Button> */}
     </>

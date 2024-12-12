@@ -16,7 +16,7 @@ export const PropertyFilterBar: React.FC<Props> = ({
 }) => {
   const totalCount = community?.propertyList.totalCount ?? 0;
   return (
-    <div className={className}>
+    <div className={clsx(className, 'flex flex-col gap-2')}>
       <div className="flex gap-2">
         <SearchBar community={community} />
         {community && <MoreMenu community={community} />}

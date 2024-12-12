@@ -39,9 +39,7 @@ export const CancelSubscriptionButton: React.FC<Props> = ({
     },
   });
 
-  const cancel = React.useCallback<
-    React.MouseEventHandler<HTMLButtonElement>
-  >(async () => {
+  const cancel = React.useCallback(async () => {
     try {
       const result = await cancelSub();
       onSuccess?.();
@@ -55,7 +53,7 @@ export const CancelSubscriptionButton: React.FC<Props> = ({
   return (
     <Button
       className={className}
-      onClick={cancel}
+      onPress={cancel}
       isLoading={cancelSubResult.loading}
       {...buttonProps}
     />

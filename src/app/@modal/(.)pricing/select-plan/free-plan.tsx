@@ -17,7 +17,7 @@ export const FreePlan: React.FC<Props> = ({ className }) => {
     } else if (plan.isActive) {
       // Already subscribed to a plan
       return (
-        <Button onClick={() => goToPanel('free')}>Downgrade to Free</Button>
+        <Button onPress={() => goToPanel('free')}>Downgrade to Free</Button>
       );
     } else {
       return <Button isDisabled>Your current plan</Button>;

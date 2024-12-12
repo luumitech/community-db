@@ -20,7 +20,7 @@ export const PremiumPlanConfirmation: React.FC<Props> = ({ className }) => {
       <Button
         isIconOnly
         variant="light"
-        onClick={() => goToPanel('plan-select')}
+        onPress={() => goToPanel('plan-select')}
       >
         <Icon icon="back" />
       </Button>
