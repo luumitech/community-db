@@ -180,6 +180,7 @@ export class ImportHelper {
    * spreadsheet, and propagate the information into the returned object
    */
   occupant(rowIdx: number, mapping: OccupantMapping): MOccupant {
+    // @ts-expect-error: assume values are mapped correctly to each property
     return {
       ...R.pipe(
         mapping,
@@ -199,6 +200,7 @@ export class ImportHelper {
    * spreadsheet, and propagate the information into the returned object
    */
   membership(rowIdx: number, mapping: MembershipMapping): MMembership {
+    // @ts-expect-error: assume values are mapped correctly to each property
     return {
       ...R.pipe(
         mapping,

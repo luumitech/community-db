@@ -45,7 +45,9 @@ export const ExportForm: React.FC<Props> = ({ className }) => {
   const onDownload = React.useCallback(() => {
     if (exportResult) {
       const buffer = Buffer.from(exportResult.base64, 'base64');
-      const blob = new Blob([buffer]);
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;',
+      });
       startDownloadBlob(blob, exportResult.fn);
     }
   }, [exportResult]);

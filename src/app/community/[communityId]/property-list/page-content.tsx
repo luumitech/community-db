@@ -98,6 +98,9 @@ export const PageContent: React.FC<Props> = (props) => {
   }, [community]);
 
   const emptyContent = React.useMemo(() => {
+    if (result.error) {
+      return <div className="mb-2">An error has occured.</div>;
+    }
     return (
       <div>
         <p className="mb-2">No data to display.</p>
@@ -112,7 +115,7 @@ export const PageContent: React.FC<Props> = (props) => {
         )}
       </div>
     );
-  }, [filterArg, communityId]);
+  }, [filterArg, communityId, result.error]);
 
   return (
     <Table
