@@ -126,7 +126,7 @@ function communityLayoutOnError(err: ApolloError) {
             as={Link}
             color="primary"
             href={appPath('communitySelect')}
-            onClick={() => closeToast()}
+            onPress={() => closeToast()}
           >
             {appLabel('communitySelect')}
           </Button>

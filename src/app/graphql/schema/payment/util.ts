@@ -12,7 +12,9 @@ interface ApplicationConfig {
   propertyLimit?: number;
 }
 
-const GRANTED_PLAN: SubscriptionEntry & ApplicationConfig = {
+type SubscriptionPlan = SubscriptionEntry & ApplicationConfig;
+
+const GRANTED_PLAN: SubscriptionPlan = {
   paymentType: 'GRANTED',
   status: 'ACTIVE',
   dateActivated: '',
@@ -39,7 +41,7 @@ const DEFAULT_APP_CONFIG: ApplicationConfig = {
  */
 export async function getSubscriptionEntry(
   user: typeof userRef.$inferType
-): Promise<SubscriptionEntry & ApplicationConfig> {
+): Promise<SubscriptionPlan> {
   const { subscription } = user;
   const { paymentType } = subscription ?? {};
 
@@ -88,9 +90,7 @@ export async function getSubscriptionEntry(
  * @param userId UserId to lookup
  * @returns Detail subscription information
  */
-export async function getCommunityOwnerSubscriptionEntry(
-  communityId: string
-): Promise<SubscriptionEntry & ApplicationConfig> {
+export async function getCommunityOwnerSubscriptionEntry(communityId: string) {
   const communityDoc = await prisma.community.findUniqueOrThrow({
     where: { id: communityId },
     select: { owner: true },

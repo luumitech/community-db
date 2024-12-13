@@ -18,7 +18,6 @@ import {
   getPropertyEntryWithinCommunity,
   isMember,
   isMemberInYear,
-  propertyListFilterArgs,
   propertyListFindManyArgs,
 } from '../property/util';
 
@@ -225,92 +224,6 @@ const communityStatRef = builder
           return Array.from(map, ([, mapEntry]) => mapEntry);
         },
       }),
-      noRenewalPropertyList: t.field({
-        description:
-          'Properties that did not renew membership in the current year',
-        args: {
-          year: t.arg.int({
-            required: true,
-            description: 'membership year of interest',
-          }),
-        },
-        type: [propertyRef],
-        resolve: (parent, args, ctx) => {
-          const { propertyList } = parent;
-          const propertyIdList = propertyList
-            .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = isMemberInYear(
-                membershipList,
-                args.year
-              );
-              const isMemberPrevYear = isMemberInYear(
-                membershipList,
-                args.year - 1
-              );
-              if (isMemberPrevYear && !isMemberCurrentYear) {
-                return id;
-              }
-              return null;
-            })
-            .filter((id): id is string => id != null);
-          return prisma.property.findMany({
-            where: { id: { in: propertyIdList } },
-            orderBy: DEFAULT_PROPERTY_ORDER_BY,
-          });
-        },
-      }),
-      nonMemberPropertyList: t.field({
-        description: 'Properties that did not join membership this year',
-        args: {
-          year: t.arg.int({
-            required: true,
-            description: 'membership year of interest',
-          }),
-        },
-        type: [propertyRef],
-        resolve: (parent, args, ctx) => {
-          const { propertyList } = parent;
-          const propertyIdList = propertyList
-            .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = isMemberInYear(
-                membershipList,
-                args.year
-              );
-              return isMemberCurrentYear ? null : id;
-            })
-            .filter((id): id is string => id != null);
-          return prisma.property.findMany({
-            where: { id: { in: propertyIdList } },
-            orderBy: DEFAULT_PROPERTY_ORDER_BY,
-          });
-        },
-      }),
-      memberPropertyList: t.field({
-        description: 'Properties that joined membership this year',
-        args: {
-          year: t.arg.int({
-            required: true,
-            description: 'membership year of interest',
-          }),
-        },
-        type: [propertyRef],
-        resolve: (parent, args, ctx) => {
-          const { propertyList } = parent;
-          const propertyIdList = propertyList
-            .map(({ id, membershipList }) => {
-              const isMemberCurrentYear = isMemberInYear(
-                membershipList,
-                args.year
-              );
-              return isMemberCurrentYear ? id : null;
-            })
-            .filter((id): id is string => id != null);
-          return prisma.property.findMany({
-            where: { id: { in: propertyIdList } },
-            orderBy: DEFAULT_PROPERTY_ORDER_BY,
-          });
-        },
-      }),
     }),
   });
 
@@ -383,44 +296,39 @@ builder.prismaObject('Community', {
           { args },
           async ({ limit, offset }) => {
             const { filter } = args;
-            const findManyArgs = propertyListFindManyArgs(parent.id);
-
-            /**
-             * Get application configuration base on community owner's
-             * subscription level
-             */
-            const subEntry = await getCommunityOwnerSubscriptionEntry(
-              parent.id
+            const findManyArgs = await propertyListFindManyArgs(
+              parent.id,
+              filter
             );
-
-            // Construct `where` clause using the arguments in filter
-            const where = propertyListFilterArgs(parent.id, filter);
-
-            // Add additional limiter if subscription level prevents
-            // querying more entries
-            const { propertyLimit } = subEntry;
-            if (propertyLimit != null) {
-              const list = await prisma.property.findMany({
-                ...findManyArgs,
-                take: propertyLimit,
-                select: { id: true },
-              });
-              where.id = { in: list.map(({ id }) => id) };
-            }
-
             const [items, totalCount] = await prisma.$transaction([
               prisma.property.findMany({
                 ...findManyArgs,
-                where,
                 skip: offset,
                 take: limit,
               }),
-              prisma.property.count({ where }),
+              prisma.property.count({ where: findManyArgs.where }),
             ]);
 
             return { items, totalCount };
           }
         );
+      },
+    }),
+    /** Generate property list in normal array currently used to get email list */
+    rawPropertyList: t.prismaField({
+      type: ['Property'],
+      description: 'Properties that satisfies the specifed filter',
+      args: {
+        filter: t.arg({ type: PropertyFilterInput }),
+      },
+      resolve: async (query, parent, args, ctx) => {
+        const { filter } = args;
+        const findManyArgs = await propertyListFindManyArgs(parent.id, filter);
+        const propertyList = await prisma.property.findMany({
+          ...query,
+          ...findManyArgs,
+        });
+        return propertyList;
       },
     }),
     /**

@@ -10,21 +10,18 @@ exports[`Generate Email List Verify properties that are NOT members 1`] = `
         "__typename": "Access",
         "community": {
           "__typename": "Community",
-          "communityStat": {
-            "__typename": "CommunityStat",
-            "nonMemberPropertyList": [
-              {
-                "__typename": "Property",
-                "address": "123 Adventure Drive",
-                "occupantList": [
-                  {
-                    "__typename": "Occupant",
-                    "email": "ksmith@email.com",
-                  },
-                ],
-              },
-            ],
-          },
+          "rawPropertyList": [
+            {
+              "__typename": "Property",
+              "address": "123 Adventure Drive",
+              "occupantList": [
+                {
+                  "__typename": "Occupant",
+                  "email": "ksmith@email.com",
+                },
+              ],
+            },
+          ],
         },
       },
     ],
@@ -42,29 +39,26 @@ exports[`Generate Email List Verify properties that are members 1`] = `
         "__typename": "Access",
         "community": {
           "__typename": "Community",
-          "communityStat": {
-            "__typename": "CommunityStat",
-            "memberPropertyList": [
-              {
-                "__typename": "Property",
-                "address": "99 Fortune Drive",
-                "occupantList": [
-                  {
-                    "__typename": "Occupant",
-                    "email": "Email1",
-                  },
-                  {
-                    "__typename": "Occupant",
-                    "email": "Email2",
-                  },
-                  {
-                    "__typename": "Occupant",
-                    "email": "Email3",
-                  },
-                ],
-              },
-            ],
-          },
+          "rawPropertyList": [
+            {
+              "__typename": "Property",
+              "address": "99 Fortune Drive",
+              "occupantList": [
+                {
+                  "__typename": "Occupant",
+                  "email": "Email1",
+                },
+                {
+                  "__typename": "Occupant",
+                  "email": "Email2",
+                },
+                {
+                  "__typename": "Occupant",
+                  "email": "Email3",
+                },
+              ],
+            },
+          ],
         },
       },
     ],
@@ -82,39 +76,36 @@ exports[`Generate Email List Verify properties that have not been renewed 1`] = 
         "__typename": "Access",
         "community": {
           "__typename": "Community",
-          "communityStat": {
-            "__typename": "CommunityStat",
-            "noRenewalPropertyList": [
-              {
-                "__typename": "Property",
-                "address": "123 Adventure Drive",
-                "occupantList": [
-                  {
-                    "__typename": "Occupant",
-                    "email": "ksmith@email.com",
-                  },
-                ],
-              },
-              {
-                "__typename": "Property",
-                "address": "99 Fortune Drive",
-                "occupantList": [
-                  {
-                    "__typename": "Occupant",
-                    "email": "Email1",
-                  },
-                  {
-                    "__typename": "Occupant",
-                    "email": "Email2",
-                  },
-                  {
-                    "__typename": "Occupant",
-                    "email": "Email3",
-                  },
-                ],
-              },
-            ],
-          },
+          "rawPropertyList": [
+            {
+              "__typename": "Property",
+              "address": "123 Adventure Drive",
+              "occupantList": [
+                {
+                  "__typename": "Occupant",
+                  "email": "ksmith@email.com",
+                },
+              ],
+            },
+            {
+              "__typename": "Property",
+              "address": "99 Fortune Drive",
+              "occupantList": [
+                {
+                  "__typename": "Occupant",
+                  "email": "Email1",
+                },
+                {
+                  "__typename": "Occupant",
+                  "email": "Email2",
+                },
+                {
+                  "__typename": "Occupant",
+                  "email": "Email3",
+                },
+              ],
+            },
+          ],
         },
       },
     ],

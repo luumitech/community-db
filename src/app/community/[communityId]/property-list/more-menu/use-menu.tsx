@@ -4,6 +4,7 @@ import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { useGenerateEmail } from './generate-email';
 
 interface MenuItemEntry extends DropdownItemProps {}
 
@@ -18,6 +19,7 @@ interface MoreMenuOpt {
 /** Controls content of menu items within more menu */
 export function useMoreMenu(opt: MoreMenuOpt) {
   const { canEdit, isAdmin } = useAppContext();
+  const copyEmailList = useGenerateEmail();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -39,8 +41,16 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         key: 'communityDashboard',
         href: appPath('communityDashboard', { path: { communityId } }),
         endContent: <Icon icon="dashboard" />,
-        showDivider: canEdit,
+        // showDivider: canEdit,
         children: appLabel('communityDashboard'),
+      },
+      {
+        key: 'copyEmailList',
+        endContent: <Icon icon="copy" />,
+        showDivider: canEdit,
+        onPress: () => copyEmailList(),
+        children: 'Copy Emails',
+        description: 'Change filter to adjust list',
       }
     );
 
@@ -82,7 +92,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
     }
 
     return items;
-  }, [opt, canEdit, isAdmin]);
+  }, [opt, canEdit, isAdmin, copyEmailList]);
 
   return menuItems;
 }

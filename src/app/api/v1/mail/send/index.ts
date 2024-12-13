@@ -1,7 +1,6 @@
-import { getReasonPhrase, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import * as R from 'remeda';
 import { env } from '~/lib/env-cfg';
-import { HttpError } from '~/lib/http-error';
 import { Logger } from '~/lib/logger';
 import { Mailjet } from '~/lib/mailjet';
 import type { SInput, SOutput } from './contract';

@@ -93,7 +93,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         <DropdownItem
           key="logout"
           color="danger"
-          onClick={() => signOut()}
+          onPress={() => signOut()}
           startContent={<Icon icon="logout" />}
         >
           Log Out

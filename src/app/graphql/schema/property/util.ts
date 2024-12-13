@@ -2,6 +2,7 @@ import { Membership, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
+import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
 import { PropertyFilterInput } from './modify';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
@@ -126,7 +127,7 @@ export function isMemberInYear(list: Membership[], year: number) {
  * @param communityId Community Id associated to property
  * @returns
  */
-export function propertyListFindManyArgs(communityId: string) {
+function propertyListBaseFindManyArgs(communityId: string) {
   const query: Required<
     Pick<Prisma.PropertyFindManyArgs, 'where' | 'orderBy'>
   > = {
@@ -140,22 +141,20 @@ export function propertyListFindManyArgs(communityId: string) {
  * Construct mongo query `WHERE` inputs to get results that matches the filter
  * arguments
  *
- * @param communityId Community ID
  * @param args Property filter arguments
- * @returns Mongo filter query
+ * @returns Mongo filter `where` input
  */
-export function propertyListFilterArgs(
-  communityId: string,
+function propertyListFilterArgs(
   args?: typeof PropertyFilterInput.$inferInput | null
-) {
-  const query = propertyListFindManyArgs(communityId).where;
-  const { searchText, memberEvent, memberYear } = args ?? {};
+): Prisma.PropertyWhereInput {
+  const query = {
+    OR: [] as Prisma.PropertyWhereInput[],
+    AND: [] as Prisma.PropertyWhereInput[],
+  };
+  const { searchText, memberEvent, memberYear, nonMemberYear } = args ?? {};
 
   const trimSearchText = searchText?.trim();
   if (trimSearchText) {
-    if (!query.OR) {
-      query.OR = [];
-    }
     query.OR.push(
       { address: { mode: 'insensitive', contains: trimSearchText } },
       {
@@ -172,18 +171,88 @@ export function propertyListFilterArgs(
   }
 
   // Construct filters within `membershipList`
-  if (memberYear != null || memberEvent != null) {
-    query.membershipList = {
-      some: {
-        // non-empty `eventAttendedList` implies user is a member
-        eventAttendedList: { isEmpty: false },
-        ...(memberYear && { year: memberYear }),
-        ...(memberEvent && {
-          eventAttendedList: { some: { eventName: memberEvent } },
-        }),
-      },
-    };
+  if (nonMemberYear != null) {
+    query.AND.push({
+      OR: [
+        {
+          membershipList: {
+            some: {
+              // empty `eventAttendedList` implies user is not a member
+              eventAttendedList: { isEmpty: true },
+              year: nonMemberYear,
+            },
+          },
+        },
+        {
+          membershipList: {
+            none: {
+              year: nonMemberYear,
+            },
+          },
+        },
+      ],
+    });
   }
 
-  return query;
+  if (memberYear != null || memberEvent != null) {
+    query.AND.push({
+      membershipList: {
+        some: {
+          // non-empty `eventAttendedList` implies user is a member
+          eventAttendedList: { isEmpty: false },
+          ...(memberYear && { year: memberYear }),
+          ...(memberEvent && {
+            eventAttendedList: { some: { eventName: memberEvent } },
+          }),
+        },
+      },
+    });
+  }
+
+  // Only include AND/OR if they contain instruction
+  return {
+    ...(query.OR.length > 0 && { OR: query.OR }),
+    ...(query.AND.length > 0 && { AND: query.AND }),
+  };
+}
+
+/**
+ * Construct `prisma.property.findMany` query arguments using the specified
+ * filter
+ *
+ * @param communityId Community Id
+ * @param filterArgs Property filter arguments
+ * @returns
+ */
+export async function propertyListFindManyArgs(
+  communityId: string,
+  filterArgs?: typeof PropertyFilterInput.$inferInput | null
+): Promise<Prisma.PropertyFindManyArgs> {
+  const findManyArgs = propertyListBaseFindManyArgs(communityId);
+
+  /** Get application configuration base on community owner's subscription level */
+  const subEntry = await getCommunityOwnerSubscriptionEntry(communityId);
+
+  // Construct `where` clause using the arguments in filter
+  const where = propertyListFilterArgs(filterArgs);
+
+  // Add additional limiter if subscription level prevents
+  // querying more entries
+  const { propertyLimit } = subEntry;
+  if (propertyLimit != null) {
+    const list = await prisma.property.findMany({
+      ...findManyArgs,
+      take: propertyLimit,
+      select: { id: true },
+    });
+    where.id = { in: list.map(({ id }) => id) };
+  }
+
+  return {
+    ...findManyArgs,
+    where: {
+      ...findManyArgs.where,
+      ...where,
+    },
+  };
 }

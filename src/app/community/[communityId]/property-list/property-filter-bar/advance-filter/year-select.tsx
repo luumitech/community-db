@@ -33,8 +33,6 @@ export const YearSelect: React.FC<Props> = ({
         base: className,
       }}
       size="sm"
-      label="Membership Year"
-      aria-label="Membership Year"
       items={yearItems}
       isDisabled={!yearItems.length}
       selectedKeys={year.values()}

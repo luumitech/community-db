@@ -35,7 +35,7 @@ function coerceToString(input: string | number) {
 }
 
 export function Select<T extends object>(props: SelectProps<T>) {
-  const SelectImpl = React.forwardRef<HTMLSelectElement, SelectProps<T>>(
+  const SelectImpl = React.forwardRef<HTMLSelectElement | null, SelectProps<T>>(
     ({ controlName, isControlled, onBlur, onChange, ...selectProps }, ref) => {
       const { control, formState } = useFormContext();
       const { errors } = formState;

@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import { GenerateEmailList } from './generate-email-list';
 import { MemberCountChart } from './member-count-chart';
 import { YearlyChart } from './yearly-chart';
 
@@ -27,12 +26,6 @@ export default function Dashboard({ params }: RouteArgs) {
       {selectedYear && (
         <>
           <YearlyChart communityId={communityId} year={selectedYear} />
-          <GenerateEmailList
-            // occupy entire row
-            className="col-span-full"
-            communityId={communityId}
-            year={selectedYear}
-          />
         </>
       )}
     </div>

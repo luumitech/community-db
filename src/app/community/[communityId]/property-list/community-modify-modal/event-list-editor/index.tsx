@@ -97,7 +97,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
           className="text-primary"
           endContent={<Icon icon="add" />}
           variant="faded"
-          onClick={addNewItem}
+          onPress={addNewItem}
           isDisabled={addIsDisabled}
         >
           Add Event

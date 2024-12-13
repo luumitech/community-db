@@ -1,11 +1,20 @@
-import { Accordion, AccordionItem, Button, Chip } from '@nextui-org/react';
+import {
+  Button,
+  Chip,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  useDisclosure,
+} from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
+import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { Icon } from '~/view/base/icon';
 import { type CommunityEntry } from '../../_type';
-import { useFilterBarContext } from '../context';
 import { EventSelect } from './event-select';
 import { YearSelect } from './year-select';
 
@@ -15,64 +24,104 @@ interface Props {
 }
 
 export const AdvanceFilter: React.FC<Props> = ({ className, community }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { minYear, maxYear } = useAppContext();
-  const { year, event } = useFilterBarContext();
+  const { memberYear, nonMemberYear, event } = useFilterBarContext();
 
-  const [selectedYear] = year;
+  const [selectedMemberYear] = memberYear;
+  const [selectedNonMemberYear] = nonMemberYear;
   const [selectedEvent] = event;
 
   const filterSpecified = React.useMemo(() => {
-    return !!selectedYear || !!selectedEvent;
-  }, [selectedYear, selectedEvent]);
+    return !!selectedMemberYear || !!selectedNonMemberYear || !!selectedEvent;
+  }, [selectedMemberYear, selectedNonMemberYear, selectedEvent]);
 
   const title = React.useMemo(() => {
     if (!filterSpecified) {
-      return <span>No filter selected</span>;
+      return <span className="text-foreground-500">No filter selected</span>;
     }
     return (
       <div className="flex gap-2">
-        {!!selectedYear && (
+        {!!selectedMemberYear && (
           <Chip variant="bordered" color={'success'}>
-            {selectedYear}
+            <div className="flex items-center gap-2">
+              {selectedMemberYear}
+              <Icon icon="thumb-up" size={16} />
+            </div>
+          </Chip>
+        )}
+        {!!selectedNonMemberYear && (
+          <Chip variant="bordered">
+            <div className="flex items-center gap-2">
+              {selectedNonMemberYear}
+              <Icon icon="thumb-down" size={16} />
+            </div>
           </Chip>
         )}
         {!!selectedEvent && <EventChip eventName={selectedEvent} />}
       </div>
     );
-  }, [filterSpecified, selectedYear, selectedEvent]);
+  }, [
+    filterSpecified,
+    selectedMemberYear,
+    selectedNonMemberYear,
+    selectedEvent,
+  ]);
 
   return (
-    <Accordion variant="light" isCompact>
-      <AccordionItem
-        classNames={{
-          base: clsx(className),
-          title: 'text-sm text-default-500',
-        }}
-        aria-label="advance filter"
+    <div className={clsx(className)}>
+      <Button
+        className="w-full justify-start"
+        variant="light"
+        size="sm"
         startContent={<Icon className="self-center" icon="filter" />}
-        title={title}
+        onPress={onOpen}
       >
-        <div className="flex gap-2">
-          <YearSelect
-            className="w-[180px]"
-            yearRange={[minYear, maxYear]}
-            year={year}
-          />
-          <EventSelect className="w-[180px]" event={event} />
-          <Button
-            className="h-auto"
-            variant="flat"
-            isIconOnly
-            isDisabled={!filterSpecified}
-            onClick={() => {
-              year.clear();
-              event.clear();
-            }}
-          >
-            <Icon icon="clear" />
-          </Button>
-        </div>
-      </AccordionItem>
-    </Accordion>
+        {title}
+      </Button>
+      <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          {(onClose) => (
+            <>
+              <DrawerHeader className="flex flex-col gap-1">
+                Filter Option
+              </DrawerHeader>
+              <DrawerBody>
+                <YearSelect
+                  yearRange={[minYear, maxYear]}
+                  year={memberYear}
+                  label="Membership Year"
+                  description="Show properties who are members in the specified year"
+                />
+                <YearSelect
+                  yearRange={[minYear, maxYear]}
+                  year={nonMemberYear}
+                  label="Non-Membership Year"
+                  description="Show properties who are not members in the specified year"
+                />
+                <EventSelect event={event} />
+              </DrawerBody>
+              <DrawerFooter>
+                <Button
+                  className="h-auto"
+                  variant="flat"
+                  isDisabled={!filterSpecified}
+                  onPress={() => {
+                    memberYear.clear();
+                    nonMemberYear.clear();
+                    event.clear();
+                  }}
+                >
+                  Reset
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Done
+                </Button>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
+    </div>
   );
 };

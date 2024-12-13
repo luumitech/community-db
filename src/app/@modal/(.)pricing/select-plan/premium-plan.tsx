@@ -20,7 +20,7 @@ export const PremiumPlan: React.FC<Props> = ({ className }) => {
       return <Button isDisabled>Your current plan</Button>;
     } else {
       return (
-        <Button onClick={() => goToPanel('premium')}>
+        <Button onPress={() => goToPanel('premium')}>
           Upgrade to {env('NEXT_PUBLIC_PLAN_NAME')}
         </Button>
       );

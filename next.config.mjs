@@ -2,6 +2,13 @@
 const nextConfig = {
   experimental: {
     serverActions: { allowedOrigins: ['localhost:3443'] },
+    /**
+     * This is added to avoid the error
+     *
+     *     ./src/app/graphql/schema/payment/util.ts + 9 modules
+     *     Cannot get final name for export 'status' of ./node_modules/http-status/dist/index.js
+     */
+    serverComponentsExternalPackages: ['http-status-codes'],
   },
   eslint: {
     /**

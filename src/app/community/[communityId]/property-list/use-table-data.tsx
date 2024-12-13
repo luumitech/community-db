@@ -7,17 +7,22 @@ import { Occupant } from './occupant';
 import { PropertyAddress } from './property-address';
 
 export function useTableData(
-  /** What to show for the first column in memberyear */
-  currentYear?: number | null
+  /** Year to show on the table */
+  _year1?: number | null,
+  /** Year to show on the table */
+  _year2?: number | null
 ) {
-  const curYear = currentYear ?? getCurrentYear();
-  const prevYear = curYear - 1;
+  /** Sort _year1 and _year2, so yearCol1 always show the greater year */
+  const year1 = _year1 ?? getCurrentYear();
+  const year2 = _year2 ?? year1 - 1;
+  const yearCol1 = Math.max(year1, year2);
+  const yearCol2 = Math.min(year1, year2);
 
   const columns = [
     { key: 'address', label: 'Address', className: 'w-1/6' },
     { key: 'occupant', label: 'Members' },
-    { key: 'curYear', label: curYear, className: 'w-10' },
-    { key: 'prevYear', label: prevYear, className: 'w-10' },
+    { key: 'yearCol1', label: yearCol1, className: 'w-10' },
+    { key: 'yearCol2', label: yearCol2, className: 'w-10' },
   ];
 
   const renderCell = React.useCallback(
@@ -27,27 +32,27 @@ export function useTableData(
           return <PropertyAddress fragment={fragment} />;
         case 'occupant':
           return <Occupant fragment={fragment} />;
-        case 'curYear':
+        case 'yearCol1':
           return (
             <Membership
               className="text-success"
               fragment={fragment}
-              year={curYear}
+              year={yearCol1}
             />
           );
-        case 'prevYear':
+        case 'yearCol2':
           return (
             <Membership
               className="text-success"
               fragment={fragment}
-              year={prevYear}
+              year={yearCol2}
             />
           );
         default:
           return getKeyValue(fragment, columnKey);
       }
     },
-    [curYear, prevYear]
+    [yearCol1, yearCol2]
   );
 
   return { columns, renderCell };
