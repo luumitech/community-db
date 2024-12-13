@@ -14,12 +14,7 @@ interface Props {
 }
 
 export const SelectTheme: React.FC<Props> = ({ className }) => {
-  const [mounted, setMounted] = React.useState(false);
   const { theme, setTheme } = useTheme();
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const onThemeSelect = React.useCallback(
     (selected: string) => {
@@ -27,10 +22,6 @@ export const SelectTheme: React.FC<Props> = ({ className }) => {
     },
     [setTheme]
   );
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <div className={className}>

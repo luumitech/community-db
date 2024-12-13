@@ -52,6 +52,8 @@ interface EventStat {
   new: number;
   /** Members who have already joined */
   existing: number;
+  /** Total number of tickets sold for this event */
+  ticket: number;
 }
 
 /** Statistic for the community */
@@ -107,6 +109,9 @@ const eventStatRef = builder.objectRef<EventStat>('EventStat').implement({
     }),
     renew: t.exposeInt('renew', {
       description: 'member count who renewed as a member',
+    }),
+    ticket: t.exposeInt('ticket', {
+      description: 'total ticket count for this event',
     }),
   }),
 });
@@ -191,7 +196,13 @@ const communityStatRef = builder
           const map = new Map<string, EventStat>();
           eventList.forEach(({ name, hidden }) => {
             if (!!showHidden || !hidden) {
-              map.set(name, { eventName: name, new: 0, renew: 0, existing: 0 });
+              map.set(name, {
+                eventName: name,
+                new: 0,
+                renew: 0,
+                existing: 0,
+                ticket: 0,
+              });
             }
           });
 
@@ -211,11 +222,13 @@ const communityStatRef = builder
                   } else {
                     joinEntry.new++;
                   }
+                  joinEntry.ticket += joinEvent.ticket ?? 0;
                 }
                 otherEvent.forEach((event) => {
                   const mapEntry = map.get(event.eventName);
                   if (mapEntry) {
                     mapEntry.existing++;
+                    mapEntry.ticket += event.ticket ?? 0;
                   }
                 });
               }
