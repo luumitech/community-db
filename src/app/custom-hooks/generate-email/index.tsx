@@ -5,6 +5,7 @@ import { useAppContext } from '~/custom-hooks/app-context';
 import { graphql } from '~/graphql/generated';
 import { parseAsNumber } from '~/lib/number-util';
 import { toast } from '~/view/base/toastify';
+import { SuccessDialog } from './success-dialog';
 
 const GenerateEmail_PropertyListQuery = graphql(/* GraphQL */ `
   query generateEmailPropertyList($id: String!, $filter: PropertyFilterInput!) {
@@ -13,6 +14,8 @@ const GenerateEmail_PropertyListQuery = graphql(/* GraphQL */ `
       rawPropertyList(filter: $filter) {
         id
         occupantList {
+          firstName
+          lastName
           email
           optOut
         }
@@ -21,6 +24,11 @@ const GenerateEmail_PropertyListQuery = graphql(/* GraphQL */ `
   }
 `);
 
+/**
+ * Generate email CSV using the filter settings
+ *
+ * - Suitable for importing into Mailchimp
+ */
 export function useGenerateEmail() {
   const { communityId, memberYear, nonMemberYear, event } =
     useFilterBarContext();
@@ -30,7 +38,7 @@ export function useGenerateEmail() {
   const [selectedNonMemberYear] = nonMemberYear;
   const [selectedEvent] = event;
 
-  const listGenerator = React.useCallback(async () => {
+  const getPropertyList = React.useCallback(async () => {
     const result = await emailListQuery({
       variables: {
         id: communityId,
@@ -55,32 +63,19 @@ export function useGenerateEmail() {
     selectedEvent,
   ]);
 
-  // Use local copyToClipboard implementation
-  // until this is fixed:
-  // https://github.com/uidotdev/usehooks/issues/312
-  const copyToClipboard = React.useCallback(() => {
-    const handleCopy = async () => {
-      if (navigator?.clipboard?.writeText) {
-        const propertyList = await listGenerator();
-        const emailList = propertyList
-          .flatMap(({ occupantList }) =>
-            occupantList.map(({ email, optOut }) => (optOut ? null : email))
-          )
-          .filter((email): email is string => email != null);
-        await navigator.clipboard.writeText(emailList.join(';'));
-        return emailList.length;
-      } else {
-        throw new Error('writeText not supported');
-      }
-    };
-
-    toast.promise(handleCopy(), {
-      pending: 'Obtaining Email list...',
-      success: {
-        render: ({ data }) => `${data} emails copied`,
+  const generateEmailList = React.useCallback(() => {
+    toast.promise(
+      getPropertyList(),
+      {
+        pending: 'Generating Email list...',
+        success: {
+          render: ({ data }) => <SuccessDialog propertyList={data} />,
+          autoClose: false,
+        },
       },
-    });
-  }, [listGenerator]);
+      { toastId: 'generate-email' }
+    );
+  }, [getPropertyList]);
 
-  return copyToClipboard;
+  return generateEmailList;
 }

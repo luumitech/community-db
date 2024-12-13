@@ -2,9 +2,9 @@ import { DropdownItemProps } from '@nextui-org/react';
 import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { useGenerateEmail } from '~/custom-hooks/generate-email';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
-import { useGenerateEmail } from './generate-email';
 
 interface MenuItemEntry extends DropdownItemProps {}
 
@@ -19,7 +19,7 @@ interface MoreMenuOpt {
 /** Controls content of menu items within more menu */
 export function useMoreMenu(opt: MoreMenuOpt) {
   const { canEdit, isAdmin } = useAppContext();
-  const copyEmailList = useGenerateEmail();
+  const generateEmail = useGenerateEmail();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -41,16 +41,15 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         key: 'communityDashboard',
         href: appPath('communityDashboard', { path: { communityId } }),
         endContent: <Icon icon="dashboard" />,
-        // showDivider: canEdit,
         children: appLabel('communityDashboard'),
       },
       {
-        key: 'copyEmailList',
+        key: 'exportEmail',
         endContent: <Icon icon="copy" />,
         showDivider: canEdit,
-        onPress: () => copyEmailList(),
-        children: 'Copy Emails',
-        description: 'Change filter to adjust list',
+        onPress: () => generateEmail(),
+        children: 'Export Email List',
+        description: 'Modify filter to alter list',
       }
     );
 
@@ -92,7 +91,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
     }
 
     return items;
-  }, [opt, canEdit, isAdmin, copyEmailList]);
+  }, [opt, canEdit, isAdmin, generateEmail]);
 
   return menuItems;
 }

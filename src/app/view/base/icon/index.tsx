@@ -6,6 +6,7 @@ import {
   FaAward,
   FaFolderOpen,
   FaList,
+  FaMailchimp,
   FaRegCopy,
   FaSearch,
   FaTrashAlt,
@@ -70,7 +71,8 @@ type SupportedIcon =
   | 'premium-plan'
   | 'back'
   | 'filter'
-  | 'ticket';
+  | 'ticket'
+  | 'mailchimp';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -166,6 +168,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'ticket':
       IconElement = HiOutlineTicket;
+      break;
+    case 'mailchimp':
+      IconElement = FaMailchimp;
       break;
     default:
       IconElement = MdQuestionMark;
