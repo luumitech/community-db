@@ -4,6 +4,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { EventParticipation } from './event-participation';
+import { EventTicket } from './event-ticket';
 import { MembershipSource } from './membership-source';
 
 const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
@@ -14,6 +15,7 @@ const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
         id
       }
       ...Dashboard_EventParticipation
+      ...Dashboard_EventTicket
       ...Dashboard_MembershipSource
     }
   }
@@ -48,6 +50,11 @@ export const YearlyChart: React.FC<Props> = ({
         isLoading={result.loading}
       />
       <EventParticipation
+        fragment={community}
+        year={year}
+        isLoading={result.loading}
+      />
+      <EventTicket
         fragment={community}
         year={year}
         isLoading={result.loading}

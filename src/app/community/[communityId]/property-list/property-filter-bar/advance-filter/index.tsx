@@ -83,20 +83,18 @@ export const AdvanceFilter: React.FC<Props> = ({ className, community }) => {
         <DrawerContent>
           {(onClose) => (
             <>
-              <DrawerHeader className="flex flex-col gap-1">
-                Filter Option
-              </DrawerHeader>
-              <DrawerBody>
+              <DrawerHeader>Filter Options</DrawerHeader>
+              <DrawerBody className="flex flex-col gap-4">
                 <YearSelect
                   yearRange={[minYear, maxYear]}
                   year={memberYear}
-                  label="Membership Year"
+                  label="Member In Year"
                   description="Show properties who are members in the specified year"
                 />
                 <YearSelect
                   yearRange={[minYear, maxYear]}
                   year={nonMemberYear}
-                  label="Non-Membership Year"
+                  label="Non-Member In Year"
                   description="Show properties who are not members in the specified year"
                 />
                 <EventSelect event={event} />

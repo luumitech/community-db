@@ -19,6 +19,9 @@ const EventFragment = graphql(/* GraphQL */ `
   }
 `);
 
+type EventStat =
+  GQL.Dashboard_EventParticipationFragment['communityStat']['eventStat'];
+
 interface ChartDataEntry {
   eventName: string;
   new: number;
@@ -27,7 +30,7 @@ interface ChartDataEntry {
 }
 
 class ChartDataHelper {
-  constructor(private stat: GQL.EventStat[]) {}
+  constructor(private stat: EventStat) {}
 
   getChartData() {
     const chartData: Readonly<ChartDataEntry>[] = [];
