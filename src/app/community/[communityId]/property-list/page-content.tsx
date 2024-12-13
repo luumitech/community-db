@@ -86,7 +86,11 @@ export const PageContent: React.FC<Props> = (props) => {
       });
     },
   });
-  const { columns, renderCell } = useTableData(filterArg.memberYear);
+
+  const { columns, renderCell } = useTableData(
+    filterArg.memberYear,
+    filterArg.nonMemberYear
+  );
 
   const community = React.useMemo(() => data?.communityFromId, [data]);
   const rows = React.useMemo(() => {

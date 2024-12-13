@@ -71,6 +71,7 @@ export const AdvanceFilter: React.FC<Props> = ({ className, community }) => {
   return (
     <div className={clsx(className)}>
       <Button
+        className="w-full justify-start"
         variant="light"
         size="sm"
         startContent={<Icon className="self-center" icon="filter" />}

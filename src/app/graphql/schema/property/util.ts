@@ -1,6 +1,5 @@
 import { Membership, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import * as R from 'remeda';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
