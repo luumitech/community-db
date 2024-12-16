@@ -30,11 +30,10 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
 
   const menuItems = useMoreMenu({
     communityId: community.id,
-    communityModifyButtonProps: communityModify.disclosure.getButtonProps,
-    batchPropertyModifyButtonProps:
-      batchPropertyModify.disclosure.getButtonProps,
-    propertyCreateButtonProps: propertyCreate.disclosure.getButtonProps,
-    communityDeleteButtonProps: communityDelete.disclosure.getButtonProps,
+    communityModifyDisclosure: communityModify.disclosure,
+    batchPropertyModifyDisclosure: batchPropertyModify.disclosure,
+    propertyCreateDisclosure: propertyCreate.disclosure,
+    communityDeleteDisclosure: communityDelete.disclosure,
   });
 
   return (

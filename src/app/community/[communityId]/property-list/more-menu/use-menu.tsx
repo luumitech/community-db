@@ -10,10 +10,10 @@ interface MenuItemEntry extends DropdownItemProps {}
 
 interface MoreMenuOpt {
   communityId: string;
-  communityModifyButtonProps: UseDisclosureReturn['getButtonProps'];
-  batchPropertyModifyButtonProps: UseDisclosureReturn['getButtonProps'];
-  communityDeleteButtonProps: UseDisclosureReturn['getButtonProps'];
-  propertyCreateButtonProps: UseDisclosureReturn['getButtonProps'];
+  communityModifyDisclosure: UseDisclosureReturn;
+  batchPropertyModifyDisclosure: UseDisclosureReturn;
+  communityDeleteDisclosure: UseDisclosureReturn;
+  propertyCreateDisclosure: UseDisclosureReturn;
 }
 
 /** Controls content of menu items within more menu */
@@ -57,12 +57,12 @@ export function useMoreMenu(opt: MoreMenuOpt) {
       items.push(
         {
           key: 'communityModify',
-          ...opt.communityModifyButtonProps(),
+          onPress: opt.communityModifyDisclosure.onOpen,
           children: 'Modify Community',
         },
         {
           key: 'batchPropertyyModify',
-          ...opt.batchPropertyModifyButtonProps(),
+          onPress: opt.batchPropertyModifyDisclosure.onOpen,
           showDivider: isAdmin,
           children: 'Batch Modify Property',
         }
@@ -78,13 +78,13 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         },
         {
           key: 'propertyCreate',
-          ...opt.propertyCreateButtonProps(),
+          onPress: opt.propertyCreateDisclosure.onOpen,
           children: 'Create Property',
         },
         {
           key: 'communityDelete',
           className: 'text-danger',
-          ...opt.communityDeleteButtonProps(),
+          onPress: opt.communityDeleteDisclosure.onOpen,
           children: 'Delete Community',
         }
       );

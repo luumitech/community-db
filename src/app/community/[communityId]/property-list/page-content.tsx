@@ -141,6 +141,13 @@ export const PageContent: React.FC<Props> = (props) => {
           />
         )
       }
+      onRowAction={(key) =>
+        router.push(
+          appPath('property', {
+            path: { communityId, propertyId: key as string },
+          })
+        )
+      }
     >
       <TableHeader columns={columns}>
         {(column) => (
@@ -158,20 +165,7 @@ export const PageContent: React.FC<Props> = (props) => {
         {(entry) => (
           <TableRow key={entry.id}>
             {(columnKey) => (
-              <TableCell
-                onClick={() =>
-                  router.push(
-                    appPath('property', {
-                      path: {
-                        communityId,
-                        propertyId: entry.id,
-                      },
-                    })
-                  )
-                }
-              >
-                <div className="h-6">{renderCell(entry, columnKey)}</div>
-              </TableCell>
+              <TableCell>{renderCell(entry, columnKey)}</TableCell>
             )}
           </TableRow>
         )}

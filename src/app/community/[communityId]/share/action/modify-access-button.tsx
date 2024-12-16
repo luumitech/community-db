@@ -22,7 +22,7 @@ export const ModifyAccessButton: React.FC<Props> = ({
         className="text-primary"
         icon="edit"
         tooltip="Modify Role"
-        {...hookForm.disclosure.getButtonProps()}
+        onClick={hookForm.disclosure.onOpen}
       />
       <ModifyAccessModal hookForm={hookForm} />
     </div>
