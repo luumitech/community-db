@@ -57,15 +57,17 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
       <Card>
-        <CardHeader className="gap-2">
+        <CardHeader className="gap-2 justify-between">
           <YearSelect
             yearRange={[minYear, maxYear]}
             membershipList={entry.membershipList}
             selectedYear={yearSelected}
             onYearChange={communityUi.actions.setYearSelected}
           />
-          <div className="grow" />
-          <MemberStatusChip isMember={membership?.isMember} />
+          <MemberStatusChip
+            className="max-sm:hidden"
+            isMember={membership?.isMember}
+          />
         </CardHeader>
         <CardBody className="gap-2">
           <RegisteredEventList membership={membership} />
@@ -74,7 +76,7 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
             <ModalButton
               isDisabled={!lastEventSelected}
               color="primary"
-              {...registerEvent.disclosure.getButtonProps()}
+              onPress={registerEvent.disclosure.onOpen}
             >
               Register Event
             </ModalButton>
@@ -84,7 +86,7 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
         </CardBody>
         {canEdit && (
           <CardFooter>
-            <ModalButton {...membershipEditor.disclosure.getButtonProps()}>
+            <ModalButton onPress={membershipEditor.disclosure.onOpen}>
               Edit Membership Info
             </ModalButton>
           </CardFooter>

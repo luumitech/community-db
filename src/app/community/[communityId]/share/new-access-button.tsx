@@ -24,7 +24,7 @@ export const NewAccessButton: React.FC<Props> = ({
       <Button
         color="primary"
         endContent={<Icon icon="person-add" />}
-        {...hookForm.disclosure.getButtonProps()}
+        onPress={hookForm.disclosure.onOpen}
       >
         Add user...
       </Button>

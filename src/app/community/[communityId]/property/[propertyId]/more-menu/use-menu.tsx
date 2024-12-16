@@ -26,12 +26,12 @@ export function useMoreMenu() {
       items.push(
         {
           key: 'membership-editor',
-          ...membershipEditor.disclosure.getButtonProps(),
+          onPress: membershipEditor.disclosure.onOpen,
           children: 'Edit Membership Info',
         },
         {
           key: 'occupant-editor',
-          ...occupantEditor.disclosure.getButtonProps(),
+          onPress: occupantEditor.disclosure.onOpen,
           children: 'Edit Member Details',
         },
         {
@@ -43,7 +43,7 @@ export function useMoreMenu() {
         },
         {
           key: 'modify',
-          ...propertyModify.disclosure.getButtonProps(),
+          onPress: propertyModify.disclosure.onOpen,
           children: 'Modify Property',
         }
       );
@@ -53,7 +53,7 @@ export function useMoreMenu() {
       items.push({
         key: 'delete',
         className: 'text-danger',
-        ...propertyDelete.disclosure.getButtonProps(),
+        onPress: propertyDelete.disclosure.onOpen,
         children: 'Delete Property',
       });
     }

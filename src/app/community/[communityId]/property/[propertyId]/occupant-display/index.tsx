@@ -36,7 +36,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
       </CardBody>
       {canEdit && (
         <CardFooter>
-          <ModalButton {...occupantEditor.disclosure.getButtonProps()}>
+          <ModalButton onPress={occupantEditor.disclosure.onOpen}>
             Edit Member Details
           </ModalButton>
         </CardFooter>

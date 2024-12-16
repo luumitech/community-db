@@ -57,22 +57,25 @@ export const Header: React.FC<Props> = ({}) => {
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
         )}
-        <NavbarContent className="pr-3" justify="center">
-          <NavbarBrand className="flex gap-2">
-            <Image
-              className="object-fit rounded-md"
-              src="/image/community-db-logo.png"
-              alt="LummiTech Logo"
-              priority
-              width={36}
-              height={36}
-            />
+        <NavbarContent justify="center">
+          <NavbarBrand className="min-w-[36px]">
             <Link
+              className="gap-1"
               href={appPath('communityWelcome')}
               color="foreground"
-              className="leading-5 max-w-min whitespace-normal text-center text-balance font-bold"
             >
-              {appTitle}
+              <Image
+                className="object-fit rounded-md"
+                src="/image/community-db-logo.png"
+                alt="LummiTech Logo"
+                priority
+                width={36}
+                height={36}
+              />
+              {/* Hide appTitle in small layout */}
+              <span className="max-sm:hidden max-w-min leading-5 whitespace-normal text-center text-balance font-bold">
+                {appTitle}
+              </span>
             </Link>
           </NavbarBrand>
         </NavbarContent>
