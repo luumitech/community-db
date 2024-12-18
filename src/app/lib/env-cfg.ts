@@ -35,10 +35,16 @@ const baseSchema = z.object({
   /** Subscription Plan details */
   /** Is Subscription plan enabled? */
   NEXT_PUBLIC_PLAN_ENABLE: zz.coerce.toBoolean(),
-  /** Name of paid subscription plan */
-  NEXT_PUBLIC_PLAN_NAME: zz.string.nonEmpty(),
-  /** Cost of paid subscription plan */
-  NEXT_PUBLIC_PLAN_COST: z.coerce.number(),
+  /** Name and cost of Free plan */
+  NEXT_PUBLIC_PLAN_FREE_NAME: zz.string.nonEmpty(),
+  NEXT_PUBLIC_PLAN_FREE_COST: z.coerce.number(),
+  NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY: z.coerce.number(),
+  NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY: z.coerce.number(),
+  /** Name and cost of Premium plan */
+  NEXT_PUBLIC_PLAN_PREMIUM_NAME: zz.string.nonEmpty(),
+  NEXT_PUBLIC_PLAN_PREMIUM_COST: z.coerce.number(),
+  NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY: z.coerce.number(),
+  NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY: z.coerce.number(),
 
   /** See: https://next-auth.js.org/configuration/options#nextauth_url */
   NEXTAUTH_URL: zz.string.nonEmpty(),

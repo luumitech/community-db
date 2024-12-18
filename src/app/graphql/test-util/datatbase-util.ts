@@ -24,7 +24,7 @@ export class DatabaseUtil {
     const ownerEmail = 'jest@email.com';
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
-        name: 'Test Community',
+        name: 'Serenity',
         owner: {
           connect: {
             email: ownerEmail,

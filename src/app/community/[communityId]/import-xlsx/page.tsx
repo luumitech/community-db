@@ -1,10 +1,10 @@
 'use client';
 import { useMutation } from '@apollo/client';
-import { Button, Link } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
-import { appLabel, appPath } from '~/lib/app-path';
+import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
 import { ImportForm } from './import-form';
@@ -23,6 +23,7 @@ interface RouteArgs {
 }
 
 export default function ImportXlsx({ params }: RouteArgs) {
+  const router = useRouter();
   const { communityId } = params;
   const [importCommunity] = useMutation(CommunityImportMutation);
   const { formMethods } = useHookForm(communityId);
@@ -53,20 +54,13 @@ export default function ImportXlsx({ params }: RouteArgs) {
           pending: 'Importing...',
           success: {
             render: () => {
+              // Redirect to property list
+              router.push(
+                appPath('propertyList', { path: { communityId: input.id } })
+              );
               return (
                 <div className="flex items-center gap-2">
                   Imported Successfully
-                  <Button
-                    className="flex-shrink-0"
-                    size="sm"
-                    as={Link}
-                    color="primary"
-                    href={appPath('propertyList', {
-                      path: { communityId: input.id },
-                    })}
-                  >
-                    {appLabel('propertyList')}
-                  </Button>
                 </div>
               );
             },
@@ -74,7 +68,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
         }
       );
     },
-    [importCommunity]
+    [importCommunity, router]
   );
 
   return (

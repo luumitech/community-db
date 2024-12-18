@@ -3,10 +3,7 @@ import path from 'path';
 // Default timeout
 const timeout = 10000;
 
-/**
- * Take screenshot and save them into `/src/app/view/landing/getting-started`
- * directory
- */
+/** Take screenshot and save them into `/src/app/view/landing/images` directory */
 function takeScreenshot(name: string) {
   // Wait a bit before taking screenshot, in case there is animation
   // that needs to be transitioned through
@@ -24,7 +21,7 @@ function takeScreenshot(name: string) {
             'app',
             'view',
             'landing',
-            'getting-started',
+            'images',
             imageName
           );
           cy.writeFile(destFn, content, 'binary');
@@ -83,7 +80,7 @@ describe('take screenshots for landing screen', () => {
     // Wait for graphs to be loaded
     cy.get('div.grid div[data-loaded="true"]', { timeout }).should(
       'have.length',
-      3
+      4
     );
     cy.scrollTo(0, 370);
     takeScreenshot('dashboard');

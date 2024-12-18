@@ -1,13 +1,11 @@
 import React from 'react';
 import { Footer } from '~/view/footer';
-import { GettingStarted } from '~/view/landing/getting-started';
-import { Hero } from '~/view/landing/hero';
+import { Landing } from '~/view/landing';
 
 export default function App() {
   return (
     <>
-      <Hero />
-      <GettingStarted />
+      <Landing />
       <Footer />
     </>
   );

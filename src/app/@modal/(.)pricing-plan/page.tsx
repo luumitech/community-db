@@ -12,7 +12,7 @@ import { appLabel } from '~/lib/app-path';
 import { PanelWrapper } from './panel-wrapper';
 import { PlanContextProvider } from './plan-context';
 
-export default function Pricing() {
+export default function PricingPlan() {
   const router = useRouter();
 
   return (
@@ -25,7 +25,7 @@ export default function Pricing() {
       // isKeyboardDismissDisabled
     >
       <ModalContent className="overflow-hidden">
-        <ModalHeader>{appLabel('pricing')}</ModalHeader>
+        <ModalHeader>{appLabel('pricingPlan')}</ModalHeader>
         <ModalBody>
           <PlanContextProvider>
             <PanelWrapper />

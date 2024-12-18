@@ -48,7 +48,7 @@ export class MongoSeeder {
 
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
-        name: 'Test Community',
+        name: 'Serenity',
         owner: {
           connect: {
             email: ownerEmail,

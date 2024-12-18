@@ -6,7 +6,7 @@ export const supportedPathTemplates = {
   home: '/',
   about: '/about',
   preference: '/preference',
-  pricing: '/pricing',
+  pricingPlan: '/pricing-plan',
   contactUs: '/contact-us',
   communityWelcome: '/community',
   communitySelect: '/community/select',
@@ -32,7 +32,7 @@ export function appPath(
     | 'home'
     | 'about'
     | 'preference'
-    | 'pricing'
+    | 'pricingPlan'
     | 'communityWelcome'
     | 'communitySelect'
     | 'communityCreate'
@@ -101,8 +101,8 @@ export function appLabel(template: keyof SupportedPath) {
       return 'About';
     case 'preference':
       return 'Preference';
-    case 'pricing':
-      return 'Change your plan';
+    case 'pricingPlan':
+      return 'Pricing Plan';
     case 'contactUs':
       return 'Contact Us';
     case 'communityWelcome':
