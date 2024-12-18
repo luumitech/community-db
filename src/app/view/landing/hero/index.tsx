@@ -1,11 +1,10 @@
 'use client';
-import { Button, Link } from '@nextui-org/react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 import { appTitle } from '~/lib/env-var';
-import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
+import { GoToWelcome } from '../go-to-welcome';
 import heroImg from './community-with-people.png';
 
 interface Props {
@@ -27,7 +26,7 @@ export const Hero: React.FC<Props> = ({ className }) => {
       <div
         className={clsx(
           'absolute bg-opacity-80 bg-background rounded-xl m-5 p-5',
-          'flex flex-col items-center text-center text-wrap space-y-4'
+          'flex flex-col items-center text-center text-wrap gap-4'
         )}
       >
         <Image
@@ -43,17 +42,7 @@ export const Hero: React.FC<Props> = ({ className }) => {
         <div className="text-2xl">
           A safe and secure way to manage your community membership information
         </div>
-        {status === 'authenticated' ? (
-          <Button
-            as={Link}
-            className="bg-gradient-to-tr from-pink-500 to-orange-500 text-white"
-            href="/community"
-          >
-            Get Started
-          </Button>
-        ) : (
-          <SignInButton />
-        )}
+        <GoToWelcome />
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { FreePlan } from './free-plan';
 import { PremiumPlan } from './premium-plan';
-import styles from './styles.module.css';
 
 interface Props {
   className?: string;
@@ -14,8 +13,8 @@ interface Props {
 export const SelectPlan: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
-      <div className="grid grid-cols-2 gap-4 items-start p-2">
-        <FreePlan className={styles['item-with-border']} />
+      <div className="grid grid-rows-[repeat(4,_auto)] grid-cols-2 divide-x">
+        <FreePlan />
         <PremiumPlan />
       </div>
       <div className="flex items-center justify-center mt-4">

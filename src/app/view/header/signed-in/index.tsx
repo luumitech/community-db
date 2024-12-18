@@ -56,7 +56,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         className={styles['drop-down']}
         aria-label="Profile Actions"
         variant="flat"
-        disabledKeys={[...insertIf(!subscriptionPlanEnable, 'pricing')]}
+        disabledKeys={[...insertIf(!subscriptionPlanEnable, 'pricingPlan')]}
       >
         <DropdownItem
           key="profile"
@@ -81,14 +81,14 @@ export const SignedIn: React.FC<Props> = ({}) => {
           {appLabel('preference')}
         </DropdownItem>
         <DropdownItem
-          key="pricing"
-          href={appPath('pricing')}
+          key="pricingPlan"
+          href={appPath('pricingPlan')}
           startContent={
             <Icon className="text-yellow-600" icon="premium-plan" />
           }
           showDivider
         >
-          {appLabel('pricing')}
+          {appLabel('pricingPlan')}
         </DropdownItem>
         <DropdownItem
           key="logout"

@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
-import DashboardImg from './dashboard.png';
-import ExportToXlsxImg from './export-to-xlsx.png';
-import MembershipEditorImg from './membership-editor.png';
-import PropertyDetailImg from './property-detail.png';
-import propertyListImg from './property-list.png';
+import DashboardImg from '../images/dashboard.png';
+import ExportToXlsxImg from '../images/export-to-xlsx.png';
+import MembershipEditorImg from '../images/membership-editor.png';
+import PropertyDetailImg from '../images/property-detail.png';
+import propertyListImg from '../images/property-list.png';
 import { Slide } from './slide';
 import { DotButton, useDotButton } from './slide-button';
 
@@ -29,17 +29,17 @@ export const GettingStarted: React.FC<Props> = ({ className }) => {
         <Slide
           alt="property-list"
           src={propertyListImg}
-          caption="Address searchable by address or member name"
+          caption="Easily search membership information within community"
         />
         <Slide
           alt="property-detail"
           src={PropertyDetailImg}
-          caption="Membership information at a glance"
+          caption="Store and access membership information"
         />
         <Slide
           alt="membership-editor"
           src={MembershipEditorImg}
-          caption="Easy to modify any information"
+          caption="Keep record of event attendance"
         />
         <Slide
           alt="dashboard"
@@ -49,7 +49,7 @@ export const GettingStarted: React.FC<Props> = ({ className }) => {
         <Slide
           alt="export-xlsx"
           src={ExportToXlsxImg}
-          caption="Export to Excel"
+          caption="Take entire database with you by exporting to Excel"
         />
       </div>
       <div className="flex justify-center items-center gap-1">

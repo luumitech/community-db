@@ -29,8 +29,8 @@ const GRANTED_PLAN: SubscriptionPlan = {
 
 /** Default configuration when client has not paid for subscription */
 const DEFAULT_APP_CONFIG: ApplicationConfig = {
-  communityLimit: 2,
-  propertyLimit: 10,
+  communityLimit: env.NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY,
+  propertyLimit: env.NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY,
 };
 
 /**
@@ -65,8 +65,8 @@ export async function getSubscriptionEntry(
           ...(subEntry.status === 'INACTIVE'
             ? DEFAULT_APP_CONFIG
             : {
-                communityLimit: 5,
-                propertyLimit: undefined,
+                communityLimit: env.NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY,
+                propertyLimit: env.NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY,
               }),
         };
       }

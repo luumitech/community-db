@@ -5,6 +5,7 @@ import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { FileInput } from '~/view/base/file-input';
 import { useMakeXlsxData } from '../common/make-xlsx-data';
 import { XlsxView } from '../common/xlsx-view';
+import { StartImport } from './start-import';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {}
@@ -36,12 +37,14 @@ export const SelectXlsxFile: React.FC<Props> = ({}) => {
   return (
     <>
       <FileInput
+        className="max-w-sm"
         label="Upload xlsx file"
         isRequired
         controlName="hidden.importList"
         onChange={onXlsxSelect}
         onClear={() => clear()}
       />
+      <StartImport />
       {pending ? (
         <div className="flex flex-col grow mb-4 gap-3">
           <Skeleton className="h-12 rounded-lg" />

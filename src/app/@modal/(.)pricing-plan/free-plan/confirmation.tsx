@@ -5,15 +5,18 @@ import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
 import { PricePlan } from '../price-plan';
-import { ProcessPaymentButton } from './process-payment-button';
+import { CancelSubscriptionButton } from './cancel-subscription';
 
 interface Props {
   className?: string;
 }
 
-export const PremiumPlanConfirmation: React.FC<Props> = ({ className }) => {
+export const FreePlanConfirmation: React.FC<Props> = ({ className }) => {
   const { plan, goToPanel } = usePlanContext();
   const { isActive, recurringAmount, nextBillingDate } = plan ?? {};
+
+  const planName = env('NEXT_PUBLIC_PLAN_FREE_NAME')!;
+  const planCost = env('NEXT_PUBLIC_PLAN_FREE_COST')!;
 
   return (
     <div className={clsx(className, 'flex items-start')}>
@@ -26,19 +29,16 @@ export const PremiumPlanConfirmation: React.FC<Props> = ({ className }) => {
       </Button>
       <div className="mt-2">
         <p>New Plan:</p>
-        <PricePlan
-          price={env('NEXT_PUBLIC_PLAN_COST') ?? 'n/a'}
-          planName={env('NEXT_PUBLIC_PLAN_NAME')}
-        />
+        <PricePlan planCost={planCost} planName={planName} />
       </div>
       <Spacer x={6} />
-      <ProcessPaymentButton
+      <CancelSubscriptionButton
         className="grow self-center"
         color="primary"
-        onSuccess={() => goToPanel('premium-success')}
+        onSuccess={() => goToPanel('free-success')}
       >
-        Proceed To Payment
-      </ProcessPaymentButton>
+        Cancel Current Subscription
+      </CancelSubscriptionButton>
     </div>
   );
 };
