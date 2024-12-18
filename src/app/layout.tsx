@@ -15,7 +15,38 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: appTitle,
-  description: 'Community Membership Database',
+  description:
+    'Community Membership Database made specifically for nonprofits. Easy to use, keep tracks of events and membership information.',
+  applicationName: 'Community Database',
+  appleWebApp: {
+    title: 'Community Database',
+    statusBarStyle: 'default',
+    capable: true,
+  },
+  openGraph: {
+    siteName: 'Community Database',
+    type: 'website',
+    locale: 'en_US',
+  },
+  keywords: [
+    'community',
+    'database',
+    'non-profit',
+    'easy to use',
+    'membership',
+    'event registration',
+    'safe and secure',
+    'multiple administrator',
+    'membership statistics',
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    'max-image-preview': 'large',
+    'max-snippet': -1,
+    'max-video-preview': -1,
+    googleBot: 'index, follow',
+  },
 };
 
 interface RootLayoutProps {
