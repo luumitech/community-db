@@ -25,6 +25,13 @@ export function useMoreMenu() {
     if (canEdit) {
       items.push(
         {
+          key: 'property-list',
+          href: appPath('propertyList', { path: { communityId } }),
+          endContent: <Icon icon="property-list" />,
+          showDivider: true,
+          children: appLabel('propertyList'),
+        },
+        {
           key: 'membership-editor',
           onPress: membershipEditor.disclosure.onOpen,
           children: 'Edit Membership Info',
@@ -33,13 +40,7 @@ export function useMoreMenu() {
           key: 'occupant-editor',
           onPress: occupantEditor.disclosure.onOpen,
           children: 'Edit Member Details',
-        },
-        {
-          key: 'property-list',
-          href: appPath('propertyList', { path: { communityId } }),
-          endContent: <Icon icon="list" />,
           showDivider: true,
-          children: appLabel('propertyList'),
         },
         {
           key: 'modify',

@@ -27,9 +27,10 @@ export function useMoreMenu(opt: MoreMenuOpt) {
 
     items.push(
       {
-        key: 'communityExport',
-        href: appPath('communityExport', { path: { communityId } }),
-        children: appLabel('communityExport'),
+        key: 'communityDashboard',
+        href: appPath('communityDashboard', { path: { communityId } }),
+        endContent: <Icon icon="dashboard" />,
+        children: appLabel('communityDashboard'),
       },
       {
         key: 'communityShare',
@@ -38,18 +39,17 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         children: appLabel('communityShare'),
       },
       {
-        key: 'communityDashboard',
-        href: appPath('communityDashboard', { path: { communityId } }),
-        endContent: <Icon icon="dashboard" />,
-        children: appLabel('communityDashboard'),
-      },
-      {
         key: 'exportEmail',
         endContent: <Icon icon="copy" />,
-        showDivider: canEdit,
         onPress: () => generateEmail(),
         children: 'Export Email List',
         description: 'Modify filter to alter list',
+      },
+      {
+        key: 'communityExport',
+        href: appPath('communityExport', { path: { communityId } }),
+        children: appLabel('communityExport'),
+        showDivider: canEdit,
       }
     );
 
@@ -58,6 +58,7 @@ export function useMoreMenu(opt: MoreMenuOpt) {
         {
           key: 'communityModify',
           onPress: opt.communityModifyDisclosure.onOpen,
+          endContent: <Icon icon="settings" />,
           children: 'Modify Community',
         },
         {

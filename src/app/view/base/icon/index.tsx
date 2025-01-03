@@ -2,10 +2,10 @@ import clsx from 'clsx';
 import React from 'react';
 import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
+import { CiFilter, CiShare2 } from 'react-icons/ci';
 import {
   FaAward,
   FaFolderOpen,
-  FaList,
   FaMailchimp,
   FaRegCopy,
   FaSearch,
@@ -13,26 +13,19 @@ import {
 } from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa6';
 import { FcDonate } from 'react-icons/fc';
+import { GoGear } from 'react-icons/go';
 import { GrUndo } from 'react-icons/gr';
 import { HiOutlineTicket } from 'react-icons/hi2';
-import {
-  IoIosSettings,
-  IoMdAddCircleOutline,
-  IoMdLink,
-  IoMdMore,
-} from 'react-icons/io';
+import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
 import {
   IoArrowBack,
-  IoBarChart,
+  IoBarChartOutline,
   IoCheckmark,
-  IoFilter,
   IoInformation,
   IoPersonAdd,
-  IoTicket,
 } from 'react-icons/io5';
 import {
   MdDragIndicator,
-  MdIosShare,
   MdLogout,
   MdOutlineClear,
   MdOutlineMail,
@@ -40,6 +33,7 @@ import {
   MdOutlineThumbUp,
   MdQuestionMark,
 } from 'react-icons/md';
+import { RiHome6Line } from 'react-icons/ri';
 import { RxCross2 } from 'react-icons/rx';
 
 type SupportedIcon =
@@ -63,7 +57,7 @@ type SupportedIcon =
   | 'download'
   | 'dashboard'
   | 'copy'
-  | 'list'
+  | 'property-list'
   | 'logout'
   | 'settings'
   | 'about'
@@ -128,7 +122,7 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       IconElement = FaSearch;
       break;
     case 'share':
-      IconElement = MdIosShare;
+      IconElement = CiShare2;
       break;
     case 'link':
       IconElement = IoMdLink;
@@ -137,19 +131,19 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       IconElement = FaDownload;
       break;
     case 'dashboard':
-      IconElement = IoBarChart;
+      IconElement = IoBarChartOutline;
       break;
     case 'copy':
       IconElement = FaRegCopy;
       break;
-    case 'list':
-      IconElement = FaList;
+    case 'property-list':
+      IconElement = RiHome6Line;
       break;
     case 'logout':
       IconElement = MdLogout;
       break;
     case 'settings':
-      IconElement = IoIosSettings;
+      IconElement = GoGear;
       break;
     case 'about':
       IconElement = IoInformation;
@@ -164,7 +158,7 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       IconElement = IoArrowBack;
       break;
     case 'filter':
-      IconElement = IoFilter;
+      IconElement = CiFilter;
       break;
     case 'ticket':
       IconElement = HiOutlineTicket;
