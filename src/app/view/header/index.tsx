@@ -21,9 +21,11 @@ import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
 import { useTopMenu } from './use-top-menu';
 
-interface Props {}
+interface Props {
+  moreMenu?: React.ReactNode;
+}
 
-export const Header: React.FC<Props> = ({}) => {
+export const Header: React.FC<Props> = ({ moreMenu }) => {
   const { status } = useSession();
   const breadcrumbItems = useTopMenu();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -86,6 +88,7 @@ export const Header: React.FC<Props> = ({}) => {
           ))}
         </Breadcrumbs>
         <NavbarContent justify="end">
+          {moreMenu}
           {status === 'loading' ? (
             <Spinner />
           ) : status === 'authenticated' ? (

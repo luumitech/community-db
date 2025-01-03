@@ -18,7 +18,8 @@ import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
-import { PropertyFilterBar } from './property-filter-bar';
+import { MoreMenu } from './more-menu';
+import { PropertySearchHeader } from './property-search-header';
 import { useTableData } from './use-table-data';
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
@@ -131,7 +132,7 @@ export const PageContent: React.FC<Props> = (props) => {
       // removeWrapper
       isHeaderSticky
       selectionMode="single"
-      topContent={<PropertyFilterBar community={community} />}
+      topContent={<PropertySearchHeader community={community} />}
       topContentPlacement="outside"
       bottomContent={
         !!pageInfo?.hasNextPage && (

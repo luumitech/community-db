@@ -5,7 +5,7 @@ import {
   type ConfirmationState,
 } from './confirmation-modal';
 
-type ContextT = Readonly<ConfirmationState & CommunityState>;
+interface ContextT extends Readonly<ConfirmationState & CommunityState> {}
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
