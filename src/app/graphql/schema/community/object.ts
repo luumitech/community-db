@@ -5,19 +5,15 @@ import { GraphQLError } from 'graphql';
 import hash from 'object-hash';
 import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
-import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { getCurrentYear } from '~/lib/date-util';
-import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
-import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
 import { PropertyFilterInput } from '../property/modify';
 import { propertyRef } from '../property/object';
 import {
   getPropertyEntryWithinCommunity,
   isMember,
-  isMemberInYear,
   propertyListFindManyArgs,
 } from '../property/util';
 

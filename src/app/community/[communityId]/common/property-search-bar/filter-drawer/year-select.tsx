@@ -1,6 +1,7 @@
-import { Select, SelectItem, SelectProps } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { Select, SelectItem, SelectProps } from '~/view/base/select';
+import { useHookFormContext } from '../use-hook-form';
 import {
   SelectedYearItem,
   YearItemLabel,
@@ -13,16 +14,18 @@ type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
 interface Props extends CustomSelectProps {
   className?: string;
   yearRange: [number, number];
-  year: Set<string>;
+  controlName: 'memberYear' | 'nonMemberYear';
 }
 
 export const YearSelect: React.FC<Props> = ({
   className,
   yearRange,
-  year,
+  controlName,
   ...props
 }) => {
-  const [selectedYear] = year;
+  const { watch } = useHookFormContext();
+  const selectedYear = watch(controlName);
+
   const yearItems = React.useMemo(() => {
     return yearSelectItems(yearRange, selectedYear);
   }, [yearRange, selectedYear]);
@@ -33,19 +36,13 @@ export const YearSelect: React.FC<Props> = ({
         base: className,
       }}
       size="sm"
+      controlName={controlName}
       items={yearItems}
       isDisabled={!yearItems.length}
-      selectedKeys={year.values()}
       selectionMode="single"
       // disallowEmptySelection
-      renderValue={(items) => <SelectedYearItem items={items} />}
-      onSelectionChange={(keys) => {
-        const [firstKey] = keys;
-        const yearSelected = firstKey as string;
-        year.clear();
-        year.add(yearSelected);
-      }}
       {...props}
+      renderValue={(items) => <SelectedYearItem items={items} />}
     >
       {(item) => {
         return (

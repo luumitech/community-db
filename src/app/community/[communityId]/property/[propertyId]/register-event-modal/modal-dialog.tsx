@@ -1,5 +1,4 @@
 import {
-  Chip,
   Modal,
   ModalBody,
   ModalContent,
@@ -42,7 +41,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }

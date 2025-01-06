@@ -18,7 +18,7 @@ export const PropertySearchHeader: React.FC<Props> = ({
     <>
       {community && <MoreMenu community={community} />}
       <div className={clsx(className, 'flex flex-col gap-2')}>
-        <PropertySearchBar />
+        <PropertySearchBar autoFocus />
         <span className="text-tiny text-foreground-400">
           {totalCount} entries found
         </span>

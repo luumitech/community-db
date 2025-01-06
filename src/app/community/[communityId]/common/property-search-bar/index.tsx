@@ -1,26 +1,50 @@
-import { Input } from '@nextui-org/react';
+import { Input, InputProps } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
 import { FilterChip } from './filter-chip';
 import { FilterDrawer } from './filter-drawer';
+import { useHookFormWithDisclosure, type InputData } from './use-hook-form';
 
-interface Props {
+interface Props extends InputProps {
   className?: string;
+  onChange?: () => void;
 }
 
-export const PropertySearchBar: React.FC<Props> = ({ className }) => {
+export const PropertySearchBar: React.FC<Props> = ({
+  className,
+  onChange,
+  ...props
+}) => {
   const { communityUi } = useAppContext();
+  const { disclosure, formMethods } = useHookFormWithDisclosure();
+  const { memberYear, nonMemberYear, event } = useFilterBarContext();
 
   const setSearchText = (input?: string) => {
     communityUi.actions.setPropertyListSearch(input);
+    onChange?.();
   };
 
+  const onFilterChange = React.useCallback(
+    async (input: InputData) => {
+      memberYear.clear();
+      memberYear.add(input.memberYear);
+      nonMemberYear.clear();
+      nonMemberYear.add(input.nonMemberYear);
+      event.clear();
+      event.add(input.event);
+      onChange?.();
+    },
+    [memberYear, nonMemberYear, event]
+  );
+
   return (
-    <>
+    <FormProvider {...formMethods}>
       <Input
         className={className}
         placeholder="Search Address or Member Name"
@@ -38,8 +62,8 @@ export const PropertySearchBar: React.FC<Props> = ({ className }) => {
               disabled={!communityUi.propertyListSearch}
               onClick={() => setSearchText(undefined)}
             />
-            <FilterButton />
-            <FilterChip />
+            <FilterButton disclosure={disclosure} />
+            <FilterChip disclosure={disclosure} onChange={onFilterChange} />
           </div>
         }
         // endContent={
@@ -49,8 +73,9 @@ export const PropertySearchBar: React.FC<Props> = ({ className }) => {
         // }
         value={communityUi.propertyListSearch ?? ''}
         onValueChange={setSearchText}
+        {...props}
       />
-      <FilterDrawer />
-    </>
+      <FilterDrawer disclosure={disclosure} onChange={onFilterChange} />
+    </FormProvider>
   );
 };

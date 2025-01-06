@@ -1,15 +1,17 @@
+import { useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { FlatButton } from '~/view/base/flat-button';
+import { useIsFilterSpecified } from './use-hook-form';
 
 interface Props {
   className?: string;
+  disclosure: ReturnType<typeof useDisclosure>;
 }
 
-export const FilterButton: React.FC<Props> = ({ className }) => {
-  const { drawerDisclosure, filterSpecified } = useFilterBarContext();
-  const { onOpen } = drawerDisclosure;
+export const FilterButton: React.FC<Props> = ({ className, disclosure }) => {
+  const { filterSpecified } = useIsFilterSpecified();
+  const { onOpen } = disclosure;
 
   return (
     <FlatButton

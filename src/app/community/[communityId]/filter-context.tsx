@@ -1,4 +1,3 @@
-import { useDisclosure } from '@nextui-org/react';
 import { useDebounce, useSet } from '@uidotdev/usehooks';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
@@ -8,9 +7,6 @@ type ContextT = Readonly<{
   /** CommunityId (read from route param) */
   communityId: string;
 
-  /** Disclosure props for drawer */
-  drawerDisclosure: ReturnType<typeof useDisclosure>;
-
   /** Filter control: membership year */
   memberYear: Set<string>;
   nonMemberYear: Set<string>;
@@ -18,8 +14,6 @@ type ContextT = Readonly<{
 
   /** Property filter arguments */
   filterArg: GQL.PropertyFilterInput;
-  /** Has Filter been specified */
-  filterSpecified: boolean;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -32,7 +26,6 @@ interface Props {
 
 export function FilterBarProvider({ communityId, ...props }: Props) {
   const { communityUi } = useAppContext();
-  const drawerDisclosure = useDisclosure();
   const memberYear = useSet<string>([]);
   const nonMemberYear = useSet<string>([]);
   const event = useSet<string>([]);
@@ -41,12 +34,6 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
   const [selectedMemberYearStr] = memberYear;
   const [selectedNonMemberYearStr] = nonMemberYear;
   const [selectedEvent] = event;
-
-  const filterSpecified = React.useMemo(() => {
-    return (
-      !!selectedMemberYearStr || !!selectedNonMemberYearStr || !!selectedEvent
-    );
-  }, [selectedMemberYearStr, selectedNonMemberYearStr, selectedEvent]);
 
   const filterArg = React.useMemo<GQL.PropertyFilterInput>(() => {
     const arg: GQL.PropertyFilterInput = {};
@@ -76,12 +63,10 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
     <Context.Provider
       value={{
         communityId,
-        drawerDisclosure,
         memberYear,
         nonMemberYear,
         event,
         filterArg,
-        filterSpecified,
       }}
       {...props}
     />
