@@ -18,7 +18,7 @@ export default function Dashboard({ params }: RouteArgs) {
 
   return (
     <>
-      {/* <MoreMenu communityId={communityId} /> */}
+      <MoreMenu communityId={communityId} omitKeys={['communityDashboard']} />
       <div className="grid md:grid-cols-2 gap-4 mb-4">
         <MemberCountChart
           // Top chart always occupy first row

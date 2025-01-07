@@ -1,8 +1,7 @@
-'use client';
 import { DropdownItemProps } from '@nextui-org/react';
-import { useMediaQuery } from '@uidotdev/usehooks';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useMediaQuery } from 'usehooks-ts';
 import { Button } from '~/view/base/button';
 
 export interface MenuItemEntry extends DropdownItemProps {}
