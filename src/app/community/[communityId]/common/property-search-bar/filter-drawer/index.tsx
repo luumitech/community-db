@@ -5,8 +5,8 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-  useDisclosure,
 } from '@nextui-org/react';
+import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { Form } from '~/view/base/form';
@@ -19,7 +19,7 @@ import { EventSelect } from './event-select';
 import { YearSelect } from './year-select';
 
 interface Props {
-  disclosure: ReturnType<typeof useDisclosure>;
+  disclosure: UseDisclosureReturn;
   onChange?: (input: InputData) => void;
 }
 
@@ -35,7 +35,7 @@ export const FilterDrawer: React.FC<Props> = ({ disclosure, onChange }) => {
       onChange?.(input);
       onClose();
     },
-    [onClose]
+    [onClose, onChange]
   );
 
   return (

@@ -1,5 +1,7 @@
 import { type CommunityAccessListQuery } from '~/graphql/generated/graphql';
 
+export type CommunityEntry = CommunityAccessListQuery['communityFromId'];
+
 export type AccessEntry = {
   /** Indicates if the access entry is owner of community */
   isOwner?: boolean;
@@ -8,4 +10,4 @@ export type AccessEntry = {
    * is owned by context user
    */
   isSelf?: boolean;
-} & CommunityAccessListQuery['communityFromId']['otherAccessList'][0];
+} & CommunityEntry['otherAccessList'][0];

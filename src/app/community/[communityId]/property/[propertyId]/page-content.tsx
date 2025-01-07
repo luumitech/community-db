@@ -35,10 +35,10 @@ export const PageContent: React.FC<Props> = (props) => {
 
   return (
     <div className="flex flex-col gap-3">
+      <MoreMenu />
       <PropertySearchBar onChange={onSearchChanged} />
       <div className="flex gap-2">
         <PropertyDisplay />
-        <MoreMenu />
       </div>
       <Divider />
       <MembershipDisplay />

@@ -1,4 +1,4 @@
-import { useDisclosure } from '@nextui-org/react';
+import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
@@ -6,7 +6,7 @@ import { useIsFilterSpecified } from './use-hook-form';
 
 interface Props {
   className?: string;
-  disclosure: ReturnType<typeof useDisclosure>;
+  disclosure: UseDisclosureReturn;
 }
 
 export const FilterButton: React.FC<Props> = ({ className, disclosure }) => {

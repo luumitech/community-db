@@ -40,7 +40,7 @@ export const PropertySearchBar: React.FC<Props> = ({
       event.add(input.event);
       onChange?.();
     },
-    [memberYear, nonMemberYear, event]
+    [memberYear, nonMemberYear, event, onChange]
   );
 
   return (

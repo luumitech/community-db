@@ -21,7 +21,7 @@ import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
 import { useTopMenu } from './use-top-menu';
 
-export * from './more-menu';
+export * from './header-menu';
 
 interface Props {}
 

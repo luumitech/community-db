@@ -2,16 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { CommunityEntry } from '../_type';
 
 const CreateFragment = graphql(/* GraphQL */ `
   fragment CommunityId_PropertyCreateModal on Community {
     id
   }
 `);
+export type CreateFragmentType = FragmentType<typeof CreateFragment>;
 
 function schema() {
   return z.object({
@@ -40,7 +40,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(fragment: CommunityEntry) {
+export function useHookFormWithDisclosure(fragment: CreateFragmentType) {
   const community = getFragment(CreateFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(community),
@@ -62,8 +62,8 @@ export function useHookFormWithDisclosure(fragment: CommunityEntry) {
    * fragment
    */
   const onModalClose = React.useCallback(() => {
-    reset(defaultInputData(fragment));
-  }, [reset, fragment]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
   const disclosure = useDisclosure({
     onClose: onModalClose,
   });

@@ -1,17 +1,24 @@
+'use client';
 import { DropdownItemProps } from '@nextui-org/react';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Button } from '~/view/base/button';
 
-interface Props {
-  /** Available list of menu items */
-  items: DropdownItemProps[];
-  /** List of items to create shortcuts for */
-  itemKeys: string[];
+export interface MenuItemEntry extends DropdownItemProps {}
+export type MenuItemMap = Map<string, MenuItemEntry>;
+
+export interface HeaderMenuShortcutProps {
+  /** Map of menu items and their configurations */
+  itemMap: MenuItemMap;
+  /** List of menu item key(s) to create shortcuts for */
+  shortcutKeys: string[];
 }
 
-export const MoreMenuShortcut: React.FC<Props> = ({ items, itemKeys }) => {
+export const HeaderMenuShortcut: React.FC<HeaderMenuShortcutProps> = ({
+  itemMap,
+  shortcutKeys,
+}) => {
   const router = useRouter();
   const isSmallDevice = useMediaQuery('(max-width: 640px)');
 
@@ -19,9 +26,9 @@ export const MoreMenuShortcut: React.FC<Props> = ({ items, itemKeys }) => {
     return null;
   }
 
-  return itemKeys
+  return shortcutKeys
     .map((key) => {
-      const menuItem = items.find((item) => item.key === key);
+      const menuItem = itemMap.get(key);
       if (!menuItem) {
         return null;
       }

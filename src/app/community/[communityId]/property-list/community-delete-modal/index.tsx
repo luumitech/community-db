@@ -7,7 +7,10 @@ import { toast } from '~/view/base/toastify';
 import { DeleteModal } from './delete-modal';
 import { type UseHookFormWithDisclosureResult } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
+export {
+  useHookFormWithDisclosure,
+  type DeleteFragmentType,
+} from './use-hook-form';
 
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityDelete($id: String!) {

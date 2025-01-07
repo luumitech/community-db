@@ -9,7 +9,10 @@ import {
   type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
+export {
+  useHookFormWithDisclosure,
+  type BatchPropertyModifyFragmentType,
+} from './use-hook-form';
 
 const BatchPropertyMutation = graphql(/* GraphQL */ `
   mutation batchPropertyModify($input: BatchPropertyModifyInput!) {

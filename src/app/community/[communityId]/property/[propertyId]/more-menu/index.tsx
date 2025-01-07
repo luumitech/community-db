@@ -1,38 +1,36 @@
-import {
-  Button,
-  ButtonGroup,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from '@nextui-org/react';
 import React from 'react';
-import { Icon } from '~/view/base/icon';
-import { MoreMenuShortcut, MoreMenuWrapper } from '~/view/header';
-import { useMoreMenu } from './use-menu';
+import { useAppContext } from '~/custom-hooks/app-context';
+import { insertIf } from '~/lib/insert-if';
+import { HeaderMenu } from '~/view/header';
+import { useItemMap } from './use-item-map';
 
 interface Props {}
 
 export const MoreMenu: React.FC<Props> = (props) => {
-  const menuItems = useMoreMenu();
+  const { canEdit, isAdmin } = useAppContext();
+  const itemMap = useItemMap();
+
+  const menuConfig = [
+    'propertyList',
+    // 'communityDashboard',
+    // 'communityShare',
+    // 'exportEmail',
+    // 'communityExport',
+    'divider',
+    ...insertIf(canEdit, 'membershipEditor'),
+    ...insertIf(canEdit, 'occupantEditor'),
+    'divider',
+    ...insertIf(canEdit, 'modifyProperty'),
+    ...insertIf(isAdmin, 'deleteProperty'),
+  ];
+
+  const shortcutKeys = ['propertyList'];
 
   return (
-    <MoreMenuWrapper>
-      <ButtonGroup variant="light">
-        <MoreMenuShortcut items={menuItems} itemKeys={['property-list']} />
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
-            <Button className="text-2xl" aria-label="Open More Menu" isIconOnly>
-              <Icon icon="more" />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="More Menu" variant="flat">
-            {menuItems.map(({ key, ...entry }) => (
-              <DropdownItem key={key} {...entry} />
-            ))}
-          </DropdownMenu>
-        </Dropdown>
-      </ButtonGroup>
-    </MoreMenuWrapper>
+    <HeaderMenu
+      itemMap={itemMap}
+      menuConfig={menuConfig}
+      shortcutKeys={shortcutKeys}
+    />
   );
 };

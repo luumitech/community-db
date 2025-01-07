@@ -3,11 +3,10 @@ import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { z, zz } from '~/lib/zod';
-import { CommunityEntry } from '../_type';
 
 const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
@@ -15,6 +14,9 @@ const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
     name
   }
 `);
+export type BatchPropertyModifyFragmentType = FragmentType<
+  typeof BatchPropertyModifyFragment
+>;
 
 function schema() {
   return z.object({
@@ -57,8 +59,11 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(community: CommunityEntry) {
+export function useHookFormWithDisclosure(
+  fragment: BatchPropertyModifyFragmentType
+) {
   const { filterArg } = useFilterBarContext();
+  const community = getFragment(BatchPropertyModifyFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(community.id, filterArg),
     [community, filterArg]

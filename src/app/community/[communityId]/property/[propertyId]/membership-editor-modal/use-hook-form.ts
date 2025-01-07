@@ -7,10 +7,9 @@ import {
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { type PropertyEntry } from '../_type';
 import { yearSelectItems } from '../year-select-items';
 
 export const MembershipEditorFragment = graphql(/* GraphQL */ `
@@ -34,6 +33,9 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+export type MembershipEditorFragmentType = FragmentType<
+  typeof MembershipEditorFragment
+>;
 
 function schema() {
   return z.object({
@@ -150,7 +152,7 @@ function defaultInputData(
 }
 
 export function useHookFormWithDisclosure(
-  fragment: PropertyEntry,
+  fragment: MembershipEditorFragmentType,
   yearSelected: string
 ) {
   const { minYear, maxYear } = useAppContext();

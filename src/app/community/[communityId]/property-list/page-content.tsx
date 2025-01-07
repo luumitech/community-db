@@ -119,58 +119,61 @@ export const PageContent: React.FC<Props> = (props) => {
   }, [filterArg, communityId, result.error]);
 
   return (
-    <Table
-      aria-label="Property Table"
-      classNames={{
-        base: ['max-h-main-height'],
-        // Don't use array here
-        // See: https://github.com/nextui-org/nextui/issues/2304
-        // replaces the removeWrapper attribute
-        // use this to keep scroll bar within table
-        wrapper: 'p-0',
-      }}
-      // removeWrapper
-      isHeaderSticky
-      selectionMode="single"
-      topContent={<PropertySearchHeader community={community} />}
-      topContentPlacement="outside"
-      bottomContent={
-        !!pageInfo?.hasNextPage && (
-          <Spinner
-            className="flex w-full justify-center mb-4"
-            ref={loadingRef}
-          />
-        )
-      }
-      onRowAction={(key) =>
-        router.push(
-          appPath('property', {
-            path: { communityId, propertyId: key as string },
-          })
-        )
-      }
-    >
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.key} className={column.className}>
-            {column.label}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody
-        isLoading={loading}
-        loadingContent={<Spinner />}
-        emptyContent={emptyContent}
-        items={rows}
+    <>
+      {community && <MoreMenu community={community} />}
+      <Table
+        aria-label="Property Table"
+        classNames={{
+          base: ['max-h-main-height'],
+          // Don't use array here
+          // See: https://github.com/nextui-org/nextui/issues/2304
+          // replaces the removeWrapper attribute
+          // use this to keep scroll bar within table
+          wrapper: 'p-0',
+        }}
+        // removeWrapper
+        isHeaderSticky
+        selectionMode="single"
+        topContent={<PropertySearchHeader community={community} />}
+        topContentPlacement="outside"
+        bottomContent={
+          !!pageInfo?.hasNextPage && (
+            <Spinner
+              className="flex w-full justify-center mb-4"
+              ref={loadingRef}
+            />
+          )
+        }
+        onRowAction={(key) =>
+          router.push(
+            appPath('property', {
+              path: { communityId, propertyId: key as string },
+            })
+          )
+        }
       >
-        {(entry) => (
-          <TableRow key={entry.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(entry, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key} className={column.className}>
+              {column.label}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          isLoading={loading}
+          loadingContent={<Spinner />}
+          emptyContent={emptyContent}
+          items={rows}
+        >
+          {(entry) => (
+            <TableRow key={entry.id}>
+              {(columnKey) => (
+                <TableCell>{renderCell(entry, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
 };

@@ -6,10 +6,9 @@ import {
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { CommunityEntry } from '../_type';
 
 const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityModifyModal on Community {
@@ -29,6 +28,7 @@ const ModifyFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+export type ModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 function schema() {
   return z.object({
@@ -94,7 +94,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(fragment: CommunityEntry) {
+export function useHookFormWithDisclosure(fragment: ModifyFragmentType) {
   const community = getFragment(ModifyFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(community),

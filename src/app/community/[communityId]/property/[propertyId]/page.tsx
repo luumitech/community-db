@@ -2,7 +2,6 @@
 import { useQuery } from '@apollo/client';
 import { Skeleton } from '@nextui-org/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { PageContent } from './page-content';
@@ -40,13 +39,9 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
 `);
 
 export default function Property({ params }: RouteArgs) {
-  const { communityId } = useAppContext();
+  const { communityId, propertyId } = params;
   const result = useQuery(PropertyFromIdQuery, {
-    skip: communityId == null,
-    variables: {
-      communityId: communityId!,
-      propertyId: params.propertyId,
-    },
+    variables: { communityId, propertyId },
   });
   useGraphqlErrorHandler(result);
   const community = result.data?.communityFromId;

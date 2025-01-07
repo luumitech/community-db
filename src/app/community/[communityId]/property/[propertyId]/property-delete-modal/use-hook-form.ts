@@ -1,6 +1,5 @@
 import { useDisclosure } from '@nextui-org/react';
-import { getFragment, graphql } from '~/graphql/generated';
-import { PropertyEntry } from '../_type';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 
 const DeleteFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyDelete on Property {
@@ -8,8 +7,9 @@ const DeleteFragment = graphql(/* GraphQL */ `
     address
   }
 `);
+export type DeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
-export function useHookFormWithDisclosure(fragment: PropertyEntry) {
+export function useHookFormWithDisclosure(fragment: DeleteFragmentType) {
   const property = getFragment(DeleteFragment, fragment);
   const disclosure = useDisclosure();
 

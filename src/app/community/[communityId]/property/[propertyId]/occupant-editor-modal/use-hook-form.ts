@@ -6,10 +6,9 @@ import {
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { type PropertyEntry } from '../_type';
 
 const OccupantEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantEditor on Property {
@@ -29,6 +28,9 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+export type OccupantEditorFragmentType = FragmentType<
+  typeof OccupantEditorFragment
+>;
 
 function schema() {
   return z.object({
@@ -88,7 +90,9 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(fragment: PropertyEntry) {
+export function useHookFormWithDisclosure(
+  fragment: OccupantEditorFragmentType
+) {
   const property = getFragment(OccupantEditorFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(property),
