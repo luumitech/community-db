@@ -7,7 +7,7 @@ import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
-import { MoreMenu } from '../more-menu';
+import { MoreMenu } from '../common/more-menu';
 import { ImportForm } from './import-form';
 import {
   CommunityImportMutation,

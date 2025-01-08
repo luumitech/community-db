@@ -6,7 +6,7 @@ import * as batchPropertyModifyModal from '../batch-property-modify-modal';
 import * as communityDeleteModal from '../community-delete-modal';
 import * as communityModifyModal from '../community-modify-modal';
 import * as propertyCreateModal from '../property-create-modal';
-import { useItemMap } from './use-item-map';
+import { useMenuItem } from './use-menu-item';
 
 interface Props {
   community: batchPropertyModifyModal.BatchPropertyModifyFragmentType &
@@ -27,7 +27,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
   const communityDelete =
     communityDeleteModal.useHookFormWithDisclosure(community);
 
-  const itemMap = useItemMap({
+  const menuItems = useMenuItem({
     communityId: communityModify.community.id,
     communityModifyDisclosure: communityModify.disclosure,
     batchPropertyModifyDisclosure: batchPropertyModify.disclosure,
@@ -35,29 +35,28 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
     propertyCreateDisclosure: propertyCreate.disclosure,
   });
 
-  const menuConfig = [
-    'propertyList',
-    'communityDashboard',
-    'communityShare',
-    'exportEmail',
-    'communityExport',
-    'divider',
-    ...insertIf(canEdit, 'communityModify'),
-    ...insertIf(canEdit, 'batchPropertyyModify'),
-    'divider',
-    ...insertIf(isAdmin, 'communityImport'),
-    ...insertIf(isAdmin, 'propertyCreate'),
-    ...insertIf(isAdmin, 'communityDelete'),
-  ];
-
-  const shortcutKeys = ['propertyList', 'communityDashboard', 'communityShare'];
-
   return (
     <>
       <HeaderMenu
-        itemMap={itemMap}
-        menuConfig={menuConfig}
-        shortcutKeys={shortcutKeys}
+        menuItems={menuItems}
+        menuKeys={[
+          'communityDashboard',
+          'communityShare',
+          'exportEmail',
+          'communityExport',
+          'divider',
+          ...insertIf(canEdit, 'communityModify'),
+          ...insertIf(canEdit, 'batchPropertyyModify'),
+          'divider',
+          ...insertIf(isAdmin, 'communityImport'),
+          ...insertIf(isAdmin, 'propertyCreate'),
+          ...insertIf(isAdmin, 'communityDelete'),
+        ]}
+        shortcutKeys={[
+          'communityDashboard',
+          'communityModify',
+          'communityShare',
+        ]}
       />
       <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
       <batchPropertyModifyModal.BatchPropertyModifyModal

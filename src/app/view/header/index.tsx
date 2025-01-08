@@ -54,11 +54,12 @@ export const Header: React.FC<Props> = ({}) => {
           ],
         }}
       >
-        {menuItems.length > 0 && (
+        {/** Hamburger menu */}
+        {/* {menuItems.length > 0 && (
           <NavbarMenuToggle
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
-        )}
+        )} */}
         <NavbarContent justify="center">
           <NavbarBrand className="min-w-[36px]">
             <Link

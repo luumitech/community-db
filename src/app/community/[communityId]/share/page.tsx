@@ -13,7 +13,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { MoreMenu } from '../more-menu';
+import { MoreMenu } from '../common/more-menu';
 import { CopyShareLink } from './copy-share-link';
 import { NewAccessButton } from './new-access-button';
 import { RoleDescription } from './role-description';

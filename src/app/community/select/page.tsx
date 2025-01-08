@@ -6,6 +6,7 @@ import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 import { ListBox, ListboxItemProps } from '~/view/base/list-box';
+import { MoreMenu } from '../common/more-menu';
 
 const CurrentUserInfoQuery = graphql(/* GraphQL */ `
   query currentUserInfo {
@@ -40,6 +41,7 @@ export default function CommunitySelect() {
 
   return (
     <div>
+      <MoreMenu omitKeys={['communitySelect']} />
       <ListBox
         header="Select Community"
         loading={result.loading}

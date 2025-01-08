@@ -1,20 +1,26 @@
-import { DropdownItemProps } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { Button } from '~/view/base/button';
+import type { MenuItemEntry } from './_type';
 
-export interface MenuItemEntry extends DropdownItemProps {}
 export type MenuItemMap = Map<string, MenuItemEntry>;
 
-export interface HeaderMenuShortcutProps {
-  /** Map of menu items and their configurations */
+interface Props {
+  /**
+   * List of available menu items and their configurations, mapped by each menu
+   * item's key
+   */
   itemMap: MenuItemMap;
-  /** List of menu item key(s) to create shortcuts for */
+  /**
+   * List of menu item key(s) to create shortcuts for.
+   *
+   * Shortcuts are displayed on the left side of the 'more icon' button
+   */
   shortcutKeys: string[];
 }
 
-export const HeaderMenuShortcut: React.FC<HeaderMenuShortcutProps> = ({
+export const HeaderMenuShortcut: React.FC<Props> = ({
   itemMap,
   shortcutKeys,
 }) => {

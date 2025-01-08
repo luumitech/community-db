@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { MoreMenu } from '../more-menu';
+import { MoreMenu } from '../common/more-menu';
 import { MemberCountChart } from './member-count-chart';
 import { YearlyChart } from './yearly-chart';
 
