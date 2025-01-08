@@ -22,7 +22,12 @@ export const RegisteredEventList: React.FC<Props> = ({
       )}
       <div className="flex flex-wrap gap-2">
         {eventAttendedList?.map((entry) => (
-          <EventChip key={entry.eventName} eventName={entry.eventName} />
+          <EventChip
+            key={entry.eventName}
+            eventName={entry.eventName}
+            variant="flat"
+            color="secondary"
+          />
         ))}
       </div>
     </div>

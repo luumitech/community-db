@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter } from '@nextui-org/react';
+import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
@@ -31,16 +31,21 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardBody>
+      <CardHeader>Contact</CardHeader>
+      <CardBody className="gap-2">
+        {canEdit && (
+          <div className="self-end">
+            <ModalButton
+              onPress={occupantEditor.disclosure.onOpen}
+              color="primary"
+              variant="bordered"
+            >
+              Edit Member Details
+            </ModalButton>
+          </div>
+        )}
         <OccupantTable occupantList={entry.occupantList} />
       </CardBody>
-      {canEdit && (
-        <CardFooter>
-          <ModalButton onPress={occupantEditor.disclosure.onOpen}>
-            Edit Member Details
-          </ModalButton>
-        </CardFooter>
-      )}
     </Card>
   );
 };

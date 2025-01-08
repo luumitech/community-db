@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
+import { getCurrentDate } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { usePageContext } from '../page-context';
@@ -62,12 +63,18 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader className="justify-between">
-            Event Registration
-            <MemberStatusChip isMember={isMember} />
-          </ModalHeader>
+          <ModalHeader>Event Registration</ModalHeader>
           <ModalBody>
-            <EventChip eventName={eventName} />
+            <MemberStatusChip />
+            <div className="flex items-center gap-2">
+              Current Event
+              <EventChip
+                eventName={eventName}
+                variant="flat"
+                color="secondary"
+              />
+              {getCurrentDate()}
+            </div>
             <EventEditor />
           </ModalBody>
           <ModalFooter>

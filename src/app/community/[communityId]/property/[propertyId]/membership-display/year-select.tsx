@@ -36,13 +36,13 @@ export const YearSelect: React.FC<Props> = ({
   return (
     <Select
       classNames={{
-        base: clsx(className, 'items-center'),
+        base: clsx(className, 'items-start'),
         label: 'whitespace-nowrap',
-        mainWrapper: 'max-w-[150px]',
+        mainWrapper: 'max-w-xs',
       }}
-      label="Membership Info For Year"
-      labelPlacement="outside-left"
-      aria-label="Membership Year"
+      // label="Membership Info For Year"
+      // labelPlacement="outside-left"
+      aria-label="Membership Info For Year"
       placeholder="Select a year"
       items={yearItems}
       selectedKeys={year.values()}

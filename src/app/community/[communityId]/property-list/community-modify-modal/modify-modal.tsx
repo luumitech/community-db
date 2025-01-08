@@ -5,6 +5,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
+import { Tab, Tabs } from '@nextui-org/tabs';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
@@ -56,16 +57,35 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Community</ModalHeader>
-          <ModalBody>
-            <NameEditor />
-            <EventListEditor />
-            <PaymentMethodListEditor />
+          <ModalHeader className="flex justify-between">
+            Edit Community
             <LastModified
-              className="text-right"
+              className="text-right text-foreground-400"
               updatedAt={community.updatedAt}
               userFragment={community.updatedBy}
             />
+          </ModalHeader>
+          <ModalBody>
+            <Tabs
+              aria-label="Edit Community Options"
+              classNames={{
+                tabList:
+                  'gap-6 w-full relative rounded-none p-0 border-b border-divider',
+                tab: 'max-w-fit px-0 h-12',
+              }}
+              color="primary"
+              variant="underlined"
+            >
+              <Tab key="nameEditor" title="General">
+                <NameEditor />
+              </Tab>
+              <Tab key="eventEditor" title="Events">
+                <EventListEditor />
+              </Tab>
+              <Tab key="paymentMethodEditor" title="Payment Methods">
+                <PaymentMethodListEditor />
+              </Tab>
+            </Tabs>
           </ModalBody>
           <ModalFooter>
             <Button variant="bordered" confirmation={isDirty} onPress={onClose}>

@@ -75,6 +75,15 @@ export function getCurrentYear() {
 }
 
 /**
+ * Get the current date (i.e. Jan 20, 2024)
+ *
+ * @returns
+ */
+export function getCurrentDate() {
+  return format(new Date(), 'MMM d, yyyy');
+}
+
+/**
  * Format date as yyyy-MM-dd
  *
  * ```js

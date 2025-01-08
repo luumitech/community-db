@@ -65,8 +65,9 @@ describe('take screenshots for landing screen', () => {
     cy.findByLabelText('Membership Info For Year', { timeout });
     takeScreenshot('property-detail');
 
-    cy.clickButton('Edit Membership Info');
-    cy.findByRole('dialog').contains('Edit Membership Info');
+    cy.clickHeaderMoreMenu();
+    cy.clickRoleMenuItem('Edit Membership Detail');
+    cy.findByRole('dialog').contains('Edit Membership Detail');
     takeScreenshot('membership-editor');
     cy.clickButton('Cancel');
 
@@ -75,8 +76,8 @@ describe('take screenshots for landing screen', () => {
     // takeScreenshot('occupant-editor');
     // cy.clickButton('Cancel');
 
-    cy.clickMainMenu();
-    cy.clickMenuItem('Dashboard');
+    cy.clickHeaderMoreMenu();
+    cy.clickRoleMenuItem('Dashboard');
     // Wait for graphs to be loaded
     cy.get('div.grid div[data-loaded="true"]', { timeout }).should(
       'have.length',
@@ -85,8 +86,8 @@ describe('take screenshots for landing screen', () => {
     cy.scrollTo(0, 370);
     takeScreenshot('dashboard');
 
-    cy.clickMainMenu();
-    cy.clickMenuItem('Export to Excel');
+    cy.clickHeaderMoreMenu();
+    cy.clickRoleMenuItem('Export to Excel');
     cy.findByText('Download', { timeout });
     cy.get('table').parent().scrollTo(1950, 0);
     takeScreenshot('export-to-xlsx');

@@ -115,21 +115,14 @@ export default function Share({ params }: RouteArgs) {
       return null;
     }
     return (
-      <div className="flex gap-2 items-center">
-        <span className="text-lg grow">Share {community.name} with:</span>
+      <div className="flex gap-2 items-center justify-end">
+        <CopyShareLink communityId={community.id} />
         {isAdmin && (
           <NewAccessButton communityId={community.id} accessList={accessList} />
         )}
       </div>
     );
   }, [community, isAdmin, accessList]);
-
-  const bottomContent = React.useMemo(() => {
-    if (!community) {
-      return null;
-    }
-    return <CopyShareLink communityId={community.id} />;
-  }, [community]);
 
   return (
     <>
@@ -150,8 +143,6 @@ export default function Share({ params }: RouteArgs) {
         isHeaderSticky
         topContent={topContent}
         topContentPlacement="outside"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
       >
         <TableHeader columns={columns}>
           {(column) => (

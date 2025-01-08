@@ -2,6 +2,7 @@ import { Select, SelectItem, SelectSection } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { getCurrentDate } from '~/lib/date-util';
 
 interface Props {
   className?: string;
@@ -14,10 +15,10 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
   return (
     <Select
       className={clsx(className)}
-      label="Current Event Name"
+      aria-label="Current Event Name"
       items={selectEventSections}
-      placeholder="Select an event"
-      color="primary"
+      placeholder="Select current event"
+      description={getCurrentDate()}
       selectedKeys={lastEventSelected ? [lastEventSelected] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;

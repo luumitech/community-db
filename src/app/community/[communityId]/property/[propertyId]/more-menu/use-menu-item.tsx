@@ -20,7 +20,7 @@ export function useMenuItem() {
       {
         key: 'membershipEditor',
         onPress: membershipEditor.disclosure.onOpen,
-        children: 'Edit Membership Info',
+        children: 'Edit Membership Detail',
       },
       {
         key: 'occupantEditor',

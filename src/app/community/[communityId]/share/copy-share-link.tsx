@@ -20,6 +20,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
       <div className="flex items-center gap-2">
         <Button
           variant="bordered"
+          color="primary"
           endContent={<Icon icon="link" />}
           onPress={() => {
             const path = appPath('propertyList', { path: { communityId } });
