@@ -89,6 +89,8 @@ export const Header: React.FC<Props> = ({}) => {
           ))}
         </Breadcrumbs>
         <NavbarContent justify="end">
+          {/* placeholder for calculating position of more menu */}
+          <div id="nav-bar-avatar" />
           {status === 'loading' ? (
             <Spinner />
           ) : status === 'authenticated' ? (
