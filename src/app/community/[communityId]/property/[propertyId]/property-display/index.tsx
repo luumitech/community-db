@@ -55,7 +55,7 @@ export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
           return tableData.renderCell(fragment, columnKey);
       }
     },
-    [tableData.renderCell]
+    [tableData]
   );
 
   return (

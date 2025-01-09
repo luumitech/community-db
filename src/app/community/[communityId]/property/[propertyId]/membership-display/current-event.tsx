@@ -27,7 +27,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
             color="primary"
             onPress={registerEvent.disclosure.onOpen}
           >
-            I'm here!
+            I&apos;m here!
           </ModalButton>
         </div>
       </CardBody>

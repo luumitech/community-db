@@ -89,6 +89,7 @@ export class ExportHelper {
           .join(';');
         row[`${prfx}-payment`] = membership?.paymentMethod;
         row[`${prfx}-deposited`] = toBool(membership?.paymentDeposited);
+        row[`${prfx}-price`] = membership?.price;
       });
 
     return row;

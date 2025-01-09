@@ -3,8 +3,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { EventsAttendedSelect } from './events-attended-select';
-import { PaymentInfoEditor } from './payment-info-editor';
+import { EventInfoEditor } from './event-info-editor';
 import { useHookFormContext } from './use-hook-form';
 import { YearSelect } from './year-select';
 
@@ -44,8 +43,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
         </CardHeader>
         {idx > -1 && (
           <CardBody key={selectedYear} className="gap-4">
-            <PaymentInfoEditor yearIdx={idx} />
-            <EventsAttendedSelect yearIdx={idx} />
+            <EventInfoEditor membershipField={fields[idx]} yearIdx={idx} />
           </CardBody>
         )}
       </Card>

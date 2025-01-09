@@ -39,6 +39,7 @@ const membershipRef = builder.objectRef<Membership>('Membership').implement({
     }),
     paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
     paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),
+    price: t.exposeString('price', { nullable: true }),
   }),
 });
 

@@ -84,6 +84,10 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         colIdx: importHelper.labelColumn(`${prefix}-deposited`),
         type: 'boolean',
       },
+      price: {
+        colIdx: importHelper.labelColumn(`${prefix}-price`),
+        type: 'string',
+      },
     });
     // Map eventNameList/eventDateList into the format of
     // eventAttendedList

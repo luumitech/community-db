@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { Community, Prisma, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
@@ -37,6 +38,7 @@ const MembershipInput = builder.inputType('MembershipInput', {
     year: t.int({ required: true }),
     eventAttendedList: t.field({ type: [EventInput] }),
     paymentMethod: t.string(),
+    price: t.string(),
   }),
 });
 
@@ -179,6 +181,7 @@ const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
     year: t.int({ required: true }),
     eventAttended: t.field({ type: EventInput, required: true }),
     paymentMethod: t.string({ required: true }),
+    price: t.string(),
   }),
 });
 
@@ -260,6 +263,7 @@ builder.mutationField('batchPropertyModify', (t) =>
             year: input.membership.year,
             paymentMethod: input.membership.paymentMethod,
             paymentDeposited: null,
+            price: input.membership.price ?? null,
             eventAttendedList: [
               {
                 eventName: eventAttended.eventName,

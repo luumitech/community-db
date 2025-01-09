@@ -30,6 +30,7 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
       }
       paymentMethod
       paymentDeposited
+      price
     }
   }
 `);
@@ -67,6 +68,7 @@ function schema() {
               { message: 'Event Name must be unique', path: [''] }
             ),
           paymentMethod: z.string().nullable(),
+          price: z.string().nullable(),
         })
         .refine(
           (form) => {
@@ -107,6 +109,7 @@ export function membershipDefault(
     year,
     eventAttendedList: [],
     paymentMethod: null,
+    price: null,
   };
 }
 
@@ -146,6 +149,7 @@ function defaultInputData(
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
+        price: membershipItem?.price ?? defaultItem.price,
       };
     }),
   };
@@ -197,4 +201,9 @@ export function useHookFormContext() {
 export type MembershipListFieldArray = UseFieldArrayReturn<
   InputData,
   'membershipList'
+>;
+
+export type EventAttendedListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'membershipList.0.eventAttendedList'
 >;

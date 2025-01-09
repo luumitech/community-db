@@ -7,14 +7,14 @@ import {
   SelectProps,
   SelectSection,
 } from '~/view/base/select';
-import { useHookFormContext } from './use-hook-form';
+import { useHookFormContext } from '../use-hook-form';
 
 interface Props {
   className?: string;
   yearIdx: number;
 }
 
-export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
+export const PaymentSelect: React.FC<Props> = ({ className, yearIdx }) => {
   const { selectPaymentMethodSections } = useAppContext();
   const { clearErrors } = useHookFormContext();
 
@@ -31,9 +31,10 @@ export const PaymentInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
       <Select
         className="max-w-sm"
         controlName={`membershipList.${yearIdx}.paymentMethod`}
-        label="Payment Method"
+        aria-label="Payment Method"
         items={selectPaymentMethodSections}
-        placeholder="Select a payment method"
+        variant="underlined"
+        // placeholder="Select a payment method"
         selectionMode="single"
         onSelectionChange={onSelectionChange}
       >
