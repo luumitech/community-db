@@ -40,7 +40,7 @@ class ChartDataHelper {
   public chartData: Readonly<ChartDataEntry>[];
   constructor(stat: GQL.MemberCountStat[], yearRange: number) {
     if (yearRange > 0) {
-      this.stat = stat.slice(0, yearRange);
+      this.stat = stat.slice(-yearRange);
     } else {
       this.stat = stat;
     }

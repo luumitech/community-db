@@ -1,16 +1,11 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Input,
-} from '@nextui-org/react';
+import { Button, Input } from '@nextui-org/react';
+import clsx from 'clsx';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
 import { HiddenList } from './hidden-list';
+import { RowHeader } from './row-header';
 import { VisibleList } from './visible-list';
 
 interface Props {
@@ -32,11 +27,11 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
   /** Item can only be added if it is different than the ones on the visible list */
   const isItemValid = React.useCallback(
     (itemName: string) => {
-      const allEvents = [
+      const nameList = [
         ...paymentMethods.fields,
         ...hiddenPaymentMethods.fields,
       ];
-      const found = allEvents.find(
+      const found = nameList.find(
         ({ name }) =>
           !name.localeCompare(itemName, undefined, { sensitivity: 'accent' })
       );
@@ -71,22 +66,16 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
   );
 
   return (
-    <Card shadow="none" className="border-2">
-      <CardHeader>
-        <div className="flex flex-col text-foreground-500">
-          <p className="text-small">Payment Methods</p>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <div className="flex items-start gap-4">
-          <VisibleList fieldArray={paymentMethods} onRemove={addHiddenItem} />
-          <HiddenList
-            fieldArray={hiddenPaymentMethods}
-            onRemove={addVisibleItem}
-          />
-        </div>
-      </CardBody>
-      <CardFooter className="gap-2 items-start">
+    <div className={clsx(className, 'flex flex-col gap-4')}>
+      <div className="grid grid-cols-[40px_repeat(1,1fr)_75px] gap-2">
+        <RowHeader />
+        <VisibleList fieldArray={paymentMethods} onRemove={addHiddenItem} />
+        <HiddenList
+          fieldArray={hiddenPaymentMethods}
+          onRemove={addVisibleItem}
+        />
+      </div>
+      <div className="flex gap-2 items-start">
         <Input
           className="max-w-xs"
           aria-label="New payment method"
@@ -97,15 +86,22 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
           isInvalid={!isItemValid(newItem)}
         />
         <Button
-          className="text-primary"
+          variant="bordered"
+          color="primary"
           endContent={<Icon icon="add" />}
-          variant="faded"
           onPress={addNewItem}
           isDisabled={addIsDisabled}
         >
           Add Payment Method
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+      {hiddenPaymentMethods.fields.length > 0 && (
+        <p className="text-sm">
+          <span className="font-semibold">NOTE:</span> Removed payment methods
+          will not be shown in payment selection list. The removed methods will
+          remain in the database until they are no longer being referenced.
+        </p>
+      )}
+    </div>
   );
 };

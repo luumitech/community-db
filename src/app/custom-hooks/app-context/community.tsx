@@ -23,6 +23,12 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
         name
         hidden
       }
+      ticketList {
+        name
+        unitPrice
+        count
+        hidden
+      }
       paymentMethodList {
         name
         hidden
@@ -61,12 +67,16 @@ export type CommunityState = Readonly<{
   minYear: number;
   /** Maximum membership year recorded within membership */
   maxYear: number;
-  /** Visible event items (suitable for 'Add new event') */
+  /** Visible items (suitable for 'Add new --') */
   visibleEventItems: SelectItem[];
-  /** All event items (including hidden, suitable for event selection) */
+  visibleTicketItems: SelectItem[];
+  visiblePaymentMethods: SelectItem[];
+  /** All items (including hidden, suitable for modify existing selection) */
   selectEventSections: SelectSection[];
-  /** All payment method items (including hidden) */
+  selectTicketSections: SelectSection[];
   selectPaymentMethodSections: SelectSection[];
+  /** Ticket default configurations */
+  ticketDefault: Map<string, GQL.SupportedTicketItem>;
   /** Current user's role in this community */
   role: GQL.Role;
   /** Base on current user's role, can user modify content within this community? */
@@ -76,14 +86,19 @@ export type CommunityState = Readonly<{
 }>;
 
 /**
- * Given a list of SupportedSelectItem, group all visible items into
- * `visibleItems`, and create selection sections that contains all visible and
- * hidden items
+ * Given a list of Supported items, group all visible items into `visibleItems`,
+ * and create selection sections that contains all visible and hidden items
  *
- * @param list List of SupportedSelectItem
+ * @param list List of Supported items
  * @returns
  */
-function createSelectionItems(list: GQL.SupportedSelectItem[]) {
+function createSelectionItems(
+  list: (
+    | GQL.SupportedEventItem
+    | GQL.SupportedTicketItem
+    | GQL.SupportedPaymentMethod
+  )[]
+) {
   const visibleItems: SelectItem[] = [];
   const hiddenItems: SelectItem[] = [];
   list.forEach((entry) => {
@@ -162,6 +177,7 @@ export function useCommunityContext() {
 
   const contextValue = React.useMemo<CommunityState>(() => {
     const eventList = community?.eventList ?? [];
+    const ticketList = community?.ticketList ?? [];
     const paymentMethodList = community?.paymentMethodList ?? [];
     const role = community?.access.role ?? GQL.Role.Viewer;
 
@@ -171,6 +187,7 @@ export function useCommunityContext() {
       { label: 'Viewer', value: GQL.Role.Viewer },
     ];
     const eventSelect = createSelectionItems(eventList);
+    const ticketSelect = createSelectionItems(ticketList);
     const paymentMethodSelect = createSelectionItems(paymentMethodList);
 
     return {
@@ -181,8 +198,12 @@ export function useCommunityContext() {
       minYear: community?.minYear ?? getCurrentYear(),
       maxYear: community?.maxYear ?? getCurrentYear(),
       visibleEventItems: eventSelect.visibleItems,
+      visibleTicketItems: ticketSelect.visibleItems,
+      visiblePaymentMethods: paymentMethodSelect.visibleItems,
       selectEventSections: eventSelect.selectSections,
+      selectTicketSections: ticketSelect.selectSections,
       selectPaymentMethodSections: paymentMethodSelect.selectSections,
+      ticketDefault: new Map(ticketList.map((entry) => [entry.name, entry])),
       role,
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
       isAdmin: role === GQL.Role.Admin,

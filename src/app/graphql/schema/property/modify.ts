@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { Community, Prisma, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
@@ -29,7 +28,16 @@ const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
     eventDate: t.string(),
-    ticket: t.int(),
+    ticketList: t.field({ type: [TicketInput] }),
+  }),
+});
+
+const TicketInput = builder.inputType('TicketInput', {
+  fields: (t) => ({
+    ticketName: t.string({ required: true }),
+    count: t.int(),
+    price: t.string(),
+    paymentMethod: t.string(),
   }),
 });
 
@@ -251,7 +259,7 @@ builder.mutationField('batchPropertyModify', (t) =>
               eventDate: eventAttended.eventDate
                 ? new Date(eventAttended.eventDate)
                 : null,
-              ticket: null,
+              ticketList: [],
             });
             // Non empty event list require payment Method
             if (membership.eventAttendedList.length === 1) {
@@ -270,7 +278,7 @@ builder.mutationField('batchPropertyModify', (t) =>
                 eventDate: eventAttended.eventDate
                   ? new Date(eventAttended.eventDate)
                   : null,
-                ticket: null,
+                ticketList: [],
               },
             ],
           });

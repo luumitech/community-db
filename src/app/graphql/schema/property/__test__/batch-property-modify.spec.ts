@@ -213,7 +213,7 @@ describe('BatchPropertyModify', () => {
       const expectedEvent: Event = {
         eventName: newEvent.eventName,
         eventDate: newEvent.eventDate,
-        ticket: null,
+        ticketList: [],
       };
       expect(membership?.eventAttendedList).toIncludeAnyMembers([
         expectedEvent,

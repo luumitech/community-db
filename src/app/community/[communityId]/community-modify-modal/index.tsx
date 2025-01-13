@@ -12,6 +12,7 @@ import {
 export {
   useHookFormWithDisclosure,
   type ModifyFragmentType,
+  type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
 const CommunityMutation = graphql(/* GraphQL */ `

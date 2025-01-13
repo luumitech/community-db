@@ -2,9 +2,9 @@ import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
+import * as communityModifyModal from '../../community-modify-modal';
 import * as batchPropertyModifyModal from '../batch-property-modify-modal';
 import * as communityDeleteModal from '../community-delete-modal';
-import * as communityModifyModal from '../community-modify-modal';
 import * as propertyCreateModal from '../property-create-modal';
 import { useMenuItem } from './use-menu-item';
 

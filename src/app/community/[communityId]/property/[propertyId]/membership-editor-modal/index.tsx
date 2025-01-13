@@ -35,10 +35,11 @@ export const MembershipEditorModal: React.FC<Props> = ({ className }) => {
   const { membershipEditor } = usePageContext();
   const { formMethods } = membershipEditor;
   const { formState } = formMethods;
-  const onSave = async (input: InputData) => {
+  const onSave = async (_input: InputData) => {
     if (!formState.isDirty) {
       return;
     }
+    const { hidden, ...input } = _input;
     await toast.promise(
       updateProperty({
         variables: { input },

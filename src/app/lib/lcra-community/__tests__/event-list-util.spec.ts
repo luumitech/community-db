@@ -1,30 +1,35 @@
+import { type Event } from '@prisma/client';
 import { extractEventList, type Property } from '../import/event-list-util';
 
-const NO_DATE = { eventName: 'Missing Date', eventDate: null, ticket: null };
-const NEW_YEAR = {
+const NO_DATE: Event = {
+  eventName: 'Missing Date',
+  eventDate: null,
+  ticketList: [],
+};
+const NEW_YEAR: Event = {
   eventName: 'New Year',
   eventDate: new Date(Date.UTC(2012, 0, 1)),
-  ticket: null,
+  ticketList: [],
 };
-const CANADA_DAY = {
+const CANADA_DAY: Event = {
   eventName: 'Canada Day',
   eventDate: new Date(Date.UTC(2023, 6, 1)),
-  ticket: null,
+  ticketList: [],
 };
-const XMAS = {
+const XMAS: Event = {
   eventName: 'Christmas',
   eventDate: new Date(Date.UTC(1997, 11, 25)),
-  ticket: null,
+  ticketList: [],
 };
-const NEW_YEAR_EVE = {
+const NEW_YEAR_EVE: Event = {
   eventName: 'New Year Eve',
   eventDate: new Date(Date.UTC(2010, 11, 31)),
-  ticket: null,
+  ticketList: [],
 };
-const NEW_YEAR_EVE_CLONE = {
+const NEW_YEAR_EVE_CLONE: Event = {
   eventName: 'Fake Year Eve',
   eventDate: new Date(Date.UTC(2020, 11, 31)),
-  ticket: null,
+  ticketList: [],
 };
 
 describe('Event List conversion', () => {

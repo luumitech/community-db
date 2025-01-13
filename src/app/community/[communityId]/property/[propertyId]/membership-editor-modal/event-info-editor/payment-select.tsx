@@ -12,9 +12,16 @@ import { useHookFormContext } from '../use-hook-form';
 interface Props {
   className?: string;
   yearIdx: number;
+  eventIdx?: number;
+  ticketIdx?: number;
 }
 
-export const PaymentSelect: React.FC<Props> = ({ className, yearIdx }) => {
+export const PaymentSelect: React.FC<Props> = ({
+  className,
+  yearIdx,
+  eventIdx,
+  ticketIdx,
+}) => {
   const { selectPaymentMethodSections } = useAppContext();
   const { clearErrors } = useHookFormContext();
 
@@ -26,11 +33,16 @@ export const PaymentSelect: React.FC<Props> = ({ className, yearIdx }) => {
       [clearErrors, yearIdx]
     );
 
+  const controlName =
+    eventIdx == null || ticketIdx == null
+      ? `membershipList.${yearIdx}.paymentMethod`
+      : `membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticketList.${ticketIdx}.paymentMethod`;
+
   return (
     <div className={clsx(className)}>
       <Select
         className="max-w-sm"
-        controlName={`membershipList.${yearIdx}.paymentMethod`}
+        controlName={controlName}
         aria-label="Payment Method"
         items={selectPaymentMethodSections}
         variant="underlined"

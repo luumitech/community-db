@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
-import { CiFilter, CiShare2 } from 'react-icons/ci';
+import { CiCalculator2, CiFilter, CiShare2 } from 'react-icons/ci';
 import {
   FaAward,
   FaFolderOpen,
@@ -21,9 +21,11 @@ import {
   IoArrowBack,
   IoBarChartOutline,
   IoCheckmark,
+  IoChevronForward,
   IoInformation,
   IoPersonAdd,
 } from 'react-icons/io5';
+import { LuTicketPlus } from 'react-icons/lu';
 import {
   MdDragIndicator,
   MdLogout,
@@ -66,7 +68,10 @@ type SupportedIcon =
   | 'back'
   | 'filter'
   | 'ticket'
-  | 'mailchimp';
+  | 'mailchimp'
+  | 'chevron-forward'
+  | 'add-ticket'
+  | 'calculator';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -165,6 +170,15 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'mailchimp':
       IconElement = FaMailchimp;
+      break;
+    case 'chevron-forward':
+      IconElement = IoChevronForward;
+      break;
+    case 'add-ticket':
+      IconElement = LuTicketPlus;
+      break;
+    case 'calculator':
+      IconElement = CiCalculator2;
       break;
     default:
       IconElement = MdQuestionMark;

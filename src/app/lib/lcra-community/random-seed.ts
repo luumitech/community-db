@@ -1,4 +1,6 @@
 import { faker } from '@faker-js/faker';
+import { type Ticket } from '@prisma/client';
+import { toTicketList } from './ticket-list-util';
 
 /**
  * Generate Community data in "LCRA" format
@@ -29,6 +31,8 @@ import { faker } from '@faker-js/faker';
  * - Y23: 1,
  * - 'Y23-event': 'Summer Festival;Corn Roast',
  * - 'Y23-date': '2023-06-12T12:07:25-04:00;2023-08-20T17:07:25-04:00',
+ * - 'Y23-ticket': 'meal:20:0:free;drink:1:1:cash',
+ * - 'Y23-price': '15',
  * - 'Y23-payment': 'cash',
  * - 'Y23-deposited': 1,
  *
@@ -68,6 +72,23 @@ function genEvent(count: number) {
 }
 
 /**
+ * Generate an array of random ticket object
+ *
+ * @param _count Number of ticket objects to generate
+ * @returns
+ */
+function genTicket(_count: number) {
+  const ticketList: Ticket[] = Array.from({ length: _count }, () => {
+    const ticketName = faker.helpers.arrayElement(['Meal', 'Drink', 'Pizza']);
+    const count = faker.number.int({ min: 0, max: 20 });
+    const price = faker.finance.amount({ min: 0, max: 10, dec: 0 });
+    const paymentMethod = genPaymentMethod();
+    return { ticketName, count, price, paymentMethod };
+  });
+  return toTicketList(ticketList);
+}
+
+/**
  * Generate an array of random dates within the given year
  *
  * @param count Number of dates to generate
@@ -83,6 +104,11 @@ function genDate(count: number, year: number) {
       })
       .toISOString();
   });
+}
+
+/** Generate a random payment method */
+function genPaymentMethod() {
+  return faker.helpers.arrayElement(['cash', 'cheque', 'e-transfer']);
 }
 
 /**
@@ -101,15 +127,14 @@ function newMembershipYear(year: number) {
 
   // Create a membership year
   const numEvent = faker.number.int({ min: 1, max: 5 });
+  const numTicket = faker.number.int({ min: 0, max: 3 });
   return {
     [`${pfx}`]: 1,
     [`${pfx}-event`]: genEvent(numEvent).join(';'),
     [`${pfx}-date`]: genDate(numEvent, year).join(';'),
-    [`${pfx}-payment`]: faker.helpers.arrayElement([
-      'cash',
-      'cheque',
-      'e-transfer',
-    ]),
+    [`${pfx}-ticket`]: genTicket(numTicket),
+    [`${pfx}-price`]: faker.finance.amount({ min: 10, max: 20, dec: 0 }),
+    [`${pfx}-payment`]: genPaymentMethod(),
     [`${pfx}-deposited`]: faker.number.int(1),
   };
 }

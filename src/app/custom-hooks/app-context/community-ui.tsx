@@ -16,15 +16,12 @@ type State = Readonly<{
   lastEventSelected?: string;
   /** Year selected In membership editor/membership display */
   yearSelected: string;
-  /** Default ticket count when recording new event */
-  defaultTicket: number;
 }>;
 
 const initialState: State = {
   propertyListSearch: undefined,
   lastEventSelected: undefined,
   yearSelected: getCurrentYear().toString(),
-  defaultTicket: 0,
 };
 
 const slice = createSlice({
@@ -46,9 +43,6 @@ const slice = createSlice({
     },
     setYearSelected: (state, { payload }: PayloadAction<string>) => {
       state.yearSelected = payload;
-    },
-    setDefaultTicket: (state, { payload }: PayloadAction<number>) => {
-      state.defaultTicket = payload;
     },
   },
 });

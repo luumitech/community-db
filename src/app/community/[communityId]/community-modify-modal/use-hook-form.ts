@@ -18,6 +18,12 @@ const ModifyFragment = graphql(/* GraphQL */ `
       name
       hidden
     }
+    ticketList {
+      name
+      unitPrice
+      count
+      hidden
+    }
     paymentMethodList {
       name
       hidden
@@ -42,6 +48,17 @@ function schema() {
         name: zz.string.nonEmpty(),
       })
     ),
+    ticketList: z.array(
+      z.object({
+        name: zz.string.nonEmpty(),
+        count: z.coerce
+          .number({ message: 'Must be a number' })
+          .int()
+          .min(0)
+          .nullable(),
+        unitPrice: z.string().nullable(),
+      })
+    ),
     paymentMethodList: z.array(
       z.object({
         name: zz.string.nonEmpty(),
@@ -52,6 +69,11 @@ function schema() {
     hidden: z.object({
       // list of events items that should be hidden
       eventList: z.array(
+        z.object({
+          name: zz.string.nonEmpty(),
+        })
+      ),
+      ticketList: z.array(
         z.object({
           name: zz.string.nonEmpty(),
         })
@@ -80,11 +102,21 @@ function defaultInputData(
     eventList: item.eventList
       .filter((entry) => !entry.hidden)
       .map((entry) => ({ name: entry.name })),
+    ticketList: item.ticketList
+      .filter((entry) => !entry.hidden)
+      .map((entry) => ({
+        name: entry.name,
+        count: entry.count ?? null,
+        unitPrice: entry.unitPrice ?? null,
+      })),
     paymentMethodList: item.paymentMethodList
       .filter((entry) => !entry.hidden)
       .map((entry) => ({ name: entry.name })),
     hidden: {
       eventList: item.eventList
+        .filter((entry) => !!entry.hidden)
+        .map((entry) => ({ name: entry.name })),
+      ticketList: item.ticketList
         .filter((entry) => !!entry.hidden)
         .map((entry) => ({ name: entry.name })),
       paymentMethodList: item.paymentMethodList
@@ -133,6 +165,12 @@ export type EventListFieldArray = UseFieldArrayReturn<InputData, 'eventList'>;
 export type HiddenEventListFieldArray = UseFieldArrayReturn<
   InputData,
   'hidden.eventList'
+>;
+
+export type TicketListFieldArray = UseFieldArrayReturn<InputData, 'ticketList'>;
+export type HiddenTicketListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'hidden.ticketList'
 >;
 
 export type PaymentMethodListFieldArray = UseFieldArrayReturn<

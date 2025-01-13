@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
+import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 import { usePageContext } from '../page-context';
 
@@ -11,6 +12,7 @@ export function useMenuItem() {
     propertyModify,
     membershipEditor,
     propertyDelete,
+    communityModify,
   } = usePageContext();
   const baseMenuItem = useBaseMenuItem({ communityId: community.id });
 
@@ -39,6 +41,12 @@ export function useMenuItem() {
         onPress: propertyDelete.disclosure.onOpen,
         children: 'Delete Property',
       },
+      {
+        key: 'communityModify',
+        onPress: communityModify.disclosure.onOpen,
+        endContent: <Icon icon="settings" />,
+        children: 'Modify Community',
+      },
     ];
   }, [
     baseMenuItem,
@@ -46,6 +54,7 @@ export function useMenuItem() {
     propertyModify,
     membershipEditor,
     propertyDelete,
+    communityModify,
   ]);
 
   return menuItemList;

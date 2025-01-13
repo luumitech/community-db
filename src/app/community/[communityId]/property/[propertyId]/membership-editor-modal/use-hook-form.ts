@@ -26,7 +26,12 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
       eventAttendedList {
         eventName
         eventDate
-        ticket
+        ticketList {
+          ticketName
+          count
+          price
+          paymentMethod
+        }
       }
       paymentMethod
       paymentDeposited
@@ -54,10 +59,18 @@ function schema() {
               z.object({
                 eventName: zz.string.nonEmpty('Must specify a value'),
                 eventDate: zz.coerce.toIsoDate(),
-                ticket: z.coerce
-                  .number({ message: 'Must be a number' })
-                  .int()
-                  .min(0),
+                ticketList: z.array(
+                  z.object({
+                    ticketName: zz.string.nonEmpty('Must specify a value'),
+                    count: z.coerce
+                      .number({ message: 'Must be a number' })
+                      .int()
+                      .min(0)
+                      .nullable(),
+                    paymentMethod: z.string().nullable(),
+                    price: z.string().nullable(),
+                  })
+                ),
               })
             )
             .refine(
@@ -97,6 +110,20 @@ function schema() {
           }
         )
     ),
+    hidden: z.object({
+      /**
+       * For controlling which ticketList table should be shown
+       *
+       * Used in `Edit Membership Detail` modal, where we only show one
+       * ticketList table at a time (i.e. accordian style)
+       */
+      membershipList: z.array(
+        z.object({
+          // Means ticketList should be expanded for event section of specified index
+          expandTicketListEventIdx: z.number().nullable(),
+        })
+      ),
+    }),
   });
 }
 
@@ -145,13 +172,24 @@ function defaultInputData(
         ).map((event) => ({
           eventName: event.eventName ?? '',
           eventDate: event.eventDate ?? '',
-          ticket: event.ticket,
+          ticketList: event.ticketList.map((ticket) => ({
+            ticketName: ticket.ticketName,
+            count: ticket.count ?? 0,
+            price: ticket.price ?? '',
+            paymentMethod: ticket.paymentMethod ?? '',
+          })),
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
         price: membershipItem?.price ?? defaultItem.price,
       };
     }),
+    hidden: {
+      membershipList: membershipList.map((v) => ({
+        // Automatically expand the ticketList table in the first event
+        expandTicketListEventIdx: 0,
+      })),
+    },
   };
 }
 
@@ -205,5 +243,14 @@ export type MembershipListFieldArray = UseFieldArrayReturn<
 
 export type EventAttendedListFieldArray = UseFieldArrayReturn<
   InputData,
-  'membershipList.0.eventAttendedList'
+  `membershipList.${number}.eventAttendedList`
 >;
+
+export type TicketListFieldArray = UseFieldArrayReturn<
+  InputData,
+  `membershipList.${number}.eventAttendedList.${number}.ticketList`
+>;
+
+export type MembershipField = MembershipListFieldArray['fields'][0];
+export type EventField = EventAttendedListFieldArray['fields'][0];
+export type TicketField = TicketListFieldArray['fields'][0];

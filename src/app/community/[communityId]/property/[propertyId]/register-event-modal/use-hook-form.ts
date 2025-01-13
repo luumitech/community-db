@@ -25,7 +25,14 @@ function schema() {
     event: z.object({
       eventName: zz.string.nonEmpty('Must specify a value'),
       eventDate: zz.coerce.toIsoDate(),
-      ticket: z.coerce.number({ message: 'Must be a number' }).int().min(0),
+      ticketList: z.array(
+        z.object({
+          ticketName: zz.string.nonEmpty('Must specify a value'),
+          count: z.coerce.number({ message: 'Must be a number' }).int().min(0),
+          paymentMethod: z.string().nullable(),
+          price: z.string().nullable(),
+        })
+      ),
     }),
     /** Whether member is already a member when registering */
     isMember: z.boolean(),
@@ -43,8 +50,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   lastEventSelected: string | undefined,
-  yearSelected: string,
-  defaultTicket: number
+  yearSelected: string
 ): InputData {
   const year = parseAsNumber(yearSelected) ?? getCurrentYear();
   const membership = item.membershipList.find((entry) => entry.year === year);
@@ -67,7 +73,12 @@ function defaultInputData(
     event: {
       eventName: lastEventSelected ?? '',
       eventDate: event?.eventDate ?? new Date(Date.now()).toISOString(),
-      ticket: event?.ticket ?? defaultTicket,
+      ticketList: (event?.ticketList ?? []).map((ticket) => ({
+        ticketName: ticket.ticketName,
+        count: ticket.count ?? 0,
+        price: ticket.price ?? '',
+        paymentMethod: ticket.paymentMethod ?? '',
+      })),
     },
     isMember,
     canRegister,
@@ -76,16 +87,11 @@ function defaultInputData(
 
 export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const { communityUi } = useAppContext();
-  const { yearSelected, lastEventSelected, defaultTicket } = communityUi;
+  const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {
-    return defaultInputData(
-      property,
-      lastEventSelected,
-      yearSelected,
-      defaultTicket
-    );
-  }, [property, lastEventSelected, yearSelected, defaultTicket]);
+    return defaultInputData(property, lastEventSelected, yearSelected);
+  }, [property, lastEventSelected, yearSelected]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

@@ -35,10 +35,6 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
       owner {
         id
       }
-      ...CommunityId_CommunityModifyModal
-      ...CommunityId_CommunityDeleteModal
-      ...CommunityId_PropertyCreateModal
-      ...CommunityId_BatchPropertyModifyModal
       access {
         id
         role

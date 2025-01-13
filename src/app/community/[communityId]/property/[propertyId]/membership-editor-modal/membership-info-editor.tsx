@@ -43,7 +43,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
         </CardHeader>
         {idx > -1 && (
           <CardBody key={selectedYear} className="gap-4">
-            <EventInfoEditor membershipField={fields[idx]} yearIdx={idx} />
+            <EventInfoEditor yearIdx={idx} />
           </CardBody>
         )}
       </Card>

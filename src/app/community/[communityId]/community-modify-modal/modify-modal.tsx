@@ -13,6 +13,7 @@ import { LastModified } from '~/view/last-modified';
 import { EventListEditor } from './event-list-editor';
 import { NameEditor } from './name-editor';
 import { PaymentMethodListEditor } from './payment-method-list-editor';
+import { TicketListEditor } from './ticket-list-editor';
 import {
   InputData,
   useHookFormContext,
@@ -81,6 +82,9 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
               </Tab>
               <Tab key="eventEditor" title="Events">
                 <EventListEditor />
+              </Tab>
+              <Tab key="ticketListEditor" title="Tickets">
+                <TicketListEditor />
               </Tab>
               <Tab key="paymentMethodEditor" title="Payment Methods">
                 <PaymentMethodListEditor />

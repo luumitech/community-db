@@ -1,4 +1,3 @@
-import { Spacer } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
@@ -17,15 +16,17 @@ export const HiddenListItem: React.FC<React.PropsWithChildren<Props>> = ({
   onRemove,
 }) => {
   return (
-    <li
+    <div
       className={clsx(
         className,
-        'flex items-center p-2 border-2 border-default-200 rounded-md min-w-[300px]'
+        'grid col-span-full grid-cols-subgrid',
+        'mx-3 items-center h-6'
       )}
+      role="row"
     >
-      {label}
-      <Spacer className="grow" />
+      <div />
+      <span className="line-through">{label}</span>
       <FlatButton icon="undo" onClick={() => onRemove?.(label)} />
-    </li>
+    </div>
   );
 };

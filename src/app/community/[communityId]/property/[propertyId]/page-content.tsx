@@ -3,6 +3,7 @@ import { Divider } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
+import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
 import { appPath } from '~/lib/app-path';
 import { LastModified } from '~/view/last-modified';
 import { MembershipDisplay } from './membership-display';
@@ -20,7 +21,7 @@ interface Props {}
 
 export const PageContent: React.FC<Props> = (props) => {
   const router = useRouter();
-  const { property, community } = usePageContext();
+  const { property, community, communityModify } = usePageContext();
   const routerCalled = React.useRef(false);
 
   const onSearchChanged = React.useCallback(() => {
@@ -51,6 +52,7 @@ export const PageContent: React.FC<Props> = (props) => {
       <occupantEditorModal.OccupantEditorModal />
       <propertyDeleteModal.PropertyDeleteModal />
       <registerEventModal.RegisterEventModal />
+      <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
     </div>
   );
 };

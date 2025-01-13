@@ -7,6 +7,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import clsx from 'clsx';
 import React from 'react';
 import { type EventListFieldArray } from '../use-hook-form';
 import { VisibleListItem } from './visible-list-item';
@@ -62,16 +63,14 @@ export const VisibleList: React.FC<Props> = ({
       onDragEnd={reorderList}
     >
       <SortableContext items={fields} strategy={verticalListSortingStrategy}>
-        <ul className="grid auto-cols-max gap-1">
-          {fields.map((field, index) => (
-            <VisibleListItem
-              key={field.id}
-              id={field.id}
-              label={field.name}
-              onRemove={(label) => removeItem(label, index)}
-            />
-          ))}
-        </ul>
+        {fields.map((field, index) => (
+          <VisibleListItem
+            key={field.id}
+            id={field.id}
+            label={field.name}
+            onRemove={(label) => removeItem(label, index)}
+          />
+        ))}
       </SortableContext>
     </DndContext>
   );

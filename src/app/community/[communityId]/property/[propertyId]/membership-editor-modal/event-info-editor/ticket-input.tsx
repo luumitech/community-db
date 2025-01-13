@@ -2,50 +2,55 @@ import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { FlatButton } from '~/view/base/flat-button';
-import { Input } from '~/view/base/input';
+import { Input, InputProps } from '~/view/base/input';
 import { useHookFormContext } from '../use-hook-form';
 
-interface Props {
+type CustomInputProps = Omit<InputProps, 'controlName'>;
+
+interface Props extends CustomInputProps {
   className?: string;
   yearIdx: number;
   eventIdx: number;
+  ticketIdx: number;
 }
 
 export const TicketInput: React.FC<Props> = ({
   className,
   yearIdx,
   eventIdx,
+  ticketIdx,
+  ...prop
 }) => {
-  const { communityUi } = useAppContext();
-  const { actions, defaultTicket } = communityUi;
-  const { watch } = useHookFormContext();
-  const ticket = watch(
-    `membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticket`
-  );
-  const enableSetDefaultTicket = defaultTicket !== ticket;
+  const ticketControlPrefix =
+    `membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticketList.${ticketIdx}` as const;
+  const { ticketDefault } = useAppContext();
+  const { setValue, watch } = useHookFormContext();
+  const ticketType = watch(`${ticketControlPrefix}.ticketName`);
+  const countDefault = React.useMemo(() => {
+    const value = ticketDefault.get(ticketType);
+    return value?.count;
+  }, [ticketType, ticketDefault]);
 
   return (
     <Input
       className={clsx(className)}
-      controlName={`membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticket`}
-      aria-label="Ticket"
+      controlName={`${ticketControlPrefix}.count`}
+      aria-label="Ticket #"
       variant="underlined"
       type="number"
       min={0}
       endContent={
-        <div>
+        countDefault != null && (
           <FlatButton
             icon="ticket"
-            tooltip={
-              enableSetDefaultTicket
-                ? `Change ticket default to ${ticket}`
-                : `Ticket default is ${ticket}`
-            }
-            onClick={() => actions.setDefaultTicket(ticket)}
-            disabled={!enableSetDefaultTicket}
+            tooltip={`Use ticket default (${countDefault})`}
+            onClick={() => {
+              setValue(`${ticketControlPrefix}.count`, countDefault);
+            }}
           />
-        </div>
+        )
       }
+      {...prop}
     />
   );
 };

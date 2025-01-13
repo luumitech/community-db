@@ -1,4 +1,5 @@
 import React from 'react';
+import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal';
@@ -15,6 +16,7 @@ type ContextT = Readonly<{
   membershipEditor: membershipEditorModal.UseHookFormWithDisclosureResult;
   propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
   registerEvent: registerEventModal.UseHookFormWithDisclosureResult;
+  communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -40,6 +42,8 @@ export function PageProvider({ community, property, ...props }: Props) {
   const propertyDelete =
     propertyDeleteModal.useHookFormWithDisclosure(property);
   const registerEvent = registerEventModal.useHookFormWithDisclosure(property);
+  const communityModify =
+    communityModifyModal.useHookFormWithDisclosure(community);
 
   return (
     <Context.Provider
@@ -51,6 +55,7 @@ export function PageProvider({ community, property, ...props }: Props) {
         membershipEditor,
         propertyDelete,
         registerEvent,
+        communityModify,
       }}
       {...props}
     />

@@ -2,6 +2,7 @@ import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { isMember } from '~/graphql/schema/property/util';
 import { isValidDate } from '~/lib/date-util';
+import { toTicketList } from '../ticket-list-util';
 import { type Property } from './community-data';
 
 /** Convert Date to xlsx cell value (ISO date string) */
@@ -85,7 +86,7 @@ export class ExportHelper {
           .map((event) => toDate(event.eventDate))
           .join(';');
         row[`${prfx}-ticket`] = membership?.eventAttendedList
-          .map((event) => event.ticket ?? '')
+          .map((event) => toTicketList(event.ticketList))
           .join(';');
         row[`${prfx}-payment`] = membership?.paymentMethod;
         row[`${prfx}-deposited`] = toBool(membership?.paymentDeposited);

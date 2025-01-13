@@ -55,8 +55,14 @@ describe('import community xlsx', () => {
                       eventAttendedList {
                         eventName
                         eventDate
-                        ticket
+                        ticketList {
+                          ticketName
+                          count
+                          price
+                          paymentMethod
+                        }
                       }
+                      price
                       paymentMethod
                       paymentDeposited
                     }
@@ -126,6 +132,7 @@ describe('import community xlsx', () => {
           isMember: false,
           paymentDeposited: false,
           paymentMethod: null,
+          price: null,
           year: 2024,
         },
         {
@@ -135,18 +142,49 @@ describe('import community xlsx', () => {
               __typename: 'Event',
               eventName: 'Summer Festival',
               eventDate: '2023-06-11',
-              ticket: 2,
+              ticketList: [
+                {
+                  __typename: 'Ticket',
+                  count: 20,
+                  paymentMethod: 'free',
+                  price: '0',
+                  ticketName: 'meal',
+                },
+                {
+                  __typename: 'Ticket',
+                  count: 1,
+                  paymentMethod: 'cash',
+                  price: '1',
+                  ticketName: 'cotton-candy',
+                },
+              ],
             },
             {
               __typename: 'Event',
               eventName: 'Corn Roast',
               eventDate: '2023-08-20',
-              ticket: 3,
+              ticketList: [
+                {
+                  __typename: 'Ticket',
+                  count: 10,
+                  paymentMethod: 'cash',
+                  price: '5',
+                  ticketName: 'meal',
+                },
+                {
+                  __typename: 'Ticket',
+                  count: 1,
+                  paymentMethod: 'e-transfer',
+                  price: '1',
+                  ticketName: 'drink',
+                },
+              ],
             },
           ],
           isMember: true,
           paymentDeposited: true,
           paymentMethod: 'e-Transfer',
+          price: '10',
           year: 2023,
         },
         {
@@ -156,12 +194,13 @@ describe('import community xlsx', () => {
               __typename: 'Event',
               eventName: 'Membership Carry Forward',
               eventDate: '2022-02-10',
-              ticket: 0,
+              ticketList: [],
             },
           ],
           isMember: true,
           paymentDeposited: false,
           paymentMethod: 'free',
+          price: null,
           year: 2022,
         },
         {
@@ -171,12 +210,13 @@ describe('import community xlsx', () => {
               __typename: 'Event',
               eventName: 'Membership Carry Forward',
               eventDate: '2021-01-23',
-              ticket: 0,
+              ticketList: [],
             },
           ],
           isMember: true,
           paymentDeposited: false,
           paymentMethod: 'free',
+          price: null,
           year: 2021,
         },
       ],

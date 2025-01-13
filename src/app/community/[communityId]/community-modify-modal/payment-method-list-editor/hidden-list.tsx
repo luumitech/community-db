@@ -28,23 +28,15 @@ export const HiddenList: React.FC<Props> = ({
   }
 
   return (
-    <div className={className}>
-      <p className="text-sm mb-4">Removed payment methods:</p>
-      <ul className="grid auto-cols-max gap-1">
-        {fields.map((field, index) => (
-          <HiddenListItem
-            key={field.id}
-            id={field.id}
-            label={field.name}
-            onRemove={(label) => removeItem(label, index)}
-          />
-        ))}
-      </ul>
-      <p className="text-sm mt-4">
-        NOTE: Removed payment methods will not be shown in payment selection
-        list. The removed methods will remain in the database until they are no
-        longer being referenced.
-      </p>
-    </div>
+    <>
+      {fields.map((field, index) => (
+        <HiddenListItem
+          key={field.id}
+          id={field.id}
+          label={field.name}
+          onRemove={(label) => removeItem(label, index)}
+        />
+      ))}
+    </>
   );
 };

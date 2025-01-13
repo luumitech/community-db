@@ -4,7 +4,6 @@ import {
   type AnimateLayoutChanges,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Spacer } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
@@ -36,30 +35,34 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
     useSortable({ animateLayoutChanges, id });
 
   return (
-    <li
+    <div
       ref={setNodeRef}
       className={clsx(
-        className,
-        'flex items-center p-2 border-2 border-default-200 rounded-md min-w-[300px]'
+        'grid col-span-full grid-cols-subgrid',
+        'mx-3 items-center h-6'
       )}
+      role="row"
       style={{
         transform: CSS.Transform.toString(transform),
         transition: transition,
       }}
     >
-      <FlatButton
-        className="text-foreground-500 pr-2 cursor-grab active:cursor-grabbing"
-        icon="drag-handle"
-        {...attributes}
-        {...listeners}
-      />
-      {label}
-      <Spacer className="grow" />
-      <FlatButton
-        className="text-danger"
-        icon="cross"
-        onClick={() => onRemove?.(label)}
-      />
-    </li>
+      <div role="cell">
+        <FlatButton
+          className="text-foreground-500 pr-2 cursor-grab active:cursor-grabbing"
+          icon="drag-handle"
+          {...attributes}
+          {...listeners}
+        />
+      </div>
+      <div role="cell">{label}</div>
+      <div role="cell">
+        <FlatButton
+          className="text-danger"
+          icon="cross"
+          onClick={() => onRemove?.(label)}
+        />
+      </div>
+    </div>
   );
 };

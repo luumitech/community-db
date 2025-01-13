@@ -62,16 +62,14 @@ export const VisibleList: React.FC<Props> = ({
       onDragEnd={reorderList}
     >
       <SortableContext items={fields} strategy={verticalListSortingStrategy}>
-        <ul className="grid auto-cols-max gap-1">
-          {fields.map((field, index) => (
-            <VisibleListItem
-              key={field.id}
-              id={field.id}
-              label={field.name}
-              onRemove={(label) => removeItem(label, index)}
-            />
-          ))}
-        </ul>
+        {fields.map((field, index) => (
+          <VisibleListItem
+            key={field.id}
+            id={field.id}
+            label={field.name}
+            onRemove={(label) => removeItem(label, index)}
+          />
+        ))}
       </SortableContext>
     </DndContext>
   );

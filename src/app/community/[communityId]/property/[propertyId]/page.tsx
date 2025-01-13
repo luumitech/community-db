@@ -20,6 +20,7 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
   query propertyFromId($communityId: String!, $propertyId: String!) {
     communityFromId(id: $communityId) {
       id
+      ...CommunityId_CommunityModifyModal
       propertyFromId(id: $propertyId) {
         id
         updatedAt
