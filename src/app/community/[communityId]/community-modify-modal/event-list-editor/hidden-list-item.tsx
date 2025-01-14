@@ -25,7 +25,7 @@ export const HiddenListItem: React.FC<React.PropsWithChildren<Props>> = ({
       role="row"
     >
       <div />
-      <span className="line-through">{label}</span>
+      <span className="line-through text-sm">{label}</span>
       <FlatButton icon="undo" onClick={() => onRemove?.(label)} />
     </div>
   );

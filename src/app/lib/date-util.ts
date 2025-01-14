@@ -84,6 +84,19 @@ export function getCurrentDate() {
 }
 
 /**
+ * Get the current date in ISOString form (i.e. 2024-01-20T00:00:00.000Z)
+ *
+ * @returns
+ */
+export function getCurrentDateAsISOString() {
+  const zonedToday = parseAsDate(new Date().toISOString());
+  if (!zonedToday) {
+    throw new Error("Unable to parse today's date");
+  }
+  return zonedToday.toAbsoluteString();
+}
+
+/**
  * Format date as yyyy-MM-dd
  *
  * ```js

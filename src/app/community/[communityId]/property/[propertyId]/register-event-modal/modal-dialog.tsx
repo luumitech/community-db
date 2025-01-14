@@ -12,7 +12,7 @@ import { getCurrentDate } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { usePageContext } from '../page-context';
-import { EventEditor } from './event-editor';
+import { EventInfoEditor } from './event-info-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -26,7 +26,6 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit, watch } = useHookFormContext();
   const canRegister = watch('canRegister');
-  const eventName = watch('event.eventName');
   const isMember = watch('isMember');
   const { isDirty } = formState;
 
@@ -65,20 +64,24 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
         <ModalContent>
           <ModalHeader>Event Registration</ModalHeader>
           <ModalBody>
-            <MemberStatusChip />
-            <div className="flex items-center gap-2">
-              Current Event
-              <EventChip
-                eventName={eventName}
-                variant="flat"
-                color="secondary"
-              />
-              {getCurrentDate()}
-            </div>
-            <EventEditor />
+            <MemberStatusChip isMember={isMember} />
+            <EventInfoEditor />
           </ModalBody>
           <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
+            <Button
+              variant="bordered"
+              confirmation={canRegister}
+              confirmationArg={{
+                bodyText: (
+                  <p>
+                    The event has not been registered.
+                    <br />
+                    Are you sure?
+                  </p>
+                ),
+              }}
+              onPress={onClose}
+            >
               Cancel
             </Button>
             <Button
@@ -87,7 +90,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
               isLoading={pending}
               isDisabled={!canSave}
             >
-              Save
+              Register
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -47,22 +47,18 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
         transition: transition,
       }}
     >
-      <div role="cell">
-        <FlatButton
-          className="text-foreground-500 pr-2 cursor-grab active:cursor-grabbing"
-          icon="drag-handle"
-          {...attributes}
-          {...listeners}
-        />
-      </div>
-      <div role="cell">{label}</div>
-      <div role="cell">
-        <FlatButton
-          className="text-danger"
-          icon="cross"
-          onClick={() => onRemove?.(label)}
-        />
-      </div>
+      <FlatButton
+        className="text-foreground-500 pr-2 cursor-grab active:cursor-grabbing"
+        icon="drag-handle"
+        {...attributes}
+        {...listeners}
+      />
+      <div className="text-sm">{label}</div>
+      <FlatButton
+        className="text-danger"
+        icon="cross"
+        onClick={() => onRemove?.(label)}
+      />
     </div>
   );
 };

@@ -11,9 +11,9 @@ export const EventDatePicker: React.FC<Props> = ({ className }) => {
     <DatePicker
       className={clsx(className)}
       controlName="event.eventDate"
-      label="Event Date"
+      aria-label="Event Date"
+      variant="underlined"
       granularity="day"
-      isControlled
     />
   );
 };

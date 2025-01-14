@@ -10,20 +10,15 @@ type CustomCurrencyInputProps = Omit<CurrencyInputProps, 'controlName'>;
 
 interface Props extends CustomCurrencyInputProps {
   className?: string;
-  yearIdx: number;
-  eventIdx: number;
   ticketIdx: number;
 }
 
 export const PriceInput: React.FC<Props> = ({
   className,
-  yearIdx,
-  eventIdx,
   ticketIdx,
   ...props
 }) => {
-  const ticketControlPrefix =
-    `membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticketList.${ticketIdx}` as const;
+  const ticketControlPrefix = `event.ticketList.${ticketIdx}` as const;
   const { ticketDefault } = useAppContext();
   const { setValue, watch } = useHookFormContext();
   const ticketType = watch(`${ticketControlPrefix}.ticketName`);
@@ -36,6 +31,7 @@ export const PriceInput: React.FC<Props> = ({
     if (!unitPrice || !ticketCount) {
       return null;
     }
+
     const unitPriceDec = new Decimal(unitPrice);
     const defaultPriceDec = unitPriceDec.mul(new Decimal(ticketCount));
     return defaultPriceDec.toString();
@@ -55,7 +51,9 @@ export const PriceInput: React.FC<Props> = ({
             icon="calculator"
             tooltip={`${ticketCount} * $${unitPrice} = $${defaultPrice}`}
             onClick={() => {
-              setValue(`${ticketControlPrefix}.price`, defaultPrice);
+              setValue(`${ticketControlPrefix}.price`, defaultPrice, {
+                shouldDirty: true,
+              });
             }}
           />
         )

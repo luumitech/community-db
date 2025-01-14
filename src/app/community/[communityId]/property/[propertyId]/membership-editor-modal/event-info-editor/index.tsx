@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
+import { getCurrentDateAsISOString } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext, type EventField } from '../use-hook-form';
@@ -48,7 +49,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
           onPress={() =>
             append({
               eventName: lastEventSelected ?? '',
-              eventDate: new Date(Date.now()).toISOString(),
+              eventDate: getCurrentDateAsISOString(),
               ticketList: [],
             })
           }

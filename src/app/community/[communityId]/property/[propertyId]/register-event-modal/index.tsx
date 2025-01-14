@@ -33,9 +33,7 @@ function createPropertyInput(
         return {
           eventName: eventEntry.eventName,
           eventDate: parseAsDate(eventEntry.eventDate)?.toAbsoluteString(),
-          // ticket: eventEntry.ticket,
-          // TODO: kendrick
-          ticketList: [],
+          ticketList: eventEntry.ticketList,
         };
       }),
     }));
@@ -51,8 +49,7 @@ function createPropertyInput(
   } else {
     // Update event details
     eventFound.eventDate = event.eventDate;
-    // TODO: kendrick
-    // eventFound.ticket = event.ticket;
+    eventFound.ticketList = event.ticketList;
   }
 
   return {

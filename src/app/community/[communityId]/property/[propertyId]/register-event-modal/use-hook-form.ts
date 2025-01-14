@@ -2,10 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  useForm,
+  useFormContext,
+  type UseFieldArrayReturn,
+} from '~/custom-hooks/hook-form';
 import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { getCurrentYear } from '~/lib/date-util';
+import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
@@ -28,16 +32,20 @@ function schema() {
       ticketList: z.array(
         z.object({
           ticketName: zz.string.nonEmpty('Must specify a value'),
-          count: z.coerce.number({ message: 'Must be a number' }).int().min(0),
-          paymentMethod: z.string().nullable(),
+          count: z.coerce
+            .number({ message: 'Must be a number' })
+            .int()
+            .min(0)
+            .nullable(),
           price: z.string().nullable(),
+          paymentMethod: z.string().nullable(),
         })
       ),
     }),
     /** Whether member is already a member when registering */
     isMember: z.boolean(),
     /**
-     * Determine if the register button should be enabled For example, if user
+     * Determine if the register button should be enabled. For example, if user
      * is already registered in the event previously, then the register button
      * should not be enabled, unless they have modified the form.
      */
@@ -72,12 +80,12 @@ function defaultInputData(
     },
     event: {
       eventName: lastEventSelected ?? '',
-      eventDate: event?.eventDate ?? new Date(Date.now()).toISOString(),
+      eventDate: event?.eventDate ?? getCurrentDateAsISOString(),
       ticketList: (event?.ticketList ?? []).map((ticket) => ({
-        ticketName: ticket.ticketName,
-        count: ticket.count ?? 0,
-        price: ticket.price ?? '',
-        paymentMethod: ticket.paymentMethod ?? '',
+        ticketName: ticket.ticketName ?? '',
+        count: ticket.count ?? null,
+        price: ticket.price ?? null,
+        paymentMethod: ticket.paymentMethod ?? null,
       })),
     },
     isMember,
@@ -123,3 +131,10 @@ export type UseHookFormWithDisclosureResult = ReturnType<
 export function useHookFormContext() {
   return useFormContext<InputData>();
 }
+
+export type TicketListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'event.ticketList'
+>;
+
+export type TicketField = TicketListFieldArray['fields'][0];

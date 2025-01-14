@@ -5,7 +5,7 @@ import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { getCurrentYear } from '~/lib/date-util';
+import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { z, zz } from '~/lib/zod';
 
 const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
@@ -52,7 +52,7 @@ function defaultInputData(
       year: getCurrentYear(),
       eventAttended: {
         eventName: '',
-        eventDate: new Date(Date.now()).toISOString(),
+        eventDate: getCurrentDateAsISOString(),
       },
       paymentMethod: '',
     },
