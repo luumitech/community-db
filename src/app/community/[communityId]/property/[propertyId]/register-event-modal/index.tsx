@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
+import * as R from 'remeda';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { parseAsDate } from '~/lib/date-util';
@@ -16,36 +17,53 @@ export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 function createPropertyInput(
   property: GQL.PropertyId_MembershipEditorFragment,
   input: InputData
-): GQL.PropertyModifyInput | null {
-  const membershipIdx = property.membershipList.findIndex(
-    (entry) => entry.year === input.membership.year
-  );
-  if (membershipIdx === -1) {
-    return null;
-  }
-
-  // Map existing membership information to `GQL.PropertyModifyInput`
-  const membershipList: GQL.PropertyModifyInput['membershipList'] =
-    property.membershipList.map((membershipEntry) => ({
+): GQL.PropertyModifyInput {
+  // Transfer existing membership information to `GQL.PropertyModifyInput`
+  const membershipList = property.membershipList.map<GQL.MembershipInput>(
+    (membershipEntry) => ({
       year: membershipEntry.year,
+      price: membershipEntry.price,
       paymentMethod: membershipEntry.paymentMethod,
       eventAttendedList: membershipEntry.eventAttendedList.map((eventEntry) => {
         return {
           eventName: eventEntry.eventName,
           eventDate: parseAsDate(eventEntry.eventDate)?.toAbsoluteString(),
-          ticketList: eventEntry.ticketList,
+          ticketList: eventEntry.ticketList.map(
+            ({ __typename, ...ticketEntry }) => ({ ...ticketEntry })
+          ),
         };
       }),
-    }));
+    })
+  );
 
   const { self, notes, event, membership } = input;
-  const membershipFound = membershipList[membershipIdx];
+  /**
+   * `membershipList` should be sorted by year in descending order Look for the
+   * appropriate index to insert the new membership
+   */
+  const membershipIdx = R.sortedIndexWith(
+    membershipList,
+    ({ year }) => year > membership.year
+  );
+  let membershipFound = membershipList[membershipIdx];
+  // If existing membership is found, then update it in place, otherwise insert
+  // the `membership` into the `membershipList`
+  if (membershipFound?.year !== membership.year) {
+    membershipList.splice(membershipIdx, 0, membership);
+    membershipFound = membership;
+  }
+
+  // Update membership entry
+  membershipFound.price = membership.price;
   membershipFound.paymentMethod = membership.paymentMethod;
   const eventFound = (membershipFound.eventAttendedList ?? []).find(
     (eventEntry) => eventEntry.eventName === event.eventName
   );
   if (!eventFound) {
-    membershipFound.eventAttendedList?.push(event);
+    if (!membershipFound.eventAttendedList) {
+      membershipFound.eventAttendedList = [];
+    }
+    membershipFound.eventAttendedList.push(event);
   } else {
     // Update event details
     eventFound.eventDate = event.eventDate;
@@ -71,15 +89,13 @@ export const RegisterEventModal: React.FC<Props> = ({ className }) => {
   const onSave = React.useCallback(
     async (input: InputData) => {
       const propertyInput = createPropertyInput(property, input);
-      if (propertyInput != null) {
-        await toast.promise(
-          updateProperty({ variables: { input: propertyInput } }),
-          {
-            pending: 'Saving...',
-            success: 'Saved',
-          }
-        );
-      }
+      await toast.promise(
+        updateProperty({ variables: { input: propertyInput } }),
+        {
+          pending: 'Saving...',
+          // success: 'Saved',
+        }
+      );
     },
     [property, updateProperty]
   );

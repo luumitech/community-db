@@ -44,7 +44,7 @@ export const NewAccessModal: React.FC<Props> = ({ hookForm }) => {
         }),
         {
           pending: 'Saving...',
-          success: 'Saved',
+          // success: 'Saved',
         }
       );
     },

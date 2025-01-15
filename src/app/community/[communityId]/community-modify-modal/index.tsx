@@ -45,7 +45,7 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
         }),
         {
           pending: 'Saving...',
-          success: 'Saved',
+          // success: 'Saved',
         }
       );
     },

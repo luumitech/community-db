@@ -89,9 +89,16 @@ model Community {
   ticketList        SupportedTicketItem[]
   /// List of payment method supported (can be sorted)
   paymentMethodList SupportedPaymentMethod[]
+  /// default settings
+  defaultSetting    DefaultSetting?
 
   accessList   Access[]   @relation("accessCommunity")
   propertyList Property[] @relation("propertyCommunity")
+}
+
+type DefaultSetting {
+  /// Default yearly membership fee
+  membershipFee String?
 }
 
 type SupportedEventItem {

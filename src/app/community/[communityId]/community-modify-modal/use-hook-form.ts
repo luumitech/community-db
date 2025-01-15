@@ -28,6 +28,9 @@ const ModifyFragment = graphql(/* GraphQL */ `
       name
       hidden
     }
+    defaultSetting {
+      membershipFee
+    }
     updatedAt
     updatedBy {
       ...User
@@ -64,6 +67,9 @@ function schema() {
         name: zz.string.nonEmpty(),
       })
     ),
+    defaultSetting: z.object({
+      membershipFee: z.string().nullable(),
+    }),
     // Used for rendering UI only, not submitted
     // to server
     hidden: z.object({
@@ -112,6 +118,9 @@ function defaultInputData(
     paymentMethodList: item.paymentMethodList
       .filter((entry) => !entry.hidden)
       .map((entry) => ({ name: entry.name })),
+    defaultSetting: {
+      membershipFee: item.defaultSetting?.membershipFee ?? null,
+    },
     hidden: {
       eventList: item.eventList
         .filter((entry) => !!entry.hidden)

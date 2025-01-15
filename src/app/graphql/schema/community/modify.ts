@@ -13,6 +13,12 @@ import { getSubscriptionEntry } from '../payment/util';
 import { NameListUtil } from './name-list-util';
 import { getCommunityEntry } from './util';
 
+const DefaultSettingInput = builder.inputType('DefaultSettingInput', {
+  fields: (t) => ({
+    membershipFee: t.string(),
+  }),
+});
+
 const EventItemInput = builder.inputType('EventItemInput', {
   fields: (t) => ({
     name: t.string({ required: true }),
@@ -38,6 +44,7 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
     eventList: t.field({ type: [EventItemInput] }),
     ticketList: t.field({ type: [TicketItemInput] }),
     paymentMethodList: t.field({ type: [PaymentMethodInput] }),
+    defaultSetting: t.field({ type: DefaultSettingInput }),
   }),
 });
 

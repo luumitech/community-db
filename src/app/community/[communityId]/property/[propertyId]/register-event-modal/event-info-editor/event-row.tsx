@@ -1,13 +1,15 @@
 import { Input } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import {
+  TicketAddButton,
+  TicketInputTable,
+} from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { CurrencyInput } from '~/view/base/currency-input';
-import { FlatButton } from '~/view/base/flat-button';
 import { useHookFormContext } from '../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 import { PaymentSelect } from './payment-select';
-import { TicketTable } from './ticket-table';
+import { PriceInput } from './price-input';
 
 interface EventHeaderProps {
   className?: string;
@@ -71,40 +73,18 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
         <div role="cell">
           <EventDatePicker className="max-w-xs" />
         </div>
-        <div role="cell">
-          {!isMember && (
-            <CurrencyInput
-              controlName="membership.price"
-              aria-label="Price"
-              allowNegative={false}
-              variant="underlined"
-            />
-          )}
-        </div>
-        <div role="cell">
-          {!isMember && <PaymentSelect className="max-w-xs" />}
-        </div>
+        <div role="cell">{!isMember && <PriceInput />}</div>
+        <div role="cell">{!isMember && <PaymentSelect />}</div>
         <div className="flex pt-3 gap-2" role="cell">
-          <FlatButton
-            className="text-primary"
-            icon="add-ticket"
-            tooltip="Add Ticket"
-            onClick={() => {
-              ticketListMethods.append({
-                ticketName: '',
-                count: null,
-                price: null,
-                paymentMethod: null,
-              });
-            }}
-          />
+          <TicketAddButton onClick={ticketListMethods.append} />
         </div>
       </div>
       {ticketListMethods.fields.length > 0 && (
         <div className="col-span-full">
-          <TicketTable
-            className={clsx('border-medium rounded-lg', 'ml-[40px]')}
-            ticketListMethods={ticketListMethods}
+          <TicketInputTable
+            className={clsx('border-medium rounded-lg', 'ml-[40px] p-1')}
+            controlNamePrefix="event.ticketList"
+            fieldMethods={ticketListMethods}
           />
         </div>
       )}

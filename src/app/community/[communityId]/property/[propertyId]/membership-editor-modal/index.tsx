@@ -46,7 +46,7 @@ export const MembershipEditorModal: React.FC<Props> = ({ className }) => {
       }),
       {
         pending: 'Saving...',
-        success: 'Saved',
+        // success: 'Saved',
       }
     );
   };

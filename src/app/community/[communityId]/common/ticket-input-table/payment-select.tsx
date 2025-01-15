@@ -1,44 +1,36 @@
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import {
-  Select,
-  SelectItem,
-  SelectProps,
-  SelectSection,
-} from '~/view/base/select';
+import { Select, SelectItem, SelectSection } from '~/view/base/select';
 
-type CustomSelectProps = Omit<
-  SelectProps,
-  'controlName' | 'items' | 'children'
->;
-
-interface Props extends CustomSelectProps {
+interface Props {
   className?: string;
-  yearIdx: number;
-  eventIdx: number;
-  ticketIdx: number;
+  controlNamePrefix: string;
+  includeHiddenFields?: boolean;
 }
 
-export const TicketTypeSelect: React.FC<Props> = ({
+export const PaymentSelect: React.FC<Props> = ({
   className,
-  yearIdx,
-  eventIdx,
-  ticketIdx,
-  ...props
+  controlNamePrefix,
+  includeHiddenFields,
 }) => {
-  const { selectTicketSections } = useAppContext();
+  const { selectPaymentMethodSections, visiblePaymentMethods } =
+    useAppContext();
+
+  const items = includeHiddenFields
+    ? selectPaymentMethodSections
+    : [{ title: '', items: visiblePaymentMethods, showDivider: false }];
 
   return (
     <div className={clsx(className)}>
       <Select
-        className="max-w-sm"
-        controlName={`membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticketList.${ticketIdx}.ticketName`}
-        aria-label="Ticket Name"
-        items={selectTicketSections}
+        className="max-w-xs"
+        controlName={`${controlNamePrefix}.paymentMethod`}
+        aria-label="Payment Method"
+        items={items}
         variant="underlined"
+        // placeholder="Select a payment method"
         selectionMode="single"
-        {...props}
       >
         {(section) => (
           <SelectSection

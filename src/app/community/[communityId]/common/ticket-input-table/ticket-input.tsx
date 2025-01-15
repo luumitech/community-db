@@ -1,26 +1,25 @@
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { useFormContext } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
 import { Input, InputProps } from '~/view/base/input';
-import { useHookFormContext } from '../use-hook-form';
 
 type CustomInputProps = Omit<InputProps, 'controlName'>;
 
 interface Props extends CustomInputProps {
   className?: string;
-  ticketIdx: number;
+  controlNamePrefix: string;
 }
 
 export const TicketInput: React.FC<Props> = ({
   className,
-  ticketIdx,
+  controlNamePrefix,
   ...prop
 }) => {
-  const ticketControlPrefix = `event.ticketList.${ticketIdx}` as const;
   const { ticketDefault } = useAppContext();
-  const { setValue, watch } = useHookFormContext();
-  const ticketType = watch(`${ticketControlPrefix}.ticketName`);
+  const { setValue, watch } = useFormContext();
+  const ticketType = watch(`${controlNamePrefix}.ticketName`);
   const countDefault = React.useMemo(() => {
     const value = ticketDefault.get(ticketType);
     return value?.count;
@@ -29,20 +28,17 @@ export const TicketInput: React.FC<Props> = ({
   return (
     <Input
       className={clsx(className)}
-      controlName={`${ticketControlPrefix}.count`}
+      controlName={`${controlNamePrefix}.count`}
       aria-label="Ticket #"
       variant="underlined"
       type="number"
-      min={0}
       endContent={
         countDefault != null && (
           <FlatButton
             icon="ticket"
             tooltip={`Use ticket default (${countDefault})`}
             onClick={() => {
-              setValue(`${ticketControlPrefix}.count`, countDefault, {
-                shouldDirty: true,
-              });
+              setValue(`${controlNamePrefix}.count`, countDefault);
             }}
           />
         )

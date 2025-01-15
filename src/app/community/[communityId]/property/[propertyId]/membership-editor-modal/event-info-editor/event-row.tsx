@@ -1,8 +1,11 @@
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
+import {
+  TicketAddButton,
+  TicketInputTable,
+} from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { CurrencyInput } from '~/view/base/currency-input';
 import { FlatButton } from '~/view/base/flat-button';
 import {
   useHookFormContext,
@@ -12,17 +15,10 @@ import { EventDatePicker } from './event-date-picker';
 import { EventNameSelect } from './event-name-select';
 import { PaymentSelect } from './payment-select';
 import { PriceInput } from './price-input';
-import { TicketTable } from './ticket-table';
+import { useTicketAccordion } from './use-ticket-acoordion';
 
 interface EventHeaderProps {
   className?: string;
-}
-
-interface EventRowProps {
-  className?: string;
-  eventAttendedListMethods: EventAttendedListFieldArray;
-  yearIdx: number;
-  eventIdx: number;
 }
 
 export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
@@ -47,29 +43,28 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
   );
 };
 
+interface EventRowProps {
+  className?: string;
+  eventAttendedListMethods: EventAttendedListFieldArray;
+  yearIdx: number;
+  eventIdx: number;
+}
+
 export const EventRow: React.FC<EventRowProps> = ({
   className,
   eventAttendedListMethods,
   yearIdx,
   eventIdx,
 }) => {
-  const { control, setValue, watch } = useHookFormContext();
+  const { control, setValue } = useHookFormContext();
+  const { isExpanded, toggle, expand } = useTicketAccordion(yearIdx);
+  const membershipPrefix = `membershipList.${yearIdx}` as const;
+  const ticketListPrefix =
+    `${membershipPrefix}.eventAttendedList.${eventIdx}.ticketList` as const;
   const ticketListMethods = useFieldArray({
     control,
-    name: `membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticketList`,
+    name: ticketListPrefix,
   });
-  const { fields } = ticketListMethods;
-  const expandTicketListEventIdx = watch(
-    `hidden.membershipList.${yearIdx}.expandTicketListEventIdx`
-  );
-  const ticketListIsExpanded = expandTicketListEventIdx === eventIdx;
-
-  const toggleChevron = React.useCallback(() => {
-    setValue(
-      `hidden.membershipList.${yearIdx}.expandTicketListEventIdx`,
-      ticketListIsExpanded ? null : eventIdx
-    );
-  }, [setValue, eventIdx, ticketListIsExpanded, yearIdx]);
 
   return (
     <>
@@ -82,13 +77,16 @@ export const EventRow: React.FC<EventRowProps> = ({
             className="justify-self-center text-foreground-400"
             role="cell"
             animate={{
-              rotate: ticketListIsExpanded ? 90 : 0,
+              rotate:
+                isExpanded(eventIdx) && ticketListMethods.fields.length > 0
+                  ? 90
+                  : 0,
             }}
           >
             <FlatButton
               icon="chevron-forward"
-              disabled={fields.length === 0}
-              onClick={toggleChevron}
+              disabled={ticketListMethods.fields.length === 0}
+              onClick={() => toggle(eventIdx)}
             />
           </motion.div>
         </div>
@@ -107,19 +105,10 @@ export const EventRow: React.FC<EventRowProps> = ({
           />
         </div>
         <div role="cell">
-          {eventIdx === 0 && (
-            <CurrencyInput
-              controlName={`membershipList.${yearIdx}.price`}
-              aria-label="Price"
-              allowNegative={false}
-              variant="underlined"
-            />
-          )}
+          {eventIdx === 0 && <PriceInput yearIdx={yearIdx} />}
         </div>
         <div role="cell">
-          {eventIdx === 0 && (
-            <PaymentSelect className="max-w-xs" yearIdx={yearIdx} />
-          )}
+          {eventIdx === 0 && <PaymentSelect yearIdx={yearIdx} />}
         </div>
         <div className="flex pt-3 gap-2" role="cell">
           <FlatButton
@@ -130,34 +119,28 @@ export const EventRow: React.FC<EventRowProps> = ({
               eventAttendedListMethods.remove(eventIdx);
               if (eventAttendedListMethods.fields.length === 1) {
                 // About to remove last entry, clear paymentMethod/price
-                setValue(`membershipList.${yearIdx}.paymentMethod`, null);
-                setValue(`membershipList.${yearIdx}.price`, null);
+                setValue(`${membershipPrefix}.paymentMethod`, null, {
+                  shouldDirty: true,
+                });
+                setValue(`${membershipPrefix}.price`, null, {
+                  shouldDirty: true,
+                });
               }
             }}
           />
-          <FlatButton
-            className="text-primary"
-            icon="add-ticket"
-            tooltip="Add Ticket"
-            onClick={() => {
-              ticketListMethods.append({
-                ticketName: '',
-                count: null,
-                price: null,
-                paymentMethod: null,
-              });
-              setValue(
-                `hidden.membershipList.${yearIdx}.expandTicketListEventIdx`,
-                eventIdx
-              );
+          <TicketAddButton
+            includeHiddenFields
+            onClick={(ticket) => {
+              ticketListMethods.append(ticket);
+              expand(eventIdx);
             }}
           />
         </div>
       </div>
-      {fields.length > 0 && (
+      {ticketListMethods.fields.length > 0 && (
         <div className="col-span-full">
           <AnimatePresence initial={false}>
-            {ticketListIsExpanded && (
+            {isExpanded(eventIdx) && (
               <motion.div
                 className="overflow-hidden"
                 initial="collapsed"
@@ -168,11 +151,20 @@ export const EventRow: React.FC<EventRowProps> = ({
                   collapsed: { opacity: 0, height: 0 },
                 }}
               >
-                <TicketTable
-                  className={clsx('border-medium rounded-lg', 'ml-[40px]')}
-                  ticketListMethods={ticketListMethods}
-                  yearIdx={yearIdx}
-                  eventIdx={eventIdx}
+                <TicketInputTable
+                  className={clsx('border-medium rounded-lg', 'ml-[40px] p-1')}
+                  controlNamePrefix={ticketListPrefix}
+                  fieldMethods={ticketListMethods}
+                  includeHiddenFields
+                  onRemove={(ticketIdx: number) => {
+                    if (ticketListMethods.fields.length === 1) {
+                      // About to remove last entry, collapse ticketList table
+                      setValue(
+                        `hidden.${membershipPrefix}.expandTicketListEventIdx`,
+                        null
+                      );
+                    }
+                  }}
                 />
               </motion.div>
             )}

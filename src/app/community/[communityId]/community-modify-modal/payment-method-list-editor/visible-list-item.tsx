@@ -48,7 +48,10 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
       }}
     >
       <FlatButton
-        className="text-foreground-500 pr-2 cursor-grab active:cursor-grabbing"
+        className={clsx(
+          'text-foreground-500',
+          'cursor-grab active:cursor-grabbing'
+        )}
         icon="drag-handle"
         {...attributes}
         {...listeners}

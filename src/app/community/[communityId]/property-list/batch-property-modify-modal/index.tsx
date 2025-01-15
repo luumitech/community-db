@@ -62,7 +62,7 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
         }),
         {
           pending: 'Saving...',
-          success: 'Saved',
+          // success: 'Saved',
         }
       );
     },

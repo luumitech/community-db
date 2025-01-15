@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
   useForm,
@@ -24,23 +25,13 @@ function schema() {
     notes: z.string().nullable(),
     membership: z.object({
       year: zz.coerce.toNumber('Must select a year'),
+      price: z.string().nullable(),
       paymentMethod: zz.string.nonEmpty('Must select a payment method'),
     }),
     event: z.object({
       eventName: zz.string.nonEmpty('Must specify a value'),
       eventDate: zz.coerce.toIsoDate(),
-      ticketList: z.array(
-        z.object({
-          ticketName: zz.string.nonEmpty('Must specify a value'),
-          count: z.coerce
-            .number({ message: 'Must be a number' })
-            .int()
-            .min(0)
-            .nullable(),
-          price: z.string().nullable(),
-          paymentMethod: z.string().nullable(),
-        })
-      ),
+      ticketList: z.array(ticketSchema),
     }),
     /** Whether member is already a member when registering */
     isMember: z.boolean(),
@@ -58,7 +49,8 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   lastEventSelected: string | undefined,
-  yearSelected: string
+  yearSelected: string,
+  defaultSetting: GQL.DefaultSetting
 ): InputData {
   const year = parseAsNumber(yearSelected) ?? getCurrentYear();
   const membership = item.membershipList.find((entry) => entry.year === year);
@@ -76,6 +68,7 @@ function defaultInputData(
     notes: item.notes ?? '',
     membership: {
       year,
+      price: membership?.price ?? defaultSetting.membershipFee ?? null,
       paymentMethod: membership?.paymentMethod ?? '',
     },
     event: {
@@ -94,12 +87,17 @@ function defaultInputData(
 }
 
 export function useHookFormWithDisclosure(fragment: PropertyEntry) {
-  const { communityUi } = useAppContext();
+  const { communityUi, defaultSetting } = useAppContext();
   const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {
-    return defaultInputData(property, lastEventSelected, yearSelected);
-  }, [property, lastEventSelected, yearSelected]);
+    return defaultInputData(
+      property,
+      lastEventSelected,
+      yearSelected,
+      defaultSetting
+    );
+  }, [property, lastEventSelected, yearSelected, defaultSetting]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

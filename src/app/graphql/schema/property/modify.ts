@@ -1,4 +1,4 @@
-import { Community, Prisma, Property, Role } from '@prisma/client';
+import { Community, Event, Prisma, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
@@ -243,6 +243,24 @@ builder.mutationField('batchPropertyModify', (t) =>
       const findManyArgs = await propertyListFindManyArgs(community.id, filter);
       const propertyList = await prisma.property.findMany(findManyArgs);
 
+      // Map EventInput to Event object in database
+      const mapEventAttendedEntry = (
+        eventEntry: typeof EventInput.$inferInput
+      ): Event => {
+        return {
+          eventName: eventEntry.eventName,
+          eventDate: eventEntry.eventDate
+            ? new Date(eventEntry.eventDate)
+            : null,
+          ticketList: (eventEntry.ticketList ?? []).map((entry) => ({
+            ticketName: entry.ticketName,
+            count: entry.count ?? null,
+            price: entry.price ?? null,
+            paymentMethod: entry.paymentMethod ?? null,
+          })),
+        };
+      };
+
       // Modify the propertyList in memory, and then write them to
       // database afterwards
       propertyList.forEach((property) => {
@@ -254,33 +272,23 @@ builder.mutationField('batchPropertyModify', (t) =>
             (entry) => entry.eventName === eventAttended.eventName
           );
           if (!event) {
-            membership.eventAttendedList.push({
-              eventName: eventAttended.eventName,
-              eventDate: eventAttended.eventDate
-                ? new Date(eventAttended.eventDate)
-                : null,
-              ticketList: [],
-            });
+            membership.eventAttendedList.push(
+              mapEventAttendedEntry(eventAttended)
+            );
             // Non empty event list require payment Method
             if (membership.eventAttendedList.length === 1) {
+              // membership.price = input.membership.price;
               membership.paymentMethod = input.membership.paymentMethod;
             }
           }
         } else {
           property.membershipList.unshift({
             year: input.membership.year,
+            // membership.price = input.membership.price;
             paymentMethod: input.membership.paymentMethod,
             paymentDeposited: null,
             price: input.membership.price ?? null,
-            eventAttendedList: [
-              {
-                eventName: eventAttended.eventName,
-                eventDate: eventAttended.eventDate
-                  ? new Date(eventAttended.eventDate)
-                  : null,
-                ticketList: [],
-              },
-            ],
+            eventAttendedList: [mapEventAttendedEntry(eventAttended)],
           });
         }
       });

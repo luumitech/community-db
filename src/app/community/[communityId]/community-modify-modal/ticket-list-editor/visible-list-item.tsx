@@ -43,7 +43,7 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
       ref={setNodeRef}
       className={clsx(
         'grid col-span-full grid-cols-subgrid',
-        'mx-3 items-center'
+        'mx-3 items-start'
       )}
       role="row"
       style={{
@@ -52,12 +52,15 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
       }}
     >
       <FlatButton
-        className="text-foreground-500 pr-2 cursor-grab active:cursor-grabbing"
+        className={clsx(
+          'text-foreground-500 mt-3',
+          'cursor-grab active:cursor-grabbing'
+        )}
         icon="drag-handle"
         {...attributes}
         {...listeners}
       />
-      <div className="text-sm">{label}</div>
+      <div className="text-sm mt-3">{label}</div>
       <CurrencyInput
         controlName={`ticketList.${ticketIdx}.unitPrice`}
         aria-label="Unit Price"
@@ -69,10 +72,9 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
         aria-label="Ticket #"
         variant="underlined"
         type="number"
-        min={0}
       />
       <FlatButton
-        className="text-danger"
+        className="text-danger mt-3"
         icon="cross"
         onClick={() => onRemove?.(label)}
       />

@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
-import { type TicketListFieldArray } from '../use-hook-form';
 import { PaymentSelect } from './payment-select';
 import { PriceInput } from './price-input';
 import { TicketInput } from './ticket-input';
@@ -9,12 +8,6 @@ import { TicketTypeSelect } from './ticket-type-select';
 
 interface TicketHeaderProps {
   className?: string;
-}
-
-interface TicketRowProps {
-  className?: string;
-  ticketListMethods: TicketListFieldArray;
-  ticketIdx: number;
 }
 
 export const TicketRowHeader: React.FC<TicketHeaderProps> = ({ className }) => {
@@ -38,10 +31,18 @@ export const TicketRowHeader: React.FC<TicketHeaderProps> = ({ className }) => {
   );
 };
 
+interface TicketRowProps {
+  className?: string;
+  controlNamePrefix: string;
+  includeHiddenFields?: boolean;
+  onRemove?: () => void;
+}
+
 export const TicketRow: React.FC<TicketRowProps> = ({
   className,
-  ticketListMethods,
-  ticketIdx,
+  controlNamePrefix,
+  includeHiddenFields,
+  onRemove,
 }) => {
   return (
     <div
@@ -49,25 +50,29 @@ export const TicketRow: React.FC<TicketRowProps> = ({
       role="row"
     >
       <div role="cell">
-        <TicketTypeSelect className="max-w-xs" ticketIdx={ticketIdx} />
+        <TicketTypeSelect
+          controlNamePrefix={controlNamePrefix}
+          includeHiddenFields={includeHiddenFields}
+        />
       </div>
       <div role="cell">
-        <TicketInput isControlled ticketIdx={ticketIdx} />
+        <TicketInput isControlled controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
-        <PriceInput isControlled ticketIdx={ticketIdx} />
+        <PriceInput isControlled controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
-        <PaymentSelect className="max-w-xs" ticketIdx={ticketIdx} />
+        <PaymentSelect
+          controlNamePrefix={controlNamePrefix}
+          includeHiddenFields={includeHiddenFields}
+        />
       </div>
       <div className="flex items-center gap-2" role="cell">
         <FlatButton
           className="text-danger"
           icon="trash"
           tooltip="Remove Ticket"
-          onClick={() => {
-            ticketListMethods.remove(ticketIdx);
-          }}
+          onClick={onRemove}
         />
       </div>
     </div>

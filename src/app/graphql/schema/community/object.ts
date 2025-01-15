@@ -1,4 +1,5 @@
 import {
+  DefaultSetting,
   Property,
   Role,
   SupportedEventItem,
@@ -21,6 +22,14 @@ import {
   isMember,
   propertyListFindManyArgs,
 } from '../property/util';
+
+const defaultSettingRef = builder
+  .objectRef<DefaultSetting>('DefaultSetting')
+  .implement({
+    fields: (t) => ({
+      membershipFee: t.exposeString('membershipFee', { nullable: true }),
+    }),
+  });
 
 const supportedEventItemRef = builder
   .objectRef<SupportedEventItem>('SupportedEventItem')
@@ -291,6 +300,11 @@ builder.prismaObject('Community', {
     paymentMethodList: t.field({
       type: [supportedPaymentMethodRef],
       resolve: (entry) => entry.paymentMethodList,
+    }),
+    defaultSetting: t.field({
+      type: defaultSettingRef,
+      nullable: true,
+      resolve: (entry) => entry.defaultSetting,
     }),
     /** Return context user's access document */
     access: t.prismaField({

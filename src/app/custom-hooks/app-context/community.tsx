@@ -33,6 +33,9 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
         name
         hidden
       }
+      defaultSetting {
+        membershipFee
+      }
       access {
         role
       }
@@ -77,6 +80,7 @@ export type CommunityState = Readonly<{
   selectPaymentMethodSections: SelectSection[];
   /** Ticket default configurations */
   ticketDefault: Map<string, GQL.SupportedTicketItem>;
+  defaultSetting: GQL.DefaultSetting;
   /** Current user's role in this community */
   role: GQL.Role;
   /** Base on current user's role, can user modify content within this community? */
@@ -204,6 +208,9 @@ export function useCommunityContext() {
       selectTicketSections: ticketSelect.selectSections,
       selectPaymentMethodSections: paymentMethodSelect.selectSections,
       ticketDefault: new Map(ticketList.map((entry) => [entry.name, entry])),
+      defaultSetting: community?.defaultSetting ?? {
+        __typename: 'DefaultSetting',
+      },
       role,
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
       isAdmin: role === GQL.Role.Admin,

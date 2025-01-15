@@ -26,6 +26,10 @@ export const EventNameSelect: React.FC<Props> = ({
   const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
     React.useCallback(
       (keys) => {
+        /**
+         * This is needed because errors like duplicate event names are not
+         * cleared automatically after selection is changed
+         */
         clearErrors(`membershipList.${yearIdx}.eventAttendedList`);
       },
       [clearErrors, yearIdx]
@@ -38,7 +42,7 @@ export const EventNameSelect: React.FC<Props> = ({
       aria-label="Event Name"
       items={selectEventSections}
       variant="underlined"
-      placeholder="Select an event"
+      // placeholder="Select an event"
       onSelectionChange={onSelectionChange}
     >
       {(section) => (

@@ -11,7 +11,7 @@ import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { LastModified } from '~/view/last-modified';
 import { EventListEditor } from './event-list-editor';
-import { NameEditor } from './name-editor';
+import { GeneralTab } from './general-tab';
 import { PaymentMethodListEditor } from './payment-method-list-editor';
 import { TicketListEditor } from './ticket-list-editor';
 import {
@@ -77,16 +77,16 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
               color="primary"
               variant="underlined"
             >
-              <Tab key="nameEditor" title="General">
-                <NameEditor />
+              <Tab key="generalTab" title="General">
+                <GeneralTab />
               </Tab>
-              <Tab key="eventEditor" title="Events">
+              <Tab key="eventTab" title="Events">
                 <EventListEditor />
               </Tab>
-              <Tab key="ticketListEditor" title="Tickets">
+              <Tab key="ticketListTab" title="Tickets">
                 <TicketListEditor />
               </Tab>
-              <Tab key="paymentMethodEditor" title="Payment Methods">
+              <Tab key="paymentMethodTab" title="Payment Methods">
                 <PaymentMethodListEditor />
               </Tab>
             </Tabs>
