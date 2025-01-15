@@ -34,7 +34,14 @@ const BatchPropertyMutation = graphql(/* GraphQL */ `
           eventAttendedList {
             eventName
             eventDate
+            ticketList {
+              ticketName
+              count
+              price
+              paymentMethod
+            }
           }
+          price
           paymentMethod
         }
       }
