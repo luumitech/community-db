@@ -50,6 +50,10 @@ function defaultInputData(communityId: string): InputData {
 }
 
 export function useHookForm(communityId: string) {
+  const defaultValues = React.useMemo(
+    () => defaultInputData(communityId),
+    [communityId]
+  );
   const formMethods = useForm({
     /**
      * Due to the way confirmation dialog handles submission, manual validation
@@ -58,15 +62,15 @@ export function useHookForm(communityId: string) {
      * form more closely behave like 'onSubmit'
      */
     mode: 'onChange',
-    defaultValues: defaultInputData(communityId),
+    defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
 
   React.useEffect(() => {
     // After form is submitted, update the form with new defaults
-    reset(defaultInputData(communityId));
-  }, [reset, communityId]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   return { formMethods };
 }

@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { calcPrice } from '~/lib/decimal-util';
+import { insertIf } from '~/lib/insert-if';
 import { FlatButton } from '~/view/base/flat-button';
 import { Ticket } from './_type';
 
@@ -34,7 +35,13 @@ export const TicketAddButton: React.FC<Props> = ({
 
   const sections = includeHiddenFields
     ? selectTicketSections
-    : [{ title: '', items: visibleTicketItems, showDivider: false }];
+    : [
+        ...insertIf(visibleTicketItems.length > 0, {
+          title: '',
+          items: visibleTicketItems,
+          showDivider: false,
+        }),
+      ];
 
   return (
     <Dropdown>
@@ -47,6 +54,14 @@ export const TicketAddButton: React.FC<Props> = ({
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Add ticket item"
+        emptyContent={
+          <div>
+            Please configure ticket items in{' '}
+            <span className="text-sm text-foreground-500">
+              Modify Community
+            </span>
+          </div>
+        }
         onAction={(key) => {
           const ticketName = key as string;
           const ticketDef = ticketDefault.get(ticketName);

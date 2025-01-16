@@ -181,26 +181,20 @@ export function useHookFormWithDisclosure(
 ) {
   const { minYear, maxYear, defaultSetting } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
-  const defaultValues = React.useMemo(
-    () =>
-      defaultInputData(
-        property,
-        [minYear, maxYear],
-        yearSelected,
-        defaultSetting
-      ),
-    [minYear, maxYear, property, yearSelected, defaultSetting]
-  );
+  const defaultValues = React.useMemo(() => {
+    const data = defaultInputData(
+      property,
+      [minYear, maxYear],
+      yearSelected,
+      defaultSetting
+    );
+    return data;
+  }, [minYear, maxYear, property, yearSelected, defaultSetting]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
-
-  React.useEffect(() => {
-    // After form is submitted, update the form with new default
-    reset(defaultValues);
-  }, [reset, defaultValues]);
 
   /**
    * When modal is closed, reset form value with default values derived from

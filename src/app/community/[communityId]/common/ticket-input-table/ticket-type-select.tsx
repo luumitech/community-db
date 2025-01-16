@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { insertIf } from '~/lib/insert-if';
 import {
   Select,
   SelectItem,
@@ -29,7 +30,13 @@ export const TicketTypeSelect: React.FC<Props> = ({
 
   const items = includeHiddenFields
     ? selectTicketSections
-    : [{ title: '', items: visibleTicketItems, showDivider: false }];
+    : [
+        ...insertIf(visibleTicketItems.length > 0, {
+          title: '',
+          items: visibleTicketItems,
+          showDivider: false,
+        }),
+      ];
 
   return (
     <div className={clsx(className)}>

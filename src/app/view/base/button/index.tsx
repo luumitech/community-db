@@ -40,6 +40,7 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
       beforeConfirm,
       tooltip,
       onPress,
+      type,
       ...props
     },
     ref
@@ -50,41 +51,41 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
 
     const customOnPress = React.useCallback<OnPressFn>(
       async (evt) => {
-        if (confirmation) {
-          const showDialog = (await beforeConfirm?.()) ?? true;
-          if (showDialog) {
-            open({
-              ...confirmationArg,
-              onConfirm: async () => {
-                switch (props.type) {
-                  case 'submit':
-                    {
-                      const form = buttonRef.current.closest('form');
-                      form?.requestSubmit();
-                    }
-                    break;
-                  case 'reset':
-                    {
-                      const form = buttonRef.current.closest('form');
-                      form?.reset();
-                    }
-                    break;
-                  case 'button':
-                  default:
-                    break;
-                }
-                onPress?.(evt);
-              },
-            });
-          }
-        } else {
+        if (!confirmation) {
           onPress?.(evt);
+          return;
+        }
+        const showDialog = (await beforeConfirm?.()) ?? true;
+        if (showDialog) {
+          open({
+            ...confirmationArg,
+            onConfirm: async () => {
+              switch (type) {
+                case 'submit':
+                  {
+                    const form = buttonRef.current.closest('form');
+                    form?.requestSubmit();
+                  }
+                  break;
+                case 'reset':
+                  {
+                    const form = buttonRef.current.closest('form');
+                    form?.reset();
+                  }
+                  break;
+                case 'button':
+                default:
+                  break;
+              }
+              onPress?.(evt);
+            },
+          });
         }
       },
       [
         confirmation,
         confirmationArg,
-        props.type,
+        type,
         open,
         beforeConfirm,
         onPress,
@@ -92,26 +93,33 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
       ]
     );
 
-    const renderButton = React.useMemo(() => {
-      return (
+    const CustomButton = React.useCallback(
+      () => (
         <NextUIButton
           ref={buttonRef}
           onPress={customOnPress}
-          {...props}
+          type={type}
           /**
-           * When confirmation dialog is enabled, need to handle submit/reset
-           * type manually. See logic in `customOnPress` above.
+           * When confirmation dialog is enabled, override the default button
+           * type, so we can handle submit/reset type manually. See logic in
+           * `customOnPress` above.
            */
           {...(confirmation && { type: 'button' })}
+          {...props}
         />
-      );
-    }, [buttonRef, props, customOnPress, confirmation]);
-
-    return tooltip ? (
-      <Tooltip content={tooltip}>{renderButton}</Tooltip>
-    ) : (
-      renderButton
+      ),
+      [buttonRef, confirmation, customOnPress, props, type]
     );
+
+    if (tooltip) {
+      return (
+        <Tooltip content={tooltip}>
+          <CustomButton />
+        </Tooltip>
+      );
+    }
+
+    return <CustomButton />;
   }
 );
 

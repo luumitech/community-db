@@ -68,24 +68,23 @@ export function useHookFormWithDisclosure(
   communityId: string,
   accessList: AccessEntry[]
 ) {
+  const defaultValues = React.useMemo(
+    () => defaultInputData(communityId, accessList),
+    [communityId, accessList]
+  );
   const formMethods = useForm({
-    defaultValues: defaultInputData(communityId, accessList),
+    defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
-
-  React.useEffect(() => {
-    // After form is submitted, update the form with new default
-    reset(defaultInputData(communityId, accessList));
-  }, [reset, communityId, accessList]);
 
   /**
    * When modal is closed, reset form value with default values derived from
    * fragment
    */
   const onModalClose = React.useCallback(() => {
-    reset(defaultInputData(communityId, accessList));
-  }, [reset, communityId, accessList]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
   const disclosure = useDisclosure({
     onClose: onModalClose,
   });

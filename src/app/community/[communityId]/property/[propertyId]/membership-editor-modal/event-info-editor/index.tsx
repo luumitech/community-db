@@ -5,10 +5,8 @@ import { useFieldArray } from '~/custom-hooks/hook-form';
 import { getCurrentDateAsISOString } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
-import { useHookFormContext, type EventField } from '../use-hook-form';
+import { useHookFormContext } from '../use-hook-form';
 import { EventRow, EventRowHeader } from './event-row';
-
-type RowEntry = EventField & { key: string };
 
 interface Props {
   className?: string;
@@ -27,13 +25,6 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   const { fields, append } = eventAttendedListMethods;
   const eventAttendedListError =
     errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
-
-  const rows: RowEntry[] = React.useMemo(() => {
-    return fields.map((field) => ({
-      key: field.id,
-      ...field,
-    }));
-  }, [fields]);
 
   const topContent = React.useMemo(() => {
     return (
@@ -69,7 +60,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
       {topContent}
       <div className="grid grid-cols-[40px_repeat(4,1fr)_80px] gap-2">
         <EventRowHeader />
-        {rows.length === 0 && (
+        {fields.length === 0 && (
           <div
             className={clsx(
               'col-span-full self-center justify-self-center',
@@ -79,9 +70,9 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
             No entries
           </div>
         )}
-        {rows.map((row, eventIdx) => (
+        {fields.map((field, eventIdx) => (
           <EventRow
-            key={row.key}
+            key={field.id}
             eventAttendedListMethods={eventAttendedListMethods}
             yearIdx={yearIdx}
             eventIdx={eventIdx}
