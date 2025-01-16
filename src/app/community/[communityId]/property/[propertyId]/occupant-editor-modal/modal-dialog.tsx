@@ -61,16 +61,18 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Member Details</ModalHeader>
+          <ModalHeader>Membership Contact Information</ModalHeader>
           <ModalBody>
             <Editor fieldArrayMethods={occupantMethods} />
           </ModalBody>
           <ModalFooter>
             <Button
               endContent={<Icon icon="person-add" />}
+              color="primary"
+              variant="bordered"
               onPress={() => occupantMethods.append(occupantDefault)}
             >
-              Add Member
+              Add Contact
             </Button>
             <div className="flex-grow" />
             <Button variant="bordered" confirmation={isDirty} onPress={onClose}>

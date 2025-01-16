@@ -69,6 +69,16 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
       {topContent}
       <div className="grid grid-cols-[40px_repeat(4,1fr)_80px] gap-2">
         <EventRowHeader />
+        {rows.length === 0 && (
+          <div
+            className={clsx(
+              'col-span-full self-center justify-self-center',
+              'text-sm text-foreground-500'
+            )}
+          >
+            No entries
+          </div>
+        )}
         {rows.map((row, eventIdx) => (
           <EventRow
             key={row.key}

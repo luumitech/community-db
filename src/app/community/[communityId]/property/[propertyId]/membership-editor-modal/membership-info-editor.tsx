@@ -1,17 +1,22 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
+import { Spacer } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
+import * as GQL from '~/graphql/generated/graphql';
 import { EventInfoEditor } from './event-info-editor';
 import { useHookFormContext } from './use-hook-form';
 import { YearSelect } from './year-select';
 
 interface Props {
   className?: string;
+  property: GQL.PropertyId_MembershipEditorFragment;
 }
 
-export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
+export const MembershipInfoEditor: React.FC<Props> = ({
+  className,
+  property,
+}) => {
   const { communityUi, minYear, maxYear } = useAppContext();
   const [selectedYear, setSelectedYear] = React.useState(
     communityUi.yearSelected
@@ -21,8 +26,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
     control,
     name: 'membershipList',
   });
-  const { fields } = membershipMethods;
-
+  const { fields, prepend } = membershipMethods;
   const idx = React.useMemo(() => {
     const foundIdx = fields.findIndex(
       (entry) => entry.year.toString() === selectedYear
@@ -32,21 +36,18 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={clsx(className)}>
-      <Card>
-        <CardHeader className="gap-2">
-          <YearSelect
-            yearRange={[minYear, maxYear]}
-            membershipMethods={membershipMethods}
-            selectedYear={selectedYear}
-            onChange={setSelectedYear}
-          />
-        </CardHeader>
-        {idx > -1 && (
-          <CardBody key={selectedYear} className="gap-4">
-            <EventInfoEditor yearIdx={idx} />
-          </CardBody>
-        )}
-      </Card>
+      <YearSelect
+        yearRange={[minYear, Math.max(fields[0].year, maxYear)]}
+        membershipList={property.membershipList}
+        selectedYear={selectedYear}
+        onChange={setSelectedYear}
+        onAddYear={(item) => {
+          prepend(item);
+          setSelectedYear(item.year.toString());
+        }}
+      />
+      <Spacer y={4} />
+      {idx > -1 && <EventInfoEditor key={fields[idx].id} yearIdx={idx} />}
     </div>
   );
 };

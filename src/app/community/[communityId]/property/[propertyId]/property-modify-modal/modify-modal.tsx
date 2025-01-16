@@ -54,23 +54,29 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
           <ModalHeader>Edit Property</ModalHeader>
           <ModalBody>
             <AddressEditorForm />
+          </ModalBody>
+          <ModalFooter className="flex items-center justify-between">
             <LastModified
               className="text-right"
               updatedAt={property.updatedAt}
-              userFragment={property.updatedBy}
+              updatedBy={property.updatedBy}
             />
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Save
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="bordered"
+                confirmation={isDirty}
+                onPress={onClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                isDisabled={!formState.isDirty || pending}
+              >
+                Save
+              </Button>
+            </div>
           </ModalFooter>
         </ModalContent>
       </Form>

@@ -7,20 +7,19 @@ import { UserName } from './user-name';
 interface Props {
   className?: string;
   updatedAt: string;
-  userFragment?: UserFragmentType | null;
+  updatedBy?: UserFragmentType | null;
 }
 
 export const LastModified: React.FC<Props> = ({
   className,
   updatedAt,
-  userFragment,
+  updatedBy,
 }) => {
   const updatedAtStr = toLocalDateTime(updatedAt);
 
   return (
-    <div className={clsx(className, 'text-xs')}>
-      Last modified on {updatedAtStr} by{' '}
-      <UserName userFragment={userFragment} />
+    <div className={clsx(className, 'text-xs text-foreground-500')}>
+      Last modified on {updatedAtStr} by <UserName userFragment={updatedBy} />
     </div>
   );
 };

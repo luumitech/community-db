@@ -63,6 +63,7 @@ export const FilterChip: React.FC<Props> = ({
       {!!event && (
         <EventChip
           eventName={event}
+          variant="faded"
           onClose={() => {
             setValue('event', '');
             onChange?.({ memberYear, nonMemberYear, event: '' });

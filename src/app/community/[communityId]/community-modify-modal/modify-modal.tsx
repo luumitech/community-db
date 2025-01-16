@@ -60,11 +60,6 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
         <ModalContent>
           <ModalHeader className="flex justify-between">
             Edit Community
-            <LastModified
-              className="text-right text-foreground-400"
-              updatedAt={community.updatedAt}
-              userFragment={community.updatedBy}
-            />
           </ModalHeader>
           <ModalBody>
             <Tabs
@@ -91,17 +86,27 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
               </Tab>
             </Tabs>
           </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Save
-            </Button>
+          <ModalFooter className="flex items-center justify-between">
+            <LastModified
+              updatedAt={community.updatedAt}
+              updatedBy={community.updatedBy}
+            />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="bordered"
+                confirmation={isDirty}
+                onPress={onClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                isDisabled={!formState.isDirty || pending}
+              >
+                Save
+              </Button>
+            </div>
           </ModalFooter>
         </ModalContent>
       </Form>

@@ -43,9 +43,8 @@ export const PageContent: React.FC<Props> = (props) => {
       <MembershipDisplay />
       <OccupantDisplay />
       <LastModified
-        className="text-right"
         updatedAt={property.updatedAt}
-        userFragment={property.updatedBy}
+        updatedBy={property.updatedBy}
       />
       <propertyModifyModal.PropertyModifyModal />
       <membershipEditorModal.MembershipEditorModal />

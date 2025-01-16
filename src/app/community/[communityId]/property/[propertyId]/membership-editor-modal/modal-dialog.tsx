@@ -6,11 +6,12 @@ import {
   ModalHeader,
 } from '@nextui-org/react';
 import React from 'react';
+import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
+import { LastModified } from '~/view/last-modified';
 import { usePageContext } from '../page-context';
 import { MembershipInfoEditor } from './membership-info-editor';
-import { NotesEditor } from './notes-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -19,7 +20,7 @@ interface Props {
 
 export const ModalDialog: React.FC<Props> = ({ onSave }) => {
   const { membershipEditor } = usePageContext();
-  const { disclosure } = membershipEditor;
+  const { property, disclosure } = membershipEditor;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();
@@ -51,22 +52,32 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Membership Detail</ModalHeader>
-          <ModalBody>
-            <MembershipInfoEditor />
-            <NotesEditor />
+          <ModalHeader>Membership Detail</ModalHeader>
+          <ModalBody className="gap-4">
+            <MembershipInfoEditor property={property} />
+            <NotesEditor controlName="notes" />
           </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Save
-            </Button>
+          <ModalFooter className="flex items-center justify-between">
+            <LastModified
+              updatedAt={property.updatedAt}
+              updatedBy={property.updatedBy}
+            />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="bordered"
+                confirmation={isDirty}
+                onPress={onClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                isDisabled={!formState.isDirty || pending}
+              >
+                Save
+              </Button>
+            </div>
           </ModalFooter>
         </ModalContent>
       </Form>
