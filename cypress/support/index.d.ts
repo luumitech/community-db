@@ -11,11 +11,29 @@ declare namespace Cypress {
     clickMainMenu(): void;
 
     /**
-     * Click a menu item within a menu
+     * Click Header more (...) menu
      *
-     * @param itemLabel A regular expression for menu item label
+     * @example Cy.clickHeaderMoreMenu()
      */
-    clickMenuItem(itemLabel: string): void;
+    clickHeaderMoreMenu(): void;
+
+    /**
+     * Click an item with role="link"
+     *
+     * - Can be used for selecting menu item within main hamburger menu
+     *
+     * @param itemLabel A regular expression for item label
+     */
+    clickRoleLink(itemLabel: string): void;
+
+    /**
+     * Click an item with role="menuitem"
+     *
+     * - Can be used for selecting menu item within header more menu
+     *
+     * @param itemLabel A regular expression for item label
+     */
+    clickRoleMenuItem(itemLabel: string): void;
 
     /**
      * Click a button

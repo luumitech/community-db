@@ -1,4 +1,4 @@
-import type { Event, Membership, Occupant } from '@prisma/client';
+import type { Event, Membership, Occupant, Ticket } from '@prisma/client';
 import { builder } from '~/graphql/builder';
 import { isMember } from './util';
 
@@ -14,14 +14,22 @@ const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
   }),
 });
 
+const ticketRef = builder.objectRef<Ticket>('Ticket').implement({
+  fields: (t) => ({
+    ticketName: t.exposeString('ticketName'),
+    count: t.exposeInt('count', { nullable: true }),
+    price: t.exposeString('price', { nullable: true }),
+    paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
+  }),
+});
+
 const eventRef = builder.objectRef<Event>('Event').implement({
   fields: (t) => ({
     eventName: t.exposeString('eventName'),
     eventDate: t.expose('eventDate', { type: 'Date', nullable: true }),
-    ticket: t.field({
-      type: 'Int',
-      description: 'Number of tickets given for the event',
-      resolve: (entry) => entry.ticket ?? 0,
+    ticketList: t.field({
+      type: [ticketRef],
+      resolve: (entry) => entry.ticketList,
     }),
   }),
 });
@@ -39,6 +47,7 @@ const membershipRef = builder.objectRef<Membership>('Membership').implement({
     }),
     paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
     paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),
+    price: t.exposeString('price', { nullable: true }),
   }),
 });
 

@@ -5,35 +5,19 @@ import {
   DropdownTrigger,
   User,
 } from '@nextui-org/react';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
+import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
 import { insertIf } from '~/lib/insert-if';
 import { Icon } from '~/view/base/icon';
 import styles from './styles.module.css';
 
-/** Extract the first letter of each word */
-function acronym(input?: string | null) {
-  if (!input) {
-    return 'n/a';
-  }
-  return input
-    .split(/\s/)
-    .reduce((response, word) => (response += word.slice(0, 1)), '');
-}
-
 interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
-  const { status, data } = useSession({ required: true });
-
-  if (status === 'loading') {
-    return null;
-  }
-
-  // useSession guarantees user to be authenticated
-  const { name, email, image } = data!.user!;
+  const { initial, email, image } = useUserInfo();
 
   const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
 
@@ -46,7 +30,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
           isFocusable
           avatarProps={{
             isBordered: true,
-            name: acronym(name) ?? 'n/a',
+            name: initial || 'n/a',
             color: 'secondary',
             ...(!!image && { src: image }),
           }}

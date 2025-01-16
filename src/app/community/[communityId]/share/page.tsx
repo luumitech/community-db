@@ -9,12 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react';
-import { Role } from '@prisma/client';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { type AccessEntry } from './_type';
+import { MoreMenu } from '../common/more-menu';
 import { CopyShareLink } from './copy-share-link';
 import { NewAccessButton } from './new-access-button';
 import { RoleDescription } from './role-description';
@@ -64,9 +63,7 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
 export default function Share({ params }: RouteArgs) {
   const { communityId } = params;
   const result = useQuery(CommunityAccessListQuery, {
-    variables: {
-      id: communityId,
-    },
+    variables: { id: communityId },
   });
   useGraphqlErrorHandler(result);
   const { data, loading } = result;
@@ -114,8 +111,8 @@ export default function Share({ params }: RouteArgs) {
       return null;
     }
     return (
-      <div className="flex gap-2 items-center">
-        <span className="text-lg grow">Share {community.name} with:</span>
+      <div className="flex gap-2 items-center justify-end">
+        <CopyShareLink communityId={community.id} />
         {isAdmin && (
           <NewAccessButton communityId={community.id} accessList={accessList} />
         )}
@@ -123,15 +120,11 @@ export default function Share({ params }: RouteArgs) {
     );
   }, [community, isAdmin, accessList]);
 
-  const bottomContent = React.useMemo(() => {
-    if (!community) {
-      return null;
-    }
-    return <CopyShareLink communityId={community.id} />;
-  }, [community]);
-
   return (
     <>
+      {community && (
+        <MoreMenu communityId={community.id} omitKeys={['communityShare']} />
+      )}
       <Table
         aria-label="Community Access List"
         classNames={{
@@ -146,8 +139,6 @@ export default function Share({ params }: RouteArgs) {
         isHeaderSticky
         topContent={topContent}
         topContentPlacement="outside"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
       >
         <TableHeader columns={columns}>
           {(column) => (

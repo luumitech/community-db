@@ -2,6 +2,7 @@
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
+import { MoreMenu } from '../common/more-menu';
 import { ExportForm } from './export-form';
 import { useHookForm } from './use-hook-form';
 
@@ -20,6 +21,7 @@ export default function ExportXlsx({ params }: RouteArgs) {
 
   return (
     <FormProvider {...formMethods}>
+      <MoreMenu communityId={communityId} omitKeys={['communityExport']} />
       <Form
         className="flex flex-col h-main-height"
         // onSubmit={handleSubmit(onExport)}

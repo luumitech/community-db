@@ -40,7 +40,7 @@ export const OccupantEditorModal: React.FC<Props> = ({ className }) => {
       }),
       {
         pending: 'Saving...',
-        success: 'Saved',
+        // success: 'Saved',
       }
     );
   };

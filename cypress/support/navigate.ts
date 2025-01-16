@@ -3,8 +3,7 @@ Cypress.Commands.add('navigatePropertyList', () => {
 
   // Wait for menu to load
   cy.findByText('Welcome!', { timeout: 5000 });
-  cy.clickMainMenu();
-  cy.clickMenuItem('Select Community');
+  cy.findByRole('option', { name: 'Select Community' }).click();
   cy.findByRole('option', { name: 'Serenity' }).click();
 
   // Wait for property list to load

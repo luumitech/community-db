@@ -1,20 +1,37 @@
-import { Community, Role, SupportedSelectItem } from '@prisma/client';
+import { Community, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import * as XLSX from 'xlsx';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import { importLcraDB } from '~/lib/lcra-community/import';
-import { extractEventList } from '~/lib/lcra-community/import/event-list-util';
-import { extractPaymentMethodList } from '~/lib/lcra-community/import/payment-method-list-util';
 import { seedCommunityData } from '~/lib/lcra-community/random-seed';
 import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { getSubscriptionEntry } from '../payment/util';
+import { NameListUtil } from './name-list-util';
 import { getCommunityEntry } from './util';
 
-const NameInput = builder.inputType('NameInput', {
+const DefaultSettingInput = builder.inputType('DefaultSettingInput', {
+  fields: (t) => ({
+    membershipFee: t.string(),
+  }),
+});
+
+const EventItemInput = builder.inputType('EventItemInput', {
+  fields: (t) => ({
+    name: t.string({ required: true }),
+  }),
+});
+const TicketItemInput = builder.inputType('TicketItemInput', {
+  fields: (t) => ({
+    name: t.string({ required: true }),
+    count: t.int(),
+    unitPrice: t.string(),
+  }),
+});
+const PaymentMethodInput = builder.inputType('PaymentMethodInput', {
   fields: (t) => ({
     name: t.string({ required: true }),
   }),
@@ -24,82 +41,12 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
     name: t.string(),
-    eventList: t.field({ type: [NameInput] }),
-    paymentMethodList: t.field({ type: [NameInput] }),
+    eventList: t.field({ type: [EventItemInput] }),
+    ticketList: t.field({ type: [TicketItemInput] }),
+    paymentMethodList: t.field({ type: [PaymentMethodInput] }),
+    defaultSetting: t.field({ type: DefaultSettingInput }),
   }),
 });
-
-/**
- * Generate eventList entry for database
- *
- * User may want a reduced list of events to show when selecting in the UI, but
- * the database may contain events that are still being referenced, and they
- * need to be maintained in this list. We'll mark these entries as hidden, so
- * they would still show up properly in the selection UI
- *
- * @param community Community entry in database
- * @param eventList New event list as requested by user
- * @returns
- */
-async function getCompleteEventList(
-  community: Pick<Community, 'id' | 'eventList'>,
-  eventList: (typeof NameInput.$inferInput)[]
-) {
-  const result: SupportedSelectItem[] = [];
-  eventList.forEach(({ name }) => {
-    result.push({ name, hidden: false });
-  });
-
-  // mark any events missing in the input eventList as hidden
-  const propertyList = await prisma.property.findMany({
-    where: { communityId: community.id },
-    select: { membershipList: true },
-  });
-  const completeEventList = extractEventList(propertyList);
-  completeEventList.forEach((name) => {
-    if (!eventList.find((entry) => entry.name === name)) {
-      result.push({ name, hidden: true });
-    }
-  });
-
-  return result;
-}
-
-/**
- * Generate paymentMethodList entry for database
- *
- * User may want a reduced list of payment methods to show when selecting in the
- * UI, but the database may contain methods that are still being referenced, and
- * they need to be maintained in this list. We'll mark these entries as hidden,
- * so they would still show up properly in the selection UI
- *
- * @param community Community entry in database
- * @param paymentMethodList New event list as requested by user
- * @returns
- */
-async function getCompletePaymentMethodList(
-  community: Pick<Community, 'id' | 'paymentMethodList'>,
-  paymentMethodList: (typeof NameInput.$inferInput)[]
-) {
-  const result: SupportedSelectItem[] = [];
-  paymentMethodList.forEach(({ name }) => {
-    result.push({ name, hidden: false });
-  });
-
-  // mark any events missing in the input eventList as hidden
-  const propertyList = await prisma.property.findMany({
-    where: { communityId: community.id },
-    select: { membershipList: true },
-  });
-  const completePaymentMethodList = extractPaymentMethodList(propertyList);
-  completePaymentMethodList.forEach((name) => {
-    if (!paymentMethodList.find((entry) => entry.name === name)) {
-      result.push({ name, hidden: true });
-    }
-  });
-
-  return result;
-}
 
 builder.mutationField('communityModify', (t) =>
   t.prismaField({
@@ -116,6 +63,7 @@ builder.mutationField('communityModify', (t) =>
           id: true,
           updatedAt: true,
           eventList: true,
+          ticketList: true,
           paymentMethodList: true,
         },
       });
@@ -128,7 +76,15 @@ builder.mutationField('communityModify', (t) =>
       // Make sure user has permission to modify
       await verifyAccess(user, { id: entry.id }, [Role.ADMIN, Role.EDITOR]);
 
-      const { name, eventList, paymentMethodList, ...optionalInput } = input;
+      const {
+        name,
+        eventList,
+        ticketList,
+        paymentMethodList,
+        ...optionalInput
+      } = input;
+
+      const nameListUtil = await NameListUtil.fromDB(entry.id);
 
       const community = await prisma.community.update({
         ...query,
@@ -142,15 +98,16 @@ builder.mutationField('communityModify', (t) =>
           // If eventList is provided, make sure eventList contains
           // every event used within the community database
           ...(!!eventList && {
-            eventList: await getCompleteEventList(entry, eventList),
+            eventList: nameListUtil.getCompleteEventList(eventList),
+          }),
+          ...(!!ticketList && {
+            ticketList: nameListUtil.getCompleteTicketList(ticketList),
           }),
           // If paymentMethodList is provided, make sure paymentMethodList contains
           // every payment method used within the community database
           ...(!!paymentMethodList && {
-            paymentMethodList: await getCompletePaymentMethodList(
-              entry,
-              paymentMethodList
-            ),
+            paymentMethodList:
+              nameListUtil.getCompletePaymentMethodList(paymentMethodList),
           }),
           ...optionalInput,
         },

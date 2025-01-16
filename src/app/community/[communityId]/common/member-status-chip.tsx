@@ -6,9 +6,19 @@ import { Icon } from '~/view/base/icon';
 interface Props {
   className?: string;
   isMember?: boolean;
+  /** Hide 'member' | 'non-member' text */
+  hideText?: boolean;
+  /** Hide thumb-up | thumb-down icon */
+  hideIcon?: boolean;
 }
 
-export const MemberStatusChip: React.FC<Props> = ({ className, isMember }) => {
+export const MemberStatusChip: React.FC<React.PropsWithChildren<Props>> = ({
+  className,
+  isMember,
+  hideText,
+  hideIcon,
+  children,
+}) => {
   return (
     <Chip
       className={className}
@@ -17,8 +27,11 @@ export const MemberStatusChip: React.FC<Props> = ({ className, isMember }) => {
       color={isMember ? 'success' : 'default'}
     >
       <div className="flex items-center gap-2">
-        {isMember ? 'member' : 'non-member'}
-        <Icon icon={isMember ? 'thumb-up' : 'thumb-down'} size={16} />
+        {children}
+        {!hideText && <span>{isMember ? 'member' : 'non-member'}</span>}
+        {!hideIcon && (
+          <Icon icon={isMember ? 'thumb-up' : 'thumb-down'} size={16} />
+        )}
       </div>
     </Chip>
   );

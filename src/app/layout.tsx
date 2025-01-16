@@ -5,7 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
-import { appTitle } from '~/lib/env-var';
+import { appDescription, appTitle } from '~/lib/env-var';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 
@@ -15,16 +15,10 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: appTitle,
-  description:
-    'Community Membership Database made specifically for nonprofits. Easy to use, keep tracks of events and membership information.',
-  applicationName: 'Community Database',
-  appleWebApp: {
-    title: 'Community Database',
-    statusBarStyle: 'default',
-    capable: true,
-  },
+  description: appDescription,
+  applicationName: appTitle,
   openGraph: {
-    siteName: 'Community Database',
+    siteName: appTitle,
     type: 'website',
     locale: 'en_US',
   },

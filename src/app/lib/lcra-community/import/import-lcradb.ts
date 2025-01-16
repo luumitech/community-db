@@ -2,11 +2,12 @@ import { type Membership } from '@prisma/client';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { parseAsDate } from '~/lib/date-util';
-import { parseAsNumber } from '~/lib/number-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { parseTicketList } from '../ticket-list-util';
 import { extractEventList } from './event-list-util';
 import { ImportHelper } from './import-helper';
 import { extractPaymentMethodList } from './payment-method-list-util';
+import { extractTicketList } from './ticket-list-util';
 import { extractYearRange } from './year-range-util';
 
 /**
@@ -84,6 +85,10 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         colIdx: importHelper.labelColumn(`${prefix}-deposited`),
         type: 'boolean',
       },
+      price: {
+        colIdx: importHelper.labelColumn(`${prefix}-price`),
+        type: 'string',
+      },
     });
     // Map eventNameList/eventDateList into the format of
     // eventAttendedList
@@ -94,11 +99,11 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     const eventAttendedList = eventNameList.map((eventName, idx) => {
       // intepret date string as ZonedDateTime
       const eventDateObj = parseAsDate(eventDateList[idx]);
-      const ticket = parseAsNumber(eventTicketList[idx]);
+      const ticketList = parseTicketList(eventTicketList[idx]);
       return {
         eventName,
         eventDate: eventDateObj?.toDate() ?? null,
-        ticket,
+        ticketList,
       };
     });
 
@@ -186,6 +191,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
   const eventNameList = extractEventList(propertyList);
   const paymentMethodList = extractPaymentMethodList(propertyList);
+  const ticketList = extractTicketList(propertyList);
   const yearRange = extractYearRange(propertyList);
 
   return {
@@ -193,6 +199,10 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     ...yearRange,
     eventList: eventNameList.map((eventName) => ({
       name: eventName,
+      hidden: false,
+    })),
+    ticketList: ticketList.map((ticketName) => ({
+      name: ticketName,
       hidden: false,
     })),
     paymentMethodList: paymentMethodList.map((method) => ({

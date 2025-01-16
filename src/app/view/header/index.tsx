@@ -21,6 +21,8 @@ import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
 import { useTopMenu } from './use-top-menu';
 
+export * from './header-menu';
+
 interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
@@ -52,11 +54,12 @@ export const Header: React.FC<Props> = ({}) => {
           ],
         }}
       >
-        {menuItems.length > 0 && (
+        {/** Hamburger menu */}
+        {/* {menuItems.length > 0 && (
           <NavbarMenuToggle
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
-        )}
+        )} */}
         <NavbarContent justify="center">
           <NavbarBrand className="min-w-[36px]">
             <Link
@@ -86,6 +89,8 @@ export const Header: React.FC<Props> = ({}) => {
           ))}
         </Breadcrumbs>
         <NavbarContent justify="end">
+          {/* placeholder for calculating position of more menu */}
+          <div id="nav-bar-avatar" />
           {status === 'loading' ? (
             <Spinner />
           ) : status === 'authenticated' ? (

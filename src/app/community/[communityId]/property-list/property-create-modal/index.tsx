@@ -12,7 +12,10 @@ import {
   type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
+export {
+  useHookFormWithDisclosure,
+  type CreateFragmentType,
+} from './use-hook-form';
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyCreate($input: PropertyCreateInput!) {

@@ -7,6 +7,7 @@ import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
+import { MoreMenu } from '../common/more-menu';
 import { ImportForm } from './import-form';
 import {
   CommunityImportMutation,
@@ -73,6 +74,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
 
   return (
     <FormProvider {...formMethods}>
+      <MoreMenu communityId={communityId} omitKeys={['communityImport']} />
       <Form
         className="flex flex-col h-main-height"
         onSubmit={handleSubmit(onImport)}

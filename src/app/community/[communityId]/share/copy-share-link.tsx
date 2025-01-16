@@ -1,7 +1,7 @@
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import { env } from 'next-runtime-env';
 import React from 'react';
+import { useCopyToClipboard } from 'usehooks-ts';
 import { appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
@@ -13,28 +13,14 @@ interface Props {
 }
 
 export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
-  // const [copiedText, copyToClipboard] = useCopyToClipboard();
-
-  // Use local copyToClipboard implementation
-  // until this is fixed:
-  // https://github.com/uidotdev/usehooks/issues/312
-  const copyToClipboard = React.useCallback((value: string) => {
-    const handleCopy = async () => {
-      if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(value);
-      } else {
-        throw new Error('writeText not supported');
-      }
-    };
-
-    return handleCopy();
-  }, []);
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
 
   return (
     <div className={clsx(className)}>
       <div className="flex items-center gap-2">
         <Button
           variant="bordered"
+          color="primary"
           endContent={<Icon icon="link" />}
           onPress={() => {
             const path = appPath('propertyList', { path: { communityId } });

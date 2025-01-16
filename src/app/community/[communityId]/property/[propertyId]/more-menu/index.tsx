@@ -1,38 +1,33 @@
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from '@nextui-org/react';
 import React from 'react';
-import { Icon } from '~/view/base/icon';
-import { useMoreMenu } from './use-menu';
+import { useAppContext } from '~/custom-hooks/app-context';
+import { insertIf } from '~/lib/insert-if';
+import { HeaderMenu } from '~/view/header';
+import { useMenuItem } from './use-menu-item';
 
 interface Props {}
 
 export const MoreMenu: React.FC<Props> = (props) => {
-  const menuItems = useMoreMenu();
+  const { canEdit, isAdmin } = useAppContext();
+  const menuItems = useMenuItem();
 
   return (
-    <>
-      <Dropdown placement="bottom-end">
-        <DropdownTrigger>
-          <Button
-            className="text-2xl"
-            aria-label="Open More Menu"
-            isIconOnly
-            variant="light"
-          >
-            <Icon icon="more" />
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu aria-label="More Menu" variant="flat">
-          {menuItems.map(({ key, ...entry }) => (
-            <DropdownItem key={key} {...entry} />
-          ))}
-        </DropdownMenu>
-      </Dropdown>
-    </>
+    <HeaderMenu
+      menuItems={menuItems}
+      menuKeys={[
+        'propertyList',
+        'communityDashboard',
+        // 'communityShare',
+        // 'exportEmail',
+        // 'communityExport',
+        'divider',
+        ...insertIf(canEdit, 'membershipEditor'),
+        ...insertIf(canEdit, 'occupantEditor'),
+        'divider',
+        ...insertIf(canEdit, 'communityModify'),
+        ...insertIf(canEdit, 'modifyProperty'),
+        ...insertIf(isAdmin, 'deleteProperty'),
+      ]}
+      shortcutKeys={['propertyList', 'communityDashboard', 'communityModify']}
+    />
   );
 };

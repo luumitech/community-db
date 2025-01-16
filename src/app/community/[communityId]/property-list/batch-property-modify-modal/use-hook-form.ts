@@ -1,13 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { getCurrentYear } from '~/lib/date-util';
+import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { z, zz } from '~/lib/zod';
-import { CommunityEntry } from '../_type';
 
 const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
@@ -15,6 +16,9 @@ const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
     name
   }
 `);
+export type BatchPropertyModifyFragmentType = FragmentType<
+  typeof BatchPropertyModifyFragment
+>;
 
 function schema() {
   return z.object({
@@ -28,7 +32,9 @@ function schema() {
       eventAttended: z.object({
         eventName: zz.string.nonEmpty('Must select an event'),
         eventDate: zz.coerce.toIsoDate(),
+        ticketList: z.array(ticketSchema),
       }),
+      price: z.string().nullable(),
       paymentMethod: zz.string.nonEmpty('Must specify payment method'),
     }),
   });
@@ -38,7 +44,8 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
   communityId: string,
-  filter: GQL.PropertyFilterInput
+  filter: GQL.PropertyFilterInput,
+  defaultSetting: GQL.DefaultSetting
 ): InputData {
   return {
     communityId,
@@ -50,18 +57,24 @@ function defaultInputData(
       year: getCurrentYear(),
       eventAttended: {
         eventName: '',
-        eventDate: new Date(Date.now()).toISOString(),
+        eventDate: getCurrentDateAsISOString(),
+        ticketList: [],
       },
+      price: defaultSetting.membershipFee ?? null,
       paymentMethod: '',
     },
   };
 }
 
-export function useHookFormWithDisclosure(community: CommunityEntry) {
+export function useHookFormWithDisclosure(
+  fragment: BatchPropertyModifyFragmentType
+) {
+  const { defaultSetting } = useAppContext();
   const { filterArg } = useFilterBarContext();
+  const community = getFragment(BatchPropertyModifyFragment, fragment);
   const defaultValues = React.useMemo(
-    () => defaultInputData(community.id, filterArg),
-    [community, filterArg]
+    () => defaultInputData(community.id, filterArg, defaultSetting),
+    [community, filterArg, defaultSetting]
   );
   const formMethods = useForm({
     defaultValues,

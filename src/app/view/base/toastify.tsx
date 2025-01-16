@@ -32,21 +32,16 @@ async function toastPromise<
     },
   };
 
-  try {
-    const result = await toastify.promise(
-      promise,
-      {
-        pending,
-        error: error ?? customError,
-        success,
-      },
-      options
-    );
-    return result;
-  } catch (err) {
-    // ignore the error returned by the promise,
-    // since it is already handled by customError
-  }
+  const result = await toastify.promise(
+    promise,
+    {
+      pending,
+      error: error ?? customError,
+      success,
+    },
+    options
+  );
+  return result;
 }
 
 /**

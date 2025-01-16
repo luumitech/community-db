@@ -1,11 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  useForm,
+  useFormContext,
+  type UseFieldArrayReturn,
+} from '~/custom-hooks/hook-form';
 import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { getCurrentYear } from '~/lib/date-util';
+import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
 import { type PropertyEntry } from '../_type';
@@ -20,17 +25,18 @@ function schema() {
     notes: z.string().nullable(),
     membership: z.object({
       year: zz.coerce.toNumber('Must select a year'),
+      price: z.string().nullable(),
       paymentMethod: zz.string.nonEmpty('Must select a payment method'),
     }),
     event: z.object({
       eventName: zz.string.nonEmpty('Must specify a value'),
       eventDate: zz.coerce.toIsoDate(),
-      ticket: z.coerce.number({ message: 'Must be a number' }).int().min(0),
+      ticketList: z.array(ticketSchema),
     }),
     /** Whether member is already a member when registering */
     isMember: z.boolean(),
     /**
-     * Determine if the register button should be enabled For example, if user
+     * Determine if the register button should be enabled. For example, if user
      * is already registered in the event previously, then the register button
      * should not be enabled, unless they have modified the form.
      */
@@ -44,7 +50,7 @@ function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   lastEventSelected: string | undefined,
   yearSelected: string,
-  defaultTicket: number
+  defaultSetting: GQL.DefaultSetting
 ): InputData {
   const year = parseAsNumber(yearSelected) ?? getCurrentYear();
   const membership = item.membershipList.find((entry) => entry.year === year);
@@ -62,12 +68,18 @@ function defaultInputData(
     notes: item.notes ?? '',
     membership: {
       year,
+      price: membership?.price ?? defaultSetting.membershipFee ?? null,
       paymentMethod: membership?.paymentMethod ?? '',
     },
     event: {
       eventName: lastEventSelected ?? '',
-      eventDate: event?.eventDate ?? new Date(Date.now()).toISOString(),
-      ticket: event?.ticket ?? defaultTicket,
+      eventDate: event?.eventDate ?? getCurrentDateAsISOString(),
+      ticketList: (event?.ticketList ?? []).map((ticket) => ({
+        ticketName: ticket.ticketName ?? '',
+        count: ticket.count ?? null,
+        price: ticket.price ?? null,
+        paymentMethod: ticket.paymentMethod ?? null,
+      })),
     },
     isMember,
     canRegister,
@@ -75,17 +87,17 @@ function defaultInputData(
 }
 
 export function useHookFormWithDisclosure(fragment: PropertyEntry) {
-  const { communityUi } = useAppContext();
-  const { yearSelected, lastEventSelected, defaultTicket } = communityUi;
+  const { communityUi, defaultSetting } = useAppContext();
+  const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {
     return defaultInputData(
       property,
       lastEventSelected,
       yearSelected,
-      defaultTicket
+      defaultSetting
     );
-  }, [property, lastEventSelected, yearSelected, defaultTicket]);
+  }, [property, lastEventSelected, yearSelected, defaultSetting]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
@@ -117,3 +129,10 @@ export type UseHookFormWithDisclosureResult = ReturnType<
 export function useHookFormContext() {
   return useFormContext<InputData>();
 }
+
+export type TicketListFieldArray = UseFieldArrayReturn<
+  InputData,
+  'event.ticketList'
+>;
+
+export type TicketField = TicketListFieldArray['fields'][0];

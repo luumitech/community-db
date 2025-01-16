@@ -1,0 +1,94 @@
+import clsx from 'clsx';
+import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
+import { useFieldArray } from '~/custom-hooks/hook-form';
+import { getCurrentDateAsISOString } from '~/lib/date-util';
+import { Button } from '~/view/base/button';
+import { Icon } from '~/view/base/icon';
+import { useHookFormContext, type EventField } from '../use-hook-form';
+import { EventRow, EventRowHeader } from './event-row';
+
+type RowEntry = EventField & { key: string };
+
+interface Props {
+  className?: string;
+  yearIdx: number;
+}
+
+export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
+  const { communityUi } = useAppContext();
+  const { lastEventSelected } = communityUi;
+  const { control, formState } = useHookFormContext();
+  const { errors } = formState;
+  const eventAttendedListMethods = useFieldArray({
+    control,
+    name: `membershipList.${yearIdx}.eventAttendedList`,
+  });
+  const { fields, append } = eventAttendedListMethods;
+  const eventAttendedListError =
+    errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
+
+  const rows: RowEntry[] = React.useMemo(() => {
+    return fields.map((field) => ({
+      key: field.id,
+      ...field,
+    }));
+  }, [fields]);
+
+  const topContent = React.useMemo(() => {
+    return (
+      <div className="flex items-center justify-between">
+        <span className="text-foreground-500 font-semibold text-sm">
+          Attended Events
+        </span>
+        <Button
+          color="primary"
+          variant="bordered"
+          size="sm"
+          endContent={<Icon icon="add" />}
+          onPress={() =>
+            append({
+              eventName: lastEventSelected ?? '',
+              eventDate: getCurrentDateAsISOString(),
+              ticketList: [],
+            })
+          }
+        >
+          Add Event
+        </Button>
+      </div>
+    );
+  }, [append, lastEventSelected]);
+
+  const bottomContent = React.useMemo(() => {
+    return <div className="text-sm text-danger">{eventAttendedListError}</div>;
+  }, [eventAttendedListError]);
+
+  return (
+    <div className={clsx(className, 'flex flex-col gap-2')}>
+      {topContent}
+      <div className="grid grid-cols-[40px_repeat(4,1fr)_80px] gap-2">
+        <EventRowHeader />
+        {rows.length === 0 && (
+          <div
+            className={clsx(
+              'col-span-full self-center justify-self-center',
+              'text-sm text-foreground-500'
+            )}
+          >
+            No entries
+          </div>
+        )}
+        {rows.map((row, eventIdx) => (
+          <EventRow
+            key={row.key}
+            eventAttendedListMethods={eventAttendedListMethods}
+            yearIdx={yearIdx}
+            eventIdx={eventIdx}
+          />
+        ))}
+      </div>
+      {bottomContent}
+    </div>
+  );
+};

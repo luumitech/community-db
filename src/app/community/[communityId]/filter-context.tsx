@@ -6,6 +6,7 @@ import * as GQL from '~/graphql/generated/graphql';
 type ContextT = Readonly<{
   /** CommunityId (read from route param) */
   communityId: string;
+
   /** Filter control: membership year */
   memberYear: Set<string>;
   nonMemberYear: Set<string>;

@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { MoreMenu } from '../common/more-menu';
 import { MemberCountChart } from './member-count-chart';
 import { YearlyChart } from './yearly-chart';
 
@@ -16,18 +17,21 @@ export default function Dashboard({ params }: RouteArgs) {
   const [selectedYear, setSelectedYear] = React.useState<number>();
 
   return (
-    <div className="grid md:grid-cols-2 gap-4 mb-4">
-      <MemberCountChart
-        // Top chart always occupy first row
-        className="col-span-full"
-        communityId={communityId}
-        onYearSelect={setSelectedYear}
-      />
-      {selectedYear && (
-        <>
-          <YearlyChart communityId={communityId} year={selectedYear} />
-        </>
-      )}
-    </div>
+    <>
+      <MoreMenu communityId={communityId} omitKeys={['communityDashboard']} />
+      <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <MemberCountChart
+          // Top chart always occupy first row
+          className="col-span-full"
+          communityId={communityId}
+          onYearSelect={setSelectedYear}
+        />
+        {selectedYear && (
+          <>
+            <YearlyChart communityId={communityId} year={selectedYear} />
+          </>
+        )}
+      </div>
+    </>
   );
 }

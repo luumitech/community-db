@@ -54,11 +54,11 @@ export const YearlyChart: React.FC<Props> = ({
         year={year}
         isLoading={result.loading}
       />
-      <EventTicket
+      {/* <EventTicket
         fragment={community}
         year={year}
         isLoading={result.loading}
-      />
+      /> */}
     </>
   );
 };

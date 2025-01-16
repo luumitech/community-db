@@ -10,9 +10,13 @@ import {
   type TableSlots,
 } from '@nextui-org/react';
 import React from 'react';
+import type { PropertyEntry } from '~/community/[communityId]/property-list/_type';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
+import { insertIf } from '~/lib/insert-if';
 import { usePageContext } from '../page-context';
+import { EditMembershipButton } from './edit-membership-button';
 
 const PropertyDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyDisplay on Property {
@@ -30,9 +34,29 @@ interface Props {
 
 export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
   const { property } = usePageContext();
+  const { canEdit } = useAppContext();
   const entry = getFragment(PropertyDisplayFragment, property);
-  const { columns, renderCell } = useTableData();
+  const tableData = useTableData();
   const rows = entry ? [{ key: entry.id, ...entry }] : [];
+
+  const columns = React.useMemo(() => {
+    return [
+      ...tableData.columns,
+      ...insertIf(canEdit, { key: 'action', label: '', className: 'w-10' }),
+    ];
+  }, [tableData.columns, canEdit]);
+
+  const renderCell = React.useCallback(
+    (fragment: PropertyEntry, columnKey: string | number) => {
+      switch (columnKey) {
+        case 'action':
+          return <EditMembershipButton />;
+        default:
+          return tableData.renderCell(fragment, columnKey);
+      }
+    },
+    [tableData]
+  );
 
   return (
     <Table

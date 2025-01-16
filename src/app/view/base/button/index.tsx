@@ -1,6 +1,7 @@
 import {
   Button as NextUIButton,
   ButtonProps as NextUIButtonProps,
+  Tooltip,
 } from '@nextui-org/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
@@ -25,13 +26,22 @@ export interface ButtonProps extends NextUIButtonProps {
    * - If the callback is not provided, the confirmation dialog will open
    */
   beforeConfirm?: () => Promise<boolean>;
+  /** Tooltip description */
+  tooltip?: string;
 }
 
 type OnPressFn = NonNullable<NextUIButtonProps['onPress']>;
 
 export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
   (
-    { confirmation, confirmationArg, beforeConfirm, onPress, ...props },
+    {
+      confirmation,
+      confirmationArg,
+      beforeConfirm,
+      tooltip,
+      onPress,
+      ...props
+    },
     ref
   ) => {
     const buttonRef = useForwardRef<HTMLButtonElement>(ref);
@@ -82,17 +92,25 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
       ]
     );
 
-    return (
-      <NextUIButton
-        ref={buttonRef}
-        onPress={customOnPress}
-        {...props}
-        /**
-         * When confirmation dialog is enabled, need to handle submit/reset type
-         * manually. See logic in `customOnPress` above.
-         */
-        {...(confirmation && { type: 'button' })}
-      />
+    const renderButton = React.useMemo(() => {
+      return (
+        <NextUIButton
+          ref={buttonRef}
+          onPress={customOnPress}
+          {...props}
+          /**
+           * When confirmation dialog is enabled, need to handle submit/reset
+           * type manually. See logic in `customOnPress` above.
+           */
+          {...(confirmation && { type: 'button' })}
+        />
+      );
+    }, [buttonRef, props, customOnPress, confirmation]);
+
+    return tooltip ? (
+      <Tooltip content={tooltip}>{renderButton}</Tooltip>
+    ) : (
+      renderButton
     );
   }
 );

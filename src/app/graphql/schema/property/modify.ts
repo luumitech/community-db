@@ -1,5 +1,6 @@
-import { Community, Prisma, Property, Role } from '@prisma/client';
+import { Community, Event, Prisma, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
+import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import { extractYearRange } from '~/lib/lcra-community/import/year-range-util';
@@ -28,7 +29,16 @@ const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
     eventDate: t.string(),
-    ticket: t.int(),
+    ticketList: t.field({ type: [TicketInput] }),
+  }),
+});
+
+const TicketInput = builder.inputType('TicketInput', {
+  fields: (t) => ({
+    ticketName: t.string({ required: true }),
+    count: t.int(),
+    price: t.string(),
+    paymentMethod: t.string(),
   }),
 });
 
@@ -37,6 +47,7 @@ const MembershipInput = builder.inputType('MembershipInput', {
     year: t.int({ required: true }),
     eventAttendedList: t.field({ type: [EventInput] }),
     paymentMethod: t.string(),
+    price: t.string(),
   }),
 });
 
@@ -179,6 +190,7 @@ const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
     year: t.int({ required: true }),
     eventAttended: t.field({ type: EventInput, required: true }),
     paymentMethod: t.string({ required: true }),
+    price: t.string(),
   }),
 });
 
@@ -232,44 +244,62 @@ builder.mutationField('batchPropertyModify', (t) =>
       const findManyArgs = await propertyListFindManyArgs(community.id, filter);
       const propertyList = await prisma.property.findMany(findManyArgs);
 
+      // Map EventInput to Event object in database
+      const mapEventAttendedEntry = (
+        eventEntry: typeof EventInput.$inferInput
+      ): Event => {
+        return {
+          eventName: eventEntry.eventName,
+          eventDate: eventEntry.eventDate
+            ? new Date(eventEntry.eventDate)
+            : null,
+          ticketList: (eventEntry.ticketList ?? []).map((entry) => ({
+            ticketName: entry.ticketName,
+            count: entry.count ?? null,
+            price: entry.price ?? null,
+            paymentMethod: entry.paymentMethod ?? null,
+          })),
+        };
+      };
+
       // Modify the propertyList in memory, and then write them to
       // database afterwards
-      propertyList.forEach((property) => {
-        const membership = property.membershipList.find(
-          (entry) => entry.year === input.membership.year
+      propertyList.forEach(({ membershipList }) => {
+        /**
+         * `membershipList` should be sorted by year in descending order Look
+         * for the appropriate index to insert the new membership
+         */
+        const membershipIdx = R.sortedIndexWith(
+          membershipList,
+          ({ year }) => year > input.membership.year
         );
-        if (membership) {
-          const event = membership.eventAttendedList.find(
-            (entry) => entry.eventName === eventAttended.eventName
-          );
-          if (!event) {
-            membership.eventAttendedList.push({
-              eventName: eventAttended.eventName,
-              eventDate: eventAttended.eventDate
-                ? new Date(eventAttended.eventDate)
-                : null,
-              ticket: null,
-            });
-            // Non empty event list require payment Method
-            if (membership.eventAttendedList.length === 1) {
-              membership.paymentMethod = input.membership.paymentMethod;
-            }
-          }
-        } else {
-          property.membershipList.unshift({
+        let membership = membershipList[membershipIdx];
+        // If existing membership is found, then update it in place, otherwise insert
+        // the `membership` into the `membershipList`
+        if (membership?.year !== input.membership.year) {
+          const newMembership = {
             year: input.membership.year,
-            paymentMethod: input.membership.paymentMethod,
             paymentDeposited: null,
-            eventAttendedList: [
-              {
-                eventName: eventAttended.eventName,
-                eventDate: eventAttended.eventDate
-                  ? new Date(eventAttended.eventDate)
-                  : null,
-                ticket: null,
-              },
-            ],
-          });
+            eventAttendedList: [],
+            price: null,
+            paymentMethod: null,
+          };
+          membershipList.splice(membershipIdx, 0, newMembership);
+          membership = newMembership;
+        }
+
+        const event = membership.eventAttendedList.find(
+          (entry) => entry.eventName === eventAttended.eventName
+        );
+        if (!event) {
+          membership.eventAttendedList.push(
+            mapEventAttendedEntry(eventAttended)
+          );
+          // Update price/paymentMethod only if not already have membership
+          if (membership.eventAttendedList.length === 1) {
+            membership.price = input.membership.price ?? null;
+            membership.paymentMethod = input.membership.paymentMethod;
+          }
         }
       });
 

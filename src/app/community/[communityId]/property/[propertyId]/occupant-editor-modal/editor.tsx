@@ -42,7 +42,7 @@ export const Editor: React.FC<Props> = ({ className, fieldArrayMethods }) => {
                 variant="underlined"
               />
               <Input
-                className="col-span-5"
+                className="col-span-4"
                 controlName={`occupantList.${idx}.email`}
                 role="cell"
                 label="Email"
@@ -50,10 +50,12 @@ export const Editor: React.FC<Props> = ({ className, fieldArrayMethods }) => {
               />
               <Checkbox
                 size="md"
-                className="col-span-1"
+                className="col-span-2"
                 {...register(`occupantList.${idx}.optOut`)}
               >
-                Opt out
+                <span className="text-sm text-default-600">
+                  Opt out to receive email
+                </span>
               </Checkbox>
               <Input
                 className="col-span-2"

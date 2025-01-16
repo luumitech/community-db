@@ -45,7 +45,7 @@ export const PropertyModifyModal: React.FC<Props> = (props) => {
         }),
         {
           pending: 'Saving...',
-          success: 'Saved',
+          // success: 'Saved',
         }
       );
     },

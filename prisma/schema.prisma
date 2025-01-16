@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextIndex"]
+  provider = "prisma-client-js"
 }
 
 generator pothos {
@@ -70,30 +69,57 @@ model Access {
 }
 
 model Community {
-  id                String                @id @default(auto()) @map("_id") @db.ObjectId
-  shortId           String                @default(nanoid(6))
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  updatedById       String?               @db.ObjectId
-  updatedBy         User?                 @relation(name: "communityUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
+  id                String                   @id @default(auto()) @map("_id") @db.ObjectId
+  shortId           String                   @default(nanoid(6))
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  updatedById       String?                  @db.ObjectId
+  updatedBy         User?                    @relation(name: "communityUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
   /// Owner/Creator of community
-  ownerId           String                @db.ObjectId
-  owner             User                  @relation(name: "communityOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId           String                   @db.ObjectId
+  owner             User                     @relation(name: "communityOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   name              String
   /// minimum membership year represented in database
   minYear           Int?
   /// maximum membership year represented in database
   maxYear           Int?
   /// List of events supported (can be sorted)
-  eventList         SupportedSelectItem[]
+  eventList         SupportedEventItem[]
+  /// List of tickets supported (can be sorted)
+  ticketList        SupportedTicketItem[]
   /// List of payment method supported (can be sorted)
-  paymentMethodList SupportedSelectItem[]
+  paymentMethodList SupportedPaymentMethod[]
+  /// default settings
+  defaultSetting    DefaultSetting?
 
   accessList   Access[]   @relation("accessCommunity")
   propertyList Property[] @relation("propertyCommunity")
 }
 
-type SupportedSelectItem {
+type DefaultSetting {
+  /// Default yearly membership fee
+  membershipFee String?
+}
+
+type SupportedEventItem {
+  /// select item name
+  name   String
+  /// Should select item name be visible in selection list
+  hidden Boolean?
+}
+
+type SupportedTicketItem {
+  /// select item name
+  name      String
+  /// Default ticket count for ticket item
+  count     Int?
+  /// Default price per ticket
+  unitPrice String?
+  /// Should select item name be visible in selection list
+  hidden    Boolean?
+}
+
+type SupportedPaymentMethod {
   /// select item name
   name   String
   /// Should select item name be visible in selection list
@@ -132,10 +158,18 @@ type Occupant {
 
 /// Event Information
 type Event {
-  eventName String
-  eventDate DateTime?
-  /// Number of tickets given out for this event
-  ticket    Int?
+  eventName  String
+  eventDate  DateTime?
+  ticketList Ticket[]
+}
+
+/// Event Ticket Information
+type Ticket {
+  ticketName    String
+  /// Number of tickets issued
+  count         Int?
+  price         String?
+  paymentMethod String?
 }
 
 /// Membership information within a property
@@ -143,6 +177,8 @@ type Membership {
   year              Int
   /// List of events attended
   eventAttendedList Event[]
+  /// Price paid for membership
+  price             String?
   paymentMethod     String?
   paymentDeposited  Boolean?
 }

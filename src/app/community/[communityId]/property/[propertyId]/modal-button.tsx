@@ -9,8 +9,13 @@ interface Props extends ButtonProps {
 
 export const ModalButton: React.FC<Props> = ({ className, ...props }) => {
   return (
-    <div className={clsx(className)}>
-      <Button size="sm" endContent={<Icon icon="edit" />} {...props} />
+    <div>
+      <Button
+        className={clsx(className)}
+        size="sm"
+        endContent={<Icon icon="edit" />}
+        {...props}
+      />
     </div>
   );
 };

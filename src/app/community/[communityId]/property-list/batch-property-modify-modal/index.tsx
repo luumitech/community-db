@@ -9,7 +9,10 @@ import {
   type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
+export {
+  useHookFormWithDisclosure,
+  type BatchPropertyModifyFragmentType,
+} from './use-hook-form';
 
 const BatchPropertyMutation = graphql(/* GraphQL */ `
   mutation batchPropertyModify($input: BatchPropertyModifyInput!) {
@@ -31,7 +34,14 @@ const BatchPropertyMutation = graphql(/* GraphQL */ `
           eventAttendedList {
             eventName
             eventDate
+            ticketList {
+              ticketName
+              count
+              price
+              paymentMethod
+            }
           }
+          price
           paymentMethod
         }
       }
@@ -59,7 +69,7 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
         }),
         {
           pending: 'Saving...',
-          success: 'Saved',
+          // success: 'Saved',
         }
       );
     },

@@ -1,28 +1,58 @@
-import { ApolloError } from '@apollo/client';
-import { Property, Role, SupportedSelectItem } from '@prisma/client';
+import {
+  DefaultSetting,
+  Property,
+  Role,
+  SupportedEventItem,
+  SupportedPaymentMethod,
+  SupportedTicketItem,
+} from '@prisma/client';
 import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import hash from 'object-hash';
 import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
-import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { getCurrentYear } from '~/lib/date-util';
-import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
-import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
 import { PropertyFilterInput } from '../property/modify';
 import { propertyRef } from '../property/object';
 import {
   getPropertyEntryWithinCommunity,
   isMember,
-  isMemberInYear,
   propertyListFindManyArgs,
 } from '../property/util';
 
-const supportedSelectItemRef = builder
-  .objectRef<SupportedSelectItem>('SupportedSelectItem')
+const defaultSettingRef = builder
+  .objectRef<DefaultSetting>('DefaultSetting')
+  .implement({
+    fields: (t) => ({
+      membershipFee: t.exposeString('membershipFee', { nullable: true }),
+    }),
+  });
+
+const supportedEventItemRef = builder
+  .objectRef<SupportedEventItem>('SupportedEventItem')
+  .implement({
+    fields: (t) => ({
+      name: t.exposeString('name', { nullable: false }),
+      hidden: t.exposeBoolean('hidden', { nullable: true }),
+    }),
+  });
+
+const supportedTicketItemRef = builder
+  .objectRef<SupportedTicketItem>('SupportedTicketItem')
+  .implement({
+    fields: (t) => ({
+      name: t.exposeString('name', { nullable: false }),
+      count: t.exposeInt('count', { nullable: true }),
+      unitPrice: t.exposeString('unitPrice', { nullable: true }),
+      hidden: t.exposeBoolean('hidden', { nullable: true }),
+    }),
+  });
+
+const supportedPaymentMethodRef = builder
+  .objectRef<SupportedPaymentMethod>('SupportedPaymentMethod')
   .implement({
     fields: (t) => ({
       name: t.exposeString('name', { nullable: false }),
@@ -72,7 +102,7 @@ interface CommunityStat {
   /** List of all properties within this community */
   propertyList: Pick<Property, 'id' | 'membershipList'>[];
   /** List of all events */
-  eventList: SupportedSelectItem[];
+  eventList: SupportedEventItem[];
 }
 
 const memberCountStatRef = builder
@@ -148,11 +178,9 @@ const communityStatRef = builder
         resolve: (parent, args, ctx) => {
           const { minYear, maxYear, propertyList } = parent;
           const map = new Map<number, MemberCountStat>();
-          R.range(minYear, maxYear + 1)
-            .reverse()
-            .forEach((year) => {
-              map.set(year, { year, renew: 0, new: 0, noRenewal: 0 });
-            });
+          R.range(minYear, maxYear + 1).forEach((year) => {
+            map.set(year, { year, renew: 0, new: 0, noRenewal: 0 });
+          });
           propertyList.forEach(({ membershipList }) => {
             membershipList.forEach((entry, idx) => {
               const { year } = entry;
@@ -222,13 +250,17 @@ const communityStatRef = builder
                   } else {
                     joinEntry.new++;
                   }
-                  joinEntry.ticket += joinEvent.ticket ?? 0;
+                  // TODO: determine ticket statistics
+                  joinEntry.ticket = 0;
+                  // joinEntry.ticket += joinEvent.ticket ?? 0;
                 }
                 otherEvent.forEach((event) => {
                   const mapEntry = map.get(event.eventName);
                   if (mapEntry) {
                     mapEntry.existing++;
-                    mapEntry.ticket += event.ticket ?? 0;
+                    // TODO: determine ticket statistics
+                    mapEntry.ticket = 0;
+                    // mapEntry.ticket += event.ticket ?? 0;
                   }
                 });
               }
@@ -258,12 +290,21 @@ builder.prismaObject('Community', {
       resolve: (entry) => entry.maxYear ?? getCurrentYear(),
     }),
     eventList: t.field({
-      type: [supportedSelectItemRef],
+      type: [supportedEventItemRef],
       resolve: (entry) => entry.eventList,
     }),
+    ticketList: t.field({
+      type: [supportedTicketItemRef],
+      resolve: (entry) => entry.ticketList,
+    }),
     paymentMethodList: t.field({
-      type: [supportedSelectItemRef],
+      type: [supportedPaymentMethodRef],
       resolve: (entry) => entry.paymentMethodList,
+    }),
+    defaultSetting: t.field({
+      type: defaultSettingRef,
+      nullable: true,
+      resolve: (entry) => entry.defaultSetting,
     }),
     /** Return context user's access document */
     access: t.prismaField({

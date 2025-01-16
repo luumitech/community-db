@@ -1,7 +1,6 @@
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { getFragment, graphql } from '~/graphql/generated';
-import { CommunityEntry } from '../_type';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 
 const DeleteFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityDeleteModal on Community {
@@ -9,8 +8,9 @@ const DeleteFragment = graphql(/* GraphQL */ `
     name
   }
 `);
+export type DeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
-export function useHookFormWithDisclosure(fragment: CommunityEntry) {
+export function useHookFormWithDisclosure(fragment: DeleteFragmentType) {
   const disclosure = useDisclosure();
   const community = getFragment(DeleteFragment, fragment);
 

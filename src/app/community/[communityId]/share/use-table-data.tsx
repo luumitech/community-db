@@ -10,7 +10,7 @@ export function useTableData(isAdmin: boolean) {
   const columns = [
     { key: 'user', label: 'User with access', className: undefined },
     { key: 'role', label: 'Role' },
-    ...insertIf(isAdmin, { key: 'action', label: 'Action' }),
+    ...insertIf(isAdmin, { key: 'action', label: '' }),
   ];
 
   const renderCell = React.useCallback(

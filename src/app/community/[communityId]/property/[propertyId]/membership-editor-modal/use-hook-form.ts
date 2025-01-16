@@ -1,16 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
+import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
   UseFieldArrayReturn,
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { type PropertyEntry } from '../_type';
 import { yearSelectItems } from '../year-select-items';
 
 export const MembershipEditorFragment = graphql(/* GraphQL */ `
@@ -27,13 +27,22 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
       eventAttendedList {
         eventName
         eventDate
-        ticket
+        ticketList {
+          ticketName
+          count
+          price
+          paymentMethod
+        }
       }
       paymentMethod
       paymentDeposited
+      price
     }
   }
 `);
+export type MembershipEditorFragmentType = FragmentType<
+  typeof MembershipEditorFragment
+>;
 
 function schema() {
   return z.object({
@@ -51,10 +60,7 @@ function schema() {
               z.object({
                 eventName: zz.string.nonEmpty('Must specify a value'),
                 eventDate: zz.coerce.toIsoDate(),
-                ticket: z.coerce
-                  .number({ message: 'Must be a number' })
-                  .int()
-                  .min(0),
+                ticketList: z.array(ticketSchema),
               })
             )
             .refine(
@@ -65,6 +71,7 @@ function schema() {
               { message: 'Event Name must be unique', path: [''] }
             ),
           paymentMethod: z.string().nullable(),
+          price: z.string().nullable(),
         })
         .refine(
           (form) => {
@@ -79,20 +86,21 @@ function schema() {
             path: ['paymentMethod'],
           }
         )
-        .refine(
-          (form) => {
-            if (!form.paymentMethod) {
-              return true;
-            }
-            return form.eventAttendedList.length > 0;
-          },
-          {
-            message:
-              'Must add at least one event when Payment Method is specified',
-            path: ['eventAttendedList', ''],
-          }
-        )
     ),
+    hidden: z.object({
+      /**
+       * For controlling which ticketList table should be shown
+       *
+       * Used in `Edit Membership Detail` modal, where we only show one
+       * ticketList table at a time (i.e. accordian style)
+       */
+      membershipList: z.array(
+        z.object({
+          // Means ticketList should be expanded for event section of specified index
+          expandTicketListEventIdx: z.number().nullable(),
+        })
+      ),
+    }),
   });
 }
 
@@ -105,13 +113,15 @@ export function membershipDefault(
     year,
     eventAttendedList: [],
     paymentMethod: null,
+    price: null,
   };
 }
 
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   yearRange: [number, number],
-  yearSelected: string
+  yearSelected: string,
+  defaultSetting: GQL.DefaultSetting
 ): InputData {
   const membershipList = yearSelectItems(
     yearRange,
@@ -140,24 +150,46 @@ function defaultInputData(
         ).map((event) => ({
           eventName: event.eventName ?? '',
           eventDate: event.eventDate ?? '',
-          ticket: event.ticket,
+          ticketList: event.ticketList.map((ticket) => ({
+            ticketName: ticket.ticketName,
+            count: ticket.count ?? null,
+            price: ticket.price ?? '',
+            paymentMethod: ticket.paymentMethod ?? '',
+          })),
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
+        price:
+          membershipItem?.price ??
+          defaultItem.price ??
+          defaultSetting?.membershipFee ??
+          null,
       };
     }),
+    hidden: {
+      membershipList: membershipList.map((v) => ({
+        // Automatically expand the ticketList table in the first event
+        expandTicketListEventIdx: 0,
+      })),
+    },
   };
 }
 
 export function useHookFormWithDisclosure(
-  fragment: PropertyEntry,
+  fragment: MembershipEditorFragmentType,
   yearSelected: string
 ) {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear, defaultSetting } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(
-    () => defaultInputData(property, [minYear, maxYear], yearSelected),
-    [minYear, maxYear, property, yearSelected]
+    () =>
+      defaultInputData(
+        property,
+        [minYear, maxYear],
+        yearSelected,
+        defaultSetting
+      ),
+    [minYear, maxYear, property, yearSelected, defaultSetting]
   );
   const formMethods = useForm({
     defaultValues,
@@ -196,3 +228,17 @@ export type MembershipListFieldArray = UseFieldArrayReturn<
   InputData,
   'membershipList'
 >;
+
+export type EventAttendedListFieldArray = UseFieldArrayReturn<
+  InputData,
+  `membershipList.${number}.eventAttendedList`
+>;
+
+export type TicketListFieldArray = UseFieldArrayReturn<
+  InputData,
+  `membershipList.${number}.eventAttendedList.${number}.ticketList`
+>;
+
+export type MembershipField = MembershipListFieldArray['fields'][0];
+export type EventField = EventAttendedListFieldArray['fields'][0];
+export type TicketField = TicketListFieldArray['fields'][0];
