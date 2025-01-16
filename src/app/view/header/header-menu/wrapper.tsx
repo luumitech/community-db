@@ -1,5 +1,7 @@
 import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
 import React from 'react';
+import { useWindowSize } from 'usehooks-ts';
 
 interface Props {
   className?: string;
@@ -9,6 +11,8 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   children,
 }) => {
+  const { status } = useSession();
+  const { width } = useWindowSize();
   const divRef = React.useRef<HTMLDivElement>(null);
   const [leftPos, setLeftPos] = React.useState<number>();
 
@@ -24,7 +28,14 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
       const rect = elem.getBoundingClientRect();
       setLeftPos(rect.right - divWidth);
     }
-  }, []);
+  }, [
+    // we want to recalculate button position when screen size changes
+    width,
+  ]);
+
+  if (status !== 'authenticated') {
+    return null;
+  }
 
   return (
     <div className={className}>
