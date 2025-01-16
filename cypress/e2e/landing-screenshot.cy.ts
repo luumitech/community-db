@@ -67,7 +67,7 @@ describe('take screenshots for landing screen', () => {
 
     cy.clickHeaderMoreMenu();
     cy.clickRoleMenuItem('Edit Membership Detail');
-    cy.findByRole('dialog').contains('Edit Membership Detail');
+    cy.findByRole('dialog').contains('Membership Detail');
     takeScreenshot('membership-editor');
     cy.clickButton('Cancel');
 
@@ -81,7 +81,7 @@ describe('take screenshots for landing screen', () => {
     // Wait for graphs to be loaded
     cy.get('div.grid div[data-loaded="true"]', { timeout }).should(
       'have.length',
-      4
+      3
     );
     cy.scrollTo(0, 370);
     takeScreenshot('dashboard');

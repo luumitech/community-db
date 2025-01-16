@@ -114,10 +114,11 @@ function genPaymentMethod() {
 /**
  * Generate fields for a single membership year
  *
- * @param year Two digit year (i.e. 21)
+ * @param year
  */
 function newMembershipYear(year: number) {
-  const pfx = `Y${year}`;
+  // year must be two digits only
+  const pfx = `Y${year % 100}`;
   const isMember = faker.datatype.boolean();
   if (!isMember) {
     return {
@@ -186,12 +187,14 @@ function newAddress() {
     };
   });
 
+  const currentYear = new Date().getFullYear();
+
   addr = {
     ...addr,
-    ...newMembershipYear(24),
-    ...newMembershipYear(23),
-    ...newMembershipYear(22),
-    ...newMembershipYear(21),
+    ...newMembershipYear(currentYear),
+    ...newMembershipYear(currentYear - 1),
+    ...newMembershipYear(currentYear - 2),
+    ...newMembershipYear(currentYear - 3),
   };
   return addr;
 }

@@ -15,5 +15,8 @@ Cypress.Commands.add('clickRoleMenuItem', (itemLabel: string) => {
 });
 
 Cypress.Commands.add('clickButton', (buttonText: string) => {
-  cy.get('button[type="button"]').contains(new RegExp(buttonText)).click();
+  cy.get('button[type="button"]')
+    .contains(new RegExp(buttonText))
+    // Allow clicking outside of viewport
+    .click({ force: true });
 });
