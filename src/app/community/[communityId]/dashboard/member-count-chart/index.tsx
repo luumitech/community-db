@@ -20,12 +20,14 @@ const MemberCountStatQuery = graphql(/* GraphQL */ `
 interface Props {
   className?: string;
   communityId: string;
+  selectedYear?: number;
   onYearSelect?: (year: number) => void;
 }
 
 export const MemberCountChart: React.FC<Props> = ({
   className,
   communityId,
+  selectedYear,
   onYearSelect,
 }) => {
   const [yearRange, setYearRange] = React.useState<number>(10);
@@ -61,11 +63,12 @@ export const MemberCountChart: React.FC<Props> = ({
           />
         </div>
       </CardHeader>
-      <CardBody>
+      <CardBody className="overflow-hidden">
         <Skeleton className="rounded-lg" isLoaded={!result.loading}>
           <MemberCountBarChart
             fragment={community}
             yearRange={yearRange}
+            selectedYear={selectedYear}
             onYearSelect={onYearSelect}
           />
         </Skeleton>

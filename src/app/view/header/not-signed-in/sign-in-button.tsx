@@ -3,6 +3,7 @@ import { Button } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
+import { appPath } from '~/lib/app-path';
 
 interface Props {
   className?: string;
@@ -17,7 +18,9 @@ export const SignInButton: React.FC<Props> = ({ className }) => {
       color="primary"
       onPress={() => {
         /** You can optionally force provider to google */
-        signIn(undefined, { callbackUrl: query.get('callbackUrl') ?? '/' });
+        signIn(undefined, {
+          callbackUrl: query.get('callbackUrl') ?? appPath('communityWelcome'),
+        });
       }}
     >
       Sign In

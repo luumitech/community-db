@@ -93,7 +93,7 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
       ]
     );
 
-    const CustomButton = React.useCallback(
+    const renderButton = React.useMemo(
       () => (
         <NextUIButton
           ref={buttonRef}
@@ -112,14 +112,10 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
     );
 
     if (tooltip) {
-      return (
-        <Tooltip content={tooltip}>
-          <CustomButton />
-        </Tooltip>
-      );
+      return <Tooltip content={tooltip}>{renderButton}</Tooltip>;
     }
 
-    return <CustomButton />;
+    return renderButton;
   }
 );
 

@@ -24,6 +24,7 @@ export default function Dashboard({ params }: RouteArgs) {
           // Top chart always occupy first row
           className="col-span-full"
           communityId={communityId}
+          selectedYear={selectedYear}
           onYearSelect={setSelectedYear}
         />
         {selectedYear && (
