@@ -34,7 +34,6 @@ export const Hero: React.FC<Props> = ({ className }) => {
           className="object-fit rounded-md"
           src="/image/community-db-logo.png"
           alt="Community DB Logo"
-          priority
           width={72}
           height={72}
         />

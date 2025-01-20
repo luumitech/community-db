@@ -113,11 +113,11 @@ function createSelectionItems(
     }
   });
   const selectSections = [
-    {
+    ...insertIf(visibleItems.length > 0, {
       title: '',
       items: visibleItems,
       showDivider: hiddenItems.length > 0,
-    },
+    }),
     ...insertIf(hiddenItems.length > 0, {
       title: 'Deprecated Items',
       items: hiddenItems,

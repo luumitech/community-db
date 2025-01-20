@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
+import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
   useForm,
@@ -31,7 +31,7 @@ function schema() {
     event: z.object({
       eventName: zz.string.nonEmpty('Must specify a value'),
       eventDate: zz.coerce.toIsoDate(),
-      ticketList: z.array(ticketSchema),
+      ticketList: ticketListSchema,
     }),
     /** Whether member is already a member when registering */
     isMember: z.boolean(),

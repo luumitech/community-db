@@ -121,9 +121,11 @@ export const EventRow: React.FC<EventRowProps> = ({
                 // About to remove last entry, clear paymentMethod/price
                 setValue(`${membershipPrefix}.paymentMethod`, null, {
                   shouldDirty: true,
+                  shouldValidate: true,
                 });
                 setValue(`${membershipPrefix}.price`, null, {
                   shouldDirty: true,
+                  shouldValidate: true,
                 });
               }
             }}

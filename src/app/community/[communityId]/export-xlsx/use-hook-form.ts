@@ -18,8 +18,12 @@ function defaultInputData(communityId: string): InputData {
 }
 
 export function useHookForm(communityId: string) {
+  const defaultValues = React.useMemo(
+    () => defaultInputData(communityId),
+    [communityId]
+  );
   const formMethods = useForm({
-    defaultValues: defaultInputData(communityId),
+    defaultValues,
     resolver: zodResolver(schema()),
   });
 
@@ -27,8 +31,8 @@ export function useHookForm(communityId: string) {
 
   React.useEffect(() => {
     // After form is submitted, update the form with new defaults
-    reset(defaultInputData(communityId));
-  }, [reset, communityId]);
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   return { formMethods };
 }

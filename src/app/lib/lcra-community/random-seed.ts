@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { type Ticket } from '@prisma/client';
+import { ITEM_DELIMITER, removeDelimiter } from './delimiter-util';
 import { toTicketList } from './ticket-list-util';
 
 /**
@@ -57,35 +58,37 @@ export function seedCommunityData(numEntries: number) {
  * @returns
  */
 function genEvent(count: number) {
-  return faker.helpers.uniqueArray(
-    () =>
-      faker.helpers.arrayElement([
-        'New Year',
-        'Easter',
-        'Victoria Day',
-        'Canada Day',
-        'Labour Day',
-        'Xmas',
-      ]),
-    count
-  );
+  return faker.helpers.uniqueArray(() => {
+    const eventName = faker.helpers.arrayElement([
+      'New Year',
+      'Easter',
+      'Victoria Day',
+      'Canada Day',
+      'Labour Day',
+      'Xmas',
+    ]);
+    return removeDelimiter(eventName);
+  }, count);
 }
 
 /**
- * Generate an array of random ticket object
+ * Generate an array of random ticket objects for each event
  *
- * @param _count Number of ticket objects to generate
+ * @param eventCount Number of events to generate
  * @returns
  */
-function genTicket(_count: number) {
-  const ticketList: Ticket[] = Array.from({ length: _count }, () => {
-    const ticketName = faker.helpers.arrayElement(['Meal', 'Drink', 'Pizza']);
-    const count = faker.number.int({ min: 0, max: 20 });
-    const price = faker.finance.amount({ min: 0, max: 10, dec: 0 });
-    const paymentMethod = genPaymentMethod();
-    return { ticketName, count, price, paymentMethod };
+function genTicket(eventCount: number) {
+  return Array.from({ length: eventCount }, () => {
+    const ticketCount = faker.number.int({ min: 0, max: 3 });
+    const ticketList: Ticket[] = Array.from({ length: ticketCount }, () => {
+      const ticketName = faker.helpers.arrayElement(['Meal', 'Drink', 'Pizza']);
+      const count = faker.number.int({ min: 0, max: 20 });
+      const price = faker.finance.amount({ min: 0, max: 10, dec: 0 });
+      const paymentMethod = genPaymentMethod();
+      return { ticketName, count, price, paymentMethod };
+    });
+    return toTicketList(ticketList);
   });
-  return toTicketList(ticketList);
 }
 
 /**
@@ -97,12 +100,13 @@ function genTicket(_count: number) {
  */
 function genDate(count: number, year: number) {
   return Array.from({ length: count }, () => {
-    return faker.date
+    const someDate = faker.date
       .between({
         from: `20${year}-01-01T00:00:00.000Z`,
         to: `20${year}-12-31T23:59:59.000Z`,
       })
       .toISOString();
+    return removeDelimiter(someDate);
   });
 }
 
@@ -128,12 +132,11 @@ function newMembershipYear(year: number) {
 
   // Create a membership year
   const numEvent = faker.number.int({ min: 1, max: 5 });
-  const numTicket = faker.number.int({ min: 0, max: 3 });
   return {
     [`${pfx}`]: 1,
-    [`${pfx}-event`]: genEvent(numEvent).join(';'),
-    [`${pfx}-date`]: genDate(numEvent, year).join(';'),
-    [`${pfx}-ticket`]: genTicket(numTicket),
+    [`${pfx}-event`]: genEvent(numEvent).join(ITEM_DELIMITER),
+    [`${pfx}-date`]: genDate(numEvent, year).join(ITEM_DELIMITER),
+    [`${pfx}-ticket`]: genTicket(numEvent).join(ITEM_DELIMITER),
     [`${pfx}-price`]: faker.finance.amount({ min: 10, max: 20, dec: 0 }),
     [`${pfx}-payment`]: genPaymentMethod(),
     [`${pfx}-deposited`]: faker.number.int(1),

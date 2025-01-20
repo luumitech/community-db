@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
+import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
   UseFieldArrayReturn,
@@ -60,7 +60,7 @@ function schema() {
               z.object({
                 eventName: zz.string.nonEmpty('Must specify a value'),
                 eventDate: zz.coerce.toIsoDate(),
-                ticketList: z.array(ticketSchema),
+                ticketList: ticketListSchema,
               })
             )
             .refine(
@@ -81,8 +81,7 @@ function schema() {
             return !!form.paymentMethod;
           },
           {
-            message:
-              'Must specify payment method to indicate how membership fee is processsed',
+            message: 'Must specify payment method for membership fee',
             path: ['paymentMethod'],
           }
         )
@@ -181,26 +180,20 @@ export function useHookFormWithDisclosure(
 ) {
   const { minYear, maxYear, defaultSetting } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
-  const defaultValues = React.useMemo(
-    () =>
-      defaultInputData(
-        property,
-        [minYear, maxYear],
-        yearSelected,
-        defaultSetting
-      ),
-    [minYear, maxYear, property, yearSelected, defaultSetting]
-  );
+  const defaultValues = React.useMemo(() => {
+    const data = defaultInputData(
+      property,
+      [minYear, maxYear],
+      yearSelected,
+      defaultSetting
+    );
+    return data;
+  }, [minYear, maxYear, property, yearSelected, defaultSetting]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
-
-  React.useEffect(() => {
-    // After form is submitted, update the form with new default
-    reset(defaultValues);
-  }, [reset, defaultValues]);
 
   /**
    * When modal is closed, reset form value with default values derived from

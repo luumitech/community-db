@@ -41,10 +41,11 @@ export class MongoSeeder {
    * ```
    *
    * @param prisma Prisma instance
+   * @param ownerEmail Email creating the community
    */
-  async seed(prisma: PrismaClient) {
-    const { propertyList, ...others } = importLcraDB(this.workbook);
-    const ownerEmail = 'test@email.com';
+  async seed(prisma: PrismaClient, ownerEmail = 'test@email.com') {
+    const importResult = importLcraDB(this.workbook);
+    const { propertyList, ...others } = importResult;
 
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
@@ -78,5 +79,7 @@ export class MongoSeeder {
         },
       },
     });
+
+    return importResult;
   }
 }

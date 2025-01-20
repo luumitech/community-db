@@ -18,12 +18,23 @@ export const TicketInput: React.FC<Props> = ({
   ...prop
 }) => {
   const { ticketDefault } = useAppContext();
-  const { setValue, watch } = useFormContext();
+  const { setValue, watch, clearErrors } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
   const countDefault = React.useMemo(() => {
     const value = ticketDefault.get(ticketType);
     return value?.count;
   }, [ticketType, ticketDefault]);
+
+  const onChange: NonNullable<InputProps['onChange']> = React.useCallback(
+    (evt) => {
+      /**
+       * This is needed because price's validation error is triggered based on
+       * count
+       */
+      clearErrors(`${controlNamePrefix}.price`);
+    },
+    [clearErrors, controlNamePrefix]
+  );
 
   return (
     <Input
@@ -43,6 +54,7 @@ export const TicketInput: React.FC<Props> = ({
           />
         )
       }
+      onChange={onChange}
       {...prop}
     />
   );

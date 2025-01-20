@@ -1,5 +1,6 @@
 import { type Ticket } from '@prisma/client';
 import { parseAsNumber } from '~/lib/number-util';
+import { ITEM_DELIMITER } from './delimiter-util';
 
 /**
  * Ticket strings may contain 0 or more tickets, each ticket is separated by `/`
@@ -11,16 +12,37 @@ import { parseAsNumber } from '~/lib/number-util';
 const TICKET_DELIMITER = '/';
 const TICKET_PROPERTY_DELIMITER = ':';
 
-/** Convert database ticketList information to xlsx cell value */
+/**
+ * Names that goes into excel that are delimited should not contain delimiting
+ * characters
+ *
+ * If they are encountered, filter them out.
+ */
+function removeDelimiter(input: string) {
+  const delimiterCharList = [
+    ITEM_DELIMITER,
+    TICKET_DELIMITER,
+    TICKET_PROPERTY_DELIMITER,
+  ].join('');
+  return input.replace(new RegExp(`[${delimiterCharList}]`, 'g'), '');
+}
+
+/**
+ * Convert database ticketList information to xlsx cell value,
+ *
+ * The return ticketList string will have all delimiters removed
+ */
 export function toTicketList(input: Ticket[]) {
   const arr = input.map((ticket) => {
     const { ticketName, count, price, paymentMethod } = ticket;
     return [
       ticketName ?? '',
-      count ?? '',
+      count?.toString() ?? '',
       price ?? '',
       paymentMethod ?? '',
-    ].join(TICKET_PROPERTY_DELIMITER);
+    ]
+      .map(removeDelimiter)
+      .join(TICKET_PROPERTY_DELIMITER);
   });
   return arr.join(TICKET_DELIMITER);
 }

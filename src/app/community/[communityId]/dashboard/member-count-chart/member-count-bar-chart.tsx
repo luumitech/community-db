@@ -69,6 +69,66 @@ class ChartDataHelper {
 const CHART_KEYS = ['renewed', 'new'];
 
 /**
+ * Custom bar
+ *
+ * Add pattern overlay to selected bar
+ */
+function customBar(helper: ChartDataHelper, selectedYear?: number) {
+  const Bar: React.FC<BarCustomLayerProps<ChartDataEntry>> = ({ bars }) => {
+    return bars.map((bar) => {
+      const patternId = `pattern_${bar.key}`;
+      return (
+        <svg
+          key={bar.key}
+          x={bar.x}
+          y={bar.y}
+          width={bar.width}
+          height={bar.height}
+        >
+          <defs>
+            <pattern
+              id={patternId}
+              patternUnits="userSpaceOnUse"
+              width="16"
+              height="16"
+              patternTransform="rotate(45)"
+            >
+              <line
+                x1="0"
+                y="0"
+                x2="0"
+                y2="16"
+                stroke={bar.color}
+                strokeWidth="28"
+              />
+            </pattern>
+          </defs>
+          <rect
+            width="100%"
+            height="100%"
+            fill={
+              selectedYear === bar.data.indexValue
+                ? `url(#${patternId})`
+                : bar.color
+            }
+          />
+          <text
+            x="50%"
+            y="50%"
+            dominantBaseline="middle"
+            textAnchor="middle"
+            className="font-sans text-[11px] fill-[rgb(79,109,140)]"
+          >
+            {bar.data.formattedValue}
+          </text>
+        </svg>
+      );
+    });
+  };
+  return Bar;
+}
+
+/**
  * Custom line plot
  *
  * For members who have not renewed this year
@@ -254,6 +314,7 @@ interface Props {
   fragment?: MemberCountEntry;
   /** Number of years to show on the chart */
   yearRange: number;
+  selectedYear?: number;
   onYearSelect?: (year: number) => void;
 }
 
@@ -261,6 +322,7 @@ export const MemberCountBarChart: React.FC<Props> = ({
   className,
   fragment,
   yearRange,
+  selectedYear,
   onYearSelect,
 }) => {
   const entry = getFragment(MemberCountFragment, fragment);
@@ -274,6 +336,10 @@ export const MemberCountBarChart: React.FC<Props> = ({
     return helper;
   }, [communityStat, yearRange]);
 
+  const CustomBar = React.useMemo(
+    () => customBar(chartHelper, selectedYear),
+    [chartHelper, selectedYear]
+  );
   const NoRenewalLine = React.useMemo(
     () => noRenewalLine(chartHelper, onYearSelect),
     [chartHelper, onYearSelect]
@@ -314,7 +380,15 @@ export const MemberCountBarChart: React.FC<Props> = ({
       // containing the bar, so we implement the tooltip in NoRenewalLine
       // tooltip={CustomTooltip}
       legends={[barLegend]}
-      layers={['grid', 'axes', 'bars', NoRenewalLine, 'markers', 'legends']}
+      layers={[
+        'grid',
+        'axes',
+        // 'bars',
+        CustomBar,
+        NoRenewalLine,
+        'markers',
+        'legends',
+      ]}
     />
   );
 };

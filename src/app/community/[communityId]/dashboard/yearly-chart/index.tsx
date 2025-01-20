@@ -4,7 +4,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { EventParticipation } from './event-participation';
-import { EventTicket } from './event-ticket';
+import { EventTicketSale } from './event-ticket-sale';
 import { MembershipSource } from './membership-source';
 
 const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
@@ -54,11 +54,12 @@ export const YearlyChart: React.FC<Props> = ({
         year={year}
         isLoading={result.loading}
       />
-      {/* <EventTicket
+      <EventTicketSale
+        className="col-span-full"
         fragment={community}
         year={year}
         isLoading={result.loading}
-      /> */}
+      />
     </>
   );
 };

@@ -19,13 +19,25 @@ export const PriceInput: React.FC<Props> = ({
   ...props
 }) => {
   const { ticketDefault } = useAppContext();
-  const { setValue, watch } = useFormContext();
+  const { setValue, watch, clearErrors } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
   const ticketCount = watch(`${controlNamePrefix}.count`);
 
   const ticketDef = ticketDefault.get(ticketType);
   const unitPrice = ticketDef?.unitPrice;
   const defaultPrice = calcPrice(unitPrice, ticketCount);
+
+  const onChange: NonNullable<CurrencyInputProps['onChange']> =
+    React.useCallback(
+      (evt) => {
+        /**
+         * This is needed because paymentMethod's validation error is triggered
+         * based on value of price
+         */
+        clearErrors(`${controlNamePrefix}.paymentMethod`);
+      },
+      [clearErrors, controlNamePrefix]
+    );
 
   return (
     <CurrencyInput
@@ -45,6 +57,7 @@ export const PriceInput: React.FC<Props> = ({
           />
         )
       }
+      onChange={onChange}
       {...props}
     />
   );

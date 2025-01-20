@@ -75,11 +75,14 @@ export const YearSelect: React.FC<Props> = ({
     const yearNum = R.range(minYear, maxYear + 1).reverse();
     const yearWithErrors = membershipError
       .map?.((_, idx) => yearNum[idx])
-      ?.filter((year): year is number => year != null);
+      ?.filter(
+        (year): year is number =>
+          year != null && year.toString() !== selectedYear
+      );
     if (yearWithErrors?.length) {
       return `Please fix error(s) in ${yearWithErrors.join(', ')}`;
     }
-  }, [errors, yearRange]);
+  }, [errors, yearRange, selectedYear]);
 
   return (
     <Select
