@@ -63,11 +63,13 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
         {fields.length === 0 && (
           <div
             className={clsx(
-              'col-span-full self-center justify-self-center',
-              'text-sm text-foreground-500'
+              'col-span-full h-8',
+              'justify-self-center content-center'
             )}
           >
-            No entries
+            <div className="text-sm text-foreground-500">
+              No data to display
+            </div>
           </div>
         )}
         {fields.map((field, eventIdx) => (

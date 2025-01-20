@@ -77,7 +77,7 @@ export const EventParticipation: React.FC<Props> = ({
           <p className="font-bold text-md">{`${year} Event Participation`}</p>
         </div>
       </CardHeader>
-      <CardBody>
+      <CardBody className="overflow-hidden">
         <Skeleton className="rounded-lg" isLoaded={!isLoading}>
           <BarChart
             className="h-[400px]"

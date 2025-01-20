@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
+import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
   UseFieldArrayReturn,
@@ -60,7 +60,7 @@ function schema() {
               z.object({
                 eventName: zz.string.nonEmpty('Must specify a value'),
                 eventDate: zz.coerce.toIsoDate(),
-                ticketList: z.array(ticketSchema),
+                ticketList: ticketListSchema,
               })
             )
             .refine(
@@ -81,8 +81,7 @@ function schema() {
             return !!form.paymentMethod;
           },
           {
-            message:
-              'Must specify payment method to indicate how membership fee is processsed',
+            message: 'Must specify payment method for membership fee',
             path: ['paymentMethod'],
           }
         )

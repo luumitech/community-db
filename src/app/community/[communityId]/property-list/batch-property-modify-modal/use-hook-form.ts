@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
-import { ticketSchema } from '~/community/[communityId]/common/ticket-input-table';
+import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
@@ -32,7 +32,7 @@ function schema() {
       eventAttended: z.object({
         eventName: zz.string.nonEmpty('Must select an event'),
         eventDate: zz.coerce.toIsoDate(),
-        ticketList: z.array(ticketSchema),
+        ticketList: ticketListSchema,
       }),
       price: z.string().nullable(),
       paymentMethod: zz.string.nonEmpty('Must specify payment method'),

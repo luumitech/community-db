@@ -78,7 +78,7 @@ export const MembershipSource: React.FC<Props> = ({
           <p className="font-bold text-md">{`${year} Membership Source`}</p>
         </div>
       </CardHeader>
-      <CardBody>
+      <CardBody className="overflow-hidden">
         <Skeleton className="rounded-lg" isLoaded={!isLoading}>
           <PieChart className="h-[400px]" data={chartData} />
         </Skeleton>
