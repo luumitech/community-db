@@ -2,6 +2,10 @@ import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { isMember } from '~/graphql/schema/property/util';
 import { isValidDate } from '~/lib/date-util';
+import {
+  ITEM_DELIMITER,
+  removeDelimiter,
+} from '~/lib/lcra-community/delimiter-util';
 import { toTicketList } from '../ticket-list-util';
 import { type Property } from './community-data';
 
@@ -80,14 +84,14 @@ export class ExportHelper {
         const prfx = `Y${year - 2000}`;
         row[`${prfx}`] = toBool(isMember(membership));
         row[`${prfx}-event`] = membership?.eventAttendedList
-          .map((event) => event.eventName)
-          .join(';');
+          .map((event) => removeDelimiter(event.eventName))
+          .join(ITEM_DELIMITER);
         row[`${prfx}-date`] = membership?.eventAttendedList
-          .map((event) => toDate(event.eventDate))
-          .join(';');
+          .map((event) => removeDelimiter(toDate(event.eventDate)))
+          .join(ITEM_DELIMITER);
         row[`${prfx}-ticket`] = membership?.eventAttendedList
           .map((event) => toTicketList(event.ticketList))
-          .join(';');
+          .join(ITEM_DELIMITER);
         row[`${prfx}-payment`] = membership?.paymentMethod;
         row[`${prfx}-deposited`] = toBool(membership?.paymentDeposited);
         row[`${prfx}-price`] = membership?.price;

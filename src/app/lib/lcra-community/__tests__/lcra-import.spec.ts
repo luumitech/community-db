@@ -174,7 +174,7 @@ describe('import community xlsx', () => {
                 {
                   __typename: 'Ticket',
                   count: 1,
-                  paymentMethod: 'e-transfer',
+                  paymentMethod: 'e-Transfer',
                   price: '1',
                   ticketName: 'drink',
                 },

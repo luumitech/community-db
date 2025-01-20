@@ -179,15 +179,12 @@ const communityStatRef = builder
             required: true,
             description: 'year to retrieve statistics for',
           }),
-          showHidden: t.arg.boolean({
-            description: 'return events that have been removed by user',
-          }),
         },
         type: [eventStatRef],
         resolve: (parent, args, ctx) => {
-          const { year, showHidden } = args;
+          const { year } = args;
           const statUtil = new StatUtil(parent);
-          const statMap = statUtil.getEventStatMap(year, { showHidden });
+          const statMap = statUtil.getEventStatMap(year);
           return Array.from(statMap, ([, entry]) => entry);
         },
       }),

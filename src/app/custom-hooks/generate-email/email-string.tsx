@@ -1,6 +1,7 @@
 import { Button } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { ITEM_DELIMITER } from '~/lib/lcra-community/delimiter-util';
 import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
 import type { OccupantEntry } from './_type';
@@ -13,7 +14,7 @@ import type { OccupantEntry } from './_type';
  */
 function toEmailString(contactList: OccupantEntry[]) {
   const emailList = contactList.map(({ email }) => email);
-  return emailList.join(';');
+  return emailList.join(ITEM_DELIMITER);
 }
 
 interface Props {

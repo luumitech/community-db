@@ -1,0 +1,128 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Event Statistices Ticket name with delimiter characters should be filtered 1`] = `
+[
+  {
+    "__typename": "EventStat",
+    "eventName": "Membership Carry Forward",
+    "ticketList": [],
+  },
+  {
+    "__typename": "EventStat",
+    "eventName": "Summer Festival",
+    "ticketList": [],
+  },
+  {
+    "__typename": "EventStat",
+    "eventName": "Corn Roast",
+    "ticketList": [
+      {
+        "__typename": "TicketStat",
+        "count": 2,
+        "paymentMethod": "cash",
+        "price": "0.03",
+        "ticketName": "meal",
+      },
+      {
+        "__typename": "TicketStat",
+        "count": 1,
+        "paymentMethod": "cash",
+        "price": "1.23",
+        "ticketName": "drink",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Event Statistices Ticket with zero count and zero price should be ignored 1`] = `
+[
+  {
+    "__typename": "EventStat",
+    "eventName": "Membership Carry Forward",
+    "ticketList": [],
+  },
+  {
+    "__typename": "EventStat",
+    "eventName": "Summer Festival",
+    "ticketList": [],
+  },
+  {
+    "__typename": "EventStat",
+    "eventName": "Corn Roast",
+    "ticketList": [
+      {
+        "__typename": "TicketStat",
+        "count": 1,
+        "paymentMethod": "cash",
+        "price": "1",
+        "ticketName": "drink",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Event Statistices Verify event statistics 1`] = `
+[
+  {
+    "__typename": "EventStat",
+    "eventName": "Membership Carry Forward",
+    "ticketList": [],
+  },
+  {
+    "__typename": "EventStat",
+    "eventName": "Summer Festival",
+    "ticketList": [
+      {
+        "__typename": "TicketStat",
+        "count": 20,
+        "paymentMethod": "free",
+        "price": "0",
+        "ticketName": "meal",
+      },
+      {
+        "__typename": "TicketStat",
+        "count": 1,
+        "paymentMethod": "cash",
+        "price": "1",
+        "ticketName": "cotton-candy",
+      },
+    ],
+  },
+  {
+    "__typename": "EventStat",
+    "eventName": "Corn Roast",
+    "ticketList": [
+      {
+        "__typename": "TicketStat",
+        "count": 10,
+        "paymentMethod": "cash",
+        "price": "5",
+        "ticketName": "meal",
+      },
+      {
+        "__typename": "TicketStat",
+        "count": 20,
+        "paymentMethod": "free",
+        "price": "0",
+        "ticketName": "meal",
+      },
+      {
+        "__typename": "TicketStat",
+        "count": 1,
+        "paymentMethod": "cash",
+        "price": "1",
+        "ticketName": "drink",
+      },
+      {
+        "__typename": "TicketStat",
+        "count": 1,
+        "paymentMethod": "e-Transfer",
+        "price": "1",
+        "ticketName": "drink",
+      },
+    ],
+  },
+]
+`;

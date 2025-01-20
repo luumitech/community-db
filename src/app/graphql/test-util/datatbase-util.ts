@@ -1,13 +1,26 @@
-import { Prisma } from '@prisma/client';
 import * as XLSX from 'xlsx';
-import { importLcraDB } from '~/lib/lcra-community/import';
+import { MongoSeeder } from '~/../../prisma/mongo-seeder';
 import prisma from '~/lib/prisma';
+import { WorksheetHelper } from '~/lib/worksheet-helper';
 
 /** Database related utilities for testing purpose */
 export class DatabaseUtil {
   /** Drop database (clear all database) */
   async dropDatabase() {
     await prisma.$runCommandRaw({ dropDatabase: 1 });
+  }
+
+  /**
+   * Seed database with LCRA workbook
+   *
+   * @param workbook Excel workbook
+   * @returns Database entries returned
+   */
+  async seedFromWorkbook(workbook: XLSX.WorkBook) {
+    const seeder = new MongoSeeder(workbook);
+    const importResult = await seeder.seed(prisma, 'jest@email.com');
+
+    return importResult;
   }
 
   /**
@@ -18,43 +31,17 @@ export class DatabaseUtil {
    */
   async seed(fixturePath: string) {
     const workbook = XLSX.readFile(fixturePath);
-    const importResult = importLcraDB(workbook);
-    const { propertyList, ...others } = importResult;
+    return this.seedFromWorkbook(workbook);
+  }
 
-    const ownerEmail = 'jest@email.com';
-    const communitySeed: Prisma.CommunityCreateInput[] = [
-      {
-        name: 'Serenity',
-        owner: {
-          connect: {
-            email: ownerEmail,
-          },
-        },
-        ...others,
-        propertyList: {
-          create: propertyList,
-        },
-      },
-    ];
-
-    const accessSeed: Prisma.AccessCreateWithoutUserInput[] = communitySeed.map(
-      (community) => ({
-        role: 'ADMIN',
-        community: {
-          create: community,
-        },
-      })
-    );
-
-    await prisma.user.create({
-      data: {
-        email: ownerEmail,
-        accessList: {
-          create: accessSeed,
-        },
-      },
-    });
-
-    return importResult;
+  /**
+   * Clone workbook and return it
+   *
+   * @param workbook Workbook to clone
+   */
+  cloneWorkbook(workbook: XLSX.WorkBook) {
+    const ws = WorksheetHelper.fromFirstSheet(workbook);
+    const newWb = XLSX.utils.book_new(ws.ws);
+    return newWb;
   }
 }

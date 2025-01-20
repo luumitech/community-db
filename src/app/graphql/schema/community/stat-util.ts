@@ -76,23 +76,14 @@ type TicketPaymentMap = Map<string, TicketStat>;
 // keyed by ticket name
 type TicketMap = Map<string, TicketPaymentMap>;
 
-interface EventStatOpt {
-  /** Return events that have been removed by user */
-  showHidden?: boolean | null;
-}
-
 export class StatUtil {
   private propertyList: CommunityStat['propertyList'];
-  /** List of all events available in system */
+  /** List of all non-hidden events available in system */
   private allEvents = new Set<string>();
-  /** List of all ticket types available in system */
+  /** List of all non-hidden ticket types available in system */
   private allTickets = new Set<string>();
   /** List of all payment methods available in system */
   private allPaymentMethods = new Set<string>();
-  /** List of all non-hidden events available in system */
-  private shownEvents = new Set<string>();
-  /** List of all non-hidden ticket types available in system */
-  private shownTickets = new Set<string>();
   private minYear: number;
   private maxYear: number;
 
@@ -101,16 +92,16 @@ export class StatUtil {
     this.minYear = communityStat.minYear;
     this.maxYear = communityStat.maxYear;
     communityStat.supportedEventList.forEach((entry) => {
-      this.allEvents.add(entry.name);
       if (!entry.hidden) {
-        this.shownEvents.add(entry.name);
+        this.allEvents.add(entry.name);
       }
     });
+    /**
+     * Show all tickets and payment methods (including hidden) because we want
+     * to make sure the statistics accounts for all tickets purchased
+     */
     communityStat.supportedTicketList.forEach((entry) => {
       this.allTickets.add(entry.name);
-      if (!entry.hidden) {
-        this.shownTickets.add(entry.name);
-      }
     });
     communityStat.supportedPaymentMethods.forEach((entry) => {
       this.allPaymentMethods.add(entry.name);
@@ -178,16 +169,12 @@ export class StatUtil {
    */
   getEventStatMap(
     /** Year to retrieve statistics for */
-    year: number,
-    opt?: EventStatOpt
+    year: number
   ) {
     const eventMap = new Map<string, EventStat>();
-    const { showHidden } = opt ?? {};
-    const supportedEvents = showHidden ? this.allEvents : this.shownEvents;
-    const supportedTickets = showHidden ? this.allTickets : this.shownTickets;
-    supportedEvents.forEach((eventName) => {
+    this.allEvents.forEach((eventName) => {
       const ticketMap = new Map<string, TicketPaymentMap>();
-      supportedTickets.forEach((ticketName) => {
+      this.allTickets.forEach((ticketName) => {
         const ticketPaymentMap = new Map<string, TicketStat>();
         // Add empty payment method to the list
         [...this.allPaymentMethods, ''].forEach((paymentMethod) => {
