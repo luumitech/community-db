@@ -49,6 +49,7 @@ export const PageContent: React.FC<Props> = (props) => {
         label="Community name"
         placeholder="Enter community name"
         isRequired
+        description="After you have created and imported a community, you can still change the name later."
       />
       <Button
         className="mt-2"

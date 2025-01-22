@@ -3,12 +3,12 @@ import clsx from 'clsx';
 import React from 'react';
 import { toast } from 'react-toastify';
 import * as XLSX from 'xlsx';
+import { useMakeXlsxData } from '~/community/[communityId]/common/make-xlsx-data';
+import { XlsxView } from '~/community/[communityId]/common/xlsx-view';
 import { startDownloadBlob } from '~/lib/dom';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { exportCommunityAsBase64 } from '~/server-action/export-community';
 import { Icon } from '~/view/base/icon';
-import { useMakeXlsxData } from '../common/make-xlsx-data';
-import { XlsxView } from '../common/xlsx-view';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {

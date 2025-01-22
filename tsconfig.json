@@ -24,7 +24,13 @@
     },
     "types": ["jest"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/community/[communityId]/import-xlsx/first-time-guide"
+  ],
   "exclude": ["node_modules", "./cypress.config.ts", "cypress"],
   "ts-node": {
     "compilerOptions": {

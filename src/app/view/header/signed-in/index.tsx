@@ -10,8 +10,8 @@ import { env } from 'next-runtime-env';
 import React from 'react';
 import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
-import { insertIf } from '~/lib/insert-if';
 import { Icon } from '~/view/base/icon';
+import { BmcLabel, BmcLogo, BmcUrl } from '~/view/buy-me-a-coffee';
 import styles from './styles.module.css';
 
 interface Props {}
@@ -40,7 +40,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         className={styles['drop-down']}
         aria-label="Profile Actions"
         variant="flat"
-        disabledKeys={[...insertIf(!subscriptionPlanEnable, 'pricingPlan')]}
+        disabledKeys={[subscriptionPlanEnable ? 'buyMeACoffee' : 'pricingPlan']}
       >
         <DropdownItem
           key="profile"
@@ -73,6 +73,15 @@ export const SignedIn: React.FC<Props> = ({}) => {
           showDivider
         >
           {appLabel('pricingPlan')}
+        </DropdownItem>
+        <DropdownItem
+          key="buyMeACoffee"
+          color="primary"
+          href={BmcUrl}
+          startContent={<BmcLogo />}
+          showDivider
+        >
+          <BmcLabel />
         </DropdownItem>
         <DropdownItem
           key="logout"

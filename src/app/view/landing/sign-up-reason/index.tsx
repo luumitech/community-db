@@ -37,9 +37,10 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
           Keeping track of membership is a breeze with Community Database
         </div>
         <ol className="text-base sm:text-lg md:text-xl">
-          <ListItem>No need to provide credit card</ListItem>
-          <ListItem>Sign up with social media account</ListItem>
-          <ListItem>Absolutely free to try</ListItem>
+          <ListItem>Absolutely free to start</ListItem>
+          <ListItem>Sign up with google account</ListItem>
+          <ListItem>Visualize membership in dashboard</ListItem>
+          <ListItem>Keep track of event ticket sales</ListItem>
         </ol>
         <GoToWelcome />
       </div>

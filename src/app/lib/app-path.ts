@@ -8,6 +8,8 @@ export const supportedPathTemplates = {
   preference: '/preference',
   pricingPlan: '/pricing-plan',
   contactUs: '/contact-us',
+  privacy: '/privacy',
+  terms: '/terms',
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
@@ -31,6 +33,8 @@ export function appPath(
   template:
     | 'home'
     | 'about'
+    | 'privacy'
+    | 'terms'
     | 'preference'
     | 'pricingPlan'
     | 'communityWelcome'
@@ -98,6 +102,10 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Home';
     case 'about':
       return 'About';
+    case 'privacy':
+      return 'Privacy';
+    case 'terms':
+      return 'Terms';
     case 'preference':
       return 'Preference';
     case 'pricingPlan':

@@ -13,6 +13,7 @@ export function useMakeXlsxData() {
   const makeColumns = React.useCallback((worksheet: WorksheetHelper) => {
     const colCount = worksheet.colCount;
     return [...Array(colCount)].map((_, colIdx) => {
+      const cell = worksheet.cell(colIdx, 0);
       return {
         accessorKey: colIdx.toString(),
         header: XLSX.utils.encode_col(colIdx),
@@ -24,7 +25,7 @@ export function useMakeXlsxData() {
         columns: [
           {
             accessorKey: colIdx.toString(),
-            header: worksheet.cell(colIdx, 0).w ?? '',
+            header: cell.w ?? cell.v?.toString() ?? '',
           },
         ],
       };
@@ -38,10 +39,10 @@ export function useMakeXlsxData() {
       // First row is header row, so don't include in data
       return R.range(1, rowCount).map((rowIdx) => ({
         ...Object.fromEntries(
-          colList.map((col, colIdx) => [
-            col.accessorKey,
-            worksheet.cell(colIdx, rowIdx).w ?? '',
-          ])
+          colList.map((col, colIdx) => {
+            const cell = worksheet.cell(colIdx, rowIdx);
+            return [col.accessorKey, cell.w ?? cell.v?.toString() ?? ''];
+          })
         ),
       }));
     },
@@ -62,5 +63,12 @@ export function useMakeXlsxData() {
     [makeColumns, makeData]
   );
 
-  return { updateWorksheet, clear, columns, data };
+  return {
+    updateWorksheet,
+    clear,
+    columns,
+    data,
+    // Is data ready to be displayed?
+    dataReady: !!data && !!columns,
+  };
 }
