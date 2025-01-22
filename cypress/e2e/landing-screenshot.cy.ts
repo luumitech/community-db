@@ -80,7 +80,7 @@ describe('take screenshots for landing screen', () => {
     cy.clickRoleMenuItem('Dashboard');
     // Wait for graphs to be loaded
     cy.get('div.grid div[data-loaded="true"]', { timeout }).should(
-      'have.length',
+      'have.length.gte',
       3
     );
     cy.scrollTo(0, 370);

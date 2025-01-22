@@ -11,11 +11,11 @@ interface ImportMethodSelectItem {
   value: GQL.ImportMethod;
 }
 const importMethodSelectionList: ImportMethodSelectItem[] = [
+  { label: 'Excel', value: GQL.ImportMethod.Xlsx },
   {
     label: 'Randomly generate sample data',
     value: GQL.ImportMethod.Random,
   },
-  { label: 'Excel', value: GQL.ImportMethod.Xlsx },
 ];
 
 interface Props {

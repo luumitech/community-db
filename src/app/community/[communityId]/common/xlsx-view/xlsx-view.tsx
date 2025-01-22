@@ -19,12 +19,17 @@ import React from 'react';
  */
 const pinningClass = 'sticky left-0 bg-background';
 
-interface Props<TData> {
+export interface XlsxViewImplProps<TData> {
+  className?: string;
   data: TData[];
   columns: ColumnDef<TData>[];
 }
 
-export function XlsxView<T>({ data, columns }: Props<T>) {
+export function XlsxViewImpl<T>({
+  className,
+  data,
+  columns,
+}: XlsxViewImplProps<T>) {
   // The virtualizers need to know the scrollable container element
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const table = useReactTable({
@@ -90,7 +95,10 @@ export function XlsxView<T>({ data, columns }: Props<T>) {
   }
 
   return (
-    <div ref={tableContainerRef} className={'h-full overflow-auto relative'}>
+    <div
+      ref={tableContainerRef}
+      className={clsx(className, 'h-full overflow-auto relative')}
+    >
       <table>
         <thead className="grid sticky top-0 bg-background z-10">
           {table.getHeaderGroups().map((headerGroup) => (

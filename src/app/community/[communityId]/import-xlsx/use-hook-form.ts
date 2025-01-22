@@ -42,7 +42,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 function defaultInputData(communityId: string): InputData {
   return {
     id: communityId,
-    method: GQL.ImportMethod.Random,
+    method: GQL.ImportMethod.Xlsx,
     hidden: {
       importList: [],
     },

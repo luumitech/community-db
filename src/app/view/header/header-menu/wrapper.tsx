@@ -38,7 +38,11 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
   }
 
   return (
-    <div className={className}>
+    <div
+      className={className}
+      // This prevents showing the menu, until it knows where to position it
+      style={{ visibility: leftPos ? 'visible' : 'hidden' }}
+    >
       <div
         ref={divRef}
         // Postion the menu to the left of avatar menu in header

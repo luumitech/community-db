@@ -2,6 +2,7 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { appTitle } from '~/lib/env-var';
 
 export default function About() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function About() {
       // isKeyboardDismissDisabled
     >
       <ModalContent>
-        <ModalHeader>Community Database</ModalHeader>
+        <ModalHeader>{appTitle}</ModalHeader>
         <ModalBody>
           <div className="grid grid-cols-[auto_max-content] gap-2">
             <div className="italic">Version</div>
