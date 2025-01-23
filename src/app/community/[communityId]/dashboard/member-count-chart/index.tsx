@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { Card, CardBody, CardHeader, Skeleton } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
+import { useLocalStorage } from 'usehooks-ts';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { MemberCountBarChart } from './member-count-bar-chart';
@@ -30,7 +31,10 @@ export const MemberCountChart: React.FC<Props> = ({
   selectedYear,
   onYearSelect,
 }) => {
-  const [yearRange, setYearRange] = React.useState<number>(10);
+  const [yearRange, setYearRange] = useLocalStorage(
+    'cd-dashboard-year-range',
+    10
+  );
   const result = useQuery(MemberCountStatQuery, {
     variables: { id: communityId },
   });

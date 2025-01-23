@@ -1,8 +1,18 @@
 'use client';
-import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
+import {
+  Button,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
+import { Icon } from '~/view/base/icon';
 
 export default function About() {
   const router = useRouter();
@@ -48,6 +58,16 @@ export default function About() {
             </div>
           </div>
         </ModalBody>
+        <ModalFooter>
+          <Button
+            as={Link}
+            href={appPath('contactUs')}
+            color="primary"
+            endContent={<Icon icon="email" />}
+          >
+            {appLabel('contactUs')}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
