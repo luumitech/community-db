@@ -75,10 +75,14 @@ export const SignedIn: React.FC<Props> = ({}) => {
           {appLabel('pricingPlan')}
         </DropdownItem>
         <DropdownItem
+          classNames={{
+            base: 'bg-primary-200 data-[hover=true]:hover:bg-primary',
+          }}
           key="buyMeACoffee"
-          color="primary"
           href={BmcUrl}
+          target="_blank"
           startContent={<BmcLogo />}
+          textValue="Buy me a coffee"
           showDivider
         >
           <BmcLabel />
