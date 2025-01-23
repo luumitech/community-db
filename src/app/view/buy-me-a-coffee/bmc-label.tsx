@@ -2,7 +2,12 @@ import clsx from 'clsx';
 import { Cookie } from 'next/font/google';
 import React from 'react';
 
-const cookie = Cookie({ subsets: ['latin'], weight: '400' });
+const cookie = Cookie({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  adjustFontFallback: false,
+});
 
 interface Props {
   className?: string;
