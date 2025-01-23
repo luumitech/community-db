@@ -57,8 +57,10 @@ export function calcPrice(unitPrice?: string | null, count?: number | null) {
  *
  * Return result in string
  */
-export function decSum(arr: (string | null | undefined)[]) {
-  const arrDec = arr.map((entry) => new Decimal(entry ?? 0));
+export function decSum(arr: (Decimal.Value | null | undefined)[]) {
+  const arrDec = arr.map((entry) =>
+    isValidDecInput(entry) ? new Decimal(entry) : new Decimal(0)
+  );
   const sumDec = arrDec.reduce((a, b) => a.add(b), new Decimal(0));
   return sumDec.toString();
 }

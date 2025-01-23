@@ -8,6 +8,7 @@ import { SymbolProps } from '@nivo/legends';
 import clsx from 'clsx';
 import { line } from 'd3-shape';
 import React from 'react';
+import * as R from 'remeda';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
@@ -75,8 +76,8 @@ const CHART_KEYS = ['renewed', 'new'];
  */
 function customBar(helper: ChartDataHelper, selectedYear?: number) {
   const Bar: React.FC<BarCustomLayerProps<ChartDataEntry>> = ({ bars }) => {
-    return bars.map((bar) => {
-      const patternId = `pattern_${bar.key}`;
+    // Render the bars normally (without selected pattern overlay)
+    const barRects = bars.map((bar) => {
       return (
         <svg
           key={bar.key}
@@ -85,6 +86,47 @@ function customBar(helper: ChartDataHelper, selectedYear?: number) {
           width={bar.width}
           height={bar.height}
         >
+          <rect width="100%" height="100%" fill={bar.color} />
+        </svg>
+      );
+    });
+
+    // Renders the value of each bar
+    const barLabels = bars.map((bar) => {
+      return (
+        <svg
+          key={bar.key}
+          x={bar.x}
+          y={bar.y}
+          width={bar.width}
+          height={bar.height}
+        >
+          <text
+            x="50%"
+            y="50%"
+            dominantBaseline="middle"
+            textAnchor="middle"
+            className="font-sans text-[11px] fill-[rgb(79,109,140)]"
+          >
+            {bar.data.formattedValue}
+          </text>
+        </svg>
+      );
+    });
+
+    // Render the selected bar with pattern overlay
+    let selectedSvg = null;
+    const selectedBars = bars.filter(
+      (bar) => selectedYear === bar.data.indexValue
+    );
+    if (selectedBars.length) {
+      const x = selectedBars[0].x;
+      const y = Math.min(...selectedBars.map((bar) => bar.y));
+      const width = selectedBars[0].width;
+      const height = R.sum(selectedBars.map((bar) => bar.height));
+      const patternId = `pattern_${selectedBars[0].key}`;
+      selectedSvg = (
+        <svg x={x} y={y} width={width} height={height}>
           <defs>
             <pattern
               id={patternId}
@@ -98,32 +140,23 @@ function customBar(helper: ChartDataHelper, selectedYear?: number) {
                 y="0"
                 x2="0"
                 y2="16"
-                stroke={bar.color}
-                strokeWidth="28"
+                stroke="white"
+                strokeWidth="3"
               />
             </pattern>
           </defs>
-          <rect
-            width="100%"
-            height="100%"
-            fill={
-              selectedYear === bar.data.indexValue
-                ? `url(#${patternId})`
-                : bar.color
-            }
-          />
-          <text
-            x="50%"
-            y="50%"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            className="font-sans text-[11px] fill-[rgb(79,109,140)]"
-          >
-            {bar.data.formattedValue}
-          </text>
+          <rect width="100%" height="100%" fill={`url(#${patternId})`} />
         </svg>
       );
-    });
+    }
+
+    return (
+      <>
+        {barRects}
+        {selectedSvg}
+        {barLabels}
+      </>
+    );
   };
   return Bar;
 }
