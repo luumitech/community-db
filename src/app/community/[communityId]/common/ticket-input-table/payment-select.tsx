@@ -24,7 +24,7 @@ export const PaymentSelect: React.FC<Props> = ({
   return (
     <div className={clsx(className)}>
       <Select
-        className="max-w-xs"
+        className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.paymentMethod`}
         aria-label="Payment Method"
         items={items}

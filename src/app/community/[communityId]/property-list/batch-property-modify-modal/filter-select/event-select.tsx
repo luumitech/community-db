@@ -14,9 +14,7 @@ export const EventSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      classNames={{
-        base: className,
-      }}
+      className={clsx(className, 'min-w-32 max-w-xs')}
       controlName="filter.memberEvent"
       size="sm"
       label="Membership Event"

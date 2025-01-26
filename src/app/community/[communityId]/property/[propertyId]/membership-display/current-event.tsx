@@ -20,7 +20,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
       <CardHeader>Current Event</CardHeader>
       <CardBody>
         <div className="flex gap-2 items-start">
-          <EventNameSelect className="max-w-xs" />
+          <EventNameSelect />
           <ModalButton
             className="h-10"
             isDisabled={!lastEventSelected}

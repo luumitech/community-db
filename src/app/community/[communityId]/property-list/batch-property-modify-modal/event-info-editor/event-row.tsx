@@ -41,12 +41,11 @@ interface EventRowProps {
 }
 
 export const EventRow: React.FC<EventRowProps> = ({ className }) => {
-  const { control, watch } = useHookFormContext();
+  const { control } = useHookFormContext();
   const ticketListMethods = useFieldArray({
     control,
     name: 'membership.eventAttended.ticketList',
   });
-  const memberYear = watch('membership.year');
 
   return (
     <>
@@ -79,17 +78,6 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
           />
         </div>
       )}
-      <div className="col-span-full">
-        <p className="text-sm">
-          <span className="font-semibold">NOTE:</span> The event{' '}
-          <span className="font-semibold text-foreground-500">Price</span> and{' '}
-          <span className="font-semibold text-foreground-500">
-            Payment Method
-          </span>{' '}
-          fields are only applicable to properties that do not have an existing
-          membership in year {memberYear}.
-        </p>
-      </div>
     </>
   );
 };

@@ -28,11 +28,11 @@ const PropertyDisplayFragment = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: SlotsToClasses<TableSlots>;
+  classNames?: SlotsToClasses<TableSlots>;
   isLoading?: boolean;
 }
 
-export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
+export const PropertyDisplay: React.FC<Props> = ({ classNames, isLoading }) => {
   const { property } = usePageContext();
   const { canEdit } = useAppContext();
   const entry = getFragment(PropertyDisplayFragment, property);
@@ -63,7 +63,8 @@ export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
       classNames={{
         // Leave enough space for one row of data only
         emptyWrapper: 'h-[40px]',
-        ...className,
+        base: 'overflow-x-auto overflow-y-hidden',
+        ...classNames,
       }}
       aria-label="Property Info"
       removeWrapper

@@ -27,7 +27,7 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
   return (
     <Select
       classNames={{
-        base: clsx(className),
+        base: clsx(className, 'max-w-xs'),
         label: 'whitespace-nowrap self-center',
       }}
       controlName="membership.year"

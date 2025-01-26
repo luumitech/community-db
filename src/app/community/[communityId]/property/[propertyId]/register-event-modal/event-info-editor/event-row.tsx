@@ -61,7 +61,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
         <div role="cell">
           <Input
             classNames={{
-              base: 'opacity-100',
+              base: 'opacity-100 min-w-28',
               inputWrapper: 'border-none shadow-none',
             }}
             aria-label="Event Name"

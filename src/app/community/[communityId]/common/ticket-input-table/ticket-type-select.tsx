@@ -41,7 +41,7 @@ export const TicketTypeSelect: React.FC<Props> = ({
   return (
     <div className={clsx(className)}>
       <Select
-        className="max-w-xs"
+        className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.ticketName`}
         aria-label="Ticket Name"
         items={items}

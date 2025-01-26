@@ -58,7 +58,12 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   return (
     <div className={clsx(className, 'flex flex-col gap-2')}>
       {topContent}
-      <div className="grid grid-cols-[40px_repeat(4,1fr)_80px] gap-2">
+      <div
+        className={clsx(
+          'grid grid-cols-[40px_repeat(4,1fr)_80px]',
+          'gap-2 overflow-x-auto overflow-y-hidden'
+        )}
+      >
         <EventRowHeader />
         {fields.length === 0 && (
           <div

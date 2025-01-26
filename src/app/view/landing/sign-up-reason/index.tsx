@@ -21,22 +21,17 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
   );
 
   return (
-    <div
-      className={clsx(
-        'h-[60vh] flex items-center justify-center',
-        'bg-green-100 text-slate-700'
-      )}
-    >
+    <div className={clsx('bg-green-100 text-slate-700')}>
       <div
         className={clsx(
-          'm-12 sm:m-18 md:m-24',
-          'flex flex-col items-center text-wrap gap-6'
+          'flex flex-col items-center text-center text-wrap gap-6',
+          'p-9 sm:p-18 md:p-24'
         )}
       >
         <div className="text-2xl sm:text-3xl font-bold text-center">
           Keeping track of membership is a breeze with Community Database
         </div>
-        <ol className="text-base sm:text-lg md:text-xl">
+        <ol className="text-base text-left sm:text-lg md:text-xl">
           <ListItem>Absolutely free to start</ListItem>
           <ListItem>Sign up with google account</ListItem>
           <ListItem>Visualize membership in dashboard</ListItem>

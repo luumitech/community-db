@@ -109,14 +109,14 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   }, [reset, defaultValues]);
 
   /**
-   * When modal is closed, reset form value with default values derived from
+   * When modal is open, sync form value with latest default values derived from
    * fragment
    */
-  const onModalClose = React.useCallback(() => {
+  const onModalOpen = React.useCallback(() => {
     reset(defaultValues);
   }, [reset, defaultValues]);
   const disclosure = useDisclosure({
-    onClose: onModalClose,
+    onOpen: onModalOpen,
   });
 
   return { disclosure, formMethods, property };

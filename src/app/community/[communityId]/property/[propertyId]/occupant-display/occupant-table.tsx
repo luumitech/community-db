@@ -4,9 +4,11 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
-  TableProps,
   TableRow,
+  TableSlots,
   getKeyValue,
+  type SlotsToClasses,
+  type TableProps,
 } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
@@ -28,13 +30,13 @@ function formatPhoneNumber(phoneNumber: string) {
 }
 
 interface Props {
-  className?: string;
+  classNames?: SlotsToClasses<TableSlots>;
   occupantList: OccupantEntry[];
   bottomContent?: TableProps['bottomContent'];
 }
 
 export const OccupantTable: React.FC<Props> = ({
-  className,
+  classNames,
   occupantList,
   bottomContent,
 }) => {
@@ -78,7 +80,10 @@ export const OccupantTable: React.FC<Props> = ({
 
   return (
     <Table
-      className={className}
+      classNames={{
+        base: 'overflow-x-auto overflow-y-hidden',
+        ...classNames,
+      }}
       aria-label="Occupant Table"
       removeWrapper
       bottomContent={bottomContent}

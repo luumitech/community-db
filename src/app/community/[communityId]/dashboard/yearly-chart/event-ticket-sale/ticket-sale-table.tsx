@@ -16,7 +16,8 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
     <div
       className={clsx(
         className,
-        'grid grid-cols-[repeat(4,_max-content)] gap-x-8 gap-y-2'
+        'grid grid-cols-[repeat(4,max-content)] gap-x-8 gap-y-2',
+        'overflow-x-auto overflow-y-hidden'
       )}
     >
       <TicketRowHeader />

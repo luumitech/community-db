@@ -9,7 +9,12 @@ interface Props {
 export const EventInfoEditor: React.FC<Props> = ({ className }) => {
   return (
     <div className={clsx(className, 'flex flex-col gap-2')}>
-      <div className="grid grid-cols-[repeat(4,1fr)_80px] gap-2">
+      <div
+        className={clsx(
+          'grid grid-cols-[repeat(4,1fr)_80px]',
+          'gap-2 overflow-x-auto overflow-y-hidden'
+        )}
+      >
         <EventRowHeader />
         <EventRow />
       </div>

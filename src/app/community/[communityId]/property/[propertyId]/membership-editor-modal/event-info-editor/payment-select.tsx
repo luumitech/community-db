@@ -13,7 +13,7 @@ export const PaymentSelect: React.FC<Props> = ({ className, yearIdx }) => {
 
   return (
     <Select
-      className={clsx(className, 'max-w-xs')}
+      className={clsx(className, 'min-w-32 max-w-xs')}
       controlName={`membershipList.${yearIdx}.paymentMethod`}
       aria-label="Payment Method"
       items={selectPaymentMethodSections}

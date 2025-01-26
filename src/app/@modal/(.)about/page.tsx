@@ -1,7 +1,6 @@
 'use client';
 import {
   Button,
-  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -60,10 +59,9 @@ export default function About() {
         </ModalBody>
         <ModalFooter>
           <Button
-            as={Link}
-            href={appPath('contactUs')}
             color="primary"
             endContent={<Icon icon="email" />}
+            onPress={() => router.push(appPath('contactUs'))}
           >
             {appLabel('contactUs')}
           </Button>
