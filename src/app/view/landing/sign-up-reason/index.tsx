@@ -33,7 +33,7 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
         </div>
         <ol className="text-base text-left sm:text-lg md:text-xl">
           <ListItem>Absolutely free to start</ListItem>
-          <ListItem>Sign up with google account</ListItem>
+          <ListItem>Sign up with Google account</ListItem>
           <ListItem>Visualize membership in dashboard</ListItem>
           <ListItem>Keep track of event ticket sales</ListItem>
         </ol>

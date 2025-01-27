@@ -1,7 +1,6 @@
 'use client';
 import { useQuery } from '@apollo/client';
 import {
-  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -13,6 +12,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { Loading } from '~/view/base/loading';
 import { MoreMenu } from '../common/more-menu';
 import { CopyShareLink } from './copy-share-link';
 import { NewAccessButton } from './new-access-button';
@@ -149,7 +149,7 @@ export default function Share({ params }: RouteArgs) {
         </TableHeader>
         <TableBody
           isLoading={loading}
-          loadingContent={<Spinner />}
+          loadingContent={<Loading />}
           items={accessList}
         >
           {renderRows()}

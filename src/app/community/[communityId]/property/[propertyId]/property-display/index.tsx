@@ -1,6 +1,5 @@
 import {
   ScrollShadow,
-  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -14,6 +13,7 @@ import { useTableData } from '~/community/[communityId]/property-list/use-table-
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import { insertIf } from '~/lib/insert-if';
+import { Loading } from '~/view/base/loading';
 import { usePageContext } from '../page-context';
 import { EditMembershipButton } from './edit-membership-button';
 
@@ -77,7 +77,7 @@ export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
         <TableBody
           items={rows}
           isLoading={isLoading}
-          loadingContent={<Spinner />}
+          loadingContent={<Loading />}
         >
           {(item) => (
             <TableRow key={item.key}>

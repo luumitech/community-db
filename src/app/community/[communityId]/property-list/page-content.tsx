@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client';
 import {
   Button,
   Link,
-  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -18,6 +17,7 @@ import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Loading } from '~/view/base/loading';
 import { MoreMenu } from './more-menu';
 import { PropertySearchHeader } from './property-search-header';
 import { useTableData } from './use-table-data';
@@ -138,7 +138,7 @@ export const PageContent: React.FC<Props> = (props) => {
         topContentPlacement="outside"
         bottomContent={
           !!pageInfo?.hasNextPage && (
-            <Spinner
+            <Loading
               className="flex w-full justify-center mb-4"
               ref={loadingRef}
             />
@@ -161,7 +161,7 @@ export const PageContent: React.FC<Props> = (props) => {
         </TableHeader>
         <TableBody
           isLoading={loading}
-          loadingContent={<Spinner />}
+          loadingContent={<Loading />}
           emptyContent={emptyContent}
           items={rows}
         >
