@@ -1,3 +1,4 @@
+import { Badge } from '@nextui-org/react';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
@@ -7,6 +8,7 @@ import {
 } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
+import { Icon } from '~/view/base/icon';
 import {
   useHookFormContext,
   type EventAttendedListFieldArray,
@@ -65,6 +67,7 @@ export const EventRow: React.FC<EventRowProps> = ({
     control,
     name: ticketListPrefix,
   });
+  const ticketCount = ticketListMethods.fields.length;
 
   return (
     <>
@@ -72,23 +75,34 @@ export const EventRow: React.FC<EventRowProps> = ({
         className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
         role="row"
       >
-        <div className="pt-3">
-          <motion.div
-            className="justify-self-center text-foreground-400"
-            role="cell"
-            animate={{
-              rotate:
-                isExpanded(eventIdx) && ticketListMethods.fields.length > 0
-                  ? 90
-                  : 0,
-            }}
+        <div
+          className={clsx(
+            'pt-3',
+            // Can't use FlatButton because I want the Badge to be clickable
+            // as well
+            ticketCount === 0
+              ? 'opacity-disabled cursor-default'
+              : 'hover:opacity-hover'
+          )}
+          role="button"
+          onClick={() => toggle(eventIdx)}
+        >
+          <Badge
+            placement="bottom-right"
+            size="sm"
+            variant="flat"
+            content={ticketCount}
           >
-            <FlatButton
-              icon="chevron-forward"
-              disabled={ticketListMethods.fields.length === 0}
-              onClick={() => toggle(eventIdx)}
-            />
-          </motion.div>
+            <motion.div
+              className="justify-self-center text-foreground-400"
+              role="cell"
+              animate={{
+                rotate: isExpanded(eventIdx) && ticketCount > 0 ? 90 : 0,
+              }}
+            >
+              <Icon icon="chevron-forward" />
+            </motion.div>
+          </Badge>
         </div>
         <div role="cell">
           <EventNameSelect yearIdx={yearIdx} eventIdx={eventIdx} />
