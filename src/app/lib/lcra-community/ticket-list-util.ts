@@ -1,4 +1,5 @@
 import { type Ticket } from '@prisma/client';
+import * as R from 'remeda';
 import { parseAsNumber } from '~/lib/number-util';
 import { ITEM_DELIMITER } from './delimiter-util';
 
@@ -52,7 +53,7 @@ export function toTicketList(input: Ticket[]) {
  * field
  */
 export function parseTicketList(input?: string): Ticket[] {
-  if (input == null) {
+  if (input == null || R.isEmpty(input.trim())) {
     return [];
   }
   return input.split(TICKET_DELIMITER).map((ticketStr) => {
