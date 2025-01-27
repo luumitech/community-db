@@ -1,3 +1,4 @@
+import { ScrollShadow } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
@@ -51,22 +52,28 @@ export const TicketInputTable: React.FC<Props> = ({
   }, [error]);
 
   return (
-    <div
-      className={clsx(className, 'grid grid-cols-[repeat(4,1fr)_75px] gap-2')}
-    >
-      <TicketRowHeader />
-      {fields.map((row, ticketIdx) => (
-        <TicketRow
-          key={row.id}
-          controlNamePrefix={`${controlNamePrefix}.${ticketIdx}`}
-          includeHiddenFields={includeHiddenFields}
-          onRemove={() => {
-            fieldMethods.remove(ticketIdx);
-            onRemove?.(ticketIdx);
-          }}
-        />
-      ))}
-      <div className="col-span-full pt-3">{bottomContent}</div>
+    <div>
+      <ScrollShadow
+        className={clsx(className)}
+        orientation="horizontal"
+        hideScrollBar
+      >
+        <div className="grid grid-cols-[repeat(4,1fr)_75px] gap-2">
+          <TicketRowHeader />
+          {fields.map((row, ticketIdx) => (
+            <TicketRow
+              key={row.id}
+              controlNamePrefix={`${controlNamePrefix}.${ticketIdx}`}
+              includeHiddenFields={includeHiddenFields}
+              onRemove={() => {
+                fieldMethods.remove(ticketIdx);
+                onRemove?.(ticketIdx);
+              }}
+            />
+          ))}
+        </div>
+      </ScrollShadow>
+      <div className="pt-3">{bottomContent}</div>
     </div>
   );
 };

@@ -24,7 +24,10 @@ function schema() {
   return z.object({
     communityId: zz.string.nonEmpty(),
     filter: z.object({
-      memberYear: zz.coerce.toNumber('Must select a year'),
+      memberYear: z.coerce
+        .number({ message: 'Must select a year' })
+        .int()
+        .min(1000, 'Must select a year'),
       memberEvent: z.string().nullable(),
     }),
     membership: z.object({
@@ -51,7 +54,7 @@ function defaultInputData(
     communityId,
     filter: {
       memberEvent: filter.memberEvent ?? '',
-      memberYear: filter.memberYear ?? NaN,
+      memberYear: filter.memberYear ?? 0,
     },
     membership: {
       year: getCurrentYear(),
@@ -83,14 +86,14 @@ export function useHookFormWithDisclosure(
   const { reset } = formMethods;
 
   /**
-   * When modal is closed, reset form value with default values derived from
+   * When modal is open, sync form value with latest default values derived from
    * fragment
    */
-  const onModalClose = React.useCallback(() => {
+  const onModalOpen = React.useCallback(() => {
     reset(defaultValues);
   }, [reset, defaultValues]);
   const disclosure = useDisclosure({
-    onClose: onModalClose,
+    onOpen: onModalOpen,
   });
 
   return { disclosure, formMethods, community };

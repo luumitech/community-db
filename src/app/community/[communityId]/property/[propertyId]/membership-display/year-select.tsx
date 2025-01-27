@@ -38,7 +38,7 @@ export const YearSelect: React.FC<Props> = ({
       classNames={{
         base: clsx(className, 'items-start'),
         label: 'whitespace-nowrap',
-        mainWrapper: 'max-w-xs',
+        mainWrapper: 'min-w-32 max-w-xs',
       }}
       // label="Membership Info For Year"
       // labelPlacement="outside-left"

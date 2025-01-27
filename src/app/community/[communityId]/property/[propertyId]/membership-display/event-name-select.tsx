@@ -14,7 +14,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={clsx(className)}
+      className={clsx(className, 'min-w-32 max-w-xs')}
       aria-label="Current Event Name"
       items={visibleEventItems}
       placeholder="Select current event"

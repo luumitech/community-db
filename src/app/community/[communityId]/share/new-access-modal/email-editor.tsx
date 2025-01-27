@@ -6,12 +6,5 @@ interface Props {
 }
 
 export const EmailEditor: React.FC<Props> = ({ className }) => {
-  return (
-    <Input
-      className={className}
-      controlName="email"
-      label="Email"
-      placeholder="Enter email"
-    />
-  );
+  return <Input className={className} controlName="email" label="Email" />;
 };

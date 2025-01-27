@@ -1,12 +1,14 @@
 import { MetadataRoute } from 'next';
+import { env } from 'next-runtime-env';
 
 export default function robots(): MetadataRoute.Robots {
+  const hostname = env('NEXT_PUBLIC_HOSTNAME');
   return {
     rules: {
       userAgent: '*',
       allow: ['/'],
-      disallow: ['/community/', '/api/'],
+      disallow: ['_next/', '/community/', '/api/'],
     },
-    sitemap: ['https://community-db.azurewebsites.net/sitemap.xml'],
+    sitemap: [new URL('/sitemap.xml', hostname!).toString()],
   };
 }

@@ -50,22 +50,20 @@ export const MemberCountChart: React.FC<Props> = ({
 
   return (
     <Card className={clsx(className)}>
-      <CardHeader>
-        <div className="flex w-full justify-between">
-          <div>
-            <p className="font-bold text-md">Total Membership Counts</p>
-            <p className="text-small text-default-500">
-              Click on a year, to view details for each year
-            </p>
-          </div>
-          <YearRangeSelect
-            defaultSelectedKeys={[yearRange.toString()]}
-            onSelectionChange={(keys) => {
-              const [firstKey] = keys;
-              setYearRange(parseInt(firstKey as string, 10));
-            }}
-          />
+      <CardHeader className="justify-between gap-2">
+        <div>
+          <p className="font-bold text-md">Total Membership Counts</p>
+          <p className="text-small text-default-500">
+            Click on a year, to view details for each year
+          </p>
         </div>
+        <YearRangeSelect
+          defaultSelectedKeys={[yearRange.toString()]}
+          onSelectionChange={(keys) => {
+            const [firstKey] = keys;
+            setYearRange(parseInt(firstKey as string, 10));
+          }}
+        />
       </CardHeader>
       <CardBody className="overflow-hidden">
         <Skeleton className="rounded-lg" isLoaded={!result.loading}>

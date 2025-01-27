@@ -12,7 +12,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={clsx(className, 'max-w-xs')}
+      className={clsx(className, 'min-w-32 max-w-xs')}
       controlName="membership.eventAttended.eventName"
       aria-label="Event Name"
       items={selectEventSections}

@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { disclosure, community } = hookForm;
+  const { disclosure } = hookForm;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit } = useHookFormContext();

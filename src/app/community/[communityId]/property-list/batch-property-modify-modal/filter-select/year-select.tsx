@@ -29,9 +29,7 @@ export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
 
   return (
     <Select
-      classNames={{
-        base: className,
-      }}
+      className={clsx(className, 'min-w-32 max-w-xs')}
       controlName="filter.memberYear"
       label="Membership Year"
       size="sm"

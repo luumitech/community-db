@@ -24,7 +24,6 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
         <Input
           label="Notes"
           labelPlacement="outside"
-          placeholder="Enter notes"
           isClearable
           value={line}
           onValueChange={setLine}
@@ -32,13 +31,14 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
         <Button
           variant="bordered"
           color="primary"
+          isDisabled={!line.trim()}
           onPress={() => {
             setValue(
               controlName,
               [
                 shortName,
                 // prefix each message with date
-                `${formatAsDate(new Date())}: ${line}\n`,
+                `${formatAsDate(new Date())}: ${line.trim()}\n`,
                 notes,
               ].join('\n'),
               { shouldDirty: true }
@@ -55,7 +55,6 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
         isControlled
         variant="bordered"
         aria-label="Notes"
-        placeholder="Enter notes"
       />
     </div>
   );

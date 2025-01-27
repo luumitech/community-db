@@ -60,13 +60,13 @@ export const Header: React.FC<Props> = ({}) => {
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
         )} */}
-        <NavbarContent justify="center">
-          <NavbarBrand className="min-w-[36px]">
-            <Link
-              className="gap-1"
-              href={appPath('communityWelcome')}
-              color="foreground"
-            >
+        <NavbarBrand className="flex-grow-0">
+          <Link
+            className="gap-1"
+            href={appPath('communityWelcome')}
+            color="foreground"
+          >
+            <div className="w-[36px]">
               <Image
                 className="object-fit rounded-md"
                 src="/image/community-db-logo.png"
@@ -75,17 +75,29 @@ export const Header: React.FC<Props> = ({}) => {
                 width={36}
                 height={36}
               />
-              {/* Hide appTitle in small layout */}
-              <span className="max-sm:hidden max-w-min leading-5 whitespace-normal text-center text-balance font-bold">
-                {appTitle}
-              </span>
-            </Link>
-          </NavbarBrand>
-        </NavbarContent>
+            </div>
+            {/* Hide appTitle in small layout */}
+            <span className="max-sm:hidden max-w-min leading-5 whitespace-normal text-center text-balance font-bold">
+              {appTitle}
+            </span>
+          </Link>
+        </NavbarBrand>
         {/** Top breadcrumb menu */}
-        <Breadcrumbs>
+        <Breadcrumbs
+          classNames={{
+            // Hide overflow, so items within breadcrumbs can truncate correctly
+            base: 'overflow-hidden',
+          }}
+        >
           {breadcrumbItems.map(({ id, ...entry }) => (
-            <BreadcrumbItem key={id} {...entry} />
+            <BreadcrumbItem
+              classNames={{
+                // Inherit the max-width from parent
+                base: 'max-w-full',
+              }}
+              key={id}
+              {...entry}
+            />
           ))}
         </Breadcrumbs>
         <NavbarContent justify="end">

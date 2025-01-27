@@ -16,9 +16,9 @@ export const MoreMenu: React.FC<Props> = (props) => {
       menuKeys={[
         'propertyList',
         'communityDashboard',
-        // 'communityShare',
+        'communityShare',
         // 'exportEmail',
-        // 'communityExport',
+        'communityExport',
         'divider',
         ...insertIf(canEdit, 'membershipEditor'),
         ...insertIf(canEdit, 'occupantEditor'),

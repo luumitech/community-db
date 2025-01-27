@@ -5,8 +5,6 @@ import React from 'react';
 const cookie = Cookie({
   subsets: ['latin'],
   weight: ['400'],
-  display: 'swap',
-  adjustFontFallback: false,
 });
 
 interface Props {

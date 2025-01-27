@@ -91,11 +91,7 @@ export const EventRow: React.FC<EventRowProps> = ({
           </motion.div>
         </div>
         <div role="cell">
-          <EventNameSelect
-            className="max-w-xs"
-            yearIdx={yearIdx}
-            eventIdx={eventIdx}
-          />
+          <EventNameSelect yearIdx={yearIdx} eventIdx={eventIdx} />
         </div>
         <div role="cell">
           <EventDatePicker

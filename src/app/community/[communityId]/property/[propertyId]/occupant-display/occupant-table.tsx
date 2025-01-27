@@ -1,12 +1,13 @@
 import {
+  ScrollShadow,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
-  TableProps,
   TableRow,
   getKeyValue,
+  type TableProps,
 } from '@nextui-org/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
@@ -77,24 +78,27 @@ export const OccupantTable: React.FC<Props> = ({
   );
 
   return (
-    <Table
-      className={className}
-      aria-label="Occupant Table"
-      removeWrapper
-      bottomContent={bottomContent}
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-      <TableBody items={rows}>
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <ScrollShadow className={className} orientation="horizontal" hideScrollBar>
+      <Table
+        aria-label="Occupant Table"
+        removeWrapper
+        bottomContent={bottomContent}
+      >
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+        <TableBody items={rows}>
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </ScrollShadow>
   );
 };

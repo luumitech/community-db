@@ -71,7 +71,7 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           className={className}
           variant="bordered"
           label="Mailing Address"
-          placeholder="i.e. 6587 Roller Derby Lane"
+          placeholder="eg. 6587 Roller Derby Lane"
           onChange={(evt) => setAddress(evt.currentTarget.value)}
           endContent={
             <Button

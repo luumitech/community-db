@@ -1,3 +1,4 @@
+import { ScrollShadow } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
@@ -58,29 +59,33 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   return (
     <div className={clsx(className, 'flex flex-col gap-2')}>
       {topContent}
-      <div className="grid grid-cols-[40px_repeat(4,1fr)_80px] gap-2">
-        <EventRowHeader />
-        {fields.length === 0 && (
-          <div
-            className={clsx(
-              'col-span-full h-8',
-              'justify-self-center content-center'
-            )}
-          >
-            <div className="text-sm text-foreground-500">
-              No data to display
+      <ScrollShadow orientation="horizontal" hideScrollBar>
+        <div
+          className={clsx('grid grid-cols-[40px_repeat(4,1fr)_80px]', 'gap-2')}
+        >
+          <EventRowHeader />
+          {fields.length === 0 && (
+            <div
+              className={clsx(
+                'col-span-full h-8',
+                'justify-self-center content-center'
+              )}
+            >
+              <div className="text-sm text-foreground-500">
+                No data to display
+              </div>
             </div>
-          </div>
-        )}
-        {fields.map((field, eventIdx) => (
-          <EventRow
-            key={field.id}
-            eventAttendedListMethods={eventAttendedListMethods}
-            yearIdx={yearIdx}
-            eventIdx={eventIdx}
-          />
-        ))}
-      </div>
+          )}
+          {fields.map((field, eventIdx) => (
+            <EventRow
+              key={field.id}
+              eventAttendedListMethods={eventAttendedListMethods}
+              yearIdx={yearIdx}
+              eventIdx={eventIdx}
+            />
+          ))}
+        </div>
+      </ScrollShadow>
       {bottomContent}
     </div>
   );

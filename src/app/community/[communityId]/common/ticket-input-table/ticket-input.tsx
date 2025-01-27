@@ -38,7 +38,7 @@ export const TicketInput: React.FC<Props> = ({
 
   return (
     <Input
-      className={clsx(className)}
+      className={clsx(className, 'min-w-12')}
       controlName={`${controlNamePrefix}.count`}
       aria-label="Ticket #"
       variant="underlined"

@@ -47,9 +47,9 @@ export const PageContent: React.FC<Props> = (props) => {
         controlName="name"
         autoFocus
         label="Community name"
-        placeholder="Enter community name"
+        placeholder="eg. Wellness Ratepayer Association"
         isRequired
-        description="After you have created and imported a community, you can still change the name later."
+        description="The name can still be changed after the community has been created."
       />
       <Button
         className="mt-2"

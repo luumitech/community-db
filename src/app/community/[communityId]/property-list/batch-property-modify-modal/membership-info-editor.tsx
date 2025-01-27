@@ -10,14 +10,14 @@ interface Props {
 }
 
 export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
-  const { communityUi, minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useAppContext();
 
   return (
     <div className={clsx(className)}>
       Specify new event to add:
       <Card className="mt-2">
         <CardHeader className="gap-2">
-          <YearSelect className="max-w-sm" yearRange={[minYear, maxYear]} />
+          <YearSelect yearRange={[minYear, maxYear]} />
         </CardHeader>
         <CardBody className="gap-2">
           <EventInfoEditor />

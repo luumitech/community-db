@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import { useWindowSize } from 'usehooks-ts';
+import { useResizeObserver, useWindowSize } from 'usehooks-ts';
 
 interface Props {
   className?: string;
@@ -12,8 +12,9 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   const { status } = useSession();
-  const { width } = useWindowSize();
+  const { width: windowWidth } = useWindowSize();
   const divRef = React.useRef<HTMLDivElement>(null);
+  const { width: menuWidth } = useResizeObserver({ ref: divRef });
   const [leftPos, setLeftPos] = React.useState<number>();
 
   React.useEffect(() => {
@@ -23,14 +24,17 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
      * left postion
      */
     const elem = document.getElementById('nav-bar-avatar');
-    const divWidth = divRef.current?.offsetWidth;
-    if (elem && divWidth) {
+    if (elem && menuWidth) {
       const rect = elem.getBoundingClientRect();
-      setLeftPos(rect.right - divWidth);
+      setLeftPos(rect.right - menuWidth);
+      // Update placeholder element width so rest of header bar would render correctly
+      elem.style.width = `${menuWidth}px`;
     }
   }, [
-    // we want to recalculate button position when screen size changes
-    width,
+    // we want to recalculate button position when screen size changes or
+    // when the header menu width changes
+    windowWidth,
+    menuWidth,
   ]);
 
   if (status !== 'authenticated') {

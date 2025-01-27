@@ -3,6 +3,7 @@ import {
   DatePicker as NextUIDatePicker,
   DatePickerProps as NextUIDatePickerProps,
 } from '@nextui-org/react';
+import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
@@ -18,7 +19,10 @@ interface DatePickerProps extends NextUIDatePickerProps {
 }
 
 export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
-  ({ controlName, isControlled, onChange, onBlur, ...props }, ref) => {
+  (
+    { className, controlName, isControlled, onChange, onBlur, ...props },
+    ref
+  ) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
@@ -38,6 +42,8 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
           return (
             <NextUIDatePicker
               ref={ref}
+              // Reserve enough space for 12/31/9999
+              className={clsx(className, 'min-w-32')}
               // Force component into a controlled component
               {...(isControlled && { value })}
               defaultValue={value}

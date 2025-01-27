@@ -1,16 +1,17 @@
 import { Input, InputProps } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
-import { NumericFormat, type NumericFormatProps } from 'react-number-format';
+import { PatternFormat, type PatternFormatProps } from 'react-number-format';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
 export { SelectItem, SelectSection } from '@nextui-org/react';
 
-type CustomInputProps = Omit<InputProps, keyof NumericFormatProps>;
+type CustomPatternFormatProps = Omit<PatternFormatProps, 'format'>;
+type CustomInputProps = Omit<InputProps, keyof CustomPatternFormatProps>;
 
-export interface CurrencyInputProps
-  extends NumericFormatProps,
+export interface PhoneInputProps
+  extends CustomPatternFormatProps,
     CustomInputProps {
   controlName: string;
   /**
@@ -20,10 +21,7 @@ export interface CurrencyInputProps
   isControlled?: boolean;
 }
 
-export const CurrencyInput = React.forwardRef<
-  HTMLInputElement,
-  CurrencyInputProps
->(
+export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (
     { className, controlName, isControlled, onBlur, onChange, ...props },
     ref
@@ -41,10 +39,10 @@ export const CurrencyInput = React.forwardRef<
         control={control}
         name={controlName}
         render={({ field }) => (
-          <NumericFormat
+          <PatternFormat
             ref={ref}
-            // Enough space for $99.99
-            className={clsx(className, 'min-w-20')}
+            // Enough space for (999)999-9999
+            className={clsx(className, 'min-w-40')}
             // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
             customInput={Input}
             defaultValue={field.value ?? ''}
@@ -60,15 +58,9 @@ export const CurrencyInput = React.forwardRef<
             }}
             errorMessage={error}
             isInvalid={!!error}
-            thousandSeparator=","
-            decimalSeparator="."
-            decimalScale={2}
-            fixedDecimalScale
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">$</span>
-              </div>
-            }
+            format="(###) ###-####"
+            mask="_"
+            allowEmptyFormatting
             {...props}
           />
         )}
@@ -77,4 +69,4 @@ export const CurrencyInput = React.forwardRef<
   }
 );
 
-CurrencyInput.displayName = 'CurrencyInput';
+PhoneInput.displayName = 'PhoneInput';
