@@ -11,8 +11,8 @@ export const NameEditor: React.FC<Props> = ({ className }) => {
       className={className}
       controlName="name"
       variant="bordered"
-      label="Name"
-      placeholder="Enter community name"
+      label="Community Name"
+      placeholder="eg. Wellness Ratepayer Association"
     />
   );
 };

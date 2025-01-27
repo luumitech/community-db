@@ -1,4 +1,4 @@
-import { Divider } from '@nextui-org/react';
+import { Divider, ScrollShadow } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
@@ -13,46 +13,48 @@ interface Props {
 
 export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
   return (
-    <div
-      className={clsx(
-        className,
-        'grid grid-cols-[repeat(4,max-content)] gap-x-8 gap-y-2',
-        'overflow-x-auto overflow-y-hidden'
-      )}
+    <ScrollShadow
+      className={clsx(className)}
+      orientation="horizontal"
+      hideScrollBar
     >
-      <TicketRowHeader />
-      {ticketList.length === 0 && (
-        <div
-          className={clsx(
-            'col-span-full h-8',
-            'justify-self-center content-center'
-          )}
-        >
-          <div className="text-sm text-foreground-500">No data to display</div>
-        </div>
-      )}
-      {ticketList.map((ticket) => (
-        <TicketRow
-          key={`${ticket.ticketName}-${ticket.paymentMethod}`}
-          ticket={ticket}
-        />
-      ))}
-      {ticketList.length > 0 && (
-        <>
-          <div className="col-span-full">
-            <Divider />
+      <div className="grid grid-cols-[repeat(4,max-content)] gap-x-8 gap-y-2">
+        <TicketRowHeader />
+        {ticketList.length === 0 && (
+          <div
+            className={clsx(
+              'col-span-full h-8',
+              'justify-self-center content-center'
+            )}
+          >
+            <div className="text-sm text-foreground-500">
+              No data to display
+            </div>
           </div>
+        )}
+        {ticketList.map((ticket) => (
           <TicketRow
-            ticket={{
-              __typename: 'TicketStat',
-              ticketName: '',
-              count: R.sumBy(ticketList, ({ count }) => count),
-              price: decSum(ticketList.map(({ price }) => price)),
-              paymentMethod: '',
-            }}
+            key={`${ticket.ticketName}-${ticket.paymentMethod}`}
+            ticket={ticket}
           />
-        </>
-      )}
-    </div>
+        ))}
+        {ticketList.length > 0 && (
+          <>
+            <div className="col-span-full">
+              <Divider />
+            </div>
+            <TicketRow
+              ticket={{
+                __typename: 'TicketStat',
+                ticketName: '',
+                count: R.sumBy(ticketList, ({ count }) => count),
+                price: decSum(ticketList.map(({ price }) => price)),
+                paymentMethod: '',
+              }}
+            />
+          </>
+        )}
+      </div>
+    </ScrollShadow>
   );
 };

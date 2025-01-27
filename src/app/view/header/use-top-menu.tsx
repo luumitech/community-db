@@ -63,7 +63,12 @@ export function useTopMenu() {
               href: appPath('propertyList', {
                 path: { communityId: ctxCommunityId },
               }),
-              children: <CommunityName communityName={communityName} />,
+              children: (
+                <BreadcrumbLabel
+                  label={communityName ?? ''}
+                  loading={communityName == null}
+                />
+              ),
             });
             handleSingleCommunity(ctxCommunityId);
           }
@@ -132,13 +137,13 @@ export function useTopMenu() {
   return menuItems;
 }
 
-/** Get community name from Id */
-const CommunityName: React.FC<{ communityName: string | undefined }> = ({
-  communityName,
+const BreadcrumbLabel: React.FC<{ label: string; loading?: boolean }> = ({
+  label,
+  loading,
 }) => {
   return (
-    <Skeleton className="rounded-lg" isLoaded={communityName != null}>
-      <div className="px-1">{communityName ?? ''}</div>
+    <Skeleton className="rounded-lg max-w-full" isLoaded={!loading}>
+      <div className="overflow-hidden text-ellipsis">{label ?? ''}</div>
     </Skeleton>
   );
 };
@@ -165,9 +170,5 @@ const PropertyAddress: React.FC<{
   });
   const address = result.data?.communityFromId.propertyFromId.address;
 
-  return (
-    <Skeleton className="rounded-lg" isLoaded={!result.loading}>
-      <div className="px-1">{address ?? ''}</div>
-    </Skeleton>
-  );
+  return <BreadcrumbLabel label={address ?? ''} loading={result.loading} />;
 };

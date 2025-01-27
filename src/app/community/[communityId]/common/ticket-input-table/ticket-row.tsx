@@ -67,7 +67,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           includeHiddenFields={includeHiddenFields}
         />
       </div>
-      <div className="flex items-center gap-2" role="cell">
+      <div className="flex pt-3 gap-2" role="cell">
         <FlatButton
           className="text-danger"
           icon="trash"

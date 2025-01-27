@@ -1,4 +1,5 @@
 import {
+  ScrollShadow,
   Spinner,
   Table,
   TableBody,
@@ -6,8 +7,6 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  type SlotsToClasses,
-  type TableSlots,
 } from '@nextui-org/react';
 import React from 'react';
 import type { PropertyEntry } from '~/community/[communityId]/property-list/_type';
@@ -28,11 +27,11 @@ const PropertyDisplayFragment = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  classNames?: SlotsToClasses<TableSlots>;
+  className?: string;
   isLoading?: boolean;
 }
 
-export const PropertyDisplay: React.FC<Props> = ({ classNames, isLoading }) => {
+export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
   const { property } = usePageContext();
   const { canEdit } = useAppContext();
   const entry = getFragment(PropertyDisplayFragment, property);
@@ -59,36 +58,36 @@ export const PropertyDisplay: React.FC<Props> = ({ classNames, isLoading }) => {
   );
 
   return (
-    <Table
-      classNames={{
-        // Leave enough space for one row of data only
-        emptyWrapper: 'h-[40px]',
-        base: 'overflow-x-auto overflow-y-hidden',
-        ...classNames,
-      }}
-      aria-label="Property Info"
-      removeWrapper
-    >
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.key} className={column.className}>
-            {column.label}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody
-        items={rows}
-        isLoading={isLoading}
-        loadingContent={<Spinner />}
+    <ScrollShadow className={className} orientation="horizontal" hideScrollBar>
+      <Table
+        classNames={{
+          // Leave enough space for one row of data only
+          emptyWrapper: 'h-[40px]',
+        }}
+        aria-label="Property Info"
+        removeWrapper
       >
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key} className={column.className}>
+              {column.label}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          items={rows}
+          isLoading={isLoading}
+          loadingContent={<Spinner />}
+        >
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </ScrollShadow>
   );
 };

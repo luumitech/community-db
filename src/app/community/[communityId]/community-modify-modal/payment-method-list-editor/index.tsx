@@ -78,21 +78,21 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
       <div className="flex gap-2 items-start">
         <Input
           className="max-w-xs"
-          aria-label="New payment method"
-          placeholder="Enter new payment method"
+          label="New payment method"
           value={newItem}
           onValueChange={setNewItem}
           errorMessage="Method name must be unique"
           isInvalid={!isItemValid(newItem)}
         />
         <Button
+          className="h-14"
           variant="bordered"
           color="primary"
           endContent={<Icon icon="add" />}
           onPress={addNewItem}
           isDisabled={addIsDisabled}
         >
-          Add Payment Method
+          Add
         </Button>
       </div>
       {hiddenPaymentMethods.fields.length > 0 && (

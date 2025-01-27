@@ -27,6 +27,8 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
     if (elem && menuWidth) {
       const rect = elem.getBoundingClientRect();
       setLeftPos(rect.right - menuWidth);
+      // Update placeholder element width so rest of header bar would render correctly
+      elem.style.width = `${menuWidth}px`;
     }
   }, [
     // we want to recalculate button position when screen size changes or

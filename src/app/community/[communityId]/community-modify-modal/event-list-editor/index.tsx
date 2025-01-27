@@ -76,21 +76,21 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
       <div className="flex gap-2 items-start">
         <Input
           className="max-w-xs"
-          aria-label="New event name"
-          placeholder="Enter new event name"
+          label="New event name"
           value={newItem}
           onValueChange={setNewItem}
           errorMessage="Event name must be unique"
           isInvalid={!isItemValid(newItem)}
         />
         <Button
+          className="h-14"
           variant="bordered"
           color="primary"
           endContent={<Icon icon="add" />}
           onPress={addNewItem}
           isDisabled={addIsDisabled}
         >
-          Add Event
+          Add
         </Button>
       </div>
       {hiddenEventList.fields.length > 0 && (

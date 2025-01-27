@@ -1,3 +1,4 @@
+import { ScrollShadow } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useHookFormContext } from '../use-hook-form';
@@ -13,15 +14,12 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={clsx(className, 'flex flex-col gap-2')}>
-      <div
-        className={clsx(
-          'grid grid-cols-[repeat(4,1fr)_80px]',
-          'gap-2 overflow-x-auto overflow-y-hidden'
-        )}
-      >
-        <EventRowHeader />
-        <EventRow />
-      </div>
+      <ScrollShadow orientation="horizontal" hideScrollBar>
+        <div className={clsx('grid grid-cols-[repeat(4,1fr)_80px]', 'gap-2')}>
+          <EventRowHeader />
+          <EventRow />
+        </div>
+      </ScrollShadow>
       <p className="text-sm">
         <span className="font-semibold">NOTE:</span> The event{' '}
         <span className="font-semibold text-foreground-500">Price</span> and{' '}

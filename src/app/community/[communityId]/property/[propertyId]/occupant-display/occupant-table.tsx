@@ -1,13 +1,12 @@
 import {
+  ScrollShadow,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
-  TableSlots,
   getKeyValue,
-  type SlotsToClasses,
   type TableProps,
 } from '@nextui-org/react';
 import React from 'react';
@@ -30,13 +29,13 @@ function formatPhoneNumber(phoneNumber: string) {
 }
 
 interface Props {
-  classNames?: SlotsToClasses<TableSlots>;
+  className?: string;
   occupantList: OccupantEntry[];
   bottomContent?: TableProps['bottomContent'];
 }
 
 export const OccupantTable: React.FC<Props> = ({
-  classNames,
+  className,
   occupantList,
   bottomContent,
 }) => {
@@ -79,27 +78,27 @@ export const OccupantTable: React.FC<Props> = ({
   );
 
   return (
-    <Table
-      classNames={{
-        base: 'overflow-x-auto overflow-y-hidden',
-        ...classNames,
-      }}
-      aria-label="Occupant Table"
-      removeWrapper
-      bottomContent={bottomContent}
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-      <TableBody items={rows}>
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <ScrollShadow className={className} orientation="horizontal" hideScrollBar>
+      <Table
+        aria-label="Occupant Table"
+        removeWrapper
+        bottomContent={bottomContent}
+      >
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+        <TableBody items={rows}>
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </ScrollShadow>
   );
 };

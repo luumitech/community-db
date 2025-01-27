@@ -24,7 +24,6 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
         <Input
           label="Notes"
           labelPlacement="outside"
-          placeholder="Enter notes"
           isClearable
           value={line}
           onValueChange={setLine}
@@ -56,7 +55,6 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
         isControlled
         variant="bordered"
         aria-label="Notes"
-        placeholder="Enter notes"
       />
     </div>
   );

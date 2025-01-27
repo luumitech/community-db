@@ -29,7 +29,6 @@ export const PaymentSelect: React.FC<Props> = ({
         aria-label="Payment Method"
         items={items}
         variant="underlined"
-        // placeholder="Select a payment method"
         selectionMode="single"
       >
         {(section) => (

@@ -20,7 +20,7 @@ export const EmailEditor: React.FC<Props> = ({ className }) => {
         variant="bordered"
         label="Subject"
         isRequired
-        placeholder="Enter email subject"
+        placeholder="eg. How to export data?"
       />
       <Input
         className={className}
@@ -36,15 +36,13 @@ export const EmailEditor: React.FC<Props> = ({ className }) => {
          * See: https://github.com/nextui-org/nextui/issues/1996
          */
         // type="email"
-        placeholder="Your email address"
         description="We'll never share your email with anyone else."
       />
       <Input
         className={className}
         controlName="contactName"
         variant="bordered"
-        label="Name"
-        placeholder="Your name"
+        label="Your Name"
       />
       <Divider />
       <Textarea

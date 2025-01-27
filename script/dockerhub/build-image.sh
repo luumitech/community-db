@@ -72,7 +72,6 @@ echo "  GIT_COMMIT_HASH=${GIT_COMMIT_HASH}"
 (
   set -ex
   docker buildx build \
-    --network=host \
     --platform linux/amd64 \
     -t ${CONTAINER_REGISTRY}/${DOCKER_IMAGE}:${TAG} \
     --build-arg APP_VERSION=${APP_VERSION} \
