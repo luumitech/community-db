@@ -2,17 +2,18 @@ import { Tooltip } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
 import { Icon, type IconProps } from '~/view/base/icon';
 
-interface Props
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLSpanElement>,
-    HTMLSpanElement
-  > {
+type DivProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
+interface Props extends DivProps {
   className?: string;
-  icon: IconProps['icon'];
+  /** Render a plain button with an icon. */
+  icon?: IconProps['icon'];
   disabled?: boolean;
   /** Tooltip description */
   tooltip?: string;
@@ -22,16 +23,16 @@ interface Props
    */
   confirmation?: boolean;
   confirmationArg?: ConfirmationModalArg;
+  onClick?: DivProps['onClick'];
 }
 
 type OnClickFn = NonNullable<Props['onClick']>;
 
-export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
+export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
   (
     { className, tooltip, confirmation, confirmationArg, onClick, ...props },
     ref
   ) => {
-    const spanRef = useForwardRef<HTMLSpanElement>(ref);
     const { confirmationModal } = useAppContext();
     const { open } = confirmationModal;
 
@@ -52,11 +53,11 @@ export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
     );
 
     const renderButton = React.useMemo(() => {
-      const { icon, disabled, ...other } = props;
+      const { icon, disabled, children, ...other } = props;
 
       return (
-        <span
-          ref={spanRef}
+        <div
+          ref={ref}
           role="button"
           className={clsx(
             className,
@@ -65,10 +66,11 @@ export const FlatButton = React.forwardRef<HTMLSpanElement, Props>(
           {...(!disabled && { onClick: customOnClick })}
           {...other}
         >
-          <Icon icon={icon} size={16} />
-        </span>
+          {icon != null && <Icon icon={icon} size={16} />}
+          {children}
+        </div>
       );
-    }, [spanRef, className, props, customOnClick]);
+    }, [ref, className, props, customOnClick]);
 
     return tooltip ? (
       <Tooltip content={tooltip}>{renderButton}</Tooltip>
