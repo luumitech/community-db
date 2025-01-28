@@ -12,6 +12,7 @@ export const Loading = React.forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={ref}
+        aria-label="Loading"
         className={clsx(className, 'text-primary-300 px-4 py-2')}
         {...props}
       >
