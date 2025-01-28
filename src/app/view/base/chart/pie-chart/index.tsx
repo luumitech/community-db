@@ -1,15 +1,24 @@
-import { ResponsivePie, type MayHaveLabel, type PieSvgProps } from '@nivo/pie';
+import { type LegendProps } from '@nivo/legends';
+import {
+  ResponsivePie,
+  type DefaultRawDatum,
+  type MayHaveLabel,
+  type PieSvgProps,
+} from '@nivo/pie';
 import clsx from 'clsx';
 import React from 'react';
-import { COLOR_SCHEME } from '../item-color';
+import * as R from 'remeda';
+import { COLOR_SCHEME, getItemColor } from '../item-color';
 import { useNivoTheme } from '../theme';
 
-export interface PieChartProps<T extends MayHaveLabel>
+type DataT = DefaultRawDatum & MayHaveLabel;
+
+export interface PieChartProps<T extends DataT>
   extends Omit<PieSvgProps<T>, 'width' | 'height'> {
   className?: string;
 }
 
-export function PieChart<T extends MayHaveLabel>({
+export function PieChart<T extends DataT>({
   className,
   ...props
 }: PieChartProps<T>) {
@@ -23,6 +32,48 @@ export function PieChart<T extends MayHaveLabel>({
     };
     return result;
   }, []);
+
+  /**
+   * If there are too many slices, they can't all fit on one row. So split them
+   * up to multiple rows and render the legends accordingly
+   */
+  const customLegend = React.useCallback(
+    (dataList: readonly T[], chunkSize: number): LegendProps[] => {
+      const legendProps: LegendProps = {
+        anchor: 'bottom',
+        direction: 'row',
+        justify: false,
+        translateX: 0,
+        itemsSpacing: 0,
+        itemWidth: 100,
+        itemHeight: 18,
+        itemDirection: 'left-to-right',
+        itemOpacity: 1,
+        symbolSize: 18,
+        symbolShape: 'circle',
+        effects: [
+          {
+            on: 'hover',
+            style: { itemOpacity: 1 },
+          },
+        ],
+      };
+
+      const dataChunk = R.chunk(dataList, chunkSize);
+      return dataChunk.map((chunk, chunkIdx) => {
+        return {
+          ...legendProps,
+          translateY: 56 + chunkIdx * (legendProps.itemHeight + 5),
+          data: (chunk as T[]).map((dataEntry, dataIdx) => ({
+            ...dataEntry,
+            label: dataEntry.label ?? '',
+            color: getItemColor(chunkIdx * chunkSize + dataIdx),
+          })),
+        };
+      });
+    },
+    []
+  );
 
   return (
     <div className={clsx(className)}>
@@ -47,30 +98,7 @@ export function PieChart<T extends MayHaveLabel>({
           from: 'color',
           modifiers: [['darker', 2]],
         }}
-        legends={[
-          {
-            anchor: 'bottom',
-            direction: 'row',
-            justify: false,
-            translateX: 0,
-            translateY: 56,
-            itemsSpacing: 0,
-            itemWidth: 100,
-            itemHeight: 18,
-            itemDirection: 'left-to-right',
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: 'circle',
-            effects: [
-              {
-                on: 'hover',
-                style: {
-                  itemOpacity: 1,
-                },
-              },
-            ],
-          },
-        ]}
+        legends={customLegend(props.data, 3)}
         {...props}
       />
     </div>
