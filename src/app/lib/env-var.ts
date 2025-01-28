@@ -1,6 +1,6 @@
 export const appTitle = 'Community Database';
 export const appDescription =
-  'Community Membership Database made specifically for nonprofits. Easy to use, keep tracks of events and membership information.';
+  'Community Membership Database designed specifically for nonprofits. Easy to use, keep tracks of events and membership information.';
 
 /** Is the app running in production mode? */
 export function isProduction() {

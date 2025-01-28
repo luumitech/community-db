@@ -75,16 +75,9 @@ export const EventRow: React.FC<EventRowProps> = ({
         className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
         role="row"
       >
-        <div
-          className={clsx(
-            'pt-3',
-            // Can't use FlatButton because I want the Badge to be clickable
-            // as well
-            ticketCount === 0
-              ? 'opacity-disabled cursor-default'
-              : 'hover:opacity-hover'
-          )}
-          role="button"
+        <FlatButton
+          className={clsx('pt-3')}
+          disabled={ticketCount === 0}
           onClick={() => toggle(eventIdx)}
         >
           <Badge
@@ -103,7 +96,7 @@ export const EventRow: React.FC<EventRowProps> = ({
               <Icon icon="chevron-forward" />
             </motion.div>
           </Badge>
-        </div>
+        </FlatButton>
         <div role="cell">
           <EventNameSelect yearIdx={yearIdx} eventIdx={eventIdx} />
         </div>

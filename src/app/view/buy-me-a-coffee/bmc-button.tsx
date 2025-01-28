@@ -17,7 +17,6 @@ export const BmcButton: React.FC<Props> = ({ className }) => {
         alt="Buy Me A Coffee"
         // Original dimension is 217px x 60px
         width={122}
-        height={35}
       />
     </Link>
   );
