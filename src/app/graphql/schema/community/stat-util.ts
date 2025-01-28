@@ -1,4 +1,5 @@
 import {
+  Membership,
   Property,
   SupportedEventItem,
   SupportedPaymentMethod,
@@ -55,22 +56,36 @@ export interface EventStat {
   new: number;
   /** Members who have already joined */
   existing: number;
+  /** Membership statistics for this event, indexed by payment method */
+  membershipMap: MembershipMap;
   /** Ticket statistics for this event, indexed by ticket name */
   ticketMap: TicketMap;
 }
 
-/** Ticket statistics for a given event */
-export interface TicketStat {
-  /** Ticket name associated to this entry */
-  ticketName: string;
-  /** Ticket count for this type of ticket */
+/** Membership statistics for a given event */
+export interface MembershipStat {
+  /** Membership count for this group of MembershipStat */
   count: number;
-  /** Ticket price for this type of ticket */
+  /** Total Membership collected for this group of MembershipStat */
   price: string;
-  /** Payment method used to paid for ticket */
+  /** Payment method used for this group of MembershipStat */
   paymentMethod: string;
 }
 
+/** Ticket statistics for a given event */
+export interface TicketStat {
+  /** Ticket name for this group of TicketStat */
+  ticketName: string;
+  /** Ticket count for this group of TicketStat */
+  count: number;
+  /** Total ticket sold for this group of TicketStat */
+  price: string;
+  /** Payment method used for this group of TicketStat */
+  paymentMethod: string;
+}
+
+// keyed by payment method
+type MembershipMap = Map<string, MembershipStat>;
 // keyed by payment method
 type TicketPaymentMap = Map<string, TicketStat>;
 // keyed by ticket name
@@ -106,6 +121,16 @@ export class StatUtil {
     communityStat.supportedPaymentMethods.forEach((entry) => {
       this.allPaymentMethods.add(entry.name);
     });
+  }
+
+  /** Add membership entry into the membershipMap */
+  private addMembershipToMap(membershipMap: MembershipMap, entry: Membership) {
+    const { paymentMethod, price } = entry;
+    const membershipEntry = membershipMap.get(paymentMethod ?? '');
+    if (membershipEntry) {
+      membershipEntry.count++;
+      membershipEntry.price = decSum([membershipEntry.price, price]);
+    }
   }
 
   /** Add list of tickets into the ticketMap */
@@ -173,6 +198,15 @@ export class StatUtil {
   ) {
     const eventMap = new Map<string, EventStat>();
     this.allEvents.forEach((eventName) => {
+      const membershipMap = new Map<string, MembershipStat>();
+      this.allPaymentMethods.forEach((paymentMethod) => {
+        membershipMap.set(paymentMethod, {
+          count: 0,
+          price: '0',
+          paymentMethod,
+        });
+      });
+
       const ticketMap = new Map<string, TicketPaymentMap>();
       this.allTickets.forEach((ticketName) => {
         const ticketPaymentMap = new Map<string, TicketStat>();
@@ -192,6 +226,7 @@ export class StatUtil {
         new: 0,
         renew: 0,
         existing: 0,
+        membershipMap,
         ticketMap,
       });
     });
@@ -213,6 +248,7 @@ export class StatUtil {
             } else {
               joinEntry.new++;
             }
+            this.addMembershipToMap(joinEntry.membershipMap, entry);
             this.addTicketToMap(joinEntry.ticketMap, joinEvent.ticketList);
           }
           otherEvent.forEach((event) => {

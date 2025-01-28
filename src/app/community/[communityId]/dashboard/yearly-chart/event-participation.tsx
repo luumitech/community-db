@@ -5,6 +5,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { BarChart } from '~/view/base/chart';
 import { type DashboardEntry } from './_type';
+import { useYearlyContext } from './yearly-context';
 
 const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
@@ -59,6 +60,7 @@ export const EventParticipation: React.FC<Props> = ({
   year,
   isLoading,
 }) => {
+  const { setEventSelected } = useYearlyContext();
   const entry = getFragment(EventFragment, fragment);
 
   const chartData = React.useMemo(() => {
@@ -100,6 +102,7 @@ export const EventParticipation: React.FC<Props> = ({
             legendProp={{
               translateY: 90,
             }}
+            onDataClick={(data) => setEventSelected(data.eventName)}
           />
         </Skeleton>
       </CardBody>

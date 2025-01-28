@@ -2,16 +2,22 @@ import { Divider, ScrollShadow } from '@nextui-org/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
-import { type TicketStat } from './_type';
+import { type MembershipStat } from './_type';
 import { TableHeader, TableRow, TableSumRow } from './table-row';
 
 export interface Props {
   className?: string;
-  ticketList: TicketStat[];
+  membershipList: MembershipStat[];
 }
 
-export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
-  const ticketByPaymentMethod = R.groupBy(ticketList, R.prop('paymentMethod'));
+export const MembershipSaleTable: React.FC<Props> = ({
+  className,
+  membershipList,
+}) => {
+  const membershipByPaymentMethod = R.groupBy(
+    membershipList,
+    R.prop('paymentMethod')
+  );
 
   return (
     <ScrollShadow
@@ -21,7 +27,7 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
     >
       <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
         <TableHeader />
-        {ticketList.length === 0 && (
+        {membershipList.length === 0 && (
           <div
             className={clsx(
               'col-span-full h-8',
@@ -33,23 +39,23 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
             </div>
           </div>
         )}
-        {ticketList.map((ticket) => (
+        {membershipList.map((membership) => (
           <TableRow
-            key={`${ticket.ticketName}-${ticket.paymentMethod}`}
-            ticket={ticket}
+            key={`${membership.eventName}-${membership.paymentMethod}`}
+            membership={membership}
           />
         ))}
-        {ticketList.length > 0 && (
+        {membershipList.length > 0 && (
           <>
             <div className="col-span-full">
               <Divider />
             </div>
-            {Object.entries(ticketByPaymentMethod).map(
-              ([paymentMethod, tickets]) => {
+            {Object.entries(membershipByPaymentMethod).map(
+              ([paymentMethod, memberships]) => {
                 return (
                   <TableSumRow
                     key={paymentMethod}
-                    ticketList={tickets}
+                    membershipList={memberships}
                     paymentMethod={paymentMethod}
                   />
                 );
@@ -58,7 +64,7 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
             <div className="col-span-full">
               <Divider />
             </div>
-            <TableSumRow ticketList={ticketList} />
+            <TableSumRow membershipList={membershipList} />
           </>
         )}
       </div>

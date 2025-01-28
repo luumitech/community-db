@@ -5,6 +5,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { type DashboardEntry } from './_type';
+import { useYearlyContext } from './yearly-context';
 
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
@@ -60,6 +61,7 @@ export const MembershipSource: React.FC<Props> = ({
   year,
   isLoading,
 }) => {
+  const { setEventSelected } = useYearlyContext();
   const entry = getFragment(MembershipSourceFragment, fragment);
 
   const chartData = React.useMemo(() => {
@@ -80,7 +82,11 @@ export const MembershipSource: React.FC<Props> = ({
       </CardHeader>
       <CardBody className="overflow-hidden">
         <Skeleton className="rounded-lg" isLoaded={!isLoading}>
-          <PieChart className="h-[400px]" data={chartData} />
+          <PieChart
+            className="h-[400px]"
+            data={chartData}
+            onClick={(data) => setEventSelected(data.data.label)}
+          />
         </Skeleton>
       </CardBody>
     </Card>
