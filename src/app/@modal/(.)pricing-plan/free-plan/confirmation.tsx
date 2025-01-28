@@ -1,4 +1,4 @@
-import { Button, Spacer } from '@nextui-org/react';
+import { Button, Spacer } from '@heroui/react';
 import clsx from 'clsx';
 import { env } from 'next-runtime-env';
 import React from 'react';

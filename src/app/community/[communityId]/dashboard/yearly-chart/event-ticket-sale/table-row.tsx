@@ -1,13 +1,16 @@
 import clsx from 'clsx';
 import React from 'react';
-import { formatCurrency } from '~/lib/decimal-util';
+import * as R from 'remeda';
+import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { type TicketStat } from './_type';
 
-interface TicketHeaderProps {
+type TicketStatEntry = Omit<TicketStat, '__typename'>;
+
+interface TableHeaderProps {
   className?: string;
 }
 
-export const TicketRowHeader: React.FC<TicketHeaderProps> = ({ className }) => {
+export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
   return (
     <div
       className={clsx(
@@ -27,12 +30,12 @@ export const TicketRowHeader: React.FC<TicketHeaderProps> = ({ className }) => {
   );
 };
 
-interface TicketRowProps {
+interface TableRowProps {
   className?: string;
-  ticket: TicketStat;
+  ticket: TicketStatEntry;
 }
 
-export const TicketRow: React.FC<TicketRowProps> = ({ className, ticket }) => {
+export const TableRow: React.FC<TableRowProps> = ({ className, ticket }) => {
   return (
     <>
       <div
@@ -54,5 +57,32 @@ export const TicketRow: React.FC<TicketRowProps> = ({ className, ticket }) => {
         <div role="cell">{ticket.paymentMethod}</div>
       </div>
     </>
+  );
+};
+
+interface TableSumRowProps {
+  className?: string;
+  ticketList: TicketStatEntry[];
+  ticketName?: string;
+  paymentMethod?: string;
+}
+
+/** Sum all ticket count and price for all tickets in the `ticketList` */
+export const TableSumRow: React.FC<TableSumRowProps> = ({
+  className,
+  ticketList,
+  ticketName,
+  paymentMethod,
+}) => {
+  return (
+    <TableRow
+      className={className}
+      ticket={{
+        ticketName: ticketName ?? '',
+        count: R.sumBy(ticketList, ({ count }) => count),
+        price: decSum(ticketList.map(({ price }) => price)),
+        paymentMethod: paymentMethod ?? '',
+      }}
+    />
   );
 };

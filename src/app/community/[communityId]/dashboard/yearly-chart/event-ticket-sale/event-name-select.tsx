@@ -1,20 +1,16 @@
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { useYearlyContext } from '../yearly-context';
 
 interface Props {
   className?: string;
-  eventSelected: string;
-  onEventSelected: (eventName: string) => void;
 }
 
-export const EventNameSelect: React.FC<Props> = ({
-  className,
-  eventSelected,
-  onEventSelected,
-}) => {
+export const EventNameSelect: React.FC<Props> = ({ className }) => {
   const { visibleEventItems } = useAppContext();
+  const { eventSelected, setEventSelected } = useYearlyContext();
 
   return (
     <Select
@@ -25,7 +21,7 @@ export const EventNameSelect: React.FC<Props> = ({
       selectedKeys={[eventSelected]}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
-        onEventSelected(firstKey?.toString() ?? '');
+        setEventSelected(firstKey?.toString() ?? '');
       }}
     >
       {(item) => (

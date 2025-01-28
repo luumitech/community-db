@@ -1,6 +1,6 @@
 'use client';
 import { ApolloProvider } from '@apollo/client';
-import { NextUIProvider } from '@nextui-org/react';
+import { HeroUIProvider } from '@heroui/react';
 import { SessionProvider, SessionProviderProps } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,7 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <SessionProvider {...sessionProviderProps}>
       <ApolloProvider client={apolloClient}>
-        <NextUIProvider navigate={router.push}>
+        <HeroUIProvider navigate={router.push}>
           <ReduxProviders>
             <TsrProviders>
               <AppProvider>
@@ -37,7 +37,7 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
               </AppProvider>
             </TsrProviders>
           </ReduxProviders>
-        </NextUIProvider>
+        </HeroUIProvider>
       </ApolloProvider>
     </SessionProvider>
   );

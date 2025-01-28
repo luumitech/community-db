@@ -6,7 +6,7 @@ import {
   CardHeader,
   Checkbox,
   ScrollShadow,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';

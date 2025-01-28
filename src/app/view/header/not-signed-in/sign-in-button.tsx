@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';

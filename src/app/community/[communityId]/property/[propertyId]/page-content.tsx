@@ -1,5 +1,5 @@
 'use client';
-import { Divider } from '@nextui-org/react';
+import { Divider } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';

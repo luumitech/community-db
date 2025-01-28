@@ -1,4 +1,4 @@
-import { Skeleton } from '@nextui-org/react';
+import { Skeleton } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { XlsxViewImpl, type XlsxViewImplProps } from './xlsx-view';

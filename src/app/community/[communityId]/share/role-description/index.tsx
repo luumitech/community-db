@@ -1,5 +1,5 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/card';
-import { Divider } from '@nextui-org/react';
+import { Card, CardBody, CardHeader } from '@heroui/card';
+import { Divider } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { RoleItem } from './role-item';

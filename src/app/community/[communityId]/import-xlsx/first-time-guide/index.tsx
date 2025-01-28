@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
+import { Card, CardBody, CardHeader } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { appTitle } from '~/lib/env-var';
@@ -23,25 +23,25 @@ export const FirstTimeGuide: React.FC<Props> = ({ className }) => {
         <p>
           To import an Excel document, the document should contain at least the
           following headings:
-          <ul className="list-disc pl-6">
-            <li className="font-semibold">Address</li>
-            <li className="font-semibold">StreetNo</li>
-            <li className="font-semibold">StreetName</li>
-            <li className="font-semibold">PostalCode</li>
-          </ul>
         </p>
+        <ul className="list-disc pl-6">
+          <li className="font-semibold">Address</li>
+          <li className="font-semibold">StreetNo</li>
+          <li className="font-semibold">StreetName</li>
+          <li className="font-semibold">PostalCode</li>
+        </ul>
         <p>For example:</p>
         <SampleXlsx />
         <p>
           If you want to add contact information for each household, you can use
           the following headings:
-          <ul className="list-disc pl-6">
-            <li className="font-semibold">FirstName1, FirstName2, ...</li>
-            <li className="font-semibold">LastName1, LastName2, ...</li>
-            <li className="font-semibold">EMail1, Email2, ...</li>
-            <li className="font-semibold">CellPhone1, CellPohone2, ...</li>
-          </ul>
         </p>
+        <ul className="list-disc pl-6">
+          <li className="font-semibold">FirstName1, FirstName2, ...</li>
+          <li className="font-semibold">LastName1, LastName2, ...</li>
+          <li className="font-semibold">EMail1, Email2, ...</li>
+          <li className="font-semibold">CellPhone1, CellPohone2, ...</li>
+        </ul>
         <p>
           Once you have imported your data, you can use {appTitle} to add or
           modify any information within the community.

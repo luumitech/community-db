@@ -25,6 +25,7 @@ import {
   type CommunityStat,
   type EventStat,
   type MemberCountStat,
+  type MembershipStat,
   type TicketStat,
 } from './stat-util';
 
@@ -86,6 +87,22 @@ const memberCountStatRef = builder
     }),
   });
 
+const membershipStatRef = builder
+  .objectRef<MembershipStat>('MembershipStat')
+  .implement({
+    fields: (t) => ({
+      count: t.exposeInt('count', {
+        description: 'membership sold count',
+      }),
+      price: t.exposeString('price', {
+        description: 'membership sold price',
+      }),
+      paymentMethod: t.exposeString('paymentMethod', {
+        description: 'payment method used to purchase membership',
+      }),
+    }),
+  });
+
 const ticketStatRef = builder.objectRef<TicketStat>('TicketStat').implement({
   fields: (t) => ({
     ticketName: t.exposeString('ticketName', {
@@ -116,6 +133,20 @@ const eventStatRef = builder.objectRef<EventStat>('EventStat').implement({
     }),
     renew: t.exposeInt('renew', {
       description: 'member count who renewed as a member',
+    }),
+    membershipList: t.field({
+      description: 'membership statistics for this event',
+      type: [membershipStatRef],
+      resolve: async (parent, args, ctx) => {
+        const { membershipMap } = parent;
+        return (
+          Array.from(membershipMap, ([, mapEntry]) => mapEntry)
+            // Only keep entries with +ve count or non zero price
+            .filter((entry) => {
+              return entry.count > 0 || isNonZeroDec(entry.price);
+            })
+        );
+      },
     }),
     ticketList: t.field({
       description: 'ticket statistics for this event',

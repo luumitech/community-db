@@ -1,9 +1,5 @@
-import { Divider } from '@nextui-org/react';
-import {
-  BarCustomLayerProps,
-  BarLegendProps,
-  BarTooltipProps,
-} from '@nivo/bar';
+import { Divider } from '@heroui/react';
+import { BarCustomLayerProps, BarLegendProps } from '@nivo/bar';
 import { SymbolProps } from '@nivo/legends';
 import clsx from 'clsx';
 import { line } from 'd3-shape';

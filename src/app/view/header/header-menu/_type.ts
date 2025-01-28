@@ -1,4 +1,4 @@
-import { DropdownItemProps } from '@nextui-org/react';
+import { DropdownItemProps } from '@heroui/react';
 
 export interface MenuItemEntry extends DropdownItemProps {
   /**

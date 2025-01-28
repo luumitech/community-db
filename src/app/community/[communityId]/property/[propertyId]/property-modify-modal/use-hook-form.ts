@@ -1,5 +1,5 @@
+import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDisclosure } from '@nextui-org/react';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';

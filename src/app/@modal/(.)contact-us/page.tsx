@@ -5,7 +5,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';

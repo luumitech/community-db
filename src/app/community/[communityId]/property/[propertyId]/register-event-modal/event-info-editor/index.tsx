@@ -1,4 +1,4 @@
-import { ScrollShadow } from '@nextui-org/react';
+import { ScrollShadow } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { EventRow, EventRowHeader } from './event-row';

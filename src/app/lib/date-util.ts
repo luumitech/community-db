@@ -1,10 +1,10 @@
+import { type DateValue } from '@heroui/react';
 import {
   parseDate,
   parseTime,
   toCalendarDateTime,
   toZoned,
 } from '@internationalized/date';
-import { type DateValue } from '@nextui-org/react';
 import { format } from 'date-fns';
 import * as GQL from '~/graphql/generated/graphql';
 

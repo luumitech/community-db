@@ -4,7 +4,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   User,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { signOut } from 'next-auth/react';
 import { env } from 'next-runtime-env';
 import React from 'react';

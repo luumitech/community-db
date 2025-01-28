@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
 import { Icon } from '~/view/base/icon';

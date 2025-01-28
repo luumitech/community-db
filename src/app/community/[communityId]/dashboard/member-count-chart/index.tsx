@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Card, CardBody, CardHeader, Skeleton } from '@nextui-org/react';
+import { Card, CardBody, CardHeader, Skeleton } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useLocalStorage } from 'usehooks-ts';

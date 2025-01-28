@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';

@@ -1,11 +1,11 @@
-import { Input, InputProps } from '@nextui-org/react';
+import { Input, InputProps } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { PatternFormat, type PatternFormatProps } from 'react-number-format';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
-export { SelectItem, SelectSection } from '@nextui-org/react';
+export { SelectItem, SelectSection } from '@heroui/react';
 
 type CustomPatternFormatProps = Omit<PatternFormatProps, 'format'>;
 type CustomInputProps = Omit<InputProps, keyof CustomPatternFormatProps>;

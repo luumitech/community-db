@@ -1,4 +1,4 @@
-import { Spacer } from '@nextui-org/react';
+import { Spacer } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';

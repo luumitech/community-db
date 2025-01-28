@@ -1,9 +1,9 @@
+import { type DateValue } from '@heroui/react';
 import {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
 } from '@internationalized/date';
-import { type DateValue } from '@nextui-org/react';
 import { parseAsDate } from '../date-util';
 
 type TestCaseEntry = [

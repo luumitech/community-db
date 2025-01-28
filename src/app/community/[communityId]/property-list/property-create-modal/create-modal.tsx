@@ -4,7 +4,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
 import { Button } from '~/view/base/button';

@@ -1,6 +1,6 @@
 'use client';
 import { useMutation } from '@apollo/client';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';

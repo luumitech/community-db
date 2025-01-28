@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button, ButtonProps } from '@nextui-org/react';
+import { Button, ButtonProps } from '@heroui/react';
 import clsx from 'clsx';
 import Script from 'next/script';
 import React from 'react';

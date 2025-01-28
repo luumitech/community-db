@@ -1,15 +1,9 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Skeleton,
-  Spacer,
-} from '@nextui-org/react';
+import { Card, CardBody, CardHeader, Skeleton, Spacer } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import { type DashboardEntry } from '../_type';
+import { useYearlyContext } from '../yearly-context';
 import { EventNameSelect } from './event-name-select';
 import { TicketSaleTable } from './ticket-sale-table';
 
@@ -42,15 +36,11 @@ export const EventTicketSale: React.FC<Props> = ({
   year,
   isLoading,
 }) => {
-  const { communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
+  const { eventSelected } = useYearlyContext();
   const entry = getFragment(EventTicketFragment, fragment);
-  const [eventSelected, setEventSelected] = React.useState(
-    lastEventSelected ?? ''
-  );
   const eventStat = entry?.communityStat.eventStat ?? [];
   const ticketList =
-    eventStat?.find(({ eventName }) => eventName === eventSelected)
+    eventStat.find(({ eventName }) => eventName === eventSelected)
       ?.ticketList ?? [];
 
   return (
@@ -60,12 +50,9 @@ export const EventTicketSale: React.FC<Props> = ({
           <p className="font-bold text-md">{`${year} Event Ticket Sale`}</p>
         </div>
       </CardHeader>
-      <CardBody className="overflow-hidden">
+      <CardBody>
         <Skeleton className="rounded-lg" isLoaded={!isLoading}>
-          <EventNameSelect
-            eventSelected={eventSelected}
-            onEventSelected={setEventSelected}
-          />
+          <EventNameSelect />
           <Spacer y={2} />
           <TicketSaleTable ticketList={ticketList} />
         </Skeleton>

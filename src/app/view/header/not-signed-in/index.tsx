@@ -1,4 +1,4 @@
-import { NavbarItem } from '@nextui-org/react';
+import { NavbarItem } from '@heroui/react';
 import React from 'react';
 import { SignInButton } from './sign-in-button';
 

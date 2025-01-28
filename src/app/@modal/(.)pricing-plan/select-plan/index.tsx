@@ -1,4 +1,4 @@
-import { Link } from '@nextui-org/link';
+import { Link } from '@heroui/link';
 import clsx from 'clsx';
 import React from 'react';
 import { appPath } from '~/lib/app-path';

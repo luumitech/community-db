@@ -1,4 +1,4 @@
-import { LinkProps } from '@nextui-org/react';
+import { LinkProps } from '@heroui/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
