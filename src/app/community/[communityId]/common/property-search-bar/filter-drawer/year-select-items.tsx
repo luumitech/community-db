@@ -1,4 +1,4 @@
-import { type SelectedItems } from '@nextui-org/react';
+import { type SelectedItems } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';

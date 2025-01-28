@@ -1,4 +1,4 @@
-import { Select, SelectItem, SelectProps } from '@nextui-org/react';
+import { Select, SelectItem, SelectProps } from '@heroui/react';
 import { useSet } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import React from 'react';

@@ -1,4 +1,4 @@
-import { Button, Skeleton, Spacer } from '@nextui-org/react';
+import { Button, Skeleton, Spacer } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { toast } from 'react-toastify';

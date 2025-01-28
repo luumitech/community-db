@@ -1,4 +1,4 @@
-import { Input, InputProps } from '@nextui-org/react';
+import { Input, InputProps } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';

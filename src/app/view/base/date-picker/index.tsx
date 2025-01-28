@@ -1,8 +1,8 @@
-import { toCalendarDate } from '@internationalized/date';
 import {
   DatePicker as NextUIDatePicker,
   DatePickerProps as NextUIDatePickerProps,
-} from '@nextui-org/react';
+} from '@heroui/react';
+import { toCalendarDate } from '@internationalized/date';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';

@@ -6,7 +6,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import type { PropertyEntry } from '~/community/[communityId]/property-list/_type';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';

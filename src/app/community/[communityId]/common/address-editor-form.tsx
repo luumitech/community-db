@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import { Button, Divider, Input as NInput } from '@nextui-org/react';
+import { Button, Divider, Input as NInput } from '@heroui/react';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useFormContext } from '~/custom-hooks/hook-form';

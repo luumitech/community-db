@@ -4,7 +4,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
@@ -91,7 +91,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
             <div className="flex items-center gap-2">
               <Button
                 variant="bordered"
-                confirmation={canRegister}
+                confirmation={canSave}
                 confirmationArg={{
                   bodyText: (
                     <p>

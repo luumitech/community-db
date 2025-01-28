@@ -9,11 +9,11 @@ import {
   ListboxItemProps,
   ListboxProps,
   Skeleton,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 
-export { type ListboxItemProps } from '@nextui-org/react';
+export { type ListboxItemProps } from '@heroui/react';
 
 interface Props extends Omit<ListboxProps, 'children'> {
   className?: string;

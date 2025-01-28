@@ -1,4 +1,4 @@
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';

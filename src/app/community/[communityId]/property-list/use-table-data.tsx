@@ -1,4 +1,4 @@
-import { getKeyValue } from '@nextui-org/react';
+import { getKeyValue } from '@heroui/react';
 import React from 'react';
 import { getCurrentYear } from '~/lib/date-util';
 import { PropertyEntry } from './_type';

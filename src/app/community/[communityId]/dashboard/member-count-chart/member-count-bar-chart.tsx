@@ -1,4 +1,4 @@
-import { Divider } from '@nextui-org/react';
+import { Divider } from '@heroui/react';
 import { BarCustomLayerProps, BarLegendProps } from '@nivo/bar';
 import { SymbolProps } from '@nivo/legends';
 import clsx from 'clsx';

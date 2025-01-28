@@ -8,7 +8,7 @@ import {
   TableRow,
   getKeyValue,
   type TableProps,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { OccupantEntry } from './_type';

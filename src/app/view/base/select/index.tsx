@@ -1,12 +1,12 @@
 import {
   Select as NextUISelect,
   SelectProps as NextUISelectProps,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
-export { SelectItem, SelectSection } from '@nextui-org/react';
+export { SelectItem, SelectSection } from '@heroui/react';
 
 export interface SelectProps<T extends object = object>
   extends NextUISelectProps<T> {

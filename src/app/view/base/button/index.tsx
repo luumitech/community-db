@@ -2,7 +2,7 @@ import {
   Button as NextUIButton,
   ButtonProps as NextUIButtonProps,
   Tooltip,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForwardRef } from '~/custom-hooks/forward-ref';

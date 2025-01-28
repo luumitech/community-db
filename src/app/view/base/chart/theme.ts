@@ -1,8 +1,4 @@
-import {
-  commonColors,
-  semanticColors,
-  type ColorScale,
-} from '@nextui-org/theme';
+import { commonColors, semanticColors, type ColorScale } from '@heroui/theme';
 import { useTheme } from 'next-themes';
 
 function getColor(cs: ColorScale, key?: keyof ColorScale) {

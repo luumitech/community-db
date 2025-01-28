@@ -10,7 +10,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Spinner,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';

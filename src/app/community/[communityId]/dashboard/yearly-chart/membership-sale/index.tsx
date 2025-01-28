@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Skeleton } from '@nextui-org/react';
+import { Card, CardBody, CardHeader, Skeleton } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';

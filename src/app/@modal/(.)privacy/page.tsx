@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';

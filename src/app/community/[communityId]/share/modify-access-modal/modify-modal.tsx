@@ -4,8 +4,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
-import { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+} from '@heroui/react';
+import { UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { getFragment } from '~/graphql/generated';
 import { Button } from '~/view/base/button';

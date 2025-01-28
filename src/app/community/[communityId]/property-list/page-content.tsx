@@ -8,7 +8,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';

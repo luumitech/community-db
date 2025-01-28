@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { ITEM_DELIMITER } from '~/lib/lcra-community/delimiter-util';

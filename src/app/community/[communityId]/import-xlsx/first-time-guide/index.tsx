@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
+import { Card, CardBody, CardHeader } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { appTitle } from '~/lib/env-var';

@@ -1,4 +1,4 @@
-import { Chip, useDisclosure } from '@nextui-org/react';
+import { Chip, useDisclosure } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';

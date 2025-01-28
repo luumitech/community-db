@@ -1,4 +1,4 @@
-import { Badge } from '@nextui-org/react';
+import { Badge } from '@heroui/react';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';

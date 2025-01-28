@@ -4,7 +4,7 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 

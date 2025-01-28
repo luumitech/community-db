@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@nextui-org/react';
+import { Button, ButtonProps } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { Icon } from '~/view/base/icon';

@@ -1,4 +1,4 @@
-import { getKeyValue } from '@nextui-org/react';
+import { getKeyValue } from '@heroui/react';
 import React from 'react';
 import { insertIf } from '~/lib/insert-if';
 import { type AccessEntry } from './_type';

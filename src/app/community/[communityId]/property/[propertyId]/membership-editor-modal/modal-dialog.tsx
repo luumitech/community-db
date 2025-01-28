@@ -4,7 +4,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { Button } from '~/view/base/button';

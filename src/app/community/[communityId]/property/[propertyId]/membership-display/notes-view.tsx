@@ -1,5 +1,5 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
-import { ScrollShadow } from '@nextui-org/scroll-shadow';
+import { Card, CardBody, CardHeader } from '@heroui/react';
+import { ScrollShadow } from '@heroui/scroll-shadow';
 import clsx from 'clsx';
 import React from 'react';
 

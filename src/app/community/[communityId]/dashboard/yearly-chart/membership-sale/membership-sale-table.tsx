@@ -1,4 +1,4 @@
-import { Divider, ScrollShadow } from '@nextui-org/react';
+import { Divider, ScrollShadow } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';

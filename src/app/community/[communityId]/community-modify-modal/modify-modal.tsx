@@ -4,8 +4,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
-import { Tab, Tabs } from '@nextui-org/tabs';
+} from '@heroui/react';
+import { Tab, Tabs } from '@heroui/tabs';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';

@@ -5,8 +5,8 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-} from '@nextui-org/react';
-import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
+} from '@heroui/react';
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { Form } from '~/view/base/form';

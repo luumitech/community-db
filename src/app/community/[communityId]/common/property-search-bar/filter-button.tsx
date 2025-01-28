@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';

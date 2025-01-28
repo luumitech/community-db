@@ -1,12 +1,12 @@
 import {
   Textarea as NextUITextarea,
   TextAreaProps as NextUITextareaProps,
-} from '@nextui-org/input';
+} from '@heroui/input';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
-export { SelectItem, SelectSection } from '@nextui-org/react';
+export { SelectItem, SelectSection } from '@heroui/react';
 
 export interface TextareaProps extends NextUITextareaProps {
   controlName: string;

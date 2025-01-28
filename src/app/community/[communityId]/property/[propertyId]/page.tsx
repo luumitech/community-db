@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import { Skeleton } from '@nextui-org/react';
+import { Skeleton } from '@heroui/react';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';

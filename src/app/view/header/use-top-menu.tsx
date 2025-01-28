@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { BreadcrumbItemProps, Skeleton } from '@nextui-org/react';
+import { BreadcrumbItemProps, Skeleton } from '@heroui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';

@@ -5,7 +5,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import type { MenuItemEntry } from './_type';

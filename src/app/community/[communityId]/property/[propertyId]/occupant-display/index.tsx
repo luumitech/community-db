@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/react';
+import { Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
