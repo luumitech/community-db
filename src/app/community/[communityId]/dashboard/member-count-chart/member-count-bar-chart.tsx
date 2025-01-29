@@ -382,7 +382,7 @@ export const MemberCountBarChart: React.FC<Props> = ({
 
   return (
     <BarChart
-      className={clsx(className, 'h-[400px]')}
+      className={clsx(className, 'min-h-[400px]')}
       data={chartData}
       colors={(datum) => chartHelper.getDataColor(datum.id)}
       // This is being hidden by the bars rendered by NoRenewalLine

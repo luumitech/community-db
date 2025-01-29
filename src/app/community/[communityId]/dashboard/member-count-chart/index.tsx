@@ -66,7 +66,13 @@ export const MemberCountChart: React.FC<Props> = ({
         />
       </CardHeader>
       <CardBody className="overflow-hidden">
-        <Skeleton className="rounded-lg" isLoaded={!result.loading}>
+        <Skeleton
+          classNames={{
+            base: 'rounded-lg h-full',
+            content: 'h-full',
+          }}
+          isLoaded={!result.loading}
+        >
           <MemberCountBarChart
             fragment={community}
             yearRange={yearRange}

@@ -13,6 +13,10 @@ import { useNivoTheme } from '../theme';
 
 type DataT = DefaultRawDatum & MayHaveLabel;
 
+const LEGEND_ITEM_HEIGHT = 18;
+const LEGEND_ITEM_PER_ROW = 3;
+const LEGEND_ITEM_GAP_Y = 5;
+
 export interface PieChartProps<T extends DataT>
   extends Omit<PieSvgProps<T>, 'width' | 'height'> {
   className?: string;
@@ -24,14 +28,16 @@ export function PieChart<T extends DataT>({
 }: PieChartProps<T>) {
   const theme = useNivoTheme();
   const margin = React.useMemo(() => {
+    const legendRowCount = Math.ceil(props.data.length / LEGEND_ITEM_PER_ROW);
     const result = {
       top: 25, // save space for pie labels
       right: 80, // save space for pie labels
-      bottom: 80, // save space for legend
+      // save space for legend
+      bottom: 50 + legendRowCount * (LEGEND_ITEM_HEIGHT + LEGEND_ITEM_GAP_Y),
       left: 80, // save space for pie labels
     };
     return result;
-  }, []);
+  }, [props.data]);
 
   /**
    * If there are too many slices, they can't all fit on one row. So split them
@@ -46,10 +52,10 @@ export function PieChart<T extends DataT>({
         translateX: 0,
         itemsSpacing: 0,
         itemWidth: 100,
-        itemHeight: 18,
+        itemHeight: LEGEND_ITEM_HEIGHT,
         itemDirection: 'left-to-right',
         itemOpacity: 1,
-        symbolSize: 18,
+        symbolSize: LEGEND_ITEM_HEIGHT,
         symbolShape: 'circle',
         effects: [
           {
@@ -63,7 +69,7 @@ export function PieChart<T extends DataT>({
       return dataChunk.map((chunk, chunkIdx) => {
         return {
           ...legendProps,
-          translateY: 56 + chunkIdx * (legendProps.itemHeight + 5),
+          translateY: 50 + chunkIdx * (LEGEND_ITEM_HEIGHT + LEGEND_ITEM_GAP_Y),
           data: (chunk as T[]).map((dataEntry, dataIdx) => ({
             ...dataEntry,
             label: dataEntry.label ?? '',
@@ -76,7 +82,7 @@ export function PieChart<T extends DataT>({
   );
 
   return (
-    <div className={clsx(className)}>
+    <div className={clsx(className, 'h-full')}>
       <ResponsivePie
         margin={margin}
         theme={theme}
@@ -98,7 +104,7 @@ export function PieChart<T extends DataT>({
           from: 'color',
           modifiers: [['darker', 2]],
         }}
-        legends={customLegend(props.data, 3)}
+        legends={customLegend(props.data, LEGEND_ITEM_PER_ROW)}
         {...props}
       />
     </div>

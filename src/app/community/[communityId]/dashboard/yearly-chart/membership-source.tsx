@@ -81,9 +81,15 @@ export const MembershipSource: React.FC<Props> = ({
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">
-        <Skeleton className="rounded-lg" isLoaded={!isLoading}>
+        <Skeleton
+          classNames={{
+            base: 'rounded-lg h-full',
+            content: 'h-full',
+          }}
+          isLoaded={!isLoading}
+        >
           <PieChart
-            className="h-[400px]"
+            className="min-h-[400px]"
             data={chartData}
             onClick={(data) => setEventSelected(data.data.label)}
           />

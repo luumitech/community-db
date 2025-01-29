@@ -80,9 +80,15 @@ export const EventParticipation: React.FC<Props> = ({
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">
-        <Skeleton className="rounded-lg" isLoaded={!isLoading}>
+        <Skeleton
+          classNames={{
+            base: 'rounded-lg h-full',
+            content: 'h-full',
+          }}
+          isLoaded={!isLoading}
+        >
           <BarChart
-            className="h-[400px]"
+            className="min-h-[400px]"
             data={chartData}
             keys={['existing', 'renewed', 'new']}
             indexBy="eventName"
