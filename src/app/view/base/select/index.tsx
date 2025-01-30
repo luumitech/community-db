@@ -2,6 +2,7 @@ import {
   Select as NextUISelect,
   SelectProps as NextUISelectProps,
 } from '@heroui/react';
+import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
@@ -16,6 +17,8 @@ export interface SelectProps<T extends object = object>
    * work properly
    */
   isControlled?: boolean;
+  /** Remove all decoration and disable interactions to select */
+  isReadOnly?: boolean;
 }
 
 /**
@@ -36,7 +39,18 @@ function coerceToString(input: string | number) {
 
 export function Select<T extends object>(props: SelectProps<T>) {
   const SelectImpl = React.forwardRef<HTMLSelectElement | null, SelectProps<T>>(
-    ({ controlName, isControlled, onBlur, onChange, ...selectProps }, ref) => {
+    (
+      {
+        classNames,
+        controlName,
+        isControlled,
+        onBlur,
+        onChange,
+        isReadOnly,
+        ...selectProps
+      },
+      ref
+    ) => {
       const { control, formState } = useFormContext();
       const { errors } = formState;
 
@@ -66,6 +80,19 @@ export function Select<T extends object>(props: SelectProps<T>) {
           render={({ field }) => (
             <NextUISelect<T>
               ref={ref}
+              classNames={{
+                ...classNames,
+                // Render readonly field by removing all input decoration
+                base: clsx(classNames?.base, {
+                  'opacity-100': isReadOnly,
+                }),
+                trigger: clsx(classNames?.trigger, {
+                  'border-none shadow-none bg-transparent': isReadOnly,
+                }),
+                selectorIcon: clsx({
+                  hidden: isReadOnly,
+                }),
+              }}
               // Force component into a controlled component
               {...(isControlled && { selectedKeys: selectedKeys(field.value) })}
               defaultSelectedKeys={selectedKeys(field.value)}
@@ -79,6 +106,9 @@ export function Select<T extends object>(props: SelectProps<T>) {
               }}
               errorMessage={error}
               isInvalid={!!error}
+              {...(!!isReadOnly && {
+                isDisabled: true,
+              })}
               {...selectProps}
             />
           )}

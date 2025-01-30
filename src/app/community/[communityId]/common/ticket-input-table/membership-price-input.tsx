@@ -6,13 +6,18 @@ type CustomCurrencyInputProps = Omit<CurrencyInputProps, 'controlName'>;
 
 interface Props extends CustomCurrencyInputProps {
   className?: string;
+  controlNamePrefix: string;
 }
 
-export const PriceInput: React.FC<Props> = ({ className, ...props }) => {
+export const MembershipPriceInput: React.FC<Props> = ({
+  className,
+  controlNamePrefix,
+  ...props
+}) => {
   return (
     <CurrencyInput
       className={clsx(className)}
-      controlName="membership.price"
+      controlName={`${controlNamePrefix}.price`}
       aria-label="Price"
       allowNegative={false}
       variant="underlined"

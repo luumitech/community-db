@@ -1,4 +1,5 @@
 import { Decimal } from 'decimal.js';
+export { Decimal } from 'decimal.js';
 
 /**
  * Check if input is a valid Decimal input. Normally `new Decimal()` throws an
@@ -31,25 +32,37 @@ export function isNonZeroDec(
 }
 
 /** Format a price string appropriately as a currency string */
-export function formatCurrency(input: Decimal.Value) {
+export function formatCurrency(input: Decimal.Value | null | undefined) {
+  if (!isValidDecInput(input)) {
+    return '';
+  }
   return new Decimal(input).toFixed(2);
 }
 
+/** Check if two decimal strings are equal */
+export function decIsEqual(
+  v1: Decimal.Value | null | undefined,
+  v2: Decimal.Value | null | undefined
+) {
+  if (!isValidDecInput(v1) || !isValidDecInput(v2)) {
+    return false;
+  }
+  const v1Dec = new Decimal(v1);
+  const v2Dec = new Decimal(v2);
+  return v1Dec.equals(v2);
+}
+
 /**
- * Calculate price using unitPrice and count
+ * Multiply one or more decimal strings
  *
  * Return result in string
  */
-export function calcPrice(unitPrice?: string | null, count?: number | null) {
-  if (!isValidDecInput(unitPrice) || !isValidDecInput(count)) {
-    return null;
-  }
-
-  const unitPriceDec = new Decimal(unitPrice);
-  const countDec = new Decimal(count);
-  const defaultPriceDec = unitPriceDec.mul(countDec);
-  const price = defaultPriceDec.toString();
-  return price;
+export function decMul(...arr: (Decimal.Value | null | undefined)[]) {
+  const arrDec = arr.map((entry) =>
+    isValidDecInput(entry) ? new Decimal(entry) : new Decimal(0)
+  );
+  const mulDec = arrDec.reduce((a, b) => a.mul(b), new Decimal(1));
+  return mulDec.toString();
 }
 
 /**
@@ -57,7 +70,7 @@ export function calcPrice(unitPrice?: string | null, count?: number | null) {
  *
  * Return result in string
  */
-export function decSum(arr: (Decimal.Value | null | undefined)[]) {
+export function decSum(...arr: (Decimal.Value | null | undefined)[]) {
   const arrDec = arr.map((entry) =>
     isValidDecInput(entry) ? new Decimal(entry) : new Decimal(0)
   );

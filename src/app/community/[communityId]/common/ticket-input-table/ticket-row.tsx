@@ -1,20 +1,22 @@
 import clsx from 'clsx';
 import React from 'react';
+import { useFormContext } from '~/custom-hooks/hook-form';
+import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
+import { Icon } from '~/view/base/icon';
+import { type TicketList } from './_type';
+import { MembershipPriceInput } from './membership-price-input';
 import { PaymentSelect } from './payment-select';
 import { PriceInput } from './price-input';
+import { TicketAddButton } from './ticket-add-button';
+import { useTicketContext } from './ticket-context';
 import { TicketInput } from './ticket-input';
 import { TicketTypeSelect } from './ticket-type-select';
 
-interface TicketHeaderProps {
-  className?: string;
-}
-
-export const TicketRowHeader: React.FC<TicketHeaderProps> = ({ className }) => {
+export const TicketRowHeader: React.FC<{}> = () => {
   return (
     <div
       className={clsx(
-        className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
         'text-tiny font-semibold items-center',
@@ -32,21 +34,21 @@ export const TicketRowHeader: React.FC<TicketHeaderProps> = ({ className }) => {
 };
 
 interface TicketRowProps {
-  className?: string;
-  controlNamePrefix: string;
-  includeHiddenFields?: boolean;
+  ticketIdx: number;
   onRemove?: () => void;
 }
 
 export const TicketRow: React.FC<TicketRowProps> = ({
-  className,
-  controlNamePrefix,
-  includeHiddenFields,
+  ticketIdx,
   onRemove,
 }) => {
+  const { ticketListConfig, includeHiddenFields } = useTicketContext();
+  const { fieldMethods } = ticketListConfig;
+  const controlNamePrefix = `${ticketListConfig.controlNamePrefix}.${ticketIdx}`;
+
   return (
     <div
-      className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+      className={clsx('grid col-span-full grid-cols-subgrid mx-3')}
       role="row"
     >
       <div role="cell">
@@ -56,10 +58,10 @@ export const TicketRow: React.FC<TicketRowProps> = ({
         />
       </div>
       <div role="cell">
-        <TicketInput isControlled controlNamePrefix={controlNamePrefix} />
+        <TicketInput controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
-        <PriceInput isControlled controlNamePrefix={controlNamePrefix} />
+        <PriceInput controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
         <PaymentSelect
@@ -72,9 +74,143 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           className="text-danger"
           icon="trash"
           tooltip="Remove Ticket"
-          onClick={onRemove}
+          onClick={() => {
+            fieldMethods.remove(ticketIdx);
+            onRemove?.();
+          }}
         />
       </div>
+    </div>
+  );
+};
+
+export const TransactionHeader: React.FC<{}> = () => {
+  return (
+    <div className={clsx('grid col-span-full')}>
+      <fieldset className="border-t-medium border-dotted">
+        <legend
+          className={clsx(
+            'w-auto mx-auto px-4 text-sm text-foreground-400',
+            'flex gap-2 items-center'
+          )}
+        >
+          <Icon className="rotate-90" icon="chevron-forward" />
+          New Transaction
+          <Icon className="rotate-90" icon="chevron-forward" />
+        </legend>
+      </fieldset>
+    </div>
+  );
+};
+
+export const TransactionTotal: React.FC<{}> = ({}) => {
+  const { ticketListConfig, membershipConfig } = useTicketContext();
+  const { watch, setValue } = useFormContext();
+  const ticketList: TicketList = watch(ticketListConfig.controlNamePrefix);
+  const membershipPrice = watch(`${membershipConfig?.controlNamePrefix}.price`);
+  const membershipPaymentMethod = watch(
+    `${membershipConfig?.controlNamePrefix}.paymentMethod`
+  );
+  const totalPrice = decSum(
+    membershipConfig?.canEdit ? membershipPrice : 0,
+    ...ticketList.map(({ price }) => price)
+  );
+  const [paymentMethod, setPaymentMethod] = React.useState<string>('');
+
+  return (
+    <div
+      className={clsx(
+        'grid col-span-full grid-cols-subgrid',
+        'bg-default-100 items-center',
+        'rounded-lg'
+      )}
+      role="row"
+    >
+      <div
+        role="cell"
+        className="col-span-2 text-sm text-right text-default-500"
+      >
+        Current Transaction Total
+      </div>
+      <div className="pl-1 text-sm" role="cell">
+        <span className="text-default-400 pr-1.5">$</span>
+        <span>{formatCurrency(totalPrice)}</span>
+      </div>
+      <div role="cell">
+        <PaymentSelect
+          controlNamePrefix=""
+          placeholder="Select Payment"
+          onSelectionChange={(keys) => {
+            const [firstKey] = keys;
+            const selectedPaymentMethod = (firstKey as string) ?? '';
+            setPaymentMethod(selectedPaymentMethod);
+            if (!membershipPaymentMethod) {
+              setValue(
+                `${membershipConfig?.controlNamePrefix}.paymentMethod`,
+                selectedPaymentMethod,
+                {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                }
+              );
+            }
+            // Backfill any tickets that don't have a payment method specified
+            ticketList.forEach((entry, idx) => {
+              if (!entry.paymentMethod) {
+                setValue(
+                  `${ticketListConfig.controlNamePrefix}.${idx}.paymentMethod`,
+                  selectedPaymentMethod,
+                  {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  }
+                );
+              }
+            });
+          }}
+        />
+      </div>
+      <div className="flex gap-2" role="cell">
+        <TicketAddButton
+          onClick={(ticket) => {
+            ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const MembershipRow: React.FC<{}> = () => {
+  const { membershipConfig, includeHiddenFields } = useTicketContext();
+
+  const showMembershipInput =
+    membershipConfig != null && membershipConfig.canEdit;
+  if (!showMembershipInput) {
+    return null;
+  }
+
+  const { controlNamePrefix } = membershipConfig;
+
+  return (
+    <div
+      className={clsx('grid col-span-full grid-cols-subgrid mx-3')}
+      role="row"
+    >
+      <div role="cell" className="text-sm pt-2 pl-1">
+        Membership Fee
+      </div>
+      <div role="cell" />
+      <div role="cell">
+        <MembershipPriceInput controlNamePrefix={controlNamePrefix} />
+      </div>
+      <div role="cell">
+        <PaymentSelect
+          controlNamePrefix={controlNamePrefix}
+          includeHiddenFields={includeHiddenFields}
+        />
+      </div>
+      <div className="flex pt-3 gap-2" role="cell" />
     </div>
   );
 };

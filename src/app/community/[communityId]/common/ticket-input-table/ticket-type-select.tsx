@@ -5,8 +5,8 @@ import { insertIf } from '~/lib/insert-if';
 import {
   Select,
   SelectItem,
-  SelectProps,
   SelectSection,
+  type SelectProps,
 } from '~/view/base/select';
 
 type CustomSelectProps = Omit<

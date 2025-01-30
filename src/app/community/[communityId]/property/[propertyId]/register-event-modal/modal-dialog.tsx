@@ -27,8 +27,8 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formState, handleSubmit, watch } = useHookFormContext();
-  const canRegister = watch('canRegister');
-  const isMember = watch('isMember');
+  const canRegister = watch('hidden.canRegister');
+  const isMember = watch('hidden.isMember');
   const memberYear = watch('membership.year');
   const eventName = watch('event.eventName');
   const { isDirty } = formState;
@@ -92,15 +92,17 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
               <Button
                 variant="bordered"
                 confirmation={canSave}
-                confirmationArg={{
-                  bodyText: (
-                    <p>
-                      This event has not been registered.
-                      <br />
-                      Are you sure?
-                    </p>
-                  ),
-                }}
+                {...(canRegister && {
+                  confirmationArg: {
+                    bodyText: (
+                      <p>
+                        This event has not been registered.
+                        <br />
+                        Are you sure?
+                      </p>
+                    ),
+                  },
+                })}
                 onPress={onClose}
               >
                 Cancel
@@ -111,7 +113,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
                 isLoading={pending}
                 isDisabled={!canSave}
               >
-                Register
+                {canRegister ? 'Register' : 'Save'}
               </Button>
             </div>
           </ModalFooter>

@@ -15,8 +15,6 @@ import {
 } from '../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 import { EventNameSelect } from './event-name-select';
-import { PaymentSelect } from './payment-select';
-import { PriceInput } from './price-input';
 import { useTicketAccordion } from './use-ticket-acoordion';
 
 interface EventHeaderProps {
@@ -38,8 +36,8 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
       <div role="columnheader" aria-label="Expand Ticket Section" />
       <div role="columnheader">Event</div>
       <div role="columnheader">Event Date</div>
-      <div role="columnheader">Price</div>
-      <div role="columnheader">Payment Method</div>
+      <div role="columnheader" />
+      <div role="columnheader" />
       <div role="columnheader" />
     </div>
   );
@@ -67,7 +65,11 @@ export const EventRow: React.FC<EventRowProps> = ({
     control,
     name: ticketListPrefix,
   });
-  const ticketCount = ticketListMethods.fields.length;
+  const isFirstEvent = eventIdx === 0;
+  const ticketCount =
+    ticketListMethods.fields.length +
+    // Show membership fee in the ticket section of first event
+    (isFirstEvent ? 1 : 0);
 
   return (
     <>
@@ -107,12 +109,8 @@ export const EventRow: React.FC<EventRowProps> = ({
             eventIdx={eventIdx}
           />
         </div>
-        <div role="cell">
-          {eventIdx === 0 && <PriceInput yearIdx={yearIdx} />}
-        </div>
-        <div role="cell">
-          {eventIdx === 0 && <PaymentSelect yearIdx={yearIdx} />}
-        </div>
+        <div role="cell" />
+        <div role="cell" />
         <div className="flex pt-3 gap-2" role="cell">
           <FlatButton
             className="text-danger"
@@ -142,40 +140,49 @@ export const EventRow: React.FC<EventRowProps> = ({
           />
         </div>
       </div>
-      {ticketListMethods.fields.length > 0 && (
-        <div className="col-span-full">
-          <AnimatePresence initial={false}>
-            {isExpanded(eventIdx) && (
-              <motion.div
-                className="overflow-hidden"
-                initial="collapsed"
-                animate="open"
-                exit="collapsed"
-                variants={{
-                  open: { opacity: 1, height: 'auto' },
-                  collapsed: { opacity: 0, height: 0 },
+      <div className="col-span-full">
+        <AnimatePresence initial={false}>
+          {isExpanded(eventIdx) && (
+            <motion.div
+              className="overflow-hidden"
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={{
+                open: { opacity: 1, height: 'auto' },
+                collapsed: { opacity: 0, height: 0 },
+              }}
+            >
+              <TicketInputTable
+                className={clsx(
+                  'border-medium border-divider rounded-lg',
+                  'ml-[40px] p-1'
+                )}
+                ticketListConfig={{
+                  controlNamePrefix: ticketListPrefix,
+                  fieldMethods: ticketListMethods,
                 }}
-              >
-                <TicketInputTable
-                  className={clsx('border-medium rounded-lg', 'ml-[40px] p-1')}
-                  controlNamePrefix={ticketListPrefix}
-                  fieldMethods={ticketListMethods}
-                  includeHiddenFields
-                  onRemove={(ticketIdx: number) => {
-                    if (ticketListMethods.fields.length === 1) {
-                      // About to remove last entry, collapse ticketList table
-                      setValue(
-                        `hidden.${membershipPrefix}.expandTicketListEventIdx`,
-                        null
-                      );
-                    }
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
+                {...(isFirstEvent && {
+                  membershipConfig: {
+                    controlNamePrefix: membershipPrefix,
+                    canEdit: true,
+                  },
+                })}
+                includeHiddenFields
+                onRemove={(ticketIdx: number) => {
+                  if (ticketListMethods.fields.length === 1) {
+                    // About to remove last entry, collapse ticketList table
+                    setValue(
+                      `hidden.${membershipPrefix}.expandTicketListEventIdx`,
+                      null
+                    );
+                  }
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 };

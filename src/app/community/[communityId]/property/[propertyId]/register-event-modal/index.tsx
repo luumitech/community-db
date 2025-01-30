@@ -67,7 +67,10 @@ function createPropertyInput(
   } else {
     // Update event details
     eventFound.eventDate = event.eventDate;
-    eventFound.ticketList = event.ticketList;
+    eventFound.ticketList = [
+      ...(eventFound.ticketList ?? []),
+      ...event.ticketList,
+    ];
   }
 
   return {

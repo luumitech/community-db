@@ -83,7 +83,7 @@ export const TableSumRow: React.FC<TableSumRowProps> = ({
       membership={{
         eventName: eventName ?? '',
         count: R.sumBy(membershipList, ({ count }) => count),
-        price: decSum(membershipList.map(({ price }) => price)),
+        price: decSum(...membershipList.map(({ price }) => price)),
         paymentMethod: paymentMethod ?? '',
       }}
     />

@@ -23,7 +23,15 @@ export interface PhoneInputProps
 
 export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (
-    { className, controlName, isControlled, onBlur, onChange, ...props },
+    {
+      classNames,
+      controlName,
+      isControlled,
+      onBlur,
+      onChange,
+      isReadOnly,
+      ...props
+    },
     ref
   ) => {
     const { control, formState } = useFormContext();
@@ -41,8 +49,19 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         render={({ field }) => (
           <PatternFormat
             ref={ref}
-            // Enough space for (999)999-9999
-            className={clsx(className, 'min-w-40')}
+            classNames={{
+              ...classNames,
+              // Render readonly field by removing all input decoration
+              base: clsx(
+                classNames?.base,
+                // Enough space for (999)999-9999
+                'min-w-40 font-mono',
+                { 'opacity-100': isReadOnly }
+              ),
+              inputWrapper: clsx(classNames?.inputWrapper, {
+                'border-none shadow-none bg-transparent': isReadOnly,
+              }),
+            }}
             // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
             customInput={Input}
             defaultValue={field.value ?? ''}
@@ -58,9 +77,19 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             }}
             errorMessage={error}
             isInvalid={!!error}
-            format="(###) ###-####"
+            format="(###)###-####"
             mask="_"
             allowEmptyFormatting
+            onKeyDown={(e) => {
+              // Prevent Enter key inside input from submitting form
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
+            {...(!!isReadOnly && {
+              isReadOnly: true,
+              isDisabled: true,
+            })}
             {...props}
           />
         )}

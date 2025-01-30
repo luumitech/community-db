@@ -25,6 +25,7 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
           label="Notes"
           labelPlacement="outside"
           isClearable
+          variant="bordered"
           value={line}
           onValueChange={setLine}
         />

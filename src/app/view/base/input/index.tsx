@@ -2,6 +2,7 @@ import {
   Input as NextUIInput,
   InputProps as NextUIInputProps,
 } from '@heroui/react';
+import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
@@ -18,7 +19,19 @@ export interface InputProps extends NextUIInputProps {
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ controlName, isControlled, onBlur, onChange, ...props }, ref) => {
+  (
+    {
+      classNames,
+      controlName,
+      isControlled,
+      onBlur,
+      onChange,
+      onValueChange,
+      isReadOnly,
+      ...props
+    },
+    ref
+  ) => {
     const { control, formState } = useFormContext();
     const { errors } = formState;
 
@@ -34,6 +47,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         render={({ field }) => (
           <NextUIInput
             ref={ref}
+            classNames={{
+              ...classNames,
+              // Render readonly field by removing all input decoration
+              base: clsx(classNames?.base, {
+                'opacity-100': isReadOnly,
+              }),
+              inputWrapper: clsx(classNames?.inputWrapper, {
+                'border-none shadow-none bg-transparent': isReadOnly,
+              }),
+            }}
             defaultValue={field.value ?? ''}
             // Force component into a controlled component
             {...(isControlled && { value: field.value ?? '' })}
@@ -47,6 +70,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             }}
             errorMessage={error}
             isInvalid={!!error}
+            {...(!!isReadOnly && {
+              isReadOnly: true,
+              isDisabled: true,
+            })}
             {...props}
           />
         )}

@@ -8,8 +8,6 @@ import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useHookFormContext } from '../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 import { EventNameSelect } from './event-name-select';
-import { PaymentSelect } from './payment-select';
-import { PriceInput } from './price-input';
 
 interface EventHeaderProps {
   className?: string;
@@ -29,8 +27,8 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
     >
       <div role="columnheader">Event</div>
       <div role="columnheader">Event Date</div>
-      <div role="columnheader">Price</div>
-      <div role="columnheader">Payment Method</div>
+      <div role="columnheader" />
+      <div role="columnheader" />
       <div role="columnheader" />
     </div>
   );
@@ -59,25 +57,28 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
         <div role="cell">
           <EventDatePicker />
         </div>
-        <div role="cell">
-          <PriceInput />
-        </div>
-        <div role="cell">
-          <PaymentSelect />
-        </div>
+        <div role="cell" />
+        <div role="cell" />
         <div className="flex pt-3 gap-2" role="cell">
           <TicketAddButton onClick={ticketListMethods.append} />
         </div>
       </div>
-      {ticketListMethods.fields.length > 0 && (
-        <div className="col-span-full">
-          <TicketInputTable
-            className={clsx('border-medium rounded-lg', 'ml-[40px] p-1')}
-            controlNamePrefix="membership.eventAttended.ticketList"
-            fieldMethods={ticketListMethods}
-          />
-        </div>
-      )}
+      <div className="col-span-full">
+        <TicketInputTable
+          className={clsx(
+            'border-medium border-divider rounded-lg',
+            'ml-[40px] p-1'
+          )}
+          ticketListConfig={{
+            controlNamePrefix: 'membership.eventAttended.ticketList',
+            fieldMethods: ticketListMethods,
+          }}
+          membershipConfig={{
+            controlNamePrefix: 'membership',
+            canEdit: true,
+          }}
+        />
+      </div>
     </>
   );
 };

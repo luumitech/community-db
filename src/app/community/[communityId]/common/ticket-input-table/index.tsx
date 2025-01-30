@@ -3,21 +3,35 @@ import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { useFormContext } from '~/custom-hooks/hook-form';
-import { type TicketListFieldArray } from './_type';
-import { TicketRow, TicketRowHeader } from './ticket-row';
+import {
+  TicketProvider,
+  type MembershipConfig,
+  type TicketListConfig,
+  type TransactionConfig,
+} from './ticket-context';
+import { TicketListReadonly } from './ticket-list-readonly';
+import {
+  MembershipRow,
+  TicketRow,
+  TicketRowHeader,
+  TransactionHeader,
+  TransactionTotal,
+} from './ticket-row';
 
 export * from './_type';
 export { TicketAddButton } from './ticket-add-button';
 
 interface Props {
   className?: string;
+  ticketListConfig: TicketListConfig;
+  membershipConfig?: MembershipConfig;
   /**
-   * Ticket List hook-form control name prefix
+   * In transaction mode, existing ticketLists will render as readonly.
    *
-   * I.e. `membershipList.${yearIdx}.eventAttendedList.${eventIdx}.ticketList`
+   * All new entries are added to a 'New Transaction' section, and a total is
+   * displayed to make it easier to deal with new transaction.
    */
-  controlNamePrefix: string;
-  fieldMethods: TicketListFieldArray;
+  transactionConfig?: TransactionConfig;
   /**
    * When displaying select items, include hidden fields as well, applicable to:
    *
@@ -25,20 +39,30 @@ interface Props {
    * - Event Names
    */
   includeHiddenFields?: boolean;
+  /**
+   * Callback when a ticket item is removed
+   *
+   * NOTE: membership fee is not a ticket item, and cannot be removed
+   */
   onRemove?: (ticketIdx: number) => void;
 }
 
 export const TicketInputTable: React.FC<Props> = ({
   className,
-  controlNamePrefix,
-  fieldMethods,
+  ticketListConfig,
+  membershipConfig,
+  transactionConfig,
   includeHiddenFields,
   onRemove,
 }) => {
   const { formState } = useFormContext();
   const { errors } = formState;
-  const { fields } = fieldMethods;
-  const errObj = R.pathOr(errors, R.stringToPath(controlNamePrefix), {});
+  const ticketListMethods = ticketListConfig.fieldMethods;
+  const errObj = R.pathOr(
+    errors,
+    R.stringToPath(ticketListConfig.controlNamePrefix),
+    {}
+  );
   const error = React.useMemo<string | undefined>(() => {
     return errObj?.message as string;
   }, [errObj]);
@@ -51,8 +75,22 @@ export const TicketInputTable: React.FC<Props> = ({
     );
   }, [error]);
 
+  // Don't render anything if there is nothing to show
+  if (
+    transactionConfig == null &&
+    membershipConfig == null &&
+    ticketListMethods.fields.length === 0
+  ) {
+    return null;
+  }
+
   return (
-    <div>
+    <TicketProvider
+      ticketListConfig={ticketListConfig}
+      membershipConfig={membershipConfig}
+      transactionConfig={transactionConfig}
+      includeHiddenFields={includeHiddenFields}
+    >
       <ScrollShadow
         className={clsx(className)}
         orientation="horizontal"
@@ -60,20 +98,20 @@ export const TicketInputTable: React.FC<Props> = ({
       >
         <div className="grid grid-cols-[repeat(4,1fr)_75px] gap-2">
           <TicketRowHeader />
-          {fields.map((row, ticketIdx) => (
+          <TicketListReadonly />
+          {transactionConfig != null && <TransactionHeader />}
+          <MembershipRow />
+          {ticketListMethods.fields.map((row, ticketIdx) => (
             <TicketRow
               key={row.id}
-              controlNamePrefix={`${controlNamePrefix}.${ticketIdx}`}
-              includeHiddenFields={includeHiddenFields}
-              onRemove={() => {
-                fieldMethods.remove(ticketIdx);
-                onRemove?.(ticketIdx);
-              }}
+              ticketIdx={ticketIdx}
+              onRemove={() => onRemove?.(ticketIdx)}
             />
           ))}
+          {transactionConfig != null && <TransactionTotal />}
         </div>
       </ScrollShadow>
       <div className="pt-3">{bottomContent}</div>
-    </div>
+    </TicketProvider>
   );
 };

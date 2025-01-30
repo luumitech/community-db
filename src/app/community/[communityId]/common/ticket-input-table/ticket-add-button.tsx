@@ -8,7 +8,7 @@ import {
 import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { calcPrice } from '~/lib/decimal-util';
+import { decMul } from '~/lib/decimal-util';
 import { insertIf } from '~/lib/insert-if';
 import { FlatButton } from '~/view/base/flat-button';
 import { Ticket } from './_type';
@@ -68,7 +68,7 @@ export const TicketAddButton: React.FC<Props> = ({
           onClick?.({
             ticketName,
             count: ticketDef?.count ?? null,
-            price: calcPrice(ticketDef?.unitPrice, ticketDef?.count) ?? null,
+            price: decMul(ticketDef?.unitPrice, ticketDef?.count) ?? null,
             paymentMethod: null,
           });
         }}

@@ -80,7 +80,7 @@ export const TableSumRow: React.FC<TableSumRowProps> = ({
       ticket={{
         ticketName: ticketName ?? '',
         count: R.sumBy(ticketList, ({ count }) => count),
-        price: decSum(ticketList.map(({ price }) => price)),
+        price: decSum(...ticketList.map(({ price }) => price)),
         paymentMethod: paymentMethod ?? '',
       }}
     />

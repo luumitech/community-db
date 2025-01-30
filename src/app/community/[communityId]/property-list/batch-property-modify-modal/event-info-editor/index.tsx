@@ -21,13 +21,12 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
         </div>
       </ScrollShadow>
       <p className="text-sm">
-        <span className="font-semibold">NOTE:</span> The event{' '}
-        <span className="font-semibold text-foreground-500">Price</span> and{' '}
+        <span className="font-semibold">NOTE:</span> The{' '}
         <span className="font-semibold text-foreground-500">
-          Payment Method
+          Membership Fee
         </span>{' '}
-        fields are only applicable to properties that do not have an existing
-        membership in year {memberYear}.
+        is only applicable to properties that do not have an existing membership
+        in year {memberYear}.
       </p>
     </div>
   );

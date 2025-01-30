@@ -129,7 +129,7 @@ export class StatUtil {
     const membershipEntry = membershipMap.get(paymentMethod ?? '');
     if (membershipEntry) {
       membershipEntry.count++;
-      membershipEntry.price = decSum([membershipEntry.price, price]);
+      membershipEntry.price = decSum(membershipEntry.price, price);
     }
   }
 
@@ -142,7 +142,7 @@ export class StatUtil {
         const ticketEntry = ticketMap.get(ticketName)?.get(paymentMethod ?? '');
         if (ticketEntry) {
           ticketEntry.count += count ?? 0;
-          ticketEntry.price = decSum([ticketEntry.price, price]);
+          ticketEntry.price = decSum(ticketEntry.price, price);
         }
       }
     });
