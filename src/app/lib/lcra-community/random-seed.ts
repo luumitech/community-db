@@ -60,12 +60,12 @@ export function seedCommunityData(numEntries: number) {
 function genEvent(count: number) {
   return faker.helpers.uniqueArray(() => {
     const eventName = faker.helpers.arrayElement([
-      'New Year',
-      'Easter',
-      'Victoria Day',
-      'Canada Day',
-      'Labour Day',
-      'Xmas',
+      'Membership Form',
+      'Town Hall',
+      'Clean-Up',
+      'Meet & Greet',
+      'Community Forum',
+      'Town Planning Night',
     ]);
     return removeDelimiter(eventName);
   }, count);
@@ -81,7 +81,11 @@ function genTicket(eventCount: number) {
   return Array.from({ length: eventCount }, () => {
     const ticketCount = faker.number.int({ min: 0, max: 3 });
     const ticketList: Ticket[] = Array.from({ length: ticketCount }, () => {
-      const ticketName = faker.helpers.arrayElement(['Meal', 'Drink', 'Pizza']);
+      const ticketName = faker.helpers.arrayElement([
+        'Meal',
+        'Coffee',
+        'Snack',
+      ]);
       const count = faker.number.int({ min: 0, max: 20 });
       const price = faker.finance.amount({ min: 0, max: 10, dec: 0 });
       const paymentMethod = genPaymentMethod();

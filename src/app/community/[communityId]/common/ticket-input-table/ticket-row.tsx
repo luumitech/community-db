@@ -11,6 +11,7 @@ import { TicketAddButton } from './ticket-add-button';
 import { useTicketContext } from './ticket-context';
 import { TicketInput } from './ticket-input';
 import { TicketTypeSelect } from './ticket-type-select';
+import { TransactionTotalPaymentSelect } from './transaction-total-payment-select';
 
 interface EmptyProps {}
 
@@ -136,14 +137,13 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
         <span>{formatCurrency(totalPrice)}</span>
       </div>
       <div role="cell">
-        <PaymentSelect
-          controlNamePrefix=""
+        <TransactionTotalPaymentSelect
           placeholder="Select Payment"
           onSelectionChange={(keys) => {
             const [firstKey] = keys;
             const selectedPaymentMethod = (firstKey as string) ?? '';
             setPaymentMethod(selectedPaymentMethod);
-            if (!membershipPaymentMethod) {
+            if (membershipConfig && !membershipPaymentMethod) {
               setValue(
                 `${membershipConfig?.controlNamePrefix}.paymentMethod`,
                 selectedPaymentMethod,
