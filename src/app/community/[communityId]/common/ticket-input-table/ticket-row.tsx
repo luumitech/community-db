@@ -3,7 +3,6 @@ import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
-import { Icon } from '~/view/base/icon';
 import { type TicketList } from './_type';
 import { MembershipPriceInput } from './membership-price-input';
 import { PaymentSelect } from './payment-select';
@@ -13,7 +12,9 @@ import { useTicketContext } from './ticket-context';
 import { TicketInput } from './ticket-input';
 import { TicketTypeSelect } from './ticket-type-select';
 
-export const TicketRowHeader: React.FC<{}> = () => {
+interface EmptyProps {}
+
+export const TicketRowHeader: React.FC<EmptyProps> = () => {
   return (
     <div
       className={clsx(
@@ -84,7 +85,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
   );
 };
 
-export const TransactionHeader: React.FC<{}> = () => {
+export const TransactionHeader: React.FC<EmptyProps> = () => {
   return (
     <div className={clsx('grid col-span-full')}>
       <fieldset className="border-t-medium border-dotted">
@@ -94,16 +95,14 @@ export const TransactionHeader: React.FC<{}> = () => {
             'flex gap-2 items-center'
           )}
         >
-          <Icon className="rotate-90" icon="chevron-forward" />
           New Transaction
-          <Icon className="rotate-90" icon="chevron-forward" />
         </legend>
       </fieldset>
     </div>
   );
 };
 
-export const TransactionTotal: React.FC<{}> = ({}) => {
+export const TransactionTotal: React.FC<EmptyProps> = () => {
   const { ticketListConfig, membershipConfig } = useTicketContext();
   const { watch, setValue } = useFormContext();
   const ticketList: TicketList = watch(ticketListConfig.controlNamePrefix);
@@ -181,12 +180,10 @@ export const TransactionTotal: React.FC<{}> = ({}) => {
   );
 };
 
-export const MembershipRow: React.FC<{}> = () => {
+export const MembershipRow: React.FC<EmptyProps> = () => {
   const { membershipConfig, includeHiddenFields } = useTicketContext();
 
-  const showMembershipInput =
-    membershipConfig != null && membershipConfig.canEdit;
-  if (!showMembershipInput) {
+  if (!membershipConfig?.canEdit) {
     return null;
   }
 

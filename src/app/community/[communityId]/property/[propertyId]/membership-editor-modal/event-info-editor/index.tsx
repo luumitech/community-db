@@ -61,7 +61,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
       {topContent}
       <ScrollShadow orientation="horizontal" hideScrollBar>
         <div
-          className={clsx('grid grid-cols-[40px_repeat(4,1fr)_80px]', 'gap-2')}
+          className={clsx('grid grid-cols-[40px_repeat(2,1fr)_80px]', 'gap-2')}
         >
           <EventRowHeader />
           {fields.length === 0 && (

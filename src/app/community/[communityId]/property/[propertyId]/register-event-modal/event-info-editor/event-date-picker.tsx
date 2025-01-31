@@ -9,7 +9,7 @@ interface Props {
 export const EventDatePicker: React.FC<Props> = ({ className }) => {
   return (
     <DatePicker
-      className={clsx(className)}
+      className={clsx(className, 'max-w-xs')}
       controlName="event.eventDate"
       aria-label="Event Date"
       variant="underlined"

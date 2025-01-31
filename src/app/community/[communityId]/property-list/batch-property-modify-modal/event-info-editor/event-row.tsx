@@ -28,8 +28,6 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
       <div role="columnheader">Event</div>
       <div role="columnheader">Event Date</div>
       <div role="columnheader" />
-      <div role="columnheader" />
-      <div role="columnheader" />
     </div>
   );
 };
@@ -57,8 +55,6 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
         <div role="cell">
           <EventDatePicker />
         </div>
-        <div role="cell" />
-        <div role="cell" />
         <div className="flex pt-3 gap-2" role="cell">
           <TicketAddButton onClick={ticketListMethods.append} />
         </div>

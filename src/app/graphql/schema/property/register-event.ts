@@ -2,71 +2,40 @@ import { Community, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
-import { extractYearRange } from '~/lib/lcra-community/import/year-range-util';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { communityMinMaxYearUpdateArgs } from '../community/util';
-import { getPropertyEntry } from './util';
+import { EventInput } from './modify';
+import { findOrAddEvent, getPropertyEntry, mapEventEntry } from './util';
 
-const OccupantInput = builder.inputType('OccupantInput', {
-  fields: (t) => ({
-    firstName: t.string(),
-    lastName: t.string(),
-    optOut: t.boolean(),
-    email: t.string(),
-    cell: t.string(),
-    work: t.string(),
-    home: t.string(),
-  }),
-});
+const RegisterEventMembershipInput = builder.inputType(
+  'RegisterEventMembershipInput',
+  {
+    fields: (t) => ({
+      year: t.int({ required: true }),
+      price: t.string(),
+      paymentMethod: t.string({ required: true }),
+    }),
+  }
+);
 
-export const EventInput = builder.inputType('EventInput', {
-  fields: (t) => ({
-    eventName: t.string({ required: true }),
-    eventDate: t.string(),
-    ticketList: t.field({ type: [TicketInput] }),
-  }),
-});
-
-const TicketInput = builder.inputType('TicketInput', {
-  fields: (t) => ({
-    ticketName: t.string({ required: true }),
-    count: t.int(),
-    price: t.string(),
-    paymentMethod: t.string(),
-  }),
-});
-
-export const MembershipInput = builder.inputType('MembershipInput', {
-  fields: (t) => ({
-    year: t.int({ required: true }),
-    eventAttendedList: t.field({ type: [EventInput] }),
-    paymentMethod: t.string(),
-    price: t.string(),
-  }),
-});
-
-const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
+const RegisterEventInput = builder.inputType('RegisterEventInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
-    address: t.string(),
-    streetNo: t.int(),
-    streetName: t.string(),
-    postalCode: t.string(),
     notes: t.string(),
-    occupantList: t.field({ type: [OccupantInput] }),
-    membershipList: t.field({ type: [MembershipInput] }),
+    membership: t.field({ type: RegisterEventMembershipInput, required: true }),
+    event: t.field({ type: EventInput, required: true }),
   }),
 });
 
-interface PropertyModifyPayload {
+interface RegisterEventPayload {
   community: Community;
   property: Property;
 }
 
-const propertyModifyPayloadRef = builder
-  .objectRef<PropertyModifyPayload>('PropertyModifyPayload')
+const registerEventPayloadRef = builder
+  .objectRef<RegisterEventPayload>('RegisterEventPayload')
   .implement({
     fields: (t) => ({
       community: t.prismaField({
@@ -80,21 +49,27 @@ const propertyModifyPayloadRef = builder
     }),
   });
 
-builder.mutationField('propertyModify', (t) =>
+builder.mutationField('registerEvent', (t) =>
   t.field({
-    type: propertyModifyPayloadRef,
+    type: registerEventPayloadRef,
     args: {
-      input: t.arg({ type: PropertyModifyInput, required: true }),
+      input: t.arg({ type: RegisterEventInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
       const { user, pubSub } = await ctx;
-      const { self, ...input } = args.input;
+      const {
+        self,
+        event: eventInput,
+        membership: membershipInput,
+        ...input
+      } = args.input;
       const shortId = self.id;
 
       const entry = await getPropertyEntry(user, shortId, {
         select: {
           id: true,
           updatedAt: true,
+          membershipList: true,
           community: {
             select: {
               id: true,
@@ -118,12 +93,25 @@ builder.mutationField('propertyModify', (t) =>
       ]);
 
       // Check if community min/max year needs to be updated
-      const yearRange = extractYearRange([input]);
       const communityUpdateDataArgs = communityMinMaxYearUpdateArgs(
         entry.community,
-        yearRange.minYear,
-        yearRange.maxYear
+        membershipInput.year
       );
+
+      const result = findOrAddEvent(
+        entry.membershipList,
+        membershipInput.year,
+        eventInput.eventName
+      );
+      const membership = entry.membershipList[result.membershipIdx];
+      membership.price = membershipInput.price ?? null;
+      membership.paymentMethod = membershipInput.paymentMethod ?? null;
+
+      // Update event and ticketList information
+      const newEvent = mapEventEntry(eventInput);
+      const event = membership.eventAttendedList[result.eventIdx];
+      event.eventDate = newEvent.eventDate;
+      event.ticketList.push(...newEvent.ticketList);
 
       const [updatedCommunity, updatedProperty] = await prisma.$transaction([
         // Update community, if required
@@ -141,10 +129,9 @@ builder.mutationField('propertyModify', (t) =>
           where: {
             id: entry.id,
           },
-          // @ts-expect-error: composite types like 'occupantList'
-          // is allowed to be undefined
           data: {
             updatedBy: { connect: { email: user.email } },
+            membershipList: entry.membershipList,
             ...input,
           },
         }),

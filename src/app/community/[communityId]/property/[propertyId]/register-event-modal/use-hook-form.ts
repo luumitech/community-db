@@ -121,10 +121,9 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const { communityUi, defaultSetting } = useAppContext();
   const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
-  const findEventResult = React.useMemo(
-    () => findEvent(property, yearSelected, lastEventSelected),
-    [property, yearSelected, lastEventSelected]
-  );
+  const findEventResult = React.useMemo(() => {
+    return findEvent(property, yearSelected, lastEventSelected);
+  }, [property, yearSelected, lastEventSelected]);
   const defaultValues = React.useMemo(() => {
     return defaultInputData(property, findEventResult, defaultSetting);
   }, [property, findEventResult, defaultSetting]);
@@ -133,10 +132,6 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
-
-  React.useEffect(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
 
   /**
    * When modal is open, sync form value with latest default values derived from
