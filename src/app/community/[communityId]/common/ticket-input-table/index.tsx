@@ -68,8 +68,12 @@ export const TicketInputTable: React.FC<Props> = ({
   }, [errObj]);
 
   const bottomContent = React.useMemo(() => {
+    if (!error) {
+      return null;
+    }
+
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 pt-3">
         <div className="text-sm text-danger">{error}</div>
       </div>
     );
@@ -91,27 +95,25 @@ export const TicketInputTable: React.FC<Props> = ({
       transactionConfig={transactionConfig}
       includeHiddenFields={includeHiddenFields}
     >
-      <ScrollShadow
-        className={clsx(className)}
-        orientation="horizontal"
-        hideScrollBar
-      >
-        <div className="grid grid-cols-[repeat(4,1fr)_75px] gap-2">
-          <TicketRowHeader />
-          <TicketListReadonly />
-          {transactionConfig != null && <TransactionHeader />}
-          <MembershipRow />
-          {ticketListMethods.fields.map((row, ticketIdx) => (
-            <TicketRow
-              key={row.id}
-              ticketIdx={ticketIdx}
-              onRemove={() => onRemove?.(ticketIdx)}
-            />
-          ))}
-          {transactionConfig != null && <TransactionTotal />}
-        </div>
-      </ScrollShadow>
-      <div className="pt-3">{bottomContent}</div>
+      <div className={clsx(className)}>
+        <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
+          <div className="grid grid-cols-[repeat(4,1fr)_75px] gap-2">
+            <TicketRowHeader />
+            <TicketListReadonly />
+            {transactionConfig != null && <TransactionHeader />}
+            <MembershipRow />
+            {ticketListMethods.fields.map((row, ticketIdx) => (
+              <TicketRow
+                key={row.id}
+                ticketIdx={ticketIdx}
+                onRemove={() => onRemove?.(ticketIdx)}
+              />
+            ))}
+            {transactionConfig != null && <TransactionTotal />}
+          </div>
+        </ScrollShadow>
+        {bottomContent}
+      </div>
     </TicketProvider>
   );
 };

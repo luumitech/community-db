@@ -58,36 +58,38 @@ export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
   );
 
   return (
-    <ScrollShadow className={className} orientation="horizontal" hideScrollBar>
-      <Table
-        classNames={{
-          // Leave enough space for one row of data only
-          emptyWrapper: 'h-[40px]',
-        }}
-        aria-label="Property Info"
-        removeWrapper
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.key} className={column.className}>
-              {column.label}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          items={rows}
-          isLoading={isLoading}
-          loadingContent={<Loading />}
+    <div className={className}>
+      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
+        <Table
+          classNames={{
+            // Leave enough space for one row of data only
+            emptyWrapper: 'h-[40px]',
+          }}
+          aria-label="Property Info"
+          removeWrapper
         >
-          {(item) => (
-            <TableRow key={item.key}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </ScrollShadow>
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn key={column.key} className={column.className}>
+                {column.label}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody
+            items={rows}
+            isLoading={isLoading}
+            loadingContent={<Loading />}
+          >
+            {(item) => (
+              <TableRow key={item.key}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </ScrollShadow>
+    </div>
   );
 };

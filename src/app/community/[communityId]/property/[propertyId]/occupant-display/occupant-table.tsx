@@ -78,27 +78,29 @@ export const OccupantTable: React.FC<Props> = ({
   );
 
   return (
-    <ScrollShadow className={className} orientation="horizontal" hideScrollBar>
-      <Table
-        aria-label="Occupant Table"
-        removeWrapper
-        bottomContent={bottomContent}
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={rows}>
-          {(item) => (
-            <TableRow key={item.key}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </ScrollShadow>
+    <div className={className}>
+      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
+        <Table
+          aria-label="Occupant Table"
+          removeWrapper
+          bottomContent={bottomContent}
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn key={column.key}>{column.label}</TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={rows}>
+            {(item) => (
+              <TableRow key={item.key}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </ScrollShadow>
+    </div>
   );
 };

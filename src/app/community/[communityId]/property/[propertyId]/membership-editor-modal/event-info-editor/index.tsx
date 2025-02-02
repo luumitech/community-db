@@ -59,7 +59,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   return (
     <div className={clsx(className, 'flex flex-col gap-2')}>
       {topContent}
-      <ScrollShadow orientation="horizontal" hideScrollBar>
+      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div
           className={clsx('grid grid-cols-[40px_repeat(2,1fr)_80px]', 'gap-2')}
         >

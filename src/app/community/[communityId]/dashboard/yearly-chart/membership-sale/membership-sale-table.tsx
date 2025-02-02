@@ -20,54 +20,52 @@ export const MembershipSaleTable: React.FC<Props> = ({
   );
 
   return (
-    <ScrollShadow
-      className={clsx(className)}
-      orientation="horizontal"
-      hideScrollBar
-    >
-      <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
-        <TableHeader />
-        {membershipList.length === 0 && (
-          <div
-            className={clsx(
-              'col-span-full h-8',
-              'justify-self-center content-center'
-            )}
-          >
-            <div className="text-sm text-foreground-500">
-              No data to display
+    <div className={clsx(className)}>
+      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
+        <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
+          <TableHeader />
+          {membershipList.length === 0 && (
+            <div
+              className={clsx(
+                'col-span-full h-8',
+                'justify-self-center content-center'
+              )}
+            >
+              <div className="text-sm text-foreground-500">
+                No data to display
+              </div>
             </div>
-          </div>
-        )}
-        {membershipList.map((membership) => (
-          <TableRow
-            key={`${membership.eventName}-${membership.paymentMethod}`}
-            membership={membership}
-          />
-        ))}
-        {membershipList.length > 0 && (
-          <>
-            <div className="col-span-full">
-              <Divider />
-            </div>
-            {Object.entries(membershipByPaymentMethod).map(
-              ([paymentMethod, memberships]) => {
-                return (
-                  <TableSumRow
-                    key={paymentMethod}
-                    membershipList={memberships}
-                    paymentMethod={paymentMethod}
-                  />
-                );
-              }
-            )}
-            <div className="col-span-full">
-              <Divider />
-            </div>
-            <TableSumRow membershipList={membershipList} />
-          </>
-        )}
-      </div>
-    </ScrollShadow>
+          )}
+          {membershipList.map((membership) => (
+            <TableRow
+              key={`${membership.eventName}-${membership.paymentMethod}`}
+              membership={membership}
+            />
+          ))}
+          {membershipList.length > 0 && (
+            <>
+              <div className="col-span-full">
+                <Divider />
+              </div>
+              {Object.entries(membershipByPaymentMethod).map(
+                ([paymentMethod, memberships]) => {
+                  return (
+                    <TableSumRow
+                      key={paymentMethod}
+                      membershipList={memberships}
+                      paymentMethod={paymentMethod}
+                    />
+                  );
+                }
+              )}
+              <div className="col-span-full">
+                <Divider />
+              </div>
+              <TableSumRow membershipList={membershipList} />
+            </>
+          )}
+        </div>
+      </ScrollShadow>
+    </div>
   );
 };

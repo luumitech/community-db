@@ -9,8 +9,8 @@ interface Props {
 
 export const EventInfoEditor: React.FC<Props> = ({ className }) => {
   return (
-    <div className={clsx(className, 'flex flex-col gap-2')}>
-      <ScrollShadow orientation="horizontal" hideScrollBar>
+    <div className={clsx(className)}>
+      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div className={clsx('grid grid-cols-[repeat(2,1fr)_80px]', 'gap-2')}>
           <EventRowHeader />
           <EventRow />
