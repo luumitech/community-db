@@ -1,8 +1,10 @@
+import { Button } from '@heroui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
+import { Icon } from '~/view/base/icon';
 import { type TicketList } from './_type';
 import { MembershipPriceInput } from './membership-price-input';
 import { PaymentSelect } from './payment-select';
@@ -87,24 +89,34 @@ export const TicketRow: React.FC<TicketRowProps> = ({
 };
 
 export const TransactionHeader: React.FC<EmptyProps> = () => {
+  const { ticketListConfig, transactionUIConfig } = useTicketContext();
+  const { paymentMethod } = transactionUIConfig;
+
   return (
     <div className={clsx('grid col-span-full')}>
-      <fieldset className="border-t-medium border-dotted">
-        <legend
-          className={clsx(
-            'w-auto mx-auto px-4 text-sm text-foreground-400',
-            'flex gap-2 items-center'
-          )}
+      <TicketAddButton
+        onClick={(ticket) => {
+          ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
+        }}
+      >
+        <Button
+          className="justify-start"
+          color="primary"
+          variant="bordered"
+          radius="sm"
+          fullWidth
+          startContent={<Icon icon="add-ticket" />}
         >
           New Transaction
-        </legend>
-      </fieldset>
+        </Button>
+      </TicketAddButton>
     </div>
   );
 };
 
 export const TransactionTotal: React.FC<EmptyProps> = () => {
-  const { ticketListConfig, membershipConfig } = useTicketContext();
+  const { ticketListConfig, membershipConfig, transactionUIConfig } =
+    useTicketContext();
   const { watch, setValue } = useFormContext();
   const ticketList: TicketList = watch(ticketListConfig.controlNamePrefix);
   const membershipPrice = watch(`${membershipConfig?.controlNamePrefix}.price`);
@@ -115,7 +127,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
     membershipConfig?.canEdit ? membershipPrice : 0,
     ...ticketList.map(({ price }) => price)
   );
-  const [paymentMethod, setPaymentMethod] = React.useState<string>('');
+  const { paymentMethod, setPaymentMethod } = transactionUIConfig;
 
   return (
     <div

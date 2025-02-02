@@ -25,10 +25,11 @@ interface Props {
   onClick?: (ticket: Ticket) => void;
 }
 
-export const TicketAddButton: React.FC<Props> = ({
+export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   includeHiddenFields,
   onClick,
+  children,
 }) => {
   const { selectTicketSections, visibleTicketItems, ticketDefault } =
     useAppContext();
@@ -44,13 +45,15 @@ export const TicketAddButton: React.FC<Props> = ({
       ];
 
   return (
-    <Dropdown>
+    <Dropdown placement="bottom-start">
       <DropdownTrigger>
-        <FlatButton
-          className={clsx(className, 'text-primary')}
-          icon="add-ticket"
-          tooltip="Add Ticket"
-        />
+        {children ?? (
+          <FlatButton
+            className={clsx(className, 'text-primary')}
+            icon="add-ticket"
+            tooltip="Add Ticket"
+          />
+        )}
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Add ticket item"

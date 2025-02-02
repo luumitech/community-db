@@ -124,38 +124,24 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
 
   return (
     <div className={clsx('grid col-span-full')}>
-      <fieldset className="border-t-medium border-dotted">
-        <legend
-          className={clsx(
-            'w-auto mx-auto px-4 text-sm text-foreground-400',
-            'flex gap-2 items-center',
-            'cursor-pointer hover:opacity-hover'
-          )}
-          onClick={toggle}
+      <div
+        className={clsx(
+          'h-10 border-medium rounded-md flex items-center px-2 gap-2',
+          'cursor-pointer hover:opacity-hover'
+        )}
+        onClick={toggle}
+      >
+        <motion.div
+          className="justify-self-center"
+          role="cell"
+          animate={{
+            rotate: isExpanded ? 90 : 0,
+          }}
         >
-          <motion.div
-            className="justify-self-center text-foreground-400"
-            role="cell"
-            animate={{
-              rotate: isExpanded ? 90 : -90,
-            }}
-          >
-            <Icon icon="chevron-forward" />
-          </motion.div>
-          <span>
-            {isExpanded ? 'Hide' : 'Show'} {ticketCount} Previous Transactions
-          </span>
-          <motion.div
-            className="justify-self-center text-foreground-400"
-            role="cell"
-            animate={{
-              rotate: isExpanded ? 90 : -90,
-            }}
-          >
-            <Icon icon="chevron-forward" />
-          </motion.div>
-        </legend>
-      </fieldset>
+          <Icon icon="chevron-forward" />
+        </motion.div>
+        <span className="text-sm">Previous Transactions ({ticketCount})</span>
+      </div>
     </div>
   );
 };
@@ -170,7 +156,7 @@ export const TicketListTotal: React.FC<PreviousTransaction> = ({
       className={clsx(
         'grid col-span-full grid-cols-subgrid',
         'bg-default-100 items-center',
-        'rounded-lg h-8'
+        'rounded-lg h-10'
       )}
       role="row"
     >

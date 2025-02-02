@@ -26,7 +26,12 @@ export const PriceInput: React.FC<Props> = ({
 
   const ticketDef = ticketDefault.get(ticketType);
   const unitPrice = ticketDef?.unitPrice;
-  const defaultPrice = decMul(unitPrice, ticketCount);
+  const defaultPrice = React.useMemo(() => {
+    if (unitPrice == null || ticketCount == null) {
+      return null;
+    }
+    return decMul(unitPrice, ticketCount);
+  }, [unitPrice, ticketCount]);
 
   const onChange: NonNullable<CurrencyInputProps['onChange']> =
     React.useCallback(
