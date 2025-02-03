@@ -4,7 +4,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
-  query PropertyModifySpec_CommunityInfo {
+  query RegisterEventSpec_CommunityInfo {
     userCurrent {
       accessList {
         community {
@@ -20,6 +20,9 @@ const communityInfoDocument = graphql(/* GraphQL */ `
                   eventAttendedList {
                     eventName
                     eventDate
+                    ticketList {
+                      ticketName
+                    }
                   }
                 }
               }
@@ -32,12 +35,12 @@ const communityInfoDocument = graphql(/* GraphQL */ `
 `);
 
 type Community =
-  GQL.PropertyModifySpec_CommunityInfoQuery['userCurrent']['accessList'][0]['community'];
+  GQL.RegisterEventSpec_CommunityInfoQuery['userCurrent']['accessList'][0]['community'];
 type Property = Community['propertyList']['edges'][0]['node'];
 
-const propertyModifyDocument = graphql(/* GraphQL */ `
-  mutation PropertyModifySpec_PropertyModify($input: PropertyModifyInput!) {
-    propertyModify(input: $input) {
+const registerEventDocument = graphql(/* GraphQL */ `
+  mutation RegisterEventSpec_RegisterEvent($input: RegisterEventInput!) {
+    registerEvent(input: $input) {
       community {
         id
         updatedAt
@@ -46,6 +49,19 @@ const propertyModifyDocument = graphql(/* GraphQL */ `
       }
       property {
         id
+        membershipList {
+          year
+          eventAttendedList {
+            eventName
+            eventDate
+            ticketList {
+              ticketName
+              count
+              price
+              paymentMethod
+            }
+          }
+        }
       }
     }
   }
@@ -67,7 +83,30 @@ type TestCaseEntry = [
   Expected, // expected results
 ];
 
-describe('Property Modify (minYear/maxYear changes)', () => {
+type PropertyInput = Pick<Property, 'membershipList'>;
+
+/**
+ * Find event of a specified name
+ *
+ * @param property
+ * @param year
+ * @param eventName
+ * @returns Event object
+ */
+function findEvent(property: PropertyInput, year: number, eventName: string) {
+  const membershipList = property?.membershipList ?? [];
+  const membership = membershipList.find((entry) => year === entry.year);
+  if (!membership) {
+    return undefined;
+  }
+
+  const event = membership.eventAttendedList.find(
+    (entry) => eventName === entry.eventName
+  );
+  return event;
+}
+
+describe('Register Event (minYear/maxYear changes)', () => {
   const testUtil = new TestUtil();
   let firstCommunity: Community | undefined;
   let firstProperty: Property | undefined;
@@ -97,9 +136,9 @@ describe('Property Modify (minYear/maxYear changes)', () => {
 
   const cases: TestCaseEntry[] = [
     [
-      'add 2022 membership (does not change min/max Year)',
+      'add 2023 membership (does not change min/max Year)',
       {
-        year: 2022,
+        year: 2023,
       },
       {
         minYear: 2021,
@@ -132,30 +171,34 @@ describe('Property Modify (minYear/maxYear changes)', () => {
   ];
 
   test.each(cases)('%s', async (description, newEvent, expected) => {
+    const newEventName = 'Corn Roast';
+    const newTicket = {
+      ticketName: 'fries',
+      count: 1,
+      price: '2.00',
+      paymentMethod: 'cash',
+    };
     const result = await testUtil.graphql.executeSingle({
-      document: propertyModifyDocument,
+      document: registerEventDocument,
       variables: {
         input: {
           self: {
             id: firstProperty?.id ?? '',
             updatedAt: firstProperty?.updatedAt ?? '',
           },
-          membershipList: [
-            {
-              year: newEvent.year,
-              paymentMethod: 'custom-test-payment',
-              eventAttendedList: [
-                {
-                  eventName: 'New Years Eve',
-                  eventDate: new Date(Date.UTC(2024, 11, 31)).toISOString(),
-                },
-              ],
-            },
-          ],
+          membership: {
+            year: newEvent.year,
+            paymentMethod: 'custom-test-payment',
+          },
+          event: {
+            eventName: newEventName,
+            eventDate: new Date(Date.UTC(2024, 11, 31)).toISOString(),
+            ticketList: [newTicket],
+          },
         },
       },
     });
-    const { community } = result.data?.propertyModify ?? {};
+    const { community, property } = result.data?.registerEvent ?? {};
     expect(community?.minYear).toBe(expected.minYear);
     expect(community?.maxYear).toBe(expected.maxYear);
     const actualCommunityUpdated = new Date(community?.updatedAt ?? '');
@@ -165,5 +208,19 @@ describe('Property Modify (minYear/maxYear changes)', () => {
     } else {
       expect(actualCommunityUpdated).toStrictEqual(originalCommunityUpdated);
     }
+
+    const event = findEvent(property!, newEvent.year, newEventName);
+    expect(event).toBeDefined();
+
+    // Verify new ticketList contains new ticket as well as previous ones
+    const originalEvent = findEvent(
+      firstProperty!,
+      newEvent.year,
+      newEventName
+    );
+    expect(event!.ticketList).toEqual([
+      ...(originalEvent?.ticketList ?? []).map(expect.objectContaining),
+      expect.objectContaining(newTicket),
+    ]);
   });
 });
