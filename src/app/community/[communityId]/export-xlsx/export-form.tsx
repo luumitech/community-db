@@ -1,5 +1,4 @@
-import { Button, Skeleton, Spacer } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, Skeleton, Spacer, cn } from '@heroui/react';
 import React from 'react';
 import { toast } from 'react-toastify';
 import * as XLSX from 'xlsx';
@@ -55,7 +54,7 @@ export const ExportForm: React.FC<Props> = ({ className }) => {
   const previewActive = !!data && !!columns;
 
   return (
-    <div className={clsx(className, 'flex flex-col h-full')}>
+    <div className={cn(className, 'flex flex-col h-full')}>
       <div className="flex items-center">
         <Button
           onPress={onDownload}

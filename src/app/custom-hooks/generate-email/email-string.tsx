@@ -1,5 +1,4 @@
-import { Button } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { ITEM_DELIMITER } from '~/lib/lcra-community/delimiter-util';
 import { Icon } from '~/view/base/icon';
@@ -49,7 +48,7 @@ export const EmailString: React.FC<Props> = ({ className, contactList }) => {
 
   return (
     <Button
-      className={clsx(className)}
+      className={cn(className)}
       color="primary"
       variant="faded"
       size="sm"

@@ -1,8 +1,8 @@
 import {
   Input as NextUIInput,
   InputProps as NextUIInputProps,
+  cn,
 } from '@heroui/react';
-import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
@@ -50,10 +50,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             classNames={{
               ...classNames,
               // Render readonly field by removing all input decoration
-              base: clsx(classNames?.base, {
+              base: cn(classNames?.base, {
                 'opacity-100': isReadOnly,
               }),
-              inputWrapper: clsx(classNames?.inputWrapper, {
+              inputWrapper: cn(classNames?.inputWrapper, {
                 'border-none shadow-none bg-transparent': isReadOnly,
               }),
             }}

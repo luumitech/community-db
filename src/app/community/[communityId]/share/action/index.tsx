@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { type AccessEntry } from '../_type';
 import { ModifyAccessButton } from './modify-access-button';
@@ -11,7 +11,7 @@ interface Props {
 
 export const Action: React.FC<Props> = ({ className, fragment }) => {
   return (
-    <div className={clsx(className, 'flex gap-2')}>
+    <div className={cn(className, 'flex gap-2')}>
       <ModifyAccessButton fragment={fragment} />
       <RemoveAccess fragment={fragment} />
     </div>

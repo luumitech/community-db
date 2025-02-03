@@ -1,5 +1,4 @@
-import { Button } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
@@ -20,7 +19,7 @@ interface EmptyProps {}
 export const TicketRowHeader: React.FC<EmptyProps> = () => {
   return (
     <div
-      className={clsx(
+      className={cn(
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
         'text-tiny font-semibold items-center',
@@ -51,10 +50,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
   const controlNamePrefix = `${ticketListConfig.controlNamePrefix}.${ticketIdx}`;
 
   return (
-    <div
-      className={clsx('grid col-span-full grid-cols-subgrid mx-3')}
-      role="row"
-    >
+    <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
       <div role="cell">
         <TicketTypeSelect
           controlNamePrefix={controlNamePrefix}
@@ -93,7 +89,7 @@ export const TransactionHeader: React.FC<EmptyProps> = () => {
   const { paymentMethod } = transactionUIConfig;
 
   return (
-    <div className={clsx('grid col-span-full')}>
+    <div className={cn('grid col-span-full')}>
       <TicketAddButton
         onClick={(ticket) => {
           ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
@@ -131,7 +127,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
 
   return (
     <div
-      className={clsx(
+      className={cn(
         'grid col-span-full grid-cols-subgrid',
         'bg-default-100 items-center',
         'rounded-lg'
@@ -202,10 +198,7 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
   const { controlNamePrefix } = membershipConfig;
 
   return (
-    <div
-      className={clsx('grid col-span-full grid-cols-subgrid mx-3')}
-      role="row"
-    >
+    <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
       <div role="cell" className="text-sm pt-2 pl-1">
         Membership Fee
       </div>

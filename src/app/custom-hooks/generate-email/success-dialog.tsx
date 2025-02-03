@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import type { OccupantEntry, PropertyEntry } from './_type';
 import { EmailString } from './email-string';
@@ -40,7 +40,7 @@ export const SuccessDialog: React.FC<Props> = ({ className, propertyList }) => {
   const contactCount = contactList.length;
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-2')}>
+    <div className={cn(className, 'flex flex-col gap-2')}>
       <p className="leading-4">
         <span>{contactCount} emails generated</span>
         <br />

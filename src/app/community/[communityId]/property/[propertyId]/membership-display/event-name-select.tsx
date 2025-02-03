@@ -1,5 +1,4 @@
-import { Select, SelectItem } from '@heroui/react';
-import clsx from 'clsx';
+import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getCurrentDate } from '~/lib/date-util';
@@ -14,7 +13,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={clsx(className, 'min-w-32 max-w-xs')}
+      className={cn(className, 'min-w-32 max-w-xs')}
       aria-label="Current Event Name"
       items={visibleEventItems}
       placeholder="Select current event"

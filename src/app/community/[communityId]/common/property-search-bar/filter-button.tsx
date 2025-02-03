@@ -1,5 +1,5 @@
+import { cn } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
-import clsx from 'clsx';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 import { useIsFilterSpecified } from './use-hook-form';
@@ -16,7 +16,7 @@ export const FilterButton: React.FC<Props> = ({ className, disclosure }) => {
   return (
     <FlatButton
       icon="filter"
-      className={clsx({
+      className={cn({
         'text-success': filterSpecified,
       })}
       onClick={onOpen}

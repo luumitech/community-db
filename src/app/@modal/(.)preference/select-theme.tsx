@@ -1,5 +1,4 @@
-import { Radio, RadioGroup } from '@heroui/react';
-import clsx from 'clsx';
+import { Radio, RadioGroup, cn } from '@heroui/react';
 import { useTheme } from 'next-themes';
 import React from 'react';
 

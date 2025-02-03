@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { FlatButton } from '~/view/base/flat-button';
@@ -54,7 +54,7 @@ export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
 
   return (
     <FlatButton
-      className={clsx(className, 'text-danger')}
+      className={cn(className, 'text-danger')}
       icon="trash"
       tooltip="Remove Access"
       onClick={onDelete}

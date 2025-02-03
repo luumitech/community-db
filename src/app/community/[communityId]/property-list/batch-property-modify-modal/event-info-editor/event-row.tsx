@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import {
   TicketAddButton,
@@ -16,7 +16,7 @@ interface EventHeaderProps {
 export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
@@ -46,7 +46,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
   return (
     <>
       <div
-        className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+        className={cn(className, 'grid col-span-full grid-cols-subgrid mx-3')}
         role="row"
       >
         <div role="cell">
@@ -61,7 +61,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
       </div>
       <div className="col-span-full">
         <TicketInputTable
-          className={clsx(
+          className={cn(
             'border-medium border-divider rounded-lg',
             'ml-[40px] p-1'
           )}

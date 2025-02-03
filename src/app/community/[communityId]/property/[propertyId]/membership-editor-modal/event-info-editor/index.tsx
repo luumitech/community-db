@@ -1,5 +1,4 @@
-import { ScrollShadow } from '@heroui/react';
-import clsx from 'clsx';
+import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
@@ -57,16 +56,16 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   }, [eventAttendedListError]);
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-2')}>
+    <div className={cn(className, 'flex flex-col gap-2')}>
       {topContent}
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div
-          className={clsx('grid grid-cols-[40px_repeat(2,1fr)_80px]', 'gap-2')}
+          className={cn('grid grid-cols-[40px_repeat(2,1fr)_80px]', 'gap-2')}
         >
           <EventRowHeader />
           {fields.length === 0 && (
             <div
-              className={clsx(
+              className={cn(
                 'col-span-full h-8',
                 'justify-self-center content-center'
               )}

@@ -1,5 +1,4 @@
-import { Select, SelectItem } from '@heroui/react';
-import clsx from 'clsx';
+import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useYearlyContext } from '../yearly-context';
@@ -14,10 +13,10 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={clsx(className, 'min-w-32 max-w-xs')}
+      className={cn(className, 'min-w-32 w-full')}
       aria-label="Event Name"
       items={visibleEventItems}
-      placeholder="Select an event"
+      placeholder="Select event from list or click on bar chart"
       selectedKeys={[eventSelected]}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;

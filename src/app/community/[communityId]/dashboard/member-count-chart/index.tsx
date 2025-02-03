@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { Card, CardBody, CardHeader, Skeleton } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { lsFlags } from '~/lib/env-var';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
 
@@ -32,7 +32,7 @@ export const MemberCountChart: React.FC<Props> = ({
   onYearSelect,
 }) => {
   const [yearRange, setYearRange] = useLocalStorage(
-    'cd-dashboard-year-range',
+    lsFlags.dashboardYearRange,
     10
   );
   const result = useQuery(MemberCountStatQuery, {
@@ -49,7 +49,7 @@ export const MemberCountChart: React.FC<Props> = ({
   }, [community, onYearSelect]);
 
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader className="justify-between gap-2">
         <div>
           <p className="font-bold text-md">Total Membership Counts</p>

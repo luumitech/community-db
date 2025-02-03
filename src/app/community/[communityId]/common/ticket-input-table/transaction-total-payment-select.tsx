@@ -2,9 +2,9 @@ import {
   Select,
   SelectItem,
   SelectSection,
+  cn,
   type SelectProps,
 } from '@heroui/react';
-import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 
@@ -28,7 +28,7 @@ export const TransactionTotalPaymentSelect: React.FC<Props> = ({
     : [{ title: '', items: visiblePaymentMethods, showDivider: false }];
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <Select
         className="min-w-32 max-w-xs"
         aria-label="Transaction Total Payment Method"

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 import { usePageContext } from '../page-context';
@@ -11,7 +11,7 @@ export const EditMembershipButton: React.FC<Props> = ({ className }) => {
   const { membershipEditor } = usePageContext();
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <FlatButton
         className="text-primary"
         icon="edit"

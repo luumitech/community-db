@@ -1,5 +1,4 @@
-import { Chip, useDisclosure } from '@heroui/react';
-import clsx from 'clsx';
+import { Chip, cn, useDisclosure } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { Icon } from '~/view/base/icon';

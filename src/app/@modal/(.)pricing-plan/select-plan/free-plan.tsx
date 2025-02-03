@@ -1,5 +1,4 @@
-import { Button } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, cn } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
 import { usePlanContext } from '../plan-context';

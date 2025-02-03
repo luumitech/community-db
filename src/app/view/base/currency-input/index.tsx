@@ -1,5 +1,4 @@
-import { Input, InputProps } from '@heroui/react';
-import clsx from 'clsx';
+import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { NumericFormat, type NumericFormatProps } from 'react-number-format';
 import * as R from 'remeda';
@@ -54,13 +53,13 @@ export const CurrencyInput = React.forwardRef<
             classNames={{
               ...classNames,
               // Render readonly field by removing all input decoration
-              base: clsx(
+              base: cn(
                 classNames?.base,
                 // Enough space for $99.99
                 'min-w-20',
                 { 'opacity-100': isReadOnly }
               ),
-              inputWrapper: clsx(classNames?.inputWrapper, 'pb-0', {
+              inputWrapper: cn(classNames?.inputWrapper, 'pb-0', {
                 'border-none shadow-none bg-transparent': isReadOnly,
               }),
             }}

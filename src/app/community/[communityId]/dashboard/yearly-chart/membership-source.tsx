@@ -1,5 +1,4 @@
-import { Card, CardBody, CardHeader, Skeleton } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -74,7 +73,7 @@ export const MembershipSource: React.FC<Props> = ({
   }, [entry]);
 
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
           <p className="font-bold text-md">{`${year} Membership Source`}</p>

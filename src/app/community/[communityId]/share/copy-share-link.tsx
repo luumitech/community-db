@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
@@ -16,7 +16,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <div className="flex items-center gap-2">
         <Button
           variant="bordered"

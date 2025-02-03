@@ -1,5 +1,11 @@
-import { Card, CardBody, CardHeader, Skeleton, Spacer } from '@heroui/react';
-import clsx from 'clsx';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Skeleton,
+  Spacer,
+  cn,
+} from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { type DashboardEntry } from '../_type';
@@ -44,14 +50,14 @@ export const EventTicketSale: React.FC<Props> = ({
       ?.ticketList ?? [];
 
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
           <p className="font-bold text-md">{`${year} Event Ticket Sale`}</p>
         </div>
       </CardHeader>
       <CardBody>
-        <Skeleton className="rounded-lg" isLoaded={!isLoading}>
+        <Skeleton className="rounded-lg min-h-[400px]" isLoaded={!isLoading}>
           <EventNameSelect />
           <Spacer y={2} />
           <TicketSaleTable ticketList={ticketList} />

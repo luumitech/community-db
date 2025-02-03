@@ -1,5 +1,4 @@
-import { Input } from '@heroui/react';
-import clsx from 'clsx';
+import { Input, cn } from '@heroui/react';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
@@ -67,7 +66,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
   );
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-4')}>
+    <div className={cn(className, 'flex flex-col gap-4')}>
       <div className="grid grid-cols-[40px_repeat(1,1fr)_75px] gap-2">
         <RowHeader />
         <VisibleList fieldArray={eventList} onRemove={addHiddenItem} />

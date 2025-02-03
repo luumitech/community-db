@@ -1,5 +1,4 @@
-import { Button, Input } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, Input, cn } from '@heroui/react';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Icon } from '~/view/base/icon';
@@ -66,7 +65,7 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
   );
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-4')}>
+    <div className={cn(className, 'flex flex-col gap-4')}>
       <div className="grid grid-cols-[40px_repeat(1,1fr)_75px] gap-2">
         <RowHeader />
         <VisibleList fieldArray={paymentMethods} onRemove={addHiddenItem} />

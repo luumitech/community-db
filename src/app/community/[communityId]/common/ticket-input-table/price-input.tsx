@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
@@ -48,9 +48,9 @@ export const PriceInput: React.FC<Props> = ({
   return (
     <CurrencyInput
       classNames={{
-        base: clsx(className),
+        base: cn(className),
         // This will align input and select items text on the same line
-        innerWrapper: clsx('pb-0'),
+        innerWrapper: cn('pb-0'),
       }}
       controlName={`${controlNamePrefix}.price`}
       isControlled

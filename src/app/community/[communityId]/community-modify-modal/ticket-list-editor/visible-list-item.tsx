@@ -4,7 +4,7 @@ import {
   type AnimateLayoutChanges,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { CurrencyInput } from '~/view/base/currency-input';
 import { FlatButton } from '~/view/base/flat-button';
@@ -41,10 +41,7 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <div
       ref={setNodeRef}
-      className={clsx(
-        'grid col-span-full grid-cols-subgrid',
-        'mx-3 items-start'
-      )}
+      className={cn('grid col-span-full grid-cols-subgrid', 'mx-3 items-start')}
       role="row"
       style={{
         transform: CSS.Transform.toString(transform),
@@ -52,7 +49,7 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
       }}
     >
       <FlatButton
-        className={clsx(
+        className={cn(
           'text-foreground-500 mt-3',
           'cursor-grab active:cursor-grabbing'
         )}

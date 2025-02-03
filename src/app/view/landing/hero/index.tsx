@@ -1,5 +1,5 @@
 'use client';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import Image from 'next/image';
 import React from 'react';
 import { appTitle } from '~/lib/env-var';
@@ -12,7 +12,7 @@ interface Props {
 export const Hero: React.FC<Props> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         // Make sure background covers entire screen
         'w-full min-h-main-height',
@@ -22,7 +22,7 @@ export const Hero: React.FC<Props> = ({ className }) => {
       {/* Render text box that prefers to be aligned slightly to the top */}
       <div className="px-6 py-6 sm:pt-[10vh] sm:px-12">
         <div
-          className={clsx(
+          className={cn(
             'flex flex-col items-center text-center text-wrap gap-6',
             'bg-opacity-80 bg-background rounded-xl p-5 sm:p-10'
           )}

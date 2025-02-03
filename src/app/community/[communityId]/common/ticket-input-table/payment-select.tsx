@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
@@ -33,7 +33,7 @@ export const PaymentSelect: React.FC<Props> = ({
     : [{ title: '', items: visiblePaymentMethods, showDivider: false }];
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <Select
         className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.paymentMethod`}

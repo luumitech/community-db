@@ -1,6 +1,5 @@
-import { Card, CardBody, CardHeader } from '@heroui/react';
+import { Card, CardBody, CardHeader, cn } from '@heroui/react';
 import { ScrollShadow } from '@heroui/scroll-shadow';
-import clsx from 'clsx';
 import React from 'react';
 
 interface Props {
@@ -10,7 +9,7 @@ interface Props {
 
 export const NotesView: React.FC<Props> = ({ className, notes }) => {
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader>Notes</CardHeader>
       <CardBody>
         <ScrollShadow className="h-28">

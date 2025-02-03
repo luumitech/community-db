@@ -1,5 +1,4 @@
-import { Badge } from '@heroui/react';
-import clsx from 'clsx';
+import { Badge, cn } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import {
@@ -24,7 +23,7 @@ interface EventHeaderProps {
 export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
@@ -72,11 +71,11 @@ export const EventRow: React.FC<EventRowProps> = ({
   return (
     <>
       <div
-        className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+        className={cn(className, 'grid col-span-full grid-cols-subgrid mx-3')}
         role="row"
       >
         <FlatButton
-          className={clsx('pt-3')}
+          className={cn('pt-3')}
           disabled={ticketCount === 0}
           onClick={() => toggle(eventIdx)}
         >
@@ -150,7 +149,7 @@ export const EventRow: React.FC<EventRowProps> = ({
               }}
             >
               <TicketInputTable
-                className={clsx(
+                className={cn(
                   'border-medium border-divider rounded-lg',
                   'ml-[40px] p-1'
                 )}

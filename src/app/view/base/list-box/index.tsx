@@ -9,8 +9,8 @@ import {
   ListboxItemProps,
   ListboxProps,
   Skeleton,
+  cn,
 } from '@heroui/react';
-import clsx from 'clsx';
 import React from 'react';
 
 export { type ListboxItemProps } from '@heroui/react';
@@ -30,9 +30,7 @@ export const ListBox: React.FC<Props> = ({
   ...listBoxProps
 }) => {
   return (
-    <div
-      className={clsx(className, 'flex flex-row justify-center items-center')}
-    >
+    <div className={cn(className, 'flex flex-row justify-center items-center')}>
       <Card className="w-80 md:w-96">
         {!!header && (
           <>

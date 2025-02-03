@@ -1,5 +1,4 @@
-import { ScrollShadow } from '@heroui/react';
-import clsx from 'clsx';
+import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { useFormContext } from '~/custom-hooks/hook-form';
@@ -95,7 +94,7 @@ export const TicketInputTable: React.FC<Props> = ({
       transactionConfig={transactionConfig}
       includeHiddenFields={includeHiddenFields}
     >
-      <div className={clsx(className)}>
+      <div className={cn(className)}>
         <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
           <div className="grid grid-cols-[repeat(4,1fr)_75px] gap-2">
             <TicketRowHeader />

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { EventSelect } from './event-select';
@@ -10,7 +10,7 @@ interface Props {
 
 export const FilterSelect: React.FC<Props> = ({ className }) => {
   return (
-    <div className={clsx(className, 'flex flex-col gap-2')}>
+    <div className={cn(className, 'flex flex-col gap-2')}>
       Apply changes to all properties who are members in the year:
       <div className="ml-4 flex gap-2 items-center">
         <YearSelect />

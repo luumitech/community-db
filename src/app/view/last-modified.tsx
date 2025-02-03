@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { toLocalDateTime } from '~/lib/date-util';
 import { type UserFragmentType } from './_type';
@@ -18,7 +18,7 @@ export const LastModified: React.FC<Props> = ({
   const updatedAtStr = toLocalDateTime(updatedAt);
 
   return (
-    <div className={clsx(className, 'text-xs text-foreground-500')}>
+    <div className={cn(className, 'text-xs text-foreground-500')}>
       Last modified on {updatedAtStr} by <UserName userFragment={updatedBy} />
     </div>
   );

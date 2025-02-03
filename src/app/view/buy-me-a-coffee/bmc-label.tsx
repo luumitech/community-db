@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import { Cookie } from 'next/font/google';
 import React from 'react';
 
@@ -13,7 +13,7 @@ interface Props {
 
 export const BmcLabel: React.FC<Props> = ({ className }) => {
   return (
-    <div className={clsx(className, cookie.className, 'text-xl')}>
+    <div className={cn(className, cookie.className, 'text-xl')}>
       Buy me a coffee
     </div>
   );

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { PublicEnvScript } from 'next-runtime-env';
@@ -63,7 +63,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
           <PublicEnvScript />
         </React.Suspense>
       </head>
-      <body className={clsx(inter.className, 'text-foreground bg-background')}>
+      <body className={cn(inter.className, 'text-foreground bg-background')}>
         {/**
          * Light/dark theme can be customized
          *

@@ -1,5 +1,4 @@
-import { Spacer } from '@heroui/react';
-import clsx from 'clsx';
+import { Spacer, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
@@ -35,7 +34,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({
   }, [selectedYear, fields]);
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <YearSelect
         yearRange={[minYear, Math.max(fields[0].year, maxYear)]}
         membershipList={property.membershipList}

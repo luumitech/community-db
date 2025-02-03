@@ -1,3 +1,4 @@
+import { cn } from '@heroui/react';
 import { type LegendProps } from '@nivo/legends';
 import {
   ResponsivePie,
@@ -5,7 +6,6 @@ import {
   type MayHaveLabel,
   type PieSvgProps,
 } from '@nivo/pie';
-import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { COLOR_SCHEME, getItemColor } from '../item-color';
@@ -82,7 +82,7 @@ export function PieChart<T extends DataT>({
   );
 
   return (
-    <div className={clsx(className, 'h-full')}>
+    <div className={cn(className, 'h-full')}>
       <ResponsivePie
         margin={margin}
         theme={theme}

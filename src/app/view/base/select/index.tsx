@@ -1,8 +1,8 @@
 import {
   Select as NextUISelect,
   SelectProps as NextUISelectProps,
+  cn,
 } from '@heroui/react';
-import clsx from 'clsx';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
@@ -83,13 +83,13 @@ export function Select<T extends object>(props: SelectProps<T>) {
               classNames={{
                 ...classNames,
                 // Render readonly field by removing all input decoration
-                base: clsx(classNames?.base, {
+                base: cn(classNames?.base, {
                   'opacity-100': isReadOnly,
                 }),
-                trigger: clsx(classNames?.trigger, {
+                trigger: cn(classNames?.trigger, {
                   'border-none shadow-none bg-transparent': isReadOnly,
                 }),
-                selectorIcon: clsx({
+                selectorIcon: cn({
                   hidden: isReadOnly,
                 }),
               }}

@@ -4,8 +4,8 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
+  cn,
 } from '@heroui/react';
-import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { decMul } from '~/lib/decimal-util';
@@ -49,7 +49,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
       <DropdownTrigger>
         {children ?? (
           <FlatButton
-            className={clsx(className, 'text-primary')}
+            className={cn(className, 'text-primary')}
             icon="add-ticket"
             tooltip="Add Ticket"
           />

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 export const RowHeader: React.FC<Props> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',

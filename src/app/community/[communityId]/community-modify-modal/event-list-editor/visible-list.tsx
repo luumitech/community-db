@@ -7,7 +7,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { type EventListFieldArray } from '../use-hook-form';
 import { VisibleListItem } from './visible-list-item';

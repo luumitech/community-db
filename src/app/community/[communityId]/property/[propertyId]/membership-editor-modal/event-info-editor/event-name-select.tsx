@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import {
@@ -37,7 +37,7 @@ export const EventNameSelect: React.FC<Props> = ({
 
   return (
     <Select
-      className={clsx(className, 'min-w-32 max-w-xs')}
+      className={cn(className, 'min-w-32 max-w-xs')}
       controlName={`membershipList.${yearIdx}.eventAttendedList.${eventIdx}.eventName`}
       aria-label="Event Name"
       items={selectEventSections}

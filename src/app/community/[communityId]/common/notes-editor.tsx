@@ -1,5 +1,4 @@
-import { Input } from '@heroui/react';
-import clsx from 'clsx';
+import { Input, cn } from '@heroui/react';
 import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { useUserInfo } from '~/custom-hooks/user-info';
@@ -19,7 +18,7 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
   const notes = watch(controlName);
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-2')}>
+    <div className={cn(className, 'flex flex-col gap-2')}>
       <div className="flex items-end gap-2">
         <Input
           label="Notes"

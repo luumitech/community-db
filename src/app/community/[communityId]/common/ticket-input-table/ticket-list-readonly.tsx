@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useToggle } from 'usehooks-ts';
@@ -98,7 +98,7 @@ interface TicketRowProps {
 const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
   return (
     <div
-      className={clsx('grid col-span-full grid-cols-subgrid mx-3', 'text-sm')}
+      className={cn('grid col-span-full grid-cols-subgrid mx-3', 'text-sm')}
       role="row"
     >
       <div className="pl-1" role="cell">
@@ -123,9 +123,9 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
   const { ticketCount, isExpanded, toggle } = prevXact;
 
   return (
-    <div className={clsx('grid col-span-full')}>
+    <div className={cn('grid col-span-full')}>
       <div
-        className={clsx(
+        className={cn(
           'h-10 border-medium rounded-md flex items-center px-2 gap-2',
           'cursor-pointer hover:opacity-hover'
         )}
@@ -153,7 +153,7 @@ export const TicketListTotal: React.FC<PreviousTransaction> = ({
 
   return (
     <div
-      className={clsx(
+      className={cn(
         'grid col-span-full grid-cols-subgrid',
         'bg-default-100 items-center',
         'rounded-lg h-10'

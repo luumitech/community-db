@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useResizeObserver, useWindowSize } from 'usehooks-ts';

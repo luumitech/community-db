@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 import { type EventAttendedListFieldArray } from '../use-hook-form';
@@ -18,7 +18,7 @@ export const EventAction: React.FC<Props> = ({
 
   return (
     <FlatButton
-      className={clsx(className, 'text-danger')}
+      className={cn(className, 'text-danger')}
       icon="trash"
       tooltip="Remove Event"
       onClick={() => remove(eventIdx)}

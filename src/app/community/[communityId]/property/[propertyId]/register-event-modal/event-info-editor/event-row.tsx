@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
@@ -17,7 +17,7 @@ interface EventRowProps {
 export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
@@ -48,7 +48,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
   return (
     <>
       <div
-        className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+        className={cn(className, 'grid col-span-full grid-cols-subgrid mx-3')}
         role="row"
       >
         <div role="cell" className="text-sm pt-1.5">
@@ -64,7 +64,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
       </div>
       <div className="col-span-full">
         <TicketInputTable
-          className={clsx(
+          className={cn(
             'border-medium border-divider rounded-lg',
             'ml-[40px] p-1'
           )}

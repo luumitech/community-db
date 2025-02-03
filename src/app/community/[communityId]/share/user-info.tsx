@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { type AccessEntry } from './_type';
@@ -19,7 +19,7 @@ interface Props {
 export const UserInfo: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(UserInfoFragment, fragment);
   return (
-    <div className={clsx(className, 'flex truncate gap-1')}>
+    <div className={cn(className, 'flex truncate gap-1')}>
       <span>{entry.user.email ?? ''}</span>
       {!!fragment.isSelf && <span>(you)</span>}
       {!!fragment.isOwner && <span>(owner)</span>}

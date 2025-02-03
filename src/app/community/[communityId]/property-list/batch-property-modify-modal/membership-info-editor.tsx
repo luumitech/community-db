@@ -1,5 +1,4 @@
-import { Card, CardBody, CardHeader } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardHeader, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { EventInfoEditor } from './event-info-editor';
@@ -13,7 +12,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
   const { minYear, maxYear } = useAppContext();
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       Specify new event to add:
       <Card className="mt-2">
         <CardHeader className="gap-2">

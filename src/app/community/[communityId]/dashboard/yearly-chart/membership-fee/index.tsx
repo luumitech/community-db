@@ -1,9 +1,8 @@
-import { Card, CardBody, CardHeader, Skeleton } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { type DashboardEntry } from '../_type';
-import { MembershipSaleTable } from './membership-sale-table';
+import { MembershipFeeTable } from './membership-fee-table';
 
 const EventMembershipFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventMembership on Community {
@@ -27,7 +26,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-export const MembershipSale: React.FC<Props> = ({
+export const MembershipFee: React.FC<Props> = ({
   className,
   fragment,
   year,
@@ -46,15 +45,15 @@ export const MembershipSale: React.FC<Props> = ({
     .flat();
 
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="font-bold text-md">{`${year} Membership Sale`}</p>
+          <p className="font-bold text-md">{`${year} Membership Fee`}</p>
         </div>
       </CardHeader>
       <CardBody>
-        <Skeleton className="rounded-lg" isLoaded={!isLoading}>
-          <MembershipSaleTable membershipList={membershipList} />
+        <Skeleton className="rounded-lg min-h-[400px]" isLoaded={!isLoading}>
+          <MembershipFeeTable membershipList={membershipList} />
         </Skeleton>
       </CardBody>
     </Card>

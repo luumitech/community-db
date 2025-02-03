@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { Select, SelectItem, SelectProps } from '~/view/base/select';
@@ -29,7 +29,7 @@ export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
 
   return (
     <Select
-      className={clsx(className, 'min-w-32 max-w-xs')}
+      className={cn(className, 'min-w-32 max-w-xs')}
       controlName="filter.memberYear"
       label="Membership Year"
       size="sm"

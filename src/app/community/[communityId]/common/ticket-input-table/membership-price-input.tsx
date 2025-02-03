@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { CurrencyInput, CurrencyInputProps } from '~/view/base/currency-input';
 
@@ -16,7 +16,7 @@ export const MembershipPriceInput: React.FC<Props> = ({
 }) => {
   return (
     <CurrencyInput
-      className={clsx(className)}
+      className={cn(className)}
       controlName={`${controlNamePrefix}.price`}
       aria-label="Price"
       allowNegative={false}

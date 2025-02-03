@@ -1,5 +1,4 @@
-import { Button } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
@@ -46,7 +45,7 @@ export const MailchimpCSV: React.FC<Props> = ({ className, contactList }) => {
 
   return (
     <Button
-      className={clsx(className)}
+      className={cn(className)}
       color="primary"
       variant="faded"
       size="sm"

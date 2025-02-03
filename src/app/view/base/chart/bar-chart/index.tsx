@@ -1,10 +1,10 @@
+import { cn } from '@heroui/react';
 import {
   ResponsiveBar,
   type BarDatum,
   type BarLegendProps,
   type ResponsiveBarSvgProps,
 } from '@nivo/bar';
-import clsx from 'clsx';
 import React from 'react';
 import { COLOR_SCHEME } from '../item-color';
 import { useNivoTheme } from '../theme';
@@ -62,7 +62,7 @@ export function BarChart<T extends BarDatum>({
   );
 
   return (
-    <div className={clsx(className, 'h-full')}>
+    <div className={cn(className, 'h-full')}>
       <ResponsiveBar
         onClick={customOnClick}
         theme={theme}

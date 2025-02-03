@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { type PropertyEntry } from './_type';
@@ -17,7 +17,5 @@ interface Props {
 export const PropertyAddress: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(EntryFragment, fragment);
 
-  return (
-    <div className={clsx(className, 'truncate')}>{entry.address ?? ''}</div>
-  );
+  return <div className={cn(className, 'truncate')}>{entry.address ?? ''}</div>;
 };

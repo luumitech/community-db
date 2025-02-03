@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
@@ -13,7 +13,7 @@ interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
@@ -39,7 +39,7 @@ export const TableRow: React.FC<TableRowProps> = ({ className, ticket }) => {
   return (
     <>
       <div
-        className={clsx(
+        className={cn(
           className,
           'grid col-span-full grid-cols-subgrid mx-3',
           'text-sm items-center'

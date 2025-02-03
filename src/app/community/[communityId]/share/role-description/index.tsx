@@ -1,6 +1,5 @@
 import { Card, CardBody, CardHeader } from '@heroui/card';
-import { Divider } from '@heroui/react';
-import clsx from 'clsx';
+import { Divider, cn } from '@heroui/react';
 import React from 'react';
 import { RoleItem } from './role-item';
 
@@ -10,7 +9,7 @@ interface Props {
 
 export const RoleDescription: React.FC<Props> = ({ className }) => {
   return (
-    <Card className={clsx(className)} shadow="sm">
+    <Card className={cn(className)} shadow="sm">
       <CardHeader>Role Definition</CardHeader>
       <Divider />
       <CardBody>

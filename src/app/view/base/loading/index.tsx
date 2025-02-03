@@ -1,5 +1,5 @@
 'use client';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import styles from './styles.module.css';
 
@@ -13,10 +13,10 @@ export const Loading = React.forwardRef<HTMLDivElement, Props>(
       <div
         ref={ref}
         aria-label="Loading"
-        className={clsx(className, 'text-primary-300 px-4 py-2')}
+        className={cn(className, 'text-primary-300 px-4 py-2')}
         {...props}
       >
-        <div className={clsx(styles.loader)} />
+        <div className={cn(styles.loader)} />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 
@@ -17,7 +17,7 @@ export const HiddenListItem: React.FC<React.PropsWithChildren<Props>> = ({
 }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'mx-3 items-center h-6'
