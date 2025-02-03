@@ -1,9 +1,11 @@
-import { Membership, Prisma } from '@prisma/client';
+import { Event, Membership, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
+import * as R from 'remeda';
 import { type Context } from '~/graphql/context';
 import prisma from '~/lib/prisma';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
-import { PropertyFilterInput } from './modify';
+import { PropertyFilterInput } from './batch-modify';
+import { EventInput } from './modify';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
@@ -254,5 +256,100 @@ export async function propertyListFindManyArgs(
       ...findManyArgs.where,
       ...where,
     },
+  };
+}
+
+/** Map EventInput to Event object in database */
+export function mapEventEntry(input: typeof EventInput.$inferInput): Event {
+  return {
+    eventName: input.eventName,
+    eventDate: input.eventDate ? new Date(input.eventDate) : null,
+    ticketList: (input.ticketList ?? []).map((entry) => ({
+      ticketName: entry.ticketName,
+      count: entry.count ?? null,
+      price: entry.price ?? null,
+      paymentMethod: entry.paymentMethod ?? null,
+    })),
+  };
+}
+
+/**
+ * Find location of the event object in the given membershipList.
+ *
+ * If not found, add a placeholder entry for it, and also return additional
+ * information like:
+ *
+ * - Whether an event has been added.
+ * - Whether the new event is a new membership
+ *
+ * @param membershipList List of existing membership list in database
+ * @param memberYear MemberYear associated with event
+ * @param input Event input
+ * @returns MembershipIdx and eventIdx to locate the event object
+ */
+export function findOrAddEvent(
+  membershipList: Membership[],
+  /** Membership year where the event should be updated */
+  memberYear: number,
+  /** Event name */
+  eventName: string
+) {
+  /**
+   * `membershipList` should already be sorted by year in descending order Look
+   * for the appropriate index to insert the new membership
+   */
+  const membershipIdx = R.sortedIndexWith(
+    membershipList,
+    ({ year }) => year > memberYear
+  );
+  let membership = membershipList[membershipIdx];
+  // If existing membership is found, then update it in place, otherwise insert
+  // the `membership` into the `membershipList`
+  if (membership?.year !== memberYear) {
+    const newMembership = {
+      year: memberYear,
+      paymentDeposited: null,
+      eventAttendedList: [],
+      price: null,
+      paymentMethod: null,
+    };
+    membershipList.splice(membershipIdx, 0, newMembership);
+    membership = membershipList[membershipIdx];
+  }
+
+  let eventIdx = membership.eventAttendedList.findIndex(
+    (entry) => entry.eventName === eventName
+  );
+  const isNewEvent = eventIdx === -1;
+  const isNewMember = membership.eventAttendedList.length === 0;
+  if (isNewEvent) {
+    eventIdx = membership.eventAttendedList.length;
+    membership.eventAttendedList.push({
+      eventName,
+      eventDate: null,
+      ticketList: [],
+    });
+  }
+
+  // Extra safe check to make sure everything looks kosher
+  if (membershipList[membershipIdx].year != memberYear) {
+    throw new GraphQLError(
+      'membership at membershipIdx has incorrect information'
+    );
+  }
+  if (
+    membershipList[membershipIdx].eventAttendedList[eventIdx].eventName !=
+    eventName
+  ) {
+    throw new GraphQLError(
+      'eventAttdendedList at eventIdx has incorrect information'
+    );
+  }
+
+  return {
+    membershipIdx,
+    eventIdx,
+    isNewMember,
+    isNewEvent,
   };
 }

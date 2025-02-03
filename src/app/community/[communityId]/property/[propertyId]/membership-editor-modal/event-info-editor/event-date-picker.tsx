@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { DatePicker } from '~/view/base/date-picker';
 
@@ -15,7 +15,7 @@ export const EventDatePicker: React.FC<Props> = ({
 }) => {
   return (
     <DatePicker
-      className={clsx(className)}
+      className={cn(className)}
       controlName={`membershipList.${yearIdx}.eventAttendedList.${eventIdx}.eventDate`}
       aria-label="Event Date"
       variant="underlined"

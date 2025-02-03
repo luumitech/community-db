@@ -1,5 +1,4 @@
-import { Input, InputProps } from '@heroui/react';
-import clsx from 'clsx';
+import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { NumericFormat, type NumericFormatProps } from 'react-number-format';
 import * as R from 'remeda';
@@ -25,7 +24,15 @@ export const CurrencyInput = React.forwardRef<
   CurrencyInputProps
 >(
   (
-    { className, controlName, isControlled, onBlur, onChange, ...props },
+    {
+      classNames,
+      controlName,
+      isControlled,
+      onBlur,
+      onChange,
+      isReadOnly,
+      ...props
+    },
     ref
   ) => {
     const { control, formState } = useFormContext();
@@ -43,8 +50,19 @@ export const CurrencyInput = React.forwardRef<
         render={({ field }) => (
           <NumericFormat
             ref={ref}
-            // Enough space for $99.99
-            className={clsx(className, 'min-w-20')}
+            classNames={{
+              ...classNames,
+              // Render readonly field by removing all input decoration
+              base: cn(
+                classNames?.base,
+                // Enough space for $99.99
+                'min-w-20',
+                { 'opacity-100': isReadOnly }
+              ),
+              inputWrapper: cn(classNames?.inputWrapper, 'pb-0', {
+                'border-none shadow-none bg-transparent': isReadOnly,
+              }),
+            }}
             // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
             customInput={Input}
             defaultValue={field.value ?? ''}
@@ -69,6 +87,16 @@ export const CurrencyInput = React.forwardRef<
                 <span className="text-default-400 text-small">$</span>
               </div>
             }
+            onKeyDown={(e) => {
+              // Prevent Enter key inside input from submitting form
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
+            {...(!!isReadOnly && {
+              isReadOnly: true,
+              isDisabled: true,
+            })}
             {...props}
           />
         )}

@@ -1,5 +1,5 @@
 import { Chip } from '@heroui/chip';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { getFragment, graphql } from '~/graphql/generated';
@@ -29,7 +29,7 @@ export const Occupant: React.FC<Props> = ({ className, fragment }) => {
     .filter((name) => !R.isEmpty(name));
 
   return (
-    <div className={clsx(className, 'flex items-center gap-2')}>
+    <div className={cn(className, 'flex items-center gap-2')}>
       {nameList.map((name, idx) => (
         <Chip key={idx} size="sm">
           {name}

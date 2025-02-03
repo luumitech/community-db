@@ -1,5 +1,4 @@
-import { Select, SelectItem } from '@heroui/react';
-import clsx from 'clsx';
+import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
@@ -87,7 +86,7 @@ export const YearSelect: React.FC<Props> = ({
   return (
     <Select
       classNames={{
-        base: clsx(className, 'max-w-sm'),
+        base: cn(className, 'max-w-sm'),
         label: 'whitespace-nowrap self-center',
       }}
       label="Membership Year"

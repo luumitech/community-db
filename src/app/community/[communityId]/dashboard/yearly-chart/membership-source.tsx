@@ -1,5 +1,4 @@
-import { Card, CardBody, CardHeader, Skeleton } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -74,16 +73,22 @@ export const MembershipSource: React.FC<Props> = ({
   }, [entry]);
 
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
           <p className="font-bold text-md">{`${year} Membership Source`}</p>
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">
-        <Skeleton className="rounded-lg" isLoaded={!isLoading}>
+        <Skeleton
+          classNames={{
+            base: 'rounded-lg h-full',
+            content: 'h-full',
+          }}
+          isLoaded={!isLoading}
+        >
           <PieChart
-            className="h-[400px]"
+            className="min-h-[400px]"
             data={chartData}
             onClick={(data) => setEventSelected(data.data.label)}
           />

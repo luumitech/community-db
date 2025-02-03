@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 import { AccessEntry } from '../_type';
@@ -17,7 +17,7 @@ export const ModifyAccessButton: React.FC<Props> = ({
   const hookForm = useHookFormWithDisclosure(fragment);
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <FlatButton
         className="text-primary"
         icon="edit"

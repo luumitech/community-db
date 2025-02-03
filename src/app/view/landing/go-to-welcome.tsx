@@ -1,6 +1,5 @@
 'use client';
-import { Button } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, cn } from '@heroui/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -18,7 +17,7 @@ export const GoToWelcome: React.FC<Props> = ({ className }) => {
   if (status === 'authenticated') {
     return (
       <Button
-        className={clsx(
+        className={cn(
           className,
           'bg-gradient-to-tr from-pink-500 to-orange-500 text-white'
         )}

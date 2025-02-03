@@ -1,12 +1,12 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { insertIf } from '~/lib/insert-if';
 import {
   Select,
   SelectItem,
-  SelectProps,
   SelectSection,
+  type SelectProps,
 } from '~/view/base/select';
 
 type CustomSelectProps = Omit<
@@ -39,7 +39,7 @@ export const TicketTypeSelect: React.FC<Props> = ({
       ];
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <Select
         className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.ticketName`}

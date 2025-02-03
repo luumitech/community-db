@@ -5,7 +5,7 @@ import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { EventParticipation } from './event-participation';
 import { EventTicketSale } from './event-ticket-sale';
-import { MembershipSale } from './membership-sale';
+import { MembershipFee } from './membership-fee';
 import { MembershipSource } from './membership-source';
 import { YearlyProvider } from './yearly-context';
 
@@ -52,7 +52,7 @@ export const YearlyChart: React.FC<Props> = ({
         year={year}
         isLoading={result.loading}
       />
-      <MembershipSale
+      <MembershipFee
         fragment={community}
         year={year}
         isLoading={result.loading}

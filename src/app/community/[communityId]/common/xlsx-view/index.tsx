@@ -1,5 +1,4 @@
-import { Skeleton } from '@heroui/react';
-import clsx from 'clsx';
+import { Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { XlsxViewImpl, type XlsxViewImplProps } from './xlsx-view';
 
@@ -11,7 +10,7 @@ export function XlsxView<T>({ className, data, columns }: Props<T>) {
   const pending = !data || !columns;
   if (pending) {
     return (
-      <div className={clsx(className, 'grid grid-cols-4 gap-2')}>
+      <div className={cn(className, 'grid grid-cols-4 gap-2')}>
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-8 rounded-lg" />
         ))}

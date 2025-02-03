@@ -1,3 +1,4 @@
+import { cn } from '@heroui/react';
 import {
   ColumnDef,
   Row,
@@ -10,7 +11,6 @@ import {
   defaultRangeExtractor,
   useVirtualizer,
 } from '@tanstack/react-virtual';
-import clsx from 'clsx';
 import React from 'react';
 
 /**
@@ -97,7 +97,7 @@ export function XlsxViewImpl<T>({
   return (
     <div
       ref={tableContainerRef}
-      className={clsx(className, 'h-full overflow-auto relative')}
+      className={cn(className, 'h-full overflow-auto relative')}
     >
       <table>
         <thead className="grid sticky top-0 bg-background z-10">
@@ -112,7 +112,7 @@ export function XlsxViewImpl<T>({
                 return (
                   <th
                     key={header.id}
-                    className={clsx('flex', vc.index === 0 && pinningClass)}
+                    className={cn('flex', vc.index === 0 && pinningClass)}
                     style={{ width: header.getSize() }}
                   >
                     <div>
@@ -161,7 +161,7 @@ export function XlsxViewImpl<T>({
                   return (
                     <td
                       key={cell.id}
-                      className={clsx(
+                      className={cn(
                         'truncate whitespace-break-spaces',
                         vc.index === 0 && pinningClass
                       )}

@@ -67,7 +67,7 @@ type TestCaseEntry = [
   Expected, // expected results
 ];
 
-describe('BatchPropertyModify (minYear/maxYear changes)', () => {
+describe('Property Modify (minYear/maxYear changes)', () => {
   const testUtil = new TestUtil();
   let firstCommunity: Community | undefined;
   let firstProperty: Property | undefined;

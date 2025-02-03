@@ -1,5 +1,4 @@
-import { Spacer } from '@heroui/react';
-import clsx from 'clsx';
+import { Spacer, cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {

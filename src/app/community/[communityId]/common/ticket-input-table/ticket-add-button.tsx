@@ -4,11 +4,11 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
+  cn,
 } from '@heroui/react';
-import clsx from 'clsx';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { calcPrice } from '~/lib/decimal-util';
+import { decMul } from '~/lib/decimal-util';
 import { insertIf } from '~/lib/insert-if';
 import { FlatButton } from '~/view/base/flat-button';
 import { Ticket } from './_type';
@@ -25,10 +25,11 @@ interface Props {
   onClick?: (ticket: Ticket) => void;
 }
 
-export const TicketAddButton: React.FC<Props> = ({
+export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   includeHiddenFields,
   onClick,
+  children,
 }) => {
   const { selectTicketSections, visibleTicketItems, ticketDefault } =
     useAppContext();
@@ -44,13 +45,15 @@ export const TicketAddButton: React.FC<Props> = ({
       ];
 
   return (
-    <Dropdown>
+    <Dropdown placement="bottom-start">
       <DropdownTrigger>
-        <FlatButton
-          className={clsx(className, 'text-primary')}
-          icon="add-ticket"
-          tooltip="Add Ticket"
-        />
+        {children ?? (
+          <FlatButton
+            className={cn(className, 'text-primary')}
+            icon="add-ticket"
+            tooltip="Add Ticket"
+          />
+        )}
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Add ticket item"
@@ -68,7 +71,7 @@ export const TicketAddButton: React.FC<Props> = ({
           onClick?.({
             ticketName,
             count: ticketDef?.count ?? null,
-            price: calcPrice(ticketDef?.unitPrice, ticketDef?.count) ?? null,
+            price: decMul(ticketDef?.unitPrice, ticketDef?.count) ?? null,
             paymentMethod: null,
           });
         }}

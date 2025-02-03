@@ -1,5 +1,4 @@
-import { Link } from '@heroui/react';
-import clsx from 'clsx';
+import { Link, cn } from '@heroui/react';
 import Image from 'next/image';
 import React from 'react';
 import { BmcUrl } from './_type';
@@ -11,7 +10,7 @@ interface Props {
 
 export const BmcButton: React.FC<Props> = ({ className }) => {
   return (
-    <Link className={clsx(className)} href={BmcUrl} target="_blank">
+    <Link className={cn(className)} href={BmcUrl} target="_blank">
       <Image
         src={buyMeACoffeeButtonImg}
         alt="Buy Me A Coffee"

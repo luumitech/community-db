@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { type AccessEntry } from './_type';
@@ -18,7 +18,7 @@ export const RoleInfo: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(RoleFragment, fragment);
 
   return (
-    <div className={clsx(className, 'truncate capitalize')}>
+    <div className={cn(className, 'truncate capitalize')}>
       {entry.role.toLocaleLowerCase() ?? ''}
     </div>
   );

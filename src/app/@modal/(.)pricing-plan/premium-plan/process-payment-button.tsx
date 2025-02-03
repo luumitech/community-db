@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button, ButtonProps } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, ButtonProps, cn } from '@heroui/react';
 import Script from 'next/script';
 import React from 'react';
 import { graphql } from '~/graphql/generated';

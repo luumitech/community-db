@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { GettingStarted } from './getting-started';
 import { Hero } from './hero';
@@ -10,7 +10,7 @@ interface Props {
 
 export const Landing: React.FC<Props> = ({ className }) => {
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <Hero />
       <GettingStarted />
       <SignUpReason />

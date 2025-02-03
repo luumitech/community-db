@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {
@@ -12,7 +12,7 @@ export const Item: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <h2 className="text-xl font-semibold">{title}</h2>
       <p className="text-sm mt-2">{children}</p>
     </div>

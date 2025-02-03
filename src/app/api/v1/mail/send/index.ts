@@ -3,6 +3,7 @@ import * as R from 'remeda';
 import { env } from '~/lib/env-cfg';
 import { Logger } from '~/lib/logger';
 import { Mailjet } from '~/lib/mailjet';
+import { verifyRecaptchaV3 } from '~/lib/recaptcha';
 import type { SInput, SOutput } from './contract';
 
 const logger = Logger('/mail/send');
@@ -15,7 +16,10 @@ const logger = Logger('/mail/send');
  */
 export async function send(req: SInput): Promise<SOutput> {
   const { message } = req.body;
-  const { contactEmail, contactName, subject } = req.query;
+  const { contactEmail, contactName, subject, recaptchaToken } = req.query;
+
+  // verify recaptcha token
+  await verifyRecaptchaV3(recaptchaToken);
 
   const mailjet = await Mailjet.fromConfig();
   await mailjet.sendEmails([

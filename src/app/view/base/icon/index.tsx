@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { type IconBaseProps, type IconType } from 'react-icons';
 import { BiEditAlt } from 'react-icons/bi';
@@ -184,5 +184,5 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       IconElement = MdQuestionMark;
   }
 
-  return <IconElement className={clsx(className)} {...props} />;
+  return <IconElement className={cn(className)} {...props} />;
 };

@@ -1,5 +1,4 @@
-import { Card, CardBody, CardHeader } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardHeader, cn } from '@heroui/react';
 import React from 'react';
 import { appTitle } from '~/lib/env-var';
 import { SampleXlsx } from './sample-xlsx';
@@ -10,7 +9,7 @@ interface Props {
 
 export const FirstTimeGuide: React.FC<Props> = ({ className }) => {
   return (
-    <Card className={clsx(className)}>
+    <Card className={cn(className)}>
       <CardHeader className="font-semibold text-lg">
         Import guide for first time user
       </CardHeader>

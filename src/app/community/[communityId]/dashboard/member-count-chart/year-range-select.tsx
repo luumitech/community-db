@@ -1,5 +1,4 @@
-import { Select, SelectItem, SelectProps } from '@heroui/react';
-import clsx from 'clsx';
+import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
 import React from 'react';
 
 interface YearRangeSelectItem {
@@ -20,7 +19,7 @@ interface Props extends Omit<SelectProps<YearRangeSelectItem>, 'children'> {
 export const YearRangeSelect: React.FC<Props> = ({ className, ...props }) => {
   return (
     <Select
-      className={clsx(className, 'max-w-[150px]')}
+      className={cn(className, 'max-w-[150px]')}
       label="Years To Show"
       items={yearRangeSelectionList}
       disallowEmptySelection

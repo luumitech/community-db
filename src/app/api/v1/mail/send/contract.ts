@@ -16,6 +16,8 @@ export const sendContract = c.router({
     path: '/send',
     summary: 'Send email to webserver owner',
     query: z.object({
+      /** Google recaptcha token */
+      recaptchaToken: z.string(),
       /** Contact email, sender email address */
       contactEmail: zz.string.nonEmpty().email('Must be a valid email'),
       /** Contact name, sender contact name */

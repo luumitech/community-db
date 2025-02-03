@@ -1,5 +1,4 @@
-import { type SelectedItems } from '@heroui/react';
-import clsx from 'clsx';
+import { cn, type SelectedItems } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 

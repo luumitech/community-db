@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem } from '~/view/base/select';
@@ -28,7 +28,7 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
   const importMethod = watch('method');
 
   return (
-    <div className={clsx(className, 'flex flex-col h-full gap-2')}>
+    <div className={cn(className, 'flex flex-col h-full gap-2')}>
       <Select
         className="max-w-sm"
         controlName="method"

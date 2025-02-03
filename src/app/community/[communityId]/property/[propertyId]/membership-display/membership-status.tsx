@@ -1,5 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
-import clsx from 'clsx';
+import { Card, CardBody, CardFooter, CardHeader, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';

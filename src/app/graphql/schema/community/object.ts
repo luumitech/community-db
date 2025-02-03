@@ -14,7 +14,7 @@ import { isNonZeroDec } from '~/lib/decimal-util';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
-import { PropertyFilterInput } from '../property/modify';
+import { PropertyFilterInput } from '../property/batch-modify';
 import { propertyRef } from '../property/object';
 import {
   getPropertyEntryWithinCommunity,

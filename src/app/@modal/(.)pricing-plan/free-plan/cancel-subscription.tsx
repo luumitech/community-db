@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button, ButtonProps } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, ButtonProps, cn } from '@heroui/react';
 import React from 'react';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';

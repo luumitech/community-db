@@ -1,5 +1,5 @@
 'use client';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
@@ -22,7 +22,7 @@ export const GettingStarted: React.FC<Props> = ({ className }) => {
 
   return (
     <div
-      className={clsx(className, 'overflow-hidden bg-green-200 py-6 space-y-3')}
+      className={cn(className, 'overflow-hidden bg-green-200 py-6 space-y-3')}
       ref={emblaRef}
     >
       <div className="flex">

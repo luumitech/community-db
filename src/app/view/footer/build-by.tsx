@@ -1,5 +1,4 @@
-import { Link } from '@heroui/react';
-import clsx from 'clsx';
+import { Link, cn } from '@heroui/react';
 import Image from 'next/image';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
@@ -11,7 +10,7 @@ interface Props {
 
 export const BuiltBy: React.FC<Props> = ({ className }) => {
   return (
-    <div className={clsx(className, 'flex gap-3 items-center')}>
+    <div className={cn(className, 'flex gap-3 items-center')}>
       <Image
         className="object-fit rounded-md"
         src={logoImg}

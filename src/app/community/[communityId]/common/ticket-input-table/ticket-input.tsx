@@ -1,7 +1,8 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
+import { Decimal, decMul } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
 import { Input, InputProps } from '~/view/base/input';
 
@@ -15,31 +16,44 @@ interface Props extends CustomInputProps {
 export const TicketInput: React.FC<Props> = ({
   className,
   controlNamePrefix,
-  ...prop
+  ...props
 }) => {
   const { ticketDefault } = useAppContext();
-  const { setValue, watch, clearErrors } = useFormContext();
+  const { setValue, watch } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
-  const countDefault = React.useMemo(() => {
-    const value = ticketDefault.get(ticketType);
-    return value?.count;
-  }, [ticketType, ticketDefault]);
+
+  const ticketDef = ticketDefault.get(ticketType);
+  const countDefault = ticketDef?.count;
+  const unitPrice = ticketDef?.unitPrice;
+
+  const updatePrice = React.useCallback(
+    (ticketCount: Decimal.Value) => {
+      const price = decMul(unitPrice, ticketCount);
+      setValue(`${controlNamePrefix}.price`, price, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    },
+    [controlNamePrefix, setValue, unitPrice]
+  );
 
   const onChange: NonNullable<InputProps['onChange']> = React.useCallback(
     (evt) => {
-      /**
-       * This is needed because price's validation error is triggered based on
-       * count
-       */
-      clearErrors(`${controlNamePrefix}.price`);
+      const ticketCount = evt.currentTarget.value;
+      updatePrice(ticketCount);
     },
-    [clearErrors, controlNamePrefix]
+    [updatePrice]
   );
 
   return (
     <Input
-      className={clsx(className, 'min-w-12')}
+      classNames={{
+        base: cn(className, 'min-w-16'),
+        // This will align input and select items text on the same line
+        innerWrapper: cn('pb-0'),
+      }}
       controlName={`${controlNamePrefix}.count`}
+      isControlled
       aria-label="Ticket #"
       variant="underlined"
       type="number"
@@ -49,13 +63,16 @@ export const TicketInput: React.FC<Props> = ({
             icon="ticket"
             tooltip={`Use ticket default (${countDefault})`}
             onClick={() => {
-              setValue(`${controlNamePrefix}.count`, countDefault);
+              setValue(`${controlNamePrefix}.count`, countDefault, {
+                shouldDirty: true,
+              });
+              updatePrice(countDefault);
             }}
           />
         )
       }
       onChange={onChange}
-      {...prop}
+      {...props}
     />
   );
 };

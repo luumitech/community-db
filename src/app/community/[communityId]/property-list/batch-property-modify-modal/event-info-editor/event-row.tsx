@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import {
   TicketAddButton,
@@ -8,8 +8,6 @@ import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useHookFormContext } from '../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 import { EventNameSelect } from './event-name-select';
-import { PaymentSelect } from './payment-select';
-import { PriceInput } from './price-input';
 
 interface EventHeaderProps {
   className?: string;
@@ -18,7 +16,7 @@ interface EventHeaderProps {
 export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         'grid col-span-full grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
@@ -29,8 +27,6 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
     >
       <div role="columnheader">Event</div>
       <div role="columnheader">Event Date</div>
-      <div role="columnheader">Price</div>
-      <div role="columnheader">Payment Method</div>
       <div role="columnheader" />
     </div>
   );
@@ -50,7 +46,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
   return (
     <>
       <div
-        className={clsx(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+        className={cn(className, 'grid col-span-full grid-cols-subgrid mx-3')}
         role="row"
       >
         <div role="cell">
@@ -59,25 +55,26 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
         <div role="cell">
           <EventDatePicker />
         </div>
-        <div role="cell">
-          <PriceInput />
-        </div>
-        <div role="cell">
-          <PaymentSelect />
-        </div>
         <div className="flex pt-3 gap-2" role="cell">
           <TicketAddButton onClick={ticketListMethods.append} />
         </div>
       </div>
-      {ticketListMethods.fields.length > 0 && (
-        <div className="col-span-full">
-          <TicketInputTable
-            className={clsx('border-medium rounded-lg', 'ml-[40px] p-1')}
-            controlNamePrefix="membership.eventAttended.ticketList"
-            fieldMethods={ticketListMethods}
-          />
-        </div>
-      )}
+      <div className="col-span-full">
+        <TicketInputTable
+          className={cn(
+            'border-medium border-divider rounded-lg',
+            'ml-[40px] p-1'
+          )}
+          ticketListConfig={{
+            controlNamePrefix: 'membership.eventAttended.ticketList',
+            fieldMethods: ticketListMethods,
+          }}
+          membershipConfig={{
+            controlNamePrefix: 'membership',
+            canEdit: true,
+          }}
+        />
+      </div>
     </>
   );
 };

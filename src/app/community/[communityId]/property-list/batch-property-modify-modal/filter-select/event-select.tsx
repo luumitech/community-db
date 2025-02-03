@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { Select, SelectItem } from '~/view/base/select';
@@ -14,7 +14,7 @@ export const EventSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={clsx(className, 'min-w-32 max-w-xs')}
+      className={cn(className, 'min-w-32 max-w-xs')}
       controlName="filter.memberEvent"
       size="sm"
       label="Membership Event"

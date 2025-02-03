@@ -1,8 +1,10 @@
-import { Divider, ScrollShadow } from '@heroui/react';
-import clsx from 'clsx';
+import { Divider, ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
+import { useLocalStorage } from 'usehooks-ts';
+import { lsFlags } from '~/lib/env-var';
 import { type TicketStat } from './_type';
+import { GroupBy } from './group-by';
 import { TableHeader, TableRow, TableSumRow } from './table-row';
 
 export interface Props {
@@ -11,40 +13,50 @@ export interface Props {
 }
 
 export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
-  const ticketByPaymentMethod = R.groupBy(ticketList, R.prop('paymentMethod'));
+  const [groupBy, setGroupBy] = useLocalStorage(
+    lsFlags.dashboardEventTicketSaleGroupBy,
+    'none'
+  );
 
   return (
-    <ScrollShadow
-      className={clsx(className)}
-      orientation="horizontal"
-      hideScrollBar
-    >
-      <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
-        <TableHeader />
-        {ticketList.length === 0 && (
-          <div
-            className={clsx(
-              'col-span-full h-8',
-              'justify-self-center content-center'
+    <div className={cn(className, 'flex flex-col gap-2')}>
+      <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
+      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
+        <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
+          <TableHeader />
+          {ticketList.length === 0 && (
+            <div
+              className={cn(
+                'col-span-full h-8',
+                'justify-self-center content-center'
+              )}
+            >
+              <div className="text-sm text-foreground-500">
+                No data to display
+              </div>
+            </div>
+          )}
+          {groupBy === 'none' &&
+            ticketList.map((ticket) => (
+              <TableRow
+                key={`${ticket.ticketName}-${ticket.paymentMethod}`}
+                ticket={ticket}
+              />
+            ))}
+          {groupBy === 'ticketName' &&
+            Object.entries(R.groupBy(ticketList, R.prop('ticketName'))).map(
+              ([ticketName, tickets]) => {
+                return (
+                  <TableSumRow
+                    key={ticketName}
+                    ticketList={tickets}
+                    ticketName={ticketName}
+                  />
+                );
+              }
             )}
-          >
-            <div className="text-sm text-foreground-500">
-              No data to display
-            </div>
-          </div>
-        )}
-        {ticketList.map((ticket) => (
-          <TableRow
-            key={`${ticket.ticketName}-${ticket.paymentMethod}`}
-            ticket={ticket}
-          />
-        ))}
-        {ticketList.length > 0 && (
-          <>
-            <div className="col-span-full">
-              <Divider />
-            </div>
-            {Object.entries(ticketByPaymentMethod).map(
+          {groupBy === 'paymentMethod' &&
+            Object.entries(R.groupBy(ticketList, R.prop('paymentMethod'))).map(
               ([paymentMethod, tickets]) => {
                 return (
                   <TableSumRow
@@ -55,13 +67,12 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
                 );
               }
             )}
-            <div className="col-span-full">
-              <Divider />
-            </div>
-            <TableSumRow ticketList={ticketList} />
-          </>
-        )}
-      </div>
-    </ScrollShadow>
+          <div className="col-span-full">
+            <Divider />
+          </div>
+          <TableSumRow ticketList={ticketList} />
+        </div>
+      </ScrollShadow>
+    </div>
   );
 };

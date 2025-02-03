@@ -1,5 +1,4 @@
-import { Button } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
@@ -13,7 +12,7 @@ export const FreePlanSuccess: React.FC<Props> = ({ className }) => {
   const { isActive, recurringAmount, nextBillingDate } = plan ?? {};
 
   return (
-    <div className={clsx(className, 'flex items-start')}>
+    <div className={cn(className, 'flex items-start')}>
       <Button
         isIconOnly
         variant="light"

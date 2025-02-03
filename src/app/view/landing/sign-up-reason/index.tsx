@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { GoToWelcome } from '../go-to-welcome';
@@ -21,9 +21,9 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
   );
 
   return (
-    <div className={clsx('bg-green-100 text-slate-700')}>
+    <div className={cn('bg-green-100 text-slate-700')}>
       <div
-        className={clsx(
+        className={cn(
           'flex flex-col items-center text-center text-wrap gap-6',
           'p-9 sm:p-18 md:p-24'
         )}

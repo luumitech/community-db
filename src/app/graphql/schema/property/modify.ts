@@ -1,17 +1,13 @@
-import { Community, Event, Prisma, Property, Role } from '@prisma/client';
+import { Community, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import * as R from 'remeda';
 import { builder } from '~/graphql/builder';
 import { MutationType } from '~/graphql/pubsub';
 import { extractYearRange } from '~/lib/lcra-community/import/year-range-util';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
-import {
-  communityMinMaxYearUpdateArgs,
-  getCommunityEntry,
-} from '../community/util';
-import { getPropertyEntry, propertyListFindManyArgs } from './util';
+import { communityMinMaxYearUpdateArgs } from '../community/util';
+import { getPropertyEntry } from './util';
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -25,7 +21,7 @@ const OccupantInput = builder.inputType('OccupantInput', {
   }),
 });
 
-const EventInput = builder.inputType('EventInput', {
+export const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
     eventDate: t.string(),
@@ -42,7 +38,7 @@ const TicketInput = builder.inputType('TicketInput', {
   }),
 });
 
-const MembershipInput = builder.inputType('MembershipInput', {
+export const MembershipInput = builder.inputType('MembershipInput', {
   fields: (t) => ({
     year: t.int({ required: true }),
     eventAttendedList: t.field({ type: [EventInput] }),
@@ -163,185 +159,6 @@ builder.mutationField('propertyModify', (t) =>
       return {
         community: updatedCommunity,
         property: updatedProperty,
-      };
-    },
-  })
-);
-
-export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
-  fields: (t) => ({
-    searchText: t.string({
-      description: 'Match against property address/first name/last name',
-    }),
-    memberYear: t.int({
-      description: 'Only property who is a member of the given year',
-    }),
-    nonMemberYear: t.int({
-      description: 'Only property who is NOT a member of the given year',
-    }),
-    memberEvent: t.string({
-      description: 'Only property who attended this event',
-    }),
-  }),
-});
-
-const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
-  fields: (t) => ({
-    year: t.int({ required: true }),
-    eventAttended: t.field({ type: EventInput, required: true }),
-    paymentMethod: t.string({ required: true }),
-    price: t.string(),
-  }),
-});
-
-const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
-  fields: (t) => ({
-    communityId: t.string({ required: true }),
-    filter: t.field({ type: PropertyFilterInput }),
-    membership: t.field({ type: BatchMembershipInput, required: true }),
-  }),
-});
-
-interface BatchPropertyModifyPayload {
-  community: Community;
-  propertyList: Property[];
-}
-
-const batchPropertyModifyPayloadRef = builder
-  .objectRef<BatchPropertyModifyPayload>('BatchPropertyModifyPayload')
-  .implement({
-    fields: (t) => ({
-      community: t.prismaField({
-        type: 'Community',
-        resolve: (query, result, args, ctx) => result.community,
-      }),
-      propertyList: t.prismaField({
-        type: ['Property'],
-        resolve: (query, result, args, ctx) => result.propertyList,
-      }),
-    }),
-  });
-
-builder.mutationField('batchPropertyModify', (t) =>
-  t.field({
-    type: batchPropertyModifyPayloadRef,
-    args: {
-      input: t.arg({ type: BatchPropertyModifyInput, required: true }),
-    },
-    resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
-      const { input } = args;
-      const { communityId: shortId, filter } = input;
-      const { eventAttended } = input.membership;
-
-      // Make sure user has permission to modify
-      await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
-
-      const community = await getCommunityEntry(user, shortId, {
-        select: { id: true, minYear: true, maxYear: true },
-      });
-
-      const findManyArgs = await propertyListFindManyArgs(community.id, filter);
-      const propertyList = await prisma.property.findMany(findManyArgs);
-
-      // Map EventInput to Event object in database
-      const mapEventAttendedEntry = (
-        eventEntry: typeof EventInput.$inferInput
-      ): Event => {
-        return {
-          eventName: eventEntry.eventName,
-          eventDate: eventEntry.eventDate
-            ? new Date(eventEntry.eventDate)
-            : null,
-          ticketList: (eventEntry.ticketList ?? []).map((entry) => ({
-            ticketName: entry.ticketName,
-            count: entry.count ?? null,
-            price: entry.price ?? null,
-            paymentMethod: entry.paymentMethod ?? null,
-          })),
-        };
-      };
-
-      // Modify the propertyList in memory, and then write them to
-      // database afterwards
-      propertyList.forEach(({ membershipList }) => {
-        /**
-         * `membershipList` should be sorted by year in descending order Look
-         * for the appropriate index to insert the new membership
-         */
-        const membershipIdx = R.sortedIndexWith(
-          membershipList,
-          ({ year }) => year > input.membership.year
-        );
-        let membership = membershipList[membershipIdx];
-        // If existing membership is found, then update it in place, otherwise insert
-        // the `membership` into the `membershipList`
-        if (membership?.year !== input.membership.year) {
-          const newMembership = {
-            year: input.membership.year,
-            paymentDeposited: null,
-            eventAttendedList: [],
-            price: null,
-            paymentMethod: null,
-          };
-          membershipList.splice(membershipIdx, 0, newMembership);
-          membership = newMembership;
-        }
-
-        const event = membership.eventAttendedList.find(
-          (entry) => entry.eventName === eventAttended.eventName
-        );
-        if (!event) {
-          membership.eventAttendedList.push(
-            mapEventAttendedEntry(eventAttended)
-          );
-          // Update price/paymentMethod only if not already have membership
-          if (membership.eventAttendedList.length === 1) {
-            membership.price = input.membership.price ?? null;
-            membership.paymentMethod = input.membership.paymentMethod;
-          }
-        }
-      });
-
-      const communityUpdateDataArgs = communityMinMaxYearUpdateArgs(
-        community,
-        input.membership.year
-      );
-
-      const [updatedCommunity, ...updatedPropertyList] =
-        await prisma.$transaction([
-          // Update minYear/maxYear when appropriate
-          communityUpdateDataArgs == null
-            ? prisma.community.findUniqueOrThrow({
-                where: { id: community.id },
-              })
-            : prisma.community.update({
-                where: { id: community.id },
-                data: communityUpdateDataArgs,
-              }),
-          ...propertyList.map((property) =>
-            prisma.property.update({
-              where: { id: property.id },
-              data: {
-                updatedBy: { connect: { email: user.email } },
-                membershipList: property.membershipList,
-              },
-            })
-          ),
-        ]);
-
-      // broadcast modification to property(s)
-      updatedPropertyList.forEach((property) => {
-        pubSub.publish(`community/${shortId}/property`, {
-          broadcasterId: user.email,
-          mutationType: MutationType.UPDATED,
-          property,
-        });
-      });
-
-      return {
-        community: updatedCommunity,
-        propertyList: updatedPropertyList,
       };
     },
   })

@@ -33,31 +33,64 @@ function schema() {
       eventDate: zz.coerce.toIsoDate(),
       ticketList: ticketListSchema,
     }),
-    /** Whether member is already a member when registering */
-    isMember: z.boolean(),
-    /**
-     * Determine if the register button should be enabled. For example, if user
-     * is already registered in the event previously, then the register button
-     * should not be enabled, unless they have modified the form.
-     */
-    canRegister: z.boolean(),
+    hidden: z.object({
+      /** Whether member is already a member when registering */
+      isMember: z.boolean(),
+      /**
+       * Determine if the register button should be enabled. For example, if
+       * user is already registered in the event previously, then the register
+       * button should not be enabled, unless they have modified the form.
+       */
+      canRegister: z.boolean(),
+      /**
+       * The first event is when membership fee is collected. This information
+       * is useful for determining if ticketList should show membership fee
+       */
+      isFirstEvent: z.boolean(),
+    }),
   });
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
+/**
+ * Attemp to find event given year and eventName
+ *
+ * - Returns year (converted yearStr to number)
+ * - Returns membership (if membership year is found)
+ * - Returns event (if matching event is found)
+ */
+function findEvent(
+  property: GQL.PropertyId_MembershipEditorFragment,
+  yearStr: string,
+  eventName: string | undefined
+) {
+  const year = parseAsNumber(yearStr) ?? getCurrentYear();
+  const membership = property.membershipList.find(
+    (entry) => entry.year === year
+  );
+  const eventIdx = (membership?.eventAttendedList ?? []).findIndex(
+    (entry) => entry.eventName === eventName
+  );
+
+  const isMember = !!membership?.isMember;
+  return {
+    year,
+    eventName,
+    membership,
+    event: membership?.eventAttendedList?.[eventIdx],
+    isMember,
+    isFirstEvent: eventIdx === 0 || !isMember,
+  };
+}
+
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
-  lastEventSelected: string | undefined,
-  yearSelected: string,
+  findEventResult: ReturnType<typeof findEvent>,
   defaultSetting: GQL.DefaultSetting
 ): InputData {
-  const year = parseAsNumber(yearSelected) ?? getCurrentYear();
-  const membership = item.membershipList.find((entry) => entry.year === year);
-  const event = (membership?.eventAttendedList ?? []).find(
-    (entry) => entry.eventName === lastEventSelected
-  );
-  const isMember = !!membership?.isMember;
+  const { year, eventName, membership, event, isMember, isFirstEvent } =
+    findEventResult;
   const canRegister = !isMember || !event;
 
   return {
@@ -72,17 +105,15 @@ function defaultInputData(
       paymentMethod: membership?.paymentMethod ?? '',
     },
     event: {
-      eventName: lastEventSelected ?? '',
+      eventName: eventName ?? '',
       eventDate: event?.eventDate ?? getCurrentDateAsISOString(),
-      ticketList: (event?.ticketList ?? []).map((ticket) => ({
-        ticketName: ticket.ticketName ?? '',
-        count: ticket.count ?? null,
-        price: ticket.price ?? null,
-        paymentMethod: ticket.paymentMethod ?? null,
-      })),
+      ticketList: [],
     },
-    isMember,
-    canRegister,
+    hidden: {
+      isMember,
+      canRegister,
+      isFirstEvent,
+    },
   };
 }
 
@@ -90,23 +121,17 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
   const { communityUi, defaultSetting } = useAppContext();
   const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
+  const findEventResult = React.useMemo(() => {
+    return findEvent(property, yearSelected, lastEventSelected);
+  }, [property, yearSelected, lastEventSelected]);
   const defaultValues = React.useMemo(() => {
-    return defaultInputData(
-      property,
-      lastEventSelected,
-      yearSelected,
-      defaultSetting
-    );
-  }, [property, lastEventSelected, yearSelected, defaultSetting]);
+    return defaultInputData(property, findEventResult, defaultSetting);
+  }, [property, findEventResult, defaultSetting]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
   });
   const { reset } = formMethods;
-
-  React.useEffect(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
 
   /**
    * When modal is open, sync form value with latest default values derived from
@@ -119,7 +144,12 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     onOpen: onModalOpen,
   });
 
-  return { disclosure, formMethods, property };
+  return {
+    disclosure,
+    formMethods,
+    property,
+    ticketList: findEventResult.event?.ticketList,
+  };
 }
 
 export type UseHookFormWithDisclosureResult = ReturnType<

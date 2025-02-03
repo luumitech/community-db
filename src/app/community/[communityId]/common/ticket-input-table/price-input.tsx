@@ -1,8 +1,8 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
-import { calcPrice } from '~/lib/decimal-util';
+import { decIsEqual, decMul } from '~/lib/decimal-util';
 import { CurrencyInput, CurrencyInputProps } from '~/view/base/currency-input';
 import { FlatButton } from '~/view/base/flat-button';
 
@@ -22,10 +22,16 @@ export const PriceInput: React.FC<Props> = ({
   const { setValue, watch, clearErrors } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
   const ticketCount = watch(`${controlNamePrefix}.count`);
+  const price = watch(`${controlNamePrefix}.price`);
 
   const ticketDef = ticketDefault.get(ticketType);
   const unitPrice = ticketDef?.unitPrice;
-  const defaultPrice = calcPrice(unitPrice, ticketCount);
+  const defaultPrice = React.useMemo(() => {
+    if (unitPrice == null || ticketCount == null) {
+      return null;
+    }
+    return decMul(unitPrice, ticketCount);
+  }, [unitPrice, ticketCount]);
 
   const onChange: NonNullable<CurrencyInputProps['onChange']> =
     React.useCallback(
@@ -41,18 +47,31 @@ export const PriceInput: React.FC<Props> = ({
 
   return (
     <CurrencyInput
-      className={clsx(className)}
+      classNames={{
+        base: cn(className),
+        // This will align input and select items text on the same line
+        innerWrapper: cn('pb-0'),
+      }}
       controlName={`${controlNamePrefix}.price`}
+      isControlled
       aria-label="Price"
       allowNegative={false}
       variant="underlined"
+      {...(defaultPrice != null &&
+        !decIsEqual(defaultPrice, price) && {
+          description: (
+            <span className="text-warning">Price has been overridden</span>
+          ),
+        })}
       endContent={
         defaultPrice != null && (
           <FlatButton
             icon="calculator"
             tooltip={`${ticketCount} * $${unitPrice} = $${defaultPrice}`}
             onClick={() => {
-              setValue(`${controlNamePrefix}.price`, defaultPrice);
+              setValue(`${controlNamePrefix}.price`, defaultPrice, {
+                shouldDirty: true,
+              });
             }}
           />
         )

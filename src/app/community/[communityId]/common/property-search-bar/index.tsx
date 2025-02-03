@@ -1,5 +1,4 @@
-import { Input, InputProps } from '@heroui/react';
-import clsx from 'clsx';
+import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';

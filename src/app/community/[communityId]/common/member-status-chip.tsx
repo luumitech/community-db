@@ -1,5 +1,4 @@
-import { Chip } from '@heroui/react';
-import clsx from 'clsx';
+import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 

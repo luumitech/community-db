@@ -1,5 +1,4 @@
-import { Button, Spacer } from '@heroui/react';
-import clsx from 'clsx';
+import { Button, Spacer, cn } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
@@ -19,7 +18,7 @@ export const FreePlanConfirmation: React.FC<Props> = ({ className }) => {
   const planCost = env('NEXT_PUBLIC_PLAN_FREE_COST')!;
 
   return (
-    <div className={clsx(className, 'flex items-start')}>
+    <div className={cn(className, 'flex items-start')}>
       <Button
         isIconOnly
         variant="light"

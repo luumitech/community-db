@@ -191,6 +191,7 @@ describe('BatchPropertyModify', () => {
       },
     });
 
+    expect(result.errors).toBeUndefined();
     const { community, propertyList } = result.data?.batchPropertyModify ?? {};
     expect(community?.minYear).toBe(expected.minYear);
     expect(community?.maxYear).toBe(expected.maxYear);

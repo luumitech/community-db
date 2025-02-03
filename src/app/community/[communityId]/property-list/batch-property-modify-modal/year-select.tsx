@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { Select, SelectItem } from '~/view/base/select';
 import { useHookFormContext } from './use-hook-form';
@@ -27,7 +27,7 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
   return (
     <Select
       classNames={{
-        base: clsx(className, 'max-w-xs'),
+        base: cn(className, 'max-w-xs'),
         label: 'whitespace-nowrap self-center',
       }}
       controlName="membership.year"

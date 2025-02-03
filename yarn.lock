@@ -11579,6 +11579,11 @@ next-auth@^4.24.7:
     preact-render-to-string "^5.1.19"
     uuid "^8.3.2"
 
+next-recaptcha-v3@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/next-recaptcha-v3/-/next-recaptcha-v3-1.5.2.tgz#bad67f1add6a4614d88496f4fc4d8449448763b1"
+  integrity sha512-CTFQvyWWQLrIuI++NhOFeQKdELUFvTDGfCty+bz6hxU8frS59ycl4TInvWhCn+9eKjAqV6LqQZZGHdwla8t8GQ==
+
 next-runtime-env@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/next-runtime-env/-/next-runtime-env-3.2.2.tgz#87e9a8a7f3dccc6e142a7895b91ea09f7c8097e0"

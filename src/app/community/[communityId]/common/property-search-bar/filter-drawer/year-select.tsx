@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { Select, SelectItem, SelectProps } from '~/view/base/select';
 import { useHookFormContext } from '../use-hook-form';

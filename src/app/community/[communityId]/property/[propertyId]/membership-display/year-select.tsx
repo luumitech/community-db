@@ -1,6 +1,5 @@
-import { Select, SelectItem, SelectProps } from '@heroui/react';
+import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
 import { useSet } from '@uidotdev/usehooks';
-import clsx from 'clsx';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import {
@@ -36,7 +35,7 @@ export const YearSelect: React.FC<Props> = ({
   return (
     <Select
       classNames={{
-        base: clsx(className, 'items-start'),
+        base: cn(className, 'items-start'),
         label: 'whitespace-nowrap',
         mainWrapper: 'min-w-32 max-w-xs',
       }}

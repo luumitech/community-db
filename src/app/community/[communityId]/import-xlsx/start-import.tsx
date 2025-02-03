@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { Button } from '~/view/base/button';
@@ -13,7 +13,7 @@ export const StartImport: React.FC<Props> = ({ className }) => {
   const { trigger } = formMethods;
 
   return (
-    <div className={clsx(className)}>
+    <div className={cn(className)}>
       <Button
         color="primary"
         type="submit"

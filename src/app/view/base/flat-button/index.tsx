@@ -1,5 +1,4 @@
-import { Tooltip } from '@heroui/react';
-import clsx from 'clsx';
+import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
@@ -59,7 +58,7 @@ export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
         <div
           ref={ref}
           role="button"
-          className={clsx(
+          className={cn(
             className,
             disabled ? 'opacity-disabled cursor-default' : 'hover:opacity-hover'
           )}

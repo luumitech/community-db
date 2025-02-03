@@ -1,5 +1,4 @@
-import { Chip, type SelectedItems } from '@heroui/react';
-import clsx from 'clsx';
+import { Chip, cn, type SelectedItems } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';

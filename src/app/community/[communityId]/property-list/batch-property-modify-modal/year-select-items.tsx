@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';

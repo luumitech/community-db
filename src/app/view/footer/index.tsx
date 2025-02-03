@@ -1,5 +1,4 @@
-import { Link } from '@heroui/react';
-import clsx from 'clsx';
+import { Link, cn } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
@@ -15,8 +14,8 @@ export const Footer: React.FC<Props> = ({ className }) => {
   const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
 
   return (
-    <div className={clsx(className, 'bg-green-300 p-4')}>
-      <div className={clsx('grid grid-cols-1 sm:grid-cols-2 gap-3')}>
+    <div className={cn(className, 'bg-green-300 p-4')}>
+      <div className={cn('grid grid-cols-1 sm:grid-cols-2 gap-3')}>
         <div className="flex items-center divide-x divide-gray-600">
           {subscriptionPlanEnable ? (
             <Link isBlock href={appPath('pricingPlan')}>

@@ -1,11 +1,10 @@
+import { cn } from '@heroui/react';
 import {
   ResponsiveBar,
   type BarDatum,
   type BarLegendProps,
   type ResponsiveBarSvgProps,
 } from '@nivo/bar';
-import { useMeasure } from '@uidotdev/usehooks';
-import clsx from 'clsx';
 import React from 'react';
 import { COLOR_SCHEME } from '../item-color';
 import { useNivoTheme } from '../theme';
@@ -30,7 +29,6 @@ export function BarChart<T extends BarDatum>({
   ...props
 }: BarChartProps<T>) {
   const theme = useNivoTheme();
-  const [ref, divMeasure] = useMeasure();
 
   const actualMargin = React.useMemo(() => {
     const result = {
@@ -53,10 +51,6 @@ export function BarChart<T extends BarDatum>({
     };
   }, [props.enableTotals, legendPos, margin]);
 
-  const graphWidth = React.useMemo(() => {
-    return divMeasure.width ?? 0 - actualMargin.left - actualMargin.right;
-  }, [divMeasure, actualMargin]);
-
   const customOnClick = React.useCallback<
     NonNullable<ResponsiveBarSvgProps<T>['onClick']>
   >(
@@ -68,7 +62,7 @@ export function BarChart<T extends BarDatum>({
   );
 
   return (
-    <div ref={ref} className={clsx(className)}>
+    <div className={cn(className, 'h-full')}>
       <ResponsiveBar
         onClick={customOnClick}
         theme={theme}

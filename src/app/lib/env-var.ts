@@ -2,6 +2,16 @@ export const appTitle = 'Community Database';
 export const appDescription =
   'Community Membership Database designed specifically for nonprofits. Easy to use, keep tracks of events and membership information.';
 
+/** List of localstorage keys used to memorize user settings */
+export const lsFlags = {
+  /** Number of years to show on "Total Membership Counts" bar chart */
+  dashboardYearRange: 'cd-dashboard-year-range',
+  /** Group by settings in 'Membership Fee' table */
+  dashboardMembershipFeeGroupBy: 'cd-dashboard-membership-fee-group-by',
+  /** Group by settings in 'Event Ticket Sale' table */
+  dashboardEventTicketSaleGroupBy: 'cd-dashboard-event-ticket-sale-group-by',
+};
+
 /** Is the app running in production mode? */
 export function isProduction() {
   return process.env.NODE_ENV === 'production';

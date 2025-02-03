@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import Image, { type ImageProps } from 'next/image';
 import React from 'react';
 
@@ -15,7 +15,7 @@ export const Slide: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         className,
         // Slide should cover 100% of viewport
         'flex-[0_0_100%]',

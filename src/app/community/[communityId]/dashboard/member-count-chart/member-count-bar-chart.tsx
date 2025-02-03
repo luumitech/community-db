@@ -1,7 +1,6 @@
-import { Divider } from '@heroui/react';
+import { Divider, cn } from '@heroui/react';
 import { BarCustomLayerProps, BarLegendProps } from '@nivo/bar';
 import { SymbolProps } from '@nivo/legends';
-import clsx from 'clsx';
 import { line } from 'd3-shape';
 import React from 'react';
 import * as R from 'remeda';
@@ -222,14 +221,14 @@ function noRenewalLine(
         {chartData.map((datum) => (
           <React.Fragment key={datum.year}>
             <circle
-              className={clsx('fill-background')}
+              className={cn('fill-background')}
               cx={datum.lineX}
               cy={datum.lineY}
               r={4}
               stroke={lineColor}
             />
             <rect
-              className={clsx('fill-transparent')}
+              className={cn('fill-transparent')}
               x={datum.barX}
               y={0}
               height={innerHeight}
@@ -308,7 +307,7 @@ function customTooltip(helper: ChartDataHelper) {
         const itemColor = helper.getDataColor(label);
         const firstCol = (
           <span
-            className={clsx(
+            className={cn(
               'block w-3 mt-[3px]',
               symbol === 'bar' && 'h-3',
               symbol === 'line' && 'h-[1px]'
@@ -382,7 +381,7 @@ export const MemberCountBarChart: React.FC<Props> = ({
 
   return (
     <BarChart
-      className={clsx(className, 'h-[400px]')}
+      className={cn(className, 'min-h-[400px]')}
       data={chartData}
       colors={(datum) => chartHelper.getDataColor(datum.id)}
       // This is being hidden by the bars rendered by NoRenewalLine

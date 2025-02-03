@@ -2,6 +2,8 @@
 import { ApolloProvider } from '@apollo/client';
 import { HeroUIProvider } from '@heroui/react';
 import { SessionProvider, SessionProviderProps } from 'next-auth/react';
+import { ReCaptchaProvider } from 'next-recaptcha-v3';
+import { env } from 'next-runtime-env';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -27,16 +29,23 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
     <SessionProvider {...sessionProviderProps}>
       <ApolloProvider client={apolloClient}>
         <HeroUIProvider navigate={router.push}>
-          <ReduxProviders>
-            <TsrProviders>
-              <AppProvider>
-                {children}
+          <ReCaptchaProvider
+            reCaptchaKey={env('NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY')}
+          >
+            <ReduxProviders>
+              <TsrProviders>
+                <AppProvider>
+                  {children}
 
-                <ConfirmationModal />
-                <ToastContainer position="bottom-right" theme={resolvedTheme} />
-              </AppProvider>
-            </TsrProviders>
-          </ReduxProviders>
+                  <ConfirmationModal />
+                  <ToastContainer
+                    position="bottom-right"
+                    theme={resolvedTheme}
+                  />
+                </AppProvider>
+              </TsrProviders>
+            </ReduxProviders>
+          </ReCaptchaProvider>
         </HeroUIProvider>
       </ApolloProvider>
     </SessionProvider>

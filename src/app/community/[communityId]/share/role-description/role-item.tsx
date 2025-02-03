@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 
 export const RoleItem: React.FC<Props> = ({ className, role, children }) => {
   return (
-    <div className={clsx(className, 'text-sm text-default-500')}>
+    <div className={cn(className, 'text-sm text-default-500')}>
       <span className="font-bold">{role}</span> role:
       {children && (
         <ul className="list-disc pl-6">

@@ -1,5 +1,5 @@
 import { Link } from '@heroui/link';
-import clsx from 'clsx';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
