@@ -90,6 +90,10 @@ const baseSchema = z.object({
   EMAIL_MAILJET_SANDBOX_MODE: zz.coerce.toBoolean(),
   /** Mailjet verified sender email */
   EMAIL_MAILJET_SENDER: z.string(),
+
+  /** Google Recaptcha configuration */
+  NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY: z.string(),
+  GOOGLE_RECAPTCHA_SECRET_KEY: z.string(),
 });
 
 const azureStorageSchema = z.discriminatedUnion('AZURE_STORAGE_MODE', [

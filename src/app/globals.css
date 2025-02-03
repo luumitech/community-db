@@ -24,3 +24,8 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/* Hide default google RECAPTCHA badge */
+.grecaptcha-badge {
+  visibility: hidden;
+}

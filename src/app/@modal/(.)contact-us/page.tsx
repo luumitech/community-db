@@ -1,11 +1,13 @@
 'use client';
 import {
+  Link,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
 } from '@heroui/react';
+import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
@@ -19,6 +21,7 @@ import { InputData, useHookForm } from './use-hook-form';
 
 export default function ContactUs() {
   const router = useRouter();
+  const { executeRecaptcha } = useReCaptcha();
   const searchParams = useSearchParams();
   const title = searchParams.get('title') ?? 'Contact Us';
   const subject = searchParams.get('subject') ?? 'General Inquiry';
@@ -35,12 +38,16 @@ export default function ContactUs() {
   const onSend = React.useCallback(
     async (input: InputData) => {
       const { message, ...other } = input;
+      const recaptchaToken = await executeRecaptcha('submit');
       mailSend.mutate({
-        query: other,
+        query: {
+          ...other,
+          recaptchaToken,
+        },
         body: { message },
       });
     },
-    [mailSend]
+    [mailSend, executeRecaptcha]
   );
 
   return (
@@ -59,8 +66,26 @@ export default function ContactUs() {
             <ModalBody>
               <EmailEditor />
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter className="items-center">
+              <div className="text-xs">
+                This site is protected by reCAPTCHA and the Google{' '}
+                <Link
+                  className="text-xs"
+                  href="https://policies.google.com/privacy"
+                >
+                  Privacy Policy
+                </Link>{' '}
+                and{' '}
+                <Link
+                  className="text-xs"
+                  href="https://policies.google.com/terms"
+                >
+                  Terms of Service
+                </Link>{' '}
+                apply.
+              </div>
               <Button
+                className="min-w-24"
                 type="submit"
                 color="primary"
                 isDisabled={!isDirty}
