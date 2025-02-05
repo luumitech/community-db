@@ -59,7 +59,7 @@ export const CurrencyInput = React.forwardRef<
                 'min-w-20',
                 { 'opacity-100': isReadOnly }
               ),
-              inputWrapper: cn(classNames?.inputWrapper, 'pb-0', {
+              inputWrapper: cn(classNames?.inputWrapper, {
                 'border-none shadow-none bg-transparent': isReadOnly,
               }),
             }}

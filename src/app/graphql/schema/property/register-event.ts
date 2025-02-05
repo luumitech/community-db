@@ -1,7 +1,7 @@
 import { Community, Property, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
-import { MutationType } from '~/graphql/pubsub';
+import { MessageType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
@@ -140,7 +140,7 @@ builder.mutationField('registerEvent', (t) =>
       // broadcast modification to property
       pubSub.publish(`community/${entry.community.shortId}/property`, {
         broadcasterId: user.email,
-        mutationType: MutationType.UPDATED,
+        messageType: MessageType.UPDATED,
         property: updatedProperty,
       });
       return {

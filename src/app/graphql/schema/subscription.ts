@@ -2,23 +2,23 @@ import { filter, pipe } from 'graphql-yoga';
 import prisma from '~/lib/prisma';
 import { builder } from '../builder';
 import {
-  MutationType,
+  MessageType,
   type PubSubCommunityEvent,
   type PubSubEvent,
   type PubSubPropertyEvent,
 } from '../pubsub';
 
-builder.enumType(MutationType, {
-  name: 'MutationType',
+builder.enumType(MessageType, {
+  name: 'MessageType',
 });
 
 const subscriptionEventRef = builder
   .interfaceRef<PubSubEvent>('SubscriptionEvent')
   .implement({
     fields: (t) => ({
-      mutationType: t.expose('mutationType', {
+      messageType: t.expose('messageType', {
         description: 'type of change triggering the subscription event',
-        type: MutationType,
+        type: MessageType,
       }),
       broadcaster: t.prismaField({
         description: 'event publisher user information',
@@ -79,8 +79,10 @@ builder.subscriptionType({
         const communityId = args.id;
         return pipe(
           pubSub.subscribe(`community/${communityId}/`),
-          // Don't subscribe to events that context user publish themselves
-          filter((event) => event.broadcasterId !== user.email)
+          filter((event) => {
+            // Don't subscribe to events that context user publish themselves
+            return event.broadcasterId !== user.email;
+          })
         );
       },
       resolve: (event) => event,
@@ -96,8 +98,10 @@ builder.subscriptionType({
         const { user, pubSub } = await ctx;
         return pipe(
           pubSub.subscribe(`community/${args.communityId}/property`),
-          // Don't subscribe to events that context user publish themselves
-          filter((event) => event.broadcasterId !== user.email)
+          filter((event) => {
+            // Don't subscribe to events that context user publish themselves
+            return event.broadcasterId !== user.email;
+          })
         );
       },
       resolve: (event) => event,

@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client';
 import { builder } from '~/graphql/builder';
-import { MutationType } from '~/graphql/pubsub';
+import { MessageType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { getPropertyEntry } from './util';
@@ -50,7 +50,7 @@ builder.mutationField('propertyDelete', (t) =>
         `community/${entry.community.shortId}/property/${propertyShortId}`,
         {
           broadcasterId: user.email,
-          mutationType: MutationType.DELETED,
+          messageType: MessageType.DELETED,
           property,
         }
       );
