@@ -3,6 +3,7 @@ import { builder } from '../builder';
 import './access';
 import './community';
 import './geocode';
+import './job';
 import './offset-pagination';
 import './payment';
 import './property';

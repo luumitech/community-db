@@ -1,19 +1,25 @@
 'use client';
-import { useMutation } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
+import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
 import { MoreMenu } from '../common/more-menu';
 import { ImportForm } from './import-form';
-import {
-  CommunityImportMutation,
-  InputData,
-  useHookForm,
-} from './use-hook-form';
+import { InputData, useHookForm } from './use-hook-form';
+import { useJobStatus } from './use-job-status';
+
+const CommunityImportMutation = graphql(/* GraphQL */ `
+  mutation communityImport($input: CommunityImportInput!) {
+    communityImport(input: $input) {
+      id
+    }
+  }
+`);
 
 interface Params {
   communityId: string;
@@ -25,8 +31,10 @@ interface RouteArgs {
 
 export default function ImportXlsx({ params }: RouteArgs) {
   const router = useRouter();
+  const client = useApolloClient();
   const { communityId } = params;
   const [importCommunity] = useMutation(CommunityImportMutation);
+  const { startPolling } = useJobStatus();
   const { formMethods } = useHookForm(communityId);
   const { handleSubmit } = formMethods;
 
@@ -34,25 +42,24 @@ export default function ImportXlsx({ params }: RouteArgs) {
     (_input: InputData) => {
       const { hidden, ...input } = _input;
       toast.promise(
-        importCommunity({
-          variables: {
-            input: {
-              ...input,
-              // get first file in imported filelist
-              xlsx: hidden.importList[0],
+        async () => {
+          const result = await importCommunity({
+            variables: {
+              input: {
+                ...input,
+                // get first file in imported filelist
+                xlsx: hidden.importList[0],
+              },
             },
-          },
-          update: (cache, { data }) => {
-            if (data) {
-              // Clear cache since the data kept in the previous
-              // community is no longer available after import
-              const community = data.communityImport;
-              evictCache(cache, community.__typename!, community.id);
-            }
-          },
-        }),
+          });
+          const jobId = result.data?.communityImport.id;
+          if (jobId) {
+            await startPolling(jobId, 3000);
+            evictCache(client.cache, 'Community', input.id);
+          }
+        },
         {
-          pending: 'Importing...',
+          pending: 'Importing (Please wait)...',
           success: {
             render: () => {
               // Redirect to property list
@@ -69,7 +76,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
         }
       );
     },
-    [importCommunity, router]
+    [importCommunity, router, startPolling, client]
   );
 
   return (

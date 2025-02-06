@@ -1,13 +1,16 @@
+import { Job } from '@hokify/agenda';
 import { Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import * as XLSX from 'xlsx';
 import { builder } from '~/graphql/builder';
-import { MessageType } from '~/graphql/pubsub';
+import { Context } from '~/graphql/context';
+import { JobHandler } from '~/lib/job-handler';
 import { importLcraDB } from '~/lib/lcra-community/import';
 import { seedCommunityData } from '~/lib/lcra-community/random-seed';
 import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { verifyAccess } from '../access/util';
+import { jobPayloadRef } from '../job/object';
 import { getSubscriptionEntry } from '../payment/util';
 import { getCommunityEntry } from './util';
 
@@ -31,12 +34,12 @@ const CommunityImportInput = builder.inputType('CommunityImportInput', {
 });
 
 builder.mutationField('communityImport', (t) =>
-  t.prismaField({
-    type: 'Community',
+  t.field({
+    type: jobPayloadRef,
     args: {
       input: t.arg({ type: CommunityImportInput, required: true }),
     },
-    resolve: async (query, _parent, args, ctx) => {
+    resolve: async (_parent, args, ctx) => {
       const { user, pubSub } = await ctx;
       const { id: shortId, method, xlsx } = args.input;
 
@@ -69,46 +72,82 @@ builder.mutationField('communityImport', (t) =>
         default:
           throw new GraphQLError(`Unrecognized import method ${method}`);
       }
-      const { propertyList, ...others } = importLcraDB(workbook);
+      const importResult = importLcraDB(workbook);
+      const agenda = await JobHandler.init();
 
-      const existing = await getCommunityEntry(user, shortId, {
-        select: { id: true, owner: true },
+      const job = await agenda.start<CommunityJobArg>('communityImport', {
+        user,
+        shortId,
+        importResult,
       });
 
-      // Check community owner's subscription status to determine
-      // limitation
-      const existingSub = await getSubscriptionEntry(existing.owner);
-      const { propertyLimit } = existingSub;
-      if (propertyLimit != null) {
-        if (propertyList.length > propertyLimit) {
-          throw new GraphQLError(
-            `This community can at most have ${propertyLimit} properties.`
-          );
-        }
-      }
-
-      const community = await prisma.community.update({
-        ...query,
-        where: { id: existing.id },
-        data: {
-          ...others,
-          propertyList: {
-            // Remove existing property list
-            deleteMany: {},
-            // Add new imported property list
-            create: propertyList,
-          },
-        },
-      });
-
-      // broadcast modification to community
-      pubSub.publish(`community/${shortId}/`, {
-        broadcasterId: user.email,
-        messageType: MessageType.CREATED,
-        community,
-      });
-
-      return community;
+      return job;
     },
   })
 );
+
+interface CommunityJobArg {
+  user: Context['user'];
+  /** Community short ID */
+  shortId: string;
+  importResult: ReturnType<typeof importLcraDB>;
+}
+
+export async function communityImportTask(job: Job<CommunityJobArg>) {
+  const { user, shortId, importResult } = job.attrs.data;
+  const { propertyList, ...others } = importResult;
+
+  await job.touch(0);
+
+  const community = await getCommunityEntry(user, shortId, {
+    select: { id: true, owner: true },
+  });
+
+  // Check community owner's subscription status to determine
+  // limitation
+  const existingSub = await getSubscriptionEntry(community.owner);
+  const { propertyLimit } = existingSub;
+  if (propertyLimit != null) {
+    if (propertyList.length > propertyLimit) {
+      throw new GraphQLError(
+        `This community can at most have ${propertyLimit} properties.`
+      );
+    }
+  }
+
+  await job.touch(10);
+
+  await prisma.$transaction([
+    prisma.community.update({
+      where: { id: community.id },
+      data: others,
+    }),
+    prisma.property.deleteMany({
+      where: { communityId: community.id },
+    }),
+    ...propertyList.map((entry) =>
+      prisma.property.create({
+        data: {
+          ...entry,
+          community: {
+            connect: { id: community.id },
+          },
+        },
+      })
+    ),
+  ]);
+  // await prisma.community.update({
+  //   where: { id: community.id },
+  //   data: {
+  //     ...others,
+  //     propertyList: {
+  //       // Remove existing property list
+  //       deleteMany: {},
+  //       // Add new imported property list
+  //       create: propertyList,
+  //     },
+  //   },
+  // });
+
+  await job.touch(100);
+}

@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql';
 import { type YogaInitialContext } from 'graphql-yoga';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
-import prisma from '../lib/prisma';
 import { pubSub } from './pubsub';
 
 function getClientIp(req: Request) {

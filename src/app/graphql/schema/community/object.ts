@@ -188,9 +188,9 @@ const communityStatRef = builder
           });
           // aggregateRaw returns items encoded in EJSON format
           // So it's necessary to convert it back to normal JSON
-          const result: {
+          const result = EJSON.parse(EJSON.stringify(aggr)) as {
             size: number;
-          }[] = EJSON.parse(EJSON.stringify(aggr));
+          }[];
           return result[0].size;
         },
       }),

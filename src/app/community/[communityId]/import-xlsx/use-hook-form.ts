@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 
@@ -28,14 +27,6 @@ function schema() {
       }
     );
 }
-
-export const CommunityImportMutation = graphql(/* GraphQL */ `
-  mutation communityImport($input: CommunityImportInput!) {
-    communityImport(input: $input) {
-      id
-    }
-  }
-`);
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
