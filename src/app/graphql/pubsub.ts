@@ -3,7 +3,7 @@ import { createPubSub } from '@graphql-yoga/subscription';
 import type { Community, Property } from '@prisma/client';
 
 // See: https://the-guild.dev/graphql/yoga-server/tutorial/advanced/02-subscriptions#subscribing-to-new-link-elements
-export enum MutationType {
+export enum MessageType {
   CREATED = 'CREATED',
   UPDATED = 'UPDATED',
   DELETED = 'DELETED',
@@ -12,7 +12,7 @@ export enum MutationType {
 export interface PubSubEvent {
   /** Email (AuthContext) of broadcaster */
   broadcasterId: string;
-  mutationType: MutationType;
+  messageType: MessageType;
 }
 
 export interface PubSubCommunityEvent extends PubSubEvent {

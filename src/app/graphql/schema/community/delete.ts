@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client';
 import { builder } from '~/graphql/builder';
-import { MutationType } from '~/graphql/pubsub';
+import { MessageType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { getCommunityEntry } from './util';
@@ -49,7 +49,7 @@ builder.mutationField('communityDelete', (t) =>
       // broadcast deletion to community
       pubSub.publish(`community/${entry.shortId}/`, {
         broadcasterId: user.email,
-        mutationType: MutationType.DELETED,
+        messageType: MessageType.DELETED,
         community,
       });
 

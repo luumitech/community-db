@@ -10,7 +10,7 @@ const CommunitySubscription = graphql(/* GraphQL */ `
       broadcaster {
         email
       }
-      mutationType
+      messageType
       community {
         id
         name
@@ -25,7 +25,7 @@ const PropertySubscription = graphql(/* GraphQL */ `
       broadcaster {
         email
       }
-      mutationType
+      messageType
       property {
         id
         address
@@ -34,13 +34,13 @@ const PropertySubscription = graphql(/* GraphQL */ `
   }
 `);
 
-function mutationVerb(mutationType: GQL.MutationType) {
-  switch (mutationType) {
-    case GQL.MutationType.Created:
+function messageVerb(messageType: GQL.MessageType) {
+  switch (messageType) {
+    case GQL.MessageType.Created:
       return 'created';
-    case GQL.MutationType.Updated:
+    case GQL.MessageType.Updated:
       return 'modified';
-    case GQL.MutationType.Deleted:
+    case GQL.MessageType.Deleted:
       return 'deleted';
   }
 }
@@ -55,10 +55,10 @@ export function useSetupSubscription(communityId: string) {
       if (communityFromId) {
         const community = communityFromId.community;
         if (community) {
-          const { broadcaster, mutationType } = communityFromId;
+          const { broadcaster, messageType } = communityFromId;
           evictCache(cache, 'Community', communityId);
           toast.info(
-            `${community.name} was ${mutationVerb(mutationType)} by ${
+            `${community.name} was ${messageVerb(messageType)} by ${
               broadcaster.email
             }`
           );
@@ -80,9 +80,9 @@ export function useSetupSubscription(communityId: string) {
           // community stat are changed if property changes as well
           evictCache(cache, 'Community', communityId);
 
-          const { broadcaster, mutationType } = propertyInCommunity;
+          const { broadcaster, messageType } = propertyInCommunity;
           toast.info(
-            `${property.address} was ${mutationVerb(mutationType)} by ${
+            `${property.address} was ${messageVerb(messageType)} by ${
               broadcaster.email
             }`
           );
