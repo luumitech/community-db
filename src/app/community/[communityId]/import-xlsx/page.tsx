@@ -3,6 +3,7 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { useJobStatus } from '~/custom-hooks/job-status';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
@@ -11,7 +12,6 @@ import { toast } from '~/view/base/toastify';
 import { MoreMenu } from '../common/more-menu';
 import { ImportForm } from './import-form';
 import { InputData, useHookForm } from './use-hook-form';
-import { useJobStatus } from './use-job-status';
 
 const CommunityImportMutation = graphql(/* GraphQL */ `
   mutation communityImport($input: CommunityImportInput!) {
@@ -34,49 +34,55 @@ export default function ImportXlsx({ params }: RouteArgs) {
   const client = useApolloClient();
   const { communityId } = params;
   const [importCommunity] = useMutation(CommunityImportMutation);
-  const { startPolling } = useJobStatus();
+  const { waitUntilDone } = useJobStatus();
   const { formMethods } = useHookForm(communityId);
   const { handleSubmit } = formMethods;
 
   const onImport = React.useCallback(
-    (_input: InputData) => {
+    async (_input: InputData) => {
       const { hidden, ...input } = _input;
-      toast.promise(
-        async () => {
-          const result = await importCommunity({
-            variables: {
-              input: {
-                ...input,
-                // get first file in imported filelist
-                xlsx: hidden.importList[0],
-              },
-            },
-          });
-          const jobId = result.data?.communityImport.id;
-          if (jobId) {
-            await startPolling(jobId, 3000);
-            evictCache(client.cache, 'Community', input.id);
-          }
-        },
-        {
-          pending: 'Importing (Please wait)...',
-          success: {
-            render: () => {
-              // Redirect to property list
-              router.push(
-                appPath('propertyList', { path: { communityId: input.id } })
-              );
-              return (
-                <div className="flex items-center gap-2">
-                  Imported Successfully
-                </div>
-              );
+
+      const toastId = toast.loading('Importing (Please wait)...');
+      try {
+        const result = await importCommunity({
+          variables: {
+            input: {
+              ...input,
+              // get first file in imported filelist
+              xlsx: hidden.importList[0],
             },
           },
+        });
+        if (result.errors) {
+          throw new Error(result.errors[0].message);
+        } else if (result.data) {
+          const jobId = result.data.communityImport.id;
+          await waitUntilDone(jobId, { toastId });
+          toast.update(toastId, {
+            type: 'success',
+            render: 'Imported Successfully',
+            progress: undefined,
+            isLoading: false,
+            closeButton: true,
+            autoClose: 5000,
+          });
+          evictCache(client.cache, 'Community', input.id);
+          // Redirect to property list
+          router.push(
+            appPath('propertyList', { path: { communityId: input.id } })
+          );
         }
-      );
+      } catch (err) {
+        toast.update(toastId, {
+          type: 'error',
+          render: (err as Error).message,
+          progress: undefined,
+          isLoading: false,
+          closeButton: true,
+        });
+      }
     },
-    [importCommunity, router, startPolling, client]
+    [importCommunity, router, waitUntilDone, client]
   );
 
   return (

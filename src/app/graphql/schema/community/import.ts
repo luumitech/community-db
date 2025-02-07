@@ -1,6 +1,7 @@
 import { Job } from '@hokify/agenda';
 import { Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
+import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { builder } from '~/graphql/builder';
 import { Context } from '~/graphql/context';
@@ -97,7 +98,7 @@ export async function communityImportTask(job: Job<CommunityJobArg>) {
   const { user, shortId, importResult } = job.attrs.data;
   const { propertyList, ...others } = importResult;
 
-  await job.touch(0);
+  await job.touch(10);
 
   const community = await getCommunityEntry(user, shortId, {
     select: { id: true, owner: true },
@@ -115,39 +116,34 @@ export async function communityImportTask(job: Job<CommunityJobArg>) {
     }
   }
 
-  await job.touch(10);
+  await job.touch(20);
 
-  await prisma.$transaction([
-    prisma.community.update({
+  await prisma.community.update({
+    where: { id: community.id },
+    data: {
+      ...others,
+      propertyList: {
+        // Remove existing property list
+        deleteMany: {},
+        // Add new imported property list
+        // For unknown reason, when adding lots of properties within a single transaction,
+        // the transaction operation fails in production instance.  (works fine locally)
+        // create: propertyList,
+      },
+    },
+  });
+
+  // Inserting in bulk by chunks would allow progress report
+  const propertyChunk = R.chunk(propertyList, 100);
+  for (const [idx, chunk] of propertyChunk.entries()) {
+    await prisma.community.update({
       where: { id: community.id },
-      data: others,
-    }),
-    prisma.property.deleteMany({
-      where: { communityId: community.id },
-    }),
-    ...propertyList.map((entry) =>
-      prisma.property.create({
-        data: {
-          ...entry,
-          community: {
-            connect: { id: community.id },
-          },
+      data: {
+        propertyList: {
+          create: chunk,
         },
-      })
-    ),
-  ]);
-  // await prisma.community.update({
-  //   where: { id: community.id },
-  //   data: {
-  //     ...others,
-  //     propertyList: {
-  //       // Remove existing property list
-  //       deleteMany: {},
-  //       // Add new imported property list
-  //       create: propertyList,
-  //     },
-  //   },
-  // });
-
-  await job.touch(100);
+      },
+    });
+    await job.touch(20 + Math.ceil((idx / propertyChunk.length) * 80));
+  }
 }

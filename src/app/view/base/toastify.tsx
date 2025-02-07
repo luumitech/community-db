@@ -7,6 +7,8 @@ import {
   type UpdateOptions,
 } from 'react-toastify';
 
+export { type Id } from 'react-toastify';
+
 /**
  * Customize toast.promise to handle error condition automatically
  *

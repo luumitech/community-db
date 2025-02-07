@@ -5,7 +5,10 @@ import { JobEntry, JobHandler } from '~/lib/job-handler';
 const jobStatusRef = builder.objectRef<JobEntry>('JobStatus').implement({
   fields: (t) => ({
     id: t.exposeID('id'),
-    progress: t.exposeInt('progress', { nullable: true }),
+    progress: t.exposeInt('progress', {
+      nullable: true,
+      description: 'progress from 0 to 100',
+    }),
     failReason: t.exposeString('failReason', { nullable: true }),
     isComplete: t.exposeBoolean('isComplete'),
     hasFailed: t.exposeBoolean('hasFailed'),

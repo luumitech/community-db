@@ -13,16 +13,22 @@ export { JobEntry } from './job-entry';
  * This is backed by Agenda
  */
 export class JobHandler {
-  static agenda = new Agenda({ db: { address: env.MONGODB_URI } });
+  static _agenda: Agenda | null = null;
+
+  constructor(private agenda: Agenda) {}
 
   static async init() {
-    this.agenda.define('communityImport', communityImportTask);
-    await this.agenda.start();
-    return new JobHandler();
+    if (this._agenda == null) {
+      this._agenda = new Agenda({ db: { address: env.MONGODB_URI } });
+      this._agenda.define('communityImport', communityImportTask);
+      await this._agenda.start();
+    }
+
+    return new JobHandler(this._agenda);
   }
 
   async job(id: string) {
-    const jobs = await JobHandler.agenda.jobs({ _id: new ObjectId(id) });
+    const jobs = await this.agenda.jobs({ _id: new ObjectId(id) });
     if (jobs.length !== 1) {
       throw new GraphQLError(`Cannot find job ID ${id}`);
     }
@@ -31,7 +37,7 @@ export class JobHandler {
   }
 
   async start<T>(jobName: string, data: T) {
-    const job = await JobHandler.agenda.now<T>(jobName, data);
+    const job = await this.agenda.now<T>(jobName, data);
     return new JobEntry(job);
   }
 }
