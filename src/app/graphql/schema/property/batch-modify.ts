@@ -104,11 +104,16 @@ builder.mutationField('batchPropertyModify', (t) =>
           membership.eventAttendedList[result.eventIdx] =
             mapEventEntry(eventAttended);
         }
-        // Update price/paymentMethod for new members only
-        // Existing members will keep their membership info
         if (result.isNewMember) {
+          // Membership Fee will only be applied to properties
+          // that do not have an existing membership
           membership.price = input.membership.price ?? null;
           membership.paymentMethod = input.membership.paymentMethod;
+        } else if (membership.price == null) {
+          // If a property has a Membership Fee entry, but does not have
+          // Price information specified, the record will be updated with
+          // the new Price information.
+          membership.price = input.membership.price ?? null;
         }
       });
 

@@ -11,6 +11,10 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
   const { watch } = useHookFormContext();
   const memberYear = watch('membership.year');
 
+  const Keyword = ({ children }: React.PropsWithChildren) => (
+    <span className="font-semibold text-foreground-500">{children}</span>
+  );
+
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
@@ -20,12 +24,19 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
         </div>
       </ScrollShadow>
       <p className="text-sm">
-        <span className="font-semibold">NOTE:</span> The{' '}
-        <span className="font-semibold text-foreground-500">
-          Membership Fee
-        </span>{' '}
-        is only applicable to properties that do not have an existing membership
-        in year {memberYear}.
+        <span className="font-semibold">NOTE:</span>
+        <ul className="list-disc pl-8">
+          <li>
+            <Keyword>Membership Fee</Keyword> will only be applied to properties
+            that do not have an existing membership in year {memberYear}.
+          </li>
+          <li>
+            If a property has a <Keyword>Membership Fee</Keyword> entry, but
+            does not have <Keyword>Price</Keyword> information specified, the
+            record will be updated with the new <Keyword>Price</Keyword>{' '}
+            information.
+          </li>
+        </ul>
       </p>
     </div>
   );
