@@ -119,8 +119,7 @@ export function membershipDefault(
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   yearRange: [number, number],
-  yearSelected: string,
-  defaultSetting: GQL.DefaultSetting
+  yearSelected: string
 ): InputData {
   const membershipList = yearSelectItems(
     yearRange,
@@ -158,11 +157,7 @@ function defaultInputData(
         })),
         paymentMethod:
           membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
-        price:
-          membershipItem?.price ??
-          defaultItem.price ??
-          defaultSetting?.membershipFee ??
-          null,
+        price: membershipItem?.price ?? defaultItem.price ?? null,
       };
     }),
     hidden: {
@@ -178,17 +173,12 @@ export function useHookFormWithDisclosure(
   fragment: MembershipEditorFragmentType,
   yearSelected: string
 ) {
-  const { minYear, maxYear, defaultSetting } = useAppContext();
+  const { minYear, maxYear } = useAppContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {
-    const data = defaultInputData(
-      property,
-      [minYear, maxYear],
-      yearSelected,
-      defaultSetting
-    );
+    const data = defaultInputData(property, [minYear, maxYear], yearSelected);
     return data;
-  }, [minYear, maxYear, property, yearSelected, defaultSetting]);
+  }, [minYear, maxYear, property, yearSelected]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
