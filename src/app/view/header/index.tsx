@@ -12,10 +12,10 @@ import {
   Spinner,
 } from '@heroui/react';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
+import { AppLogo } from '~/view/app-logo';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
 import { useNavMenu } from './use-nav-menu';
@@ -60,21 +60,14 @@ export const Header: React.FC<Props> = ({}) => {
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
         )} */}
-        <NavbarBrand className="flex-grow-0">
+        <NavbarBrand className="flex-grow-0 items-center">
           <Link
             className="gap-1"
             href={appPath('communityWelcome')}
             color="foreground"
           >
             <div className="w-[36px]">
-              <Image
-                className="object-fit rounded-md"
-                src="/image/community-db-logo.png"
-                alt="LummiTech Logo"
-                priority
-                width={36}
-                height={36}
-              />
+              <AppLogo priority width={36} height={36} />
             </div>
             {/* Hide appTitle in small layout */}
             <span className="max-sm:hidden max-w-min leading-5 whitespace-normal text-center text-balance font-bold">

@@ -13,6 +13,7 @@ import {
   MembershipRow,
   TicketRow,
   TicketRowHeader,
+  TransactionFooter,
   TransactionHeader,
   TransactionTotal,
 } from './ticket-row';
@@ -108,6 +109,7 @@ export const TicketInputTable: React.FC<Props> = ({
                 onRemove={() => onRemove?.(ticketIdx)}
               />
             ))}
+            {transactionConfig != null && <TransactionFooter />}
             {transactionConfig != null && <TransactionTotal />}
           </div>
         </ScrollShadow>

@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
+import { AppLogo } from '~/view/app-logo';
 import { Icon } from '~/view/base/icon';
 import { BuiltBy } from '~/view/footer/build-by';
 
@@ -26,7 +27,10 @@ export default function About() {
       // isKeyboardDismissDisabled
     >
       <ModalContent>
-        <ModalHeader>{appTitle}</ModalHeader>
+        <ModalHeader className="items-center gap-2">
+          <AppLogo />
+          {appTitle}
+        </ModalHeader>
         <ModalBody>
           <div className="grid grid-cols-[repeat(2,max-content)] gap-y-2 gap-x-4">
             <div className="italic">Version</div>
