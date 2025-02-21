@@ -126,7 +126,7 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
     <div className={cn('grid col-span-full')}>
       <div
         className={cn(
-          'h-10 border-medium rounded-md flex items-center px-2 gap-2',
+          'h-10 border-divider border-medium rounded-md flex items-center px-2 gap-2',
           'cursor-pointer hover:opacity-hover'
         )}
         onClick={toggle}

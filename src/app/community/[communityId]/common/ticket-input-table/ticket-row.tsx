@@ -90,22 +90,38 @@ export const TransactionHeader: React.FC<EmptyProps> = () => {
 
   return (
     <div className={cn('grid col-span-full')}>
-      <TicketAddButton
-        onClick={(ticket) => {
-          ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
-        }}
-      >
-        <Button
-          className="justify-start"
-          color="primary"
-          variant="bordered"
-          radius="sm"
-          fullWidth
-          startContent={<Icon icon="add-ticket" />}
+      <fieldset className="border-t-2 border-divider">
+        <legend className="text-sm text-default-400 m-auto px-4">
+          Current Transaction
+        </legend>
+      </fieldset>
+    </div>
+  );
+};
+
+export const TransactionFooter: React.FC<EmptyProps> = () => {
+  const { ticketListConfig, transactionUIConfig } = useTicketContext();
+  const { paymentMethod } = transactionUIConfig;
+
+  return (
+    <div className={cn('grid col-span-full')}>
+      <div className="ml-3">
+        <TicketAddButton
+          onClick={(ticket) => {
+            ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
+          }}
         >
-          New Transaction
-        </Button>
-      </TicketAddButton>
+          <Button
+            className="justify-start"
+            color="primary"
+            variant="bordered"
+            radius="sm"
+            startContent={<Icon icon="add-ticket" />}
+          >
+            Add Ticket
+          </Button>
+        </TicketAddButton>
+      </div>
     </div>
   );
 };
@@ -178,11 +194,11 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
         />
       </div>
       <div className="flex gap-2" role="cell">
-        <TicketAddButton
+        {/* <TicketAddButton
           onClick={(ticket) => {
             ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
           }}
-        />
+        /> */}
       </div>
     </div>
   );

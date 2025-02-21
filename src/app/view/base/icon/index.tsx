@@ -14,7 +14,7 @@ import {
 import { FaDownload } from 'react-icons/fa6';
 import { FcDonate } from 'react-icons/fc';
 import { GoGear } from 'react-icons/go';
-import { GrUndo } from 'react-icons/gr';
+import { GrHelpBook, GrUndo } from 'react-icons/gr';
 import { HiOutlineTicket } from 'react-icons/hi2';
 import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
 import {
@@ -71,7 +71,8 @@ type SupportedIcon =
   | 'mailchimp'
   | 'chevron-forward'
   | 'add-ticket'
-  | 'calculator';
+  | 'calculator'
+  | 'helpbook';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -179,6 +180,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'calculator':
       IconElement = CiCalculator2;
+      break;
+    case 'helpbook':
+      IconElement = GrHelpBook;
       break;
     default:
       IconElement = MdQuestionMark;
