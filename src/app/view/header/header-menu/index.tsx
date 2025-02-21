@@ -83,7 +83,10 @@ export const HeaderMenu: React.FC<Props> = ({
       <ButtonGroup variant="light">
         <HeaderMenuShortcut
           itemMap={itemMap}
-          shortcutKeys={shortcutKeys ?? []}
+          shortcutKeys={
+            // Only show shortcuts that are available in menu
+            (shortcutKeys ?? []).filter((key) => menuKeys.includes(key))
+          }
         />
         <Dropdown placement="bottom-end">
           <DropdownTrigger>

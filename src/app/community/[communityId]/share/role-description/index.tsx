@@ -29,7 +29,7 @@ export const RoleDescription: React.FC<Props> = ({ className }) => {
               In addition to <span className="font-bold">Editor</span> role:
             </span>
             <span>Add or remove user access</span>
-            <span>Create or remove community</span>
+            <span>Remove community</span>
             <span>Import new data into community</span>
             <span>Create or remove property</span>
           </RoleItem>
