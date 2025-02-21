@@ -46,7 +46,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           'communityExport',
           'divider',
           ...insertIf(canEdit, 'communityModify'),
-          ...insertIf(canEdit, 'batchPropertyyModify'),
+          ...insertIf(canEdit, 'batchPropertyModify'),
           'divider',
           ...insertIf(isAdmin, 'communityImport'),
           ...insertIf(isAdmin, 'propertyCreate'),

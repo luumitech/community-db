@@ -27,7 +27,7 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: 'Modify Community',
       },
       {
-        key: 'batchPropertyyModify',
+        key: 'batchPropertyModify',
         onPress: opt.batchPropertyModifyDisclosure.onOpen,
         children: 'Batch Modify Property',
       },
