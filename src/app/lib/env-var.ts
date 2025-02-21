@@ -10,6 +10,8 @@ export const lsFlags = {
   dashboardMembershipFeeGroupBy: 'cd-dashboard-membership-fee-group-by',
   /** Group by settings in 'Event Ticket Sale' table */
   dashboardEventTicketSaleGroupBy: 'cd-dashboard-event-ticket-sale-group-by',
+  /** Reach import dialog for the first time */
+  importFirstTime: 'cd-import-first-time',
 };
 
 /** Is the app running in production mode? */

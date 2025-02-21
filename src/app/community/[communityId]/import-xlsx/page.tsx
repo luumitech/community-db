@@ -10,7 +10,9 @@ import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
 import { MoreMenu } from '../common/more-menu';
+import { FirstTimeWizard } from './first-time-wizard';
 import { ImportForm } from './import-form';
+import { PageProvider } from './page-context';
 import { InputData, useHookForm } from './use-hook-form';
 
 const CommunityImportMutation = graphql(/* GraphQL */ `
@@ -88,12 +90,15 @@ export default function ImportXlsx({ params }: RouteArgs) {
   return (
     <FormProvider {...formMethods}>
       <MoreMenu communityId={communityId} omitKeys={['communityImport']} />
-      <Form
-        className="flex flex-col h-main-height"
-        onSubmit={handleSubmit(onImport)}
-      >
-        <ImportForm />
-      </Form>
+      <PageProvider>
+        <Form
+          className="flex flex-col h-main-height"
+          onSubmit={handleSubmit(onImport)}
+        >
+          <ImportForm />
+        </Form>
+        <FirstTimeWizard />
+      </PageProvider>
     </FormProvider>
   );
 }
