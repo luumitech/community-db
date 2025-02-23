@@ -76,9 +76,10 @@ export function useSetupSubscription(communityId: string) {
         const property = propertyInCommunity.property;
         if (property) {
           evictCache(cache, 'Property', property.id);
-          // evict community cache too because some fields like
-          // community stat are changed if property changes as well
+          // community may changed if things like minYear/maxYear changes
           evictCache(cache, 'Community', communityId);
+          // community stat may changed if property content changes
+          evictCache(cache, 'CommunityStat', communityId);
 
           const { broadcaster, messageType } = propertyInCommunity;
           toast.info(

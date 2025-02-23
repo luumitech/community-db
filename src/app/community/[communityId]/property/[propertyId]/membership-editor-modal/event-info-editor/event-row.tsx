@@ -54,7 +54,7 @@ export const EventRow: React.FC<EventRowProps> = ({
   eventIdx,
 }) => {
   const { control, setValue } = useHookFormContext();
-  const { isExpanded, toggle, expand } = useTicketAccordion(yearIdx);
+  const { isExpanded, toggle, expand, collapse } = useTicketAccordion(yearIdx);
   const membershipPrefix = `membershipList.${yearIdx}` as const;
   const ticketListPrefix =
     `${membershipPrefix}.eventAttendedList.${eventIdx}.ticketList` as const;
@@ -130,7 +130,7 @@ export const EventRow: React.FC<EventRowProps> = ({
             includeHiddenFields
             onClick={(ticket) => {
               ticketListMethods.append(ticket);
-              expand(eventIdx);
+              setTimeout(() => expand(eventIdx));
             }}
           />
         </div>
@@ -165,12 +165,9 @@ export const EventRow: React.FC<EventRowProps> = ({
                 })}
                 includeHiddenFields
                 onRemove={(ticketIdx: number) => {
-                  if (ticketListMethods.fields.length === 1) {
-                    // About to remove last entry, collapse ticketList table
-                    setValue(
-                      `hidden.${membershipPrefix}.expandTicketListEventIdx`,
-                      null
-                    );
+                  if (ticketCount === 1) {
+                    // About to remove last ticket entry, collapse ticketList table
+                    collapse();
                   }
                 }}
               />

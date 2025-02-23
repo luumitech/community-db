@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
@@ -38,10 +39,21 @@ export const RegisterEventModal: React.FC<Props> = ({ className }) => {
   const onSave = React.useCallback(
     async (_input: InputData) => {
       const { hidden, ...input } = _input;
-      await toast.promise(updateProperty({ variables: { input } }), {
-        pending: 'Saving...',
-        // success: 'Saved',
-      });
+      await toast.promise(
+        updateProperty({
+          variables: { input },
+          update: (cache, result) => {
+            const communityId = result.data?.registerEvent.community.id;
+            if (communityId) {
+              evictCache(cache, 'CommunityStat', communityId);
+            }
+          },
+        }),
+        {
+          pending: 'Saving...',
+          // success: 'Saved',
+        }
+      );
     },
     [updateProperty]
   );

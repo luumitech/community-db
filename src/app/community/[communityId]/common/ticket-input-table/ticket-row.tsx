@@ -76,7 +76,8 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           tooltip="Remove Ticket"
           onClick={() => {
             fieldMethods.remove(ticketIdx);
-            onRemove?.();
+            // Wait for remove operation to complete before calling other onRemove handlers
+            setTimeout(() => onRemove?.());
           }}
         />
       </div>

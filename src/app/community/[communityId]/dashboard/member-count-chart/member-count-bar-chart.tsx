@@ -14,6 +14,7 @@ import { type MemberCountEntry } from './_type';
 const MemberCountFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MemberCount on Community {
     communityStat {
+      id
       memberCountStat {
         year
         renew

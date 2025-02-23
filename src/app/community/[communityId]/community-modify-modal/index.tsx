@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { ModifyModal } from './modify-modal';
@@ -18,6 +19,7 @@ export {
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityModify($input: CommunityModifyInput!) {
     communityModify(input: $input) {
+      id
       ...CommunityId_CommunityModifyModal
     }
   }
@@ -42,6 +44,12 @@ export const CommunityModifyModal: React.FC<Props> = ({ hookForm }) => {
       await toast.promise(
         updateCommunity({
           variables: { input },
+          update: (cache, result) => {
+            const communityId = result.data?.communityModify.id;
+            if (communityId) {
+              evictCache(cache, 'CommunityStat', communityId);
+            }
+          },
         }),
         {
           pending: 'Saving...',

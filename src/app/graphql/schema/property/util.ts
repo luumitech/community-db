@@ -157,19 +157,49 @@ function propertyListFilterArgs(
 
   const trimSearchText = searchText?.trim();
   if (trimSearchText) {
-    query.OR.push(
-      { address: { mode: 'insensitive', contains: trimSearchText } },
-      {
+    query.OR.push({
+      address: { mode: 'insensitive', contains: trimSearchText },
+    });
+  }
+
+  /**
+   * Matching searchText again name is slightly more complicated, we want to
+   * search against `${firstName} ${lastName}`, but we don't have ability to
+   * concat the fields in Prisma prior to do searching
+   */
+  const nameList = trimSearchText?.split(' ');
+  if (nameList) {
+    // If only a single name is provided, search against either firstName or lastName
+    if (nameList.length === 1) {
+      query.OR.push({
         occupantList: {
           some: {
             OR: [
-              { firstName: { mode: 'insensitive', contains: trimSearchText } },
-              { lastName: { mode: 'insensitive', contains: trimSearchText } },
+              { firstName: { mode: 'insensitive', startsWith: nameList[0] } },
+              { lastName: { mode: 'insensitive', startsWith: nameList[0] } },
             ],
           },
         },
-      }
-    );
+      });
+    } else if (nameList.length > 1) {
+      // If both names are provided, search against firstName and lastName
+      const searchLast = nameList.pop()!;
+      query.OR.push({
+        occupantList: {
+          some: {
+            AND: [
+              {
+                firstName: {
+                  mode: 'insensitive',
+                  startsWith: nameList.join(' '),
+                },
+              },
+              { lastName: { mode: 'insensitive', startsWith: searchLast } },
+            ],
+          },
+        },
+      });
+    }
   }
 
   // Construct filters within `membershipList`
