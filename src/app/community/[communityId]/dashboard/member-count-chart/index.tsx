@@ -7,11 +7,13 @@ import { graphql } from '~/graphql/generated';
 import { lsFlags } from '~/lib/env-var';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
+import { YearSelect } from './year-select';
 
 const MemberCountStatQuery = graphql(/* GraphQL */ `
   query memberCountStat($id: String!) {
     communityFromId(id: $id) {
       id
+      minYear
       maxYear
       ...Dashboard_MemberCount
     }
@@ -50,13 +52,21 @@ export const MemberCountChart: React.FC<Props> = ({
 
   return (
     <Card className={cn(className)}>
-      <CardHeader className="justify-between gap-2">
-        <div>
+      <CardHeader className="items-start gap-2">
+        <div className="flex-grow">
           <p className="font-bold text-md">Total Membership Counts</p>
-          <p className="text-small text-default-500">
-            Click on a year, to view details for each year
-          </p>
         </div>
+        {community != null && (
+          <YearSelect
+            minYear={community.minYear}
+            maxYear={community.maxYear}
+            selectedKeys={selectedYear ? [selectedYear.toString()] : []}
+            onSelectionChange={(keys) => {
+              const [firstKey] = keys;
+              onYearSelect?.(parseInt(firstKey as string, 10));
+            }}
+          />
+        )}
         <YearRangeSelect
           defaultSelectedKeys={[yearRange.toString()]}
           onSelectionChange={(keys) => {

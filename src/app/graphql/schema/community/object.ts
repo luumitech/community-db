@@ -7,7 +7,6 @@ import {
 } from '@prisma/client';
 import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
-import hash from 'object-hash';
 import { builder } from '~/graphql/builder';
 import { getCurrentYear } from '~/lib/date-util';
 import { isNonZeroDec } from '~/lib/decimal-util';
@@ -372,7 +371,7 @@ builder.prismaObject('Community', {
         });
 
         return {
-          id: hash(propertyList),
+          id: parent.shortId,
           minYear: parent.minYear ?? getCurrentYear(),
           maxYear: parent.maxYear ?? getCurrentYear(),
           communityId,

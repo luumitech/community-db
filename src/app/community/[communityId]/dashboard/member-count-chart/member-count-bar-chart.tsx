@@ -3,17 +3,21 @@ import { BarCustomLayerProps, BarLegendProps } from '@nivo/bar';
 import { SymbolProps } from '@nivo/legends';
 import { line } from 'd3-shape';
 import React from 'react';
-import * as R from 'remeda';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { BarChart } from '~/view/base/chart';
-import { getItemColor } from '~/view/base/chart/item-color';
-import { TableTooltip, useTooltip } from '~/view/base/chart/tooltip';
+import {
+  BarChart,
+  barHighlightSelected,
+  barSelectable,
+  getItemColor,
+} from '~/view/base/chart';
+import { TableTooltip } from '~/view/base/chart/tooltip';
 import { type MemberCountEntry } from './_type';
 
 const MemberCountFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MemberCount on Community {
     communityStat {
+      id
       memberCountStat {
         year
         renew
@@ -34,6 +38,10 @@ interface ChartDataEntry extends Record<string, number> {
 class ChartDataHelper {
   private stat: GQL.MemberCountStat[];
   public chartData: Readonly<ChartDataEntry>[];
+  // There is also a 'no renewal' key in the data that is represented by
+  // a customLine plot
+  public chartKeys = ['renewed', 'new'];
+
   constructor(stat: GQL.MemberCountStat[], yearRange: number) {
     if (yearRange > 0) {
       this.stat = stat.slice(-yearRange);
@@ -50,110 +58,15 @@ class ChartDataHelper {
   }
 
   getDataColor(label: keyof ChartDataEntry) {
-    switch (label) {
-      case 'new':
-        return '#BDE2B9';
-      case 'renewed':
-        return '#8BC1F7';
-      case 'no renewal':
-        return '#ED7D31';
+    if (label === 'no renewal') {
+      return getItemColor(0);
+    }
+    const itemIdx = this.chartKeys.indexOf(label as string);
+    if (itemIdx !== -1) {
+      return getItemColor(itemIdx + 1);
     }
     return getItemColor(0);
   }
-}
-
-const CHART_KEYS = ['renewed', 'new'];
-
-/**
- * Custom bar
- *
- * Add pattern overlay to selected bar
- */
-function customBar(helper: ChartDataHelper, selectedYear?: number) {
-  const Bar: React.FC<BarCustomLayerProps<ChartDataEntry>> = ({ bars }) => {
-    // Render the bars normally (without selected pattern overlay)
-    const barRects = bars.map((bar) => {
-      return (
-        <svg
-          key={bar.key}
-          x={bar.x}
-          y={bar.y}
-          width={bar.width}
-          height={bar.height}
-        >
-          <rect width="100%" height="100%" fill={bar.color} />
-        </svg>
-      );
-    });
-
-    // Renders the value of each bar
-    const barLabels = bars.map((bar) => {
-      return (
-        <svg
-          key={bar.key}
-          x={bar.x}
-          y={bar.y}
-          width={bar.width}
-          height={bar.height}
-        >
-          <text
-            x="50%"
-            y="50%"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            className="font-sans text-[11px] fill-[rgb(79,109,140)]"
-          >
-            {bar.data.formattedValue}
-          </text>
-        </svg>
-      );
-    });
-
-    // Render the selected bar with pattern overlay
-    let selectedSvg = null;
-    const selectedBars = bars.filter(
-      (bar) => selectedYear === bar.data.indexValue
-    );
-    if (selectedBars.length) {
-      const x = selectedBars[0].x;
-      const y = Math.min(...selectedBars.map((bar) => bar.y));
-      const width = selectedBars[0].width;
-      const height = R.sum(selectedBars.map((bar) => bar.height));
-      const patternId = `pattern_${selectedBars[0].key}`;
-      selectedSvg = (
-        <svg x={x} y={y} width={width} height={height}>
-          <defs>
-            <pattern
-              id={patternId}
-              patternUnits="userSpaceOnUse"
-              width="16"
-              height="16"
-              patternTransform="rotate(45)"
-            >
-              <line
-                x1="0"
-                y="0"
-                x2="0"
-                y2="16"
-                stroke="white"
-                strokeWidth="3"
-              />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#${patternId})`} />
-        </svg>
-      );
-    }
-
-    return (
-      <>
-        {barRects}
-        {selectedSvg}
-        {barLabels}
-      </>
-    );
-  };
-  return Bar;
 }
 
 /**
@@ -161,26 +74,12 @@ function customBar(helper: ChartDataHelper, selectedYear?: number) {
  *
  * For members who have not renewed this year
  */
-function noRenewalLine(
-  helper: ChartDataHelper,
-  onYearSelect?: (year: number) => void
-) {
+function noRenewalLine(helper: ChartDataHelper) {
   const Line: React.FC<BarCustomLayerProps<ChartDataEntry>> = ({
     bars,
     xScale,
     yScale,
-    innerHeight,
   }) => {
-    const tip = useTooltip();
-    const CustomTooltip = React.useMemo(() => customTooltip(helper), []);
-
-    const renderTooltip = React.useCallback(
-      (evt: React.MouseEvent, datum: ChartDataEntry) => {
-        return tip.showTooltipFromEvent(<CustomTooltip data={datum} />, evt);
-      },
-      [tip, CustomTooltip]
-    );
-
     /**
      * Gather necessary information to plot the line graph (as well as
      * implementing custom tooltip)
@@ -219,26 +118,14 @@ function noRenewalLine(
           strokeWidth={2}
         />
         {chartData.map((datum) => (
-          <React.Fragment key={datum.year}>
-            <circle
-              className={cn('fill-background')}
-              cx={datum.lineX}
-              cy={datum.lineY}
-              r={4}
-              stroke={lineColor}
-            />
-            <rect
-              className={cn('fill-transparent')}
-              x={datum.barX}
-              y={0}
-              height={innerHeight}
-              width={datum.barWidth}
-              onMouseEnter={(evt) => renderTooltip(evt, datum.data)}
-              onMouseMove={(evt) => renderTooltip(evt, datum.data)}
-              onMouseLeave={tip.hideTooltip}
-              onClick={() => onYearSelect?.(datum.year)}
-            />
-          </React.Fragment>
+          <circle
+            key={datum.year}
+            className={cn('fill-background')}
+            cx={datum.lineX}
+            cy={datum.lineY}
+            r={4}
+            stroke={lineColor}
+          />
         ))}
       </>
     );
@@ -364,20 +251,32 @@ export const MemberCountBarChart: React.FC<Props> = ({
     return helper;
   }, [communityStat, yearRange]);
 
+  const { chartData } = chartHelper;
+
   const CustomBar = React.useMemo(
-    () => customBar(chartHelper, selectedYear),
-    [chartHelper, selectedYear]
+    () => barHighlightSelected(chartData, selectedYear),
+    [chartData, selectedYear]
   );
   const NoRenewalLine = React.useMemo(
-    () => noRenewalLine(chartHelper, onYearSelect),
-    [chartHelper, onYearSelect]
+    () => noRenewalLine(chartHelper),
+    [chartHelper]
+  );
+  const CustomTooltip = React.useMemo(
+    () => customTooltip(chartHelper),
+    [chartHelper]
+  );
+  const SelectableBar = React.useMemo(
+    () =>
+      barSelectable(chartData, {
+        renderToolTip: (data) => <CustomTooltip data={data} />,
+        onDataClick: (data) => onYearSelect?.(data.year),
+      }),
+    [chartData, CustomTooltip, onYearSelect]
   );
   const barLegend = React.useMemo(
     () => customLegend(chartHelper),
     [chartHelper]
   );
-
-  const { chartData } = chartHelper;
 
   return (
     <BarChart
@@ -386,7 +285,7 @@ export const MemberCountBarChart: React.FC<Props> = ({
       colors={(datum) => chartHelper.getDataColor(datum.id)}
       // This is being hidden by the bars rendered by NoRenewalLine
       // onDataClick={(data) => onYearSelect?.(data.year as number)}
-      keys={CHART_KEYS}
+      keys={chartHelper.chartKeys}
       indexBy="year"
       valueFormat={(v) => v.toString()}
       axisBottom={{
@@ -414,6 +313,7 @@ export const MemberCountBarChart: React.FC<Props> = ({
         // 'bars',
         CustomBar,
         NoRenewalLine,
+        SelectableBar,
         'markers',
         'legends',
       ]}

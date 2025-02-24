@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { ModifyModal } from './modify-modal';
@@ -66,6 +67,12 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
       await toast.promise(
         updateProperty({
           variables: { input },
+          update: (cache, result) => {
+            const communityId = result.data?.batchPropertyModify.community.id;
+            if (communityId) {
+              evictCache(cache, 'CommunityStat', communityId);
+            }
+          },
         }),
         {
           pending: 'Saving...',

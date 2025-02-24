@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
@@ -43,6 +44,12 @@ export const MembershipEditorModal: React.FC<Props> = ({ className }) => {
     await toast.promise(
       updateProperty({
         variables: { input },
+        update: (cache, result) => {
+          const communityId = result.data?.propertyModify.community.id;
+          if (communityId) {
+            evictCache(cache, 'CommunityStat', communityId);
+          }
+        },
       }),
       {
         pending: 'Saving...',
