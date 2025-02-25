@@ -33,6 +33,7 @@
   ],
   "exclude": ["node_modules", "./cypress.config.ts", "cypress"],
   "ts-node": {
+    "files": true,
     "compilerOptions": {
       "moduleResolution": "node",
       "module": "CommonJS"
