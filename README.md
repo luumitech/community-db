@@ -97,6 +97,16 @@ yarn cy:open
 # in the appropriate directory
 ```
 
+## Updating App logo
+
+The `favicon.ico` and other related app logo files can be generated via this command:
+
+```sh
+yarn gen-favicon -i ./public/image/community-db-logo.png -o ./src/app
+```
+
+Note: The Google OAuth consent screen also make use of the app logo, and should be updated accordingly if this is changed.
+
 ## Prerequiste for deploying to Microsoft Azure
 
 In [Azure Portal](https://portal.azure.com):
