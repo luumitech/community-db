@@ -67,7 +67,7 @@ export const Header: React.FC<Props> = ({}) => {
             color="foreground"
           >
             <div className="w-[36px]">
-              <AppLogo priority width={36} height={36} />
+              <AppLogo priority size={36} />
             </div>
             {/* Hide appTitle in small layout */}
             <span className="max-sm:hidden max-w-min leading-5 whitespace-normal text-center text-balance font-bold">

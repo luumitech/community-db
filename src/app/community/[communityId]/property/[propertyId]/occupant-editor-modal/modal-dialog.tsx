@@ -1,15 +1,15 @@
+import React from 'react';
+import { useFieldArray } from '~/custom-hooks/hook-form';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
+import { Icon } from '~/view/base/icon';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import React from 'react';
-import { useFieldArray } from '~/custom-hooks/hook-form';
-import { Button } from '~/view/base/button';
-import { Form } from '~/view/base/form';
-import { Icon } from '~/view/base/icon';
+} from '~/view/base/modal';
 import { usePageContext } from '../page-context';
 import { Editor } from './editor';
 import {
@@ -40,7 +40,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -53,39 +53,43 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
       size="5xl"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      confirmation={isDirty}
       placement="top-center"
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Membership Contact Information</ModalHeader>
-          <ModalBody>
-            <Editor fieldArrayMethods={occupantMethods} />
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              endContent={<Icon icon="person-add" />}
-              color="primary"
-              variant="bordered"
-              onPress={() => occupantMethods.append(occupantDefault)}
-            >
-              Add Contact
-            </Button>
-            <div className="flex-grow" />
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Save
-            </Button>
-          </ModalFooter>
+          {(closeModal) => (
+            <>
+              <ModalHeader>Membership Contact Information</ModalHeader>
+              <ModalBody>
+                <Editor fieldArrayMethods={occupantMethods} />
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  endContent={<Icon icon="person-add" />}
+                  color="primary"
+                  variant="bordered"
+                  onPress={() => occupantMethods.append(occupantDefault)}
+                >
+                  Add Contact
+                </Button>
+                <div className="flex-grow" />
+                <Button variant="bordered" onPress={closeModal}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isDisabled={!formState.isDirty || pending}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Form>
     </Modal>

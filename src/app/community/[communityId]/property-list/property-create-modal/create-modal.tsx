@@ -1,14 +1,14 @@
+import React from 'react';
+import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import React from 'react';
-import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
-import { Button } from '~/view/base/button';
-import { Form } from '~/view/base/form';
+} from '~/view/base/modal';
 import {
   useHookFormContext,
   type InputData,
@@ -31,7 +31,7 @@ export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -48,26 +48,29 @@ export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Create Property</ModalHeader>
-          <ModalBody>
-            <AddressEditorForm />
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              type="submit"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Create
-            </Button>
-          </ModalFooter>
+          {(closeModal) => (
+            <>
+              <ModalHeader>Create Property</ModalHeader>
+              <ModalBody>
+                <AddressEditorForm />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="bordered" onPress={closeModal}>
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  type="submit"
+                  isDisabled={!formState.isDirty || pending}
+                >
+                  Create
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Form>
     </Modal>

@@ -2,6 +2,7 @@
 import {
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Divider,
   Listbox,
@@ -17,7 +18,8 @@ export { type ListboxItemProps } from '@heroui/react';
 
 interface Props extends Omit<ListboxProps, 'children'> {
   className?: string;
-  header?: string;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
   items: ListboxItemProps[];
   loading?: boolean;
 }
@@ -25,6 +27,7 @@ interface Props extends Omit<ListboxProps, 'children'> {
 export const ListBox: React.FC<Props> = ({
   className,
   header,
+  footer,
   items,
   loading,
   ...listBoxProps
@@ -34,9 +37,7 @@ export const ListBox: React.FC<Props> = ({
       <Card className="w-80 md:w-96">
         {!!header && (
           <>
-            <CardHeader>
-              <p className="text-lg">{header}</p>
-            </CardHeader>
+            <CardHeader className="text-lg">{header}</CardHeader>
             <Divider />
           </>
         )}
@@ -53,6 +54,7 @@ export const ListBox: React.FC<Props> = ({
             </Listbox>
           )}
         </CardBody>
+        {!!footer && <CardFooter>{footer}</CardFooter>}
       </Card>
     </div>
   );

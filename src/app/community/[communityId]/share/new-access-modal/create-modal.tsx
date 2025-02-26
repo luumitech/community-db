@@ -1,14 +1,14 @@
+import { UseDisclosureReturn } from '@heroui/use-disclosure';
+import React from 'react';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import { UseDisclosureReturn } from '@heroui/use-disclosure';
-import React from 'react';
-import { Button } from '~/view/base/button';
-import { Form } from '~/view/base/form';
+} from '~/view/base/modal';
 import { EmailEditor } from './email-editor';
 import { RoleEditor } from './role-editor';
 import { InputData, useHookFormContext } from './use-hook-form';
@@ -29,7 +29,7 @@ export const CreateModal: React.FC<Props> = ({ disclosure, onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -42,31 +42,35 @@ export const CreateModal: React.FC<Props> = ({ disclosure, onSave }) => {
       size="5xl"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      confirmation={isDirty}
       placement="top-center"
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Add User To Access List</ModalHeader>
-          <ModalBody>
-            <EmailEditor />
-            <RoleEditor />
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Share
-            </Button>
-          </ModalFooter>
+          {(closeModal) => (
+            <>
+              <ModalHeader>Add User To Access List</ModalHeader>
+              <ModalBody>
+                <EmailEditor />
+                <RoleEditor />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="bordered" onPress={closeModal}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isDisabled={!formState.isDirty || pending}
+                >
+                  Share
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Form>
     </Modal>

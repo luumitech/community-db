@@ -27,7 +27,7 @@ export const Hero: React.FC<Props> = ({ className }) => {
             'bg-opacity-80 bg-background rounded-xl p-5 sm:p-10'
           )}
         >
-          <AppLogo width={96} height={96} />
+          <AppLogo size={96} />
           <h1 className="text-5xl font-extrabold">{appTitle}</h1>
           <p className="text-2xl">
             A simple and secure way to track, update, and organize member
