@@ -1,15 +1,15 @@
+import { UseDisclosureReturn } from '@heroui/use-disclosure';
+import React from 'react';
+import { getFragment } from '~/graphql/generated';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import { UseDisclosureReturn } from '@heroui/use-disclosure';
-import React from 'react';
-import { getFragment } from '~/graphql/generated';
-import { Button } from '~/view/base/button';
-import { Form } from '~/view/base/form';
+} from '~/view/base/modal';
 import type { AccessEntry } from '../_type';
 import { RoleEditor } from './role-editor';
 import { InputData, ModifyFragment, useHookFormContext } from './use-hook-form';
@@ -36,7 +36,7 @@ export const ModifyModal: React.FC<Props> = ({
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -49,30 +49,34 @@ export const ModifyModal: React.FC<Props> = ({
       size="5xl"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      confirmation={isDirty}
       placement="top-center"
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
-          <ModalBody>
-            <RoleEditor />
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Save
-            </Button>
-          </ModalFooter>
+          {(closeModal) => (
+            <>
+              <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
+              <ModalBody>
+                <RoleEditor />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="bordered" onPress={closeModal}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isDisabled={!formState.isDirty || pending}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Form>
     </Modal>

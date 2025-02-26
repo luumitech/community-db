@@ -1,12 +1,12 @@
+import React from 'react';
+import { Button } from '~/view/base/button';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import React from 'react';
-import { Button } from '~/view/base/button';
+} from '~/view/base/modal';
 import { usePageContext } from '../page-context';
 
 interface Props {
@@ -24,7 +24,7 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
       startTransition(async () => {
         try {
           await onDelete();
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -41,32 +41,33 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <ModalContent>
-        <ModalHeader>Delete Property</ModalHeader>
-        <ModalBody>
-          <div>
-            This will delete property &apos;{property.address}&apos; and all
-            data within it.
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="bordered" onPress={onClose}>
-            Cancel
-          </Button>
-          <Button
-            color="danger"
-            confirmation
-            confirmationArg={{
-              bodyText: 'Are you sure?',
-            }}
-            isDisabled={pending}
-            onPress={onSubmit}
-          >
-            Delete
-          </Button>
-        </ModalFooter>
+        {(closeModal) => (
+          <>
+            <ModalHeader>Delete Property</ModalHeader>
+            <ModalBody>
+              <div>
+                This will delete property &apos;{property.address}&apos; and all
+                data within it.
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="bordered" onPress={closeModal}>
+                Cancel
+              </Button>
+              <Button
+                color="danger"
+                confirmation
+                confirmationArg={{ bodyText: 'Are you sure?' }}
+                isDisabled={pending}
+                onPress={onSubmit}
+              >
+                Delete
+              </Button>
+            </ModalFooter>
+          </>
+        )}
       </ModalContent>
     </Modal>
   );

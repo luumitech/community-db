@@ -1,13 +1,13 @@
+import React from 'react';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import React from 'react';
-import { Button } from '~/view/base/button';
-import { Form } from '~/view/base/form';
+} from '~/view/base/modal';
 import { FilterSelect } from './filter-select';
 import { MembershipInfoEditor } from './membership-info-editor';
 import {
@@ -33,7 +33,7 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -46,31 +46,35 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
       size="5xl"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      confirmation={isDirty}
       placement="top-center"
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Batch Property Modify</ModalHeader>
-          <ModalBody>
-            <FilterSelect className="mb-4" />
-            <MembershipInfoEditor />
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="bordered" confirmation={isDirty} onPress={onClose}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              isDisabled={!formState.isDirty || pending}
-            >
-              Save
-            </Button>
-          </ModalFooter>
+          {(closeModal) => (
+            <>
+              <ModalHeader>Batch Property Modify</ModalHeader>
+              <ModalBody>
+                <FilterSelect className="mb-4" />
+                <MembershipInfoEditor />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="bordered" onPress={closeModal}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isDisabled={!formState.isDirty || pending}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Form>
     </Modal>

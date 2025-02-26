@@ -1,14 +1,14 @@
+import React from 'react';
+import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import React from 'react';
-import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
-import { Button } from '~/view/base/button';
-import { Form } from '~/view/base/form';
+} from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { usePageContext } from '../page-context';
 import { useHookFormContext, type InputData } from './use-hook-form';
@@ -30,7 +30,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose?.();
+          onClose();
         } catch (err) {
           // error handled by parent
         }
@@ -43,41 +43,41 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
       size="5xl"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      confirmation={isDirty}
       placement="top-center"
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
-      hideCloseButton
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          <ModalHeader>Edit Property</ModalHeader>
-          <ModalBody>
-            <AddressEditorForm />
-          </ModalBody>
-          <ModalFooter className="flex items-center justify-between">
-            <LastModified
-              className="text-right"
-              updatedAt={property.updatedAt}
-              updatedBy={property.updatedBy}
-            />
-            <div className="flex items-center gap-2">
-              <Button
-                variant="bordered"
-                confirmation={isDirty}
-                onPress={onClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                color="primary"
-                isDisabled={!formState.isDirty || pending}
-              >
-                Save
-              </Button>
-            </div>
-          </ModalFooter>
+          {(closeModal) => (
+            <>
+              <ModalHeader>Edit Property</ModalHeader>
+              <ModalBody>
+                <AddressEditorForm />
+              </ModalBody>
+              <ModalFooter className="flex items-center justify-between">
+                <LastModified
+                  className="text-right"
+                  updatedAt={property.updatedAt}
+                  updatedBy={property.updatedBy}
+                />
+                <div className="flex items-center gap-2">
+                  <Button variant="bordered" onPress={closeModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    isDisabled={!formState.isDirty || pending}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Form>
     </Modal>
