@@ -23,7 +23,7 @@ export const StartImport: React.FC<Props> = ({ className }) => {
           return validated;
         }}
         confirmationArg={{
-          bodyText: (
+          body: (
             <p>
               Importing will wipe existing entries in current database.
               <br />

@@ -54,7 +54,8 @@ export const Modal: React.FC<ModalProps> = ({
       if (showDialog) {
         open({
           ...confirmationArg,
-          onConfirm: async () => {
+          onConfirm: () => {
+            confirmationArg?.onConfirm?.();
             onOpenChange?.(modalIsOpen);
           },
         });

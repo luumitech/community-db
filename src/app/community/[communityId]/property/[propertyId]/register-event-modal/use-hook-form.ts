@@ -54,7 +54,7 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 /**
- * Attemp to find event given year and eventName
+ * Attempt to find event given year and eventName
  *
  * - Returns year (converted yearStr to number)
  * - Returns membership (if membership year is found)

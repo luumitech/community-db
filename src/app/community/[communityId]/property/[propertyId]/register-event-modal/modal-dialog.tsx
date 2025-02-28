@@ -26,11 +26,11 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
   const { disclosure, property } = registerEvent;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formState, handleSubmit, watch } = useHookFormContext();
-  const canRegister = watch('hidden.canRegister');
-  const isMember = watch('hidden.isMember');
-  const memberYear = watch('membership.year');
-  const eventName = watch('event.eventName');
+  const { formState, handleSubmit, getValues } = useHookFormContext();
+  const canRegister = getValues('hidden.canRegister');
+  const isMember = getValues('hidden.isMember');
+  const memberYear = getValues('membership.year');
+  const eventName = getValues('event.eventName');
   const { isDirty } = formState;
 
   const canSave = React.useMemo(() => {
@@ -61,7 +61,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
       confirmation={canSave}
       {...(canRegister && {
         confirmationArg: {
-          bodyText: (
+          body: (
             <p>
               This event has not been registered.
               <br />

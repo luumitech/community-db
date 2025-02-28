@@ -16,31 +16,52 @@ interface Props {}
  */
 export const ConfirmationModal: React.FC<Props> = () => {
   const { confirmationModal } = useAppContext();
-  const { disclosure, bodyText, onConfirm, onCancel } =
-    confirmationModal.getModalArgs();
+  const { disclosure, modalArg } = confirmationModal;
+  const { modalProps, content, body, onConfirm, onCancel } = modalArg ?? {};
 
   return (
     <Modal
+      classNames={{
+        base: 'border-warning border-[2px]',
+      }}
       size="xs"
       isOpen={disclosure.isOpen}
       onOpenChange={disclosure.onOpenChange}
       isDismissable={false}
       isKeyboardDismissDisabled={true}
       hideCloseButton
-      classNames={{
-        base: 'border-warning border-[2px]',
-      }}
+      {...modalProps}
     >
       <ModalContent>
-        <ModalBody>{bodyText ?? <p>Discard Changes?</p>}</ModalBody>
-        <ModalFooter>
-          <Button variant="bordered" onPress={onCancel}>
-            Cancel
-          </Button>
-          <Button color="primary" onPress={onConfirm}>
-            OK
-          </Button>
-        </ModalFooter>
+        {(closeModal) =>
+          content ? (
+            content({ closeModal, onConfirm, onCancel })
+          ) : (
+            <>
+              <ModalBody>{body ?? 'Discard Changes?'}</ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="bordered"
+                  onPress={(evt) => {
+                    onCancel?.();
+                    closeModal();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={(evt) => {
+                    onConfirm?.();
+                    closeModal();
+                  }}
+                >
+                  OK
+                </Button>
+              </ModalFooter>
+            </>
+          )
+        }
       </ModalContent>
     </Modal>
   );

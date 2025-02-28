@@ -24,17 +24,17 @@ export interface SelectProps<T extends object = object>
 /**
  * Coerce string or numeric type to string
  *
- * Returns null if:
+ * Returns empty string if:
  *
  * - Input is a number but a NaN
  * - Input is a empty string
  */
 function coerceToString(input: string | number) {
   if (typeof input === 'number') {
-    return isNaN(input) ? null : input.toString();
+    return isNaN(input) ? '' : input.toString().trim();
   }
 
-  return R.isEmpty(input) ? null : input;
+  return R.isEmpty(input) ? '' : input.trim();
 }
 
 export function Select<T extends object>(props: SelectProps<T>) {
@@ -67,8 +67,8 @@ export function Select<T extends object>(props: SelectProps<T>) {
 
           const result = Array.isArray(values)
             ? values.map(coerceToString)
-            : [coerceToString(values)];
-          return result.filter((v): v is string => v !== null);
+            : coerceToString(values).split(',');
+          return result.filter((v): v is string => !!v);
         },
         []
       );

@@ -7,6 +7,7 @@ import * as occupantEditorModal from './occupant-editor-modal';
 import * as propertyDeleteModal from './property-delete-modal';
 import * as propertyModifyModal from './property-modify-modal';
 import * as registerEventModal from './register-event-modal';
+import { useSendMailModal } from './send-mail-modal';
 
 type ContextT = Readonly<{
   community: CommunityEntry;
@@ -17,6 +18,7 @@ type ContextT = Readonly<{
   propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
   registerEvent: registerEventModal.UseHookFormWithDisclosureResult;
   communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
+  sendMail: ReturnType<typeof useSendMailModal>;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -44,6 +46,7 @@ export function PageProvider({ community, property, ...props }: Props) {
   const registerEvent = registerEventModal.useHookFormWithDisclosure(property);
   const communityModify =
     communityModifyModal.useHookFormWithDisclosure(community);
+  const sendMail = useSendMailModal();
 
   return (
     <Context.Provider
@@ -56,6 +59,7 @@ export function PageProvider({ community, property, ...props }: Props) {
         propertyDelete,
         registerEvent,
         communityModify,
+        sendMail,
       }}
       {...props}
     />

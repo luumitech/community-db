@@ -10,7 +10,9 @@ import {
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
+import * as R from 'remeda';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appTitle } from '~/lib/env-var';
 import { tsr } from '~/tsr';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
@@ -24,30 +26,38 @@ export default function ContactUs() {
   const { executeRecaptcha } = useReCaptcha();
   const searchParams = useSearchParams();
   const title = searchParams.get('title') ?? 'Contact Us';
-  const subject = searchParams.get('subject') ?? 'General Inquiry';
-  const mailSend = tsr.mail.send.useMutation({
-    onSuccess: () => {
-      toast.success('Thank you. Our team will contact you shortly.');
-      router.back();
-    },
-  });
-  const { formMethods } = useHookForm(subject);
+  const defaultSubject = searchParams.get('subject') ?? 'General Inquiry';
+  const mailSend = tsr.mail.send.useMutation();
+  const { formMethods } = useHookForm(defaultSubject);
   const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const onSend = React.useCallback(
     async (input: InputData) => {
-      const { message, ...other } = input;
+      const { subject, contactName, contactEmail } = input;
       const recaptchaToken = await executeRecaptcha('submit');
-      mailSend.mutate({
-        query: {
-          ...other,
-          recaptchaToken,
+      const message = [
+        `Source: ${appTitle}`,
+        'Contact Info:',
+        `Name: ${R.isEmpty(contactName) ? '(n/a)' : contactName}`,
+        `Email: ${contactEmail}`,
+        '',
+        input.message,
+      ].join('\n');
+      mailSend.mutate(
+        {
+          query: { subject },
+          body: { recaptchaToken, to: [], message },
         },
-        body: { message },
-      });
+        {
+          onSuccess: () => {
+            toast.success('Thank you. Our team will contact you shortly.');
+            router.back();
+          },
+        }
+      );
     },
-    [mailSend, executeRecaptcha]
+    [executeRecaptcha, mailSend, router]
   );
 
   return (

@@ -59,7 +59,8 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
         if (showDialog) {
           open({
             ...confirmationArg,
-            onConfirm: async () => {
+            onConfirm: () => {
+              confirmationArg?.onConfirm?.();
               switch (type) {
                 case 'submit':
                   {

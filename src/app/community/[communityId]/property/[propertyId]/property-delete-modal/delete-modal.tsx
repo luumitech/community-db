@@ -59,7 +59,7 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
               <Button
                 color="danger"
                 confirmation
-                confirmationArg={{ bodyText: 'Are you sure?' }}
+                confirmationArg={{ body: 'Are you sure?' }}
                 isDisabled={pending}
                 onPress={onSubmit}
               >
