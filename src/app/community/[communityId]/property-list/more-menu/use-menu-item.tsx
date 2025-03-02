@@ -1,4 +1,3 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
 import { Icon } from '~/view/base/icon';
@@ -6,10 +5,10 @@ import { type MenuItemEntry } from '~/view/header';
 
 interface MenuItemOpt {
   communityId: string;
-  communityModifyDisclosure: UseDisclosureReturn;
-  batchPropertyModifyDisclosure: UseDisclosureReturn;
-  communityDeleteDisclosure: UseDisclosureReturn;
-  propertyCreateDisclosure: UseDisclosureReturn;
+  communityModifyOpen: () => void;
+  batchPropertyModifyOpen: () => void;
+  communityDeleteOpen: () => void;
+  propertyCreateOpen: () => void;
 }
 
 /** Configure all possible menu items */
@@ -22,24 +21,24 @@ export function useMenuItem(opt: MenuItemOpt) {
       ...baseMenuItems,
       {
         key: 'communityModify',
-        onPress: opt.communityModifyDisclosure.onOpen,
+        onPress: opt.communityModifyOpen,
         endContent: <Icon icon="settings" />,
         children: 'Modify Community',
       },
       {
         key: 'batchPropertyModify',
-        onPress: opt.batchPropertyModifyDisclosure.onOpen,
+        onPress: opt.batchPropertyModifyOpen,
         children: 'Batch Modify Property',
       },
       {
         key: 'propertyCreate',
-        onPress: opt.propertyCreateDisclosure.onOpen,
+        onPress: opt.propertyCreateOpen,
         children: 'Create Property',
       },
       {
         key: 'communityDelete',
         className: 'text-danger',
-        onPress: opt.communityDeleteDisclosure.onOpen,
+        onPress: opt.communityDeleteOpen,
         children: 'Delete Community',
       },
     ];

@@ -1,16 +1,21 @@
 import { useReCaptcha } from 'next-recaptcha-v3';
 import React from 'react';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { tsr } from '~/tsr';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog, type ModalArg } from './modal-dialog';
 import { type InputData } from './use-hook-form';
 
-interface Props {}
+export { type ModalArg } from './modal-dialog';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
-export const SendMailModal: React.FC<Props> = ({}) => {
-  const { sendMail } = usePageContext();
-  const { modalArg, disclosure } = sendMail;
+interface Props {
+  modalControl: ModalControl;
+}
+
+export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
+  const { modalArg, disclosure } = modalControl;
   const { executeRecaptcha } = useReCaptcha();
   const mailSend = tsr.mail.send.useMutation();
 

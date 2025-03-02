@@ -3,26 +3,36 @@ import { Divider } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
-import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
+import { CommunityModifyModal } from '~/community/[communityId]/community-modify-modal';
 import { appPath } from '~/lib/app-path';
 import { LastModified } from '~/view/last-modified';
 import { MembershipDisplay } from './membership-display';
-import * as membershipEditorModal from './membership-editor-modal';
+import { MembershipEditorModal } from './membership-editor-modal';
 import { MoreMenu } from './more-menu';
 import { OccupantDisplay } from './occupant-display';
-import * as occupantEditorModal from './occupant-editor-modal';
+import { OccupantEditorModal } from './occupant-editor-modal';
 import { usePageContext } from './page-context';
-import * as propertyDeleteModal from './property-delete-modal';
+import { PropertyDeleteModal } from './property-delete-modal';
 import { PropertyDisplay } from './property-display';
-import * as propertyModifyModal from './property-modify-modal';
-import * as registerEventModal from './register-event-modal';
+import { PropertyModifyModal } from './property-modify-modal';
+import { RegisterEventModal } from './register-event-modal';
 import { SendMailModal } from './send-mail-modal';
 
 interface Props {}
 
 export const PageContent: React.FC<Props> = (props) => {
   const router = useRouter();
-  const { property, community, communityModify } = usePageContext();
+  const {
+    property,
+    community,
+    propertyModify,
+    membershipEditor,
+    occupantEditor,
+    propertyDelete,
+    registerEvent,
+    communityModify,
+    sendMail,
+  } = usePageContext();
   const routerCalled = React.useRef(false);
 
   const onSearchChanged = React.useCallback(() => {
@@ -47,13 +57,13 @@ export const PageContent: React.FC<Props> = (props) => {
         updatedAt={property.updatedAt}
         updatedBy={property.updatedBy}
       />
-      <propertyModifyModal.PropertyModifyModal />
-      <membershipEditorModal.MembershipEditorModal />
-      <occupantEditorModal.OccupantEditorModal />
-      <propertyDeleteModal.PropertyDeleteModal />
-      <registerEventModal.RegisterEventModal />
-      <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
-      <SendMailModal />
+      <PropertyModifyModal modalControl={propertyModify} />
+      <MembershipEditorModal modalControl={membershipEditor} />
+      <OccupantEditorModal modalControl={occupantEditor} />
+      <PropertyDeleteModal modalControl={propertyDelete} />
+      <RegisterEventModal modalControl={registerEvent} />
+      <CommunityModifyModal modalControl={communityModify} />
+      <SendMailModal modalControl={sendMail} />
     </div>
   );
 };

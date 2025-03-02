@@ -1,11 +1,16 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
-import { ModifyModal } from './modify-modal';
+import { ModifyModal, type ModalArg } from './modify-modal';
 import { InputData } from './use-hook-form';
+
+export { type ModalArg } from './modify-modal';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyModify($input: PropertyModifyInput!) {
@@ -17,12 +22,14 @@ const PropertyMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {}
+interface Props {
+  modalControl: ModalControl;
+}
 
-export const PropertyModifyModal: React.FC<Props> = (props) => {
+export const PropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { community, propertyModify } = usePageContext();
-  const { modalArg, disclosure } = propertyModify;
+  const { community } = usePageContext();
+  const { modalArg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
@@ -48,9 +55,5 @@ export const PropertyModifyModal: React.FC<Props> = (props) => {
     return null;
   }
 
-  return (
-    <div>
-      <ModifyModal {...modalArg} disclosure={disclosure} onSave={onSave} />
-    </div>
-  );
+  return <ModifyModal {...modalArg} disclosure={disclosure} onSave={onSave} />;
 };

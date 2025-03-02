@@ -1,11 +1,16 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog, type ModalArg } from './modal-dialog';
 import { type InputData } from './use-hook-form';
+
+export { type ModalArg } from './modal-dialog';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const RegisterEventMutation = graphql(/* GraphQL */ `
   mutation registerEvent($input: RegisterEventInput!) {
@@ -31,13 +36,13 @@ const RegisterEventMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: string;
+  modalControl: ModalControl;
 }
 
-export const RegisterEventModal: React.FC<Props> = ({ className }) => {
+export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(RegisterEventMutation);
-  const { registerEvent, sendMail } = usePageContext();
-  const { modalArg, disclosure } = registerEvent;
+  const { modalArg, disclosure } = modalControl;
+  const { sendMail } = usePageContext();
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -81,9 +86,5 @@ export const RegisterEventModal: React.FC<Props> = ({ className }) => {
     return null;
   }
 
-  return (
-    <div className={className}>
-      <ModalDialog {...modalArg} disclosure={disclosure} onSave={onSave} />
-    </div>
-  );
+  return <ModalDialog {...modalArg} disclosure={disclosure} onSave={onSave} />;
 };

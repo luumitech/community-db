@@ -1,10 +1,14 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog, type ModalArg } from './modal-dialog';
 import { InputData } from './use-hook-form';
+
+export { type ModalArg } from './modal-dialog';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const OccupantMutation = graphql(/* GraphQL */ `
   mutation occupantModify($input: PropertyModifyInput!) {
@@ -17,12 +21,11 @@ const OccupantMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: string;
+  modalControl: ModalControl;
 }
 
-export const OccupantEditorModal: React.FC<Props> = ({ className }) => {
-  const { occupantEditor } = usePageContext();
-  const { modalArg, disclosure } = occupantEditor;
+export const OccupantEditorModal: React.FC<Props> = ({ modalControl }) => {
+  const { modalArg, disclosure } = modalControl;
   const [updateProperty] = useMutation(OccupantMutation);
 
   const onSave = async (input: InputData) => {
@@ -41,9 +44,5 @@ export const OccupantEditorModal: React.FC<Props> = ({ className }) => {
     return null;
   }
 
-  return (
-    <div className={className}>
-      <ModalDialog {...modalArg} disclosure={disclosure} onSave={onSave} />
-    </div>
-  );
+  return <ModalDialog {...modalArg} disclosure={disclosure} onSave={onSave} />;
 };

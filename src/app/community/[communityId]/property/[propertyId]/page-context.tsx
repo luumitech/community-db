@@ -2,25 +2,23 @@ import React from 'react';
 import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
 import { useModalArg } from '~/custom-hooks/modal-arg';
 import { CommunityEntry, PropertyEntry } from './_type';
-import * as membershipEditorModal from './membership-editor-modal/modal-dialog';
-import * as occupantEditorModal from './occupant-editor-modal/modal-dialog';
-import * as propertyDeleteModal from './property-delete-modal/delete-modal';
-import * as propertyModifyModal from './property-modify-modal/modify-modal';
-import * as registerEventModal from './register-event-modal/modal-dialog';
-import * as sendMailModal from './send-mail-modal/modal-dialog';
+import * as membershipEditorModal from './membership-editor-modal';
+import * as occupantEditorModal from './occupant-editor-modal';
+import * as propertyDeleteModal from './property-delete-modal';
+import * as propertyModifyModal from './property-modify-modal';
+import * as registerEventModal from './register-event-modal';
+import * as sendMailModal from './send-mail-modal';
 
 type ContextT = Readonly<{
   community: CommunityEntry;
   property: PropertyEntry;
-  occupantEditor: ReturnType<typeof useModalArg<occupantEditorModal.ModalArg>>;
-  propertyModify: ReturnType<typeof useModalArg<propertyModifyModal.ModalArg>>;
-  membershipEditor: ReturnType<
-    typeof useModalArg<membershipEditorModal.ModalArg>
-  >;
-  propertyDelete: ReturnType<typeof useModalArg<propertyDeleteModal.ModalArg>>;
-  registerEvent: ReturnType<typeof useModalArg<registerEventModal.ModalArg>>;
-  communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
-  sendMail: ReturnType<typeof useModalArg<sendMailModal.ModalArg>>;
+  occupantEditor: occupantEditorModal.ModalControl;
+  propertyModify: propertyModifyModal.ModalControl;
+  membershipEditor: membershipEditorModal.ModalControl;
+  propertyDelete: propertyDeleteModal.ModalControl;
+  registerEvent: registerEventModal.ModalControl;
+  communityModify: communityModifyModal.ModalControl;
+  sendMail: sendMailModal.ModalControl;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -33,14 +31,13 @@ interface Props {
 }
 
 export function PageProvider({ community, property, ...props }: Props) {
-  const occupantEditor = useModalArg<occupantEditorModal.ModalArg>();
-  const propertyModify = useModalArg<propertyModifyModal.ModalArg>();
-  const membershipEditor = useModalArg<membershipEditorModal.ModalArg>();
-  const propertyDelete = useModalArg<propertyDeleteModal.ModalArg>();
-  const registerEvent = useModalArg<registerEventModal.ModalArg>();
-  const communityModify =
-    communityModifyModal.useHookFormWithDisclosure(community);
-  const sendMail = useModalArg<sendMailModal.ModalArg>();
+  const occupantEditor = occupantEditorModal.useModalControl();
+  const propertyModify = propertyModifyModal.useModalControl();
+  const membershipEditor = membershipEditorModal.useModalControl();
+  const propertyDelete = propertyDeleteModal.useModalControl();
+  const registerEvent = registerEventModal.useModalControl();
+  const communityModify = communityModifyModal.useModalControl();
+  const sendMail = sendMailModal.useModalControl();
 
   return (
     <Context.Provider

@@ -1,11 +1,16 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
-import { DeleteModal } from './delete-modal';
+import { DeleteModal, type ModalArg } from './delete-modal';
+
+export { type ModalArg } from './delete-modal';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyDelete($id: String!) {
@@ -15,13 +20,15 @@ const PropertyMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {}
+interface Props {
+  modalControl: ModalControl;
+}
 
-export const PropertyDeleteModal: React.FC<Props> = (props) => {
+export const PropertyDeleteModal: React.FC<Props> = ({ modalControl }) => {
   const router = useRouter();
   const [deleteProperty] = useMutation(PropertyMutation);
-  const { community, property, propertyDelete } = usePageContext();
-  const { modalArg, disclosure } = propertyDelete;
+  const { community, property } = usePageContext();
+  const { modalArg, disclosure } = modalControl;
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
@@ -56,8 +63,6 @@ export const PropertyDeleteModal: React.FC<Props> = (props) => {
   }
 
   return (
-    <div>
-      <DeleteModal {...modalArg} disclosure={disclosure} onDelete={onDelete} />
-    </div>
+    <DeleteModal {...modalArg} disclosure={disclosure} onDelete={onDelete} />
   );
 };

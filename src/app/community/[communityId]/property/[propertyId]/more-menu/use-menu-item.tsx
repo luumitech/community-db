@@ -43,7 +43,7 @@ export function useMenuItem() {
       },
       {
         key: 'communityModify',
-        onPress: communityModify.disclosure.onOpen,
+        onPress: () => communityModify.open({ community }),
         endContent: <Icon icon="settings" />,
         children: 'Modify Community',
       },

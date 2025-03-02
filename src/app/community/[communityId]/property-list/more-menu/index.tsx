@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import * as GQL from '~/graphql/generated/graphql';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
 import * as communityModifyModal from '../../community-modify-modal';
@@ -9,17 +10,13 @@ import * as propertyCreateModal from '../property-create-modal';
 import { useMenuItem } from './use-menu-item';
 
 interface Props {
-  community: batchPropertyModifyModal.BatchPropertyModifyFragmentType &
-    communityDeleteModal.DeleteFragmentType &
-    communityModifyModal.ModifyFragmentType &
-    propertyCreateModal.CreateFragmentType;
+  community: GQL.CommunityFromIdQuery['communityFromId'];
 }
 
 export const MoreMenu: React.FC<Props> = ({ community }) => {
   const { canEdit, isAdmin } = useAppContext();
 
-  const communityModify =
-    communityModifyModal.useHookFormWithDisclosure(community);
+  const communityModify = communityModifyModal.useModalControl();
   const batchPropertyModify =
     batchPropertyModifyModal.useHookFormWithDisclosure(community);
   const propertyCreate =
@@ -28,11 +25,11 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
     communityDeleteModal.useHookFormWithDisclosure(community);
 
   const menuItems = useMenuItem({
-    communityId: communityModify.community.id,
-    communityModifyDisclosure: communityModify.disclosure,
-    batchPropertyModifyDisclosure: batchPropertyModify.disclosure,
-    communityDeleteDisclosure: communityDelete.disclosure,
-    propertyCreateDisclosure: propertyCreate.disclosure,
+    communityId: community.id,
+    communityModifyOpen: () => communityModify.open({ community }),
+    batchPropertyModifyOpen: () => batchPropertyModify.disclosure.onOpen(),
+    communityDeleteOpen: () => communityDelete.disclosure.onOpen(),
+    propertyCreateOpen: () => propertyCreate.disclosure.onOpen(),
   });
 
   return (
@@ -58,7 +55,9 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           'communityShare',
         ]}
       />
-      <communityModifyModal.CommunityModifyModal hookForm={communityModify} />
+      <communityModifyModal.CommunityModifyModal
+        modalControl={communityModify}
+      />
       <batchPropertyModifyModal.BatchPropertyModifyModal
         hookForm={batchPropertyModify}
       />
