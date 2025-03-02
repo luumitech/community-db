@@ -38,7 +38,7 @@ export function useMenuItem() {
       {
         key: 'deleteProperty',
         className: 'text-danger',
-        onPress: propertyDelete.disclosure.onOpen,
+        onPress: () => propertyDelete.open({}),
         children: 'Delete Property',
       },
       {

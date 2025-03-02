@@ -1,3 +1,4 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import {
@@ -7,17 +8,19 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { usePageContext } from '../page-context';
+import { useHookForm } from './use-hook-form';
 
-interface Props {
+export interface ModalArg {}
+
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
   onDelete: () => Promise<void>;
 }
 
-export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
-  const { propertyDelete } = usePageContext();
-  const { disclosure, property } = propertyDelete;
+export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
+  const { property } = useHookForm();
 
   const onSubmit = React.useCallback(
     async () =>
@@ -60,7 +63,7 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
                 color="danger"
                 confirmation
                 confirmationArg={{ body: 'Are you sure?' }}
-                isDisabled={pending}
+                isLoading={pending}
                 onPress={onSubmit}
               >
                 Delete

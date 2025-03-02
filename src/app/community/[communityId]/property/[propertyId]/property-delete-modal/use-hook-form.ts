@@ -1,5 +1,5 @@
-import { useDisclosure } from '@heroui/react';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
+import { usePageContext } from '../page-context';
 
 const DeleteFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyDelete on Property {
@@ -9,13 +9,9 @@ const DeleteFragment = graphql(/* GraphQL */ `
 `);
 export type DeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
-export function useHookFormWithDisclosure(fragment: DeleteFragmentType) {
+export function useHookForm() {
+  const { property: fragment } = usePageContext();
   const property = getFragment(DeleteFragment, fragment);
-  const disclosure = useDisclosure();
 
-  return { disclosure, property };
+  return { property };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;

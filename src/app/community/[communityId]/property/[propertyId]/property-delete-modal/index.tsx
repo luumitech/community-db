@@ -7,9 +7,6 @@ import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
 import { DeleteModal } from './delete-modal';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
-
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyDelete($id: String!) {
     propertyDelete(id: $id) {
@@ -23,7 +20,8 @@ interface Props {}
 export const PropertyDeleteModal: React.FC<Props> = (props) => {
   const router = useRouter();
   const [deleteProperty] = useMutation(PropertyMutation);
-  const { community, property } = usePageContext();
+  const { community, property, propertyDelete } = usePageContext();
+  const { modalArg, disclosure } = propertyDelete;
 
   const onDelete = React.useCallback(async () => {
     await toast.promise(
@@ -53,5 +51,13 @@ export const PropertyDeleteModal: React.FC<Props> = (props) => {
     );
   }, [deleteProperty, property, community, router]);
 
-  return <DeleteModal onDelete={onDelete} />;
+  if (modalArg == null) {
+    return null;
+  }
+
+  return (
+    <div>
+      <DeleteModal {...modalArg} disclosure={disclosure} onDelete={onDelete} />
+    </div>
+  );
 };

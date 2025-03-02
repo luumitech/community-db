@@ -4,7 +4,7 @@ import { useModalArg } from '~/custom-hooks/modal-arg';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal/modal-dialog';
 import * as occupantEditorModal from './occupant-editor-modal/modal-dialog';
-import * as propertyDeleteModal from './property-delete-modal';
+import * as propertyDeleteModal from './property-delete-modal/delete-modal';
 import * as propertyModifyModal from './property-modify-modal/modify-modal';
 import * as registerEventModal from './register-event-modal/modal-dialog';
 import * as sendMailModal from './send-mail-modal/modal-dialog';
@@ -17,7 +17,7 @@ type ContextT = Readonly<{
   membershipEditor: ReturnType<
     typeof useModalArg<membershipEditorModal.ModalArg>
   >;
-  propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
+  propertyDelete: ReturnType<typeof useModalArg<propertyDeleteModal.ModalArg>>;
   registerEvent: ReturnType<typeof useModalArg<registerEventModal.ModalArg>>;
   communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
   sendMail: ReturnType<typeof useModalArg<sendMailModal.ModalArg>>;
@@ -36,8 +36,7 @@ export function PageProvider({ community, property, ...props }: Props) {
   const occupantEditor = useModalArg<occupantEditorModal.ModalArg>();
   const propertyModify = useModalArg<propertyModifyModal.ModalArg>();
   const membershipEditor = useModalArg<membershipEditorModal.ModalArg>();
-  const propertyDelete =
-    propertyDeleteModal.useHookFormWithDisclosure(property);
+  const propertyDelete = useModalArg<propertyDeleteModal.ModalArg>();
   const registerEvent = useModalArg<registerEventModal.ModalArg>();
   const communityModify =
     communityModifyModal.useHookFormWithDisclosure(community);
