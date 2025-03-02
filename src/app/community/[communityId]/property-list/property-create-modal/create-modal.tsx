@@ -1,5 +1,7 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -10,21 +12,29 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import {
-  useHookFormContext,
+  useHookForm,
+  type CreateFragmentType,
   type InputData,
-  type UseHookFormWithDisclosureResult,
 } from './use-hook-form';
 
-interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+export interface ModalArg {
+  community: CreateFragmentType;
+}
+
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { disclosure } = hookForm;
+export const CreateModal: React.FC<Props> = ({
+  community: fragment,
+  disclosure,
+  onSave,
+}) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { handleSubmit, formState } = useHookFormContext();
+  const { community, formMethods } = useHookForm(fragment);
+  const { handleSubmit, formState } = formMethods;
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -49,30 +59,33 @@ export const CreateModal: React.FC<Props> = ({ hookForm, onSave }) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <ModalContent>
-          {(closeModal) => (
-            <>
-              <ModalHeader>Create Property</ModalHeader>
-              <ModalBody>
-                <AddressEditorForm />
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="bordered" onPress={closeModal}>
-                  Cancel
-                </Button>
-                <Button
-                  color="primary"
-                  type="submit"
-                  isDisabled={!formState.isDirty || pending}
-                >
-                  Create
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Form>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(closeModal) => (
+              <>
+                <ModalHeader>Create Property</ModalHeader>
+                <ModalBody>
+                  <AddressEditorForm />
+                </ModalBody>
+                <ModalFooter>
+                  <Button variant="bordered" onPress={closeModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    isDisabled={!formState.isDirty}
+                    isLoading={pending}
+                  >
+                    Create
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Form>
+      </FormProvider>
     </Modal>
   );
 };

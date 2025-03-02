@@ -1,21 +1,17 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { CreateModal } from './create-modal';
-import {
-  type InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { CreateModal, type ModalArg } from './create-modal';
+import { type InputData } from './use-hook-form';
 
-export {
-  useHookFormWithDisclosure,
-  type CreateFragmentType,
-} from './use-hook-form';
+export { type ModalArg } from './create-modal';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyCreate($input: PropertyCreateInput!) {
@@ -30,33 +26,32 @@ const PropertyMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+  modalControl: ModalControl;
 }
 
-export const PropertyCreateModal: React.FC<Props> = ({ hookForm }) => {
+export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
   const router = useRouter();
   const [createProperty] = useMutation(PropertyMutation);
-  const { formMethods, community } = hookForm;
+  const { modalArg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
-      if (!formMethods.formState.isDirty) {
-        return;
-      }
-
       await toast.promise(
         createProperty({
           variables: { input },
           refetchQueries: [
             // Adding property require refetching property list to get the new
             // property
-            { query: CommunityFromIdDocument, variables: { id: community.id } },
+            {
+              query: CommunityFromIdDocument,
+              variables: { id: input.communityId },
+            },
           ],
           onCompleted: (result) => {
             router.push(
               appPath('property', {
                 path: {
-                  communityId: community.id,
+                  communityId: input.communityId,
                   propertyId: result.propertyCreate.id,
                 },
               })
@@ -69,12 +64,12 @@ export const PropertyCreateModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, createProperty, router, community.id]
+    [createProperty, router]
   );
 
-  return (
-    <FormProvider {...formMethods}>
-      <CreateModal hookForm={hookForm} onSave={onSave} />
-    </FormProvider>
-  );
+  if (modalArg == null) {
+    return null;
+  }
+
+  return <CreateModal {...modalArg} disclosure={disclosure} onSave={onSave} />;
 };
