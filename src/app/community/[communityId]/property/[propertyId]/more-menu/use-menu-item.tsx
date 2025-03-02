@@ -26,7 +26,7 @@ export function useMenuItem() {
       },
       {
         key: 'occupantEditor',
-        onPress: occupantEditor.disclosure.onOpen,
+        onPress: () => occupantEditor.open({}),
         children: 'Edit Member Details',
         showDivider: true,
       },

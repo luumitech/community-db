@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
+import { Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
@@ -36,7 +36,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
         {canEdit && (
           <div className="self-end">
             <ModalButton
-              onPress={occupantEditor.disclosure.onOpen}
+              onPress={() => occupantEditor.open({})}
               color="primary"
               variant="bordered"
             >

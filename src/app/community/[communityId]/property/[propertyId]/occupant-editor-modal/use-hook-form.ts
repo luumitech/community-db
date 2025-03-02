@@ -1,4 +1,3 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import {
@@ -9,6 +8,7 @@ import {
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
+import { usePageContext } from '../page-context';
 
 const OccupantEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantEditor on Property {
@@ -90,9 +90,8 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(
-  fragment: OccupantEditorFragmentType
-) {
+export function useHookForm() {
+  const { property: fragment } = usePageContext();
   const property = getFragment(OccupantEditorFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(property),
@@ -102,25 +101,9 @@ export function useHookFormWithDisclosure(
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
 
-  /**
-   * When modal is open, sync form value with latest default values derived from
-   * fragment
-   */
-  const onModalOpen = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onOpen: onModalOpen,
-  });
-
-  return { disclosure, formMethods, property };
+  return { formMethods };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();
