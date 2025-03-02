@@ -10,13 +10,8 @@ const DeleteFragment = graphql(/* GraphQL */ `
 `);
 export type DeleteFragmentType = FragmentType<typeof DeleteFragment>;
 
-export function useHookFormWithDisclosure(fragment: DeleteFragmentType) {
-  const disclosure = useDisclosure();
+export function useHookForm(fragment: DeleteFragmentType) {
   const community = getFragment(DeleteFragment, fragment);
 
-  return { disclosure, community };
+  return { community };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;

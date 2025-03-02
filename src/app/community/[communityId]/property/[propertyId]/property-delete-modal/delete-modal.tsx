@@ -8,31 +8,33 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
+import { usePageContext } from '../page-context';
 import { useHookForm } from './use-hook-form';
 
 export interface ModalArg {}
 
 interface Props extends ModalArg {
   disclosure: UseDisclosureReturn;
-  onDelete: () => Promise<void>;
+  onDelete: (communityId: string, propertyId: string) => Promise<void>;
 }
 
 export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
+  const { community } = usePageContext();
   const { property } = useHookForm();
 
   const onSubmit = React.useCallback(
     async () =>
       startTransition(async () => {
         try {
-          await onDelete();
+          await onDelete(community.id, property.id);
           onClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onDelete, onClose]
+    [onDelete, onClose, community, property]
   );
 
   return (
