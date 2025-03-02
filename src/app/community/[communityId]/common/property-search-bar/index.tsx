@@ -1,4 +1,4 @@
-import { Input, InputProps, cn } from '@heroui/react';
+import { Input, InputProps, cn, useDisclosure } from '@heroui/react';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';
@@ -8,7 +8,7 @@ import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
 import { FilterChip } from './filter-chip';
 import { FilterDrawer } from './filter-drawer';
-import { useHookFormWithDisclosure, type InputData } from './use-hook-form';
+import { useHookForm, type InputData } from './use-hook-form';
 
 interface Props extends InputProps {
   className?: string;
@@ -21,7 +21,8 @@ export const PropertySearchBar: React.FC<Props> = ({
   ...props
 }) => {
   const { communityUi } = useAppContext();
-  const { disclosure, formMethods } = useHookFormWithDisclosure();
+  const disclosure = useDisclosure();
+  const { formMethods } = useHookForm();
   const { memberYear, nonMemberYear, event } = useFilterBarContext();
 
   const setSearchText = (input?: string) => {

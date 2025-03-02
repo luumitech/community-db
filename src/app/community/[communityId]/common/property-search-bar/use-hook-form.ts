@@ -1,4 +1,3 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
@@ -27,7 +26,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure() {
+export function useHookForm() {
   const { memberYear, nonMemberYear, event } = useFilterBarContext();
   const [memberYearStr] = memberYear;
   const [nonMemberYearStr] = nonMemberYear;
@@ -39,26 +38,9 @@ export function useHookFormWithDisclosure() {
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
 
-  React.useEffect(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-
-  /** When drawer is closed, reset form value with default values */
-  const onDrawerClose = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onClose: onDrawerClose,
-  });
-
-  return { disclosure, formMethods };
+  return { formMethods };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();
