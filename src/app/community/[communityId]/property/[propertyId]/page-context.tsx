@@ -6,7 +6,7 @@ import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal';
 import * as occupantEditorModal from './occupant-editor-modal/modal-dialog';
 import * as propertyDeleteModal from './property-delete-modal';
-import * as propertyModifyModal from './property-modify-modal';
+import * as propertyModifyModal from './property-modify-modal/modify-modal';
 import * as registerEventModal from './register-event-modal/modal-dialog';
 import * as sendMailModal from './send-mail-modal/modal-dialog';
 
@@ -14,7 +14,7 @@ type ContextT = Readonly<{
   community: CommunityEntry;
   property: PropertyEntry;
   occupantEditor: ReturnType<typeof useModalArg<occupantEditorModal.ModalArg>>;
-  propertyModify: propertyModifyModal.UseHookFormWithDisclosureResult;
+  propertyModify: ReturnType<typeof useModalArg<propertyModifyModal.ModalArg>>;
   membershipEditor: membershipEditorModal.UseHookFormWithDisclosureResult;
   propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
   registerEvent: ReturnType<typeof useModalArg<registerEventModal.ModalArg>>;
@@ -35,8 +35,7 @@ export function PageProvider({ community, property, ...props }: Props) {
   const { communityUi } = useAppContext();
   const { yearSelected } = communityUi;
   const occupantEditor = useModalArg<occupantEditorModal.ModalArg>();
-  const propertyModify =
-    propertyModifyModal.useHookFormWithDisclosure(property);
+  const propertyModify = useModalArg<propertyModifyModal.ModalArg>();
   const membershipEditor = membershipEditorModal.useHookFormWithDisclosure(
     property,
     yearSelected

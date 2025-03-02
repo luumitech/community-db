@@ -7,6 +7,7 @@ import {
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
+import * as xtraArg from '~/custom-hooks/xtra-arg-context';
 import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
@@ -142,6 +143,10 @@ export function useHookForm() {
 export function useHookFormContext() {
   return useFormContext<InputData>();
 }
+
+type HookFormXtraArgs = Omit<ReturnType<typeof useHookForm>, 'formMethods'>;
+export const XtraArgProvider = xtraArg.XtraArgProvider<HookFormXtraArgs>;
+export const useXtraArgContext = xtraArg.useXtraArgContext<HookFormXtraArgs>;
 
 export type TicketListFieldArray = UseFieldArrayReturn<
   InputData,

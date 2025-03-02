@@ -32,7 +32,7 @@ export function useMenuItem() {
       },
       {
         key: 'modifyProperty',
-        onPress: propertyModify.disclosure.onOpen,
+        onPress: () => propertyModify.open({}),
         children: 'Modify Property',
       },
       {

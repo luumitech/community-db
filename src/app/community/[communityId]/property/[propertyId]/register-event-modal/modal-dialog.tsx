@@ -16,8 +16,7 @@ import {
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { EventInfoEditor } from './event-info-editor';
-import { InputData, useHookForm } from './use-hook-form';
-import { XtraProvider } from './use-xtra';
+import { InputData, XtraArgProvider, useHookForm } from './use-hook-form';
 
 export interface ModalArg {}
 
@@ -79,7 +78,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <XtraProvider {...xtraProps}>
+      <XtraArgProvider {...xtraProps}>
         <FormProvider {...formMethods}>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <ModalContent>
@@ -126,7 +125,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
             </ModalContent>
           </Form>
         </FormProvider>
-      </XtraProvider>
+      </XtraArgProvider>
     </Modal>
   );
 };

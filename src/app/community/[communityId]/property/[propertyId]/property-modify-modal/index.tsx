@@ -1,15 +1,11 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
 import { ModifyModal } from './modify-modal';
 import { InputData } from './use-hook-form';
-
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyModify($input: PropertyModifyInput!) {
@@ -26,14 +22,10 @@ interface Props {}
 export const PropertyModifyModal: React.FC<Props> = (props) => {
   const [updateProperty] = useMutation(PropertyMutation);
   const { community, propertyModify } = usePageContext();
-  const { formMethods } = propertyModify;
+  const { modalArg, disclosure } = propertyModify;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
-      if (!formMethods.formState.isDirty) {
-        return;
-      }
-
       await toast.promise(
         updateProperty({
           variables: { input },
@@ -49,12 +41,16 @@ export const PropertyModifyModal: React.FC<Props> = (props) => {
         }
       );
     },
-    [formMethods.formState, updateProperty, community]
+    [updateProperty, community]
   );
 
+  if (modalArg == null) {
+    return null;
+  }
+
   return (
-    <FormProvider {...formMethods}>
-      <ModifyModal onSave={onSave} />
-    </FormProvider>
+    <div>
+      <ModifyModal {...modalArg} disclosure={disclosure} onSave={onSave} />
+    </div>
   );
 };
