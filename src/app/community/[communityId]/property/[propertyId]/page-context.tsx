@@ -1,9 +1,8 @@
 import React from 'react';
 import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useModalArg } from '~/custom-hooks/modal-arg';
 import { CommunityEntry, PropertyEntry } from './_type';
-import * as membershipEditorModal from './membership-editor-modal';
+import * as membershipEditorModal from './membership-editor-modal/modal-dialog';
 import * as occupantEditorModal from './occupant-editor-modal/modal-dialog';
 import * as propertyDeleteModal from './property-delete-modal';
 import * as propertyModifyModal from './property-modify-modal/modify-modal';
@@ -15,7 +14,9 @@ type ContextT = Readonly<{
   property: PropertyEntry;
   occupantEditor: ReturnType<typeof useModalArg<occupantEditorModal.ModalArg>>;
   propertyModify: ReturnType<typeof useModalArg<propertyModifyModal.ModalArg>>;
-  membershipEditor: membershipEditorModal.UseHookFormWithDisclosureResult;
+  membershipEditor: ReturnType<
+    typeof useModalArg<membershipEditorModal.ModalArg>
+  >;
   propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
   registerEvent: ReturnType<typeof useModalArg<registerEventModal.ModalArg>>;
   communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
@@ -32,14 +33,9 @@ interface Props {
 }
 
 export function PageProvider({ community, property, ...props }: Props) {
-  const { communityUi } = useAppContext();
-  const { yearSelected } = communityUi;
   const occupantEditor = useModalArg<occupantEditorModal.ModalArg>();
   const propertyModify = useModalArg<propertyModifyModal.ModalArg>();
-  const membershipEditor = membershipEditorModal.useHookFormWithDisclosure(
-    property,
-    yearSelected
-  );
+  const membershipEditor = useModalArg<membershipEditorModal.ModalArg>();
   const propertyDelete =
     propertyDeleteModal.useHookFormWithDisclosure(property);
   const registerEvent = useModalArg<registerEventModal.ModalArg>();

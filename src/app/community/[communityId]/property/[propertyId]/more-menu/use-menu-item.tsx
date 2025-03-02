@@ -21,7 +21,7 @@ export function useMenuItem() {
       ...baseMenuItem,
       {
         key: 'membershipEditor',
-        onPress: membershipEditor.disclosure.onOpen,
+        onPress: () => membershipEditor.open({}),
         children: 'Edit Membership Detail',
       },
       {

@@ -1,5 +1,7 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -10,20 +12,21 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
-import { usePageContext } from '../page-context';
 import { MembershipInfoEditor } from './membership-info-editor';
-import { InputData, useHookFormContext } from './use-hook-form';
+import { InputData, useHookForm } from './use-hook-form';
 
-interface Props {
+export interface ModalArg {}
+
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ onSave }) => {
-  const { membershipEditor } = usePageContext();
-  const { property, disclosure } = membershipEditor;
+export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formState, handleSubmit } = useHookFormContext();
+  const { formMethods, property } = useHookForm();
+  const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
@@ -50,37 +53,40 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <ModalContent>
-          {(closeModal) => (
-            <>
-              <ModalHeader>Membership Detail</ModalHeader>
-              <ModalBody className="gap-4">
-                <MembershipInfoEditor property={property} />
-                <NotesEditor controlName="notes" />
-              </ModalBody>
-              <ModalFooter className="flex items-center justify-between">
-                <LastModified
-                  updatedAt={property.updatedAt}
-                  updatedBy={property.updatedBy}
-                />
-                <div className="flex items-center gap-2">
-                  <Button variant="bordered" onPress={closeModal}>
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    isDisabled={!formState.isDirty || pending}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Form>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(closeModal) => (
+              <>
+                <ModalHeader>Membership Detail</ModalHeader>
+                <ModalBody className="gap-4">
+                  <MembershipInfoEditor property={property} />
+                  <NotesEditor controlName="notes" />
+                </ModalBody>
+                <ModalFooter className="flex items-center justify-between">
+                  <LastModified
+                    updatedAt={property.updatedAt}
+                    updatedBy={property.updatedBy}
+                  />
+                  <div className="flex items-center gap-2">
+                    <Button variant="bordered" onPress={closeModal}>
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      isDisabled={!formState.isDirty}
+                      isLoading={pending}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Form>
+      </FormProvider>
     </Modal>
   );
 };
