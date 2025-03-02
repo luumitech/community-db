@@ -4,9 +4,40 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
+  type ModalProps,
 } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+
+interface ContentArg {
+  closeModal: () => void;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+}
+
+export interface ConfirmationModalArg {
+  modalProps?: Omit<ModalProps, 'children'>;
+
+  /**
+   * Specify the entire content of the Modal
+   *
+   * If used, `body` will be ignored
+   */
+  content?: (arg: ContentArg) => React.ReactNode;
+
+  /**
+   * By default, if `content` is not specified, the confirmation modal will be
+   * rendered with a default body, with cancel and OK button
+   *
+   * The body content can be customized
+   */
+  body?: React.ReactNode;
+
+  /** Callback when OK button in the confirmation dialog is pressed */
+  onConfirm?: () => void;
+  /** Callback when cancel button in the confirmation dialog is pressed */
+  onCancel?: () => void;
+}
 
 interface Props {}
 
@@ -17,7 +48,12 @@ interface Props {}
 export const ConfirmationModal: React.FC<Props> = () => {
   const { confirmationModal } = useAppContext();
   const { disclosure, modalArg } = confirmationModal;
-  const { modalProps, content, body, onConfirm, onCancel } = modalArg ?? {};
+
+  if (modalArg == null) {
+    return null;
+  }
+
+  const { modalProps, content, body, onConfirm, onCancel } = modalArg;
 
   return (
     <Modal

@@ -1,16 +1,11 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
-import { SendMailConfirmation } from '../send-mail-modal';
 import { ModalDialog } from './modal-dialog';
 import { type InputData } from './use-hook-form';
-
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
 
 const RegisterEventMutation = graphql(/* GraphQL */ `
   mutation registerEvent($input: RegisterEventInput!) {
@@ -42,7 +37,7 @@ interface Props {
 export const RegisterEventModal: React.FC<Props> = ({ className }) => {
   const [updateProperty] = useMutation(RegisterEventMutation);
   const { registerEvent, sendMail } = usePageContext();
-  const { formMethods } = registerEvent;
+  const { modalArg, disclosure } = registerEvent;
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -79,15 +74,16 @@ export const RegisterEventModal: React.FC<Props> = ({ className }) => {
         }
       );
     },
-    [updateProperty]
+    [sendMail, updateProperty]
   );
+
+  if (modalArg == null) {
+    return null;
+  }
 
   return (
     <div className={className}>
-      <FormProvider {...formMethods}>
-        <ModalDialog onSave={onSave} />
-      </FormProvider>
-      <SendMailConfirmation />
+      <ModalDialog {...modalArg} disclosure={disclosure} onSave={onSave} />
     </div>
   );
 };

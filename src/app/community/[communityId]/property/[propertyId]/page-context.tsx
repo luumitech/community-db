@@ -1,13 +1,14 @@
 import React from 'react';
 import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { useModalArg } from '~/custom-hooks/modal-arg';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal';
 import * as occupantEditorModal from './occupant-editor-modal';
 import * as propertyDeleteModal from './property-delete-modal';
 import * as propertyModifyModal from './property-modify-modal';
-import * as registerEventModal from './register-event-modal';
-import { useSendMailModal } from './send-mail-modal';
+import * as registerEventModal from './register-event-modal/modal-dialog';
+import * as sendMailModal from './send-mail-modal/modal-dialog';
 
 type ContextT = Readonly<{
   community: CommunityEntry;
@@ -16,9 +17,9 @@ type ContextT = Readonly<{
   propertyModify: propertyModifyModal.UseHookFormWithDisclosureResult;
   membershipEditor: membershipEditorModal.UseHookFormWithDisclosureResult;
   propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
-  registerEvent: registerEventModal.UseHookFormWithDisclosureResult;
+  registerEvent: ReturnType<typeof useModalArg<registerEventModal.ModalArg>>;
   communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
-  sendMail: ReturnType<typeof useSendMailModal>;
+  sendMail: ReturnType<typeof useModalArg<sendMailModal.ModalArg>>;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -43,10 +44,10 @@ export function PageProvider({ community, property, ...props }: Props) {
   );
   const propertyDelete =
     propertyDeleteModal.useHookFormWithDisclosure(property);
-  const registerEvent = registerEventModal.useHookFormWithDisclosure(property);
+  const registerEvent = useModalArg<registerEventModal.ModalArg>();
   const communityModify =
     communityModifyModal.useHookFormWithDisclosure(community);
-  const sendMail = useSendMailModal();
+  const sendMail = useModalArg<sendMailModal.ModalArg>();
 
   return (
     <Context.Provider

@@ -2,8 +2,8 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { usePageContext } from '../../page-context';
 import { useHookFormContext } from '../use-hook-form';
+import { useXtraContext } from '../use-xtra';
 import { EventDatePicker } from './event-date-picker';
 
 interface EventHeaderProps {
@@ -34,9 +34,8 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
 };
 
 export const EventRow: React.FC<EventRowProps> = ({ className }) => {
-  const { registerEvent } = usePageContext();
-  const { ticketList } = registerEvent;
   const { control, getValues } = useHookFormContext();
+  const { ticketList } = useXtraContext();
   const ticketListMethods = useFieldArray({
     control,
     name: 'event.ticketList',

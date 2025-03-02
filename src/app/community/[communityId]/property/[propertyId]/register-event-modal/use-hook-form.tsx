@@ -1,4 +1,3 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
@@ -13,8 +12,8 @@ import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
-import { type PropertyEntry } from '../_type';
 import { MembershipEditorFragment } from '../membership-editor-modal/use-hook-form';
+import { usePageContext } from '../page-context';
 
 function schema() {
   return z.object({
@@ -117,8 +116,9 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(fragment: PropertyEntry) {
+export function useHookForm() {
   const { communityUi, defaultSetting } = useAppContext();
+  const { property: fragment } = usePageContext();
   const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
   const findEventResult = React.useMemo(() => {
@@ -131,30 +131,13 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
-
-  /**
-   * When modal is open, sync form value with latest default values derived from
-   * fragment
-   */
-  const onModalOpen = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onOpen: onModalOpen,
-  });
 
   return {
-    disclosure,
     formMethods,
     property,
-    ticketList: findEventResult.event?.ticketList,
+    ticketList: findEventResult.event?.ticketList ?? [],
   };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();

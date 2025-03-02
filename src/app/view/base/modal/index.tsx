@@ -4,7 +4,7 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
+import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 
 export {
   ModalBody,
