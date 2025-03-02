@@ -1,4 +1,6 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -12,20 +14,28 @@ import { FilterSelect } from './filter-select';
 import { MembershipInfoEditor } from './membership-info-editor';
 import {
   InputData,
-  useHookFormContext,
-  type UseHookFormWithDisclosureResult,
+  useHookForm,
+  type BatchPropertyModifyFragmentType,
 } from './use-hook-form';
 
-interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+export interface ModalArg {
+  community: BatchPropertyModifyFragmentType;
+}
+
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { disclosure } = hookForm;
+export const ModifyModal: React.FC<Props> = ({
+  community: fragment,
+  disclosure,
+  onSave,
+}) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formState, handleSubmit } = useHookFormContext();
+  const { formMethods } = useHookForm(fragment);
+  const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
@@ -52,31 +62,34 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <ModalContent>
-          {(closeModal) => (
-            <>
-              <ModalHeader>Batch Property Modify</ModalHeader>
-              <ModalBody>
-                <FilterSelect className="mb-4" />
-                <MembershipInfoEditor />
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="bordered" onPress={closeModal}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  color="primary"
-                  isDisabled={!formState.isDirty || pending}
-                >
-                  Save
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Form>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(closeModal) => (
+              <>
+                <ModalHeader>Batch Property Modify</ModalHeader>
+                <ModalBody>
+                  <FilterSelect className="mb-4" />
+                  <MembershipInfoEditor />
+                </ModalBody>
+                <ModalFooter>
+                  <Button variant="bordered" onPress={closeModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    isDisabled={!formState.isDirty}
+                    isLoading={pending}
+                  >
+                    Save
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Form>
+      </FormProvider>
     </Modal>
   );
 };

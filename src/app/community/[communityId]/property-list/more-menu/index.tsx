@@ -17,8 +17,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
   const { canEdit, isAdmin } = useAppContext();
 
   const communityModify = communityModifyModal.useModalControl();
-  const batchPropertyModify =
-    batchPropertyModifyModal.useHookFormWithDisclosure(community);
+  const batchPropertyModify = batchPropertyModifyModal.useModalControl();
   const propertyCreate =
     propertyCreateModal.useHookFormWithDisclosure(community);
   const communityDelete =
@@ -27,7 +26,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
   const menuItems = useMenuItem({
     communityId: community.id,
     communityModifyOpen: () => communityModify.open({ community }),
-    batchPropertyModifyOpen: () => batchPropertyModify.disclosure.onOpen(),
+    batchPropertyModifyOpen: () => batchPropertyModify.open({ community }),
     communityDeleteOpen: () => communityDelete.disclosure.onOpen(),
     propertyCreateOpen: () => propertyCreate.disclosure.onOpen(),
   });
@@ -59,7 +58,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
         modalControl={communityModify}
       />
       <batchPropertyModifyModal.BatchPropertyModifyModal
-        hookForm={batchPropertyModify}
+        modalControl={batchPropertyModify}
       />
       <communityDeleteModal.CommunityDeleteModal hookForm={communityDelete} />
       <propertyCreateModal.PropertyCreateModal hookForm={propertyCreate} />
