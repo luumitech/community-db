@@ -6,6 +6,7 @@ import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
 import { ModalDialog, type ModalArg } from './modal-dialog';
+import { SuccessDialog } from './success-dialog';
 import { type InputData } from './use-hook-form';
 
 export { type ModalArg } from './modal-dialog';
@@ -48,38 +49,37 @@ export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
     async (_input: InputData) => {
       const { hidden, ...input } = _input;
       await toast.promise(
-        updateProperty({
-          variables: { input },
-          update: (cache, { data }) => {
-            const communityId = data?.registerEvent.community.id;
-            if (communityId) {
-              evictCache(cache, 'CommunityStat', communityId);
-            }
-          },
-          onCompleted: (data) => {
-            // Show email confirmation only when registering for the first event
-            if (hidden.isFirstEvent && hidden.canRegister) {
-              const { occupantList } = data.registerEvent.property;
-              const canSendEmail = occupantList.some(
-                ({ email }) => !!email?.trim()
-              );
-              // Check if there are valid email addresses
-              if (canSendEmail) {
-                sendMail.open({
-                  membershipYear: input.membership.year,
-                  occupantList,
-                });
+        (async () => {
+          const result = await updateProperty({
+            variables: { input },
+            update: (cache, { data }) => {
+              const communityId = data?.registerEvent.community.id;
+              if (communityId) {
+                evictCache(cache, 'CommunityStat', communityId);
               }
-            }
-          },
-        }),
+            },
+          });
+          return { result, sendMail };
+        })(),
         {
           pending: 'Saving...',
-          // success: 'Saved',
+          ...(hidden.isFirstEvent &&
+            hidden.canRegister && {
+              success: {
+                autoClose: 10000, // 10s
+                render: ({ data }) => (
+                  <SuccessDialog
+                    membershipYear={input.membership.year.toString()}
+                    registerEvent={data.result.data?.registerEvent}
+                    sendMail={data.sendMail}
+                  />
+                ),
+              },
+            }),
         }
       );
     },
-    [sendMail, updateProperty]
+    [updateProperty, sendMail]
   );
 
   if (arg == null) {

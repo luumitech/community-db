@@ -15,6 +15,7 @@ export const ToSelect: React.FC<Props> = ({ className }) => {
     <Select
       className={cn(className)}
       controlName="toEmail"
+      placeholder="Select at least one recipient"
       fullWidth
       isMultiline={true}
       label="To"

@@ -13,7 +13,14 @@ export const MailForm: React.FC<Props> = ({ className }) => {
     <div className={cn(className, 'flex flex-col gap-2')}>
       <ToSelect />
       <Input controlName="subject" label="Subject" variant="bordered" />
-      <Textarea controlName="message" label="Message" variant="bordered" />
+      <Textarea
+        classNames={{
+          input: 'resize-y min-h-[220px]',
+        }}
+        controlName="message"
+        label="Message"
+        variant="bordered"
+      />
     </div>
   );
 };

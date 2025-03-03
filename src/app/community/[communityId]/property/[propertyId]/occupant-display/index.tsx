@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment, graphql } from '~/graphql/generated';
+import { Icon } from '~/view/base/icon';
 import { ModalButton } from '../modal-button';
 import { usePageContext } from '../page-context';
 import { OccupantTable } from './occupant-table';
@@ -17,6 +18,10 @@ const OccupantDisplayFragment = graphql(/* GraphQL */ `
       work
       home
     }
+    membershipList {
+      year
+      isMember
+    }
   }
 `);
 
@@ -25,16 +30,38 @@ interface Props {
 }
 
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
-  const { canEdit } = useAppContext();
-  const { property, occupantEditor } = usePageContext();
-  const entry = getFragment(OccupantDisplayFragment, property);
+  const { canEdit, communityUi } = useAppContext();
+  const { yearSelected } = communityUi;
+  const { property: fragment, occupantEditor, sendMail } = usePageContext();
+  const property = getFragment(OccupantDisplayFragment, fragment);
+  const { occupantList } = property;
+
+  const membership = React.useMemo(() => {
+    return property.membershipList.find(
+      (entry) => entry.year.toString() === yearSelected
+    );
+  }, [property, yearSelected]);
 
   return (
     <Card className={className}>
       <CardHeader>Contact</CardHeader>
       <CardBody className="gap-2">
-        {canEdit && (
-          <div className="self-end">
+        <div className="flex gap-2 self-end">
+          <ModalButton
+            isDisabled={!membership?.isMember}
+            onPress={() =>
+              sendMail.open({
+                membershipYear: yearSelected,
+                occupantList,
+              })
+            }
+            endContent={<Icon icon="email" />}
+            color="primary"
+            variant="bordered"
+          >
+            Send Membership Confirmation
+          </ModalButton>
+          {canEdit && (
             <ModalButton
               onPress={() => occupantEditor.open({})}
               color="primary"
@@ -42,9 +69,9 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             >
               Edit Member Details
             </ModalButton>
-          </div>
-        )}
-        <OccupantTable occupantList={entry.occupantList} />
+          )}
+        </div>
+        <OccupantTable occupantList={occupantList} />
       </CardBody>
     </Card>
   );

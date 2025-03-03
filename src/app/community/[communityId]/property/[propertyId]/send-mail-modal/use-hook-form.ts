@@ -10,7 +10,7 @@ function schema() {
     toEmail: zz.string.nonEmpty('Please select at least one recipient'),
     message: zz.string.nonEmpty('Please enter a message'),
     hidden: z.object({
-      membershipYear: z.number(),
+      membershipYear: z.string(),
       /** SelectItems for To: email recipients */
       toItems: z.array(
         z.object({
@@ -26,7 +26,7 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
-  membershipYear: number,
+  membershipYear: string,
   occupantList: OccupantList
 ): InputData {
   const toItems: InputData['hidden']['toItems'] = [];
@@ -48,8 +48,6 @@ function defaultInputData(
     '',
     `Thank you for submitting your ${membershipYear} membership fee. We would like to confirm that we have received the payment and have successfully updated your membership status for ${membershipYear} in our records.`,
     '',
-    'We appreciate your continued support and look forward to having you as a valued member this year.',
-    '',
     'Please don’t hesitate to reach out if you have any questions.',
     '',
     'Best regards,',
@@ -67,7 +65,7 @@ function defaultInputData(
 }
 
 export function useHookForm(
-  membershipYear: number,
+  membershipYear: string,
   occupantList: OccupantList
 ) {
   const defaultValues = React.useMemo(() => {

@@ -16,7 +16,7 @@ import { useHookForm, type InputData } from './use-hook-form';
 
 export interface ModalArg {
   occupantList: OccupantList;
-  membershipYear: number;
+  membershipYear: string;
 }
 
 interface Props extends ModalArg {
@@ -61,16 +61,16 @@ export const ModalDialog: React.FC<Props> = ({
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Send Confirmation Email?</ModalHeader>
+                <ModalHeader>Compose Membership Confirmation Email</ModalHeader>
                 <ModalBody>
                   <MailForm />
                 </ModalBody>
                 <ModalFooter>
                   <Button isDisabled={pending} onPress={closeModal}>
-                    No
+                    Cancel
                   </Button>
                   <Button type="submit" color="primary" isLoading={pending}>
-                    Yes
+                    Open External EMail...
                   </Button>
                 </ModalFooter>
               </>
