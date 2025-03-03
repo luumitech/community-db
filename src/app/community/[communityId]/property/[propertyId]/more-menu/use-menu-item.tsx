@@ -50,11 +50,12 @@ export function useMenuItem() {
     ];
   }, [
     baseMenuItem,
+    membershipEditor,
     occupantEditor,
     propertyModify,
-    membershipEditor,
     propertyDelete,
     communityModify,
+    community,
   ]);
 
   return menuItemList;

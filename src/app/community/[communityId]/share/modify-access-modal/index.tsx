@@ -1,29 +1,33 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useModalArg } from '~/custom-hooks/modal-arg';
+import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { ModifyModal } from './modify-modal';
-import {
-  AccessModifyMutation,
-  InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { ModifyModal, type ModalArg } from './modify-modal';
+import { type InputData } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
+export { type ModalArg } from './modify-modal';
+export const useModalControl = useModalArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
+
+const AccessModifyMutation = graphql(/* GraphQL */ `
+  mutation accessModify($input: AccessModifyInput!) {
+    accessModify(input: $input) {
+      ...AccessList_Modify
+    }
+  }
+`);
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+  modalControl: ModalControl;
 }
 
-export const ModifyAccessModal: React.FC<Props> = ({ hookForm }) => {
+export const ModifyAccessModal: React.FC<Props> = ({ modalControl }) => {
   const [modifyAccess] = useMutation(AccessModifyMutation);
-  const { formMethods, disclosure, fragment } = hookForm;
+  const { modalArg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
-      if (!formMethods.formState.isDirty) {
-        return;
-      }
       await toast.promise(
         modifyAccess({
           variables: { input },
@@ -34,16 +38,12 @@ export const ModifyAccessModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, modifyAccess]
+    [modifyAccess]
   );
 
-  return (
-    <FormProvider {...formMethods}>
-      <ModifyModal
-        disclosure={disclosure}
-        onSave={onSave}
-        fragment={fragment}
-      />
-    </FormProvider>
-  );
+  if (modalArg == null) {
+    return null;
+  }
+
+  return <ModifyModal {...modalArg} disclosure={disclosure} onSave={onSave} />;
 };

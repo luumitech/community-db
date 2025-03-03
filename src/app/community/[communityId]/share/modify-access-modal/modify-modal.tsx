@@ -1,6 +1,6 @@
 import { UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { getFragment } from '~/graphql/generated';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -10,25 +10,31 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import type { AccessEntry } from '../_type';
 import { RoleEditor } from './role-editor';
-import { InputData, ModifyFragment, useHookFormContext } from './use-hook-form';
+import {
+  InputData,
+  useHookForm,
+  type ModifyFragmentType,
+} from './use-hook-form';
 
-interface Props {
+export interface ModalArg {
+  community: ModifyFragmentType;
+}
+
+interface Props extends ModalArg {
   disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
-  fragment: AccessEntry;
 }
 
 export const ModifyModal: React.FC<Props> = ({
+  community: fragment,
   disclosure,
   onSave,
-  fragment,
 }) => {
-  const access = getFragment(ModifyFragment, fragment);
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formState, handleSubmit } = useHookFormContext();
+  const { formMethods, access } = useHookForm(fragment);
+  const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
@@ -55,30 +61,33 @@ export const ModifyModal: React.FC<Props> = ({
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <ModalContent>
-          {(closeModal) => (
-            <>
-              <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
-              <ModalBody>
-                <RoleEditor />
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="bordered" onPress={closeModal}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  color="primary"
-                  isDisabled={!formState.isDirty || pending}
-                >
-                  Save
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Form>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(closeModal) => (
+              <>
+                <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
+                <ModalBody>
+                  <RoleEditor />
+                </ModalBody>
+                <ModalFooter>
+                  <Button variant="bordered" onPress={closeModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    isDisabled={!formState.isDirty}
+                    isLoading={pending}
+                  >
+                    Save
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Form>
+      </FormProvider>
     </Modal>
   );
 };

@@ -2,8 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 import { AccessEntry } from '../_type';
-import { ModifyAccessModal } from '../modify-access-modal';
-import { useHookFormWithDisclosure } from '../modify-access-modal/use-hook-form';
+import { ModifyAccessModal, useModalControl } from '../modify-access-modal';
 
 interface Props {
   className?: string;
@@ -14,7 +13,7 @@ export const ModifyAccessButton: React.FC<Props> = ({
   className,
   fragment,
 }) => {
-  const hookForm = useHookFormWithDisclosure(fragment);
+  const modalControl = useModalControl();
 
   return (
     <div className={cn(className)}>
@@ -22,9 +21,9 @@ export const ModifyAccessButton: React.FC<Props> = ({
         className="text-primary"
         icon="edit"
         tooltip="Modify Role"
-        onClick={hookForm.disclosure.onOpen}
+        onClick={() => modalControl.open({ community: fragment })}
       />
-      <ModifyAccessModal hookForm={hookForm} />
+      <ModifyAccessModal modalControl={modalControl} />
     </div>
   );
 };
