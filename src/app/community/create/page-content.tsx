@@ -55,7 +55,8 @@ export const PageContent: React.FC<Props> = (props) => {
         className="mt-2"
         color="primary"
         type="submit"
-        isDisabled={!formState.isDirty || result.loading}
+        isDisabled={!formState.isDirty}
+        isLoading={result.loading}
       >
         Create
       </Button>

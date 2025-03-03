@@ -66,7 +66,9 @@ export const ModalDialog: React.FC<Props> = ({
                   <MailForm />
                 </ModalBody>
                 <ModalFooter>
-                  <Button onPress={closeModal}>No</Button>
+                  <Button isDisabled={pending} onPress={closeModal}>
+                    No
+                  </Button>
                   <Button type="submit" color="primary" isLoading={pending}>
                     Yes
                   </Button>

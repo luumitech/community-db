@@ -75,7 +75,11 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
                     Add Contact
                   </Button>
                   <div className="flex-grow" />
-                  <Button variant="bordered" onPress={closeModal}>
+                  <Button
+                    variant="bordered"
+                    isDisabled={pending}
+                    onPress={closeModal}
+                  >
                     Cancel
                   </Button>
                   <Button

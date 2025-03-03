@@ -69,7 +69,11 @@ export const CreateModal: React.FC<Props> = ({
                   <AddressEditorForm />
                 </ModalBody>
                 <ModalFooter>
-                  <Button variant="bordered" onPress={closeModal}>
+                  <Button
+                    variant="bordered"
+                    isDisabled={pending}
+                    onPress={closeModal}
+                  >
                     Cancel
                   </Button>
                   <Button

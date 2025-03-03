@@ -71,7 +71,11 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
                     updatedBy={property.updatedBy}
                   />
                   <div className="flex items-center gap-2">
-                    <Button variant="bordered" onPress={closeModal}>
+                    <Button
+                      variant="bordered"
+                      isDisabled={pending}
+                      onPress={closeModal}
+                    >
                       Cancel
                     </Button>
                     <Button

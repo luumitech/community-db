@@ -73,7 +73,11 @@ export const ModifyModal: React.FC<Props> = ({
                   <MembershipInfoEditor />
                 </ModalBody>
                 <ModalFooter>
-                  <Button variant="bordered" onPress={closeModal}>
+                  <Button
+                    variant="bordered"
+                    isDisabled={pending}
+                    onPress={closeModal}
+                  >
                     Cancel
                   </Button>
                   <Button
