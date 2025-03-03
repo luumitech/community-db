@@ -1,14 +1,14 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useModalArg } from '~/custom-hooks/modal-arg';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { DeleteModal, type ModalArg } from './delete-modal';
 
 export { type ModalArg } from './delete-modal';
-export const useModalControl = useModalArg<ModalArg>;
+export const useModalControl = useDisclosureWithArg<ModalArg>;
 export type ModalControl = ReturnType<typeof useModalControl>;
 
 const CommunityMutation = graphql(/* GraphQL */ `
@@ -26,7 +26,7 @@ interface Props {
 export const CommunityDeleteModal: React.FC<Props> = ({ modalControl }) => {
   const router = useRouter();
   const [deleteCommunity] = useMutation(CommunityMutation);
-  const { modalArg, disclosure } = modalControl;
+  const { arg, disclosure } = modalControl;
 
   const onDelete = React.useCallback(
     async (communityId: string) => {
@@ -60,11 +60,9 @@ export const CommunityDeleteModal: React.FC<Props> = ({ modalControl }) => {
     [deleteCommunity, router]
   );
 
-  if (modalArg == null) {
+  if (arg == null) {
     return null;
   }
 
-  return (
-    <DeleteModal {...modalArg} disclosure={disclosure} onDelete={onDelete} />
-  );
+  return <DeleteModal {...arg} disclosure={disclosure} onDelete={onDelete} />;
 };

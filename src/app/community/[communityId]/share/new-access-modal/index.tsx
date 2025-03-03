@@ -1,14 +1,14 @@
 import { useMutation } from '@apollo/client';
 import { produce } from 'immer';
 import React from 'react';
-import { useModalArg } from '~/custom-hooks/modal-arg';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { CreateModal, type ModalArg } from './create-modal';
 import { InputData } from './use-hook-form';
 
 export { type ModalArg } from './create-modal';
-export const useModalControl = useModalArg<ModalArg>;
+export const useModalControl = useDisclosureWithArg<ModalArg>;
 export type ModalControl = ReturnType<typeof useModalControl>;
 
 const AccessCreateMutation = graphql(/* GraphQL */ `
@@ -29,7 +29,7 @@ interface Props {
 
 export const NewAccessModal: React.FC<Props> = ({ modalControl }) => {
   const [createAccess] = useMutation(AccessCreateMutation);
-  const { modalArg, disclosure } = modalControl;
+  const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -59,9 +59,9 @@ export const NewAccessModal: React.FC<Props> = ({ modalControl }) => {
     [createAccess]
   );
 
-  if (modalArg == null) {
+  if (arg == null) {
     return null;
   }
 
-  return <CreateModal {...modalArg} disclosure={disclosure} onSave={onSave} />;
+  return <CreateModal {...arg} disclosure={disclosure} onSave={onSave} />;
 };

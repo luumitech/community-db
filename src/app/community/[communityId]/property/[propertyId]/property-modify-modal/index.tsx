@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { useModalArg } from '~/custom-hooks/modal-arg';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
@@ -9,7 +9,7 @@ import { ModifyModal, type ModalArg } from './modify-modal';
 import { InputData } from './use-hook-form';
 
 export { type ModalArg } from './modify-modal';
-export const useModalControl = useModalArg<ModalArg>;
+export const useModalControl = useDisclosureWithArg<ModalArg>;
 export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
@@ -29,7 +29,7 @@ interface Props {
 export const PropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(PropertyMutation);
   const { community } = usePageContext();
-  const { modalArg, disclosure } = modalControl;
+  const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
@@ -51,9 +51,9 @@ export const PropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
     [updateProperty, community]
   );
 
-  if (modalArg == null) {
+  if (arg == null) {
     return null;
   }
 
-  return <ModifyModal {...modalArg} disclosure={disclosure} onSave={onSave} />;
+  return <ModifyModal {...arg} disclosure={disclosure} onSave={onSave} />;
 };

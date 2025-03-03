@@ -1,72 +1,53 @@
-import { Chip, cn, useDisclosure } from '@heroui/react';
+import { Chip } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
+import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { Icon } from '~/view/base/icon';
-import {
-  useHookFormContext,
-  useIsFilterSpecified,
-  type InputData,
-} from './use-hook-form';
 
 interface Props {
   className?: string;
-  disclosure: ReturnType<typeof useDisclosure>;
-  onChange?: (input: InputData) => void;
+  openDrawer: () => void;
 }
 
-export const FilterChip: React.FC<Props> = ({
-  className,
-  disclosure,
-  onChange,
-}) => {
-  const { filterSpecified, memberYear, nonMemberYear, event } =
-    useIsFilterSpecified();
-  const { setValue } = useHookFormContext();
-  const { onOpen } = disclosure;
+export const FilterChip: React.FC<Props> = ({ className, openDrawer }) => {
+  const { isFilterSpecified, memberYear, nonMemberYear, event } =
+    useFilterBarContext();
 
-  if (!filterSpecified) {
+  if (!isFilterSpecified) {
     return null;
   }
 
+  const [memberYearStr] = memberYear;
+  const [nonMemberYearStr] = nonMemberYear;
+  const [eventStr] = event;
+
   return (
-    <div className="flex gap-2 cursor-pointer" onClick={onOpen}>
-      {!!memberYear && (
+    <div className="flex gap-2 cursor-pointer" onClick={openDrawer}>
+      {!!memberYearStr && (
         <Chip
           variant="bordered"
           color="success"
-          onClose={() => {
-            setValue('memberYear', '');
-            onChange?.({ memberYear: '', nonMemberYear, event });
-          }}
+          onClose={() => memberYear.clear()}
         >
           <div className="flex items-center gap-2">
-            {memberYear}
+            {memberYearStr}
             <Icon icon="thumb-up" size={16} />
           </div>
         </Chip>
       )}
-      {!!nonMemberYear && (
-        <Chip
-          variant="bordered"
-          onClose={() => {
-            setValue('nonMemberYear', '');
-            onChange?.({ memberYear, nonMemberYear: '', event });
-          }}
-        >
+      {!!nonMemberYearStr && (
+        <Chip variant="bordered" onClose={() => nonMemberYear.clear()}>
           <div className="flex items-center gap-2">
-            {nonMemberYear}
+            {nonMemberYearStr}
             <Icon icon="thumb-down" size={16} />
           </div>
         </Chip>
       )}
-      {!!event && (
+      {!!eventStr && (
         <EventChip
-          eventName={event}
+          eventName={eventStr}
           variant="faded"
-          onClose={() => {
-            setValue('event', '');
-            onChange?.({ memberYear, nonMemberYear, event: '' });
-          }}
+          onClose={() => event.clear()}
         />
       )}
     </div>

@@ -47,13 +47,13 @@ interface Props {}
  */
 export const ConfirmationModal: React.FC<Props> = () => {
   const { confirmationModal } = useAppContext();
-  const { disclosure, modalArg } = confirmationModal;
+  const { disclosure, arg } = confirmationModal;
 
-  if (modalArg == null) {
+  if (arg == null) {
     return null;
   }
 
-  const { modalProps, content, body, onConfirm, onCancel } = modalArg;
+  const { modalProps, content, body, onConfirm, onCancel } = arg;
 
   return (
     <Modal

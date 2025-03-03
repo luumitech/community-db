@@ -1,6 +1,5 @@
 import React from 'react';
 import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
-import { useModalArg } from '~/custom-hooks/modal-arg';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal';
 import * as occupantEditorModal from './occupant-editor-modal';

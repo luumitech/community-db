@@ -4,21 +4,25 @@ import React from 'react';
 /**
  * Built on top of the `useDisclosure` hook,
  *
- * In addition to controlling the state of modal, it allows passing arbitrary
- * arguments into the modal when it is opened. And clears the arguments once it
- * closes
+ * In addition to controlling the open/close state, it introduces a new method
+ * to pass arbitrary arguments when opening.
+ *
+ * It also clears the arguments when closing.
+ *
+ * This will allow one to render Modal or Drawer with the arguments passed into
+ * the `open()` method without caching previous rendering
  */
-export function useModalArg<T>() {
-  const modalArg = React.useRef<T>();
+export function useDisclosureWithArg<T>() {
+  const arg = React.useRef<T>();
   const disclosure = useDisclosure({
     onClose: () => {
-      modalArg.current = undefined;
+      arg.current = undefined;
     },
   });
   const { onOpen } = disclosure;
   const open = React.useCallback(
-    (arg: T) => {
-      modalArg.current = arg;
+    (_arg: T) => {
+      arg.current = _arg;
       onOpen();
     },
     [onOpen]
@@ -33,6 +37,6 @@ export function useModalArg<T>() {
     /** Modal state controls */
     disclosure,
     /** Arguments passed into the Modal when it opens */
-    modalArg: modalArg.current,
+    arg: arg.current,
   };
 }

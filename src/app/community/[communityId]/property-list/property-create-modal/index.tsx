@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useModalArg } from '~/custom-hooks/modal-arg';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { appPath } from '~/lib/app-path';
@@ -10,7 +10,7 @@ import { CreateModal, type ModalArg } from './create-modal';
 import { type InputData } from './use-hook-form';
 
 export { type ModalArg } from './create-modal';
-export const useModalControl = useModalArg<ModalArg>;
+export const useModalControl = useDisclosureWithArg<ModalArg>;
 export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
@@ -32,7 +32,7 @@ interface Props {
 export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
   const router = useRouter();
   const [createProperty] = useMutation(PropertyMutation);
-  const { modalArg, disclosure } = modalControl;
+  const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
@@ -67,9 +67,9 @@ export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
     [createProperty, router]
   );
 
-  if (modalArg == null) {
+  if (arg == null) {
     return null;
   }
 
-  return <CreateModal {...modalArg} disclosure={disclosure} onSave={onSave} />;
+  return <CreateModal {...arg} disclosure={disclosure} onSave={onSave} />;
 };
