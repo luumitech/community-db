@@ -1,12 +1,11 @@
 import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
-import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
-import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { CreateModal, type ModalArg } from './create-modal';
+import { SuccessDialog } from './success-dialog';
 import { type InputData } from './use-hook-form';
 
 export { type ModalArg } from './create-modal';
@@ -30,7 +29,6 @@ interface Props {
 }
 
 export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
-  const router = useRouter();
   const [createProperty] = useMutation(PropertyMutation);
   const { arg, disclosure } = modalControl;
 
@@ -39,32 +37,27 @@ export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
       await toast.promise(
         createProperty({
           variables: { input },
-          refetchQueries: [
-            // Adding property require refetching property list to get the new
-            // property
-            {
-              query: CommunityFromIdDocument,
-              variables: { id: input.communityId },
-            },
-          ],
-          onCompleted: (result) => {
-            router.push(
-              appPath('property', {
-                path: {
-                  communityId: input.communityId,
-                  propertyId: result.propertyCreate.id,
-                },
-              })
-            );
+          update: (cache, result) => {
+            // Adding property will disrupt the existing property list because the new entry
+            // could be anywhere in the list, so wipe the cache, so property list can be
+            // retrieved again
+            evictCache(cache, 'Community', input.communityId);
           },
         }),
         {
           pending: 'Creating...',
-          success: 'Created',
+          success: {
+            render: ({ data }) => (
+              <SuccessDialog
+                communityId={input.communityId}
+                property={data.data?.propertyCreate}
+              />
+            ),
+          },
         }
       );
     },
-    [createProperty, router]
+    [createProperty]
   );
 
   if (arg == null) {

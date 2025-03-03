@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
@@ -33,21 +34,14 @@ export const PropertyDeleteModal: React.FC<Props> = ({ modalControl }) => {
       await toast.promise(
         deleteProperty({
           variables: { id: propertyId },
-          onCompleted: () => {
-            router.push(appPath('propertyList', { path: { communityId } }));
-          },
           update: (cache) => {
-            const normalizedId = cache.identify({
-              id: propertyId,
-              __typename: 'Property',
-            });
+            router.push(appPath('propertyList', { path: { communityId } }));
             /**
              * Add timeout to make sure route is changed before updating the
              * cache
              */
             setTimeout(() => {
-              cache.evict({ id: normalizedId });
-              cache.gc();
+              evictCache(cache, 'Property', propertyId);
             }, 1000);
           },
         }),
