@@ -96,9 +96,17 @@ model Community {
   propertyList Property[] @relation("propertyCommunity")
 }
 
+/// Default template for sending email
+type EmailSetting {
+  subject String
+  message String
+}
+
 type DefaultSetting {
   /// Default yearly membership fee
-  membershipFee String?
+  membershipFee   String?
+  /// Membership confirmation email template
+  membershipEmail EmailSetting?
 }
 
 type SupportedEventItem {

@@ -1,50 +1,77 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import React from 'react';
+import { FormProvider } from '~/custom-hooks/hook-form';
+import { Button } from '~/view/base/button';
+import { Form } from '~/view/base/form';
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
-import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
-import { Form } from '~/view/base/form';
+} from '~/view/base/modal';
 import { type OccupantList } from './_type';
 import { MailForm } from './mail-form';
-import { useHookForm, type InputData } from './use-hook-form';
+import {
+  defaultInputData,
+  useHookForm,
+  type InputData,
+  type ModifyFragmentType,
+} from './use-hook-form';
 
 export interface ModalArg {
+  community: ModifyFragmentType;
   occupantList: OccupantList;
   membershipYear: string;
 }
-
 interface Props extends ModalArg {
   disclosure: UseDisclosureReturn;
-  onSave: (input: InputData) => Promise<void>;
+  onSave: (input: InputData) => Promise<ModifyFragmentType | undefined>;
+  onSend: (input: InputData) => Promise<void>;
 }
 
 export const ModalDialog: React.FC<Props> = ({
+  community: fragment,
   membershipYear,
   occupantList,
   disclosure,
   onSave,
+  onSend,
 }) => {
-  const { formMethods } = useHookForm(membershipYear, occupantList);
-  const [pending, startTransition] = React.useTransition();
+  const { formMethods } = useHookForm(fragment, membershipYear, occupantList);
+  const [saveTemplatePending, saveTemplateStartTransition] =
+    React.useTransition();
+  const [sendMailPending, sendMailStartTransition] = React.useTransition();
   const { isOpen, onOpenChange, onClose } = disclosure;
+  const { formState, reset } = formMethods;
+  const { isDirty } = formState;
 
-  const onSubmit = React.useCallback(
-    async (input: InputData) =>
-      startTransition(async () => {
+  const onSaveTemplate = React.useCallback(
+    async (inputData: InputData) =>
+      saveTemplateStartTransition(async () => {
         try {
-          await onSave(input);
+          const community = await onSave(inputData);
+          if (community) {
+            reset(defaultInputData(community, membershipYear, occupantList));
+          }
+        } catch (err) {
+          // error handled by parent
+        }
+      }),
+    [membershipYear, occupantList, onSave, reset]
+  );
+
+  const onSendMail = React.useCallback(
+    async (inputData: InputData) =>
+      sendMailStartTransition(async () => {
+        try {
+          await onSend(inputData);
           onClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onClose, onSend]
   );
 
   return (
@@ -52,12 +79,13 @@ export const ModalDialog: React.FC<Props> = ({
       size="2xl"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
       <FormProvider {...formMethods}>
-        <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
+        <Form>
           <ModalContent>
             {(closeModal) => (
               <>
@@ -66,10 +94,28 @@ export const ModalDialog: React.FC<Props> = ({
                   <MailForm />
                 </ModalBody>
                 <ModalFooter>
-                  <Button isDisabled={pending} onPress={closeModal}>
+                  <Button
+                    color="primary"
+                    variant="bordered"
+                    isLoading={saveTemplatePending}
+                    isDisabled={sendMailPending || !isDirty}
+                    onPress={() => formMethods.handleSubmit(onSaveTemplate)()}
+                  >
+                    Save Email Template
+                  </Button>
+                  <div className="flex-grow" />
+                  <Button
+                    isDisabled={saveTemplatePending || sendMailPending}
+                    onPress={closeModal}
+                  >
                     Cancel
                   </Button>
-                  <Button type="submit" color="primary" isLoading={pending}>
+                  <Button
+                    color="primary"
+                    isLoading={sendMailPending}
+                    isDisabled={saveTemplatePending}
+                    onPress={() => formMethods.handleSubmit(onSendMail)()}
+                  >
                     Open External EMail...
                   </Button>
                 </ModalFooter>

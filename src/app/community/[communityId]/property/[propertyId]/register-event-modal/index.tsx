@@ -21,6 +21,7 @@ const RegisterEventMutation = graphql(/* GraphQL */ `
         id
         minYear
         maxYear
+        ...SendMail_CommunityModifyModal
       }
       property {
         ...PropertyId_MembershipEditor

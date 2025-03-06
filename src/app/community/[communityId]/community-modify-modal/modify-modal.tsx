@@ -115,7 +115,7 @@ export const ModifyModal: React.FC<Props> = ({
                     <Button
                       type="submit"
                       color="primary"
-                      isDisabled={!formState.isDirty}
+                      isDisabled={!isDirty}
                       isLoading={pending}
                     >
                       Save

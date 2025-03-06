@@ -8,9 +8,17 @@ import { UpdateInput } from '../common';
 import { NameListUtil } from './name-list-util';
 import { getCommunityEntry } from './util';
 
+const EmailSettingInput = builder.inputType('EmailSettingInput', {
+  fields: (t) => ({
+    subject: t.string({ required: true }),
+    message: t.string({ required: true }),
+  }),
+});
+
 const DefaultSettingInput = builder.inputType('DefaultSettingInput', {
   fields: (t) => ({
     membershipFee: t.string(),
+    membershipEmail: t.field({ type: EmailSettingInput }),
   }),
 });
 

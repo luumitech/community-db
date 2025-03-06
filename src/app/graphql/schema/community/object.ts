@@ -1,5 +1,6 @@
 import {
   DefaultSetting,
+  EmailSetting,
   Role,
   SupportedEventItem,
   SupportedPaymentMethod,
@@ -28,11 +29,25 @@ import {
   type TicketStat,
 } from './stat-util';
 
+const emailSettingRef = builder
+  .objectRef<EmailSetting>('EmailSetting')
+  .implement({
+    fields: (t) => ({
+      subject: t.exposeString('subject'),
+      message: t.exposeString('message'),
+    }),
+  });
+
 const defaultSettingRef = builder
   .objectRef<DefaultSetting>('DefaultSetting')
   .implement({
     fields: (t) => ({
       membershipFee: t.exposeString('membershipFee', { nullable: true }),
+      membershipEmail: t.field({
+        type: emailSettingRef,
+        nullable: true,
+        resolve: (entry) => entry.membershipEmail,
+      }),
     }),
   });
 

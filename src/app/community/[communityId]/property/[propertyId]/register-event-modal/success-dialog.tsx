@@ -41,7 +41,13 @@ export const SuccessDialog: React.FC<Props> = ({
         variant="faded"
         size="sm"
         endContent={<Icon icon="email" />}
-        onPress={() => sendMail.open({ membershipYear, occupantList })}
+        onPress={() =>
+          sendMail.open({
+            community: registerEvent.community,
+            membershipYear,
+            occupantList,
+          })
+        }
       >
         Send Membership Confirmation
       </Button>

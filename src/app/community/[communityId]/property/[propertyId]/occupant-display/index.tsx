@@ -32,7 +32,12 @@ interface Props {
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const { canEdit, communityUi } = useAppContext();
   const { yearSelected } = communityUi;
-  const { property: fragment, occupantEditor, sendMail } = usePageContext();
+  const {
+    property: fragment,
+    community,
+    occupantEditor,
+    sendMail,
+  } = usePageContext();
   const property = getFragment(OccupantDisplayFragment, fragment);
   const { occupantList } = property;
 
@@ -51,6 +56,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             isDisabled={!membership?.isMember}
             onPress={() =>
               sendMail.open({
+                community,
                 membershipYear: yearSelected,
                 occupantList,
               })
