@@ -3,10 +3,10 @@ import queryString from 'query-string';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
+import { MentionUtil } from '~/view/base/rich-text-editor';
 import { toast } from '~/view/base/toastify';
-import { createMentionMapping } from './message-editor';
+import { createMentionMapping } from './editor-util';
 import { ModalDialog, type ModalArg } from './modal-dialog';
-import { MentionUtil } from './rich-text-editor';
 import { type InputData } from './use-hook-form';
 
 export { type ModalArg } from './modal-dialog';
@@ -31,27 +31,32 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
   const { arg, disclosure } = modalControl;
 
   const onSend = React.useCallback(async (input: InputData) => {
-    const { toEmail, messageEditorState, subject, hidden } = input;
+    const {
+      defaultSetting: { membershipEmail },
+      hidden,
+    } = input;
     const mentionUtil = new MentionUtil(
-      createMentionMapping(hidden.membershipYear, hidden.toItems, toEmail)
+      createMentionMapping(
+        hidden.membershipYear,
+        hidden.toItems,
+        hidden.toEmail
+      )
     );
-    const message = mentionUtil.toPlainText(messageEditorState);
+    const subject = mentionUtil.toPlainText(membershipEmail.subject);
+    const message = mentionUtil.toPlainText(membershipEmail.message);
     const url = queryString.stringifyUrl({
-      url: `mailto:${toEmail}`,
+      url: `mailto:${hidden.toEmail}`,
       query: { subject, body: message },
     });
     document.location.href = url.toString();
   }, []);
 
   const onSave = React.useCallback(
-    async (input: InputData) => {
-      const { self, subject, messageEditorState } = input;
-      const defaultSetting = {
-        membershipEmail: { subject, message: messageEditorState },
-      };
+    async (_input: InputData) => {
+      const { hidden, ...input } = _input;
       const result = await toast.promise(
         updateCommunity({
-          variables: { input: { self, defaultSetting } },
+          variables: { input },
         }),
         {
           pending: 'Saving...',

@@ -1,4 +1,4 @@
-import { InputProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -16,9 +16,7 @@ import {
 import React from 'react';
 import { CustomMenu, CustomMenuItem } from './custom-menu';
 
-export { MentionUtil } from './mention-util';
-
-interface RichTextEditorProps {
+export interface CustomLexicalProps {
   className?: string;
   label?: React.ReactNode;
   description?: React.ReactNode;
@@ -28,7 +26,7 @@ interface RichTextEditorProps {
   onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
 }
 
-export const RichTextEditor: React.FC<RichTextEditorProps> = ({
+export const CustomLexical: React.FC<CustomLexicalProps> = ({
   className,
   label,
   description,

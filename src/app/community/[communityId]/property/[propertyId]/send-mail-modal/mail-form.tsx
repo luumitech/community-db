@@ -1,7 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { Input } from '~/view/base/input';
-import { MessageEditor } from './message-editor';
+import { mentionClass } from './editor-util';
+import { TextEditor } from './text-editor';
 import { ToSelect } from './to-select';
 
 interface Props {
@@ -12,13 +12,23 @@ export const MailForm: React.FC<Props> = ({ className }) => {
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
       <ToSelect />
-      <Input
-        controlName="subject"
+      <TextEditor
+        controlName="defaultSetting.membershipEmail.subject"
         label="Subject"
-        variant="bordered"
-        description="heh"
       />
-      <MessageEditor />
+      <TextEditor
+        controlName="defaultSetting.membershipEmail.message"
+        label="Message"
+        description={
+          <div>
+            Type{' '}
+            <span className={mentionClass.container}>
+              <span className={mentionClass.value}>@</span>
+            </span>{' '}
+            to insert template values
+          </div>
+        }
+      />
     </div>
   );
 };

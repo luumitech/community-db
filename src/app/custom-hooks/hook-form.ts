@@ -11,6 +11,7 @@ export {
   FormProvider,
   useFieldArray,
   useFormContext,
+  type Path,
   type UseFieldArrayReturn,
 } from 'react-hook-form';
 
