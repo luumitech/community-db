@@ -116,7 +116,7 @@ export const ModalDialog: React.FC<Props> = ({
                     isDisabled={saveTemplatePending}
                     onPress={() => formMethods.handleSubmit(onSendMail)()}
                   >
-                    Open External EMail...
+                    Launch Email Client...
                   </Button>
                 </ModalFooter>
               </>

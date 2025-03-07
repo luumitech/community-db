@@ -9,16 +9,18 @@ export const CustomMenu: React.FC<BeautifulMentionsMenuProps> = ({
   loading,
   ...props
 }) => {
+  const ul = React.createRef<HTMLUListElement>();
+
   React.useLayoutEffect(() => {
-    const menuContainer = document.querySelector(
-      'div[aria-label="Typeahead menu"]'
-    );
+    // This should be an element with `aria-label="Typeahead menu"`
+    const menuContainer = ul.current?.parentElement;
     // Raise the z-index level so it can appear in front of nextui Modal
     menuContainer?.classList.add('z-50');
-  }, []);
+  }, [ul]);
 
   return (
     <ul
+      ref={ul}
       className={cn(
         'w-[max-content] border-small',
         'rounded-small border-default-200 dark:border-default-100',

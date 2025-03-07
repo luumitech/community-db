@@ -3,9 +3,9 @@ import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import { z, zz } from '~/lib/zod';
+import { MentionUtil } from '~/view/base/rich-text-editor';
 import { type OccupantList } from './_type';
-import { createMentionMapping } from './message-editor';
-import { MentionUtil } from './rich-text-editor';
+import { createMentionMapping } from './editor-util';
 
 const ModifyFragment = graphql(/* GraphQL */ `
   fragment SendMail_CommunityModifyModal on Community {
@@ -30,9 +30,13 @@ function schema() {
       id: zz.string.nonEmpty(),
       updatedAt: zz.string.nonEmpty(),
     }),
-    subject: zz.string.nonEmpty('Please enter a subject'),
-    toEmail: zz.string.nonEmpty('Please select at least one recipient'),
-    messageEditorState: z.string(),
+    defaultSetting: z.object({
+      // subject and message keeps editor state
+      membershipEmail: z.object({
+        subject: z.string(),
+        message: z.string(),
+      }),
+    }),
     hidden: z.object({
       membershipYear: z.string(),
       /** SelectItems for To: email recipients */
@@ -43,11 +47,50 @@ function schema() {
           fullName: z.string(),
         })
       ),
+      /** Actual selected emails */
+      toEmail: zz.string.nonEmpty('Please select at least one recipient'),
     }),
   });
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
+
+/**
+ * This is the EditorState for:
+ *
+ *     Membership Registration Confirmation
+ */
+const defaultSubject = JSON.stringify({
+  root: {
+    children: [
+      {
+        children: [
+          {
+            detail: 0,
+            format: 0,
+            mode: 'normal',
+            style: '',
+            text: 'Membership Registration Confirmation',
+            type: 'text',
+            version: 1,
+          },
+        ],
+        direction: 'ltr',
+        format: '',
+        indent: 0,
+        type: 'paragraph',
+        version: 1,
+        textFormat: 0,
+        textStyle: '',
+      },
+    ],
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    type: 'root',
+    version: 1,
+  },
+});
 
 /**
  * This is the EditorState for:
@@ -60,7 +103,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
  *
  *     Best regards,
  */
-const defaultMessageEditorState = JSON.stringify({
+const defaultMessage = JSON.stringify({
   root: {
     children: [
       {
@@ -216,17 +259,20 @@ export function defaultInputData(
       id: community.id,
       updatedAt: community.updatedAt,
     },
-    subject:
-      community.defaultSetting?.membershipEmail?.subject ??
-      'Membership Registration Confirmation',
-    toEmail,
-    messageEditorState: mentionUtil.updateMentionInEditorState(
-      community.defaultSetting?.membershipEmail?.message ??
-        defaultMessageEditorState
-    ),
+    defaultSetting: {
+      membershipEmail: {
+        subject: mentionUtil.updateMentionInEditorState(
+          community.defaultSetting?.membershipEmail?.subject ?? defaultSubject
+        ),
+        message: mentionUtil.updateMentionInEditorState(
+          community.defaultSetting?.membershipEmail?.message ?? defaultMessage
+        ),
+      },
+    },
     hidden: {
       membershipYear,
       toItems,
+      toEmail,
     },
   };
 }
