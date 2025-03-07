@@ -1,25 +1,23 @@
 import { cn } from '@heroui/react';
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { FlatButton } from '~/view/base/flat-button';
-import { useIsFilterSpecified } from './use-hook-form';
 
 interface Props {
   className?: string;
-  disclosure: UseDisclosureReturn;
+  openDrawer: () => void;
 }
 
-export const FilterButton: React.FC<Props> = ({ className, disclosure }) => {
-  const { filterSpecified } = useIsFilterSpecified();
-  const { onOpen } = disclosure;
+export const FilterButton: React.FC<Props> = ({ className, openDrawer }) => {
+  const { isFilterSpecified } = useFilterBarContext();
 
   return (
     <FlatButton
       icon="filter"
       className={cn({
-        'text-success': filterSpecified,
+        'text-success': isFilterSpecified,
       })}
-      onClick={onOpen}
+      onClick={openDrawer}
     />
   );
 };

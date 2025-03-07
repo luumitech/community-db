@@ -1,15 +1,17 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../page-context';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog, type ModalArg } from './modal-dialog';
+import { SuccessDialog } from './success-dialog';
 import { type InputData } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
+export { type ModalArg } from './modal-dialog';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const RegisterEventMutation = graphql(/* GraphQL */ `
   mutation registerEvent($input: RegisterEventInput!) {
@@ -19,50 +21,72 @@ const RegisterEventMutation = graphql(/* GraphQL */ `
         id
         minYear
         maxYear
+        ...SendMail_CommunityModifyModal
       }
       property {
         ...PropertyId_MembershipEditor
+
+        # For sending confirmation email to members
+        occupantList {
+          firstName
+          lastName
+          email
+        }
       }
     }
   }
 `);
 
 interface Props {
-  className?: string;
+  modalControl: ModalControl;
 }
 
-export const RegisterEventModal: React.FC<Props> = ({ className }) => {
+export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(RegisterEventMutation);
-  const { registerEvent } = usePageContext();
-  const { formMethods } = registerEvent;
+  const { arg, disclosure } = modalControl;
+  const { sendMail } = usePageContext();
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
       const { hidden, ...input } = _input;
       await toast.promise(
-        updateProperty({
-          variables: { input },
-          update: (cache, result) => {
-            const communityId = result.data?.registerEvent.community.id;
-            if (communityId) {
-              evictCache(cache, 'CommunityStat', communityId);
-            }
-          },
-        }),
+        (async () => {
+          const result = await updateProperty({
+            variables: { input },
+            update: (cache, { data }) => {
+              const communityId = data?.registerEvent.community.id;
+              if (communityId) {
+                evictCache(cache, 'CommunityStat', communityId);
+              }
+            },
+          });
+          return { result, sendMail };
+        })(),
         {
           pending: 'Saving...',
-          // success: 'Saved',
+          ...(hidden.isFirstEvent &&
+            hidden.canRegister && {
+              success: {
+                autoClose: 10000, // 10s
+                render: ({ data, toastProps }) => (
+                  <SuccessDialog
+                    membershipYear={input.membership.year.toString()}
+                    registerEvent={data.result.data?.registerEvent}
+                    sendMail={data.sendMail}
+                    closeToast={toastProps.closeToast}
+                  />
+                ),
+              },
+            }),
         }
       );
     },
-    [updateProperty]
+    [updateProperty, sendMail]
   );
 
-  return (
-    <div className={className}>
-      <FormProvider {...formMethods}>
-        <ModalDialog onSave={onSave} />
-      </FormProvider>
-    </div>
-  );
+  if (arg == null) {
+    return null;
+  }
+
+  return <ModalDialog {...arg} disclosure={disclosure} onSave={onSave} />;
 };

@@ -2,6 +2,8 @@ import MailjetApi, { SendEmailV3_1 } from 'node-mailjet';
 import { env } from '~/lib/env-cfg';
 import { Logger } from '~/lib/logger';
 
+export { type SendEmailV3_1 } from 'node-mailjet';
+
 const logger = Logger('mailjet');
 
 interface MailjetOpt {

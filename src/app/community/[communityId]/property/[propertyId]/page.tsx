@@ -21,6 +21,7 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
     communityFromId(id: $communityId) {
       id
       ...CommunityId_CommunityModifyModal
+      ...SendMail_CommunityModifyModal
       propertyFromId(id: $propertyId) {
         id
         updatedAt

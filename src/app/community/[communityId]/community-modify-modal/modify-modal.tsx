@@ -1,5 +1,7 @@
 import { Tab, Tabs } from '@heroui/tabs';
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -16,20 +18,28 @@ import { PaymentMethodListEditor } from './payment-method-list-editor';
 import { TicketListEditor } from './ticket-list-editor';
 import {
   InputData,
-  useHookFormContext,
-  type UseHookFormWithDisclosureResult,
+  useHookForm,
+  type ModifyFragmentType,
 } from './use-hook-form';
 
-interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+export interface ModalArg {
+  community: ModifyFragmentType;
+}
+
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
-  const { community, disclosure } = hookForm;
+export const ModifyModal: React.FC<Props> = ({
+  community: fragment,
+  disclosure,
+  onSave,
+}) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formState, handleSubmit } = useHookFormContext();
+  const { formMethods, community } = useHookForm(fragment);
+  const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
@@ -56,60 +66,67 @@ export const ModifyModal: React.FC<Props> = ({ hookForm, onSave }) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <ModalContent>
-          {(closeModal) => (
-            <>
-              <ModalHeader className="flex justify-between">
-                Edit Community
-              </ModalHeader>
-              <ModalBody>
-                <Tabs
-                  aria-label="Edit Community Options"
-                  classNames={{
-                    tabList:
-                      'gap-6 w-full relative rounded-none p-0 border-b border-divider',
-                    tab: 'max-w-fit px-0 h-12',
-                  }}
-                  color="primary"
-                  variant="underlined"
-                >
-                  <Tab key="generalTab" title="General">
-                    <GeneralTab />
-                  </Tab>
-                  <Tab key="eventTab" title="Events">
-                    <EventListEditor />
-                  </Tab>
-                  <Tab key="ticketListTab" title="Tickets">
-                    <TicketListEditor />
-                  </Tab>
-                  <Tab key="paymentMethodTab" title="Payment Methods">
-                    <PaymentMethodListEditor />
-                  </Tab>
-                </Tabs>
-              </ModalBody>
-              <ModalFooter className="flex items-center justify-between">
-                <LastModified
-                  updatedAt={community.updatedAt}
-                  updatedBy={community.updatedBy}
-                />
-                <div className="flex items-center gap-2">
-                  <Button variant="bordered" onPress={closeModal}>
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(closeModal) => (
+              <>
+                <ModalHeader className="flex justify-between">
+                  Edit Community
+                </ModalHeader>
+                <ModalBody>
+                  <Tabs
+                    aria-label="Edit Community Options"
+                    classNames={{
+                      tabList:
+                        'gap-6 w-full relative rounded-none p-0 border-b border-divider',
+                      tab: 'max-w-fit px-0 h-12',
+                    }}
                     color="primary"
-                    isDisabled={!formState.isDirty || pending}
+                    variant="underlined"
                   >
-                    Save
-                  </Button>
-                </div>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Form>
+                    <Tab key="generalTab" title="General">
+                      <GeneralTab />
+                    </Tab>
+                    <Tab key="eventTab" title="Events">
+                      <EventListEditor />
+                    </Tab>
+                    <Tab key="ticketListTab" title="Tickets">
+                      <TicketListEditor />
+                    </Tab>
+                    <Tab key="paymentMethodTab" title="Payment Methods">
+                      <PaymentMethodListEditor />
+                    </Tab>
+                  </Tabs>
+                </ModalBody>
+                <ModalFooter className="flex items-center justify-between">
+                  <LastModified
+                    updatedAt={community.updatedAt}
+                    updatedBy={community.updatedBy}
+                  />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="bordered"
+                      isDisabled={pending}
+                      onPress={closeModal}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      isDisabled={!isDirty}
+                      isLoading={pending}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Form>
+      </FormProvider>
     </Modal>
   );
 };

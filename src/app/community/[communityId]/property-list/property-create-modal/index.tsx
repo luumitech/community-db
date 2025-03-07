@@ -1,21 +1,16 @@
 import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/navigation';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
-import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
-import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { CreateModal } from './create-modal';
-import {
-  type InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { CreateModal, type ModalArg } from './create-modal';
+import { SuccessDialog } from './success-dialog';
+import { type InputData } from './use-hook-form';
 
-export {
-  useHookFormWithDisclosure,
-  type CreateFragmentType,
-} from './use-hook-form';
+export { type ModalArg } from './create-modal';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyCreate($input: PropertyCreateInput!) {
@@ -30,51 +25,45 @@ const PropertyMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+  modalControl: ModalControl;
 }
 
-export const PropertyCreateModal: React.FC<Props> = ({ hookForm }) => {
-  const router = useRouter();
+export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
   const [createProperty] = useMutation(PropertyMutation);
-  const { formMethods, community } = hookForm;
+  const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
-      if (!formMethods.formState.isDirty) {
-        return;
-      }
-
       await toast.promise(
         createProperty({
           variables: { input },
-          refetchQueries: [
-            // Adding property require refetching property list to get the new
-            // property
-            { query: CommunityFromIdDocument, variables: { id: community.id } },
-          ],
-          onCompleted: (result) => {
-            router.push(
-              appPath('property', {
-                path: {
-                  communityId: community.id,
-                  propertyId: result.propertyCreate.id,
-                },
-              })
-            );
+          update: (cache, result) => {
+            // Adding property will disrupt the existing property list because the new entry
+            // could be anywhere in the list, so wipe the cache, so property list can be
+            // retrieved again
+            evictCache(cache, 'Community', input.communityId);
           },
         }),
         {
           pending: 'Creating...',
-          success: 'Created',
+          success: {
+            render: ({ data, toastProps }) => (
+              <SuccessDialog
+                communityId={input.communityId}
+                property={data.data?.propertyCreate}
+                closeToast={toastProps.closeToast}
+              />
+            ),
+          },
         }
       );
     },
-    [formMethods.formState, createProperty, router, community.id]
+    [createProperty]
   );
 
-  return (
-    <FormProvider {...formMethods}>
-      <CreateModal hookForm={hookForm} onSave={onSave} />
-    </FormProvider>
-  );
+  if (arg == null) {
+    return null;
+  }
+
+  return <CreateModal {...arg} disclosure={disclosure} onSave={onSave} />;
 };

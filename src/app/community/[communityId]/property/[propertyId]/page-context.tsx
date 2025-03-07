@@ -1,22 +1,23 @@
 import React from 'react';
 import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal';
 import * as occupantEditorModal from './occupant-editor-modal';
 import * as propertyDeleteModal from './property-delete-modal';
 import * as propertyModifyModal from './property-modify-modal';
 import * as registerEventModal from './register-event-modal';
+import * as sendMailModal from './send-mail-modal';
 
 type ContextT = Readonly<{
   community: CommunityEntry;
   property: PropertyEntry;
-  occupantEditor: occupantEditorModal.UseHookFormWithDisclosureResult;
-  propertyModify: propertyModifyModal.UseHookFormWithDisclosureResult;
-  membershipEditor: membershipEditorModal.UseHookFormWithDisclosureResult;
-  propertyDelete: propertyDeleteModal.UseHookFormWithDisclosureResult;
-  registerEvent: registerEventModal.UseHookFormWithDisclosureResult;
-  communityModify: communityModifyModal.UseHookFormWithDisclosureResult;
+  occupantEditor: occupantEditorModal.ModalControl;
+  propertyModify: propertyModifyModal.ModalControl;
+  membershipEditor: membershipEditorModal.ModalControl;
+  propertyDelete: propertyDeleteModal.ModalControl;
+  registerEvent: registerEventModal.ModalControl;
+  communityModify: communityModifyModal.ModalControl;
+  sendMail: sendMailModal.ModalControl;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -29,21 +30,13 @@ interface Props {
 }
 
 export function PageProvider({ community, property, ...props }: Props) {
-  const { communityUi } = useAppContext();
-  const { yearSelected } = communityUi;
-  const occupantEditor =
-    occupantEditorModal.useHookFormWithDisclosure(property);
-  const propertyModify =
-    propertyModifyModal.useHookFormWithDisclosure(property);
-  const membershipEditor = membershipEditorModal.useHookFormWithDisclosure(
-    property,
-    yearSelected
-  );
-  const propertyDelete =
-    propertyDeleteModal.useHookFormWithDisclosure(property);
-  const registerEvent = registerEventModal.useHookFormWithDisclosure(property);
-  const communityModify =
-    communityModifyModal.useHookFormWithDisclosure(community);
+  const occupantEditor = occupantEditorModal.useModalControl();
+  const propertyModify = propertyModifyModal.useModalControl();
+  const membershipEditor = membershipEditorModal.useModalControl();
+  const propertyDelete = propertyDeleteModal.useModalControl();
+  const registerEvent = registerEventModal.useModalControl();
+  const communityModify = communityModifyModal.useModalControl();
+  const sendMail = sendMailModal.useModalControl();
 
   return (
     <Context.Provider
@@ -56,6 +49,7 @@ export function PageProvider({ community, property, ...props }: Props) {
         propertyDelete,
         registerEvent,
         communityModify,
+        sendMail,
       }}
       {...props}
     />

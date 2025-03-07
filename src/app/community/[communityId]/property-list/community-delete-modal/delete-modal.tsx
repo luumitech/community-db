@@ -1,3 +1,4 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import {
@@ -7,29 +8,37 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { type UseHookFormWithDisclosureResult } from './use-hook-form';
+import { useHookForm, type DeleteFragmentType } from './use-hook-form';
 
-interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
-  onDelete: () => Promise<void>;
+export interface ModalArg {
+  community: DeleteFragmentType;
 }
 
-export const DeleteModal: React.FC<Props> = ({ hookForm, onDelete }) => {
-  const { disclosure, community } = hookForm;
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
+  onDelete: (communityId: string) => Promise<void>;
+}
+
+export const DeleteModal: React.FC<Props> = ({
+  community: fragment,
+  disclosure,
+  onDelete,
+}) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
+  const { community } = useHookForm(fragment);
 
   const onSubmit = React.useCallback(
     async () =>
       startTransition(async () => {
         try {
-          await onDelete();
+          await onDelete(community.id);
           onClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onDelete, onClose]
+    [onDelete, community.id, onClose]
   );
 
   return (
@@ -59,8 +68,8 @@ export const DeleteModal: React.FC<Props> = ({ hookForm, onDelete }) => {
               <Button
                 color="danger"
                 confirmation
-                confirmationArg={{ bodyText: 'Are you sure?' }}
-                isDisabled={pending}
+                confirmationArg={{ body: 'Are you sure?' }}
+                isLoading={pending}
                 onPress={onSubmit}
               >
                 Delete

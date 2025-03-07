@@ -1,10 +1,9 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { type AccessEntry } from './_type';
-import { NewAccessModal, useHookFormWithDisclosure } from './new-access-modal';
+import { NewAccessModal, useModalControl } from './new-access-modal';
 
 interface Props {
   className?: string;
@@ -17,18 +16,18 @@ export const NewAccessButton: React.FC<Props> = ({
   communityId,
   accessList,
 }) => {
-  const hookForm = useHookFormWithDisclosure(communityId, accessList);
+  const modalControl = useModalControl();
 
   return (
     <div className={cn(className)}>
       <Button
         color="primary"
         endContent={<Icon icon="person-add" />}
-        onPress={hookForm.disclosure.onOpen}
+        onPress={() => modalControl.open({ communityId, accessList })}
       >
         Add user...
       </Button>
-      <NewAccessModal hookForm={hookForm} />
+      <NewAccessModal modalControl={modalControl} />
     </div>
   );
 };

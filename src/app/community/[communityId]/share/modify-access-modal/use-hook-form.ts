@@ -1,11 +1,9 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { type AccessEntry } from '../_type';
 
 export const ModifyFragment = graphql(/* GraphQL */ `
   fragment AccessList_Modify on Access {
@@ -17,14 +15,7 @@ export const ModifyFragment = graphql(/* GraphQL */ `
     role
   }
 `);
-
-export const AccessModifyMutation = graphql(/* GraphQL */ `
-  mutation accessModify($input: AccessModifyInput!) {
-    accessModify(input: $input) {
-      ...AccessList_Modify
-    }
-  }
-`);
+export type ModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 function schema() {
   return z.object({
@@ -38,8 +29,7 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultInputData(fragment: AccessEntry): InputData {
-  const access = getFragment(ModifyFragment, fragment);
+function defaultInputData(access: GQL.AccessList_ModifyFragment): InputData {
   return {
     self: {
       id: access.id,
@@ -49,34 +39,16 @@ function defaultInputData(fragment: AccessEntry): InputData {
   };
 }
 
-export function useHookFormWithDisclosure(fragment: AccessEntry) {
-  const defaultValues = React.useMemo(
-    () => defaultInputData(fragment),
-    [fragment]
-  );
+export function useHookForm(fragment: ModifyFragmentType) {
+  const access = getFragment(ModifyFragment, fragment);
+  const defaultValues = React.useMemo(() => defaultInputData(access), [access]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
 
-  /**
-   * When modal is open, sync form value with latest default values derived from
-   * fragment
-   */
-  const onModalOpen = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onOpen: onModalOpen,
-  });
-
-  return { disclosure, formMethods, fragment };
+  return { formMethods, access };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();

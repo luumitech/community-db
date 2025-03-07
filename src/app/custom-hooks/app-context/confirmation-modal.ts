@@ -1,12 +1,15 @@
 import React from 'react';
-import { useConfirmationModal } from '~/view/base/confirmation-modal/helper';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 
 export type ConfirmationState = Readonly<{
-  confirmationModal: ReturnType<typeof useConfirmationModal>;
+  confirmationModal: ReturnType<
+    typeof useDisclosureWithArg<ConfirmationModalArg>
+  >;
 }>;
 
 export function useConfirmationModalContext() {
-  const confirmationModal = useConfirmationModal();
+  const confirmationModal = useDisclosureWithArg<ConfirmationModalArg>();
 
   const contextValue = React.useMemo<ConfirmationState>(
     () => ({ confirmationModal }),

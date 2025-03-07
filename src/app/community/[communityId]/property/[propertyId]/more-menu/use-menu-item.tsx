@@ -21,40 +21,41 @@ export function useMenuItem() {
       ...baseMenuItem,
       {
         key: 'membershipEditor',
-        onPress: membershipEditor.disclosure.onOpen,
+        onPress: () => membershipEditor.open({}),
         children: 'Edit Membership Detail',
       },
       {
         key: 'occupantEditor',
-        onPress: occupantEditor.disclosure.onOpen,
+        onPress: () => occupantEditor.open({}),
         children: 'Edit Member Details',
         showDivider: true,
       },
       {
         key: 'modifyProperty',
-        onPress: propertyModify.disclosure.onOpen,
+        onPress: () => propertyModify.open({}),
         children: 'Modify Property',
       },
       {
         key: 'deleteProperty',
         className: 'text-danger',
-        onPress: propertyDelete.disclosure.onOpen,
+        onPress: () => propertyDelete.open({}),
         children: 'Delete Property',
       },
       {
         key: 'communityModify',
-        onPress: communityModify.disclosure.onOpen,
+        onPress: () => communityModify.open({ community }),
         endContent: <Icon icon="settings" />,
         children: 'Modify Community',
       },
     ];
   }, [
     baseMenuItem,
+    membershipEditor,
     occupantEditor,
     propertyModify,
-    membershipEditor,
     propertyDelete,
     communityModify,
+    community,
   ]);
 
   return menuItemList;

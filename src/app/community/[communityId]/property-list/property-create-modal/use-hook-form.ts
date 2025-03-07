@@ -1,4 +1,3 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
@@ -40,7 +39,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(fragment: CreateFragmentType) {
+export function useHookForm(fragment: CreateFragmentType) {
   const community = getFragment(CreateFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(community),
@@ -50,25 +49,9 @@ export function useHookFormWithDisclosure(fragment: CreateFragmentType) {
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
 
-  /**
-   * When modal is open, sync form value with latest default values derived from
-   * fragment
-   */
-  const onModalOpen = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onOpen: onModalOpen,
-  });
-
-  return { disclosure, formMethods, community };
+  return { formMethods, community };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();

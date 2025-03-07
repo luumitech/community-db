@@ -36,9 +36,8 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
             setValue(
               controlName,
               [
-                shortName,
-                // prefix each message with date
-                `${formatAsDate(new Date())}: ${line.trim()}\n`,
+                // prefix each message with `date(name):`
+                `${formatAsDate(new Date())}(${shortName}): ${line.trim()}`,
                 notes,
               ].join('\n'),
               { shouldDirty: true }

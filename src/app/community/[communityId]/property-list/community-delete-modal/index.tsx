@@ -1,16 +1,15 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { DeleteModal } from './delete-modal';
-import { type UseHookFormWithDisclosureResult } from './use-hook-form';
+import { DeleteModal, type ModalArg } from './delete-modal';
 
-export {
-  useHookFormWithDisclosure,
-  type DeleteFragmentType,
-} from './use-hook-form';
+export { type ModalArg } from './delete-modal';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation communityDelete($id: String!) {
@@ -21,39 +20,49 @@ const CommunityMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+  modalControl: ModalControl;
 }
 
-export const CommunityDeleteModal: React.FC<Props> = ({ hookForm }) => {
+export const CommunityDeleteModal: React.FC<Props> = ({ modalControl }) => {
   const router = useRouter();
   const [deleteCommunity] = useMutation(CommunityMutation);
-  const { community } = hookForm;
+  const { arg, disclosure } = modalControl;
 
-  const onDelete = React.useCallback(async () => {
-    await toast.promise(
-      deleteCommunity({
-        variables: { id: community.id },
-        onCompleted: () => {
-          router.push(appPath('communitySelect'));
-        },
-        update: (cache) => {
-          const normalizedId = cache.identify({
-            id: community.id,
-            __typename: 'Community',
-          });
-          /** Add timeout to make sure route is changed before updating the cache */
-          setTimeout(() => {
-            cache.evict({ id: normalizedId });
-            cache.gc();
-          }, 1000);
-        },
-      }),
-      {
-        pending: 'Deleting...',
-        success: 'Deleted',
-      }
-    );
-  }, [deleteCommunity, community, router]);
+  const onDelete = React.useCallback(
+    async (communityId: string) => {
+      await toast.promise(
+        deleteCommunity({
+          variables: { id: communityId },
+          onCompleted: () => {
+            router.push(appPath('communitySelect'));
+          },
+          update: (cache) => {
+            const normalizedId = cache.identify({
+              id: communityId,
+              __typename: 'Community',
+            });
+            /**
+             * Add timeout to make sure route is changed before updating the
+             * cache
+             */
+            setTimeout(() => {
+              cache.evict({ id: normalizedId });
+              cache.gc();
+            }, 1000);
+          },
+        }),
+        {
+          pending: 'Deleting...',
+          success: 'Deleted',
+        }
+      );
+    },
+    [deleteCommunity, router]
+  );
 
-  return <DeleteModal hookForm={hookForm} onDelete={onDelete} />;
+  if (arg == null) {
+    return null;
+  }
+
+  return <DeleteModal {...arg} disclosure={disclosure} onDelete={onDelete} />;
 };

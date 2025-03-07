@@ -1,30 +1,38 @@
 import { useMutation } from '@apollo/client';
 import { produce } from 'immer';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { CreateModal } from './create-modal';
-import {
-  AccessCreateMutation,
-  InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { CreateModal, type ModalArg } from './create-modal';
+import { InputData } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
+export { type ModalArg } from './create-modal';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
+
+const AccessCreateMutation = graphql(/* GraphQL */ `
+  mutation accessCreate($input: AccessCreateInput!) {
+    accessCreate(input: $input) {
+      id
+      ...AccessList_User
+      ...AccessList_Role
+      ...AccessList_Modify
+      ...AccessList_Delete
+    }
+  }
+`);
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+  modalControl: ModalControl;
 }
 
-export const NewAccessModal: React.FC<Props> = ({ hookForm }) => {
+export const NewAccessModal: React.FC<Props> = ({ modalControl }) => {
   const [createAccess] = useMutation(AccessCreateMutation);
-  const { formMethods, disclosure } = hookForm;
+  const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
-      if (!formMethods.formState.isDirty) {
-        return;
-      }
       const { hidden, ...input } = _input;
 
       await toast.promise(
@@ -48,12 +56,12 @@ export const NewAccessModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, createAccess]
+    [createAccess]
   );
 
-  return (
-    <FormProvider {...formMethods}>
-      <CreateModal disclosure={disclosure} onSave={onSave} />
-    </FormProvider>
-  );
+  if (arg == null) {
+    return null;
+  }
+
+  return <CreateModal {...arg} disclosure={disclosure} onSave={onSave} />;
 };

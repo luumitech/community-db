@@ -1,7 +1,7 @@
 import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
+import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 import { Icon, type IconProps } from '~/view/base/icon';
 
 type DivProps = React.DetailedHTMLProps<
@@ -41,6 +41,7 @@ export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
           open({
             ...confirmationArg,
             onConfirm: () => {
+              confirmationArg?.onConfirm?.();
               onClick?.(evt);
             },
           });

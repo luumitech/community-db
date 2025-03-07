@@ -16,7 +16,7 @@ export const EditMembershipButton: React.FC<Props> = ({ className }) => {
         className="text-primary"
         icon="edit"
         tooltip="Edit Membership Detail"
-        onClick={membershipEditor.disclosure.onOpen}
+        onClick={() => membershipEditor.open({})}
       />
     </div>
   );

@@ -1,14 +1,14 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog, type ModalArg } from './modal-dialog';
 import { InputData } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
+export { type ModalArg } from './modal-dialog';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const OccupantMutation = graphql(/* GraphQL */ `
   mutation occupantModify($input: PropertyModifyInput!) {
@@ -21,19 +21,14 @@ const OccupantMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: string;
+  modalControl: ModalControl;
 }
 
-export const OccupantEditorModal: React.FC<Props> = ({ className }) => {
-  const { occupantEditor } = usePageContext();
-  const { formMethods } = occupantEditor;
-  const { formState } = formMethods;
+export const OccupantEditorModal: React.FC<Props> = ({ modalControl }) => {
+  const { arg, disclosure } = modalControl;
   const [updateProperty] = useMutation(OccupantMutation);
 
   const onSave = async (input: InputData) => {
-    if (!formState.isDirty) {
-      return;
-    }
     await toast.promise(
       updateProperty({
         variables: { input },
@@ -45,11 +40,9 @@ export const OccupantEditorModal: React.FC<Props> = ({ className }) => {
     );
   };
 
-  return (
-    <div className={className}>
-      <FormProvider {...formMethods}>
-        <ModalDialog onSave={onSave} />
-      </FormProvider>
-    </div>
-  );
+  if (arg == null) {
+    return null;
+  }
+
+  return <ModalDialog {...arg} disclosure={disclosure} onSave={onSave} />;
 };

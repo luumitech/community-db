@@ -69,9 +69,7 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(
-  fragment: BatchPropertyModifyFragmentType
-) {
+export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
   const { defaultSetting } = useAppContext();
   const { filterArg } = useFilterBarContext();
   const community = getFragment(BatchPropertyModifyFragment, fragment);
@@ -83,25 +81,9 @@ export function useHookFormWithDisclosure(
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
 
-  /**
-   * When modal is open, sync form value with latest default values derived from
-   * fragment
-   */
-  const onModalOpen = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onOpen: onModalOpen,
-  });
-
-  return { disclosure, formMethods, community };
+  return { formMethods, community };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();

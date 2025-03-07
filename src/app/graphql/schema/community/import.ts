@@ -118,6 +118,17 @@ export async function communityImportTask(job: Job<CommunityJobArg>) {
 
   await job.touch(20);
 
+  /**
+   * It's possible to do the update in an interactive transaction
+   *
+   * See:
+   * https://www.prisma.io/docs/orm/prisma-client/queries/transactions#interactive-transactions
+   *
+   * But by default, interactive transaction timeouts after 5s, but we don't
+   * know how long an import action may take. So we decided not to do
+   * transaction here.
+   */
+
   await prisma.community.update({
     where: { id: community.id },
     data: {

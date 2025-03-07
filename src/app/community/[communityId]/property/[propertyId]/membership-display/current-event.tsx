@@ -24,7 +24,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
             className="h-10"
             isDisabled={!lastEventSelected}
             color="primary"
-            onPress={registerEvent.disclosure.onOpen}
+            onPress={() => registerEvent.open({})}
           >
             I&apos;m here!
           </ModalButton>

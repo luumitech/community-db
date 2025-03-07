@@ -61,7 +61,7 @@ export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
       disabled={fragment.isOwner}
       confirmation
       confirmationArg={{
-        bodyText: fragment.isSelf ? (
+        body: fragment.isSelf ? (
           <p>
             Are you sure you want to remove your own access? Once access is
             removed, you will no longer be able to view this database.

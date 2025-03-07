@@ -1,14 +1,16 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
-import { DeleteModal } from './delete-modal';
+import { DeleteModal, type ModalArg } from './delete-modal';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
+export { type ModalArg } from './delete-modal';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation propertyDelete($id: String!) {
@@ -18,40 +20,43 @@ const PropertyMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {}
+interface Props {
+  modalControl: ModalControl;
+}
 
-export const PropertyDeleteModal: React.FC<Props> = (props) => {
+export const PropertyDeleteModal: React.FC<Props> = ({ modalControl }) => {
   const router = useRouter();
   const [deleteProperty] = useMutation(PropertyMutation);
-  const { community, property } = usePageContext();
+  const { arg, disclosure } = modalControl;
 
-  const onDelete = React.useCallback(async () => {
-    await toast.promise(
-      deleteProperty({
-        variables: { id: property.id },
-        onCompleted: () => {
-          router.push(
-            appPath('propertyList', { path: { communityId: community.id } })
-          );
-        },
-        update: (cache) => {
-          const normalizedId = cache.identify({
-            id: property.id,
-            __typename: 'Property',
-          });
-          /** Add timeout to make sure route is changed before updating the cache */
-          setTimeout(() => {
-            cache.evict({ id: normalizedId });
-            cache.gc();
-          }, 1000);
-        },
-      }),
-      {
-        pending: 'Deleting...',
-        success: 'Deleted',
-      }
-    );
-  }, [deleteProperty, property, community, router]);
+  const onDelete = React.useCallback(
+    async (communityId: string, propertyId: string) => {
+      await toast.promise(
+        deleteProperty({
+          variables: { id: propertyId },
+          update: (cache) => {
+            router.push(appPath('propertyList', { path: { communityId } }));
+            /**
+             * Add timeout to make sure route is changed before updating the
+             * cache
+             */
+            setTimeout(() => {
+              evictCache(cache, 'Property', propertyId);
+            }, 1000);
+          },
+        }),
+        {
+          pending: 'Deleting...',
+          success: 'Deleted',
+        }
+      );
+    },
+    [deleteProperty, router]
+  );
 
-  return <DeleteModal onDelete={onDelete} />;
+  if (arg == null) {
+    return null;
+  }
+
+  return <DeleteModal {...arg} disclosure={disclosure} onDelete={onDelete} />;
 };

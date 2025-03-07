@@ -1,4 +1,3 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
@@ -8,13 +7,14 @@ import {
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
+import * as xtraArg from '~/custom-hooks/xtra-arg-context';
 import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
-import { type PropertyEntry } from '../_type';
 import { MembershipEditorFragment } from '../membership-editor-modal/use-hook-form';
+import { usePageContext } from '../page-context';
 
 function schema() {
   return z.object({
@@ -54,7 +54,7 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 /**
- * Attemp to find event given year and eventName
+ * Attempt to find event given year and eventName
  *
  * - Returns year (converted yearStr to number)
  * - Returns membership (if membership year is found)
@@ -117,8 +117,9 @@ function defaultInputData(
   };
 }
 
-export function useHookFormWithDisclosure(fragment: PropertyEntry) {
+export function useHookForm() {
   const { communityUi, defaultSetting } = useAppContext();
+  const { property: fragment } = usePageContext();
   const { yearSelected, lastEventSelected } = communityUi;
   const property = getFragment(MembershipEditorFragment, fragment);
   const findEventResult = React.useMemo(() => {
@@ -131,34 +132,21 @@ export function useHookFormWithDisclosure(fragment: PropertyEntry) {
     defaultValues,
     resolver: zodResolver(schema()),
   });
-  const { reset } = formMethods;
-
-  /**
-   * When modal is open, sync form value with latest default values derived from
-   * fragment
-   */
-  const onModalOpen = React.useCallback(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-  const disclosure = useDisclosure({
-    onOpen: onModalOpen,
-  });
 
   return {
-    disclosure,
     formMethods,
     property,
-    ticketList: findEventResult.event?.ticketList,
+    ticketList: findEventResult.event?.ticketList ?? [],
   };
 }
-
-export type UseHookFormWithDisclosureResult = ReturnType<
-  typeof useHookFormWithDisclosure
->;
 
 export function useHookFormContext() {
   return useFormContext<InputData>();
 }
+
+type HookFormXtraArgs = Omit<ReturnType<typeof useHookForm>, 'formMethods'>;
+export const XtraArgProvider = xtraArg.XtraArgProvider<HookFormXtraArgs>;
+export const useXtraArgContext = xtraArg.useXtraArgContext<HookFormXtraArgs>;
 
 export type TicketListFieldArray = UseFieldArrayReturn<
   InputData,

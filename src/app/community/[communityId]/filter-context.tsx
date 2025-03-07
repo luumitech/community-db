@@ -12,6 +12,9 @@ type ContextT = Readonly<{
   nonMemberYear: Set<string>;
   event: Set<string>;
 
+  /** Has Filter control been specified */
+  isFilterSpecified: boolean;
+
   /** Property filter arguments */
   filterArg: GQL.PropertyFilterInput;
 }>;
@@ -34,6 +37,12 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
   const [selectedMemberYearStr] = memberYear;
   const [selectedNonMemberYearStr] = nonMemberYear;
   const [selectedEvent] = event;
+
+  const isFilterSpecified = React.useMemo(() => {
+    return (
+      !!selectedMemberYearStr || !!selectedNonMemberYearStr || !!selectedEvent
+    );
+  }, [selectedMemberYearStr, selectedNonMemberYearStr, selectedEvent]);
 
   const filterArg = React.useMemo<GQL.PropertyFilterInput>(() => {
     const arg: GQL.PropertyFilterInput = {};
@@ -66,6 +75,7 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
         memberYear,
         nonMemberYear,
         event,
+        isFilterSpecified,
         filterArg,
       }}
       {...props}

@@ -4,6 +4,7 @@ import React from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { getCurrentYear } from '~/lib/date-util';
 import { lsFlags } from '~/lib/env-var';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
@@ -45,8 +46,8 @@ export const MemberCountChart: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (community) {
-      // Whenever new statistics are loaded, show yearly chart for the maxYear
-      onYearSelect?.(community.maxYear);
+      // Default selected year when new statistics are loaded
+      onYearSelect?.(Math.min(getCurrentYear(), community.maxYear));
     }
   }, [community, onYearSelect]);
 

@@ -1,15 +1,15 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
-import { ModalDialog } from './modal-dialog';
+import { ModalDialog, type ModalArg } from './modal-dialog';
 import { InputData } from './use-hook-form';
 
-export { useHookFormWithDisclosure } from './use-hook-form';
-export type { UseHookFormWithDisclosureResult } from './use-hook-form';
+export { type ModalArg } from './modal-dialog';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation membershipModify($input: PropertyModifyInput!) {
@@ -28,18 +28,14 @@ const PropertyMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: string;
+  modalControl: ModalControl;
 }
 
-export const MembershipEditorModal: React.FC<Props> = ({ className }) => {
+export const MembershipEditorModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { membershipEditor } = usePageContext();
-  const { formMethods } = membershipEditor;
-  const { formState } = formMethods;
+  const { arg, disclosure } = modalControl;
+
   const onSave = async (_input: InputData) => {
-    if (!formState.isDirty) {
-      return;
-    }
     const { hidden, ...input } = _input;
     await toast.promise(
       updateProperty({
@@ -58,11 +54,9 @@ export const MembershipEditorModal: React.FC<Props> = ({ className }) => {
     );
   };
 
-  return (
-    <div className={className}>
-      <FormProvider {...formMethods}>
-        <ModalDialog onSave={onSave} />
-      </FormProvider>
-    </div>
-  );
+  if (arg == null) {
+    return null;
+  }
+
+  return <ModalDialog {...arg} disclosure={disclosure} onSave={onSave} />;
 };

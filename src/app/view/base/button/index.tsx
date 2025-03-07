@@ -6,7 +6,7 @@ import {
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
-import { ConfirmationModalArg } from '~/view/base/confirmation-modal/helper';
+import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 
 export interface ButtonProps extends NextUIButtonProps {
   /**
@@ -59,7 +59,8 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
         if (showDialog) {
           open({
             ...confirmationArg,
-            onConfirm: async () => {
+            onConfirm: () => {
+              confirmationArg?.onConfirm?.();
               switch (type) {
                 case 'submit':
                   {

@@ -1,28 +1,31 @@
-import { Input, InputProps, cn } from '@heroui/react';
+import { Input, InputProps } from '@heroui/react';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
 import { FilterChip } from './filter-chip';
-import { FilterDrawer } from './filter-drawer';
-import { useHookFormWithDisclosure, type InputData } from './use-hook-form';
+import { FilterDrawer, type DrawerArg } from './filter-drawer';
+import { type InputData } from './use-hook-form';
+
+const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
 interface Props extends InputProps {
-  className?: string;
   onChange?: () => void;
 }
 
 export const PropertySearchBar: React.FC<Props> = ({
-  className,
   onChange,
-  ...props
+  ...inputProps
 }) => {
   const { communityUi } = useAppContext();
-  const { disclosure, formMethods } = useHookFormWithDisclosure();
+  const { arg, disclosure, open } = useDrawerControl();
   const { memberYear, nonMemberYear, event } = useFilterBarContext();
+  const [memberYearStr] = memberYear;
+  const [nonMemberYearStr] = nonMemberYear;
+  const [eventStr] = event;
 
   const setSearchText = (input?: string) => {
     communityUi.actions.setPropertyListSearch(input);
@@ -42,10 +45,17 @@ export const PropertySearchBar: React.FC<Props> = ({
     [memberYear, nonMemberYear, event, onChange]
   );
 
+  const openDrawer = React.useCallback(() => {
+    open({
+      memberYear: memberYearStr,
+      nonMemberYear: nonMemberYearStr,
+      event: eventStr,
+    });
+  }, [open, memberYearStr, nonMemberYearStr, eventStr]);
+
   return (
-    <FormProvider {...formMethods}>
+    <>
       <Input
-        className={className}
         placeholder="Search Address or Member Name"
         startContent={<Icon icon="search" />}
         // isClearable
@@ -61,8 +71,8 @@ export const PropertySearchBar: React.FC<Props> = ({
               disabled={!communityUi.propertyListSearch}
               onClick={() => setSearchText(undefined)}
             />
-            <FilterButton disclosure={disclosure} />
-            <FilterChip disclosure={disclosure} onChange={onFilterChange} />
+            <FilterButton openDrawer={openDrawer} />
+            <FilterChip openDrawer={openDrawer} />
           </div>
         }
         // endContent={
@@ -72,9 +82,15 @@ export const PropertySearchBar: React.FC<Props> = ({
         // }
         value={communityUi.propertyListSearch ?? ''}
         onValueChange={setSearchText}
-        {...props}
+        {...inputProps}
       />
-      <FilterDrawer disclosure={disclosure} onChange={onFilterChange} />
-    </FormProvider>
+      {arg != null && (
+        <FilterDrawer
+          {...arg}
+          disclosure={disclosure}
+          onFilterChange={onFilterChange}
+        />
+      )}
+    </>
   );
 };

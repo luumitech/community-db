@@ -1,19 +1,15 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { FormProvider } from '~/custom-hooks/hook-form';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { ModifyModal } from './modify-modal';
-import {
-  InputData,
-  type UseHookFormWithDisclosureResult,
-} from './use-hook-form';
+import { ModifyModal, type ModalArg } from './modify-modal';
+import { InputData } from './use-hook-form';
 
-export {
-  useHookFormWithDisclosure,
-  type BatchPropertyModifyFragmentType,
-} from './use-hook-form';
+export { type ModalArg } from './modify-modal';
+export const useModalControl = useDisclosureWithArg<ModalArg>;
+export type ModalControl = ReturnType<typeof useModalControl>;
 
 const BatchPropertyMutation = graphql(/* GraphQL */ `
   mutation batchPropertyModify($input: BatchPropertyModifyInput!) {
@@ -51,19 +47,15 @@ const BatchPropertyMutation = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  hookForm: UseHookFormWithDisclosureResult;
+  modalControl: ModalControl;
 }
 
-export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
+export const BatchPropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(BatchPropertyMutation);
-  const { formMethods } = hookForm;
+  const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
     async (input: InputData) => {
-      if (!formMethods.formState.isDirty) {
-        return;
-      }
-
       await toast.promise(
         updateProperty({
           variables: { input },
@@ -80,12 +72,12 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ hookForm }) => {
         }
       );
     },
-    [formMethods.formState, updateProperty]
+    [updateProperty]
   );
 
-  return (
-    <FormProvider {...formMethods}>
-      <ModifyModal hookForm={hookForm} onSave={onSave} />
-    </FormProvider>
-  );
+  if (arg == null) {
+    return null;
+  }
+
+  return <ModifyModal {...arg} disclosure={disclosure} onSave={onSave} />;
 };

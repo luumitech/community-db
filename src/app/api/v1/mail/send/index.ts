@@ -1,9 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import * as R from 'remeda';
 import { env } from '~/lib/env-cfg';
-import { appTitle } from '~/lib/env-var';
 import { Logger } from '~/lib/logger';
-import { Mailjet } from '~/lib/mailjet';
+import { Mailjet, type SendEmailV3_1 } from '~/lib/mailjet';
 import { verifyRecaptchaV3 } from '~/lib/recaptcha';
 import type { SInput, SOutput } from './contract';
 
@@ -16,25 +15,23 @@ const logger = Logger('/mail/send');
  * new Odoo sales orders to OnFleet system
  */
 export async function send(req: SInput): Promise<SOutput> {
-  const { message } = req.body;
-  const { contactEmail, contactName, subject, recaptchaToken } = req.query;
+  const { recaptchaToken, to, message } = req.body;
+  const { subject } = req.query;
 
   // verify recaptcha token
   await verifyRecaptchaV3(recaptchaToken);
 
+  // Construct email recipient list
+  const To: SendEmailV3_1.EmailAddressTo[] = R.isEmpty(to ?? [])
+    ? [{ Email: env.EMAIL_CONTACT_INFO }]
+    : to!.map(({ email, name }) => ({ Email: email, Name: name }));
+
   const mailjet = await Mailjet.fromConfig();
   await mailjet.sendEmails([
     {
-      To: [{ Email: env.EMAIL_CONTACT_INFO }],
+      To,
       Subject: subject,
-      TextPart: [
-        `Source: ${appTitle}`,
-        'Contact Info:',
-        `Name: ${R.isEmpty(contactName) ? '(n/a)' : contactName}`,
-        `Email: ${contactEmail}`,
-        '',
-        message,
-      ].join('\n'),
+      TextPart: message,
     },
   ]);
 

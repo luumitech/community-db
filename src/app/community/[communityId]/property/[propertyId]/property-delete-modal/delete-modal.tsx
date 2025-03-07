@@ -1,3 +1,4 @@
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import {
@@ -8,28 +9,32 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { usePageContext } from '../page-context';
+import { useHookForm } from './use-hook-form';
 
-interface Props {
-  onDelete: () => Promise<void>;
+export interface ModalArg {}
+
+interface Props extends ModalArg {
+  disclosure: UseDisclosureReturn;
+  onDelete: (communityId: string, propertyId: string) => Promise<void>;
 }
 
-export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
-  const { propertyDelete } = usePageContext();
-  const { disclosure, property } = propertyDelete;
+export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
+  const { community } = usePageContext();
+  const { property } = useHookForm();
 
   const onSubmit = React.useCallback(
     async () =>
       startTransition(async () => {
         try {
-          await onDelete();
+          await onDelete(community.id, property.id);
           onClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onDelete, onClose]
+    [onDelete, onClose, community, property]
   );
 
   return (
@@ -59,8 +64,8 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
               <Button
                 color="danger"
                 confirmation
-                confirmationArg={{ bodyText: 'Are you sure?' }}
-                isDisabled={pending}
+                confirmationArg={{ body: 'Are you sure?' }}
+                isLoading={pending}
                 onPress={onSubmit}
               >
                 Delete

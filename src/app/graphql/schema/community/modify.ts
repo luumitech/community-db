@@ -8,9 +8,17 @@ import { UpdateInput } from '../common';
 import { NameListUtil } from './name-list-util';
 import { getCommunityEntry } from './util';
 
+const EmailSettingInput = builder.inputType('EmailSettingInput', {
+  fields: (t) => ({
+    subject: t.string({ required: true }),
+    message: t.string({ required: true }),
+  }),
+});
+
 const DefaultSettingInput = builder.inputType('DefaultSettingInput', {
   fields: (t) => ({
     membershipFee: t.string(),
+    membershipEmail: t.field({ type: EmailSettingInput }),
   }),
 });
 
@@ -57,9 +65,6 @@ builder.mutationField('communityModify', (t) =>
         select: {
           id: true,
           updatedAt: true,
-          eventList: true,
-          ticketList: true,
-          paymentMethodList: true,
         },
       });
       if (entry.updatedAt.toISOString() !== self.updatedAt) {
@@ -76,6 +81,7 @@ builder.mutationField('communityModify', (t) =>
         eventList,
         ticketList,
         paymentMethodList,
+        defaultSetting,
         ...optionalInput
       } = input;
 
@@ -103,6 +109,14 @@ builder.mutationField('communityModify', (t) =>
           ...(!!paymentMethodList && {
             paymentMethodList:
               nameListUtil.getCompletePaymentMethodList(paymentMethodList),
+          }),
+          // defaultSetting is a composite type, we want to to be able to modify
+          // individual properties without overriding the entire structure
+          // See: https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/composite-types#changing-composite-types-within-update-and-updatemany
+          ...(!!defaultSetting && {
+            defaultSetting: {
+              upsert: { set: defaultSetting, update: defaultSetting },
+            },
           }),
           ...optionalInput,
         },
