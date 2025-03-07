@@ -89,7 +89,7 @@ export const ModalDialog: React.FC<Props> = ({
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Compose Membership Confirmation Email</ModalHeader>
+                <ModalHeader>Compose Confirmation Email</ModalHeader>
                 <ModalBody>
                   <MailForm />
                 </ModalBody>

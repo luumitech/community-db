@@ -69,8 +69,8 @@ export function useGenerateEmail() {
       {
         pending: 'Generating Email list...',
         success: {
-          render: ({ data }) => <SuccessDialog propertyList={data} />,
           autoClose: false,
+          render: ({ data }) => <SuccessDialog propertyList={data} />,
         },
       },
       { toastId: 'generate-email' }

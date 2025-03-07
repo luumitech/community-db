@@ -68,11 +68,12 @@ export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
             hidden.canRegister && {
               success: {
                 autoClose: 10000, // 10s
-                render: ({ data }) => (
+                render: ({ data, toastProps }) => (
                   <SuccessDialog
                     membershipYear={input.membership.year.toString()}
                     registerEvent={data.result.data?.registerEvent}
                     sendMail={data.sendMail}
+                    closeToast={toastProps.closeToast}
                   />
                 ),
               },

@@ -7,12 +7,14 @@ interface Props {
   className?: string;
   communityId: string;
   property?: GQL.PropertyCreateMutation['propertyCreate'];
+  closeToast?: () => void;
 }
 
 export const SuccessDialog: React.FC<Props> = ({
   className,
   communityId,
   property,
+  closeToast,
 }) => {
   if (!property) {
     return null;
@@ -32,6 +34,7 @@ export const SuccessDialog: React.FC<Props> = ({
             propertyId: property.id,
           },
         })}
+        onPress={closeToast}
       >
         {property.address}
       </Button>

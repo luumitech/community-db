@@ -47,10 +47,11 @@ export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
         {
           pending: 'Creating...',
           success: {
-            render: ({ data }) => (
+            render: ({ data, toastProps }) => (
               <SuccessDialog
                 communityId={input.communityId}
                 property={data.data?.propertyCreate}
+                closeToast={toastProps.closeToast}
               />
             ),
           },

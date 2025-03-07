@@ -9,6 +9,7 @@ interface Props {
   membershipYear: string;
   registerEvent?: GQL.RegisterEventMutation['registerEvent'];
   sendMail: ModalControl;
+  closeToast?: () => void;
 }
 
 export const SuccessDialog: React.FC<Props> = ({
@@ -16,6 +17,7 @@ export const SuccessDialog: React.FC<Props> = ({
   membershipYear,
   registerEvent,
   sendMail,
+  closeToast,
 }) => {
   if (!registerEvent) {
     return null;
@@ -41,15 +43,16 @@ export const SuccessDialog: React.FC<Props> = ({
         variant="faded"
         size="sm"
         endContent={<Icon icon="email" />}
-        onPress={() =>
+        onPress={() => {
+          closeToast?.();
           sendMail.open({
             community: registerEvent.community,
             membershipYear,
             occupantList,
-          })
-        }
+          });
+        }}
       >
-        Send Membership Confirmation
+        Compose Confirmation Email
       </Button>
     </div>
   );
