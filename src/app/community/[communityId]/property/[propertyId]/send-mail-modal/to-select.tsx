@@ -2,7 +2,7 @@ import { Chip, Select, SelectItem, SelectProps, cn } from '@heroui/react';
 import { produce } from 'immer';
 import React from 'react';
 import { MentionUtil } from '~/view/base/rich-text-editor';
-import { createMentionMapping } from './editor-util';
+import { createMentionMapping, createMentionValues } from './editor-util';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -30,8 +30,13 @@ export const ToSelect: React.FC<Props> = ({ className }) => {
           // editor do not flag its content as changed due to the change in the
           // mention text, so we reset the message EditorState with the new
           // mention value.
+          const mentionValues = createMentionValues(
+            membershipYear,
+            toItems,
+            newToEmail
+          );
           const mentionUtil = new MentionUtil(
-            createMentionMapping(membershipYear, toItems, newToEmail)
+            createMentionMapping(mentionValues)
           );
           reset((defaultValues) => {
             return produce(defaultValues, (draft) => {

@@ -5,7 +5,8 @@ import { CustomLexical, type CustomLexicalProps } from './custom-lexical';
 
 export { MentionUtil } from './mention-util';
 
-interface Props<TFieldValues> extends Omit<CustomLexicalProps, 'onEditorInit'> {
+export interface RichTextEditorProps<TFieldValues>
+  extends Omit<CustomLexicalProps, 'onEditorInit'> {
   controlName: Path<TFieldValues>;
   onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
 }
@@ -20,7 +21,7 @@ export function RichTextEditor<TFieldValues>({
   controlName,
   onEditorChange,
   ...props
-}: Props<TFieldValues>) {
+}: RichTextEditorProps<TFieldValues>) {
   const { getValues, setValue } = useFormContext();
   const _editorState = getValues<string>(controlName);
 

@@ -5,7 +5,7 @@ import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { toast } from '~/view/base/toastify';
-import { createMentionMapping } from './editor-util';
+import { createMentionMapping, createMentionValues } from './editor-util';
 import { ModalDialog, type ModalArg } from './modal-dialog';
 import { type InputData } from './use-hook-form';
 
@@ -35,13 +35,12 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
       defaultSetting: { membershipEmail },
       hidden,
     } = input;
-    const mentionUtil = new MentionUtil(
-      createMentionMapping(
-        hidden.membershipYear,
-        hidden.toItems,
-        hidden.toEmail
-      )
+    const mentionValues = createMentionValues(
+      hidden.membershipYear,
+      hidden.toItems,
+      hidden.toEmail
     );
+    const mentionUtil = new MentionUtil(createMentionMapping(mentionValues));
     const subject = mentionUtil.toPlainText(membershipEmail.subject);
     const message = mentionUtil.toPlainText(membershipEmail.message);
     const url = queryString.stringifyUrl({
@@ -53,10 +52,23 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
-      const { hidden, ...input } = _input;
+      const { hidden, defaultSetting, ...input } = _input;
+      // Replace mention values with placeholder (so no sensitive info in database)
+      const mentionUtil = new MentionUtil(createMentionMapping());
+      const { subject, message } = defaultSetting.membershipEmail;
       const result = await toast.promise(
         updateCommunity({
-          variables: { input },
+          variables: {
+            input: {
+              ...input,
+              defaultSetting: {
+                membershipEmail: {
+                  subject: mentionUtil.updateMentionInEditorState(subject),
+                  message: mentionUtil.updateMentionInEditorState(message),
+                },
+              },
+            },
+          },
         }),
         {
           pending: 'Saving...',

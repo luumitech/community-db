@@ -5,7 +5,7 @@ import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import { z, zz } from '~/lib/zod';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { type OccupantList } from './_type';
-import { createMentionMapping } from './editor-util';
+import { createMentionMapping, createMentionValues } from './editor-util';
 
 const ModifyFragment = graphql(/* GraphQL */ `
   fragment SendMail_CommunityModifyModal on Community {
@@ -119,7 +119,7 @@ const defaultMessage = JSON.stringify({
           },
           {
             trigger: '@',
-            value: 'member names',
+            value: 'o',
             data: {
               varname: 'Member Names',
             },
@@ -167,7 +167,7 @@ const defaultMessage = JSON.stringify({
           },
           {
             trigger: '@',
-            value: 'year',
+            value: 'o',
             data: {
               varname: 'Membership Year',
             },
@@ -250,9 +250,8 @@ export function defaultInputData(
     }
   });
   const toEmail = toItems.map(({ email }) => email).join(',');
-  const mentionUtil = new MentionUtil(
-    createMentionMapping(membershipYear, toItems, toEmail)
-  );
+  const mentionValues = createMentionValues(membershipYear, toItems, toEmail);
+  const mentionUtil = new MentionUtil(createMentionMapping(mentionValues));
 
   return {
     self: {

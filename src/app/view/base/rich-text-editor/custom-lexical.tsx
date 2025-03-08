@@ -15,6 +15,7 @@ import {
 } from 'lexical-beautiful-mentions';
 import React from 'react';
 import { CustomMenu, CustomMenuItem } from './custom-menu';
+import { SingleLinePlugin } from './single-line-plugin';
 
 export interface CustomLexicalProps {
   className?: string;
@@ -24,6 +25,8 @@ export interface CustomLexicalProps {
   mentionItems?: Record<string, BeautifulMentionsItem[]>;
   onEditorInit?: (editor: LexicalEditor) => void;
   onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
+  /** One line only, i.e. disallow new lines */
+  singleLineOnly?: boolean;
 }
 
 export const CustomLexical: React.FC<CustomLexicalProps> = ({
@@ -34,6 +37,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
   mentionItems,
   onEditorInit,
   onEditorChange,
+  singleLineOnly,
 }) => {
   const initialConfig = {
     namespace: 'editor',
@@ -111,6 +115,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
             autoSpace={false}
           />
         )}
+        {singleLineOnly && <SingleLinePlugin />}
       </LexicalComposer>
     </div>
   );
