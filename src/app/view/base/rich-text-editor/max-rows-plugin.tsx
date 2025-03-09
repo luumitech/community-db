@@ -3,13 +3,17 @@ import { mergeRegister } from '@lexical/utils';
 import { LineBreakNode, RootNode } from 'lexical';
 import React from 'react';
 
-export function SingleLinePlugin() {
+interface Props {
+  maxRows: number;
+}
+
+export const MaxRowsPlugin: React.FC<Props> = ({ maxRows }) => {
   const [editor] = useLexicalComposerContext();
 
   React.useEffect(() => {
     return mergeRegister(
       editor.registerNodeTransform(RootNode, (rootNode: RootNode) => {
-        if (rootNode.getChildrenSize() <= 1) {
+        if (rootNode.getChildrenSize() <= maxRows) {
           return;
         }
         rootNode.getLastChild()?.remove();
@@ -18,7 +22,7 @@ export function SingleLinePlugin() {
         node.remove();
       })
     );
-  }, [editor]);
+  }, [editor, maxRows]);
 
   return null;
-}
+};

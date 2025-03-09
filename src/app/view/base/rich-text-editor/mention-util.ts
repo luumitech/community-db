@@ -50,16 +50,16 @@ export class MentionUtil {
   /**
    * Serialize editorState node to plain text
    *
-   * - Handles substitutions correctly whenever mention node is encountered
+   * - Mention nodes are converted using its stored value
    */
-  toPlainText(serializedEditorState: string | SerializedEditorState) {
+  static toPlainText(serializedEditorState: string | SerializedEditorState) {
     const editor = createEditor({
       nodes: [BeautifulMentionNode],
     });
     const editorState = editor.parseEditorState(serializedEditorState);
     const text = editorState.read(() => {
       const rootNode = $getRoot();
-      return this.lexicalNodeToPlainText(rootNode);
+      return MentionUtil.lexicalNodeToPlainText(rootNode);
     });
     return text;
   }
@@ -122,23 +122,23 @@ export class MentionUtil {
   }
 
   /** Resurse through all nodes, and return text content */
-  private lexicalNodeToPlainText(node: LexicalNode) {
+  private static lexicalNodeToPlainText(node: LexicalNode) {
     let textContent = '';
 
     if (node instanceof RootNode) {
       const children = node.getChildren();
       textContent += children
-        .map((child) => this.lexicalNodeToPlainText(child))
+        .map((child) => MentionUtil.lexicalNodeToPlainText(child))
         .join('');
     } else if (node instanceof ParagraphNode) {
       const children = node.getChildren();
       textContent += children
-        .map((child) => this.lexicalNodeToPlainText(child))
+        .map((child) => MentionUtil.lexicalNodeToPlainText(child))
         .join('');
       textContent += '\n';
     } else if (node instanceof BeautifulMentionNode) {
       // Only keep the text value, not the trigger character
-      const subValue = this.findMentionValue(node);
+      const subValue = node.getValue();
       if (subValue) {
         textContent += subValue;
       }

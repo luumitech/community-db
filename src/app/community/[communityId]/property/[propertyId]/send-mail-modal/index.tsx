@@ -5,7 +5,7 @@ import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { toast } from '~/view/base/toastify';
-import { createMentionMapping, createMentionValues } from './editor-util';
+import { createMentionMapping } from './editor-util';
 import { ModalDialog, type ModalArg } from './modal-dialog';
 import { type InputData } from './use-hook-form';
 
@@ -35,14 +35,8 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
       defaultSetting: { membershipEmail },
       hidden,
     } = input;
-    const mentionValues = createMentionValues(
-      hidden.membershipYear,
-      hidden.toItems,
-      hidden.toEmail
-    );
-    const mentionUtil = new MentionUtil(createMentionMapping(mentionValues));
-    const subject = mentionUtil.toPlainText(membershipEmail.subject);
-    const message = mentionUtil.toPlainText(membershipEmail.message);
+    const subject = MentionUtil.toPlainText(membershipEmail.subject);
+    const message = MentionUtil.toPlainText(membershipEmail.message);
     const url = queryString.stringifyUrl({
       url: `mailto:${hidden.toEmail}`,
       query: { subject, body: message },

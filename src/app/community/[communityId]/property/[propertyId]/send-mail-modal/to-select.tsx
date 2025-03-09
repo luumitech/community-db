@@ -10,11 +10,13 @@ interface Props {
 }
 
 export const ToSelect: React.FC<Props> = ({ className }) => {
-  const { getValues, setValue, formState, reset } = useHookFormContext();
+  const { getValues, setValue, formState, watch, reset } = useHookFormContext();
   const controlName = 'hidden.toEmail' as const;
   const toEmail = getValues(controlName);
   const membershipYear = getValues('hidden.membershipYear');
   const toItems = getValues('hidden.toItems');
+  const subject = watch('defaultSetting.membershipEmail.subject');
+  const message = watch('defaultSetting.membershipEmail.message');
   const { errors, isDirty } = formState;
   const errMsg = errors.hidden?.toEmail?.message;
 
@@ -22,34 +24,38 @@ export const ToSelect: React.FC<Props> = ({ className }) => {
     React.useCallback(
       (keys) => {
         const newToEmail = [...keys].join(',');
-        // Not setting dirty bit because changing the To List only updates the
+        // NOT setting dirty bit because changing the To List only updates the
         // mention values, and won't actually affect the Email Template
         setValue(controlName, newToEmail);
+
+        // Since mentionValues have changed, we need to update the EditorState approriately
+        const mentionValues = createMentionValues(
+          membershipYear,
+          toItems,
+          newToEmail
+        );
+        const mentionUtil = new MentionUtil(
+          createMentionMapping(mentionValues)
+        );
+        const newSubject = mentionUtil.updateMentionInEditorState(subject);
+        const newMessage = mentionUtil.updateMentionInEditorState(message);
         if (!isDirty) {
           // When the form is clean, we want to make sure that the rich text
           // editor do not flag its content as changed due to the change in the
-          // mention text, so we reset the message EditorState with the new
-          // mention value.
-          const mentionValues = createMentionValues(
-            membershipYear,
-            toItems,
-            newToEmail
-          );
-          const mentionUtil = new MentionUtil(
-            createMentionMapping(mentionValues)
-          );
+          // mention value, so we reset the message EditorState to match the new values
           reset((defaultValues) => {
             return produce(defaultValues, (draft) => {
-              const { membershipEmail } = draft.defaultSetting;
-              draft.defaultSetting.membershipEmail.message =
-                mentionUtil.updateMentionInEditorState(membershipEmail.message);
-              draft.defaultSetting.membershipEmail.subject =
-                mentionUtil.updateMentionInEditorState(membershipEmail.subject);
+              draft.defaultSetting.membershipEmail.subject = newSubject;
+              draft.defaultSetting.membershipEmail.message = newMessage;
             });
           });
+        } else {
+          // Again don't need to set the dirty bit (the dirty state should be on anyways)
+          setValue('defaultSetting.membershipEmail.subject', newSubject);
+          setValue('defaultSetting.membershipEmail.message', newMessage);
         }
       },
-      [isDirty, membershipYear, reset, setValue, toItems]
+      [isDirty, membershipYear, message, reset, setValue, subject, toItems]
     );
 
   return (

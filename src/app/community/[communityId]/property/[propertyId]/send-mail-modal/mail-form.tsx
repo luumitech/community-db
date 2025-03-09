@@ -15,7 +15,7 @@ export const MailForm: React.FC<Props> = ({ className }) => {
       <TextEditor
         controlName="defaultSetting.membershipEmail.subject"
         label="Subject"
-        singleLineOnly
+        maxRows={1}
       />
       <TextEditor
         controlName="defaultSetting.membershipEmail.message"

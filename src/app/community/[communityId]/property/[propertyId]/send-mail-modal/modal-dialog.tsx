@@ -1,5 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
@@ -38,6 +39,7 @@ export const ModalDialog: React.FC<Props> = ({
   onSave,
   onSend,
 }) => {
+  const { canEdit } = useAppContext();
   const { formMethods } = useHookForm(fragment, membershipYear, occupantList);
   const [saveTemplatePending, saveTemplateStartTransition] =
     React.useTransition();
@@ -94,15 +96,17 @@ export const ModalDialog: React.FC<Props> = ({
                   <MailForm />
                 </ModalBody>
                 <ModalFooter>
-                  <Button
-                    color="primary"
-                    variant="bordered"
-                    isLoading={saveTemplatePending}
-                    isDisabled={sendMailPending || !isDirty}
-                    onPress={() => formMethods.handleSubmit(onSaveTemplate)()}
-                  >
-                    Save Email Template
-                  </Button>
+                  {canEdit && (
+                    <Button
+                      color="primary"
+                      variant="bordered"
+                      isLoading={saveTemplatePending}
+                      isDisabled={sendMailPending || !isDirty}
+                      onPress={() => formMethods.handleSubmit(onSaveTemplate)()}
+                    >
+                      Save Email Template
+                    </Button>
+                  )}
                   <div className="flex-grow" />
                   <Button
                     isDisabled={saveTemplatePending || sendMailPending}

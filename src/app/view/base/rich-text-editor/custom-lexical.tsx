@@ -15,7 +15,7 @@ import {
 } from 'lexical-beautiful-mentions';
 import React from 'react';
 import { CustomMenu, CustomMenuItem } from './custom-menu';
-import { SingleLinePlugin } from './single-line-plugin';
+import { MaxRowsPlugin } from './max-rows-plugin';
 
 export interface CustomLexicalProps {
   className?: string;
@@ -25,8 +25,8 @@ export interface CustomLexicalProps {
   mentionItems?: Record<string, BeautifulMentionsItem[]>;
   onEditorInit?: (editor: LexicalEditor) => void;
   onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
-  /** One line only, i.e. disallow new lines */
-  singleLineOnly?: boolean;
+  /** Maximum number of rows (newline characters) allowed in editor */
+  maxRows?: number;
 }
 
 export const CustomLexical: React.FC<CustomLexicalProps> = ({
@@ -37,7 +37,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
   mentionItems,
   onEditorInit,
   onEditorChange,
-  singleLineOnly,
+  maxRows,
 }) => {
   const initialConfig = {
     namespace: 'editor',
@@ -115,7 +115,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
             autoSpace={false}
           />
         )}
-        {singleLineOnly && <SingleLinePlugin />}
+        {maxRows != null && <MaxRowsPlugin maxRows={maxRows} />}
       </LexicalComposer>
     </div>
   );
