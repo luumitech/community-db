@@ -15,6 +15,7 @@ import {
 } from 'lexical-beautiful-mentions';
 import React from 'react';
 import { CustomMenu, CustomMenuItem } from './custom-menu';
+import { MaxRowsPlugin } from './max-rows-plugin';
 
 export interface CustomLexicalProps {
   className?: string;
@@ -24,6 +25,8 @@ export interface CustomLexicalProps {
   mentionItems?: Record<string, BeautifulMentionsItem[]>;
   onEditorInit?: (editor: LexicalEditor) => void;
   onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
+  /** Maximum number of rows (newline characters) allowed in editor */
+  maxRows?: number;
 }
 
 export const CustomLexical: React.FC<CustomLexicalProps> = ({
@@ -34,6 +37,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
   mentionItems,
   onEditorInit,
   onEditorChange,
+  maxRows,
 }) => {
   const initialConfig = {
     namespace: 'editor',
@@ -111,6 +115,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
             autoSpace={false}
           />
         )}
+        {maxRows != null && <MaxRowsPlugin maxRows={maxRows} />}
       </LexicalComposer>
     </div>
   );
