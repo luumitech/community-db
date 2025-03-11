@@ -6,21 +6,20 @@ import { ITEM_DELIMITER } from '~/lib/lcra-community/delimiter-util';
 import { toTicketList } from '~/lib/lcra-community/ticket-list-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 
-const EventStatQuery = graphql(/* GraphQL */ `
-  query EventStatSpec_EventStat($year: Int!) {
+const TicketStatQuery = graphql(/* GraphQL */ `
+  query TicketInfoStatpec_TicketStat($year: Int!) {
     userCurrent {
       accessList {
         community {
           id
           communityStat {
-            eventStat(year: $year) {
+            id
+            ticketStat(year: $year) {
               eventName
-              ticketList {
-                ticketName
-                count
-                price
-                paymentMethod
-              }
+              ticketName
+              count
+              price
+              paymentMethod
             }
           }
         }
@@ -38,7 +37,7 @@ function findColIdx(ws: WorksheetHelper, val: string) {
   }
 }
 
-describe('Event Statistices', () => {
+describe('Ticket Info Statistices', () => {
   const testUtil = new TestUtil();
   const workbook = XLSX.readFile(
     path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
@@ -61,13 +60,13 @@ describe('Event Statistices', () => {
     await testUtil.database.seedFromWorkbook(wb);
 
     const result = await testUtil.graphql.executeSingle({
-      document: EventStatQuery,
+      document: TicketStatQuery,
       variables: { year: 2023 },
     });
-    const eventStat =
-      result.data?.userCurrent.accessList[0].community.communityStat.eventStat;
-    expect(eventStat).toBeDefined();
-    expect(eventStat).toMatchSnapshot();
+    const ticketStat =
+      result.data?.userCurrent.accessList[0].community.communityStat.ticketStat;
+    expect(ticketStat).toBeDefined();
+    expect(ticketStat).toMatchSnapshot();
   });
 
   test('Ticket with zero count and zero price should be ignored', async () => {
@@ -87,13 +86,13 @@ describe('Event Statistices', () => {
 
     await testUtil.database.seedFromWorkbook(wb);
     const result = await testUtil.graphql.executeSingle({
-      document: EventStatQuery,
+      document: TicketStatQuery,
       variables: { year: 2023 },
     });
-    const eventStat =
-      result.data?.userCurrent.accessList[0].community.communityStat.eventStat;
-    expect(eventStat).toBeDefined();
-    expect(eventStat).toMatchSnapshot();
+    const ticketStat =
+      result.data?.userCurrent.accessList[0].community.communityStat.ticketStat;
+    expect(ticketStat).toBeDefined();
+    expect(ticketStat).toMatchSnapshot();
   });
 
   test('Ticket name with delimiter characters should be filtered', async () => {
@@ -123,12 +122,12 @@ describe('Event Statistices', () => {
 
     await testUtil.database.seedFromWorkbook(wb);
     const result = await testUtil.graphql.executeSingle({
-      document: EventStatQuery,
+      document: TicketStatQuery,
       variables: { year: 2023 },
     });
-    const eventStat =
-      result.data?.userCurrent.accessList[0].community.communityStat.eventStat;
-    expect(eventStat).toBeDefined();
-    expect(eventStat).toMatchSnapshot();
+    const ticketStat =
+      result.data?.userCurrent.accessList[0].community.communityStat.ticketStat;
+    expect(ticketStat).toBeDefined();
+    expect(ticketStat).toMatchSnapshot();
   });
 });

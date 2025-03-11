@@ -36,13 +36,13 @@ interface ChartDataEntry extends Record<string, number> {
 }
 
 class ChartDataHelper {
-  private stat: GQL.MemberCountStat[];
+  private stat: GQL.ByYearStat[];
   public chartData: Readonly<ChartDataEntry>[];
   // There is also a 'no renewal' key in the data that is represented by
   // a customLine plot
   public chartKeys = ['renewed', 'new'];
 
-  constructor(stat: GQL.MemberCountStat[], yearRange: number) {
+  constructor(stat: GQL.ByYearStat[], yearRange: number) {
     if (yearRange > 0) {
       this.stat = stat.slice(-yearRange);
     } else {

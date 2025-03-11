@@ -22,7 +22,8 @@ import { useYearlyContext } from './yearly-context';
 const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
     communityStat {
-      eventStat(year: $year) {
+      id
+      memberSourceStat(year: $year) {
         eventName
         new
         renew
@@ -32,8 +33,8 @@ const EventFragment = graphql(/* GraphQL */ `
   }
 `);
 
-type EventStat =
-  GQL.Dashboard_EventParticipationFragment['communityStat']['eventStat'];
+type MemberSourceStat =
+  GQL.Dashboard_EventParticipationFragment['communityStat']['memberSourceStat'];
 
 interface ChartDataEntry extends Record<string, string | number> {
   eventName: string;
@@ -46,7 +47,7 @@ class ChartDataHelper {
   public chartData: Readonly<ChartDataEntry>[];
   public chartKeys = ['existing', 'renewed', 'new'];
 
-  constructor(private stat: EventStat) {
+  constructor(private stat: MemberSourceStat) {
     this.chartData = this.stat.map((entry) => ({
       eventName: entry.eventName,
       new: entry.new,
@@ -129,8 +130,8 @@ export const EventParticipation: React.FC<Props> = ({
   const entry = getFragment(EventFragment, fragment);
 
   const chartHelper = React.useMemo(() => {
-    const eventStat = entry?.communityStat.eventStat ?? [];
-    const helper = new ChartDataHelper(eventStat);
+    const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
+    const helper = new ChartDataHelper(memberSourceStat);
     return helper;
   }, [entry]);
 

@@ -9,7 +9,8 @@ import { useYearlyContext } from './yearly-context';
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
     communityStat {
-      eventStat(year: $year) {
+      id
+      memberSourceStat(year: $year) {
         eventName
         new
         renew
@@ -18,8 +19,8 @@ const MembershipSourceFragment = graphql(/* GraphQL */ `
   }
 `);
 
-type EventStat =
-  GQL.Dashboard_MembershipSourceFragment['communityStat']['eventStat'];
+type MemberSourceStat =
+  GQL.Dashboard_MembershipSourceFragment['communityStat']['memberSourceStat'];
 
 interface ChartDataEntry {
   id: string;
@@ -28,7 +29,7 @@ interface ChartDataEntry {
 }
 
 class ChartDataHelper {
-  constructor(private stat: EventStat) {}
+  constructor(private stat: MemberSourceStat) {}
 
   getChartData() {
     const chartData: Readonly<ChartDataEntry>[] = [];
@@ -64,11 +65,8 @@ export const MembershipSource: React.FC<Props> = ({
   const entry = getFragment(MembershipSourceFragment, fragment);
 
   const chartData = React.useMemo(() => {
-    const eventStat = entry?.communityStat.eventStat;
-    if (!eventStat) {
-      return [];
-    }
-    const chartHelper = new ChartDataHelper(eventStat);
+    const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
+    const chartHelper = new ChartDataHelper(memberSourceStat);
     return chartHelper.getChartData();
   }, [entry]);
 

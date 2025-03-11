@@ -2,9 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
-import { type TicketStat } from './_type';
-
-type TicketStatEntry = Omit<TicketStat, '__typename'>;
+import { type TicketStatEntry } from './_type';
 
 interface TableHeaderProps {
   className?: string;
@@ -22,6 +20,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
       )}
       role="row"
     >
+      <div role="columnheader">Membership Year</div>
       <div role="columnheader">Ticket Type</div>
       <div role="columnheader">Ticket #</div>
       <div role="columnheader">Price</div>
@@ -46,6 +45,7 @@ export const TableRow: React.FC<TableRowProps> = ({ className, ticket }) => {
         )}
         role="row"
       >
+        <div role="cell">{ticket.membershipYear || ''}</div>
         <div role="cell">{ticket.ticketName}</div>
         <div className="flex justify-end" role="cell">
           <span className="font-mono">{ticket.count}</span>
@@ -63,6 +63,7 @@ export const TableRow: React.FC<TableRowProps> = ({ className, ticket }) => {
 interface TableSumRowProps {
   className?: string;
   ticketList: TicketStatEntry[];
+  membershipYear?: number;
   ticketName?: string;
   paymentMethod?: string;
 }
@@ -71,6 +72,7 @@ interface TableSumRowProps {
 export const TableSumRow: React.FC<TableSumRowProps> = ({
   className,
   ticketList,
+  membershipYear,
   ticketName,
   paymentMethod,
 }) => {
@@ -78,7 +80,10 @@ export const TableSumRow: React.FC<TableSumRowProps> = ({
     <TableRow
       className={className}
       ticket={{
+        key: 'not-used',
+        eventName: 'not-used',
         ticketName: ticketName ?? '',
+        membershipYear: membershipYear ?? 0,
         count: R.sumBy(ticketList, ({ count }) => count),
         price: decSum(...ticketList.map(({ price }) => price)),
         paymentMethod: paymentMethod ?? '',

@@ -16,14 +16,17 @@ import { TicketSaleTable } from './ticket-sale-table';
 const EventTicketFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventTicket on Community {
     communityStat {
-      eventStat(year: $year) {
+      memberSourceStat(year: $year) {
         eventName
-        ticketList {
-          ticketName
-          count
-          price
-          paymentMethod
-        }
+      }
+      ticketStat(year: $year) {
+        key
+        ticketName
+        eventName
+        membershipYear
+        paymentMethod
+        count
+        price
       }
     }
   }
@@ -44,10 +47,13 @@ export const EventTicketSale: React.FC<Props> = ({
 }) => {
   const { eventSelected } = useYearlyContext();
   const entry = getFragment(EventTicketFragment, fragment);
-  const eventStat = entry?.communityStat.eventStat ?? [];
-  const ticketList =
-    eventStat.find(({ eventName }) => eventName === eventSelected)
-      ?.ticketList ?? [];
+  const ticketStat = entry?.communityStat.ticketStat ?? [];
+  const ticketList = ticketStat.filter(
+    ({ eventName }) => eventName === eventSelected
+  );
+  const eventList = (entry?.communityStat.memberSourceStat ?? []).map(
+    ({ eventName }) => eventName
+  );
 
   return (
     <Card className={cn(className)}>
@@ -58,9 +64,13 @@ export const EventTicketSale: React.FC<Props> = ({
       </CardHeader>
       <CardBody>
         <Skeleton className="rounded-lg min-h-[400px]" isLoaded={!isLoading}>
-          <EventNameSelect />
-          <Spacer y={2} />
-          <TicketSaleTable ticketList={ticketList} />
+          <EventNameSelect eventList={eventList} />
+          {!!eventSelected && (
+            <>
+              <Spacer y={2} />
+              <TicketSaleTable ticketList={ticketList} />
+            </>
+          )}
         </Skeleton>
       </CardBody>
     </Card>
