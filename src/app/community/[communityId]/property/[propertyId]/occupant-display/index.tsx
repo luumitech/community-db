@@ -41,11 +41,13 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const property = getFragment(OccupantDisplayFragment, fragment);
   const { occupantList } = property;
 
-  const membership = React.useMemo(() => {
-    return property.membershipList.find(
+  const canSendEmail = React.useMemo(() => {
+    const hasEmail = occupantList.some(({ email }) => !!email?.trim());
+    const membership = property.membershipList.find(
       (entry) => entry.year.toString() === yearSelected
     );
-  }, [property, yearSelected]);
+    return hasEmail && membership?.isMember;
+  }, [occupantList, property.membershipList, yearSelected]);
 
   return (
     <Card className={className}>
@@ -53,7 +55,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
       <CardBody className="gap-2">
         <div className="flex gap-2 self-end">
           <ModalButton
-            isDisabled={!membership?.isMember}
+            isDisabled={!canSendEmail}
             onPress={() =>
               sendMail.open({
                 community,

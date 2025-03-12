@@ -67,7 +67,7 @@ export const InputEmail: React.FC<InputEmailProps> = ({
           <div
             className={cn(
               'border-medium border-default-200 hover:border-default-400',
-              'focus:border-default-foreground',
+              'focus-within:border-default-foreground',
               'px-3 py-2 rounded-medium',
               { 'border-danger': showError }
             )}
@@ -85,10 +85,11 @@ export const InputEmail: React.FC<InputEmailProps> = ({
             )}
             <ReactMultiEmail
               emails={field.value}
-              className="flex gap-2 items-center"
+              className="flex flex-wrap gap-2 items-center"
               inputClassName={cn(
                 'font-normal placeholder:text-foreground-500 bg-clip-text text-small',
-                'focus-visible:outline-none'
+                'focus-visible:outline-none',
+                'flex-grow'
               )}
               onBlur={() => {
                 field.onBlur();
