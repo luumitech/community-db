@@ -10,7 +10,7 @@ export function createMentionValues(
   toItems: InputData['hidden']['toItems'],
   toEmail: string
 ) {
-  const toEmailList = toEmail.split(',');
+  const toEmailList = toEmail.split(',').filter((email) => !!email);
   const toList = toEmailList.map(
     (email) => toItems.find((entry) => entry.email === email)!
   );
