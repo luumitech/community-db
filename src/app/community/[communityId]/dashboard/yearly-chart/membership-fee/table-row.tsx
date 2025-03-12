@@ -2,9 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
-import { type MembershipStat } from './_type';
-
-type MembershipStatEntry = Omit<MembershipStat, '__typename'>;
+import { type MembershipFeeStatEntry } from './_type';
 
 interface TableHeaderProps {
   className?: string;
@@ -22,6 +20,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
       )}
       role="row"
     >
+      <div role="columnheader">Membership Year</div>
       <div role="columnheader">Event Name</div>
       <div role="columnheader">#</div>
       <div role="columnheader">Price</div>
@@ -32,13 +31,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
 
 interface TableRowProps {
   className?: string;
-  membership: MembershipStatEntry;
+  stat: MembershipFeeStatEntry;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({
-  className,
-  membership,
-}) => {
+export const TableRow: React.FC<TableRowProps> = ({ className, stat }) => {
   return (
     <>
       <div
@@ -49,15 +45,16 @@ export const TableRow: React.FC<TableRowProps> = ({
         )}
         role="row"
       >
-        <div role="cell">{membership.eventName}</div>
+        <div role="cell">{stat.membershipYear || ''}</div>
+        <div role="cell">{stat.eventName}</div>
         <div className="flex justify-end" role="cell">
-          <span className="font-mono">{membership.count}</span>
+          <span className="font-mono">{stat.count}</span>
         </div>
         <div className="flex justify-between gap-2" role="cell">
           <span className="text-default-400">$</span>
-          <span className="font-mono">{formatCurrency(membership.price)}</span>
+          <span className="font-mono">{formatCurrency(stat.price)}</span>
         </div>
-        <div role="cell">{membership.paymentMethod}</div>
+        <div role="cell">{stat.paymentMethod}</div>
       </div>
     </>
   );
@@ -65,26 +62,30 @@ export const TableRow: React.FC<TableRowProps> = ({
 
 interface TableSumRowProps {
   className?: string;
-  membershipList: MembershipStatEntry[];
+  membershipFeeStat: MembershipFeeStatEntry[];
   eventName?: string;
+  membershipYear?: number;
   paymentMethod?: string;
 }
 
 /** Sum all membership count and price for `membershipList` */
 export const TableSumRow: React.FC<TableSumRowProps> = ({
   className,
-  membershipList,
+  membershipFeeStat,
   eventName,
+  membershipYear,
   paymentMethod,
 }) => {
   return (
     <TableRow
       className={className}
-      membership={{
+      stat={{
+        key: 'no-used',
         eventName: eventName ?? '',
-        count: R.sumBy(membershipList, ({ count }) => count),
-        price: decSum(...membershipList.map(({ price }) => price)),
+        membershipYear: membershipYear ?? 0,
         paymentMethod: paymentMethod ?? '',
+        count: R.sumBy(membershipFeeStat, ({ count }) => count),
+        price: decSum(...membershipFeeStat.map(({ price }) => price)),
       }}
     />
   );

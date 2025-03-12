@@ -106,8 +106,8 @@ function genDate(count: number, year: number) {
   return Array.from({ length: count }, () => {
     const someDate = faker.date
       .between({
-        from: `20${year}-01-01T00:00:00.000Z`,
-        to: `20${year}-12-31T23:59:59.000Z`,
+        from: `${year}-01-01T00:00:00.000Z`,
+        to: `${year}-12-31T23:59:59.000Z`,
       })
       .toISOString();
     return removeDelimiter(someDate);

@@ -7,13 +7,13 @@ import { MembershipFeeTable } from './membership-fee-table';
 const EventMembershipFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventMembership on Community {
     communityStat {
-      eventStat(year: $year) {
+      membershipFeeStat(year: $year) {
+        key
         eventName
-        membershipList {
-          count
-          price
-          paymentMethod
-        }
+        membershipYear
+        paymentMethod
+        count
+        price
       }
     }
   }
@@ -34,15 +34,7 @@ export const MembershipFee: React.FC<Props> = ({
 }) => {
   const entry = getFragment(EventMembershipFragment, fragment);
 
-  const eventStat = entry?.communityStat.eventStat ?? [];
-  const membershipList = eventStat
-    .map((statEntry) =>
-      statEntry.membershipList.map((mapEntry) => ({
-        eventName: statEntry.eventName,
-        ...mapEntry,
-      }))
-    )
-    .flat();
+  const membershipFeeStat = entry?.communityStat.membershipFeeStat ?? [];
 
   return (
     <Card className={cn(className)}>
@@ -53,7 +45,7 @@ export const MembershipFee: React.FC<Props> = ({
       </CardHeader>
       <CardBody>
         <Skeleton className="rounded-lg min-h-[400px]" isLoaded={!isLoading}>
-          <MembershipFeeTable membershipList={membershipList} />
+          <MembershipFeeTable membershipFeeStat={membershipFeeStat} />
         </Skeleton>
       </CardBody>
     </Card>

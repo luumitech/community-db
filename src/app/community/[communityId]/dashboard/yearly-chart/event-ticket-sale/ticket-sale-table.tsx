@@ -9,7 +9,7 @@ import { TableHeader, TableRow, TableSumRow } from './table-row';
 
 export interface Props {
   className?: string;
-  ticketList: TicketStat[];
+  ticketList: TicketStat;
 }
 
 export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
@@ -22,7 +22,7 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
     <div className={cn(className, 'flex flex-col gap-2')}>
       <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
-        <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
+        <div className="grid grid-cols-[repeat(5,max-content)] gap-x-6 gap-y-2">
           <TableHeader />
           {ticketList.length === 0 && (
             <div
@@ -38,11 +38,20 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
           )}
           {groupBy === 'none' &&
             ticketList.map((ticket) => (
-              <TableRow
-                key={`${ticket.ticketName}-${ticket.paymentMethod}`}
-                ticket={ticket}
-              />
+              <TableRow key={ticket.key} ticket={ticket} />
             ))}
+          {groupBy === 'membershipYear' &&
+            Object.entries(R.groupBy(ticketList, R.prop('membershipYear'))).map(
+              ([yearStr, tickets]) => {
+                return (
+                  <TableSumRow
+                    key={yearStr}
+                    ticketList={tickets}
+                    membershipYear={parseInt(yearStr, 10)}
+                  />
+                );
+              }
+            )}
           {groupBy === 'ticketName' &&
             Object.entries(R.groupBy(ticketList, R.prop('ticketName'))).map(
               ([ticketName, tickets]) => {

@@ -80,7 +80,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
               {label && (
                 <label
                   className={cn(
-                    'z-10 pointer-events-none text-foreground-500 cursor-text',
+                    'z-10 pointer-events-none text-default-600 cursor-text',
                     'text-xs pb-0.5 pe-2 max-w-full text-ellipsis overflow-hidden'
                   )}
                 >

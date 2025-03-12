@@ -1,6 +1,7 @@
 import {
   DefaultSetting,
   EmailSetting,
+  Property,
   Role,
   SupportedEventItem,
   SupportedPaymentMethod,
@@ -10,7 +11,6 @@ import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { getCurrentYear } from '~/lib/date-util';
-import { isNonZeroDec } from '~/lib/decimal-util';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
@@ -22,18 +22,30 @@ import {
 } from '../property/util';
 import {
   StatUtil,
-  type CommunityStat,
-  type EventStat,
-  type MemberCountStat,
-  type MembershipStat,
-  type TicketStat,
+  type ByYearStat,
+  type MemberSourceStat,
+  type MembershipFeeStat,
+  type TicketInfoStat,
 } from './stat-util';
+
+interface CommunityStat {
+  /**
+   * Unique id representing membership information for all properties within
+   * this community
+   */
+  id: string;
+  /** Community Id */
+  communityId: string;
+  /** Community statistics */
+  statUtil: StatUtil;
+}
 
 const emailSettingRef = builder
   .objectRef<EmailSetting>('EmailSetting')
   .implement({
     fields: (t) => ({
       subject: t.exposeString('subject'),
+      cc: t.exposeStringList('cc', { nullable: true }),
       message: t.exposeString('message'),
     }),
   });
@@ -80,107 +92,95 @@ const supportedPaymentMethodRef = builder
     }),
   });
 
-const memberCountStatRef = builder
-  .objectRef<MemberCountStat>('MemberCountStat')
+const byYearStatRef = builder.objectRef<ByYearStat>('ByYearStat').implement({
+  fields: (t) => ({
+    year: t.exposeInt('year', {
+      description: 'membership year for this entry',
+    }),
+    renew: t.exposeInt('renew', {
+      description: 'number of members who renewed this year',
+    }),
+    new: t.exposeInt('new', {
+      description: 'number of members who joined this year as new member',
+    }),
+    noRenewal: t.exposeInt('noRenewal', {
+      description:
+        'number of members who were member last year but did not renew this year',
+    }),
+  }),
+});
+
+const memberSourceStatRef = builder
+  .objectRef<MemberSourceStat>('MemberSourceStat')
   .implement({
     fields: (t) => ({
-      year: t.exposeInt('year', {
-        description: 'membership year associated to this entry',
+      eventName: t.exposeString('eventName', {
+        description: 'event name for this entry',
       }),
-      renew: t.exposeInt('renew', {
-        description:
-          'member count who were member last year and renewed this year',
+      existing: t.exposeInt('existing', {
+        description: 'number of members who attended event as a member',
       }),
       new: t.exposeInt('new', {
-        description: 'member count who joined this year as new member',
+        description: 'number of members who joined membership at the event',
       }),
-      noRenewal: t.exposeInt('noRenewal', {
-        description:
-          'member count who were member last year but did not renew this year',
+      renew: t.exposeInt('renew', {
+        description: 'number of members who renewed membership at the event',
       }),
     }),
   });
 
-const membershipStatRef = builder
-  .objectRef<MembershipStat>('MembershipStat')
+const membershipFeeStatRef = builder
+  .objectRef<MembershipFeeStat>('MembershipFeeStat')
   .implement({
     fields: (t) => ({
-      count: t.exposeInt('count', {
-        description: 'membership sold count',
+      key: t.exposeString('key', {
+        description: 'unique key for entry',
       }),
-      price: t.exposeString('price', {
-        description: 'membership sold price',
+      membershipYear: t.exposeInt('membershipYear', {
+        description: 'membership year associated with the membership fee',
+      }),
+      eventName: t.exposeString('eventName', {
+        description: 'event name where membership fee is collected',
       }),
       paymentMethod: t.exposeString('paymentMethod', {
         description: 'payment method used to purchase membership',
       }),
+      count: t.exposeInt('count', {
+        description: 'number of memberships',
+      }),
+      price: t.exposeString('price', {
+        description: 'membership fee total',
+      }),
     }),
   });
 
-const ticketStatRef = builder.objectRef<TicketStat>('TicketStat').implement({
-  fields: (t) => ({
-    ticketName: t.exposeString('ticketName', {
-      description: 'ticket name',
+const ticketInfoStatRef = builder
+  .objectRef<TicketInfoStat>('TicketInfoStat')
+  .implement({
+    fields: (t) => ({
+      key: t.exposeString('key', {
+        description: 'unique key for entry',
+      }),
+      ticketName: t.exposeString('ticketName', {
+        description: 'ticket name',
+      }),
+      membershipYear: t.exposeInt('membershipYear', {
+        description: 'Membership Year when ticket is purchased',
+      }),
+      eventName: t.exposeString('eventName', {
+        description: 'Event name where ticket is purchased',
+      }),
+      paymentMethod: t.exposeString('paymentMethod', {
+        description: 'payment method used to purchase ticket',
+      }),
+      count: t.exposeInt('count', {
+        description: 'tickets sold count',
+      }),
+      price: t.exposeString('price', {
+        description: 'tickets sold price',
+      }),
     }),
-    count: t.exposeInt('count', {
-      description: 'tickets sold count',
-    }),
-    price: t.exposeString('price', {
-      description: 'tickets sold price',
-    }),
-    paymentMethod: t.exposeString('paymentMethod', {
-      description: 'payment method used to purchase ticket',
-    }),
-  }),
-});
-
-const eventStatRef = builder.objectRef<EventStat>('EventStat').implement({
-  fields: (t) => ({
-    eventName: t.exposeString('eventName', {
-      description: 'event name',
-    }),
-    existing: t.exposeInt('existing', {
-      description: 'member count who attended event as an existing member',
-    }),
-    new: t.exposeInt('new', {
-      description: 'member count who joined as new member',
-    }),
-    renew: t.exposeInt('renew', {
-      description: 'member count who renewed as a member',
-    }),
-    membershipList: t.field({
-      description: 'membership statistics for this event',
-      type: [membershipStatRef],
-      resolve: async (parent, args, ctx) => {
-        const { membershipMap } = parent;
-        return (
-          Array.from(membershipMap, ([, mapEntry]) => mapEntry)
-            // Only keep entries with +ve count or non zero price
-            .filter((entry) => {
-              return entry.count > 0 || isNonZeroDec(entry.price);
-            })
-        );
-      },
-    }),
-    ticketList: t.field({
-      description: 'ticket statistics for this event',
-      type: [ticketStatRef],
-      resolve: async (parent, args, ctx) => {
-        const { ticketMap } = parent;
-        return (
-          Array.from(ticketMap, ([, mapEntry]) => {
-            return Array.from(mapEntry, ([, ticketEntry]) => ticketEntry);
-          })
-            .flat()
-            // Only keep entries with +ve count or non zero price
-            .filter((entry) => {
-              return entry.count > 0 || isNonZeroDec(entry.price);
-            })
-        );
-      },
-    }),
-  }),
-});
+  });
 
 const communityStatRef = builder
   .objectRef<CommunityStat>('CommunityStat')
@@ -210,27 +210,55 @@ const communityStatRef = builder
       }),
       memberCountStat: t.field({
         description: 'Member count statistic for each year',
-        type: [memberCountStatRef],
+        type: [byYearStatRef],
         resolve: (parent, args, ctx) => {
-          const statUtil = new StatUtil(parent);
-          const statMap = statUtil.getMemberCountStatMap();
-          return Array.from(statMap, ([, mapEntry]) => mapEntry);
+          const { statUtil } = parent;
+          return statUtil.memberCountStat();
         },
       }),
-      eventStat: t.field({
-        description: 'Event statistics for a given year',
+      memberSourceStat: t.field({
+        description: 'Member source statistics for each event name',
         args: {
           year: t.arg.int({
             required: true,
             description: 'year to retrieve statistics for',
           }),
         },
-        type: [eventStatRef],
+        type: [memberSourceStatRef],
         resolve: (parent, args, ctx) => {
           const { year } = args;
-          const statUtil = new StatUtil(parent);
-          const statMap = statUtil.getEventStatMap(year);
-          return Array.from(statMap, ([, entry]) => entry);
+          const { statUtil } = parent;
+          return statUtil.memberSourceStat(year);
+        },
+      }),
+      membershipFeeStat: t.field({
+        description: 'Membership Fee statistics for the specified year',
+        type: [membershipFeeStatRef],
+        args: {
+          year: t.arg.int({
+            required: true,
+            description: 'year to retrieve statistics for',
+          }),
+        },
+        resolve: async (parent, args, ctx) => {
+          const { year } = args;
+          const { statUtil } = parent;
+          return statUtil.membershipFeeStat(year);
+        },
+      }),
+      ticketStat: t.field({
+        description: 'ticket statistics for the specified year',
+        type: [ticketInfoStatRef],
+        args: {
+          year: t.arg.int({
+            required: true,
+            description: 'year to retrieve statistics for',
+          }),
+        },
+        resolve: async (parent, args, ctx) => {
+          const { year } = args;
+          const { statUtil } = parent;
+          return statUtil.ticketStat(year);
         },
       }),
     }),
@@ -384,16 +412,12 @@ builder.prismaObject('Community', {
           where: { communityId },
           select: { id: true, membershipList: true },
         });
+        const statUtil = new StatUtil(parent, propertyList);
 
         return {
           id: parent.shortId,
-          minYear: parent.minYear ?? getCurrentYear(),
-          maxYear: parent.maxYear ?? getCurrentYear(),
           communityId,
-          supportedEventList: parent.eventList,
-          supportedTicketList: parent.ticketList,
-          supportedPaymentMethods: parent.paymentMethodList,
-          propertyList,
+          statUtil,
         };
       },
     }),

@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ticket Info Statistices Ticket name with delimiter characters should be filtered 1`] = `
+[
+  {
+    "__typename": "TicketInfoStat",
+    "count": 2,
+    "eventName": "Corn Roast",
+    "paymentMethod": "cash",
+    "price": "0.03",
+    "ticketName": "meal",
+  },
+  {
+    "__typename": "TicketInfoStat",
+    "count": 1,
+    "eventName": "Corn Roast",
+    "paymentMethod": "cash",
+    "price": "1.23",
+    "ticketName": "drink",
+  },
+]
+`;
+
+exports[`Ticket Info Statistices Ticket with zero count and zero price should be ignored 1`] = `
+[
+  {
+    "__typename": "TicketInfoStat",
+    "count": 1,
+    "eventName": "Corn Roast",
+    "paymentMethod": "cash",
+    "price": "1",
+    "ticketName": "drink",
+  },
+]
+`;
+
+exports[`Ticket Info Statistices Verify event statistics 1`] = `
+[
+  {
+    "__typename": "TicketInfoStat",
+    "count": 20,
+    "eventName": "Summer Festival",
+    "paymentMethod": "free",
+    "price": "0",
+    "ticketName": "meal",
+  },
+  {
+    "__typename": "TicketInfoStat",
+    "count": 1,
+    "eventName": "Summer Festival",
+    "paymentMethod": "cash",
+    "price": "1",
+    "ticketName": "cotton-candy",
+  },
+  {
+    "__typename": "TicketInfoStat",
+    "count": 10,
+    "eventName": "Corn Roast",
+    "paymentMethod": "cash",
+    "price": "5",
+    "ticketName": "meal",
+  },
+  {
+    "__typename": "TicketInfoStat",
+    "count": 1,
+    "eventName": "Corn Roast",
+    "paymentMethod": "e-Transfer",
+    "price": "1",
+    "ticketName": "drink",
+  },
+  {
+    "__typename": "TicketInfoStat",
+    "count": 20,
+    "eventName": "Corn Roast",
+    "paymentMethod": "free",
+    "price": "0",
+    "ticketName": "meal",
+  },
+  {
+    "__typename": "TicketInfoStat",
+    "count": 1,
+    "eventName": "Corn Roast",
+    "paymentMethod": "cash",
+    "price": "1",
+    "ticketName": "drink",
+  },
+]
+`;

@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { InputEmail } from '~/view/base/input-email';
 import { mentionClass } from './editor-util';
 import { TextEditor } from './text-editor';
 import { ToSelect } from './to-select';
@@ -12,6 +13,7 @@ export const MailForm: React.FC<Props> = ({ className }) => {
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
       <ToSelect />
+      <InputEmail controlName="defaultSetting.membershipEmail.cc" label="Cc" />
       <TextEditor
         controlName="defaultSetting.membershipEmail.subject"
         label="Subject"

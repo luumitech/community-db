@@ -1,21 +1,24 @@
 import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useYearlyContext } from '../yearly-context';
 
 interface Props {
   className?: string;
+  eventList: string[];
 }
 
-export const EventNameSelect: React.FC<Props> = ({ className }) => {
-  const { visibleEventItems } = useAppContext();
+export const EventNameSelect: React.FC<Props> = ({ className, eventList }) => {
   const { eventSelected, setEventSelected } = useYearlyContext();
+  const eventItems = eventList.map((eventName) => ({
+    label: eventName,
+    value: eventName,
+  }));
 
   return (
     <Select
       className={cn(className, 'min-w-32 w-full')}
       aria-label="Event Name"
-      items={visibleEventItems}
+      items={eventItems}
       placeholder="Select event from list or click on bar chart"
       selectedKeys={[eventSelected]}
       onSelectionChange={(keys) => {

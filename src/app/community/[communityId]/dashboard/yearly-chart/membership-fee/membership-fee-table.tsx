@@ -3,18 +3,18 @@ import React from 'react';
 import * as R from 'remeda';
 import { useLocalStorage } from 'usehooks-ts';
 import { lsFlags } from '~/lib/env-var';
-import { type MembershipStat } from './_type';
+import { type MembershipFeeStat } from './_type';
 import { GroupBy } from './group-by';
 import { TableHeader, TableRow, TableSumRow } from './table-row';
 
 export interface Props {
   className?: string;
-  membershipList: MembershipStat[];
+  membershipFeeStat: MembershipFeeStat;
 }
 
 export const MembershipFeeTable: React.FC<Props> = ({
   className,
-  membershipList,
+  membershipFeeStat,
 }) => {
   const [groupBy, setGroupBy] = useLocalStorage(
     lsFlags.dashboardMembershipFeeGroupBy,
@@ -25,9 +25,9 @@ export const MembershipFeeTable: React.FC<Props> = ({
     <div className={cn(className, 'flex flex-col gap-2')}>
       <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
-        <div className="grid grid-cols-[repeat(4,max-content)] gap-x-6 gap-y-2">
+        <div className="grid grid-cols-[repeat(5,max-content)] gap-x-6 gap-y-2">
           <TableHeader />
-          {membershipList.length === 0 && (
+          {membershipFeeStat.length === 0 && (
             <div
               className={cn(
                 'col-span-full h-8',
@@ -40,32 +40,41 @@ export const MembershipFeeTable: React.FC<Props> = ({
             </div>
           )}
           {groupBy === 'none' &&
-            membershipList.map((membership) => (
-              <TableRow
-                key={`${membership.eventName}-${membership.paymentMethod}`}
-                membership={membership}
-              />
+            membershipFeeStat.map((stat) => (
+              <TableRow key={stat.key} stat={stat} />
             ))}
+          {groupBy === 'membershipYear' &&
+            Object.entries(
+              R.groupBy(membershipFeeStat, R.prop('membershipYear'))
+            ).map(([yearStr, feeStat]) => {
+              return (
+                <TableSumRow
+                  key={yearStr}
+                  membershipFeeStat={feeStat}
+                  membershipYear={parseInt(yearStr, 10)}
+                />
+              );
+            })}
           {groupBy === 'eventName' &&
-            Object.entries(R.groupBy(membershipList, R.prop('eventName'))).map(
-              ([eventName, memberships]) => {
-                return (
-                  <TableSumRow
-                    key={eventName}
-                    membershipList={memberships}
-                    eventName={eventName}
-                  />
-                );
-              }
-            )}
+            Object.entries(
+              R.groupBy(membershipFeeStat, R.prop('eventName'))
+            ).map(([eventName, feeStat]) => {
+              return (
+                <TableSumRow
+                  key={eventName}
+                  membershipFeeStat={feeStat}
+                  eventName={eventName}
+                />
+              );
+            })}
           {groupBy === 'paymentMethod' &&
             Object.entries(
-              R.groupBy(membershipList, R.prop('paymentMethod'))
-            ).map(([paymentMethod, memberships]) => {
+              R.groupBy(membershipFeeStat, R.prop('paymentMethod'))
+            ).map(([paymentMethod, feeStat]) => {
               return (
                 <TableSumRow
                   key={paymentMethod}
-                  membershipList={memberships}
+                  membershipFeeStat={feeStat}
                   paymentMethod={paymentMethod}
                 />
               );
@@ -73,7 +82,7 @@ export const MembershipFeeTable: React.FC<Props> = ({
           <div className="col-span-full">
             <Divider />
           </div>
-          <TableSumRow membershipList={membershipList} />
+          <TableSumRow membershipFeeStat={membershipFeeStat} />
         </div>
       </ScrollShadow>
     </div>
