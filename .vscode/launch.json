@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug API (server-side)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "args": ["dev"],
+      // "runtimeArgs": ["--inspect"],
+      "cwd": "${workspaceFolder}/",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"],
+      "serverReadyAction": {
+        "killOnServerStop": true,
+        "pattern": "started server on .+? \\(http://.+?\\)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest: debug current spec file",
+      "env": {
+        "NODE_ENV": "test"
+        // "CI": "true"
+      },
+      "cwd": "${workspaceFolder}/",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        // Use current spec file
+        "${fileBasenameNoExtension}",
+        "--watch",
+        "--runInBand",
+        "--no-cache"
+      ],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    }
+  ]
+}

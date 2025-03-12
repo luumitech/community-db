@@ -73,7 +73,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
             <div
               className={cn(
                 'border-medium border-default-200 hover:border-default-400',
-                'focus:border-default-foreground',
+                'focus-within:border-default-foreground',
                 'px-3 py-2 rounded-medium'
               )}
             >
