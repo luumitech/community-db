@@ -11,6 +11,7 @@ import { getCommunityEntry } from './util';
 const EmailSettingInput = builder.inputType('EmailSettingInput', {
   fields: (t) => ({
     subject: t.string({ required: true }),
+    cc: t.stringList({ required: true }),
     message: t.string({ required: true }),
   }),
 });

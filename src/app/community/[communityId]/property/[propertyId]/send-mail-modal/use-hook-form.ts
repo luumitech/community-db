@@ -13,6 +13,7 @@ const ModifyFragment = graphql(/* GraphQL */ `
     defaultSetting {
       membershipEmail {
         message
+        cc
         subject
       }
     }
@@ -34,6 +35,7 @@ function schema() {
       // subject and message keeps editor state
       membershipEmail: z.object({
         subject: z.string(),
+        cc: z.array(z.string()),
         message: z.string(),
       }),
     }),
@@ -263,6 +265,7 @@ export function defaultInputData(
         subject: mentionUtil.updateMentionInEditorState(
           community.defaultSetting?.membershipEmail?.subject ?? defaultSubject
         ),
+        cc: community.defaultSetting?.membershipEmail?.cc ?? [],
         message: mentionUtil.updateMentionInEditorState(
           community.defaultSetting?.membershipEmail?.message ?? defaultMessage
         ),

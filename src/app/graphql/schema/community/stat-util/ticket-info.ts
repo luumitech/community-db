@@ -48,6 +48,7 @@ export class TicketInfo {
     }
     return entry;
   }
+
   /**
    * Process all tickets sold within membership entry, and collect statistics
    *

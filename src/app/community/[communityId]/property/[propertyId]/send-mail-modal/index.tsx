@@ -35,11 +35,12 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
       defaultSetting: { membershipEmail },
       hidden,
     } = input;
+    const { cc } = membershipEmail;
     const subject = MentionUtil.toPlainText(membershipEmail.subject);
     const message = MentionUtil.toPlainText(membershipEmail.message);
     const url = queryString.stringifyUrl({
       url: `mailto:${hidden.toEmail}`,
-      query: { subject, body: message },
+      query: { subject, body: message, cc },
     });
     document.location.href = url.toString();
   }, []);
@@ -49,7 +50,7 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
       const { hidden, defaultSetting, ...input } = _input;
       // Replace mention values with placeholder (so no sensitive info in database)
       const mentionUtil = new MentionUtil(createMentionMapping());
-      const { subject, message } = defaultSetting.membershipEmail;
+      const { cc, subject, message } = defaultSetting.membershipEmail;
       const result = await toast.promise(
         updateCommunity({
           variables: {
@@ -57,6 +58,7 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
               ...input,
               defaultSetting: {
                 membershipEmail: {
+                  cc,
                   subject: mentionUtil.updateMentionInEditorState(subject),
                   message: mentionUtil.updateMentionInEditorState(message),
                 },

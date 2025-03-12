@@ -41,6 +41,7 @@ export class MembershipFee {
     }
     return entry;
   }
+
   /**
    * Process the membership entry, and collect statistics
    *

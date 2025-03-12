@@ -45,6 +45,7 @@ const emailSettingRef = builder
   .implement({
     fields: (t) => ({
       subject: t.exposeString('subject'),
+      cc: t.exposeStringList('cc', { nullable: true }),
       message: t.exposeString('message'),
     }),
   });

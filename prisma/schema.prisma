@@ -99,6 +99,7 @@ model Community {
 /// Default template for sending email
 type EmailSetting {
   subject String
+  cc      String[]
   message String
 }
 
