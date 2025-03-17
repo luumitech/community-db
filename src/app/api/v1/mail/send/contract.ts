@@ -17,6 +17,8 @@ export const sendContract = c.router({
     summary: 'Send email to webserver owner',
     query: z.object({
       subject: zz.string.nonEmpty('Please enter a subject'),
+      /** Include server log in sent mail */
+      log: zz.coerce.toBoolean().optional(),
     }),
     body: z.object({
       /** Google recaptcha token */

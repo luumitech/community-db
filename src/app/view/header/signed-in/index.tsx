@@ -88,6 +88,23 @@ export const SignedIn: React.FC<Props> = ({}) => {
           <BmcLabel />
         </DropdownItem>
         <DropdownItem
+          key="reportIssue"
+          href={appPath('contactUs', {
+            query: {
+              title: 'Report An Issue',
+              subject: '',
+              messageDescription: `Describe the issue in detail:
+              - What were you trying to do?
+              - Please include detail steps leading you to the error
+              - Include the error message you received`,
+              log: 'true',
+            },
+          })}
+          startContent={<Icon icon="bug" />}
+        >
+          Report An Issue
+        </DropdownItem>
+        <DropdownItem
           key="logout"
           color="danger"
           onPress={() => signOut()}

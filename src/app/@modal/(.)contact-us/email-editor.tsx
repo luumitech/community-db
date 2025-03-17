@@ -20,7 +20,6 @@ export const EmailEditor: React.FC<Props> = ({ className }) => {
         variant="bordered"
         label="Subject"
         isRequired
-        placeholder="eg. How to export data?"
       />
       <Input
         className={className}

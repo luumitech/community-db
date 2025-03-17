@@ -20,6 +20,7 @@ import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
 import {
   IoArrowBack,
   IoBarChartOutline,
+  IoBugOutline,
   IoCheckmark,
   IoChevronForward,
   IoInformation,
@@ -72,7 +73,8 @@ type SupportedIcon =
   | 'chevron-forward'
   | 'add-ticket'
   | 'calculator'
-  | 'helpbook';
+  | 'helpbook'
+  | 'bug';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -183,6 +185,9 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'helpbook':
       IconElement = GrHelpBook;
+      break;
+    case 'bug':
+      IconElement = IoBugOutline;
       break;
     default:
       IconElement = MdQuestionMark;
