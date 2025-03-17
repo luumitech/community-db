@@ -49,6 +49,8 @@ export function appPath(
       subject?: string;
       /** Additional helper text to help user compose message */
       messageDescription?: string;
+      /** Enable server log */
+      log?: string;
     };
   }
 ): string;

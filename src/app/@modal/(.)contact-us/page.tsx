@@ -27,6 +27,7 @@ export default function ContactUs() {
   const searchParams = useSearchParams();
   const title = searchParams.get('title') ?? 'Contact Us';
   const defaultSubject = searchParams.get('subject') ?? 'General Inquiry';
+  const log = searchParams.get('log');
   const mailSend = tsr.mail.send.useMutation();
   const { formMethods } = useHookForm(defaultSubject);
   const { formState, handleSubmit } = formMethods;
@@ -46,7 +47,11 @@ export default function ContactUs() {
       ].join('\n');
       mailSend.mutate(
         {
-          query: { subject },
+          query: {
+            subject,
+            // Enable log, if specified
+            ...(log != null && { log }),
+          },
           body: { recaptchaToken, to: [], message },
         },
         {
@@ -57,7 +62,7 @@ export default function ContactUs() {
         }
       );
     },
-    [executeRecaptcha, mailSend, router]
+    [executeRecaptcha, log, mailSend, router]
   );
 
   return (

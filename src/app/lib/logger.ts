@@ -2,7 +2,10 @@
 import { env } from 'next-runtime-env';
 import pino from 'pino';
 import pretty from 'pino-pretty';
+import stream from 'stream';
 import { isProduction } from '~/lib/env-var';
+import { FixedSizeBuffer } from '~/lib/fixed-size-buffer';
+import { insertIf } from '~/lib/insert-if';
 
 // Standard set of serializers
 // https://github.com/pinojs/pino-std-serializers
@@ -50,15 +53,48 @@ function debugEnabled(flag: string) {
   return flagList.includes(true);
 }
 
+const STREAM_STDOUT: pino.StreamEntry = {
+  level: 'trace',
+  stream: pino.destination(1),
+};
+
+/** Pino-pretty streamer for development build */
+const STREAM_PRETTY: pino.StreamEntry = {
+  level: 'trace',
+  stream: pretty({
+    // Options: https://github.com/pinojs/pino-pretty#options
+    translateTime: 'SYS:standard',
+    sync: true,
+  }),
+};
+
+/**
+ * Fixed size buffer for storing log data
+ *
+ * This is primary created for generation of support data. 10K should be large
+ * enough to capture the last few log entries so they can be sent to support
+ * team to diagnose the problem
+ */
+export const recentServerLog = new FixedSizeBuffer(10000);
+export const recentServerLogStream = new stream.Writable({
+  write(chunk, encoding, next) {
+    try {
+      recentServerLog.add(chunk);
+    } catch (err) {
+      // ignore err
+    } finally {
+      next();
+    }
+  },
+});
+
+const STREAM_MEMORY: pino.StreamEntry = {
+  level: 'trace',
+  stream: recentServerLogStream,
+};
+
 /** Logger for server component */
 function logger(src: string, opts: pino.LoggerOptions = {}) {
-  //   Prettier stream, only used in development
-  const prettyStream: pino.DestinationStream = pretty({
-    // Options: https://github.com/pinojs/pino-pretty#options
-    translateTime: true,
-    colorize: true,
-  });
-
   // Options: https://github.com/pinojs/pino/blob/master/docs/api.md#options
   const pinoOpts = {
     serializers: {
@@ -70,7 +106,14 @@ function logger(src: string, opts: pino.LoggerOptions = {}) {
     ...opts,
   };
 
-  return isProduction() ? pino(pinoOpts) : pino(pinoOpts, prettyStream);
+  return pino(
+    pinoOpts,
+    pino.multistream([
+      ...insertIf(isProduction(), STREAM_STDOUT),
+      ...insertIf(!isProduction(), STREAM_PRETTY),
+      STREAM_MEMORY,
+    ])
+  );
 }
 
 export const Logger = (src: string, opts?: pino.LoggerOptions) =>
