@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { mkdir } from '~/lib/file-util';
 
-const configuration: FaviconOptions = {
+const defaultConfig: FaviconOptions = {
   /**
    * For more information on the configuration options, see:
    *
@@ -35,25 +35,48 @@ const configuration: FaviconOptions = {
   },
 };
 
-export async function genFavicon(input: string, outputDir: string) {
-  const resp = await favicons(input, configuration);
+/**
+ * Generate favicons from a PNG file.
+ *
+ * @param input - The input PNG file.
+ * @param outputDir - The output directory for the generated icons.
+ * @param iconNames - Types of icons to generate
+ */
+export async function genFavicon(
+  input: string,
+  outputDir: string,
+  iconNames: string[]
+) {
+  const resp = await favicons(input, defaultConfig);
   const { images } = resp;
   // console.log({ images });
 
   // Make sure outputDir is available
   mkdir(outputDir);
 
-  writeIcon(images, 'favicon.ico', path.join(outputDir, 'favicon.ico'));
-  writeIcon(
-    images,
-    'apple-touch-icon.png',
-    path.join(outputDir, 'apple-icon.png')
-  );
-  writeIcon(
-    images,
-    'android-chrome-512x512.png',
-    path.join(outputDir, 'icon.png')
-  );
+  iconNames.forEach((iconName) => {
+    switch (iconName) {
+      case 'favicon.ico':
+        writeIcon(images, 'favicon.ico', path.join(outputDir, 'favicon.ico'));
+        break;
+
+      case 'apple-icon.png':
+        writeIcon(
+          images,
+          'apple-touch-icon.png',
+          path.join(outputDir, 'apple-icon.png')
+        );
+        break;
+
+      case 'icon.png':
+        writeIcon(
+          images,
+          'android-chrome-512x512.png',
+          path.join(outputDir, 'icon.png')
+        );
+        break;
+    }
+  });
 }
 
 function writeIcon(images: FaviconImage[], imageKey: string, destFn: string) {

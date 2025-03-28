@@ -99,10 +99,10 @@ yarn cy:open
 
 ## Updating App logo
 
-The `favicon.ico` and other related app logo files can be generated via this command:
+Many app related logo files are generated via this command:
 
 ```sh
-yarn gen-favicon -i ./public/image/community-db-logo.png -o ./src/app
+yarn gen-favicon
 ```
 
 Note: The Google OAuth consent screen also make use of the app logo, and should be updated accordingly if this is changed.

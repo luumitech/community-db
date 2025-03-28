@@ -6,7 +6,7 @@ interface OptionT {
   output: string;
 }
 
-async function main() {
+async function generate() {
   const program = new Command();
   program
     .description(`Convert .png into favicon.ico and other related files.`)
@@ -30,7 +30,21 @@ async function main() {
   program.parse();
   const { input, output } = program.opts<OptionT>();
 
-  await genFavicon(input, output);
+  await genFavicon(input, output, [
+    'favicon.ico',
+    'apple-icon.png',
+    'icon.png',
+  ]);
+}
+
+async function main() {
+  await genFavicon('./public/image/community-db-logo.png', './src/app', [
+    'apple-icon.png',
+    'icon.png',
+  ]);
+  await genFavicon('./public/image/logo-favicon-colored.png', './src/app', [
+    'favicon.ico',
+  ]);
 }
 
 main();
