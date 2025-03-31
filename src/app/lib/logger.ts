@@ -13,13 +13,18 @@ export const serializers = pino.stdSerializers;
 
 function errorSerializer(err: Error) {
   const json = serializers.err(err);
-  const { stack, ...other } = json;
-  if (stack) {
-    // If stack is available, show the stack first
-    console.error(stack);
+  // In production, we want to include the entire error object in the logger output
+  // But in development mode, we want to show the stack trace first
+  if (isProduction()) {
+    return json;
+  } else {
+    const { stack, ...other } = json;
+    if (stack) {
+      // If stack is available, show the stack first
+      console.error(stack);
+    }
+    return other;
   }
-  // Show the rest of the error object
-  return other;
 }
 
 /**

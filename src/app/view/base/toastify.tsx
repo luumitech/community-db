@@ -1,3 +1,5 @@
+import { Button, Link, cn } from '@heroui/react';
+import React from 'react';
 import {
   toast as toastify,
   type Id,
@@ -6,8 +8,49 @@ import {
   type ToastPromiseParams,
   type UpdateOptions,
 } from 'react-toastify';
+import { appPath } from '~/lib/app-path';
+import { Icon } from '~/view/base/icon';
 
 export { type Id } from 'react-toastify';
+
+interface ErrorDialogProps {
+  className?: string;
+  error: Error;
+}
+
+export const ErrorDialog: React.FC<ErrorDialogProps> = ({
+  className,
+  error,
+}) => {
+  const errMsg = error.message || 'Unknown error';
+
+  return (
+    <div className={cn(className, 'flex flex-col gap-2')}>
+      <p className="leading-4">
+        <span>{errMsg}</span>
+      </p>
+      <Button
+        variant="faded"
+        size="sm"
+        as={Link}
+        href={appPath('contactUs', {
+          query: {
+            title: 'Report An Issue',
+            subject: errMsg,
+            messageDescription: `Describe the issue in detail:
+              - What were you trying to do?
+              - Please include detail steps leading you to the error
+              - Include the error message you received`,
+            log: 'true',
+          },
+        })}
+        startContent={<Icon icon="bug" />}
+      >
+        Report An Issue
+      </Button>
+    </div>
+  );
+};
 
 /**
  * Customize toast.promise to handle error condition automatically
@@ -27,9 +70,9 @@ async function toastPromise<
   const customError: string | UpdateOptions<TError> = {
     // Don't close the error
     autoClose: false,
-    render: (arg) => {
-      if (arg.data instanceof Error) {
-        return arg.data.message;
+    render: ({ data }) => {
+      if (data instanceof Error) {
+        return <ErrorDialog error={data} />;
       }
     },
   };

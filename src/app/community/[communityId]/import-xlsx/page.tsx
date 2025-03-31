@@ -75,9 +75,10 @@ export default function ImportXlsx({ params }: RouteArgs) {
           );
         }
       } catch (err) {
+        const errMsg = err instanceof Error ? err.message : 'Unknown error';
         toast.update(toastId, {
           type: 'error',
-          render: (err as Error).message,
+          render: errMsg,
           progress: undefined,
           isLoading: false,
           closeButton: true,
