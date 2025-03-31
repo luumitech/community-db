@@ -8430,10 +8430,10 @@ convert-source-map@^2.0.0:
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-2.0.0.tgz#4b560f649fc4e918dd0ab75cf4961e8bc882d82a"
   integrity sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==
 
-cookie@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
-  integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
+cookie@^0.7.0:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.7.2.tgz#556369c472a2ba910f2979891b526b3436237ed7"
+  integrity sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==
 
 core-js-compat@^3.31.0, core-js-compat@^3.36.1:
   version "3.36.1"
@@ -12904,14 +12904,14 @@ new-find-package-json@^2.0.0:
   dependencies:
     debug "^4.3.4"
 
-next-auth@^4.24.7:
-  version "4.24.7"
-  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.24.7.tgz#0a14c1e35b4a2c0c1ecff95c295b74bd48d3817a"
-  integrity sha512-iChjE8ov/1K/z98gdKbn2Jw+2vLgJtVV39X+rCP5SGnVQuco7QOr19FRNGMIrD8d3LYhHWV9j9sKLzq1aDWWQQ==
+next-auth@^4.24.11:
+  version "4.24.11"
+  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.24.11.tgz#16eeb76d37fbc8fe887561b454f8167f490c381f"
+  integrity sha512-pCFXzIDQX7xmHFs4KVH4luCjaCbuPRtZ9oBUjUhOk84mZ9WVPf94n87TxYI4rSRf9HmfHEF8Yep3JrYDVOo3Cw==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@panva/hkdf" "^1.0.2"
-    cookie "^0.5.0"
+    cookie "^0.7.0"
     jose "^4.15.5"
     oauth "^0.9.15"
     openid-client "^5.4.0"
@@ -12924,10 +12924,10 @@ next-recaptcha-v3@^1.5.2:
   resolved "https://registry.yarnpkg.com/next-recaptcha-v3/-/next-recaptcha-v3-1.5.2.tgz#bad67f1add6a4614d88496f4fc4d8449448763b1"
   integrity sha512-CTFQvyWWQLrIuI++NhOFeQKdELUFvTDGfCty+bz6hxU8frS59ycl4TInvWhCn+9eKjAqV6LqQZZGHdwla8t8GQ==
 
-next-runtime-env@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/next-runtime-env/-/next-runtime-env-3.2.2.tgz#87e9a8a7f3dccc6e142a7895b91ea09f7c8097e0"
-  integrity sha512-S5S6NxIf3XeaVc9fLBN2L5Jzu+6dLYCXeOaPQa1RzKRYlG2BBayxXOj6A4VsciocyNkJMazW1VAibtbb1/ZjAw==
+next-runtime-env@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/next-runtime-env/-/next-runtime-env-3.3.0.tgz#01d2d28c15072c63855afa63a734333668b2a2c8"
+  integrity sha512-JgKVnog9mNbjbjH9csVpMnz2tB2cT5sLF+7O47i6Ze/s/GoiKdV7dHhJHk1gwXpo6h5qPj5PTzryldtSjvrHuQ==
   dependencies:
     next "^14"
     react "^18"
@@ -16368,9 +16368,9 @@ write-file-atomic@^5.0.0, write-file-atomic@^5.0.1:
     signal-exit "^4.0.1"
 
 ws@^8.12.0, ws@^8.13.0, ws@^8.15.0:
-  version "8.16.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
-  integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
+  version "8.18.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.1.tgz#ea131d3784e1dfdff91adb0a4a116b127515e3cb"
+  integrity sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==
 
 "xlsx@https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz":
   version "0.20.2"
