@@ -2,7 +2,7 @@ import { Radio, RadioGroup, cn } from '@heroui/react';
 import { useTheme } from 'next-themes';
 import React from 'react';
 
-const supportedTheme = [
+export const supportedTheme = [
   { value: 'system', label: 'System' },
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },

@@ -13,6 +13,7 @@ import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { BmcLabel, BmcLogo, BmcUrl } from '~/view/buy-me-a-coffee';
 import styles from './styles.module.css';
+import { ThemeSelect } from './theme-select';
 
 interface Props {}
 
@@ -31,7 +32,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
           avatarProps={{
             isBordered: true,
             name: initial || 'n/a',
-            color: 'secondary',
+            className: 'bg-transparent',
             ...(!!image && { src: image }),
           }}
         />
@@ -57,12 +58,20 @@ export const SignedIn: React.FC<Props> = ({}) => {
         >
           {appLabel('about')}
         </DropdownItem>
-        <DropdownItem
+        {/* <DropdownItem
           key="preference"
           href={appPath('preference')}
           startContent={<Icon icon="settings" />}
         >
           {appLabel('preference')}
+        </DropdownItem> */}
+        <DropdownItem
+          key="theme"
+          isReadOnly
+          startContent={<Icon icon="sunMoon" />}
+          endContent={<ThemeSelect />}
+        >
+          Theme
         </DropdownItem>
         <DropdownItem
           key="pricingPlan"
@@ -86,6 +95,13 @@ export const SignedIn: React.FC<Props> = ({}) => {
           showDivider
         >
           <BmcLabel />
+        </DropdownItem>
+        <DropdownItem
+          key="tutorial"
+          href={appPath('tutorial')}
+          startContent={<Icon icon="helpbook" />}
+        >
+          {appLabel('tutorial')}
         </DropdownItem>
         <DropdownItem
           key="reportIssue"

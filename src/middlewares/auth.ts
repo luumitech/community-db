@@ -3,7 +3,7 @@ import type { MiddlewareFactory } from './chain';
 
 const protectedPaths = [
   '/community',
-  '/preference',
+  // '/preference',
   // API route handlers
   '/api/sample',
 ];

@@ -26,6 +26,20 @@ export function useTopMenu() {
 
     const segment = segments.shift();
     switch (segment) {
+      case 'tutorial': {
+        items.push({
+          id: 'communityWelcome',
+          href: appPath('communityWelcome'),
+          children: appLabel('communityWelcome'),
+        });
+        items.push({
+          id: 'tutorial',
+          href: appPath('tutorial'),
+          children: appLabel('tutorial'),
+        });
+        break;
+      }
+
       case 'community': {
         items.push({
           id: 'communityWelcome',
@@ -56,8 +70,8 @@ export function useTopMenu() {
           });
           break;
         default:
-          items.pop();
           if (op != null && op === ctxCommunityId) {
+            items.pop();
             items.push({
               id: 'propertyList',
               href: appPath('propertyList', {
