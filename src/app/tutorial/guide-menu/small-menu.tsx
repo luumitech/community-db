@@ -24,7 +24,7 @@ export const SmallMenu: React.FC<Props> = ({ className }) => {
     <>
       <div className={cn(className, 'flex flex-col items-center')}>
         <Button
-          className="h-[40px]"
+          className="flex-shrink-0"
           variant="light"
           isIconOnly
           onPress={() => onOpenChange()}
@@ -33,7 +33,7 @@ export const SmallMenu: React.FC<Props> = ({ className }) => {
         </Button>
         <div
           className={cn(
-            'text-ellipsis overflow-hidden',
+            'text-ellipsis overflow-hidden whitespace-nowrap',
             '[writing-mode:vertical-rl]'
           )}
         >
