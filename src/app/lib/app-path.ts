@@ -6,6 +6,7 @@ export const supportedPathTemplates = {
   home: '/',
   about: '/about',
   preference: '/preference',
+  tutorial: '/tutorial{/:guide}',
   pricingPlan: '/pricing-plan',
   contactUs: '/contact-us',
   privacy: '/privacy',
@@ -51,6 +52,14 @@ export function appPath(
       messageDescription?: string;
       /** Enable server log */
       log?: string;
+    };
+  }
+): string;
+export function appPath(
+  template: 'tutorial',
+  sub?: {
+    path?: {
+      guide?: string;
     };
   }
 ): string;
@@ -110,6 +119,8 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Terms';
     case 'preference':
       return 'Preference';
+    case 'tutorial':
+      return 'Tutorial';
     case 'pricingPlan':
       return 'Pricing Plan';
     case 'contactUs':

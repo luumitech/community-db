@@ -26,7 +26,7 @@ import {
   IoInformation,
   IoPersonAdd,
 } from 'react-icons/io5';
-import { LuTicketPlus } from 'react-icons/lu';
+import { LuSunMoon, LuTicketPlus } from 'react-icons/lu';
 import {
   MdDragIndicator,
   MdLogout,
@@ -37,7 +37,7 @@ import {
   MdQuestionMark,
 } from 'react-icons/md';
 import { RiHome6Line } from 'react-icons/ri';
-import { RxCross2 } from 'react-icons/rx';
+import { RxCross2, RxHamburgerMenu } from 'react-icons/rx';
 
 type SupportedIcon =
   | 'trash'
@@ -74,7 +74,9 @@ type SupportedIcon =
   | 'add-ticket'
   | 'calculator'
   | 'helpbook'
-  | 'bug';
+  | 'bug'
+  | 'hamburgerMenu'
+  | 'sunMoon';
 
 export interface IconProps extends IconBaseProps {
   className?: string;
@@ -188,6 +190,12 @@ export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
       break;
     case 'bug':
       IconElement = IoBugOutline;
+      break;
+    case 'hamburgerMenu':
+      IconElement = RxHamburgerMenu;
+      break;
+    case 'sunMoon':
+      IconElement = LuSunMoon;
       break;
     default:
       IconElement = MdQuestionMark;
