@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { parseAsNumber } from '~/lib/number-util';
 import { toast } from '~/view/base/toastify';
@@ -32,7 +32,7 @@ const GenerateEmail_PropertyListQuery = graphql(/* GraphQL */ `
 export function useGenerateEmail() {
   const { communityId, memberYear, nonMemberYear, event } =
     useFilterBarContext();
-  const { communityUi } = useAppContext();
+  const { searchText } = useSelector((state) => state.searchBar);
   const [emailListQuery] = useLazyQuery(GenerateEmail_PropertyListQuery);
   const [selectedMemberYear] = memberYear;
   const [selectedNonMemberYear] = nonMemberYear;
@@ -43,7 +43,7 @@ export function useGenerateEmail() {
       variables: {
         id: communityId,
         filter: {
-          searchText: communityUi.propertyListSearch,
+          searchText,
           memberYear: parseAsNumber(selectedMemberYear),
           nonMemberYear: parseAsNumber(selectedNonMemberYear),
           memberEvent: selectedEvent,
@@ -57,7 +57,7 @@ export function useGenerateEmail() {
   }, [
     emailListQuery,
     communityId,
-    communityUi.propertyListSearch,
+    searchText,
     selectedMemberYear,
     selectedNonMemberYear,
     selectedEvent,

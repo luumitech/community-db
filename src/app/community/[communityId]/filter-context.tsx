@@ -1,6 +1,6 @@
-import { useDebounce, useSet } from '@uidotdev/usehooks';
+import { useSet } from '@uidotdev/usehooks';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 
 type ContextT = Readonly<{
@@ -28,11 +28,10 @@ interface Props {
 }
 
 export function FilterBarProvider({ communityId, ...props }: Props) {
-  const { communityUi } = useAppContext();
   const memberYear = useSet<string>([]);
   const nonMemberYear = useSet<string>([]);
   const event = useSet<string>([]);
-  const searchText = useDebounce(communityUi.propertyListSearch, 300);
+  const { debouncedSearchText } = useSelector((state) => state.searchBar);
 
   const [selectedMemberYearStr] = memberYear;
   const [selectedNonMemberYearStr] = nonMemberYear;
@@ -46,8 +45,8 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
 
   const filterArg = React.useMemo<GQL.PropertyFilterInput>(() => {
     const arg: GQL.PropertyFilterInput = {};
-    if (searchText) {
-      arg.searchText = searchText;
+    if (debouncedSearchText) {
+      arg.searchText = debouncedSearchText;
     }
     const selectedMemberYear = parseInt(selectedMemberYearStr, 10);
     if (!isNaN(selectedMemberYear)) {
@@ -62,7 +61,7 @@ export function FilterBarProvider({ communityId, ...props }: Props) {
     }
     return arg;
   }, [
-    searchText,
+    debouncedSearchText,
     selectedMemberYearStr,
     selectedNonMemberYearStr,
     selectedEvent,

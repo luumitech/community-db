@@ -1,6 +1,7 @@
 import { Card, CardBody, CardFooter, CardHeader, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { RegisteredEventList } from './registered-event-list';
 import { YearSelect } from './year-select';
@@ -11,8 +12,9 @@ interface Props {
 }
 
 export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
-  const { communityUi, minYear, maxYear } = useAppContext();
-  const { yearSelected } = communityUi;
+  const { minYear, maxYear } = useAppContext();
+  const dispatch = useDispatch();
+  const { yearSelected } = useSelector((state) => state.ui);
   const { membershipList } = property;
 
   const membership = React.useMemo(() => {
@@ -28,6 +30,10 @@ export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
     } as GQL.Membership;
   }, [membershipList, yearSelected]);
 
+  const onYearChange = React.useCallback((year: string) => {
+    dispatch(actions.ui.setYearSelected(year));
+  }, []);
+
   return (
     <Card className={className}>
       <CardHeader>Membership Status</CardHeader>
@@ -36,7 +42,7 @@ export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
           yearRange={[minYear, maxYear]}
           membershipList={property.membershipList}
           selectedYear={yearSelected}
-          onYearChange={communityUi.actions.setYearSelected}
+          onYearChange={onYearChange}
         />
       </CardBody>
       <CardFooter>

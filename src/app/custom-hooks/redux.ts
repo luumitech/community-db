@@ -10,5 +10,6 @@ export const useDispatch = useReduxDispatch.withTypes<AppDispatch>();
 export const useSelector = useReduxSelector.withTypes<RootState>();
 export const useStore = useReduxStore.withTypes<AppStore>();
 
-// Export actions/selectors root
+// Export commonly used methods from toolkits
+export { addListener, removeListener } from '@reduxjs/toolkit';
 export { actions } from '~/lib/reducers';

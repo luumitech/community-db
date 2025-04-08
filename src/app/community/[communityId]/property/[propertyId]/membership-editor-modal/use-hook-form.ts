@@ -7,6 +7,7 @@ import {
   useForm,
   useFormContext,
 } from '~/custom-hooks/hook-form';
+import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
@@ -170,8 +171,8 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { minYear, maxYear, communityUi } = useAppContext();
-  const { yearSelected } = communityUi;
+  const { minYear, maxYear } = useAppContext();
+  const { yearSelected } = useSelector((state) => state.ui);
   const { property: fragment } = usePageContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useSelector } from '~/custom-hooks/redux';
 
 type ContextT = Readonly<{
   eventSelected: string;
@@ -14,8 +14,7 @@ interface Props {
 }
 
 export function YearlyProvider(props: Props) {
-  const { communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
+  const { lastEventSelected } = useSelector((state) => state.ui);
   const [eventSelected, setEventSelected] = React.useState(
     lastEventSelected ?? ''
   );

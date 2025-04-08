@@ -1,8 +1,8 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
 import { useFilterBarContext } from '~/community/[communityId]/filter-context';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
@@ -20,15 +20,16 @@ export const PropertySearchBar: React.FC<Props> = ({
   onChange,
   ...inputProps
 }) => {
-  const { communityUi } = useAppContext();
   const { arg, disclosure, open } = useDrawerControl();
+  const dispatch = useDispatch();
+  const { searchText } = useSelector((state) => state.searchBar);
   const { memberYear, nonMemberYear, event } = useFilterBarContext();
   const [memberYearStr] = memberYear;
   const [nonMemberYearStr] = nonMemberYear;
   const [eventStr] = event;
 
   const setSearchText = (input?: string) => {
-    communityUi.actions.setPropertyListSearch(input);
+    dispatch(actions.searchBar.setSearchText(input));
     onChange?.();
   };
 
@@ -68,7 +69,7 @@ export const PropertySearchBar: React.FC<Props> = ({
              */}
             <FlatButton
               icon="cross"
-              disabled={!communityUi.propertyListSearch}
+              disabled={!searchText}
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
@@ -80,7 +81,7 @@ export const PropertySearchBar: React.FC<Props> = ({
         //     <span className="text-default-400 text-small">.org/</span>
         //   </div>
         // }
-        value={communityUi.propertyListSearch ?? ''}
+        value={searchText ?? ''}
         onValueChange={setSearchText}
         {...inputProps}
       />

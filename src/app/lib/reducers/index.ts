@@ -1,9 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { listenerMiddleware } from './listener';
 import { reducer } from './reducers';
 
 export const makeStore = () => {
   return configureStore({
     reducer,
+    middleware: (getDefaultMiddleware) => {
+      let mw = getDefaultMiddleware();
+      // @ts-expect-error
+      mw = mw.prepend(listenerMiddleware.middleware);
+      return mw;
+    },
   });
 };
 
