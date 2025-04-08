@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import React from 'react';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { parseAsNumber } from '~/lib/number-util';
@@ -30,23 +30,24 @@ const GenerateEmail_PropertyListQuery = graphql(/* GraphQL */ `
  * - Suitable for importing into Mailchimp
  */
 export function useGenerateEmail() {
-  const { communityId, memberYear, nonMemberYear, event } =
-    useFilterBarContext();
-  const { searchText } = useSelector((state) => state.searchBar);
+  const { communityId } = useAppContext();
+  const { searchText, memberYear, nonMemberYear, event } = useSelector(
+    (state) => state.searchBar
+  );
   const [emailListQuery] = useLazyQuery(GenerateEmail_PropertyListQuery);
-  const [selectedMemberYear] = memberYear;
-  const [selectedNonMemberYear] = nonMemberYear;
-  const [selectedEvent] = event;
 
   const getPropertyList = React.useCallback(async () => {
+    if (communityId == null) {
+      throw new Error('Community ID is not set');
+    }
     const result = await emailListQuery({
       variables: {
         id: communityId,
         filter: {
           searchText,
-          memberYear: parseAsNumber(selectedMemberYear),
-          nonMemberYear: parseAsNumber(selectedNonMemberYear),
-          memberEvent: selectedEvent,
+          memberYear: parseAsNumber(memberYear),
+          nonMemberYear: parseAsNumber(nonMemberYear),
+          memberEvent: event,
         },
       },
     });
@@ -58,9 +59,9 @@ export function useGenerateEmail() {
     emailListQuery,
     communityId,
     searchText,
-    selectedMemberYear,
-    selectedNonMemberYear,
-    selectedEvent,
+    memberYear,
+    nonMemberYear,
+    event,
   ]);
 
   const generateEmailList = React.useCallback(() => {

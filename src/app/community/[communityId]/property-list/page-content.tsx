@@ -13,8 +13,9 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import * as R from 'remeda';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
@@ -57,11 +58,13 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
 interface Props {}
 
 export const PageContent: React.FC<Props> = (props) => {
-  const { communityId, filterArg } = useFilterBarContext();
+  const { communityId } = useAppContext();
+  const { filterArg } = useSelector((state) => state.searchBar);
   const router = useRouter();
   const result = useQuery(CommunityFromIdQuery, {
+    skip: communityId == null,
     variables: {
-      id: communityId,
+      id: communityId!,
       first: 10, // load 10 entries initally
       filter: filterArg,
     },
@@ -99,7 +102,7 @@ export const PageContent: React.FC<Props> = (props) => {
   }, [community]);
 
   const emptyContent = React.useMemo(() => {
-    if (result.error) {
+    if (result.error || communityId == null) {
       return <div className="mb-2">An error has occured.</div>;
     }
     return (
@@ -117,6 +120,10 @@ export const PageContent: React.FC<Props> = (props) => {
       </div>
     );
   }, [filterArg, communityId, result.error]);
+
+  if (communityId == null) {
+    return null;
+  }
 
   return (
     <>

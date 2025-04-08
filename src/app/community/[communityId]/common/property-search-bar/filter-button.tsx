@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const FilterButton: React.FC<Props> = ({ className, openDrawer }) => {
-  const { isFilterSpecified } = useFilterBarContext();
+  const { isFilterSpecified } = useSelector((state) => state.searchBar);
 
   return (
     <FlatButton

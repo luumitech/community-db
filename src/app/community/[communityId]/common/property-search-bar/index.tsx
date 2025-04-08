@@ -1,6 +1,5 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
@@ -22,11 +21,9 @@ export const PropertySearchBar: React.FC<Props> = ({
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const dispatch = useDispatch();
-  const { searchText } = useSelector((state) => state.searchBar);
-  const { memberYear, nonMemberYear, event } = useFilterBarContext();
-  const [memberYearStr] = memberYear;
-  const [nonMemberYearStr] = nonMemberYear;
-  const [eventStr] = event;
+  const { searchText, memberYear, nonMemberYear, event } = useSelector(
+    (state) => state.searchBar
+  );
 
   const setSearchText = (input?: string) => {
     dispatch(actions.searchBar.setSearchText(input));
@@ -35,24 +32,17 @@ export const PropertySearchBar: React.FC<Props> = ({
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      memberYear.clear();
-      memberYear.add(input.memberYear);
-      nonMemberYear.clear();
-      nonMemberYear.add(input.nonMemberYear);
-      event.clear();
-      event.add(input.event);
+      dispatch(actions.searchBar.setMemberYear(input.memberYear));
+      dispatch(actions.searchBar.setNonMemberYear(input.nonMemberYear));
+      dispatch(actions.searchBar.setEvent(input.event));
       onChange?.();
     },
     [memberYear, nonMemberYear, event, onChange]
   );
 
   const openDrawer = React.useCallback(() => {
-    open({
-      memberYear: memberYearStr,
-      nonMemberYear: nonMemberYearStr,
-      event: eventStr,
-    });
-  }, [open, memberYearStr, nonMemberYearStr, eventStr]);
+    open({ memberYear, nonMemberYear, event });
+  }, [open, memberYear, nonMemberYear, event]);
 
   return (
     <>

@@ -1,10 +1,9 @@
-import { useDisclosure } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
+import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
@@ -71,7 +70,7 @@ function defaultInputData(
 
 export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
   const { defaultSetting } = useAppContext();
-  const { filterArg } = useFilterBarContext();
+  const { filterArg } = useSelector((state) => state.searchBar);
   const community = getFragment(BatchPropertyModifyFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(community.id, filterArg, defaultSetting),
