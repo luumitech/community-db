@@ -206,6 +206,7 @@ function propertyListFilterArgs(
   if (nonMemberYear != null) {
     query.AND.push({
       OR: [
+        { membershipList: { isSet: false } },
         {
           membershipList: {
             some: {

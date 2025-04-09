@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import * as GQL from '~/graphql/generated/graphql';
-import { listenerMiddleware } from './listener';
+import { startListening } from './listener';
 
 type State = Readonly<{
   /**
@@ -113,14 +113,12 @@ export const searchBarSlice = createSlice({
 
 /** Listener middlewares */
 
-listenerMiddleware.startListening({
+startListening({
   actionCreator: searchBarSlice.actions.setSearchText,
-  effect: async (action, listenerApi) => {
+  effect: async (action, api) => {
     /* Debounce search text, so that API don't gets called repeatedly  */
-    listenerApi.cancelActiveListeners();
-    await listenerApi.delay(300);
-    listenerApi.dispatch(
-      searchBarSlice.actions.setDebouncedSearchText(action.payload)
-    );
+    api.cancelActiveListeners();
+    await api.delay(300);
+    api.dispatch(searchBarSlice.actions.setDebouncedSearchText(action.payload));
   },
 });
