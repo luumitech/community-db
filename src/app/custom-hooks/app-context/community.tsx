@@ -4,13 +4,13 @@ import { Button, Link } from '@heroui/react';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
 import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
 import { toast } from '~/view/base/toastify';
-import { useCommunityUi, type UseCommunityUiReturn } from './community-ui';
 
 const CommunityLayoutQuery = graphql(/* GraphQL */ `
   query communityLayout($communityId: String!) {
@@ -58,12 +58,6 @@ export type CommunityState = Readonly<{
   communityId?: string;
   /** Community name */
   communityName?: string;
-  /**
-   * UI states like:
-   *
-   * - Property search bar text
-   */
-  communityUi: UseCommunityUiReturn;
   /** Access role items */
   roleItems: SelectItem[];
   /** Minimum membership year recorded within membership */
@@ -161,6 +155,7 @@ function communityLayoutOnError(err: ApolloError) {
 export function useCommunityContext() {
   const params = useParams<{ communityId?: string }>();
   const communityId = params.communityId;
+  const dispatch = useDispatch();
   const result = useQuery(CommunityLayoutQuery, {
     skip: communityId == null,
     variables: {
@@ -170,14 +165,13 @@ export function useCommunityContext() {
   useGraphqlErrorHandler(result, {
     onError: communityLayoutOnError,
   });
-  const communityUi = useCommunityUi();
 
   const community = result.data?.communityFromId;
 
   React.useEffect(() => {
     // Reset ui state whenever community changes
-    communityUi.actions.reset();
-  }, [communityUi.actions, community?.id]);
+    dispatch(actions.ui.reset());
+  }, [dispatch, community?.id]);
 
   const contextValue = React.useMemo<CommunityState>(() => {
     const eventList = community?.eventList ?? [];
@@ -197,7 +191,6 @@ export function useCommunityContext() {
     return {
       communityId: community?.id,
       communityName: community?.name,
-      communityUi,
       roleItems,
       minYear: community?.minYear ?? getCurrentYear(),
       maxYear: community?.maxYear ?? getCurrentYear(),
@@ -215,7 +208,7 @@ export function useCommunityContext() {
       canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
       isAdmin: role === GQL.Role.Admin,
     };
-  }, [community, communityUi]);
+  }, [community]);
 
   return contextValue;
 }

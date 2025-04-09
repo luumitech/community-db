@@ -13,8 +13,8 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import * as R from 'remeda';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
@@ -54,10 +54,12 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {}
+interface Props {
+  communityId: string;
+}
 
-export const PageContent: React.FC<Props> = (props) => {
-  const { communityId, filterArg } = useFilterBarContext();
+export const PageContent: React.FC<Props> = ({ communityId }) => {
+  const { filterArg } = useSelector((state) => state.searchBar);
   const router = useRouter();
   const result = useQuery(CommunityFromIdQuery, {
     variables: {
@@ -99,7 +101,7 @@ export const PageContent: React.FC<Props> = (props) => {
   }, [community]);
 
   const emptyContent = React.useMemo(() => {
-    if (result.error) {
+    if (!!result.error) {
       return <div className="mb-2">An error has occured.</div>;
     }
     return (
@@ -144,13 +146,12 @@ export const PageContent: React.FC<Props> = (props) => {
             />
           )
         }
-        onRowAction={(key) =>
-          router.push(
-            appPath('property', {
-              path: { communityId, propertyId: key as string },
-            })
-          )
-        }
+        onRowAction={(key) => {
+          const path = appPath('property', {
+            path: { communityId, propertyId: key as string },
+          });
+          router.push(path);
+        }}
       >
         <TableHeader columns={columns}>
           {(column) => (

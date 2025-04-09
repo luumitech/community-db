@@ -1,6 +1,6 @@
 import { Chip, ChipProps } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useSelector } from '~/custom-hooks/redux';
 
 interface Props extends ChipProps {
   className?: string;
@@ -12,8 +12,7 @@ export const EventChip: React.FC<Props> = ({
   eventName,
   ...props
 }) => {
-  const { communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
+  const { lastEventSelected } = useSelector((state) => state.ui);
 
   return (
     <Chip

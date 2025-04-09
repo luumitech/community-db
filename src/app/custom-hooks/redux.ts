@@ -1,3 +1,4 @@
+import { addListener as rtkAddListener } from '@reduxjs/toolkit';
 import {
   useDispatch as useReduxDispatch,
   useSelector as useReduxSelector,
@@ -10,5 +11,7 @@ export const useDispatch = useReduxDispatch.withTypes<AppDispatch>();
 export const useSelector = useReduxSelector.withTypes<RootState>();
 export const useStore = useReduxStore.withTypes<AppStore>();
 
-// Export actions/selectors root
+export const addListener = rtkAddListener.withTypes<RootState, AppDispatch>();
+
+// Export commonly used methods from toolkits
 export { actions } from '~/lib/reducers';

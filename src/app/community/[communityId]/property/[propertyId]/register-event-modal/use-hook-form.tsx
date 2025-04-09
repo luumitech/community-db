@@ -7,6 +7,7 @@ import {
   useFormContext,
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
+import { useSelector } from '~/custom-hooks/redux';
 import * as xtraArg from '~/custom-hooks/xtra-arg-context';
 import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -118,9 +119,9 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { communityUi, defaultSetting } = useAppContext();
+  const { defaultSetting } = useAppContext();
   const { property: fragment } = usePageContext();
-  const { yearSelected, lastEventSelected } = communityUi;
+  const { yearSelected, lastEventSelected } = useSelector((state) => state.ui);
   const property = getFragment(MembershipEditorFragment, fragment);
   const findEventResult = React.useMemo(() => {
     return findEvent(property, yearSelected, lastEventSelected);

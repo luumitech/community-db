@@ -1,53 +1,60 @@
 import { Chip } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { Icon } from '~/view/base/icon';
+import { defaultInputData, type InputData } from './use-hook-form';
 
 interface Props {
   className?: string;
   openDrawer: () => void;
+  onFilterChange?: (input: InputData) => Promise<void>;
 }
 
-export const FilterChip: React.FC<Props> = ({ className, openDrawer }) => {
-  const { isFilterSpecified, memberYear, nonMemberYear, event } =
-    useFilterBarContext();
+export const FilterChip: React.FC<Props> = ({
+  className,
+  openDrawer,
+  onFilterChange,
+}) => {
+  const searchBar = useSelector((state) => state.searchBar);
 
-  if (!isFilterSpecified) {
+  if (!searchBar.isFilterSpecified) {
     return null;
   }
 
-  const [memberYearStr] = memberYear;
-  const [nonMemberYearStr] = nonMemberYear;
-  const [eventStr] = event;
+  const { memberYear, nonMemberYear, event } = searchBar;
+  const state = defaultInputData(memberYear, nonMemberYear, event);
 
   return (
     <div className="flex gap-2 cursor-pointer" onClick={openDrawer}>
-      {!!memberYearStr && (
+      {!!memberYear && (
         <Chip
           variant="bordered"
           color="success"
-          onClose={() => memberYear.clear()}
+          onClose={() => onFilterChange?.({ ...state, memberYear: '' })}
         >
           <div className="flex items-center gap-2">
-            {memberYearStr}
+            {searchBar.memberYear}
             <Icon icon="thumb-up" size={16} />
           </div>
         </Chip>
       )}
-      {!!nonMemberYearStr && (
-        <Chip variant="bordered" onClose={() => nonMemberYear.clear()}>
+      {!!nonMemberYear && (
+        <Chip
+          variant="bordered"
+          onClose={() => onFilterChange?.({ ...state, nonMemberYear: '' })}
+        >
           <div className="flex items-center gap-2">
-            {nonMemberYearStr}
+            {nonMemberYear}
             <Icon icon="thumb-down" size={16} />
           </div>
         </Chip>
       )}
-      {!!eventStr && (
+      {!!event && (
         <EventChip
-          eventName={eventStr}
+          eventName={event}
           variant="faded"
-          onClose={() => event.clear()}
+          onClose={() => onFilterChange?.({ ...state, event: '' })}
         />
       )}
     </div>

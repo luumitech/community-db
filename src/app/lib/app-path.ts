@@ -95,10 +95,8 @@ export function appPath(
   const { query, path } = sub ?? {};
   const pathTemplate = supportedPathTemplates[template];
   const toPath = compile(pathTemplate, { encode: encodeURIComponent });
-  return queryString.stringifyUrl({
-    url: toPath(path),
-    query,
-  });
+  const url = toPath(path);
+  return queryString.stringifyUrl({ url, query });
 }
 
 /**

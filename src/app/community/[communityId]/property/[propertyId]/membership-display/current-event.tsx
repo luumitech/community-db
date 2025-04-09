@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { ModalButton } from '../modal-button';
 import { usePageContext } from '../page-context';
 import { EventNameSelect } from './event-name-select';
@@ -10,8 +10,7 @@ interface Props {
 }
 
 export const CurrentEvent: React.FC<Props> = ({ className }) => {
-  const { communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
+  const { lastEventSelected } = useSelector((state) => state.ui);
   const { registerEvent } = usePageContext();
 
   return (

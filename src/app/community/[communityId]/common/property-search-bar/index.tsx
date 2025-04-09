@@ -1,8 +1,7 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
-import { useFilterBarContext } from '~/community/[communityId]/filter-context';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
@@ -20,38 +19,30 @@ export const PropertySearchBar: React.FC<Props> = ({
   onChange,
   ...inputProps
 }) => {
-  const { communityUi } = useAppContext();
   const { arg, disclosure, open } = useDrawerControl();
-  const { memberYear, nonMemberYear, event } = useFilterBarContext();
-  const [memberYearStr] = memberYear;
-  const [nonMemberYearStr] = nonMemberYear;
-  const [eventStr] = event;
+  const dispatch = useDispatch();
+  const { searchText, memberYear, nonMemberYear, event } = useSelector(
+    (state) => state.searchBar
+  );
 
   const setSearchText = (input?: string) => {
-    communityUi.actions.setPropertyListSearch(input);
+    dispatch(actions.searchBar.setSearchText(input));
     onChange?.();
   };
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      memberYear.clear();
-      memberYear.add(input.memberYear);
-      nonMemberYear.clear();
-      nonMemberYear.add(input.nonMemberYear);
-      event.clear();
-      event.add(input.event);
+      dispatch(actions.searchBar.setMemberYear(input.memberYear));
+      dispatch(actions.searchBar.setNonMemberYear(input.nonMemberYear));
+      dispatch(actions.searchBar.setEvent(input.event));
       onChange?.();
     },
-    [memberYear, nonMemberYear, event, onChange]
+    [dispatch, onChange]
   );
 
   const openDrawer = React.useCallback(() => {
-    open({
-      memberYear: memberYearStr,
-      nonMemberYear: nonMemberYearStr,
-      event: eventStr,
-    });
-  }, [open, memberYearStr, nonMemberYearStr, eventStr]);
+    open({ memberYear, nonMemberYear, event });
+  }, [open, memberYear, nonMemberYear, event]);
 
   return (
     <>
@@ -68,11 +59,14 @@ export const PropertySearchBar: React.FC<Props> = ({
              */}
             <FlatButton
               icon="cross"
-              disabled={!communityUi.propertyListSearch}
+              disabled={!searchText}
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
-            <FilterChip openDrawer={openDrawer} />
+            <FilterChip
+              openDrawer={openDrawer}
+              onFilterChange={onFilterChange}
+            />
           </div>
         }
         // endContent={
@@ -80,7 +74,7 @@ export const PropertySearchBar: React.FC<Props> = ({
         //     <span className="text-default-400 text-small">.org/</span>
         //   </div>
         // }
-        value={communityUi.propertyListSearch ?? ''}
+        value={searchText ?? ''}
         onValueChange={setSearchText}
         {...inputProps}
       />

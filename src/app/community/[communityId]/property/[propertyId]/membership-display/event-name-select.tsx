@@ -1,6 +1,7 @@
 import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { getCurrentDate } from '~/lib/date-util';
 
 interface Props {
@@ -8,8 +9,9 @@ interface Props {
 }
 
 export const EventNameSelect: React.FC<Props> = ({ className }) => {
-  const { visibleEventItems, communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
+  const { visibleEventItems } = useAppContext();
+  const { lastEventSelected } = useSelector((state) => state.ui);
+  const dispatch = useDispatch();
 
   return (
     <Select
@@ -21,9 +23,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
       selectedKeys={lastEventSelected ? [lastEventSelected] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
-        communityUi.actions.setLastEventSelected(
-          firstKey?.toString() ?? undefined
-        );
+        dispatch(actions.ui.setLastEventSelected(firstKey?.toString()));
       }}
     >
       {(item) => (

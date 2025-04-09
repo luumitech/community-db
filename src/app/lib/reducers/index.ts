@@ -1,9 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { listenerMiddleware } from './listener';
 import { reducer } from './reducers';
 
 export const makeStore = () => {
   return configureStore({
     reducer,
+    middleware: (getDefaultMiddleware) => {
+      let mw = getDefaultMiddleware();
+      // @ts-expect-error NOTE: Since this can receive actions with functions inside,
+      // it should go before the serializability check middleware
+      mw = mw.prepend(listenerMiddleware.middleware);
+      return mw;
+    },
   });
 };
 

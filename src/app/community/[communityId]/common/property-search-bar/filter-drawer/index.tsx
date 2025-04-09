@@ -23,7 +23,7 @@ export interface DrawerArg {
 
 interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
-  onFilterChange: (input: InputData) => Promise<void>;
+  onFilterChange?: (input: InputData) => Promise<void>;
 }
 
 export const FilterDrawer: React.FC<Props> = ({
@@ -43,7 +43,7 @@ export const FilterDrawer: React.FC<Props> = ({
 
   const onSubmit = React.useCallback(
     async (input: InputData) => {
-      await onFilterChange(input);
+      await onFilterChange?.(input);
       onClose();
     },
     [onClose, onFilterChange]

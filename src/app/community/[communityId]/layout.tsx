@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import { FilterBarProvider } from './filter-context';
 import { useSetupSubscription } from './setup-subscription';
 
 interface Params {
@@ -19,9 +18,5 @@ export default function CommunityFromIdLayout({
   const { communityId } = params;
   useSetupSubscription(communityId);
 
-  return (
-    <FilterBarProvider communityId={params.communityId}>
-      {children}
-    </FilterBarProvider>
-  );
+  return <>{children}</>;
 }

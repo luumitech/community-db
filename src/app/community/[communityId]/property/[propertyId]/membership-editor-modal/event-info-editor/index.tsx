@@ -1,7 +1,7 @@
 import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
+import { useSelector } from '~/custom-hooks/redux';
 import { getCurrentDateAsISOString } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
@@ -14,8 +14,7 @@ interface Props {
 }
 
 export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
-  const { communityUi } = useAppContext();
-  const { lastEventSelected } = communityUi;
+  const { lastEventSelected } = useSelector((state) => state.ui);
   const { control, formState } = useHookFormContext();
   const { errors } = formState;
   const eventAttendedListMethods = useFieldArray({
