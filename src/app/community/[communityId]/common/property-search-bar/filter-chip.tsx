@@ -1,23 +1,29 @@
 import { Chip } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
-import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
+import { useSelector } from '~/custom-hooks/redux';
 import { Icon } from '~/view/base/icon';
+import { defaultInputData, type InputData } from './use-hook-form';
 
 interface Props {
   className?: string;
   openDrawer: () => void;
+  onFilterChange?: (input: InputData) => Promise<void>;
 }
 
-export const FilterChip: React.FC<Props> = ({ className, openDrawer }) => {
-  const dispatch = useDispatch();
-  const { isFilterSpecified, memberYear, nonMemberYear, event } = useSelector(
-    (state) => state.searchBar
-  );
+export const FilterChip: React.FC<Props> = ({
+  className,
+  openDrawer,
+  onFilterChange,
+}) => {
+  const searchBar = useSelector((state) => state.searchBar);
 
-  if (!isFilterSpecified) {
+  if (!searchBar.isFilterSpecified) {
     return null;
   }
+
+  const { memberYear, nonMemberYear, event } = searchBar;
+  const state = defaultInputData(memberYear, nonMemberYear, event);
 
   return (
     <div className="flex gap-2 cursor-pointer" onClick={openDrawer}>
@@ -25,10 +31,10 @@ export const FilterChip: React.FC<Props> = ({ className, openDrawer }) => {
         <Chip
           variant="bordered"
           color="success"
-          onClose={() => dispatch(actions.searchBar.setMemberYear())}
+          onClose={() => onFilterChange?.({ ...state, memberYear: '' })}
         >
           <div className="flex items-center gap-2">
-            {memberYear}
+            {searchBar.memberYear}
             <Icon icon="thumb-up" size={16} />
           </div>
         </Chip>
@@ -36,7 +42,7 @@ export const FilterChip: React.FC<Props> = ({ className, openDrawer }) => {
       {!!nonMemberYear && (
         <Chip
           variant="bordered"
-          onClose={() => dispatch(actions.searchBar.setNonMemberYear())}
+          onClose={() => onFilterChange?.({ ...state, nonMemberYear: '' })}
         >
           <div className="flex items-center gap-2">
             {nonMemberYear}
@@ -48,7 +54,7 @@ export const FilterChip: React.FC<Props> = ({ className, openDrawer }) => {
         <EventChip
           eventName={event}
           variant="faded"
-          onClose={() => dispatch(actions.searchBar.setEvent())}
+          onClose={() => onFilterChange?.({ ...state, event: '' })}
         />
       )}
     </div>

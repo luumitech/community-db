@@ -171,7 +171,7 @@ export function useCommunityContext() {
   React.useEffect(() => {
     // Reset ui state whenever community changes
     dispatch(actions.ui.reset());
-  }, [community?.id]);
+  }, [dispatch, community?.id]);
 
   const contextValue = React.useMemo<CommunityState>(() => {
     const eventList = community?.eventList ?? [];

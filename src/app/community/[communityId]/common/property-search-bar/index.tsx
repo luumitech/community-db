@@ -37,7 +37,7 @@ export const PropertySearchBar: React.FC<Props> = ({
       dispatch(actions.searchBar.setEvent(input.event));
       onChange?.();
     },
-    [memberYear, nonMemberYear, event, onChange]
+    [dispatch, onChange]
   );
 
   const openDrawer = React.useCallback(() => {
@@ -63,7 +63,10 @@ export const PropertySearchBar: React.FC<Props> = ({
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
-            <FilterChip openDrawer={openDrawer} />
+            <FilterChip
+              openDrawer={openDrawer}
+              onFilterChange={onFilterChange}
+            />
           </div>
         }
         // endContent={

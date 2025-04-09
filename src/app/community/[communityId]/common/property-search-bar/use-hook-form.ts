@@ -13,7 +13,7 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultInputData(
+export function defaultInputData(
   memberYear?: string,
   nonMemberYear?: string,
   event?: string

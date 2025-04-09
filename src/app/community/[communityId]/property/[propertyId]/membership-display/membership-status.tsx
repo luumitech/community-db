@@ -30,9 +30,12 @@ export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
     } as GQL.Membership;
   }, [membershipList, yearSelected]);
 
-  const onYearChange = React.useCallback((year: string) => {
-    dispatch(actions.ui.setYearSelected(year));
-  }, []);
+  const onYearChange = React.useCallback(
+    (year: string) => {
+      dispatch(actions.ui.setYearSelected(year));
+    },
+    [dispatch]
+  );
 
   return (
     <Card className={className}>
