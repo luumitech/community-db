@@ -1,54 +1,14 @@
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { isMember } from '~/graphql/schema/property/util';
-import { isValidDate } from '~/lib/date-util';
-import {
-  ITEM_DELIMITER,
-  removeDelimiter,
-} from '~/lib/lcra-community/delimiter-util';
-import { toTicketList } from '../ticket-list-util';
-import { type Property } from './community-data';
-
-/** Convert Date to xlsx cell value (ISO date string) */
-function toDate(input?: Date | null) {
-  if (!isValidDate(input)) {
-    return '';
-  }
-  return input.toISOString();
-}
-
-/** Convert database boolean (true/false/null) to xlsx cell value (1/0/undefined) */
-function toBool(input?: boolean | null) {
-  if (input == null) {
-    return undefined;
-  }
-  return input ? 1 : 0;
-}
+import { ITEM_DELIMITER, removeDelimiter } from '~/lib/xlsx-io/delimiter-util';
+import { toTicketList } from '~/lib/xlsx-io/import/format-lcradb/ticket-list-util';
+import { type Property } from '../community-data';
+import { ExportHelper } from '../export-helper';
 
 /** Export community using LCRA db format */
-export class ExportHelper {
-  private maxOccupantCount = 0;
-  private maxYear = 0;
-  private minYear = Number.POSITIVE_INFINITY;
-
-  constructor(private propertyList: Property[]) {
-    // Find:
-    // - maximum number of occupants in a property
-    // - maximum year in membership list
-    // - minimum year in membership list
-    this.propertyList.forEach((property) => {
-      this.maxOccupantCount = Math.max(
-        property.occupantList.length,
-        this.maxOccupantCount
-      );
-      property.membershipList.forEach((membership) => {
-        this.maxYear = Math.max(membership.year, this.maxYear);
-        this.minYear = Math.min(membership.year, this.minYear);
-      });
-    });
-  }
-
-  private createRow(property: Property) {
+export class ExportLcra extends ExportHelper {
+  createRow(property: Property) {
     const row: Record<string, unknown> = {
       Address: property.address,
       StreetNo: property.streetNo,
@@ -65,13 +25,13 @@ export class ExportHelper {
       row[`LastName${idx + 1}`] = occupant?.lastName;
       row[`EMail${idx + 1}`] = occupant?.email;
       // row[`EMail${idx + 1}Facebook`] = undefined;
-      row[`EMail${idx + 1}OptOut`] = toBool(occupant?.optOut);
+      row[`EMail${idx + 1}OptOut`] = ExportHelper.toBool(occupant?.optOut);
       row[`HomePhone${idx + 1}`] = occupant?.home;
       row[`WorkPhone${idx + 1}`] = occupant?.work;
       row[`CellPhone${idx + 1}`] = occupant?.cell;
     });
 
-    row.LastModDate = toDate(property.updatedAt);
+    row.LastModDate = ExportHelper.toDate(property.updatedAt);
     row.LastModBy = property.updatedBy?.email;
     row.Notes = property.notes;
 
@@ -82,18 +42,20 @@ export class ExportHelper {
           (entry) => entry.year === year
         );
         const prfx = `Y${year - 2000}`;
-        row[`${prfx}`] = toBool(isMember(membership));
+        row[`${prfx}`] = ExportHelper.toBool(isMember(membership));
         row[`${prfx}-event`] = membership?.eventAttendedList
           .map((event) => removeDelimiter(event.eventName))
           .join(ITEM_DELIMITER);
         row[`${prfx}-date`] = membership?.eventAttendedList
-          .map((event) => removeDelimiter(toDate(event.eventDate)))
+          .map((event) => removeDelimiter(ExportHelper.toDate(event.eventDate)))
           .join(ITEM_DELIMITER);
         row[`${prfx}-ticket`] = membership?.eventAttendedList
           .map((event) => toTicketList(event.ticketList))
           .join(ITEM_DELIMITER);
         row[`${prfx}-payment`] = membership?.paymentMethod;
-        row[`${prfx}-deposited`] = toBool(membership?.paymentDeposited);
+        row[`${prfx}-deposited`] = ExportHelper.toBool(
+          membership?.paymentDeposited
+        );
         row[`${prfx}-price`] = membership?.price;
       });
 

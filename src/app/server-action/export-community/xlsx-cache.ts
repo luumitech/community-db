@@ -1,10 +1,10 @@
 import { BlobContainer, getBlobContainer } from '~/lib/azure-storage';
 import { GenMD5 } from '~/lib/cache/gen-md5';
 import {
-  ExportHelper,
+  ExportLcra,
   communityData,
   type Community,
-} from '~/lib/lcra-community/export';
+} from '~/lib/xlsx-io/export';
 import { type InputData } from './_type';
 import { getDefaultXlsxFn } from './util';
 
@@ -62,7 +62,7 @@ export class XlsxCache extends GenMD5 {
     }
 
     await this.removeCache();
-    const helper = new ExportHelper(this.community.propertyList);
+    const helper = new ExportLcra(this.community.propertyList);
     const xlsxBuf = helper.toXlsx();
     await this.container.upload(this.xlsxBlobName, xlsxBuf, xlsxBuf.length);
 

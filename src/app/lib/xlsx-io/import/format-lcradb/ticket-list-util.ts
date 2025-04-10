@@ -1,7 +1,7 @@
 import { type Ticket } from '@prisma/client';
 import * as R from 'remeda';
 import { parseAsNumber } from '~/lib/number-util';
-import { ITEM_DELIMITER } from './delimiter-util';
+import * as delimiterUtil from '~/lib/xlsx-io/delimiter-util';
 
 /**
  * Ticket strings may contain 0 or more tickets, each ticket is separated by `/`
@@ -20,12 +20,10 @@ const TICKET_PROPERTY_DELIMITER = ':';
  * If they are encountered, filter them out.
  */
 function removeDelimiter(input: string) {
-  const delimiterCharList = [
-    ITEM_DELIMITER,
+  return delimiterUtil.removeDelimiter(input, [
     TICKET_DELIMITER,
     TICKET_PROPERTY_DELIMITER,
-  ].join('');
-  return input.replace(new RegExp(`[${delimiterCharList}]`, 'g'), '');
+  ]);
 }
 
 /**

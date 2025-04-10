@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
-import { importLcraDB } from '~/lib/lcra-community/import';
-import { seedCommunityData } from '~/lib/lcra-community/random-seed';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { importLcraDB } from '~/lib/xlsx-io/import';
+import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 
 export class MongoSeeder {
   constructor(private workbook: XLSX.WorkBook) {}

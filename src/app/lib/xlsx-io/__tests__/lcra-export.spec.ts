@@ -2,9 +2,9 @@ import path from 'path';
 import * as XLSX from 'xlsx';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { TestUtil } from '~/graphql/test-util';
-import { ExportHelper } from '~/lib/lcra-community/export';
-import { importLcraDB } from '~/lib/lcra-community/import';
 import prisma from '~/lib/prisma';
+import { ExportLcra } from '~/lib/xlsx-io/export';
+import { importLcraDB } from '~/lib/xlsx-io/import';
 
 describe('export community xlsx', () => {
   const testUtil = new TestUtil();
@@ -32,7 +32,7 @@ describe('export community xlsx', () => {
         },
       },
     });
-    const helper = new ExportHelper(community.propertyList);
+    const helper = new ExportLcra(community.propertyList);
     const xlsxBuf = helper.toXlsx();
 
     // Compare exported XLSX against original XLSX

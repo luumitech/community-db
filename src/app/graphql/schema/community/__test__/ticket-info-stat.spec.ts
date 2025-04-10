@@ -2,9 +2,9 @@ import path from 'path';
 import * as XLSX from 'xlsx';
 import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
-import { ITEM_DELIMITER } from '~/lib/lcra-community/delimiter-util';
-import { toTicketList } from '~/lib/lcra-community/ticket-list-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { ITEM_DELIMITER } from '~/lib/xlsx-io/delimiter-util';
+import { toTicketList } from '~/lib/xlsx-io/import/format-lcradb/ticket-list-util';
 
 const TicketStatQuery = graphql(/* GraphQL */ `
   query TicketInfoStatpec_TicketStat($year: Int!) {

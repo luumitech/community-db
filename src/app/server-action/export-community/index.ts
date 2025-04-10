@@ -1,7 +1,7 @@
 'use server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
-import { ExportHelper, communityData } from '~/lib/lcra-community/export';
+import { ExportLcra, communityData } from '~/lib/xlsx-io/export';
 import { schema } from './_type';
 import { getDefaultXlsxFn } from './util';
 import { XlsxCache } from './xlsx-cache';
@@ -38,7 +38,7 @@ export async function exportCommunityAsBase64(communityId: string) {
     communityId,
   });
   const community = await communityData(session.user, form.communityId);
-  const helper = new ExportHelper(community.propertyList);
+  const helper = new ExportLcra(community.propertyList);
   const xlsxBuf = helper.toXlsx();
   return {
     base64: xlsxBuf.toString('base64'),
