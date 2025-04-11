@@ -1,16 +1,12 @@
 import { CalendarDate } from '@internationalized/date';
-import { type Membership } from '@prisma/client';
 import { isValidDate } from '~/lib/date-util';
-
-export interface Property {
-  membershipList: Pick<Membership, 'eventAttendedList'>[];
-}
+import type { PropertyEntry } from './_type';
 
 /**
  * Extract the Month/Day from UTC date and create a CalendarDate object on year
  * 2000. So we can compare two date object by distance to Jan 1, 2000
  */
-function toCalendarDate(input: Date | null) {
+function toCalendarDate(input: string | Date | null | undefined) {
   if (!isValidDate(input)) {
     return new CalendarDate(2001, 1, 1);
   }
@@ -27,7 +23,7 @@ function toCalendarDate(input: Date | null) {
  * all membership information, and sort them in ascending order (base on
  * existing event day/month info)
  */
-export function extractEventList(propertyList: Property[]): string[] {
+export function extractEventList(propertyList: PropertyEntry[]): string[] {
   const eventMap = new Map<string, CalendarDate>();
 
   const membershipList = propertyList.flatMap((entry) => entry.membershipList);

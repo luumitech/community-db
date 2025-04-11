@@ -4,11 +4,11 @@ import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { TestUtil } from '~/graphql/test-util';
 import prisma from '~/lib/prisma';
 import { ExportLcra } from '~/lib/xlsx-io/export';
-import { importLcraDB } from '~/lib/xlsx-io/import';
+import { importLcraDB, type CommunityEntry } from '~/lib/xlsx-io/import';
 
-describe('export community xlsx', () => {
+describe('export to xlsx (singlesheet LCRA format)', () => {
   const testUtil = new TestUtil();
-  let expectedImportResult: ReturnType<typeof importLcraDB>;
+  let expectedImportResult: CommunityEntry;
 
   beforeAll(async () => {
     await testUtil.initialize();
@@ -32,7 +32,7 @@ describe('export community xlsx', () => {
         },
       },
     });
-    const helper = new ExportLcra(community.propertyList);
+    const helper = new ExportLcra(community);
     const xlsxBuf = helper.toXlsx();
 
     // Compare exported XLSX against original XLSX

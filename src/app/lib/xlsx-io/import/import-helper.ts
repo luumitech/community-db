@@ -1,4 +1,3 @@
-import type { Membership, Occupant, Property } from '@prisma/client';
 import * as R from 'remeda';
 import { isValidDate } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
@@ -10,40 +9,23 @@ export interface ImportHelperConfig {
 }
 
 /**
- * These data structures defines cell values that can be mapped from the input
- * spreadsheet. (i.e each property in the data structure) should correspond to
- * exactly one column in the spreadsheet
+ * List of types available during mapping process
+ *
+ * The goal of ImportHelper is to parse the xlsx cell value to a type that is
+ * suitable for saving into the Prisma database
  */
-interface MProperty
-  extends Omit<
-    Property,
-    | 'id'
-    | 'shortId'
-    | 'createdAt'
-    | 'occupantList'
-    | 'membershipList'
-    | 'communityId'
-    | 'updatedById'
-  > {
-  // Additional fields in excel spreadsheet that cannot be mapped
-  // to proeprty database directly.  So store them as extra fields
-  // and map them separately afterwards
-  updatedByEmail: string | null;
-}
-interface MOccupant extends Omit<Occupant, ''> {}
-interface MMembership
-  extends Omit<Membership, 'year' | 'isMember' | 'eventAttendedList'> {
-  // Additional fields in excel spreadsheet that cannot be mapped
-  // to membership database directly.  So store them as extra fields
-  // and map them separately afterwards
-  eventNames: string | null;
-  eventDates: string | null;
-  eventTickets: string | null;
-}
+type TypeMap = {
+  string: string;
+  number: number;
+  date: Date;
+  boolean: boolean;
+};
+type MappingType = keyof TypeMap;
 
-/** Type of value being mapped (to be stored in database) */
-type MappingType = 'string' | 'number' | 'date' | 'boolean';
-
+/**
+ * We assume each column in xlsx are translated into a particular javascript
+ * type
+ */
 interface MappingEntry {
   /** Contains column index (0-based) that contains the value of the spreadsheet */
   colIdx: number;
@@ -51,20 +33,29 @@ interface MappingEntry {
 }
 
 /**
- * For each of the property in the 'M' structure defined above, get mapping
- * information to where each property map to the spreadsheet. (i.e. 'address'
- * field maps to column 0)
+ * For defining a list of Mapping entries for each column in xlsx
+ *
+ * For example, if column B in xlsx corresponds to a boolean to be saved in
+ * Prisma as field 'optOut', then:
+ *
+ * ```js
+ * {
+ *   "optOut": {
+ *     "colIdx": 1,
+ *     "type": "boolean"
+ *   }
+ * }
+ * ```
  */
-type PropertyMapping = {
-  [Key in keyof Required<MProperty>]: MappingEntry;
-};
+type Mapping = Record<string, MappingEntry>;
 
-type OccupantMapping = {
-  [Key in keyof Required<MOccupant>]: MappingEntry;
-};
-
-type MembershipMapping = {
-  [Key in keyof Required<MMembership>]: MappingEntry;
+/** The output of mapping function */
+type MappingOutput<T extends Mapping> = {
+  [K in keyof T]: T[K] extends { type: infer R }
+    ? R extends keyof TypeMap
+      ? TypeMap[R]
+      : never
+    : never;
 };
 
 export class ImportHelper {
@@ -97,15 +88,11 @@ export class ImportHelper {
   }
 
   /** Return cell value and convert it to a given type */
-  cellAs(col: number, row: number, type: 'string'): string | null;
-  cellAs(col: number, row: number, type: 'number'): number | null;
-  cellAs(col: number, row: number, type: 'boolean'): boolean | null;
-  cellAs(col: number, row: number, type: 'date'): Date | null;
   cellAs(
     col: number,
     row: number,
     type: MappingType
-  ): string | number | boolean | Date | null {
+  ): TypeMap[MappingType] | null {
     const val = this.cellValue(col, row);
     if (val == null) {
       return null;
@@ -153,65 +140,19 @@ export class ImportHelper {
    * Given the mapping information, read the property information from the
    * spreadsheet, and propagate the information into the returned object
    */
-  property(
-    rowIdx: number,
-    mapping: PropertyMapping
-  ): MProperty & Pick<Property, 'occupantList' | 'membershipList'> {
-    // @ts-expect-error: some fields like updatedAt or address are required
-    // field
-    return {
+  mapping<T extends Mapping>(rowIdx: number, mapping: T): MappingOutput<T> {
+    const result = {
       ...R.pipe(
-        mapping,
-        R.mapValues((entry, key) => {
-          // @ts-expect-error: entry.type can be any of the supported type
+        mapping as Mapping,
+        R.mapValues((entry) => {
           const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
           return val;
         }),
         // Remove fields with nullish value
-        R.omitBy((val, key) => val == null)
-      ),
-      occupantList: [],
-      membershipList: [],
-    };
-  }
-
-  /**
-   * Given the mapping information, read the occupant information from the
-   * spreadsheet, and propagate the information into the returned object
-   */
-  occupant(rowIdx: number, mapping: OccupantMapping): MOccupant {
-    // @ts-expect-error: assume values are mapped correctly to each property
-    return {
-      ...R.pipe(
-        mapping,
-        R.mapValues((entry, key) => {
-          // @ts-expect-error: entry.type can be any of the supported type
-          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-          return val;
-        }),
-        // Remove fields with nullish value
-        R.omitBy((val, key) => val == null)
+        R.omitBy((val) => val == null)
       ),
     };
-  }
-
-  /**
-   * Given the mapping information, read the membership information from the
-   * spreadsheet, and propagate the information into the returned object
-   */
-  membership(rowIdx: number, mapping: MembershipMapping): MMembership {
-    // @ts-expect-error: assume values are mapped correctly to each property
-    return {
-      ...R.pipe(
-        mapping,
-        R.mapValues((entry, key) => {
-          // @ts-expect-error: entry.type can be any of the supported type
-          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
-          return val;
-        }),
-        // Remove fields with nullish value
-        R.omitBy((val, key) => val == null)
-      ),
-    };
+    // @ts-expect-error force into MappingOutput type
+    return result;
   }
 }

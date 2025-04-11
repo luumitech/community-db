@@ -1,8 +1,13 @@
-import { type Membership } from '@prisma/client';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { parseAsDate } from '~/lib/date-util';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import type {
+  CommunityEntry,
+  MembershipEntry,
+  OccupantEntry,
+  PropertyEntry,
+} from '../_type';
 import { extractEventList } from '../event-list-util';
 import { ImportHelper } from '../import-helper';
 import { extractPaymentMethodList } from '../payment-method-list-util';
@@ -11,19 +16,19 @@ import { extractYearRange } from '../year-range-util';
 import { parseTicketList } from './ticket-list-util';
 
 /**
- * Import LCRA Database spreadsheet
+ * Import xlsx spreadsheet that is saved in LCRA format
  *
  * @param wb Xlsx workbook object
  * @returns List of properties with information
  */
-export function importLcraDB(wb: XLSX.WorkBook) {
+export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
   const wsHelper = WorksheetHelper.fromFirstSheet(wb);
   const importHelper = new ImportHelper(wsHelper, {
     headerCol: 0,
   });
 
-  function addOccupant(rowIdx: number, num: number) {
-    const occupant = importHelper.occupant(rowIdx, {
+  function addOccupant(rowIdx: number, num: number): OccupantEntry {
+    const occupant = importHelper.mapping(rowIdx, {
       firstName: {
         colIdx: importHelper.labelColumn(`FirstName${num}`),
         type: 'string',
@@ -56,9 +61,9 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     return occupant;
   }
 
-  function addMembership(rowIdx: number, year: number): Membership {
+  function addMembership(rowIdx: number, year: number): MembershipEntry {
     const prefix = `Y${year}`;
-    const _membership = importHelper.membership(rowIdx, {
+    const _membership = importHelper.mapping(rowIdx, {
       // isMember: {
       //   colIdx: importHelper.labelColumn(`${prefix}`),
       //   type: 'boolean',
@@ -114,9 +119,9 @@ export function importLcraDB(wb: XLSX.WorkBook) {
     };
   }
 
-  const propertyList = [];
+  const propertyList: PropertyEntry[] = [];
   for (let rowIdx = 1; rowIdx < wsHelper.rowCount; rowIdx++) {
-    const _property = importHelper.property(rowIdx, {
+    const _property = importHelper.mapping(rowIdx, {
       address: {
         colIdx: importHelper.labelColumn('Address'),
         type: 'string',
@@ -146,6 +151,7 @@ export function importLcraDB(wb: XLSX.WorkBook) {
         type: 'string',
       },
     });
+
     // Map updatedByEmail into a user database document
     const { updatedByEmail, ...property } = _property;
     const updatedBy = updatedByEmail
@@ -159,11 +165,12 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
     // Determine total number of occupants by scanning the
     // column headers
+    const occupantList: OccupantEntry[] = [];
     const occupantCount = importHelper.labelMatch(/^FirstName/).length;
     R.times(occupantCount, (occupantIdx) => {
       const occupant = addOccupant(rowIdx, occupantIdx + 1);
       if (!R.isEmpty(occupant)) {
-        property.occupantList.push(occupant);
+        occupantList.push(occupant);
       }
     });
 
@@ -176,15 +183,18 @@ export function importLcraDB(wb: XLSX.WorkBook) {
 
     // The yearList should be array of number like
     // [24, 23, 22, ...]
+    const membershipList: MembershipEntry[] = [];
     yearList.forEach((year) => {
       const membership = addMembership(rowIdx, year);
       if (!R.isEmpty(membership)) {
-        property.membershipList.push(membership);
+        membershipList.push(membership);
       }
     });
 
     propertyList.push({
       ...property,
+      membershipList,
+      occupantList,
       ...(updatedBy && { updatedBy }),
     });
   }
@@ -195,7 +205,6 @@ export function importLcraDB(wb: XLSX.WorkBook) {
   const yearRange = extractYearRange(propertyList);
 
   return {
-    propertyList,
     ...yearRange,
     eventList: eventNameList.map((eventName) => ({
       name: eventName,
@@ -209,8 +218,8 @@ export function importLcraDB(wb: XLSX.WorkBook) {
       name: method,
       hidden: false,
     })),
+    propertyList: {
+      create: propertyList,
+    },
   };
 }
-
-/** Data type returned from importLcraDB */
-export type ImportResult = Awaited<ReturnType<typeof importLcraDB>>;

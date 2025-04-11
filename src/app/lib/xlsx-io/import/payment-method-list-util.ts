@@ -1,14 +1,12 @@
-import { type Membership } from '@prisma/client';
-
-export interface Property {
-  membershipList: Pick<Membership, 'paymentMethod'>[];
-}
+import type { PropertyEntry } from './_type';
 
 /**
  * Process property list and extract ALL payment methods from all membership
  * information
  */
-export function extractPaymentMethodList(propertyList: Property[]): string[] {
+export function extractPaymentMethodList(
+  propertyList: PropertyEntry[]
+): string[] {
   const methodSet = new Set<string>();
 
   const membershipList = propertyList.flatMap((entry) => entry.membershipList);

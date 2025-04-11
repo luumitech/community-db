@@ -2,21 +2,54 @@ import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { isMember } from '~/graphql/schema/property/util';
 import { ITEM_DELIMITER, removeDelimiter } from '~/lib/xlsx-io/delimiter-util';
-import { toTicketList } from '~/lib/xlsx-io/import/format-lcradb/ticket-list-util';
-import { type Property } from '../community-data';
+import { toTicketList } from '../../import/format-lcradb/ticket-list-util';
+import { type Community, type Property } from '../community-data';
 import { ExportHelper } from '../export-helper';
 
-/** Export community using LCRA db format */
+/**
+ * Export community using single sheet (aka LCRA DB format)
+ *
+ * This outputs a workbook with a single worksheet.
+ *
+ * - This is good for human consumption, as all nested fields are collapsed into a
+ *   column
+ */
 export class ExportLcra extends ExportHelper {
+  private maxOccupantCount = 0;
+  private maxYear = 0;
+  private minYear = Number.POSITIVE_INFINITY;
+
+  constructor(protected community: Community) {
+    super(community);
+    // Find:
+    // - maximum number of occupants in a property
+    // - maximum year in membership list
+    // - minimum year in membership list
+    community.propertyList.forEach((property) => {
+      this.maxOccupantCount = Math.max(
+        property.occupantList.length,
+        this.maxOccupantCount
+      );
+      property.membershipList.forEach((membership) => {
+        this.maxYear = Math.max(membership.year, this.maxYear);
+        this.minYear = Math.min(membership.year, this.minYear);
+      });
+    });
+  }
+
+  /**
+   * Given a property from database, convert it into a row within the exported
+   * xlsx
+   */
   createRow(property: Property) {
     const row: Record<string, unknown> = {
       Address: property.address,
       StreetNo: property.streetNo,
       StreetName: property.streetName,
       PostalCode: property.postalCode,
-      LastModDate: property.updatedAt,
-      LastModBy: property.updatedBy,
       Notes: property.notes,
+      LastModDate: ExportHelper.toDate(property.updatedAt),
+      LastModBy: property.updatedBy?.email,
     };
 
     R.range(0, this.maxOccupantCount).forEach((idx) => {

@@ -62,7 +62,7 @@ export class XlsxCache extends GenMD5 {
     }
 
     await this.removeCache();
-    const helper = new ExportLcra(this.community.propertyList);
+    const helper = new ExportLcra(this.community);
     const xlsxBuf = helper.toXlsx();
     await this.container.upload(this.xlsxBlobName, xlsxBuf, xlsxBuf.length);
 

@@ -32,7 +32,12 @@ export function toLocalDateTime(input: GQLDateTime) {
  * @param date Date object to check
  * @returns True if Date object contains a valid date
  */
-export function isValidDate(date: Date | undefined | null): date is Date {
+export function isValidDate(
+  date: string | Date | undefined | null
+): date is Date {
+  if (typeof date === 'string') {
+    return false;
+  }
   return !!date && date instanceof Date && !isNaN(date.getTime());
 }
 

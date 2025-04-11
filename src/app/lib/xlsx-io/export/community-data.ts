@@ -29,6 +29,7 @@ export async function communityData(
 /** Data type returned from communityData */
 export type Community = Awaited<ReturnType<typeof communityData>>;
 export type Property = Community['propertyList'][0];
+export type Occupant = Property['occupantList'][0];
 export type Membership = Property['membershipList'][0];
 export type Event = Membership['eventAttendedList'][0];
 export type Ticket = Event['ticketList'][0];

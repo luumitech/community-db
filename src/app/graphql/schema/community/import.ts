@@ -8,7 +8,7 @@ import { Context } from '~/graphql/context';
 import { JobHandler } from '~/lib/job-handler';
 import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
-import { importLcraDB } from '~/lib/xlsx-io/import';
+import { importLcraDB, type CommunityEntry } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 import { verifyAccess } from '../access/util';
 import { jobPayloadRef } from '../job/object';
@@ -73,13 +73,13 @@ builder.mutationField('communityImport', (t) =>
         default:
           throw new GraphQLError(`Unrecognized import method ${method}`);
       }
-      const importResult = importLcraDB(workbook);
+      const community = importLcraDB(workbook);
       const agenda = await JobHandler.init();
 
       const job = await agenda.start<CommunityJobArg>('communityImport', {
         user,
         shortId,
-        importResult,
+        community,
       });
 
       return job;
@@ -91,12 +91,15 @@ interface CommunityJobArg {
   user: Context['user'];
   /** Community short ID */
   shortId: string;
-  importResult: ReturnType<typeof importLcraDB>;
+  community: CommunityEntry;
 }
 
 export async function communityImportTask(job: Job<CommunityJobArg>) {
-  const { user, shortId, importResult } = job.attrs.data;
-  const { propertyList, ...others } = importResult;
+  const { user, shortId, community: communityEntry } = job.attrs.data;
+  const {
+    propertyList: { create: propertyList },
+    ...others
+  } = communityEntry;
 
   await job.touch(10);
 

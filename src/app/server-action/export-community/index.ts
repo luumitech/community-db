@@ -38,7 +38,7 @@ export async function exportCommunityAsBase64(communityId: string) {
     communityId,
   });
   const community = await communityData(session.user, form.communityId);
-  const helper = new ExportLcra(community.propertyList);
+  const helper = new ExportLcra(community);
   const xlsxBuf = helper.toXlsx();
   return {
     base64: xlsxBuf.toString('base64'),

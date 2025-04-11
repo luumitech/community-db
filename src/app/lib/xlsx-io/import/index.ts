@@ -1,2 +1,3 @@
 /** Can be used on client side */
-export { importLcraDB, type ImportResult } from './format-lcradb';
+export type { CommunityEntry } from './_type';
+export { importLcraDB } from './format-lcradb';
