@@ -1,32 +1,32 @@
-import { type Event } from '@prisma/client';
+import type { EventEntry } from '../import/_type';
 import { extractEventList, type Property } from '../import/event-list-util';
 
-const NO_DATE: Event = {
+const NO_DATE: EventEntry = {
   eventName: 'Missing Date',
   eventDate: null,
   ticketList: [],
 };
-const NEW_YEAR: Event = {
+const NEW_YEAR: EventEntry = {
   eventName: 'New Year',
   eventDate: new Date(Date.UTC(2012, 0, 1)),
   ticketList: [],
 };
-const CANADA_DAY: Event = {
+const CANADA_DAY: EventEntry = {
   eventName: 'Canada Day',
   eventDate: new Date(Date.UTC(2023, 6, 1)),
   ticketList: [],
 };
-const XMAS: Event = {
+const XMAS: EventEntry = {
   eventName: 'Christmas',
   eventDate: new Date(Date.UTC(1997, 11, 25)),
   ticketList: [],
 };
-const NEW_YEAR_EVE: Event = {
+const NEW_YEAR_EVE: EventEntry = {
   eventName: 'New Year Eve',
   eventDate: new Date(Date.UTC(2010, 11, 31)),
   ticketList: [],
 };
-const NEW_YEAR_EVE_CLONE: Event = {
+const NEW_YEAR_EVE_CLONE: EventEntry = {
   eventName: 'Fake Year Eve',
   eventDate: new Date(Date.UTC(2020, 11, 31)),
   ticketList: [],
@@ -37,9 +37,9 @@ describe('Event List conversion', () => {
     const input: Property[] = [
       {
         membershipList: [
-          { eventAttendedList: [NEW_YEAR_EVE] },
-          { eventAttendedList: [NEW_YEAR, XMAS] },
-          { eventAttendedList: [CANADA_DAY] },
+          { year: 2000, eventAttendedList: [NEW_YEAR_EVE] },
+          { year: 2000, eventAttendedList: [NEW_YEAR, XMAS] },
+          { year: 2000, eventAttendedList: [CANADA_DAY] },
         ],
       },
     ];
@@ -56,15 +56,15 @@ describe('Event List conversion', () => {
     const input: Property[] = [
       {
         membershipList: [
-          { eventAttendedList: [NO_DATE] },
-          { eventAttendedList: [NEW_YEAR_EVE] },
+          { year: 2000, eventAttendedList: [NO_DATE] },
+          { year: 2000, eventAttendedList: [NEW_YEAR_EVE] },
         ],
       },
       {
         membershipList: [
-          { eventAttendedList: [NEW_YEAR] },
-          { eventAttendedList: [NEW_YEAR_EVE, XMAS] },
-          { eventAttendedList: [] },
+          { year: 2000, eventAttendedList: [NEW_YEAR] },
+          { year: 2000, eventAttendedList: [NEW_YEAR_EVE, XMAS] },
+          { year: 2000, eventAttendedList: [] },
         ],
       },
     ];
@@ -81,8 +81,8 @@ describe('Event List conversion', () => {
     const input: Property[] = [
       {
         membershipList: [
-          { eventAttendedList: [NEW_YEAR_EVE] },
-          { eventAttendedList: [NEW_YEAR_EVE_CLONE] },
+          { year: 2000, eventAttendedList: [NEW_YEAR_EVE] },
+          { year: 2000, eventAttendedList: [NEW_YEAR_EVE_CLONE] },
         ],
       },
     ];

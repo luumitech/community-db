@@ -1,6 +1,6 @@
 export const worksheetNames = {
   property: 'Property',
-  member: 'Member',
+  occupant: 'Occupant',
   membership: 'Membership',
   event: 'Event',
   ticket: 'Ticket',
@@ -8,7 +8,7 @@ export const worksheetNames = {
 
 export interface WorksheetRows {
   property: PropertyRow[];
-  member: MemberRow[];
+  occupant: OccupantRow[];
   membership: MembershipRow[];
   event: EventRow[];
   ticket: TicketRow[];
@@ -21,12 +21,12 @@ export interface PropertyRow {
   streetName: string | null;
   postalCode: string | null;
   notes: string | null;
-  lastModDate: string | null;
-  lastModBy: string | null;
+  updatedAt: string | null;
+  updatedBy: string | null;
 }
 
-export interface MemberRow {
-  memberId: number;
+export interface OccupantRow {
+  occupantId: number;
   propertyId: number;
   firstName: string | null;
   lastName: string | null;
@@ -42,7 +42,8 @@ export interface MembershipRow {
   propertyId: number;
   year: number | null;
   isMember: number | undefined;
-  payment: string | null;
+  price: string | null;
+  paymentMethod: string | null;
   paymentDeposited: number | undefined;
 }
 

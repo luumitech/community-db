@@ -2,6 +2,8 @@ import { CalendarDate } from '@internationalized/date';
 import { isValidDate } from '~/lib/date-util';
 import type { PropertyEntry } from './_type';
 
+export type Property = Pick<PropertyEntry, 'membershipList'>;
+
 /**
  * Extract the Month/Day from UTC date and create a CalendarDate object on year
  * 2000. So we can compare two date object by distance to Jan 1, 2000
@@ -23,22 +25,23 @@ function toCalendarDate(input: string | Date | null | undefined) {
  * all membership information, and sort them in ascending order (base on
  * existing event day/month info)
  */
-export function extractEventList(propertyList: PropertyEntry[]): string[] {
+export function extractEventList(propertyList: Property[]): string[] {
   const eventMap = new Map<string, CalendarDate>();
 
-  const membershipList = propertyList.flatMap((entry) => entry.membershipList);
-  membershipList.forEach((entry) => {
-    entry.eventAttendedList.forEach(({ eventName, eventDate }) => {
-      // convert event date to CalendarDate to ease comparison
-      const eventCalDate = toCalendarDate(eventDate);
-      // # of days from Jan 1 stored in the event map
-      const existingCalDate = eventMap.get(eventName);
-      if (
-        existingCalDate == null ||
-        existingCalDate.compare(eventCalDate) > 0
-      ) {
-        eventMap.set(eventName, eventCalDate);
-      }
+  propertyList.forEach((property) => {
+    property.membershipList.forEach((membership) => {
+      membership.eventAttendedList.forEach(({ eventName, eventDate }) => {
+        // convert event date to CalendarDate to ease comparison
+        const eventCalDate = toCalendarDate(eventDate);
+        // # of days from Jan 1 stored in the event map
+        const existingCalDate = eventMap.get(eventName);
+        if (
+          existingCalDate == null ||
+          existingCalDate.compare(eventCalDate) > 0
+        ) {
+          eventMap.set(eventName, eventCalDate);
+        }
+      });
     });
   });
 

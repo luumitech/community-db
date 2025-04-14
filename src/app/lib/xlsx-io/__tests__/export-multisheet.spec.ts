@@ -1,11 +1,10 @@
-import fs from 'fs';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { TestUtil } from '~/graphql/test-util';
 import prisma from '~/lib/prisma';
 import { ExportMultisheet } from '~/lib/xlsx-io/export';
-import { importLcraDB, type CommunityEntry } from '~/lib/xlsx-io/import';
+import { importMultisheet, type CommunityEntry } from '~/lib/xlsx-io/import';
 
 describe('export to xlsx (multisheet format)', () => {
   const testUtil = new TestUtil();
@@ -38,10 +37,9 @@ describe('export to xlsx (multisheet format)', () => {
 
     // Compare exported XLSX against original XLSX
     const actualwb = XLSX.read(xlsxBuf);
-    fs.writeFileSync('./workbook.xlsx', xlsxBuf, 'binary');
-    // const { propertyList, paymentMethodList } = importLcraDB(actualwb);
+    const { propertyList, paymentMethodList } = importMultisheet(actualwb);
 
-    // expect(propertyList).toEqual(expectedImportResult.propertyList);
-    // expect(paymentMethodList).toEqual(expectedImportResult.paymentMethodList);
+    expect(propertyList).toEqual(expectedImportResult.propertyList);
+    expect(paymentMethodList).toEqual(expectedImportResult.paymentMethodList);
   });
 });

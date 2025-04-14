@@ -7,8 +7,10 @@ import { Prisma } from '@prisma/client';
  * down the input types slightly, so it's easier to construct the necessary
  * create instructions
  */
+export type TicketEntry = Prisma.TicketCreateInput;
+
 export interface EventEntry extends Prisma.EventCreateInput {
-  ticketList: Prisma.TicketCreateInput[];
+  ticketList: TicketEntry[];
 }
 
 export interface MembershipEntry extends Prisma.MembershipCreateInput {

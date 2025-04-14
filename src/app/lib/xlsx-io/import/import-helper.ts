@@ -14,12 +14,12 @@ export interface ImportHelperConfig {
  * The goal of ImportHelper is to parse the xlsx cell value to a type that is
  * suitable for saving into the Prisma database
  */
-type TypeMap = {
+interface TypeMap {
   string: string;
   number: number;
   date: Date;
   boolean: boolean;
-};
+}
 type MappingType = keyof TypeMap;
 
 /**
@@ -50,7 +50,7 @@ interface MappingEntry {
 type Mapping = Record<string, MappingEntry>;
 
 /** The output of mapping function */
-type MappingOutput<T extends Mapping> = {
+export type MappingOutput<T extends Mapping> = {
   [K in keyof T]: T[K] extends { type: infer R }
     ? R extends keyof TypeMap
       ? TypeMap[R]

@@ -1,19 +1,20 @@
 import type { PropertyEntry } from './_type';
 
+export type Property = Pick<PropertyEntry, 'membershipList'>;
+
 /**
  * Process property list and extract ALL payment methods from all membership
  * information
  */
-export function extractPaymentMethodList(
-  propertyList: PropertyEntry[]
-): string[] {
+export function extractPaymentMethodList(propertyList: Property[]): string[] {
   const methodSet = new Set<string>();
 
-  const membershipList = propertyList.flatMap((entry) => entry.membershipList);
-  membershipList.forEach((entry) => {
-    if (entry.paymentMethod) {
-      methodSet.add(entry.paymentMethod);
-    }
+  propertyList.forEach((property) => {
+    property.membershipList.forEach((membership) => {
+      if (membership.paymentMethod) {
+        methodSet.add(membership.paymentMethod);
+      }
+    });
   });
 
   return [...methodSet];

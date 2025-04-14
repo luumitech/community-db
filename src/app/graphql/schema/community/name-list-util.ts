@@ -1,16 +1,16 @@
 import type {
-  Property,
   SupportedEventItem,
   SupportedPaymentMethod,
   SupportedTicketItem,
 } from '@prisma/client';
 import * as GQL from '~/graphql/generated/graphql';
 import prisma from '~/lib/prisma';
-import { extractEventList } from '~/lib/xlsx-io/import/event-list-util';
+import {
+  extractEventList,
+  type Property,
+} from '~/lib/xlsx-io/import/event-list-util';
 import { extractPaymentMethodList } from '~/lib/xlsx-io/import/payment-method-list-util';
 import { extractTicketList } from '~/lib/xlsx-io/import/ticket-list-util';
-
-type PropertyEntry = Pick<Property, 'membershipList'>;
 
 export class NameListUtil {
   constructor(
@@ -21,7 +21,7 @@ export class NameListUtil {
      * - Ticket names
      * - Payment methods
      */
-    private propertyList: PropertyEntry[]
+    private propertyList: Property[]
   ) {}
 
   static async fromDB(communityId: string) {

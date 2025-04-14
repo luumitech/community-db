@@ -26,7 +26,7 @@ export class ExportMultisheet extends ExportHelper {
   private rows: WorksheetRows = {
     property: [],
     membership: [],
-    member: [],
+    occupant: [],
     event: [],
     ticket: [],
   };
@@ -40,8 +40,8 @@ export class ExportMultisheet extends ExportHelper {
       streetName: property.streetName,
       postalCode: property.postalCode,
       notes: property.notes,
-      lastModDate: ExportHelper.toDate(property.updatedAt),
-      lastModBy: property.updatedBy?.email ?? null,
+      updatedAt: ExportHelper.toDate(property.updatedAt),
+      updatedBy: property.updatedBy?.email ?? null,
     });
     property.occupantList.forEach((occupant) => {
       this.processMember(occupant, propertyId);
@@ -52,9 +52,9 @@ export class ExportMultisheet extends ExportHelper {
   }
 
   private processMember(occupant: Occupant, propertyId: number) {
-    const memberId = this.rows.member.length + 1;
-    this.rows.member.push({
-      memberId,
+    const occupantId = this.rows.occupant.length + 1;
+    this.rows.occupant.push({
+      occupantId,
       propertyId,
       firstName: occupant.firstName,
       lastName: occupant.lastName,
@@ -73,7 +73,8 @@ export class ExportMultisheet extends ExportHelper {
       propertyId,
       year: membership.year,
       isMember: ExportHelper.toBool(isMember(membership)),
-      payment: membership.paymentMethod,
+      paymentMethod: membership.paymentMethod,
+      price: membership.price,
       paymentDeposited: ExportHelper.toBool(membership.paymentDeposited),
     });
     membership.eventAttendedList.forEach((event) => {
