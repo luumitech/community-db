@@ -99,7 +99,7 @@ export function XlsxSheetView<T>({
       ref={tableContainerRef}
       className={cn(className, 'flex-grow overflow-auto relative')}
     >
-      <table>
+      <table data-testid="export-xlsx">
         <thead className="grid sticky top-0 bg-background z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="flex w-full">

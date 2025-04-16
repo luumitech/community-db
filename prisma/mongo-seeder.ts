@@ -27,7 +27,7 @@ export class MongoSeeder {
   static fromRandom(count = 100) {
     // Randomly create a workbook containing address with membership info
     const seedJson = seedCommunityData(count);
-    const wsHelper = WorksheetHelper.fromJson(seedJson, 'Membership');
+    const wsHelper = WorksheetHelper.fromJson(seedJson, 'Sample Community');
     return new MongoSeeder(wsHelper.wb);
   }
 
