@@ -1,14 +1,31 @@
 import { Skeleton, cn } from '@heroui/react';
 import React from 'react';
-import { XlsxViewImpl, type XlsxViewImplProps } from './xlsx-view';
+import * as XLSX from 'xlsx';
+import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { useMakeXlsxData } from '../make-xlsx-data';
+import { TabSelect } from './tab-select';
+import { XlsxSheetView } from './xlsx-sheet-view';
 
-interface Props<TData> extends Partial<XlsxViewImplProps<TData>> {
+interface Props {
   className?: string;
+  workbook: XLSX.WorkBook;
 }
 
-export function XlsxView<T>({ className, data, columns }: Props<T>) {
-  const pending = !data || !columns;
-  if (pending) {
+export const XlsxView: React.FC<Props> = ({ className, workbook }) => {
+  const [pending, startTransition] = React.useTransition();
+  const [sheetName, setSheetName] = React.useState<string>(
+    workbook.SheetNames[0]
+  );
+  const { data, columns, updateWorksheet } = useMakeXlsxData();
+
+  React.useEffect(() => {
+    startTransition(async () => {
+      const worksheet = new WorksheetHelper(workbook, sheetName);
+      updateWorksheet(worksheet);
+    });
+  }, [workbook, sheetName, updateWorksheet]);
+
+  if (pending || !data || !columns) {
     return (
       <div className={cn(className, 'grid grid-cols-4 gap-2')}>
         {Array.from({ length: 4 }).map((_, i) => (
@@ -21,5 +38,14 @@ export function XlsxView<T>({ className, data, columns }: Props<T>) {
     );
   }
 
-  return <XlsxViewImpl className={className} data={data} columns={columns} />;
-}
+  return (
+    <>
+      <XlsxSheetView data={data} columns={columns} />
+      <TabSelect
+        sheetNames={workbook.SheetNames}
+        selectedSheetName={sheetName}
+        onChange={setSheetName}
+      />
+    </>
+  );
+};

@@ -1,16 +1,14 @@
 import { CalendarDate } from '@internationalized/date';
-import { type Membership } from '@prisma/client';
 import { isValidDate } from '~/lib/date-util';
+import type { PropertyEntry } from './_type';
 
-export interface Property {
-  membershipList: Pick<Membership, 'eventAttendedList'>[];
-}
+export type Property = Pick<PropertyEntry, 'membershipList'>;
 
 /**
  * Extract the Month/Day from UTC date and create a CalendarDate object on year
  * 2000. So we can compare two date object by distance to Jan 1, 2000
  */
-function toCalendarDate(input: Date | null) {
+function toCalendarDate(input: string | Date | null | undefined) {
   if (!isValidDate(input)) {
     return new CalendarDate(2001, 1, 1);
   }
@@ -30,19 +28,20 @@ function toCalendarDate(input: Date | null) {
 export function extractEventList(propertyList: Property[]): string[] {
   const eventMap = new Map<string, CalendarDate>();
 
-  const membershipList = propertyList.flatMap((entry) => entry.membershipList);
-  membershipList.forEach((entry) => {
-    entry.eventAttendedList.forEach(({ eventName, eventDate }) => {
-      // convert event date to CalendarDate to ease comparison
-      const eventCalDate = toCalendarDate(eventDate);
-      // # of days from Jan 1 stored in the event map
-      const existingCalDate = eventMap.get(eventName);
-      if (
-        existingCalDate == null ||
-        existingCalDate.compare(eventCalDate) > 0
-      ) {
-        eventMap.set(eventName, eventCalDate);
-      }
+  propertyList.forEach((property) => {
+    property.membershipList.forEach((membership) => {
+      membership.eventAttendedList.forEach(({ eventName, eventDate }) => {
+        // convert event date to CalendarDate to ease comparison
+        const eventCalDate = toCalendarDate(eventDate);
+        // # of days from Jan 1 stored in the event map
+        const existingCalDate = eventMap.get(eventName);
+        if (
+          existingCalDate == null ||
+          existingCalDate.compare(eventCalDate) > 0
+        ) {
+          eventMap.set(eventName, eventCalDate);
+        }
+      });
     });
   });
 

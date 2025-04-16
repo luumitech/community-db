@@ -2,13 +2,14 @@ import path from 'path';
 import * as XLSX from 'xlsx';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { TestUtil } from '~/graphql/test-util';
-import { ExportHelper } from '~/lib/lcra-community/export';
-import { importLcraDB } from '~/lib/lcra-community/import';
 import prisma from '~/lib/prisma';
+import { ExportLcra } from '~/lib/xlsx-io/export';
+import { CommunityEntry } from '~/lib/xlsx-io/import';
+import { importLcraDB } from '~/lib/xlsx-io/import/format-lcradb';
 
-describe('export community xlsx', () => {
+describe('export to xlsx (singlesheet LCRA format)', () => {
   const testUtil = new TestUtil();
-  let expectedImportResult: ReturnType<typeof importLcraDB>;
+  let expectedImportResult: CommunityEntry;
 
   beforeAll(async () => {
     await testUtil.initialize();
@@ -24,6 +25,7 @@ describe('export community xlsx', () => {
   test('verify export workbook', async () => {
     const community = await prisma.community.findFirstOrThrow({
       include: {
+        updatedBy: true,
         propertyList: {
           include: {
             updatedBy: true,
@@ -32,14 +34,19 @@ describe('export community xlsx', () => {
         },
       },
     });
-    const helper = new ExportHelper(community.propertyList);
+    const helper = new ExportLcra(community);
     const xlsxBuf = helper.toXlsx();
 
     // Compare exported XLSX against original XLSX
     const actualwb = XLSX.read(xlsxBuf);
-    const { propertyList, paymentMethodList } = importLcraDB(actualwb);
+    const actualImportResult = importLcraDB(actualwb);
 
-    expect(propertyList).toEqual(expectedImportResult.propertyList);
-    expect(paymentMethodList).toEqual(expectedImportResult.paymentMethodList);
+    expect(actualImportResult.name).toEqual(expectedImportResult.name);
+    expect(actualImportResult.propertyList).toEqual(
+      expectedImportResult.propertyList
+    );
+    expect(actualImportResult.paymentMethodList).toEqual(
+      expectedImportResult.paymentMethodList
+    );
   });
 });

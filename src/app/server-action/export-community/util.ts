@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { type Community } from '~/lib/lcra-community/export';
+import { type Community } from '~/lib/xlsx-io/export';
 
 /**
  * Get default xlsx filename when exporting a community

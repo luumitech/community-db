@@ -6,6 +6,7 @@ import React from 'react';
 import DashboardImg from '../images/dashboard.png';
 import ExportToXlsxImg from '../images/export-to-xlsx.png';
 import MembershipEditorImg from '../images/membership-editor.png';
+import occupantEditorImg from '../images/occupant-editor.png';
 import PropertyDetailImg from '../images/property-detail.png';
 import propertyListImg from '../images/property-list.png';
 import { Slide } from './slide';
@@ -40,6 +41,11 @@ export const GettingStarted: React.FC<Props> = ({ className }) => {
           alt="membership-editor"
           src={MembershipEditorImg}
           caption="Keep record of event attendance"
+        />
+        <Slide
+          alt="occupant-editor"
+          src={occupantEditorImg}
+          caption="Keep record of member contact information"
         />
         <Slide
           alt="dashboard"

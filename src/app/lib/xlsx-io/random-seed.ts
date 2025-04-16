@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { type Ticket } from '@prisma/client';
 import { ITEM_DELIMITER, removeDelimiter } from './delimiter-util';
-import { toTicketList } from './ticket-list-util';
+import { toTicketList } from './import/format-lcradb/ticket-list-util';
 
 /**
  * Generate Community data in "LCRA" format

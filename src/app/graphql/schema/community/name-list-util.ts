@@ -1,16 +1,16 @@
 import type {
-  Property,
   SupportedEventItem,
   SupportedPaymentMethod,
   SupportedTicketItem,
 } from '@prisma/client';
 import * as GQL from '~/graphql/generated/graphql';
-import { extractEventList } from '~/lib/lcra-community/import/event-list-util';
-import { extractPaymentMethodList } from '~/lib/lcra-community/import/payment-method-list-util';
-import { extractTicketList } from '~/lib/lcra-community/import/ticket-list-util';
 import prisma from '~/lib/prisma';
-
-type PropertyEntry = Pick<Property, 'membershipList'>;
+import {
+  extractEventList,
+  type Property,
+} from '~/lib/xlsx-io/import/event-list-util';
+import { extractPaymentMethodList } from '~/lib/xlsx-io/import/payment-method-list-util';
+import { extractTicketList } from '~/lib/xlsx-io/import/ticket-list-util';
 
 export class NameListUtil {
   constructor(
@@ -21,7 +21,7 @@ export class NameListUtil {
      * - Ticket names
      * - Payment methods
      */
-    private propertyList: PropertyEntry[]
+    private propertyList: Property[]
   ) {}
 
   static async fromDB(communityId: string) {

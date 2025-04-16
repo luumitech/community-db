@@ -1,6 +1,6 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
-import { ITEM_DELIMITER } from '~/lib/lcra-community/delimiter-util';
+import { ITEM_DELIMITER } from '~/lib/xlsx-io/delimiter-util';
 import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
 import type { OccupantEntry } from './_type';
