@@ -15,6 +15,7 @@ export async function communityData(
 ) {
   const data = await getCommunityEntry(user, communityId, {
     include: {
+      updatedBy: true,
       propertyList: {
         include: {
           updatedBy: true,

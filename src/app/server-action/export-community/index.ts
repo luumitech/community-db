@@ -1,8 +1,12 @@
 'use server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
-import { ExportLcra, communityData } from '~/lib/xlsx-io/export';
-import { schema } from './_type';
+import {
+  ExportLcra,
+  ExportMultisheet,
+  communityData,
+} from '~/lib/xlsx-io/export';
+import { ExportMethod, schema } from './_type';
 import { getDefaultXlsxFn } from './util';
 import { XlsxCache } from './xlsx-cache';
 
@@ -28,7 +32,10 @@ export async function exportCommunityAsUrl(communityId: string) {
  * @param input Form input for generating xlsx
  * @returns Xlsx buffer encoded in base64
  */
-export async function exportCommunityAsBase64(communityId: string) {
+export async function exportCommunityAsBase64(
+  communityId: string,
+  exportMethod: ExportMethod
+) {
   const session = await getServerSession(authOptions);
   if (!session) {
     throw new Error('Not authorized');
@@ -36,10 +43,29 @@ export async function exportCommunityAsBase64(communityId: string) {
   const form = schema.parse({
     email: session.user.email,
     communityId,
+    exportMethod,
   });
   const community = await communityData(session.user, form.communityId);
-  const helper = new ExportLcra(community);
-  const xlsxBuf = helper.toXlsx();
+  let xlsxBuf: Buffer;
+  switch (exportMethod) {
+    case ExportMethod.Singlesheet:
+      {
+        const helper = new ExportLcra(community);
+        xlsxBuf = helper.toXlsx();
+      }
+      break;
+
+    case ExportMethod.Multisheet:
+      {
+        const helper = new ExportMultisheet(community);
+        xlsxBuf = helper.toXlsx();
+      }
+      break;
+
+    default:
+      throw new Error(`Unsupported export method ${exportMethod}`);
+  }
+
   return {
     base64: xlsxBuf.toString('base64'),
     fn: getDefaultXlsxFn(community),

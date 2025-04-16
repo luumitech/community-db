@@ -24,6 +24,7 @@ import { ExportHelper } from '../export-helper';
  */
 export class ExportMultisheet extends ExportHelper {
   private rows: WorksheetRows = {
+    community: [],
     property: [],
     membership: [],
     occupant: [],
@@ -108,6 +109,11 @@ export class ExportMultisheet extends ExportHelper {
   }
 
   private processCommunity(community: Community) {
+    this.rows.community.push({
+      name: community.name,
+      updatedAt: ExportHelper.toDate(community.updatedAt),
+      updatedBy: community.updatedBy?.email ?? null,
+    });
     community.propertyList.forEach((property) =>
       this.processProperty(property)
     );

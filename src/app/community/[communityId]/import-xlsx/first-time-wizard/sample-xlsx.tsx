@@ -1,10 +1,8 @@
 import { Button } from '@heroui/react';
 import React from 'react';
 import * as XLSX from 'xlsx';
-import { useMakeXlsxData } from '~/community/[communityId]/common/make-xlsx-data';
 import { XlsxView } from '~/community/[communityId]/common/xlsx-view';
 import { startDownloadBlob } from '~/lib/dom';
-import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { Icon } from '~/view/base/icon';
 
 /** Filename of the sample xlsx */
@@ -15,8 +13,6 @@ interface Props {
 }
 
 export const SampleXlsx: React.FC<Props> = ({ className }) => {
-  const { data, columns, updateWorksheet } = useMakeXlsxData();
-
   const workbook = React.useMemo(() => {
     const aoa = [
       ['Address', 'StreetNo', 'StreetName', 'PostalCode'],
@@ -27,13 +23,8 @@ export const SampleXlsx: React.FC<Props> = ({ className }) => {
       ['36 North King Dr', '36', 'North King Dr', 'A0A0A0'],
     ];
     const ws = XLSX.utils.aoa_to_sheet(aoa);
-    return XLSX.utils.book_new(ws, 'sheet1');
+    return XLSX.utils.book_new(ws, 'Sample');
   }, []);
-
-  React.useEffect(() => {
-    const worksheet = WorksheetHelper.fromFirstSheet(workbook);
-    updateWorksheet(worksheet);
-  }, [workbook, updateWorksheet]);
 
   const onDownload = React.useCallback(() => {
     const buffer = XLSX.write(workbook, {
@@ -50,7 +41,7 @@ export const SampleXlsx: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={className}>
-      <XlsxView data={data} columns={columns} />
+      <XlsxView workbook={workbook} />
       <Button
         className="mt-4"
         endContent={<Icon icon="download" />}

@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
-import { importLcraDB } from '~/lib/xlsx-io/import';
+import { importXlsx } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 
 export class MongoSeeder {
@@ -44,17 +44,21 @@ export class MongoSeeder {
    * @param ownerEmail Email creating the community
    */
   async seed(prisma: PrismaClient, ownerEmail = 'test@email.com') {
-    const communityInput = importLcraDB(this.workbook);
+    const communityCreateInput = importXlsx(this.workbook);
 
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
-        name: 'My Community',
+        /**
+         * Assign default name to community, but this value would most likely be
+         * overridden by tthe imported result
+         */
+        name: 'CommunityName',
         owner: {
           connect: {
             email: ownerEmail,
           },
         },
-        ...communityInput,
+        ...communityCreateInput,
       },
     ];
 
@@ -76,6 +80,6 @@ export class MongoSeeder {
       },
     });
 
-    return communityInput;
+    return communityCreateInput;
   }
 }

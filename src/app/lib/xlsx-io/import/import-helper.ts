@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import { isValidDate } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
@@ -119,7 +120,7 @@ export class ImportHelper {
           return dateResult;
         }
       default:
-        throw new Error(`invalid cell type ${type} specified`);
+        throw new GraphQLError(`invalid cell type ${type} specified`);
     }
   }
 
@@ -141,6 +142,13 @@ export class ImportHelper {
    * spreadsheet, and propagate the information into the returned object
    */
   mapping<T extends Mapping>(rowIdx: number, mapping: T): MappingOutput<T> {
+    const allColIdxInvalid = Object.values(mapping).every(
+      ({ colIdx }) => colIdx === -1
+    );
+    if (allColIdxInvalid) {
+      throw new GraphQLError('Unrecognized format');
+    }
+
     const result = {
       ...R.pipe(
         mapping as Mapping,

@@ -7,6 +7,7 @@ import { createYoga } from 'graphql-yoga';
 import type { Context } from '~/graphql/context';
 import { pubSub } from '~/graphql/pubsub';
 import { schema } from '~/graphql/schema';
+import { JEST_USER } from './test-user';
 
 /** Helper test utility class for invoking graphQL query/mutation */
 export class GraphQLUtil {
@@ -14,10 +15,7 @@ export class GraphQLUtil {
 
   // Default context for graphQL
   private _context: Context = {
-    user: {
-      email: 'jest@email.com',
-      name: 'jest tester',
-    },
+    user: JEST_USER,
     pubSub,
     clientIp: '127.0.0.1',
   };

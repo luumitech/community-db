@@ -4,7 +4,8 @@ import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
 import { TestUtil } from '~/graphql/test-util';
 import prisma from '~/lib/prisma';
 import { ExportMultisheet } from '~/lib/xlsx-io/export';
-import { importMultisheet, type CommunityEntry } from '~/lib/xlsx-io/import';
+import { type CommunityEntry } from '~/lib/xlsx-io/import';
+import { importMultisheet } from '~/lib/xlsx-io/import/format-multisheet';
 
 describe('export to xlsx (multisheet format)', () => {
   const testUtil = new TestUtil();
@@ -24,6 +25,7 @@ describe('export to xlsx (multisheet format)', () => {
   test('verify export workbook', async () => {
     const community = await prisma.community.findFirstOrThrow({
       include: {
+        updatedBy: true,
         propertyList: {
           include: {
             updatedBy: true,
@@ -37,9 +39,14 @@ describe('export to xlsx (multisheet format)', () => {
 
     // Compare exported XLSX against original XLSX
     const actualwb = XLSX.read(xlsxBuf);
-    const { propertyList, paymentMethodList } = importMultisheet(actualwb);
+    const actualImportResult = importMultisheet(actualwb);
 
-    expect(propertyList).toEqual(expectedImportResult.propertyList);
-    expect(paymentMethodList).toEqual(expectedImportResult.paymentMethodList);
+    expect(actualImportResult.name).toEqual(expectedImportResult.name);
+    expect(actualImportResult.propertyList).toEqual(
+      expectedImportResult.propertyList
+    );
+    expect(actualImportResult.paymentMethodList).toEqual(
+      expectedImportResult.paymentMethodList
+    );
   });
 });

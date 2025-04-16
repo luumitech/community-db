@@ -1,14 +1,14 @@
 import { cn } from '@heroui/react';
 import {
   ColumnDef,
-  Row,
   flexRender,
   getCoreRowModel,
+  Row,
   useReactTable,
 } from '@tanstack/react-table';
 import {
-  Range,
   defaultRangeExtractor,
+  Range,
   useVirtualizer,
 } from '@tanstack/react-virtual';
 import React from 'react';
@@ -19,17 +19,17 @@ import React from 'react';
  */
 const pinningClass = 'sticky left-0 bg-background';
 
-export interface XlsxViewImplProps<TData> {
+export interface XlsxSheetViewProps<TData> {
   className?: string;
   data: TData[];
   columns: ColumnDef<TData>[];
 }
 
-export function XlsxViewImpl<T>({
+export function XlsxSheetView<T>({
   className,
   data,
   columns,
-}: XlsxViewImplProps<T>) {
+}: XlsxSheetViewProps<T>) {
   // The virtualizers need to know the scrollable container element
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const table = useReactTable({
@@ -97,7 +97,7 @@ export function XlsxViewImpl<T>({
   return (
     <div
       ref={tableContainerRef}
-      className={cn(className, 'h-full overflow-auto relative')}
+      className={cn(className, 'flex-grow overflow-auto relative')}
     >
       <table>
         <thead className="grid sticky top-0 bg-background z-10">

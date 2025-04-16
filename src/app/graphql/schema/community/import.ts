@@ -8,7 +8,7 @@ import { Context } from '~/graphql/context';
 import { JobHandler } from '~/lib/job-handler';
 import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
-import { importLcraDB, type CommunityEntry } from '~/lib/xlsx-io/import';
+import { importXlsx, type CommunityEntry } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 import { verifyAccess } from '../access/util';
 import { jobPayloadRef } from '../job/object';
@@ -73,7 +73,7 @@ builder.mutationField('communityImport', (t) =>
         default:
           throw new GraphQLError(`Unrecognized import method ${method}`);
       }
-      const community = importLcraDB(workbook);
+      const community = importXlsx(workbook);
       const agenda = await JobHandler.init();
 
       const job = await agenda.start<CommunityJobArg>('communityImport', {

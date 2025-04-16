@@ -205,6 +205,7 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
   const yearRange = extractYearRange(propertyList);
 
   return {
+    name: wsHelper.sheetName,
     ...yearRange,
     eventList: eventNameList.map((eventName) => ({
       name: eventName,

@@ -2,10 +2,7 @@ import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { worksheetNames } from '~/lib/xlsx-io/multisheet';
-import { extractEventList } from '../event-list-util';
-import { extractPaymentMethodList } from '../payment-method-list-util';
-import { extractTicketList } from '../ticket-list-util';
-import { extractYearRange } from '../year-range-util';
+import { CommunityUtil } from './community-util';
 import { EventUtil } from './event-util';
 import { MembershipUtil } from './membership-util';
 import { OccupantUtil } from './occupant-util';
@@ -29,35 +26,15 @@ export function importMultisheet(wb: XLSX.WorkBook) {
   const membershipUtil = new MembershipUtil(wsHelper.membership);
   const eventUtil = new EventUtil(wsHelper.event);
   const ticketUtil = new TicketUtil(wsHelper.ticket);
+  const communityUtil = new CommunityUtil(wsHelper.community);
 
-  const propertyList = propertyUtil.propertyList({
+  const communityCreateInput = communityUtil.communityCreateInput({
+    propertyUtil,
     occupantUtil,
     membershipUtil,
     eventUtil,
     ticketUtil,
   });
 
-  const eventNameList = extractEventList(propertyList);
-  const paymentMethodList = extractPaymentMethodList(propertyList);
-  const ticketList = extractTicketList(propertyList);
-  const yearRange = extractYearRange(propertyList);
-
-  return {
-    ...yearRange,
-    eventList: eventNameList.map((eventName) => ({
-      name: eventName,
-      hidden: false,
-    })),
-    ticketList: ticketList.map((ticketName) => ({
-      name: ticketName,
-      hidden: false,
-    })),
-    paymentMethodList: paymentMethodList.map((method) => ({
-      name: method,
-      hidden: false,
-    })),
-    propertyList: {
-      create: propertyList,
-    },
-  };
+  return communityCreateInput;
 }

@@ -104,7 +104,7 @@ export class ExportLcra extends ExportHelper {
     const rows = this.propertyList.map((property) => this.createRow(property));
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'membership');
+    XLSX.utils.book_append_sheet(workbook, worksheet, this.community.name);
     /**
      * For option descriptions See:
      * https://docs.sheetjs.com/docs/api/write-options
