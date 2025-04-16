@@ -1,3 +1,4 @@
+import { type DefaultSetting } from '@prisma/client';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
@@ -34,6 +35,14 @@ describe('export to xlsx (multisheet format)', () => {
         },
       },
     });
+
+    // Multisheet format support saving of defaultSettings
+    const expectedDefaultSetting: DefaultSetting = {
+      membershipFee: '15',
+      membershipEmail: null,
+    };
+    community.defaultSetting = expectedDefaultSetting;
+
     const helper = new ExportMultisheet(community);
     const xlsxBuf = helper.toXlsx();
 
@@ -48,5 +57,11 @@ describe('export to xlsx (multisheet format)', () => {
     expect(actualImportResult.paymentMethodList).toEqual(
       expectedImportResult.paymentMethodList
     );
+    expect(actualImportResult.paymentMethodList).toEqual(
+      expectedImportResult.paymentMethodList
+    );
+
+    // verify defaultSetting
+    expect(actualImportResult.defaultSetting).toEqual(expectedDefaultSetting);
   });
 });

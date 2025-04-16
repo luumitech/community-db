@@ -24,6 +24,14 @@ export abstract class ExportHelper {
     return input ? 1 : 0;
   }
 
+  /** Convert database JSON to xlsx cell value */
+  static toJson(input?: unknown) {
+    if (input == null) {
+      return null;
+    }
+    return JSON.stringify(input);
+  }
+
   constructor(protected community: Community) {
     this.propertyList = community.propertyList;
   }

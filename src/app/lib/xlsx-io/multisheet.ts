@@ -18,6 +18,7 @@ export interface WorksheetRows {
 
 export interface CommunityRow {
   name: string | null;
+  defaultSetting: string | null;
   updatedAt: string | null;
   updatedBy: string | null;
 }

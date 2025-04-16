@@ -27,6 +27,10 @@ export class CommunityUtil {
         colIdx: importHelper.labelColumn('name'),
         type: 'string',
       },
+      defaultSettingJson: {
+        colIdx: importHelper.labelColumn('defaultSetting'),
+        type: 'string',
+      },
       updatedAt: {
         colIdx: importHelper.labelColumn('updatedAt'),
         type: 'date',
@@ -48,7 +52,7 @@ export class CommunityUtil {
     eventUtil: EventUtil;
     ticketUtil: TicketUtil;
   }): CommunityEntry {
-    const { updatedByEmail, ...community } = this.community;
+    const { updatedByEmail, defaultSettingJson, ...community } = this.community;
     const updatedBy = updatedByEmail
       ? {
           connectOrCreate: {
@@ -58,6 +62,13 @@ export class CommunityUtil {
         }
       : undefined;
 
+    let defaultSetting = undefined;
+    try {
+      defaultSetting = JSON.parse(defaultSettingJson);
+    } catch (err) {
+      // ignore JSON parse error
+    }
+
     const propertyList = opt.propertyUtil.propertyList(opt);
     const eventNameList = extractEventList(propertyList);
     const paymentMethodList = extractPaymentMethodList(propertyList);
@@ -66,6 +77,7 @@ export class CommunityUtil {
 
     return {
       ...community,
+      ...(!!defaultSetting && { defaultSetting }),
       ...(updatedBy && { updatedBy }),
       ...yearRange,
       eventList: eventNameList.map((eventName) => ({
