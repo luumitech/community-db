@@ -1,7 +1,6 @@
 import { Community, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import * as R from 'remeda';
-import { type Context } from '~/graphql/context';
+import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
 
 type FindArgs = Omit<Prisma.CommunityFindFirstOrThrowArgs, 'where'>;
@@ -16,7 +15,7 @@ type FindArgs = Omit<Prisma.CommunityFindFirstOrThrowArgs, 'where'>;
  * @returns
  */
 export async function getCommunityEntry<T extends FindArgs>(
-  user: Context['user'],
+  user: ContextUser,
   shortId: string,
   args?: Prisma.SelectSubset<T, FindArgs>
 ) {

@@ -1,7 +1,7 @@
 import { Prisma, Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { jsonc } from 'jsonc';
-import { type Context } from '~/graphql/context';
+import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
 
 type FindArgs = Omit<Prisma.AccessFindFirstOrThrowArgs, 'where'>;
@@ -63,7 +63,7 @@ export async function createAccess<T extends CreateArgs>(
  * @returns Access document
  */
 export async function verifyAccess(
-  user: Context['user'],
+  user: ContextUser,
   community: Prisma.AccessWhereInput['community'],
   roleList: Role[]
 ) {

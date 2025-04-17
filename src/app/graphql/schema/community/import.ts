@@ -4,7 +4,7 @@ import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { builder } from '~/graphql/builder';
-import { Context } from '~/graphql/context';
+import { type ContextUser } from '~/lib/context-user';
 import { JobHandler } from '~/lib/job-handler';
 import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
@@ -88,7 +88,7 @@ builder.mutationField('communityImport', (t) =>
 );
 
 interface CommunityJobArg {
-  user: Context['user'];
+  user: ContextUser;
   /** Community short ID */
   shortId: string;
   community: CommunityEntry;

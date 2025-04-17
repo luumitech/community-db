@@ -7,6 +7,7 @@ import { createYoga } from 'graphql-yoga';
 import type { Context } from '~/graphql/context';
 import { pubSub } from '~/graphql/pubsub';
 import { schema } from '~/graphql/schema';
+import { type ContextUser } from '~/lib/context-user';
 import { JEST_USER } from './test-user';
 
 /** Helper test utility class for invoking graphQL query/mutation */
@@ -31,7 +32,7 @@ export class GraphQLUtil {
   }
 
   /** Set the authorized user in the context */
-  setAuthUser(user: Context['user']) {
+  setAuthUser(user: ContextUser) {
     this._context = {
       ...this._context,
       user,
