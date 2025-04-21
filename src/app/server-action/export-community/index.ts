@@ -1,6 +1,5 @@
 'use server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
+import { getServerSession } from '~/api/auth/[...better]/auth';
 import {
   ExportLcra,
   ExportMultisheet,
@@ -12,7 +11,7 @@ import { XlsxCache } from './xlsx-cache';
 
 /** Export community information */
 export async function exportCommunityAsUrl(communityId: string) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!session) {
     throw new Error('Not authorized');
   }
@@ -36,7 +35,7 @@ export async function exportCommunityAsBase64(
   communityId: string,
   exportMethod: ExportMethod
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!session) {
     throw new Error('Not authorized');
   }

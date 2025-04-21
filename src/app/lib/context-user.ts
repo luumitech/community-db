@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
+import { getServerSession } from '~/api/auth/[...better]/auth';
 
 export interface ContextUser {
   /** Email address used to sign in */
@@ -12,7 +11,7 @@ export interface ContextUser {
 }
 
 export async function contextUser(): Promise<ContextUser> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   // All graphQL operations require user to be authenticated
   if (!session) {
@@ -23,9 +22,12 @@ export async function contextUser(): Promise<ContextUser> {
   if (!user) {
     throw new GraphQLError('Auth: Missing user context');
   }
-  const { email } = user;
+  const { email, emailVerified } = user;
   if (!email) {
     throw new GraphQLError('Auth: Missing email in user context');
+  }
+  if (!emailVerified) {
+    throw new GraphQLError('Auth: email is not verified');
   }
 
   return {

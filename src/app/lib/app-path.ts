@@ -43,6 +43,14 @@ export function appPath(
     | 'communityCreate'
 ): string;
 export function appPath(
+  template: 'home',
+  sub?: {
+    query?: {
+      callbackUrl?: string;
+    };
+  }
+): string;
+export function appPath(
   template: 'contactUs',
   sub?: {
     query?: {

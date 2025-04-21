@@ -1,11 +1,9 @@
 import { cn } from '@heroui/react';
 import type { Metadata } from 'next';
-import { getServerSession } from 'next-auth/next';
 import { PublicEnvScript } from 'next-runtime-env';
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
-import { authOptions } from '~/api/auth/[...nextauth]/auth-options';
 import { appDescription, appTitle } from '~/lib/env-var';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
@@ -50,7 +48,6 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({ children, modal }: RootLayoutProps) {
-  const session = await getServerSession(authOptions);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -70,7 +67,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
          * See: https://nextui.org/docs/customization/customize-theme
          */}
         <ThemeProvider defaultTheme="system" attribute="class">
-          <Providers sessionProviderProps={{ session }}>
+          <Providers>
             <div className="flex flex-col min-h-screen">
               <Header />
               <main>{children}</main>

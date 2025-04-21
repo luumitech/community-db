@@ -6,8 +6,8 @@ import {
 
 export default defineConfig({
   env: {
-    NEXTAUTH_SECRET: 'cypress-test',
-    NEXTAUTH_SESSION_USER: {
+    BETTER_AUTH_SECRET: 'cypress-test',
+    BETTER_AUTH_SESSION_USER: {
       name: 'J Smith',
       email: 'test@email.com',
     },

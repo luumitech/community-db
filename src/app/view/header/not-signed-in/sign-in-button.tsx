@@ -1,27 +1,35 @@
 'use client';
-import { Button } from '@heroui/react';
-import { signIn } from 'next-auth/react';
+import { Button, type ButtonProps } from '@heroui/react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
+import { signIn } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
 
-interface Props {
+export interface SignInButtonProps extends ButtonProps {
   className?: string;
 }
 
-export const SignInButton: React.FC<Props> = ({ className }) => {
+export const SignInButton: React.FC<SignInButtonProps> = ({
+  className,
+  ...props
+}) => {
   const query = useSearchParams();
 
   return (
     <Button
       className={className}
       color="primary"
-      onPress={() => {
+      onPress={async () => {
         /** You can optionally force provider to google */
-        signIn(undefined, {
-          callbackUrl: query.get('callbackUrl') ?? appPath('communityWelcome'),
+        // signIn(undefined, {
+        //   callbackUrl: query.get('callbackUrl') ?? appPath('communityWelcome'),
+        // });
+        signIn.social({
+          provider: 'google',
+          callbackURL: query.get('callbackUrl') ?? appPath('communityWelcome'),
         });
       }}
+      {...props}
     >
       Sign In
     </Button>

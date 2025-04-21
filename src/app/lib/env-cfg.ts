@@ -46,11 +46,6 @@ const baseSchema = z.object({
   NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY: z.coerce.number(),
   NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY: z.coerce.number(),
 
-  /** See: https://next-auth.js.org/configuration/options#nextauth_url */
-  NEXTAUTH_URL: zz.string.nonEmpty(),
-  /** See: https://next-auth.js.org/configuration/options#nextauth_secret */
-  NEXTAUTH_SECRET: zz.string.nonEmpty(),
-
   /** True only if Jest is running */
   JEST_RUNNING: zz.coerce.toBoolean(),
 
@@ -60,11 +55,7 @@ const baseSchema = z.object({
   CONFIG_DEBUG: zz.coerce.toBoolean(),
 
   /** Google related env vars */
-  /**
-   * For google login
-   *
-   * Options passed into GoogleProvider from 'next-auth/providers/google';
-   */
+  /** For google login */
   GOOGLE_CLIENT_ID: zz.string.nonEmpty(),
   GOOGLE_CLIENT_SECRET: zz.string.nonEmpty(),
 

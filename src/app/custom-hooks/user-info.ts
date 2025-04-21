@@ -1,4 +1,4 @@
-import { useSession } from 'next-auth/react';
+import { useSession } from '~/custom-hooks/auth';
 
 /** Extract the first letter of each word */
 function acronym(input?: string | null) {
@@ -41,7 +41,7 @@ interface UserEntry {
  * - Image
  */
 export function useUserInfo() {
-  const { data } = useSession({ required: true });
+  const { data } = useSession();
 
   const user: UserEntry = data?.user ?? {};
 

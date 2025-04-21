@@ -5,9 +5,10 @@ import {
   DropdownTrigger,
   User,
 } from '@heroui/react';
-import { signOut } from 'next-auth/react';
 import { env } from 'next-runtime-env';
+import { useRouter } from 'next/navigation';
 import React from 'react';
+import { signOut } from '~/custom-hooks/auth';
 import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
@@ -18,6 +19,7 @@ import { ThemeSelect } from './theme-select';
 interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
+  const router = useRouter();
   const { initial, email, image } = useUserInfo();
 
   const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
@@ -123,7 +125,15 @@ export const SignedIn: React.FC<Props> = ({}) => {
         <DropdownItem
           key="logout"
           color="danger"
-          onPress={() => signOut()}
+          onPress={() =>
+            signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  router.push(appPath('home'));
+                },
+              },
+            })
+          }
           startContent={<Icon icon="logout" />}
         >
           Log Out
