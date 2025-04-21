@@ -183,7 +183,7 @@ function newAddress() {
     PostalCode: faker.location.zipCode(),
     Notes: faker.lorem.sentences({ min: 1, max: 5 }, '\n'),
     LastModDate: faker.date.past().toISOString(),
-    LastModBy: 'test@email.com',
+    LastModBy: process.env.AUTH_TEST_EMAIL,
   };
 
   const numPerson = faker.number.int(4);

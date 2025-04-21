@@ -2,7 +2,6 @@ import * as XLSX from 'xlsx';
 import { MongoSeeder } from '~/../../prisma/mongo-seeder';
 import prisma from '~/lib/prisma';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
-import { JEST_USER } from './test-user';
 
 /** Database related utilities for testing purpose */
 export class DatabaseUtil {
@@ -19,7 +18,7 @@ export class DatabaseUtil {
    */
   async seedFromWorkbook(workbook: XLSX.WorkBook) {
     const seeder = new MongoSeeder(workbook);
-    const importResult = await seeder.seed(prisma, JEST_USER.email);
+    const importResult = await seeder.seed(prisma);
 
     return importResult;
   }

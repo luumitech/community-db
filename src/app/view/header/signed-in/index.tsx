@@ -29,12 +29,13 @@ export const SignedIn: React.FC<Props> = ({}) => {
       <DropdownTrigger>
         <User
           className="transition-transform"
+          data-testid="signed-in-user-avatar"
           name=""
           isFocusable
           avatarProps={{
             isBordered: true,
-            name: initial || 'n/a',
             className: 'bg-transparent',
+            ...(initial && { name: initial }),
             ...(!!image && { src: image }),
           }}
         />

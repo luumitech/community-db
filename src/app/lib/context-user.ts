@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { getServerSession } from '~/api/auth/[...better]/auth';
+import { isProduction } from '~/lib/env-var';
 
 export interface ContextUser {
   /** Email address used to sign in */
@@ -26,7 +27,9 @@ export async function contextUser(): Promise<ContextUser> {
   if (!email) {
     throw new GraphQLError('Auth: Missing email in user context');
   }
-  if (!emailVerified) {
+  if (isProduction() && !emailVerified) {
+    // During testing, we allow user account to be created without
+    // verifying email address
     throw new GraphQLError('Auth: email is not verified');
   }
 

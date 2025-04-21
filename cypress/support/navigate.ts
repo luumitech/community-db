@@ -1,5 +1,6 @@
 Cypress.Commands.add('navigatePropertyList', () => {
   cy.visit('/community');
+  cy.findByTestId('signed-in-user-avatar', { timeout: 5000 });
 
   // Wait for menu to load
   cy.findByText('Welcome!', { timeout: 5000 });

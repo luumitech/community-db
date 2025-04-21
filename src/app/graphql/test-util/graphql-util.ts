@@ -8,7 +8,6 @@ import type { Context } from '~/graphql/context';
 import { pubSub } from '~/graphql/pubsub';
 import { schema } from '~/graphql/schema';
 import { type ContextUser } from '~/lib/context-user';
-import { JEST_USER } from './test-user';
 
 /** Helper test utility class for invoking graphQL query/mutation */
 export class GraphQLUtil {
@@ -16,7 +15,9 @@ export class GraphQLUtil {
 
   // Default context for graphQL
   private _context: Context = {
-    user: JEST_USER,
+    user: {
+      email: process.env.AUTH_TEST_EMAIL!,
+    },
     pubSub,
     clientIp: '127.0.0.1',
   };

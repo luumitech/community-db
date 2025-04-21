@@ -3,7 +3,7 @@ import { useSession } from '~/custom-hooks/auth';
 /** Extract the first letter of each word */
 function acronym(input?: string | null) {
   if (!input) {
-    return 'n/a';
+    return '';
   }
   return input
     .split(/\s/)
