@@ -19,6 +19,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     <Button
       className={className}
       color="primary"
+      // startContent={<Icon icon="flat-color-icons:google" width={24} />}
       onPress={async () => {
         /** You can optionally force provider to google */
         // signIn(undefined, {

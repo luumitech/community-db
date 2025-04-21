@@ -1,43 +1,6 @@
 import { cn } from '@heroui/react';
+import { Icon as Iconify, IconProps as IconifyProps } from '@iconify/react';
 import React from 'react';
-import { type IconBaseProps, type IconType } from 'react-icons';
-import { BiEditAlt } from 'react-icons/bi';
-import { CiCalculator2, CiFilter, CiShare2 } from 'react-icons/ci';
-import {
-  FaAward,
-  FaFolderOpen,
-  FaMailchimp,
-  FaRegCopy,
-  FaSearch,
-  FaTrashAlt,
-} from 'react-icons/fa';
-import { FaDownload } from 'react-icons/fa6';
-import { FcDonate } from 'react-icons/fc';
-import { GoGear } from 'react-icons/go';
-import { GrHelpBook, GrUndo } from 'react-icons/gr';
-import { HiOutlineTicket } from 'react-icons/hi2';
-import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
-import {
-  IoArrowBack,
-  IoBarChartOutline,
-  IoBugOutline,
-  IoCheckmark,
-  IoChevronForward,
-  IoInformation,
-  IoPersonAdd,
-} from 'react-icons/io5';
-import { LuSunMoon, LuTicketPlus } from 'react-icons/lu';
-import {
-  MdDragIndicator,
-  MdLogout,
-  MdOutlineClear,
-  MdOutlineMail,
-  MdOutlineThumbDown,
-  MdOutlineThumbUp,
-  MdQuestionMark,
-} from 'react-icons/md';
-import { RiHome6Line } from 'react-icons/ri';
-import { RxCross2, RxHamburgerMenu } from 'react-icons/rx';
 
 type SupportedIcon =
   | 'trash'
@@ -78,128 +41,130 @@ type SupportedIcon =
   | 'hamburgerMenu'
   | 'sunMoon';
 
-export interface IconProps extends IconBaseProps {
+type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;
+
+export interface IconProps extends Partial<CustomIconifyIconProps> {
   className?: string;
   icon: SupportedIcon;
 }
 
 export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
-  let IconElement: IconType;
+  let iconName: IconifyProps['icon'];
   switch (icon) {
     case 'trash':
-      IconElement = FaTrashAlt;
+      iconName = 'fa6-regular:trash-can';
       break;
     case 'folder-open':
-      IconElement = FaFolderOpen;
+      iconName = 'material-symbols-light:folder-open-outline';
       break;
     case 'clear':
-      IconElement = MdOutlineClear;
+      iconName = 'ic:round-clear';
       break;
     case 'add':
-      IconElement = IoMdAddCircleOutline;
+      iconName = 'material-symbols:add-circle-outline';
       break;
     case 'drag-handle':
-      IconElement = MdDragIndicator;
+      iconName = 'ic:outline-drag-indicator';
       break;
     case 'cross':
-      IconElement = RxCross2;
+      iconName = 'ic:round-clear';
       break;
     case 'undo':
-      IconElement = GrUndo;
+      iconName = 'grommet-icons:undo';
       break;
     case 'edit':
-      IconElement = BiEditAlt;
+      iconName = 'carbon:edit';
       break;
     case 'email':
-      IconElement = MdOutlineMail;
+      iconName = 'mdi:email-outline';
       break;
     case 'thumb-up':
-      IconElement = MdOutlineThumbUp;
+      iconName = 'mdi:thumbs-up-outline';
       break;
     case 'thumb-down':
-      IconElement = MdOutlineThumbDown;
+      iconName = 'mdi:thumbs-down-outline';
       break;
     case 'checkmark':
-      IconElement = IoCheckmark;
+      iconName = 'ion:checkmark-outline';
       break;
     case 'person-add':
-      IconElement = IoPersonAdd;
+      iconName = 'ion:person-add-outline';
       break;
     case 'more':
-      IconElement = IoMdMore;
+      iconName = 'mdi:more-vert';
       break;
     case 'search':
-      IconElement = FaSearch;
+      iconName = 'akar-icons:search';
       break;
     case 'share':
-      IconElement = CiShare2;
+      iconName = 'material-symbols:share-outline';
       break;
     case 'link':
-      IconElement = IoMdLink;
+      iconName = 'material-symbols:link';
       break;
     case 'download':
-      IconElement = FaDownload;
+      iconName = 'ph:download-bold';
       break;
     case 'dashboard':
-      IconElement = IoBarChartOutline;
+      iconName = 'ion:bar-chart-outline';
       break;
     case 'copy':
-      IconElement = FaRegCopy;
+      iconName = 'fa-regular:copy';
       break;
     case 'property-list':
-      IconElement = RiHome6Line;
+      iconName = 'ri:home-6-line';
       break;
     case 'logout':
-      IconElement = MdLogout;
+      iconName = 'material-symbols:logout';
       break;
     case 'settings':
-      IconElement = GoGear;
+      iconName = 'gravity-ui:gear';
       break;
     case 'about':
-      IconElement = IoInformation;
+      iconName = 'ion:information-outline';
       break;
     case 'pricing':
-      IconElement = FcDonate;
+      iconName = 'la:donate';
       break;
     case 'premium-plan':
-      IconElement = FaAward;
+      iconName = 'fa6-solid:award';
       break;
     case 'back':
-      IconElement = IoArrowBack;
+      iconName = 'ion:arrow-back';
       break;
     case 'filter':
-      IconElement = CiFilter;
+      iconName = 'iconoir:filter';
       break;
     case 'ticket':
-      IconElement = HiOutlineTicket;
+      iconName = 'heroicons:ticket';
       break;
     case 'mailchimp':
-      IconElement = FaMailchimp;
+      iconName = 'cib:mailchimp';
       break;
     case 'chevron-forward':
-      IconElement = IoChevronForward;
+      iconName = 'ion:chevron-forward';
       break;
     case 'add-ticket':
-      IconElement = LuTicketPlus;
+      iconName = 'lucide:ticket-plus';
       break;
     case 'calculator':
-      IconElement = CiCalculator2;
+      iconName = 'hugeicons:calculator';
       break;
     case 'helpbook':
-      IconElement = GrHelpBook;
+      iconName = 'grommet-icons:help-book';
       break;
     case 'bug':
-      IconElement = IoBugOutline;
+      iconName = 'famicons:bug-outline';
       break;
     case 'hamburgerMenu':
-      IconElement = RxHamburgerMenu;
+      iconName = 'radix-icons:hamburger-menu';
       break;
     case 'sunMoon':
-      IconElement = LuSunMoon;
+      iconName = 'lucide:sun-moon';
       break;
     default:
-      IconElement = MdQuestionMark;
+      iconName = 'pixel:question-solid';
   }
 
-  return <IconElement className={cn(className)} {...props} />;
+  return <Iconify className={cn(className)} icon={iconName} {...props} />;
 };

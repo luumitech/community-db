@@ -43,7 +43,7 @@ export const PremiumPlan: React.FC<Props> = ({ className }) => {
       className={className}
       planName={
         <div className="flex items-center gap-1">
-          <Icon className="text-yellow-600" icon="premium-plan" size={20} />
+          <Icon className="text-yellow-600" icon="premium-plan" width={20} />
           {planName}
         </div>
       }
