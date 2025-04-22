@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { emailOTP } from 'better-auth/plugins';
 import { headers } from 'next/headers';
 import { env } from '~/lib/env-cfg';
 import { appTitle, isProduction, isRunningTest } from '~/lib/env-var';
@@ -30,6 +31,10 @@ export const auth = betterAuth({
   // username and password.
   emailAndPassword: {
     enabled: !isProduction() || isRunningTest(),
+    password: {
+      // Skip password verification during testing
+      verify: async () => true,
+    },
   },
   socialProviders: {
     google: {
@@ -38,9 +43,21 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
-  // plugins: [
-  //   // LoginPlugin()
-  // ],
+  plugins: [
+    /**
+     * The Email OTP plugin allows user to sign in, verify their email, or reset
+     * their password using a one-time password (OTP) sent to their email
+     * address.
+     *
+     * See: https://www.better-auth.com/docs/plugins/email-otp
+     */
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        console.log({ email, otp, type });
+        // Implement the sendVerificationOTP method to send the OTP to the user's email address
+      },
+    }),
+  ],
 });
 
 /** Get current session */

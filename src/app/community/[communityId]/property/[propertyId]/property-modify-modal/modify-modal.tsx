@@ -47,10 +47,10 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
   return (
     <Modal
       size="5xl"
+      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
-      placement="top-center"
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}

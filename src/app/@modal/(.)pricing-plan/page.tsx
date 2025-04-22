@@ -18,6 +18,7 @@ export default function PricingPlan() {
   return (
     <Modal
       size="xl"
+      placement="top-center"
       scrollBehavior="outside"
       isOpen
       onOpenChange={() => router.back()}

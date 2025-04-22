@@ -53,10 +53,10 @@ export const CreateModal: React.FC<Props> = ({
   return (
     <Modal
       size="5xl"
+      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
-      placement="top-center"
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}

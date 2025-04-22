@@ -20,6 +20,7 @@ export default function About() {
   return (
     <Modal
       size="lg"
+      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}
