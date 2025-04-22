@@ -17,10 +17,7 @@ builder.queryField('userCurrent', (t) =>
       let userEntry = await prisma.user.upsert({
         ...query,
         where: { email: user.email },
-        // updating document from context, if
-        update: {
-          name: user.name,
-        },
+        update: {},
         // create the user if not already in database
         create: user,
       });

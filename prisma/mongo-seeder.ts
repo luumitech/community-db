@@ -7,14 +7,9 @@ import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { importXlsx } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 
-// Community will be owned by this user
-interface CommunityOwner {
-  email: string;
-  password: string;
-}
-
 export class MongoSeeder {
-  private owner: CommunityOwner;
+  private authUser: Prisma.AuthUserCreateInput;
+  private password: string;
 
   constructor(private workbook: XLSX.WorkBook) {
     const { AUTH_TEST_EMAIL, AUTH_TEST_PASSWORD } = process.env;
@@ -28,10 +23,11 @@ export class MongoSeeder {
         'AUTH_TEST_PASSWORD must be set in the environment variables'
       );
     }
-    this.owner = {
+    this.authUser = {
       email: AUTH_TEST_EMAIL,
-      password: AUTH_TEST_PASSWORD,
+      emailVerified: true,
     };
+    this.password = AUTH_TEST_PASSWORD;
   }
 
   /**
@@ -81,7 +77,7 @@ export class MongoSeeder {
         name: 'CommunityName',
         owner: {
           connect: {
-            email: this.owner.email,
+            email: this.authUser.email,
           },
         },
         ...communityCreateInput,
@@ -97,22 +93,28 @@ export class MongoSeeder {
       })
     );
 
-    // better-auth account, so user can be logged in via email/password
-    // credential
+    await prisma.user.create({
+      data: {
+        email: this.authUser.email,
+        accessList: {
+          create: accessSeed,
+        },
+      },
+    });
+
+    // Create better-auth documents so we can logged in the test user using
+    // email/password credential
     const accountSeed: Prisma.AccountCreateWithoutUserInput[] = [
       {
         accountId: new ObjectId().toHexString(),
         providerId: 'credential',
-        password: await hashPassword(this.owner.password),
+        password: await hashPassword(this.password),
       },
     ];
 
-    await prisma.user.create({
+    await prisma.authUser.create({
       data: {
-        email: this.owner.email,
-        accessList: {
-          create: accessSeed,
-        },
+        ...this.authUser,
         accountList: {
           create: accountSeed,
         },

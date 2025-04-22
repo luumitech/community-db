@@ -25,12 +25,6 @@ export function getShortName(
   return firstName ?? emailPrefix ?? '';
 }
 
-interface UserEntry {
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-}
-
 /**
  * Helper hook for obtaining user related information
  *
@@ -43,13 +37,13 @@ interface UserEntry {
 export function useUserInfo() {
   const { data } = useSession();
 
-  const user: UserEntry = data?.user ?? {};
+  const user = data?.user;
 
   return {
-    fullName: user.name ?? '',
-    shortName: getShortName(user.name, user.email),
-    initial: acronym(user.name),
-    email: user.email ?? '',
-    image: user.image,
+    fullName: user?.name ?? '',
+    shortName: getShortName(user?.name, user?.email),
+    initial: acronym(user?.name),
+    email: user?.email ?? '',
+    image: user?.image,
   };
 }

@@ -5,7 +5,6 @@ import { type UserFragmentType } from './_type';
 export const UserFragment = graphql(/* GraphQL */ `
   fragment User on User {
     id
-    name
     email
   }
 `);
@@ -17,7 +16,7 @@ interface Props {
 
 export const UserName: React.FC<Props> = ({ className, userFragment }) => {
   const user = getFragment(UserFragment, userFragment);
-  const displayName = user?.name?.split(' ')?.[0] ?? user?.email ?? 'n/a';
+  const displayName = user?.email ?? 'n/a';
 
   return <span className={className}>{displayName}</span>;
 };
