@@ -1,4 +1,11 @@
-import { Button, ModalBody, ModalFooter, ModalHeader, cn } from '@heroui/react';
+import {
+  Button,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
+  cn,
+} from '@heroui/react';
 import React from 'react';
 import { authClient, useSignIn } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
@@ -16,8 +23,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
   const [signingIn, onSignIn] = React.useTransition();
   const { callbackURL, signIn } = useSignIn();
   const formMethods = useHookFormContext();
-  const { handleSubmit, formState, setError } = formMethods;
-  const { isDirty } = formState;
+  const { setError, clearErrors } = formMethods;
 
   const doSendOtp = React.useCallback(
     () =>
@@ -59,7 +65,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
   return (
     <Form
       className={cn(className, 'flex flex-col gap-4')}
-      onSubmit={handleSubmit(doSignIn)}
+      // onSubmit={handleSubmit(doSignIn)}
     >
       <ModalHeader className="flex flex-col items-center gap-2">
         <span className="text-3xl font-semibold ">Verify your email</span>
@@ -81,6 +87,13 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           variant="bordered"
           length={6}
           size="md"
+          isDisabled={signingIn}
+          onValueChange={(value) => {
+            clearErrors('otp');
+            if (value?.length === 6) {
+              doSignIn({ otp: value });
+            }
+          }}
         />
         <span className="pt-6 text-sm font-normal text-default-400">
           Didn&apos;t receive any code?
@@ -94,16 +107,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           Resend New Code
         </Button>
       </ModalBody>
-      <ModalFooter>
-        <Button
-          color="primary"
-          type="submit"
-          isLoading={signingIn}
-          isDisabled={!isDirty}
-        >
-          Sign In
-        </Button>
-      </ModalFooter>
+      <ModalFooter>{signingIn && <Spinner />}</ModalFooter>
     </Form>
   );
 };

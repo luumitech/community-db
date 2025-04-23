@@ -24,7 +24,6 @@ export const InputOtp = React.forwardRef<HTMLInputElement, InputProps>(
       isControlled,
       onBlur,
       onChange,
-      onValueChange,
       isReadOnly,
       ...props
     },

@@ -26,7 +26,7 @@ ${appTitle} Team`;
     const mailer = await Nodemailer.fromConfig();
     await mailer.sendMail({
       to: email,
-      subject: `${appTitle}: Let's get you signed in`,
+      subject: `${appTitle}: your login code`,
       text,
       html,
     });
