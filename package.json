@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:cypress": "dotenv -e .env.cypress -- next dev",
-    "email-dev": "email dev --dir ./src/emails --port 3100",
+    "email-dev": "shx --verbose cp .env.local ./node_modules/react-email/dist/preview && email dev --dir ./src/emails --port 3100",
     "prebuild": "yarn generate",
     "build": "next build",
     "postbuild": "shx --verbose cp -r public .next/standalone/public && shx --verbose cp -r .next/static .next/standalone/.next/static",

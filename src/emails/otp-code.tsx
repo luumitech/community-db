@@ -1,3 +1,10 @@
+/**
+ * This is necessary because react-email does not handle .env files correctly
+ *
+ * See: https://github.com/resend/react-email/issues/668
+ */
+import 'dotenv/config';
+
 import { cn } from '@heroui/react';
 import {
   Body,
