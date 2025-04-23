@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { InitiateSignIn } from './initiate-sign-in';
-import { usePanelContext } from './panel-context';
+import { usePanelContext, type PanelProps } from './panel-context';
 import { VerifyEmailOtp } from './verify-email-otp';
 
 type Direction = 'back' | 'forward';
@@ -29,7 +29,7 @@ export const PanelWrapper: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   children,
 }) => {
-  const { panel, goToPanel } = usePanelContext();
+  const { panel, panelArg, goToPanel } = usePanelContext();
   const direction = panel === 'sign-in' ? 'backward' : 'forward';
 
   return (
@@ -41,7 +41,7 @@ export const PanelWrapper: React.FC<React.PropsWithChildren<Props>> = ({
           isIconOnly
           size="sm"
           startContent={<Icon icon="back" />}
-          onPress={() => goToPanel('sign-in')}
+          onPress={() => goToPanel('sign-in', {})}
         />
       )}
       <AnimatePresence initial={false} mode="popLayout" custom={direction}>
@@ -54,8 +54,12 @@ export const PanelWrapper: React.FC<React.PropsWithChildren<Props>> = ({
           variants={variants}
           custom={direction}
         >
-          {panel === 'sign-in' && <InitiateSignIn />}
-          {panel === 'verify-email-otp' && <VerifyEmailOtp />}
+          {panel === 'sign-in' && (
+            <InitiateSignIn {...(panelArg as PanelProps['sign-in'])} />
+          )}
+          {panel === 'verify-email-otp' && (
+            <VerifyEmailOtp {...(panelArg as PanelProps['verify-email-otp'])} />
+          )}
         </motion.div>
       </AnimatePresence>
     </>

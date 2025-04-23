@@ -1,13 +1,13 @@
 import {
-  Input as NextUIInput,
-  InputProps as NextUIInputProps,
+  InputOtp as NextUIInputOtp,
+  InputOtpProps as NextUIInputOtpProps,
   cn,
 } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
-export interface InputProps extends NextUIInputProps {
+export interface InputProps extends NextUIInputOtpProps {
   controlName: string;
   /**
    * Force component into a controlled component, useful if you need setValue to
@@ -16,7 +16,7 @@ export interface InputProps extends NextUIInputProps {
   isControlled?: boolean;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const InputOtp = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       classNames,
@@ -43,17 +43,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         control={control}
         name={controlName}
         render={({ field }) => (
-          <NextUIInput
+          <NextUIInputOtp
             ref={ref}
             classNames={{
               ...classNames,
-              // Render readonly field by removing all input decoration
-              base: cn(classNames?.base, {
-                'opacity-100': isReadOnly,
-              }),
-              inputWrapper: cn(classNames?.inputWrapper, {
-                'border-none shadow-none bg-transparent': isReadOnly,
-              }),
             }}
             defaultValue={field.value ?? ''}
             // Force component into a controlled component
@@ -80,4 +73,4 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+InputOtp.displayName = 'InputOtp';

@@ -16,6 +16,7 @@ export default function SignIn() {
       isOpen
       onOpenChange={() => router.back()}
       isKeyboardDismissDisabled
+      isDismissable={false}
       hideCloseButton
     >
       <ModalContent>

@@ -1,9 +1,10 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
-import { useSignIn } from '~/custom-hooks/auth';
+import { authClient } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
+import { toast } from '~/view/base/toastify';
 import { usePanelContext } from '../../panel-context';
 import { useHookFormContext, type InputData } from './use-hook-form';
 
@@ -12,16 +13,29 @@ interface Props {
 }
 
 export const SendOtp: React.FC<Props> = ({ className }) => {
-  const { signInDev } = useSignIn();
+  const [pending, startTransition] = React.useTransition();
   const { goToPanel } = usePanelContext();
   const formMethods = useHookFormContext();
   const { handleSubmit, formState } = formMethods;
   const { isDirty } = formState;
 
-  const onSendOtp = React.useCallback(async (input: InputData) => {
-    const { email } = input;
-    goToPanel('verify-email-otp');
-  }, []);
+  const onSendOtp = React.useCallback(
+    (input: InputData) =>
+      startTransition(async () => {
+        const { email } = input;
+        const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+          email,
+          type: 'sign-in',
+        });
+        if (error) {
+          toast.error(error.message);
+        }
+        if (data?.success) {
+          goToPanel('verify-email-otp', { email });
+        }
+      }),
+    [goToPanel]
+  );
 
   return (
     <Form
@@ -41,6 +55,7 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
         type="submit"
         variant="bordered"
         isDisabled={!isDirty}
+        isLoading={pending}
       >
         Continue with Email
       </Button>

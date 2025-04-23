@@ -70,21 +70,17 @@ const baseSchema = z.object({
   PAYMENT_HELCIM_PLAN_ID: z.coerce.number(),
   PAYMENT_HELCIM_API_KEY: zz.string.nonEmpty(),
 
-  /** Email configuration */
-  /** Website contact information */
-  EMAIL_CONTACT_INFO: z.string(),
-  /** Mailjet credential apiKey */
-  EMAIL_MAILJET_API_KEY: z.string(),
-  /** Mailjet credential apiSecret */
-  EMAIL_MAILJET_API_SECRET: z.string(),
-  /** Call the API, but not actually sanding mail */
-  EMAIL_MAILJET_SANDBOX_MODE: zz.coerce.toBoolean(),
-  /** Mailjet verified sender email */
-  EMAIL_MAILJET_SENDER: z.string(),
-
   /** Google Recaptcha configuration */
   NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY: z.string(),
   GOOGLE_RECAPTCHA_SECRET_KEY: z.string(),
+
+  /** Nodemailer configuration */
+  EMAIL_SERVER_USER: zz.string.nonEmpty(),
+  EMAIL_SERVER_PASSWORD: zz.string.nonEmpty(),
+  EMAIL_SERVER_HOST: zz.string.nonEmpty(),
+  EMAIL_SERVER_PORT: z.coerce.number(),
+  EMAIL_SERVER_SECURE: zz.coerce.toBoolean(),
+  EMAIL_FROM: zz.string.nonEmpty(),
 });
 
 const azureStorageSchema = z.discriminatedUnion('AZURE_STORAGE_MODE', [

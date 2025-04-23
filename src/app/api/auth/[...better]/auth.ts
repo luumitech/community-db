@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { env } from '~/lib/env-cfg';
 import { appTitle, isProduction, isRunningTest } from '~/lib/env-var';
 import prisma from '~/lib/prisma';
+import { sendVerificationOTP } from './email-otp';
 
 export const auth = betterAuth({
   appName: appTitle,
@@ -52,10 +53,9 @@ export const auth = betterAuth({
      * See: https://www.better-auth.com/docs/plugins/email-otp
      */
     emailOTP({
-      async sendVerificationOTP({ email, otp, type }) {
-        console.log({ email, otp, type });
-        // Implement the sendVerificationOTP method to send the OTP to the user's email address
-      },
+      otpLength: 6,
+      expiresIn: 300, // 5 minutes
+      sendVerificationOTP,
     }),
   ],
 });

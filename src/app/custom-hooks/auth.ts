@@ -4,7 +4,6 @@ import { env } from 'next-runtime-env';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
-import { isProduction } from '~/lib/env-var';
 
 export const authClient = createAuthClient({
   baseURL: env('NEXT_PUBLIC_HOSTNAME'),
@@ -29,39 +28,17 @@ export const { useSession } = authClient;
  */
 export function useSignIn() {
   const query = useSearchParams();
+  const { signIn, signUp } = authClient;
 
-  const callbackURL = query.get('callbackUrl') ?? appPath('communityWelcome');
-
-  /** Sign in as developer (internal use only) */
-  const signInDev = React.useCallback(async () => {
-    // Only available in development mode
-    if (isProduction()) {
-      return;
+  const callbackURL = React.useMemo(() => {
+    const currentURL = query.get('callbackUrl');
+    if (!currentURL || currentURL === appPath('home')) {
+      return appPath('communityWelcome');
     }
-    await authClient.signUp.email({
-      name: 'Dev User',
-      email: 'dev@email.com',
-      password: 'password1234',
-    });
-    return authClient.signIn.email({
-      email: 'dev@email.com',
-      password: 'password1234',
-      callbackURL,
-    });
-  }, [callbackURL]);
+    return currentURL;
+  }, [query]);
 
-  const signInGoogle = React.useCallback(async () => {
-    return authClient.signIn.social({ provider: 'google', callbackURL });
-  }, [callbackURL]);
-
-  const signInEmailOTP = React.useCallback(async () => {
-    return authClient.emailOtp.sendVerificationOtp({
-      email: 'user-email@email.com',
-      type: 'sign-in',
-    });
-  }, [callbackURL]);
-
-  return { signInGoogle, signInDev };
+  return { signIn, signUp, callbackURL };
 }
 
 /**

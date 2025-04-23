@@ -45,7 +45,7 @@ export function appPath(
     | 'communityCreate'
 ): string;
 export function appPath(
-  template: 'home',
+  template: 'home' | 'signIn',
   sub?: {
     query?: {
       callbackUrl?: string;

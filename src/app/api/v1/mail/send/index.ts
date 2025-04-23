@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import * as R from 'remeda';
 import { env } from '~/lib/env-cfg';
 import { Logger, recentServerLog } from '~/lib/logger';
-import { Mailjet, type SendEmailV3_1 } from '~/lib/mailjet';
+import { Nodemailer } from '~/lib/nodemailer';
 import { verifyRecaptchaV3 } from '~/lib/recaptcha';
 import type { SInput, SOutput } from './contract';
 
@@ -15,7 +15,7 @@ const logger = Logger('/mail/send');
  * new Odoo sales orders to OnFleet system
  */
 export async function send(req: SInput): Promise<SOutput> {
-  const { recaptchaToken, to } = req.body;
+  const { html, recaptchaToken, to } = req.body;
   const { subject, log } = req.query;
   let { message } = req.body;
 
@@ -23,9 +23,9 @@ export async function send(req: SInput): Promise<SOutput> {
   await verifyRecaptchaV3(recaptchaToken);
 
   // Construct email recipient list
-  const To: SendEmailV3_1.EmailAddressTo[] = R.isEmpty(to ?? [])
-    ? [{ Email: env.EMAIL_CONTACT_INFO }]
-    : to!.map(({ email, name }) => ({ Email: email, Name: name }));
+  const To = R.isEmpty(to ?? [])
+    ? env.EMAIL_FROM
+    : to!.map(({ email, name }) => `${name} <${email}>`).join(', ');
 
   if (log) {
     logger.info('logging output');
@@ -33,14 +33,13 @@ export async function send(req: SInput): Promise<SOutput> {
     message += ['', 'Server Log:', serverLog].join('\n');
   }
 
-  const mailjet = await Mailjet.fromConfig();
-  await mailjet.sendEmails([
-    {
-      To,
-      Subject: subject,
-      TextPart: message,
-    },
-  ]);
+  const mailer = await Nodemailer.fromConfig();
+  await mailer.sendMail({
+    to: To,
+    subject,
+    text: message,
+    html: html,
+  });
 
   // If needed to communicate error
   // throw new HttpError('Error message', StatusCodes.BAD_REQUEST);
