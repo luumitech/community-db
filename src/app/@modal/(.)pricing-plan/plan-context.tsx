@@ -48,7 +48,7 @@ export function PlanContextProvider(props: Props) {
 export function usePlanContext() {
   const context = React.useContext(Context);
   if (!context) {
-    throw new Error(`useAppContext must be used within a PlanContextProvider`);
+    throw new Error(`usePlanContext must be used within a PlanContextProvider`);
   }
   return context;
 }

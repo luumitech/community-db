@@ -16,6 +16,7 @@ export default function Preference({ params }: RouteArgs) {
   return (
     <Modal
       size="xl"
+      placement="top-center"
       scrollBehavior="outside"
       isOpen
       onOpenChange={() => router.back()}

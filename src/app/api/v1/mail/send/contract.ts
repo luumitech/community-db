@@ -23,10 +23,7 @@ export const sendContract = c.router({
     body: z.object({
       /** Google recaptcha token */
       recaptchaToken: z.string(),
-      /**
-       * Email recipients, if not specified, email will be sent to
-       * EMAIL_CONTACT_INFO
-       */
+      /** Email recipients, if not specified, email will be sent to EMAIL_FROM */
       to: z
         .array(
           z.object({
@@ -35,7 +32,8 @@ export const sendContract = c.router({
           })
         )
         .optional(),
-      message: zz.string.nonEmpty('Please enter a subject'),
+      message: zz.string.nonEmpty('Please enter a message'),
+      html: z.string().optional(),
     }),
     responses: {
       200: z.boolean(),

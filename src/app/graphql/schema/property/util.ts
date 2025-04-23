@@ -1,7 +1,7 @@
 import { Event, Membership, Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
-import { type Context } from '~/graphql/context';
+import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
 import { PropertyFilterInput } from './batch-modify';
@@ -22,7 +22,7 @@ export const DEFAULT_PROPERTY_ORDER_BY: Prisma.PropertyOrderByWithRelationInput[
  * @returns
  */
 export async function getPropertyEntry<T extends FindArgs>(
-  user: Context['user'],
+  user: ContextUser,
   shortId: string,
   args?: Prisma.SelectSubset<T, FindArgs>
 ) {

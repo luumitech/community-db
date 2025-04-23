@@ -1,13 +1,13 @@
 import { NavbarItem } from '@heroui/react';
 import React from 'react';
-import { SignInButton } from './sign-in-button';
+import { SignInButton, type SignInButtonProps } from './sign-in-button';
 
-interface Props {}
+interface Props extends SignInButtonProps {}
 
-export const NotSignedIn: React.FC<Props> = ({}) => {
+export const NotSignedIn: React.FC<Props> = (props) => {
   return (
     <NavbarItem>
-      <SignInButton />
+      <SignInButton {...props} />
     </NavbarItem>
   );
 };

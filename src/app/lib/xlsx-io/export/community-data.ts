@@ -1,6 +1,6 @@
-import { type Context } from '~/graphql/context';
 import { getCommunityEntry } from '~/graphql/schema/community/util';
 import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
+import { type ContextUser } from '~/lib/context-user';
 
 /**
  * Get property list for a given community from database
@@ -9,10 +9,7 @@ import { DEFAULT_PROPERTY_ORDER_BY } from '~/graphql/schema/property/util';
  * @param communityId Community shortID
  * @returns
  */
-export async function communityData(
-  user: Context['user'],
-  communityId: string
-) {
+export async function communityData(user: ContextUser, communityId: string) {
   const data = await getCommunityEntry(user, communityId, {
     include: {
       updatedBy: true,

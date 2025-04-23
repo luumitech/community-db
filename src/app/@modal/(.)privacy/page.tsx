@@ -17,6 +17,7 @@ export default function Privacy() {
   return (
     <Modal
       size="3xl"
+      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}

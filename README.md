@@ -107,6 +107,16 @@ yarn gen-favicon
 
 Note: The Google OAuth consent screen also make use of the app logo, and should be updated accordingly if this is changed.
 
+## Updating Email content
+
+Emails are sent through `nodemailer`, and the content is defined in `src/email/**.ts`.  The email content is generated using [react-email](https://react.email/).
+
+To run the email viewer locally:
+
+```sh
+yarn email-ev
+```
+
 ## Prerequiste for deploying to Microsoft Azure
 
 In [Azure Portal](https://portal.azure.com):

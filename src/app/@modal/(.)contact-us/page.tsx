@@ -68,6 +68,7 @@ export default function ContactUs() {
   return (
     <Modal
       size="lg"
+      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}

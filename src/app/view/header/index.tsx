@@ -9,10 +9,9 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-  Spinner,
 } from '@heroui/react';
-import { useSession } from 'next-auth/react';
 import React from 'react';
+import { useSession } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
 import { AppLogo } from '~/view/app-logo';
@@ -26,7 +25,7 @@ export * from './header-menu';
 interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
-  const { status } = useSession();
+  const { data, isPending } = useSession();
   const breadcrumbItems = useTopMenu();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuItems = useNavMenu();
@@ -96,13 +95,7 @@ export const Header: React.FC<Props> = ({}) => {
         <NavbarContent justify="end">
           {/* placeholder for calculating position of more menu */}
           <div id="nav-bar-avatar" />
-          {status === 'loading' ? (
-            <Spinner />
-          ) : status === 'authenticated' ? (
-            <SignedIn />
-          ) : (
-            <NotSignedIn />
-          )}
+          {data != null ? <SignedIn /> : <NotSignedIn isLoading={isPending} />}
         </NavbarContent>
         {/** Menu items for burger menu */}
         <NavbarMenu>

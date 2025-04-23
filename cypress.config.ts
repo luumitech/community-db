@@ -6,11 +6,9 @@ import {
 
 export default defineConfig({
   env: {
-    NEXTAUTH_SECRET: 'cypress-test',
-    NEXTAUTH_SESSION_USER: {
-      name: 'J Smith',
-      email: 'test@email.com',
-    },
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    AUTH_TEST_EMAIL: process.env.AUTH_TEST_EMAIL,
+    AUTH_TEST_PASSWORD: process.env.AUTH_TEST_PASSWORD,
   },
   e2e: {
     baseUrl: 'http://localhost:3000',

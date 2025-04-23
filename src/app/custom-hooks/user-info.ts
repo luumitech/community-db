@@ -1,9 +1,9 @@
-import { useSession } from 'next-auth/react';
+import { useSession } from '~/custom-hooks/auth';
 
 /** Extract the first letter of each word */
 function acronym(input?: string | null) {
   if (!input) {
-    return 'n/a';
+    return '';
   }
   return input
     .split(/\s/)
@@ -25,12 +25,6 @@ export function getShortName(
   return firstName ?? emailPrefix ?? '';
 }
 
-interface UserEntry {
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-}
-
 /**
  * Helper hook for obtaining user related information
  *
@@ -41,15 +35,15 @@ interface UserEntry {
  * - Image
  */
 export function useUserInfo() {
-  const { data } = useSession({ required: true });
+  const { data } = useSession();
 
-  const user: UserEntry = data?.user ?? {};
+  const user = data?.user;
 
   return {
-    fullName: user.name ?? '',
-    shortName: getShortName(user.name, user.email),
-    initial: acronym(user.name),
-    email: user.email ?? '',
-    image: user.image,
+    fullName: user?.name ?? '',
+    shortName: getShortName(user?.name, user?.email),
+    initial: acronym(user?.name),
+    email: user?.email ?? '',
+    image: user?.image,
   };
 }

@@ -61,6 +61,7 @@ export const ConfirmationModal: React.FC<Props> = () => {
         base: 'border-warning border-[2px]',
       }}
       size="xs"
+      placement="top-center"
       isOpen={disclosure.isOpen}
       onOpenChange={disclosure.onOpenChange}
       isDismissable={false}

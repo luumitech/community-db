@@ -12,7 +12,6 @@ export const userRef = builder.prismaObject('User', {
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
-    name: t.exposeString('name', { nullable: true }),
     accessList: t.relation('accessList'),
     subscription: t.field({
       type: subscriptionEntryRef,

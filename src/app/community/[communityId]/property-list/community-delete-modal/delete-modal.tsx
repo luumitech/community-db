@@ -44,9 +44,9 @@ export const DeleteModal: React.FC<Props> = ({
   return (
     <Modal
       size="5xl"
+      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      placement="top-center"
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}

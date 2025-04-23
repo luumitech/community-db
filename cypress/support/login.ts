@@ -1,48 +1,19 @@
-import hkdf from '@panva/hkdf';
-import { EncryptJWT, JWTPayload } from 'jose';
-
-/**
- * Function logic derived from
- * https://github.com/nextauthjs/next-auth/blob/5c1826a8d1f8d8c2d26959d12375704b0a693bfc/packages/next-auth/src/jwt/index.ts#L113-L121
- */
-async function getDerivedEncryptionKey(secret: string) {
-  return await hkdf(
-    'sha256',
-    secret,
-    '',
-    'NextAuth.js Generated Encryption Key',
-    32
-  );
-}
-
-/**
- * Function logic derived from
- * https://github.com/nextauthjs/next-auth/blob/5c1826a8d1f8d8c2d26959d12375704b0a693bfc/packages/next-auth/src/jwt/index.ts#L16-L25
- */
-async function encode(token: JWTPayload, secret: string) {
-  const maxAge = 1 * 24 * 60 * 60; // 1 day
-  const encryptionSecret = await getDerivedEncryptionKey(secret);
-  const sessionToken = new EncryptJWT(token)
-    .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
-    .setIssuedAt()
-    .setExpirationTime(Math.round(Date.now() / 1000 + maxAge))
-    .setJti('test')
-    .encrypt(encryptionSecret);
-  return sessionToken;
-}
+import { createAuthClient } from 'better-auth/client';
 
 /** Create session token to simulate the action of user logging in */
 Cypress.Commands.add('login', () => {
   // Set theme to light theme
   window.localStorage.setItem('theme', 'light');
-  cy.wrap(null)
-    .then(() =>
-      encode(
-        Cypress.env('NEXTAUTH_SESSION_USER'),
-        Cypress.env('NEXTAUTH_SECRET')
-      )
-    )
-    .then((sessionToken) => {
-      cy.setCookie('next-auth.session-token', sessionToken);
+
+  cy.wrap(null).then(async () => {
+    const authClient = createAuthClient({
+      baseURL: Cypress.env('BETTER_AUTH_URL'),
     });
+    const { error } = await authClient.signIn.email({
+      email: Cypress.env('AUTH_TEST_EMAIL'),
+      password: Cypress.env('AUTH_TEST_PASSWORD'),
+    });
+    // Verify login to be successful
+    expect(error).to.be.null;
+  });
 });

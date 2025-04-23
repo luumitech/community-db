@@ -7,8 +7,6 @@ import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
-export { SelectItem, SelectSection } from '@heroui/react';
-
 export interface InputProps extends NextUIInputProps {
   controlName: string;
   /**

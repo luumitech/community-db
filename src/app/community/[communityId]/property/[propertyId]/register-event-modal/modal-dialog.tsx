@@ -59,6 +59,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
   return (
     <Modal
       size="5xl"
+      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={canSave}
@@ -73,7 +74,6 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
           ),
         },
       })}
-      placement="top-center"
       scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}

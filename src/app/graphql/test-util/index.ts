@@ -1,8 +1,6 @@
 import { DatabaseUtil } from './datatbase-util';
 import { GraphQLUtil } from './graphql-util';
 
-export { JEST_USER } from './test-user';
-
 /**
  * Helper test utility class for initializaton of key test tools when running
  * Jest unit tests

@@ -46,11 +46,6 @@ const baseSchema = z.object({
   NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY: z.coerce.number(),
   NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY: z.coerce.number(),
 
-  /** See: https://next-auth.js.org/configuration/options#nextauth_url */
-  NEXTAUTH_URL: zz.string.nonEmpty(),
-  /** See: https://next-auth.js.org/configuration/options#nextauth_secret */
-  NEXTAUTH_SECRET: zz.string.nonEmpty(),
-
   /** True only if Jest is running */
   JEST_RUNNING: zz.coerce.toBoolean(),
 
@@ -60,11 +55,7 @@ const baseSchema = z.object({
   CONFIG_DEBUG: zz.coerce.toBoolean(),
 
   /** Google related env vars */
-  /**
-   * For google login
-   *
-   * Options passed into GoogleProvider from 'next-auth/providers/google';
-   */
+  /** For google login */
   GOOGLE_CLIENT_ID: zz.string.nonEmpty(),
   GOOGLE_CLIENT_SECRET: zz.string.nonEmpty(),
 
@@ -79,21 +70,17 @@ const baseSchema = z.object({
   PAYMENT_HELCIM_PLAN_ID: z.coerce.number(),
   PAYMENT_HELCIM_API_KEY: zz.string.nonEmpty(),
 
-  /** Email configuration */
-  /** Website contact information */
-  EMAIL_CONTACT_INFO: z.string(),
-  /** Mailjet credential apiKey */
-  EMAIL_MAILJET_API_KEY: z.string(),
-  /** Mailjet credential apiSecret */
-  EMAIL_MAILJET_API_SECRET: z.string(),
-  /** Call the API, but not actually sanding mail */
-  EMAIL_MAILJET_SANDBOX_MODE: zz.coerce.toBoolean(),
-  /** Mailjet verified sender email */
-  EMAIL_MAILJET_SENDER: z.string(),
-
   /** Google Recaptcha configuration */
   NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY: z.string(),
   GOOGLE_RECAPTCHA_SECRET_KEY: z.string(),
+
+  /** Nodemailer configuration */
+  EMAIL_SERVER_USER: zz.string.nonEmpty(),
+  EMAIL_SERVER_PASSWORD: zz.string.nonEmpty(),
+  EMAIL_SERVER_HOST: zz.string.nonEmpty(),
+  EMAIL_SERVER_PORT: z.coerce.number(),
+  EMAIL_SERVER_SECURE: zz.coerce.toBoolean(),
+  EMAIL_FROM: zz.string.nonEmpty(),
 });
 
 const azureStorageSchema = z.discriminatedUnion('AZURE_STORAGE_MODE', [

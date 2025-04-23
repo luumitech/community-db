@@ -8,28 +8,22 @@ builder.queryField('userCurrent', (t) =>
   t.prismaField({
     type: 'User',
     resolve: async (query, parent, args, ctx, info) => {
-      const {
-        // Only image is not saved in user document
-        user: { image, ...user },
-      } = await ctx;
+      const { user } = await ctx;
 
       // Find the user matching the current logged in user
       let userEntry = await prisma.user.upsert({
         ...query,
         where: { email: user.email },
-        // updating document from context, if
-        update: {
-          name: user.name,
-        },
+        update: {},
         // create the user if not already in database
-        create: user,
+        create: { email: user.email },
       });
 
       // In development mode, if context user does not have access
       // to any community, then add all document accessible under
-      // 'test@email.com' to the current context user
+      // AUTH_TEST_EMAIL to the current context user
       // This will ensure that context user see everything that `yarn seed-db` has
-      // created for test@email.com'
+      // created
       if (!isProduction()) {
         const ownAccess = await prisma.access.findFirst({
           select: { id: true },
@@ -37,7 +31,7 @@ builder.queryField('userCurrent', (t) =>
         });
         if (ownAccess == null) {
           const devAccessList = await prisma.access.findMany({
-            where: { user: { email: 'test@email.com' } },
+            where: { user: { email: process.env.AUTH_TEST_EMAIL } },
           });
           // clone devAccessList to context user
           // We can't create access directly in user.update because

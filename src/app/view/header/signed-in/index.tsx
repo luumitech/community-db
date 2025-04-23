@@ -5,9 +5,9 @@ import {
   DropdownTrigger,
   User,
 } from '@heroui/react';
-import { signOut } from 'next-auth/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
+import { useSignOut } from '~/custom-hooks/auth';
 import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
@@ -19,6 +19,7 @@ interface Props {}
 
 export const SignedIn: React.FC<Props> = ({}) => {
   const { initial, email, image } = useUserInfo();
+  const signOut = useSignOut();
 
   const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
 
@@ -27,12 +28,13 @@ export const SignedIn: React.FC<Props> = ({}) => {
       <DropdownTrigger>
         <User
           className="transition-transform"
+          data-testid="signed-in-user-avatar"
           name=""
           isFocusable
           avatarProps={{
             isBordered: true,
-            name: initial || 'n/a',
             className: 'bg-transparent',
+            ...(initial && { name: initial }),
             ...(!!image && { src: image }),
           }}
         />
@@ -123,7 +125,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
         <DropdownItem
           key="logout"
           color="danger"
-          onPress={() => signOut()}
+          onPress={signOut}
           startContent={<Icon icon="logout" />}
         >
           Log Out

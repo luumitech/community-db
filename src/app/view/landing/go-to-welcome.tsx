@@ -1,8 +1,8 @@
 'use client';
 import { Button, cn } from '@heroui/react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useSession } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
 import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
 
@@ -11,10 +11,10 @@ interface Props {
 }
 
 export const GoToWelcome: React.FC<Props> = ({ className }) => {
-  const { status } = useSession();
+  const session = useSession();
   const router = useRouter();
 
-  if (status === 'authenticated') {
+  if (session.data) {
     return (
       <Button
         className={cn(
@@ -28,5 +28,5 @@ export const GoToWelcome: React.FC<Props> = ({ className }) => {
     );
   }
 
-  return <SignInButton className={className} />;
+  return <SignInButton className={className} isLoading={session.isPending} />;
 };

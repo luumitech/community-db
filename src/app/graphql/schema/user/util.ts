@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import { type Context } from '~/graphql/context';
+import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
 
 type FindArgs = Omit<Prisma.UserFindFirstOrThrowArgs, 'where'>;
@@ -13,7 +13,7 @@ type FindArgs = Omit<Prisma.UserFindFirstOrThrowArgs, 'where'>;
  * @returns
  */
 export async function getUserEntry<T extends FindArgs>(
-  user: Context['user'],
+  user: ContextUser,
   args?: Prisma.SelectSubset<T, FindArgs>
 ) {
   try {

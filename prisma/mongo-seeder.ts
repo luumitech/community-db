@@ -1,4 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { hashPassword } from 'better-auth/crypto';
+import { ObjectId } from 'mongodb';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
@@ -6,7 +8,27 @@ import { importXlsx } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 
 export class MongoSeeder {
-  constructor(private workbook: XLSX.WorkBook) {}
+  private authUser: Prisma.AuthUserCreateInput;
+  private password: string;
+
+  constructor(private workbook: XLSX.WorkBook) {
+    const { AUTH_TEST_EMAIL, AUTH_TEST_PASSWORD } = process.env;
+    if (!AUTH_TEST_EMAIL) {
+      throw new Error(
+        'AUTH_TEST_EMAIL must be set in the environment variables'
+      );
+    }
+    if (!AUTH_TEST_PASSWORD) {
+      throw new Error(
+        'AUTH_TEST_PASSWORD must be set in the environment variables'
+      );
+    }
+    this.authUser = {
+      email: AUTH_TEST_EMAIL,
+      emailVerified: true,
+    };
+    this.password = AUTH_TEST_PASSWORD;
+  }
 
   /**
    * Seed Mongo database with fixture located in the `/__fixtures__` directory
@@ -41,9 +63,9 @@ export class MongoSeeder {
    * ```
    *
    * @param prisma Prisma instance
-   * @param ownerEmail Email creating the community
+   * @param owner Owner information for creating this community
    */
-  async seed(prisma: PrismaClient, ownerEmail = 'test@email.com') {
+  async seed(prisma: PrismaClient) {
     const communityCreateInput = importXlsx(this.workbook);
 
     const communitySeed: Prisma.CommunityCreateInput[] = [
@@ -55,7 +77,7 @@ export class MongoSeeder {
         name: 'CommunityName',
         owner: {
           connect: {
-            email: ownerEmail,
+            email: this.authUser.email,
           },
         },
         ...communityCreateInput,
@@ -73,9 +95,28 @@ export class MongoSeeder {
 
     await prisma.user.create({
       data: {
-        email: ownerEmail,
+        email: this.authUser.email,
         accessList: {
           create: accessSeed,
+        },
+      },
+    });
+
+    // Create better-auth documents so we can logged in the test user using
+    // email/password credential
+    const accountSeed: Prisma.AccountCreateWithoutUserInput[] = [
+      {
+        accountId: new ObjectId().toHexString(),
+        providerId: 'credential',
+        password: await hashPassword(this.password),
+      },
+    ];
+
+    await prisma.authUser.create({
+      data: {
+        ...this.authUser,
+        accountList: {
+          create: accountSeed,
         },
       },
     });

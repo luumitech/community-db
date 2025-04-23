@@ -4,6 +4,7 @@ import queryString from 'query-string';
 /** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
+  signIn: '/sign-in',
   about: '/about',
   preference: '/preference',
   tutorial: '/tutorial{/:guide}',
@@ -33,6 +34,7 @@ type SupportedPath = typeof supportedPathTemplates;
 export function appPath(
   template:
     | 'home'
+    | 'signIn'
     | 'about'
     | 'privacy'
     | 'terms'
@@ -41,6 +43,14 @@ export function appPath(
     | 'communityWelcome'
     | 'communitySelect'
     | 'communityCreate'
+): string;
+export function appPath(
+  template: 'home' | 'signIn',
+  sub?: {
+    query?: {
+      callbackUrl?: string;
+    };
+  }
 ): string;
 export function appPath(
   template: 'contactUs',

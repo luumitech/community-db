@@ -1,205 +1,70 @@
 import { cn } from '@heroui/react';
+import { Icon as Iconify, IconProps as IconifyProps } from '@iconify/react';
 import React from 'react';
-import { type IconBaseProps, type IconType } from 'react-icons';
-import { BiEditAlt } from 'react-icons/bi';
-import { CiCalculator2, CiFilter, CiShare2 } from 'react-icons/ci';
-import {
-  FaAward,
-  FaFolderOpen,
-  FaMailchimp,
-  FaRegCopy,
-  FaSearch,
-  FaTrashAlt,
-} from 'react-icons/fa';
-import { FaDownload } from 'react-icons/fa6';
-import { FcDonate } from 'react-icons/fc';
-import { GoGear } from 'react-icons/go';
-import { GrHelpBook, GrUndo } from 'react-icons/gr';
-import { HiOutlineTicket } from 'react-icons/hi2';
-import { IoMdAddCircleOutline, IoMdLink, IoMdMore } from 'react-icons/io';
-import {
-  IoArrowBack,
-  IoBarChartOutline,
-  IoBugOutline,
-  IoCheckmark,
-  IoChevronForward,
-  IoInformation,
-  IoPersonAdd,
-} from 'react-icons/io5';
-import { LuSunMoon, LuTicketPlus } from 'react-icons/lu';
-import {
-  MdDragIndicator,
-  MdLogout,
-  MdOutlineClear,
-  MdOutlineMail,
-  MdOutlineThumbDown,
-  MdOutlineThumbUp,
-  MdQuestionMark,
-} from 'react-icons/md';
-import { RiHome6Line } from 'react-icons/ri';
-import { RxCross2, RxHamburgerMenu } from 'react-icons/rx';
 
-type SupportedIcon =
-  | 'trash'
-  | 'folder-open'
-  | 'clear'
-  | 'add'
-  | 'drag-handle'
-  | 'cross'
-  | 'undo'
-  | 'edit'
-  | 'email'
-  | 'thumb-up'
-  | 'thumb-down'
-  | 'checkmark'
-  | 'person-add'
-  | 'more'
-  | 'search'
-  | 'share'
-  | 'link'
-  | 'download'
-  | 'dashboard'
-  | 'copy'
-  | 'property-list'
-  | 'logout'
-  | 'settings'
-  | 'about'
-  | 'pricing'
-  | 'premium-plan'
-  | 'back'
-  | 'filter'
-  | 'ticket'
-  | 'mailchimp'
-  | 'chevron-forward'
-  | 'add-ticket'
-  | 'calculator'
-  | 'helpbook'
-  | 'bug'
-  | 'hamburgerMenu'
-  | 'sunMoon';
+const supportedIcon = {
+  trash: 'fa6-regular:trash-can',
+  'folder-open': 'material-symbols-light:folder-open-outline',
+  clear: 'ic:round-clear',
+  add: 'material-symbols:add-circle-outline',
+  'drag-handle': 'ic:outline-drag-indicator',
+  cross: 'ic:round-clear',
+  undo: 'grommet-icons:undo',
+  edit: 'carbon:edit',
+  email: 'mdi:email-outline',
+  'thumb-up': 'mdi:thumbs-up-outline',
+  'thumb-down': 'mdi:thumbs-down-outline',
+  checkmark: 'ion:checkmark-outline',
+  'person-add': 'ion:person-add-outline',
+  more: 'mdi:more-vert',
+  search: 'akar-icons:search',
+  share: 'material-symbols:share-outline',
+  link: 'material-symbols:link',
+  download: 'ph:download-bold',
+  dashboard: 'ion:bar-chart-outline',
+  copy: 'fa-regular:copy',
+  'property-list': 'ri:home-6-line',
+  logout: 'material-symbols:logout',
+  settings: 'gravity-ui:gear',
+  about: 'ion:information-outline',
+  pricing: 'la:donate',
+  'premium-plan': 'fa6-solid:award',
+  back: 'ion:arrow-back',
+  filter: 'iconoir:filter',
+  ticket: 'heroicons:ticket',
+  mailchimp: 'cib:mailchimp',
+  'chevron-forward': 'ion:chevron-forward',
+  'add-ticket': 'lucide:ticket-plus',
+  calculator: 'hugeicons:calculator',
+  helpbook: 'grommet-icons:help-book',
+  bug: 'famicons:bug-outline',
+  hamburgerMenu: 'radix-icons:hamburger-menu',
+  sunMoon: 'lucide:sun-moon',
+  google: 'flat-color-icons:google',
+} as const;
 
-export interface IconProps extends IconBaseProps {
+type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;
+
+export interface IconProps extends Partial<CustomIconifyIconProps> {
   className?: string;
-  icon: SupportedIcon;
+  icon: keyof typeof supportedIcon;
+  size?: number;
 }
 
-export const Icon: React.FC<IconProps> = ({ className, icon, ...props }) => {
-  let IconElement: IconType;
-  switch (icon) {
-    case 'trash':
-      IconElement = FaTrashAlt;
-      break;
-    case 'folder-open':
-      IconElement = FaFolderOpen;
-      break;
-    case 'clear':
-      IconElement = MdOutlineClear;
-      break;
-    case 'add':
-      IconElement = IoMdAddCircleOutline;
-      break;
-    case 'drag-handle':
-      IconElement = MdDragIndicator;
-      break;
-    case 'cross':
-      IconElement = RxCross2;
-      break;
-    case 'undo':
-      IconElement = GrUndo;
-      break;
-    case 'edit':
-      IconElement = BiEditAlt;
-      break;
-    case 'email':
-      IconElement = MdOutlineMail;
-      break;
-    case 'thumb-up':
-      IconElement = MdOutlineThumbUp;
-      break;
-    case 'thumb-down':
-      IconElement = MdOutlineThumbDown;
-      break;
-    case 'checkmark':
-      IconElement = IoCheckmark;
-      break;
-    case 'person-add':
-      IconElement = IoPersonAdd;
-      break;
-    case 'more':
-      IconElement = IoMdMore;
-      break;
-    case 'search':
-      IconElement = FaSearch;
-      break;
-    case 'share':
-      IconElement = CiShare2;
-      break;
-    case 'link':
-      IconElement = IoMdLink;
-      break;
-    case 'download':
-      IconElement = FaDownload;
-      break;
-    case 'dashboard':
-      IconElement = IoBarChartOutline;
-      break;
-    case 'copy':
-      IconElement = FaRegCopy;
-      break;
-    case 'property-list':
-      IconElement = RiHome6Line;
-      break;
-    case 'logout':
-      IconElement = MdLogout;
-      break;
-    case 'settings':
-      IconElement = GoGear;
-      break;
-    case 'about':
-      IconElement = IoInformation;
-      break;
-    case 'pricing':
-      IconElement = FcDonate;
-      break;
-    case 'premium-plan':
-      IconElement = FaAward;
-      break;
-    case 'back':
-      IconElement = IoArrowBack;
-      break;
-    case 'filter':
-      IconElement = CiFilter;
-      break;
-    case 'ticket':
-      IconElement = HiOutlineTicket;
-      break;
-    case 'mailchimp':
-      IconElement = FaMailchimp;
-      break;
-    case 'chevron-forward':
-      IconElement = IoChevronForward;
-      break;
-    case 'add-ticket':
-      IconElement = LuTicketPlus;
-      break;
-    case 'calculator':
-      IconElement = CiCalculator2;
-      break;
-    case 'helpbook':
-      IconElement = GrHelpBook;
-      break;
-    case 'bug':
-      IconElement = IoBugOutline;
-      break;
-    case 'hamburgerMenu':
-      IconElement = RxHamburgerMenu;
-      break;
-    case 'sunMoon':
-      IconElement = LuSunMoon;
-      break;
-    default:
-      IconElement = MdQuestionMark;
-  }
+export const Icon: React.FC<IconProps> = ({
+  className,
+  icon,
+  size,
+  ...props
+}) => {
+  const iconName = supportedIcon[icon];
 
-  return <IconElement className={cn(className)} {...props} />;
+  return (
+    <Iconify
+      className={cn(className)}
+      icon={iconName ?? 'pixel:question-solid'}
+      {...(size != null && { width: size, height: size })}
+      {...props}
+    />
+  );
 };
