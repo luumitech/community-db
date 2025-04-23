@@ -1,7 +1,7 @@
 import { render } from '@react-email/components';
 import { type EmailOTPOptions } from 'better-auth/plugins';
 import React from 'react';
-import OtpEmail from '~/../emails/otp-code';
+import { OtpCode } from '~/../emails/template/otp-code';
 import { appTitle } from '~/lib/env-var';
 import { Nodemailer } from '~/lib/nodemailer';
 
@@ -11,17 +11,10 @@ import { Nodemailer } from '~/lib/nodemailer';
  */
 export const sendVerificationOTP: EmailOTPOptions['sendVerificationOTP'] =
   async ({ email, otp, type }) => {
-    const html = await render(<OtpEmail email={email} otp={otp} />);
+    const jsx = <OtpCode email={email} otp={otp} />;
 
-    const text = `${appTitle}
-
-Let's get you signed in
-
-Please use this code to login:
-${otp}
-
-All the best,
-${appTitle} Team`;
+    const html = await render(jsx);
+    const text = await render(jsx, { plainText: true });
 
     const mailer = await Nodemailer.fromConfig();
     await mailer.sendMail({
