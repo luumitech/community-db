@@ -51,6 +51,10 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           otp,
           fetchOptions: {
             onSuccess: () => {
+              /**
+               * Router.push failed to dismiss the modal dialog, as a workaround
+               * use `window.location.href` instead.
+               */
               window.location.href = callbackURL;
             },
           },
@@ -83,6 +87,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
             // expand the OTP inptu field
             helperWrapper: 'max-w-[260px]',
           }}
+          autoFocus
           controlName="otp"
           variant="bordered"
           length={6}

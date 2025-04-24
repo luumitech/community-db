@@ -27,7 +27,7 @@ export const authMiddleware: MiddlewareFactory =
         const baseURL = env('NEXT_PUBLIC_HOSTNAME');
         const homeURL = appPath('home', {
           // Add callback, to redirect to this page after login
-          query: { callbackUrl: `${baseURL}/${pathname}` },
+          query: { callbackUrl: pathname },
         });
         return NextResponse.redirect(new URL(homeURL, baseURL));
       }
