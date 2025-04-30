@@ -1,0 +1,8 @@
+/**
+ * .is-snapped is coming from the Embla ClassNames plugin
+
+ * See: https://www.embla-carousel.com/plugins/class-names/
+ */
+.slide:not(:global(.is-snapped)) {
+  opacity: 0.16;
+}
