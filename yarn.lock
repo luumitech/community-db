@@ -9663,6 +9663,11 @@ embla-carousel-autoplay@^8.1.6:
   resolved "https://registry.yarnpkg.com/embla-carousel-autoplay/-/embla-carousel-autoplay-8.1.6.tgz#24696cb6037bbb3e894f51a8bcf6698c81ea38cf"
   integrity sha512-e5n9f4q+DVeBPiPPT3gwzqpiqfae8aP8fQACS4OZkPFvFLdsVhnWcw+cwtewryP7snWJGKPXEMA1GOjieEKv+w==
 
+embla-carousel-class-names@^8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/embla-carousel-class-names/-/embla-carousel-class-names-8.6.0.tgz#2bdd057427c60d6281f5e2d11fca02ca60529939"
+  integrity sha512-l1hm1+7GxQ+zwdU2sea/LhD946on7XO2qk3Xq2XWSwBaWfdgchXdK567yzLtYSHn4sWYdiX+x4nnaj+saKnJkw==
+
 embla-carousel-react@^8.1.6:
   version "8.1.6"
   resolved "https://registry.yarnpkg.com/embla-carousel-react/-/embla-carousel-react-8.1.6.tgz#4de0cef2888443f4203408df73af2707e5c961e9"
