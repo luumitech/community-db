@@ -24,7 +24,7 @@ builder.mutationField('helcimPayInitialize', (t) =>
       input: t.arg({ type: HelcimPayInitializeInput, required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       const { paymentType, amount, currency } = args.input;
 
       // Check if user has an ongoing subscription already
@@ -73,7 +73,7 @@ builder.mutationField('helcimPurchase', (t) =>
       }),
     },
     resolve: async (parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       const { customerCode, idempotentKey } = args.input;
 
       // Check if user has an ongoing subscription already
@@ -123,7 +123,7 @@ builder.mutationField('helcimCancelSubscription', (t) =>
   t.field({
     type: userRef,
     resolve: async (parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
 
       // Check if user has an ongoing subscription already
       let userDoc = await getUserEntry(user);

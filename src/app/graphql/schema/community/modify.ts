@@ -59,7 +59,7 @@ builder.mutationField('communityModify', (t) =>
       input: t.arg({ type: CommunityModifyInput, required: true }),
     },
     resolve: async (query, _parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
+      const { user, pubSub } = ctx;
       const { self, ...input } = args.input;
       const shortId = self.id;
       const entry = await getCommunityEntry(user, shortId, {

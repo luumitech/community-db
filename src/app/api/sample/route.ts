@@ -13,7 +13,8 @@ interface FetchEvent {
  * https://nextjs.org/docs/app/building-your-application/routing/route-handlers
  */
 export async function GET(request: NextRequest, { params }: FetchEvent) {
-  const session = await getServerSession();
+  const { headers } = request;
+  const session = await getServerSession(headers);
   // const { searchParams } = req.nextUrl;
   // const query = searchParams.get('arg');
 

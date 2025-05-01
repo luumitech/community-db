@@ -87,7 +87,7 @@ builder.mutationField('propertyModify', (t) =>
       input: t.arg({ type: PropertyModifyInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
+      const { user, pubSub } = ctx;
       const { self, ...input } = args.input;
       const shortId = self.id;
 

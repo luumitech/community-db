@@ -76,7 +76,7 @@ builder.mutationField('batchPropertyModify', (t) =>
       input: t.arg({ type: BatchPropertyModifyInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
+      const { user, pubSub } = ctx;
       const { input } = args;
       const { communityId: shortId, filter } = input;
       const { eventAttended } = input.membership;

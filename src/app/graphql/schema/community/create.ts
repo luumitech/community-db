@@ -18,7 +18,7 @@ builder.mutationField('communityCreate', (t) =>
       input: t.arg({ type: CommunityCreateInput, required: true }),
     },
     resolve: async (query, _parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       const { email } = user;
       const userDoc = await getUserEntry(user);
       const existingSub = await getSubscriptionEntry(userDoc);

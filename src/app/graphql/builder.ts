@@ -3,12 +3,12 @@ import PrismaPlugin from '@pothos/plugin-prisma';
 import RelayPlugin from '@pothos/plugin-relay';
 import { DateResolver, DateTimeResolver } from 'graphql-scalars';
 import prisma from '~/lib/prisma';
-import { createContext } from './context';
+import { type Context, type YogaServerContext } from './context';
 import type PrismaTypes from './generated/pothos-types';
 
 export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;
-  Context: ReturnType<typeof createContext>;
+  Context: YogaServerContext & Context;
   Scalars: {
     Date: { Input: Date; Output: Date };
     DateTime: { Input: Date; Output: Date };

@@ -56,7 +56,7 @@ builder.mutationField('registerEvent', (t) =>
       input: t.arg({ type: RegisterEventInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
+      const { user, pubSub } = ctx;
       const {
         self,
         event: eventInput,

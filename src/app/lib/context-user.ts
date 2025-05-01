@@ -11,8 +11,8 @@ export interface ContextUser {
   image?: string | null | undefined;
 }
 
-export async function contextUser(): Promise<ContextUser> {
-  const session = await getServerSession();
+export async function contextUser(headers: Headers): Promise<ContextUser> {
+  const session = await getServerSession(headers);
 
   // All graphQL operations require user to be authenticated
   if (!session) {

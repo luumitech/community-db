@@ -1,4 +1,5 @@
 'use server';
+import { headers } from 'next/headers';
 import { getServerSession } from '~/api/auth/[...better]/auth';
 import {
   ExportLcra,
@@ -11,7 +12,8 @@ import { XlsxCache } from './xlsx-cache';
 
 /** Export community information */
 export async function exportCommunityAsUrl(communityId: string) {
-  const session = await getServerSession();
+  const hdrs = headers();
+  const session = await getServerSession(hdrs);
   if (!session) {
     throw new Error('Not authorized');
   }
@@ -35,7 +37,8 @@ export async function exportCommunityAsBase64(
   communityId: string,
   exportMethod: ExportMethod
 ) {
-  const session = await getServerSession();
+  const hdrs = headers();
+  const session = await getServerSession(hdrs);
   if (!session) {
     throw new Error('Not authorized');
   }

@@ -41,7 +41,7 @@ builder.mutationField('communityImport', (t) =>
       input: t.arg({ type: CommunityImportInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
+      const { user, pubSub } = ctx;
       const { id: shortId, method, xlsx } = args.input;
 
       // Make sure user has permission to modify

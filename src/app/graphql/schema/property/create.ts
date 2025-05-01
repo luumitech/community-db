@@ -26,7 +26,7 @@ builder.mutationField('propertyCreate', (t) =>
       input: t.arg({ type: PropertyCreateInput, required: true }),
     },
     resolve: async (query, _parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       const { communityId, ...input } = args.input;
 
       // Make sure user has permission to create

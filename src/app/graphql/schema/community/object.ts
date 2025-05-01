@@ -302,7 +302,7 @@ builder.prismaObject('Community', {
     access: t.prismaField({
       type: 'Access',
       resolve: async (query, parent, args, ctx) => {
-        const { user } = await ctx;
+        const { user } = ctx;
         const access = await verifyAccess(
           user,
           { id: parent.id },
@@ -316,7 +316,7 @@ builder.prismaObject('Community', {
     otherAccessList: t.prismaField({
       type: ['Access'],
       resolve: async (query, parent, args, ctx) => {
-        const { user } = await ctx;
+        const { user } = ctx;
         const accessList = await prisma.access.findMany({
           where: {
             communityId: parent.id,
@@ -337,7 +337,7 @@ builder.prismaObject('Community', {
         filter: t.arg({ type: PropertyFilterInput }),
       },
       resolve: async (parent, args, ctx) => {
-        const { user } = await ctx;
+        const { user } = ctx;
         return await resolveCustomOffsetConnection(
           { args },
           async ({ limit, offset }) => {
