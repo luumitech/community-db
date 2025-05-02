@@ -7,6 +7,10 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* Override default toastify progress color */
+  --toastify-color-progress-light: #45D483;
+  --toastify-color-progress-dark: #45D483;
 }
 
 :root.dark {

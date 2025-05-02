@@ -11,7 +11,7 @@ function schema() {
       method: z.nativeEnum(GQL.ImportMethod),
       hidden: z.object({
         // To be mapped to xlsx argument later
-        importList: zz.coerce.toFileList('Please upload a valid xlsx file'),
+        importList: zz.coerce.toFileArray('Please upload a valid xlsx file'),
       }),
     })
     .refine(

@@ -9,10 +9,9 @@ import type { SInput, SOutput } from './contract';
 const logger = Logger('/mail/send');
 
 /**
- * Pull new sales orders from Odoo and push them to OnFleet
+ * Send email via nodemailer
  *
- * This API is meant to be call by a scheduler on a daily basis to synchronize
- * new Odoo sales orders to OnFleet system
+ * See contract for input/output configuration
  */
 export async function send(req: SInput): Promise<SOutput> {
   const { html, recaptchaToken, to } = req.body;

@@ -7,6 +7,7 @@ import { builder } from '~/graphql/builder';
 import { type ContextUser } from '~/lib/context-user';
 import { JobHandler } from '~/lib/job-handler';
 import prisma from '~/lib/prisma';
+import { utapi } from '~/lib/uploadthing';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { importXlsx, type CommunityEntry } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
@@ -19,6 +20,13 @@ const ImportMethod = builder.enumType('ImportMethod', {
   values: ['random', 'xlsx'] as const,
 });
 
+const UploadthingInput = builder.inputType('UploadthingInput', {
+  fields: (t) => ({
+    ufsUrl: t.string({ required: true }),
+    key: t.string({ required: true }),
+  }),
+});
+
 const CommunityImportInput = builder.inputType('CommunityImportInput', {
   fields: (t) => ({
     id: t.string({ description: 'community ID', required: true }),
@@ -27,9 +35,10 @@ const CommunityImportInput = builder.inputType('CommunityImportInput', {
       type: ImportMethod,
       required: true,
     }),
+    // Only required when ImportMethod == 'xlsx'
     xlsx: t.field({
-      description: 'xlsx containing community information',
-      type: 'File',
+      description: 'uploadthing file resource object',
+      type: UploadthingInput,
     }),
   }),
 });
@@ -64,9 +73,14 @@ builder.mutationField('communityImport', (t) =>
                 'When Import Method is Excel, you must upload a valid xlsx file.'
               );
             }
-            const bytes = await xlsx.arrayBuffer();
+
+            const res = await fetch(xlsx.ufsUrl, { method: 'GET' });
+            const bytes = await res.arrayBuffer();
             const xlsxBuf = Buffer.from(bytes);
             workbook = XLSX.read(xlsxBuf);
+
+            // Remove xlsx from uploadthing, after processing its content
+            await utapi.deleteFiles(xlsx.key);
           }
           break;
 

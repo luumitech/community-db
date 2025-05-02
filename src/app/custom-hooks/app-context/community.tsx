@@ -124,7 +124,7 @@ function createSelectionItems(
 }
 
 function communityLayoutOnError(err: ApolloError) {
-  const { extensions } = err.graphQLErrors[0];
+  const extensions = err.graphQLErrors?.[0]?.extensions;
   // prisma error code are defined in
   // See: https://www.prisma.io/docs/orm/reference/error-reference
   switch (extensions?.errCode) {
