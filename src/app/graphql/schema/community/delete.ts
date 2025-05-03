@@ -20,7 +20,7 @@ builder.mutationField('communityDelete', (t) =>
       id: t.arg.string({ required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = await ctx;
+      const { user, pubSub } = ctx;
 
       // Make sure user has permission to delete
       await verifyAccess(user, { shortId: args.id }, [Role.ADMIN]);

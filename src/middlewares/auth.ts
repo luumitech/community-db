@@ -6,9 +6,9 @@ import type { MiddlewareFactory } from './chain';
 
 const protectedPaths = [
   '/community',
-  // '/preference',
-  // API route handlers
-  '/api/sample',
+  // API route handlers (for routes requiring auth)
+  // Don't protect uploadthing, as it has its own authentication layer
+  // '/api/uploadthing',
 ];
 
 export const authMiddleware: MiddlewareFactory =

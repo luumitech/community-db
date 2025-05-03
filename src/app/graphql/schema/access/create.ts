@@ -24,9 +24,9 @@ builder.mutationField('accessCreate', (t) =>
       input: t.arg({ type: AccessCreateInput, required: true }),
     },
     resolve: async (query, _parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       const { input } = args;
-      const { role, email, communityId, ...rest } = input;
+      const { role, email, communityId } = input;
 
       // Verify if user has permission to create access document
       await verifyAccess(user, { shortId: communityId }, [Role.ADMIN]);

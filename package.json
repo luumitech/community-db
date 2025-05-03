@@ -64,7 +64,6 @@
     "@ts-rest/serverless": "^3.51.0",
     "@uidotdev/usehooks": "^2.4.1",
     "apollo-link-debounce": "^3.0.0",
-    "apollo-upload-client": "^18.0.1",
     "better-auth": "^1.2.7",
     "date-fns": "^3.6.0",
     "decimal.js": "^10.4.3",
@@ -102,6 +101,7 @@
     "react-use-wizard": "^2.3.0",
     "remeda": "^2.17.4",
     "sharp": "^0.33.5",
+    "uploadthing": "^7.6.0",
     "usehooks-ts": "^3.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz",
     "zod": "^3.23.8"
@@ -117,7 +117,6 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^3.0.0",
     "@parcel/watcher": "^2.4.1",
     "@testing-library/cypress": "^10.0.3",
-    "@types/apollo-upload-client": "^18.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",

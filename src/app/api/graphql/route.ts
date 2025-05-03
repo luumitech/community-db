@@ -1,7 +1,10 @@
 import { usePersistedOperations } from '@graphql-yoga/plugin-persisted-operations';
 import { createYoga, useErrorHandler } from 'graphql-yoga';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { createContext } from '~/graphql/context';
+import {
+  createContext,
+  type Context,
+  type YogaServerContext,
+} from '~/graphql/context';
 import persistedOperations from '~/graphql/generated/persisted-documents.json';
 import { schema } from '~/graphql/schema';
 import { Logger } from '~/lib/logger';
@@ -24,10 +27,7 @@ const errorHandlerPlugin = useErrorHandler(({ errors, context, phase }) => {
   });
 });
 
-const yoga = createYoga<{
-  req: NextApiRequest;
-  res: NextApiResponse;
-}>({
+const yoga = createYoga<YogaServerContext, Context>({
   /**
    * GraphiQL is enabled only in development and served under this endpoint
    *
@@ -36,10 +36,7 @@ const yoga = createYoga<{
   graphqlEndpoint: '/api/graphql',
   schema,
   context: createContext,
-  fetchAPI: {
-    Response: Response,
-    Request: Request,
-  },
+  fetchAPI: { Response, Request },
   plugins: [errorHandlerPlugin, persistedQueryPlugin],
   /** See https://the-guild.dev/graphql/yoga-server/docs/features/error-masking */
   // maskedErrors: false,

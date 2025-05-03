@@ -10,11 +10,11 @@ interface Props {}
 
 export const SelectXlsxFile: React.FC<Props> = ({}) => {
   const formMethods = useHookFormContext();
-  const { setValue, watch } = formMethods;
+  const { setValue } = formMethods;
   const [workbook, setWorkbook] = React.useState<XLSX.WorkBook>();
 
   React.useEffect(() => {
-    setValue('hidden.importList', [] as unknown as FileList);
+    setValue('hidden.importList', []);
   }, [setValue]);
 
   const onXlsxSelect = async (evt: React.ChangeEvent<HTMLInputElement>) => {

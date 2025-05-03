@@ -8,12 +8,14 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { AppProvider } from '~/custom-hooks/app-context';
-import apolloClient from '~/graphql/apollo-client';
+import { makeApolloClient } from '~/graphql/apollo-client';
 import { ConfirmationModal } from '~/view/base/confirmation-modal';
 import { ReduxProviders } from './redux-providers';
 import { TsrProviders } from './tsr';
 
 interface Props {}
+
+const apolloClient = makeApolloClient();
 
 export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
   children,

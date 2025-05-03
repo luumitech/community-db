@@ -2,7 +2,6 @@
 import { useLazyQuery } from '@apollo/client';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-import { toast, type Id } from '~/view/base/toastify';
 
 const JobStatusQuery = graphql(/* GraphQL */ `
   query jobStatus($jobId: String!) {
@@ -19,10 +18,10 @@ const JobStatusQuery = graphql(/* GraphQL */ `
 const DEFAULT_INTERVAL = 3000;
 
 interface WaitUntilDoneOpt {
-  /** Toast ID to update progress report */
-  toastId?: Id;
   /** Polling interval (in ms) */
   pollInterval?: number;
+  /** Job status progress (0-1) */
+  cb?: (progress: number) => void;
 }
 
 async function timeout(ms: number) {
@@ -47,12 +46,9 @@ export function useJobStatus() {
           throw result.error;
         }
         const jobStatus = result.data?.jobStatus;
-        if (jobStatus?.progress && opt?.toastId) {
+        if (jobStatus?.progress && opt?.cb) {
           const progress = jobStatus.progress / 100;
-          // toast autocloses when progress is 1, so only updates progress when it's below 1
-          if (progress < 1) {
-            toast.update(opt.toastId, { progress });
-          }
+          opt.cb(progress);
         }
         if (jobStatus?.hasFailed) {
           throw new Error(jobStatus.failReason ?? 'An error has occurred');
@@ -60,6 +56,9 @@ export function useJobStatus() {
         isComplete = !!jobStatus?.isComplete;
         if (!isComplete) {
           await timeout(opt?.pollInterval ?? DEFAULT_INTERVAL);
+        } else {
+          // Update progress to indicate completion of task
+          opt?.cb?.(1);
         }
       } while (!isComplete);
     },

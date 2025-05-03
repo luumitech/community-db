@@ -8,7 +8,7 @@ builder.queryField('userCurrent', (t) =>
   t.prismaField({
     type: 'User',
     resolve: async (query, parent, args, ctx, info) => {
-      const { user } = await ctx;
+      const { user } = ctx;
 
       // Find the user matching the current logged in user
       let userEntry = await prisma.user.upsert({

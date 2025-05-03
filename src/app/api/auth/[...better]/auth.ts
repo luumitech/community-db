@@ -1,7 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { emailOTP } from 'better-auth/plugins';
-import { headers } from 'next/headers';
 import { env } from '~/lib/env-cfg';
 import { appTitle, isProduction, isRunningTest } from '~/lib/env-var';
 import prisma from '~/lib/prisma';
@@ -60,8 +59,8 @@ export const auth = betterAuth({
   ],
 });
 
-/** Get current session */
-export async function getServerSession() {
-  const session = await auth.api.getSession({ headers: headers() });
+/** Get current session, by decrypting the session token held in cookie */
+export async function getServerSession(headers: Headers) {
+  const session = await auth.api.getSession({ headers });
   return session;
 }

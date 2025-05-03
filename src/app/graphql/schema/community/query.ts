@@ -9,7 +9,7 @@ builder.queryField('communityFromId', (t) =>
       id: t.arg.string({ required: true }),
     },
     resolve: async (query, parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
 
       const entry = await getCommunityEntry(user, args.id, query);
       return entry;

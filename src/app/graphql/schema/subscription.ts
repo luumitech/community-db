@@ -75,7 +75,7 @@ builder.subscriptionType({
         id: t.arg.string({ description: 'Community short ID', required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
-        const { user, pubSub } = await ctx;
+        const { user, pubSub } = ctx;
         const communityId = args.id;
         return pipe(
           pubSub.subscribe(`community/${communityId}/`),
@@ -95,7 +95,7 @@ builder.subscriptionType({
         communityId: t.arg.string({ required: true }),
       },
       subscribe: async (_parent, args, ctx) => {
-        const { user, pubSub } = await ctx;
+        const { user, pubSub } = ctx;
         return pipe(
           pubSub.subscribe(`community/${args.communityId}/property`),
           filter((event) => {

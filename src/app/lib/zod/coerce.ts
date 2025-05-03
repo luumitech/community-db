@@ -93,13 +93,13 @@ export class Coerce {
    *
    * - UI File Input
    *
-   * Into:
+   * Into File[]:
    *
-   * - Browser specific FileList object (if file is successfully uploaded)
+   * - Array of browser specific File object (if file is successfully uploaded)
    * - Empty array if no file has been uploaded
    */
-  toFileList(msg?: string) {
-    return z.any().transform((val, ctx) => {
+  toFileArray(msg?: string) {
+    return z.any().transform<File[]>((val, ctx) => {
       const onError = () => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -111,10 +111,16 @@ export class Coerce {
       if (R.isEmpty(val)) {
         return [];
       }
+      /**
+       * Input element encodes File object as FileList
+       *
+       * See: https://developer.mozilla.org/en-US/docs/Web/API/FileList
+       */
       if (!(val instanceof FileList)) {
         return onError();
       }
-      return val;
+
+      return Array.from(val);
     });
   }
 }

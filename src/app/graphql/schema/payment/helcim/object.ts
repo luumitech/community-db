@@ -32,7 +32,7 @@ export const helcimPayInitializeOutputRef = builder
       ipAddress: t.string({
         description: 'client IP address',
         resolve: async (_parent, args, ctx) => {
-          const { clientIp } = await ctx;
+          const { clientIp } = ctx;
           return clientIp;
         },
       }),

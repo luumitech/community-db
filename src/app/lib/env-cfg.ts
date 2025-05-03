@@ -62,6 +62,9 @@ const baseSchema = z.object({
   /** Mongo configurations */
   MONGODB_URI: zz.string.nonEmpty(),
 
+  /** Uploadthing configuration */
+  UPLOADTHING_TOKEN: zz.string.nonEmpty(),
+
   /** Geoapify */
   GEOAPIFY_URL: zz.string.nonEmpty(),
   GEOAPIFY_KEY: zz.string.nonEmpty(),

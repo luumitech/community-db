@@ -20,7 +20,7 @@ builder.mutationField('accessDelete', (t) =>
       id: t.arg.string({ required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       // Get the access document of the access entry to be deleted
       const access = await prisma.access.findUniqueOrThrow({
         where: { id: args.id },

@@ -24,7 +24,7 @@ builder.mutationField('accessModify', (t) =>
       input: t.arg({ type: AccessModifyInput, required: true }),
     },
     resolve: async (query, _parent, args, ctx) => {
-      const { user } = await ctx;
+      const { user } = ctx;
       const { self, ...input } = args.input;
 
       const accessToModify = await prisma.access.findUniqueOrThrow({
