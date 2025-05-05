@@ -50,7 +50,7 @@ model AuthUser {
 /// See: https://www.better-auth.com/docs/concepts/database#session
 model Session {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  token     String
+  token     String   @unique
   expiresAt DateTime
   ipAddress String?
   userAgent String?
