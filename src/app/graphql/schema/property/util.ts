@@ -166,6 +166,9 @@ function propertyListFilterArgs(
    * Matching searchText again name is slightly more complicated, we want to
    * search against `${firstName} ${lastName}`, but we don't have ability to
    * concat the fields in Prisma prior to do searching
+   *
+   * If searhText only has one word, we'll also try to match against occupant's
+   * email
    */
   const nameList = trimSearchText?.split(' ');
   if (nameList) {
@@ -177,6 +180,7 @@ function propertyListFilterArgs(
             OR: [
               { firstName: { mode: 'insensitive', startsWith: nameList[0] } },
               { lastName: { mode: 'insensitive', startsWith: nameList[0] } },
+              { email: { mode: 'insensitive', contains: nameList[0] } },
             ],
           },
         },
