@@ -3,6 +3,7 @@ import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
+import { ChartDataHelperUtil } from '../chart-data-helper';
 import { type DashboardEntry } from './_type';
 import { useYearlyContext } from './yearly-context';
 
@@ -28,23 +29,25 @@ interface ChartDataEntry {
   value: number;
 }
 
-class ChartDataHelper {
-  constructor(private stat: MemberSourceStat) {}
+class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
+  constructor(private stat: MemberSourceStat) {
+    super();
 
-  getChartData() {
-    const chartData: Readonly<ChartDataEntry>[] = [];
     this.stat.forEach((entry) => {
       const value = entry.new + entry.renew;
       // Filter out events with no member sign-up
       if (value) {
-        chartData.push({
+        this.chartData.push({
           id: entry.eventName,
           label: entry.eventName,
           value,
         });
       }
     });
-    return chartData;
+  }
+
+  yVal(entry: ChartDataEntry) {
+    return entry.value;
   }
 }
 
@@ -64,11 +67,13 @@ export const MembershipSource: React.FC<Props> = ({
   const { setEventSelected } = useYearlyContext();
   const entry = getFragment(MembershipSourceFragment, fragment);
 
-  const chartData = React.useMemo(() => {
+  const chartHelper = React.useMemo(() => {
     const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
-    const chartHelper = new ChartDataHelper(memberSourceStat);
-    return chartHelper.getChartData();
+    const helper = new ChartDataHelper(memberSourceStat);
+    return helper;
   }, [entry]);
+
+  const { chartData } = chartHelper;
 
   return (
     <Card className={cn(className)}>

@@ -16,6 +16,7 @@ import {
   getItemColor,
 } from '~/view/base/chart';
 import { TableTooltip } from '~/view/base/chart/tooltip';
+import { ChartDataHelperUtil } from '../chart-data-helper';
 import { type DashboardEntry } from './_type';
 import { useYearlyContext } from './yearly-context';
 
@@ -43,17 +44,21 @@ interface ChartDataEntry extends Record<string, string | number> {
   existing: number;
 }
 
-class ChartDataHelper {
-  public chartData: Readonly<ChartDataEntry>[];
+class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
   public chartKeys = ['existing', 'renewed', 'new'];
 
   constructor(private stat: MemberSourceStat) {
+    super();
     this.chartData = this.stat.map((entry) => ({
       eventName: entry.eventName,
       new: entry.new,
       renewed: entry.renew,
       existing: entry.existing,
     }));
+  }
+
+  yVal(entry: ChartDataEntry) {
+    return entry.existing + entry.renewed + entry.new;
   }
 
   getDataColor(label: keyof ChartDataEntry) {
@@ -74,7 +79,7 @@ function customTooltip(helper: ChartDataHelper) {
         const entry = helper.chartData.find(
           ({ eventName }) => eventName === data.eventName
         );
-        return (entry?.[labelKey] as number) ?? 0;
+        return (entry?.[labelKey as keyof typeof entry] as number) ?? 0;
       },
       [data]
     );
@@ -152,6 +157,10 @@ export const EventParticipation: React.FC<Props> = ({
       }),
     [chartData, CustomTooltip, setEventSelected]
   );
+  const tickValues = React.useMemo(
+    () => chartHelper.getYTicks(10),
+    [chartHelper]
+  );
 
   return (
     <Card className={cn(className)}>
@@ -181,8 +190,10 @@ export const EventParticipation: React.FC<Props> = ({
               tickRotation: -15,
               legendOffset: 55,
             }}
+            gridYValues={tickValues}
             axisLeft={{
               legend: 'Member Count',
+              tickValues,
             }}
             enableTotals
             legendPos="bottom"

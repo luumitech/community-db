@@ -12,6 +12,7 @@ import {
   getItemColor,
 } from '~/view/base/chart';
 import { TableTooltip } from '~/view/base/chart/tooltip';
+import { ChartDataHelperUtil } from '../chart-data-helper';
 import { type MemberCountEntry } from './_type';
 
 const MemberCountFragment = graphql(/* GraphQL */ `
@@ -35,14 +36,14 @@ interface ChartDataEntry extends Record<string, number> {
   'no renewal': number;
 }
 
-class ChartDataHelper {
+class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
   private stat: GQL.ByYearStat[];
-  public chartData: Readonly<ChartDataEntry>[];
   // There is also a 'no renewal' key in the data that is represented by
   // a customLine plot
   public chartKeys = ['renewed', 'new'];
 
   constructor(stat: GQL.ByYearStat[], yearRange: number) {
+    super();
     if (yearRange > 0) {
       this.stat = stat.slice(-yearRange);
     } else {
@@ -55,6 +56,10 @@ class ChartDataHelper {
       renewed: entry.renew,
       ['no renewal']: entry.noRenewal,
     }));
+  }
+
+  yVal(entry: ChartDataEntry) {
+    return entry.new + entry.renewed;
   }
 
   getDataColor(label: keyof ChartDataEntry) {
@@ -184,7 +189,7 @@ function customTooltip(helper: ChartDataHelper) {
     const dataValue = React.useCallback(
       (labelKey: keyof ChartDataEntry) => {
         const entry = helper.chartData.find(({ year }) => year === data.year);
-        return entry?.[labelKey] ?? 0;
+        return entry?.[labelKey as keyof typeof entry] ?? 0;
       },
       [data]
     );
@@ -277,6 +282,10 @@ export const MemberCountBarChart: React.FC<Props> = ({
     () => customLegend(chartHelper),
     [chartHelper]
   );
+  const tickValues = React.useMemo(
+    () => chartHelper.getYTicks(10),
+    [chartHelper]
+  );
 
   return (
     <BarChart
@@ -299,8 +308,10 @@ export const MemberCountBarChart: React.FC<Props> = ({
           }
         },
       }}
+      gridYValues={tickValues}
       axisLeft={{
         legend: 'Member Count',
+        tickValues,
       }}
       // These tooltip would only show if you hover over the bar
       // We want to show tooltip as long as we are hovering over the column
