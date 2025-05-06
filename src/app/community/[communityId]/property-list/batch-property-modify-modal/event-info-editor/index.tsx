@@ -23,8 +23,8 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
           <EventRow />
         </div>
       </ScrollShadow>
-      <p className="text-sm">
-        <span className="font-semibold">NOTE:</span>
+      <figure className="text-sm">
+        <figcaption className="font-semibold">NOTE:</figcaption>
         <ul className="list-disc pl-8">
           <li>
             <Keyword>Membership Fee</Keyword> will only be applied to properties
@@ -37,7 +37,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
             information.
           </li>
         </ul>
-      </p>
+      </figure>
     </div>
   );
 };

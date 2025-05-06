@@ -55,7 +55,7 @@ function schema() {
     membershipList: z.array(
       z
         .object({
-          year: zz.coerce.toNumber('Must select a year'),
+          year: zz.coerce.toNumber({ message: 'Must select a year' }),
           eventAttendedList: z
             .array(
               z.object({

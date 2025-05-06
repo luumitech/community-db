@@ -12,6 +12,7 @@ const supportedIcon = {
   undo: 'grommet-icons:undo',
   edit: 'carbon:edit',
   email: 'mdi:email-outline',
+  'email-list': 'mdi:email-open-multiple-outline',
   'thumb-up': 'mdi:thumbs-up-outline',
   'thumb-down': 'mdi:thumbs-down-outline',
   checkmark: 'ion:checkmark-outline',

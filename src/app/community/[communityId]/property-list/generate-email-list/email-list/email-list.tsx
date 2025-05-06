@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import type { OccupantEntry, PropertyEntry } from './_type';
+import type { OccupantEntry, PropertyEntry } from '../_type';
 import { EmailString } from './email-string';
 import { MailchimpCSV } from './mailchimp-csv';
 
@@ -30,7 +30,7 @@ interface Props {
   propertyList: PropertyEntry[];
 }
 
-export const SuccessDialog: React.FC<Props> = ({ className, propertyList }) => {
+export const EmailListImpl: React.FC<Props> = ({ className, propertyList }) => {
   const propertyCount = propertyList.length;
 
   const contactList = React.useMemo(
@@ -41,7 +41,7 @@ export const SuccessDialog: React.FC<Props> = ({ className, propertyList }) => {
 
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
-      <p className="leading-4">
+      <p className="mb-4">
         <span>{contactCount} emails generated</span>
         <br />
         <span className="text-sm">(from {propertyCount} properties)</span>

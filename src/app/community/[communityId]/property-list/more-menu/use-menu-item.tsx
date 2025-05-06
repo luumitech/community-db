@@ -9,6 +9,7 @@ interface MenuItemOpt {
   batchPropertyModifyOpen: () => void;
   communityDeleteOpen: () => void;
   propertyCreateOpen: () => void;
+  generateEmailListOpen: () => void;
 }
 
 /** Configure all possible menu items */
@@ -19,6 +20,12 @@ export function useMenuItem(opt: MenuItemOpt) {
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
     return [
       ...baseMenuItems,
+      {
+        key: 'generateEmailList',
+        onPress: opt.generateEmailListOpen,
+        endContent: <Icon icon="email-list" />,
+        children: 'Generate Email List',
+      },
       {
         key: 'communityModify',
         onPress: opt.communityModifyOpen,

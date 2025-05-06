@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { startDownloadBlob } from '~/lib/dom';
 import { Icon } from '~/view/base/icon';
-import type { OccupantEntry } from './_type';
+import type { OccupantEntry } from '../_type';
 
 /**
  * Convert contact list into Mailchimp compatible CSV
