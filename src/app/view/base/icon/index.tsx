@@ -12,7 +12,8 @@ const supportedIcon = {
   undo: 'grommet-icons:undo',
   edit: 'carbon:edit',
   email: 'mdi:email-outline',
-  'email-list': 'mdi:email-open-multiple-outline',
+  'export-contact': 'ri:contacts-book-upload-line',
+  'export-xlsx': 'tdesign:file-export',
   'thumb-up': 'mdi:thumbs-up-outline',
   'thumb-down': 'mdi:thumbs-down-outline',
   checkmark: 'ion:checkmark-outline',
@@ -42,6 +43,7 @@ const supportedIcon = {
   hamburgerMenu: 'radix-icons:hamburger-menu',
   sunMoon: 'lucide:sun-moon',
   google: 'flat-color-icons:google',
+  'modify-community': 'bi:house-gear',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

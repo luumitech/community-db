@@ -44,7 +44,7 @@ export function useMenuItem() {
       {
         key: 'communityModify',
         onPress: () => communityModify.open({ community }),
-        endContent: <Icon icon="settings" />,
+        endContent: <Icon icon="modify-community" />,
         children: 'Modify Community',
       },
     ];

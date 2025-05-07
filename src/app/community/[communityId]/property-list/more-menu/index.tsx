@@ -6,7 +6,6 @@ import { HeaderMenu } from '~/view/header';
 import * as communityModifyModal from '../../community-modify-modal';
 import * as batchPropertyModifyModal from '../batch-property-modify-modal';
 import * as communityDeleteModal from '../community-delete-modal';
-import * as generateEmailListModal from '../generate-email-list';
 import * as propertyCreateModal from '../property-create-modal';
 import { useMenuItem } from './use-menu-item';
 
@@ -17,7 +16,6 @@ interface Props {
 export const MoreMenu: React.FC<Props> = ({ community }) => {
   const { canEdit, isAdmin } = useAppContext();
 
-  const generateEmailList = generateEmailListModal.useModalControl();
   const communityModify = communityModifyModal.useModalControl();
   const batchPropertyModify = batchPropertyModifyModal.useModalControl();
   const propertyCreate = propertyCreateModal.useModalControl();
@@ -25,8 +23,6 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
 
   const menuItems = useMenuItem({
     communityId: community.id,
-    generateEmailListOpen: () =>
-      generateEmailList.open({ communityId: community.id }),
     communityModifyOpen: () => communityModify.open({ community }),
     batchPropertyModifyOpen: () => batchPropertyModify.open({ community }),
     communityDeleteOpen: () => communityDelete.open({ community }),
@@ -40,7 +36,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
         menuKeys={[
           'communityDashboard',
           'communityShare',
-          'generateEmailList',
+          'contactExport',
           'communityExport',
           'divider',
           ...insertIf(canEdit, 'communityModify'),
@@ -55,9 +51,6 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           'communityModify',
           'communityShare',
         ]}
-      />
-      <generateEmailListModal.GenerateEmailListModal
-        modalControl={generateEmailList}
       />
       <communityModifyModal.CommunityModifyModal
         modalControl={communityModify}

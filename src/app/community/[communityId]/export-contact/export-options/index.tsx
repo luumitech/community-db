@@ -1,4 +1,4 @@
-import { cn } from '@heroui/react';
+import { cn, Skeleton } from '@heroui/react';
 import React from 'react';
 import type { OccupantEntry, PropertyEntry } from '../_type';
 import { EmailString } from './email-string';
@@ -28,9 +28,14 @@ function toContactList(propertyList: PropertyEntry[]) {
 interface Props {
   className?: string;
   propertyList: PropertyEntry[];
+  isLoading: boolean;
 }
 
-export const EmailListImpl: React.FC<Props> = ({ className, propertyList }) => {
+export const ExportOptions: React.FC<Props> = ({
+  className,
+  propertyList,
+  isLoading,
+}) => {
   const propertyCount = propertyList.length;
 
   const contactList = React.useMemo(
@@ -40,14 +45,24 @@ export const EmailListImpl: React.FC<Props> = ({ className, propertyList }) => {
   const contactCount = contactList.length;
 
   return (
-    <div className={cn(className, 'flex flex-col gap-2')}>
-      <p className="mb-4">
-        <span>{contactCount} emails generated</span>
-        <br />
-        <span className="text-sm">(from {propertyCount} properties)</span>
-      </p>
-      <MailchimpCSV contactList={contactList} />
-      <EmailString contactList={contactList} />
+    <div
+      className={cn(
+        className,
+        'flex flex-col gap-2',
+        'items-center sm:items-start'
+      )}
+    >
+      <Skeleton className="rounded-xl" isLoaded={!isLoading}>
+        <p className="mb-4">
+          <span>{contactCount} emails generated</span>
+          <br />
+          <span className="text-sm">(from {propertyCount} properties)</span>
+        </p>
+      </Skeleton>
+      <div className="max-w-xs flex flex-col gap-2">
+        <MailchimpCSV contactList={contactList} />
+        <EmailString contactList={contactList} />
+      </div>
     </div>
   );
 };

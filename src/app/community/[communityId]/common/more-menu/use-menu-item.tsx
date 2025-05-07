@@ -31,8 +31,15 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: appLabel('communityShare'),
       },
       {
+        key: 'contactExport',
+        href: appPath('contactExport', { path: { communityId } }),
+        endContent: <Icon icon="export-contact" />,
+        children: appLabel('contactExport'),
+      },
+      {
         key: 'communityExport',
         href: appPath('communityExport', { path: { communityId } }),
+        endContent: <Icon icon="export-xlsx" />,
         children: appLabel('communityExport'),
       },
       {

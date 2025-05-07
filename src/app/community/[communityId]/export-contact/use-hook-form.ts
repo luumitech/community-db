@@ -50,7 +50,7 @@ export function useHookForm(communityId: string) {
     resolver: zodResolver(schema()),
   });
 
-  return { formMethods, communityId };
+  return { formMethods, defaultValues, communityId };
 }
 
 export function useHookFormContext() {

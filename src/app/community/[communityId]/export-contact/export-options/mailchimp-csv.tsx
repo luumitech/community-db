@@ -47,8 +47,8 @@ export const MailchimpCSV: React.FC<Props> = ({ className, contactList }) => {
     <Button
       className={cn(className)}
       color="primary"
-      variant="faded"
-      size="sm"
+      variant="bordered"
+      fullWidth
       isDisabled={contactCount === 0}
       endContent={<Icon icon="mailchimp" size={16} />}
       onPress={onDownload}

@@ -9,7 +9,6 @@ interface MenuItemOpt {
   batchPropertyModifyOpen: () => void;
   communityDeleteOpen: () => void;
   propertyCreateOpen: () => void;
-  generateEmailListOpen: () => void;
 }
 
 /** Configure all possible menu items */
@@ -21,15 +20,9 @@ export function useMenuItem(opt: MenuItemOpt) {
     return [
       ...baseMenuItems,
       {
-        key: 'generateEmailList',
-        onPress: opt.generateEmailListOpen,
-        endContent: <Icon icon="email-list" />,
-        children: 'Generate Email List',
-      },
-      {
         key: 'communityModify',
         onPress: opt.communityModifyOpen,
-        endContent: <Icon icon="settings" />,
+        endContent: <Icon icon="modify-community" />,
         children: 'Modify Community',
       },
       {

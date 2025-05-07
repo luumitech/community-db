@@ -50,8 +50,8 @@ export const EmailString: React.FC<Props> = ({ className, contactList }) => {
     <Button
       className={cn(className)}
       color="primary"
-      variant="faded"
-      size="sm"
+      variant="bordered"
+      fullWidth
       isDisabled={contactCount === 0}
       isLoading={pending}
       {...(!copied && { endContent: <Icon icon="copy" size={14} /> })}
