@@ -1,8 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { useSelector } from '~/custom-hooks/redux';
-import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 
 function schema() {
@@ -25,32 +23,25 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultInputData(
-  communityId: string,
-  filter: GQL.PropertyFilterInput
-): InputData {
+export function defaultInputData(arg: InputData): InputData {
   return {
-    id: communityId,
+    id: arg.id,
     filter: {
-      memberYear: filter.memberYear ?? null,
-      nonMemberYear: filter.nonMemberYear ?? null,
-      memberEvent: filter.memberEvent ?? null,
+      memberYear: arg.filter.memberYear ?? null,
+      nonMemberYear: arg.filter.nonMemberYear ?? null,
+      memberEvent: arg.filter.memberEvent ?? null,
     },
   };
 }
 
-export function useHookForm(communityId: string) {
-  const { filterArg } = useSelector((state) => state.searchBar);
-  const defaultValues = React.useMemo(
-    () => defaultInputData(communityId, filterArg),
-    [communityId, filterArg]
-  );
+export function useHookForm(arg: InputData) {
+  const defaultValues = React.useMemo(() => defaultInputData(arg), [arg]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
   });
 
-  return { formMethods, defaultValues, communityId };
+  return { formMethods };
 }
 
 export function useHookFormContext() {

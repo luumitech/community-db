@@ -16,7 +16,7 @@ export default function exportContact({ params }: RouteArgs) {
 
   return (
     <>
-      <MoreMenu communityId={communityId} omitKeys={['export-contact']} />
+      <MoreMenu communityId={communityId} omitKeys={['contactExport']} />
       <PageContent
         className="flex flex-col gap-2 h-main-height"
         communityId={communityId}

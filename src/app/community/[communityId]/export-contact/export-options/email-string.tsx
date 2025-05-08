@@ -3,7 +3,7 @@ import React from 'react';
 import { ITEM_DELIMITER } from '~/lib/xlsx-io/delimiter-util';
 import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
-import type { OccupantEntry } from '../_type';
+import { type ContactInfo } from '../contact-util';
 
 /**
  * Convert contact list into Mailchimp compatible CSV
@@ -11,19 +11,20 @@ import type { OccupantEntry } from '../_type';
  * @param propertyList PropertyList obtained after filtering
  * @returns Mailchimp compatible CSV
  */
-function toEmailString(contactList: OccupantEntry[]) {
+function toEmailString(contactList: ContactInfo['contactList']) {
   const emailList = contactList.map(({ email }) => email);
   return emailList.join(ITEM_DELIMITER);
 }
 
 interface Props {
   className?: string;
-  contactList: OccupantEntry[];
+  contactInfo?: ContactInfo;
 }
 
-export const EmailString: React.FC<Props> = ({ className, contactList }) => {
+export const EmailString: React.FC<Props> = ({ className, contactInfo }) => {
   const [pending, startTransition] = React.useTransition();
   const [copied, setCopied] = React.useState(false);
+  const contactList = contactInfo?.contactList ?? [];
   const contactCount = contactList.length;
 
   // Use local copyToClipboard implementation

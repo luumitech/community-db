@@ -1,54 +1,58 @@
-import { cn } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import React from 'react';
-import { Button } from '~/view/base/button';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { Icon } from '~/view/base/icon';
-import { useHookFormContext } from '../use-hook-form';
-import { EventSelect } from './event-select';
-import { YearSelect } from './year-select';
+import { FilterChip } from './filter-chip';
+import { FilterDrawer, type DrawerArg } from './filter-drawer';
+import { type InputData } from './use-hook-form';
+
+const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
 interface Props {
   className?: string;
+  filterArgs: InputData;
+  onFilterChange?: (input: InputData) => Promise<void>;
+  isDisabled?: boolean;
 }
 
-export const FilterSelect: React.FC<Props> = ({ className }) => {
-  const { setValue } = useHookFormContext();
+export const FilterSelect: React.FC<Props> = ({
+  className,
+  filterArgs,
+  onFilterChange,
+  isDisabled,
+}) => {
+  const { arg, disclosure, open } = useDrawerControl();
+
+  const openDrawer = React.useCallback(() => {
+    open(filterArgs);
+  }, [open, filterArgs]);
 
   return (
-    <div
-      className={cn(
-        className,
-        'flex flex-col gap-4',
-        'items-center sm:items-start'
-      )}
-    >
-      <div className="flex gap-2 items-center">
-        <Icon icon="filter" />
-        Optional filters to apply:
-      </div>
-      <YearSelect
-        controlName="filter.memberYear"
-        label="Member In Year"
-        description="Include only members who have memberships in the specified year"
-        autoFocus
-      />
-      <YearSelect
-        controlName="filter.nonMemberYear"
-        label="Non-Member In Year"
-        description="Exclude members who have memberships in the specified year"
-      />
-      <EventSelect />
-      <div>
+    <div className={cn(className)}>
+      <div className="flex flex-wrap gap-2 items-center">
         <Button
+          size="sm"
           variant="faded"
-          onPress={() => {
-            setValue('filter.memberYear', null);
-            setValue('filter.nonMemberYear', null);
-            setValue('filter.memberEvent', null);
-          }}
+          isDisabled={isDisabled}
+          startContent={<Icon icon="filter" />}
+          onPress={() => openDrawer()}
         >
-          Clear Filter
+          Optional Filter...
         </Button>
+        <FilterChip
+          isDisabled={isDisabled}
+          filterArgs={filterArgs}
+          onFilterChange={onFilterChange}
+          openDrawer={openDrawer}
+        />
       </div>
+      {arg != null && (
+        <FilterDrawer
+          {...arg}
+          disclosure={disclosure}
+          onFilterChange={onFilterChange}
+        />
+      )}
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import { useResizeObserver, useWindowSize } from 'usehooks-ts';
-import { useSession } from '~/custom-hooks/auth';
 
 interface Props {
   className?: string;
@@ -11,7 +10,6 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   children,
 }) => {
-  const session = useSession();
   const { width: windowWidth } = useWindowSize();
   const divRef = React.useRef<HTMLDivElement>(null);
   const { width: menuWidth } = useResizeObserver({ ref: divRef });
@@ -36,10 +34,6 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
     windowWidth,
     menuWidth,
   ]);
-
-  if (session.data == null) {
-    return null;
-  }
 
   return (
     <div

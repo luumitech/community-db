@@ -7,6 +7,7 @@ import {
   DropdownTrigger,
 } from '@heroui/react';
 import React from 'react';
+import { useSession } from '~/custom-hooks/auth';
 import { Icon } from '~/view/base/icon';
 import type { MenuItemEntry } from './_type';
 import { HeaderMenuShortcut } from './shortcut';
@@ -44,6 +45,8 @@ export const HeaderMenu: React.FC<Props> = ({
   shortcutKeys,
   omitKeys,
 }) => {
+  const session = useSession();
+
   const itemMap = React.useMemo(() => {
     const result = new Map<string, MenuItemEntry>();
     menuItems.forEach((item) => {
@@ -77,6 +80,11 @@ export const HeaderMenu: React.FC<Props> = ({
     }
     return result;
   }, [itemMap, menuKeys]);
+
+  // Only show header menu if user is authenticated
+  if (session.data == null) {
+    return null;
+  }
 
   return (
     <HeaderMenuWrapper>
