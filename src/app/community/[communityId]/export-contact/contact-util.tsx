@@ -5,7 +5,9 @@ type PropertyEntry =
 
 type OccupantEntry = PropertyEntry['occupantList'][0];
 
-interface ContactListEntry extends OccupantEntry {
+export interface ContactListEntry extends OccupantEntry {
+  /** Unique ID for each contact entry, required for Table rendering */
+  id: string;
   address: string;
 }
 
@@ -24,11 +26,13 @@ export interface ContactInfo {
 export function toContactList(propertyList: PropertyEntry[]): ContactInfo {
   const contactList = propertyList
     .flatMap((property) =>
-      property.occupantList.map(({ optOut, ...other }) => {
+      property.occupantList.map<ContactListEntry | null>((occupant, idx) => {
+        const { optOut, ...other } = occupant;
         if (!!optOut || !other.email) {
           return null;
         }
         return {
+          id: `${property.id}-${idx}`,
           address: property.address,
           ...other,
         };

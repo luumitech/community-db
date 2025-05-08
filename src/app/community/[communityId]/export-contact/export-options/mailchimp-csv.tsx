@@ -34,7 +34,9 @@ interface Props {
 
 export const MailchimpCSV: React.FC<Props> = ({ className, contactInfo }) => {
   const { communityName } = useAppContext();
-  const contactList = contactInfo?.contactList ?? [];
+  const contactList = React.useMemo(() => {
+    return contactInfo?.contactList ?? [];
+  }, [contactInfo]);
   const contactCount = contactList.length;
 
   const onDownload = React.useCallback(() => {

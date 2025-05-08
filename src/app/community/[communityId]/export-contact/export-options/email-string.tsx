@@ -24,7 +24,10 @@ interface Props {
 export const EmailString: React.FC<Props> = ({ className, contactInfo }) => {
   const [pending, startTransition] = React.useTransition();
   const [copied, setCopied] = React.useState(false);
-  const contactList = contactInfo?.contactList ?? [];
+
+  const contactList = React.useMemo(() => {
+    return contactInfo?.contactList ?? [];
+  }, [contactInfo]);
   const contactCount = contactList.length;
 
   // Use local copyToClipboard implementation

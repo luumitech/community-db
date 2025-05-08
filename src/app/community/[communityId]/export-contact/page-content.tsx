@@ -70,16 +70,18 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     [result]
   );
 
+  const isLoading = result.loading || contactInfo == null;
+
   return (
     <div className={cn(className)}>
       <FilterSelect
-        isDisabled={contactInfo == null}
+        isDisabled={isLoading}
         filterArgs={filterArgs}
         onFilterChange={onFilterChange}
       />
       <ExportOptions contactInfo={contactInfo} />
       <Divider />
-      <ContactView contactInfo={contactInfo} />
+      <ContactView contactInfo={contactInfo} isLoading={isLoading} />
     </div>
   );
 };
