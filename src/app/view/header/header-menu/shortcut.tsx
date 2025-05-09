@@ -41,6 +41,7 @@ export const HeaderMenuShortcut: React.FC<Props> = ({
       const tooltip = menuItem.children as string;
       return (
         <Button
+          className="text-lg"
           key={menuItem.key}
           isIconOnly={hasIcon}
           {...(hasIcon && { tooltip })}

@@ -113,6 +113,14 @@ export function useTopMenu() {
           });
           break;
 
+        case 'export-contact':
+          items.push({
+            id: 'contactExport',
+            href: appPath('contactExport', { path: { communityId } }),
+            children: appLabel('contactExport'),
+          });
+          break;
+
         case 'share':
           items.push({
             id: 'communityExport',

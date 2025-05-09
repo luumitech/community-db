@@ -1,4 +1,4 @@
-import { Chip } from '@heroui/react';
+import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { useSelector } from '~/custom-hooks/redux';
@@ -26,7 +26,10 @@ export const FilterChip: React.FC<Props> = ({
   const state = defaultInputData(memberYear, nonMemberYear, event);
 
   return (
-    <div className="flex gap-2 cursor-pointer" onClick={openDrawer}>
+    <div
+      className={cn(className, 'hidden sm:flex gap-2 cursor-pointer')}
+      onClick={openDrawer}
+    >
       {!!memberYear && (
         <Chip
           variant="bordered"

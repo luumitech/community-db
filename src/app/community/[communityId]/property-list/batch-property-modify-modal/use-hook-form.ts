@@ -23,14 +23,11 @@ function schema() {
   return z.object({
     communityId: zz.string.nonEmpty(),
     filter: z.object({
-      memberYear: z.coerce
-        .number({ message: 'Must select a year' })
-        .int()
-        .min(1000, 'Must select a year'),
+      memberYear: zz.coerce.toNumber({ message: 'Must select a year' }),
       memberEvent: z.string().nullable(),
     }),
     membership: z.object({
-      year: zz.coerce.toNumber('Must select a year'),
+      year: zz.coerce.toNumber({ message: 'Must select a year' }),
       eventAttended: z.object({
         eventName: zz.string.nonEmpty('Must select an event'),
         eventDate: zz.coerce.toIsoDate(),
@@ -52,8 +49,8 @@ function defaultInputData(
   return {
     communityId,
     filter: {
-      memberEvent: filter.memberEvent ?? '',
-      memberYear: filter.memberYear ?? 0,
+      memberEvent: filter.memberEvent ?? null,
+      memberYear: filter.memberYear ?? NaN,
     },
     membership: {
       year: getCurrentYear(),

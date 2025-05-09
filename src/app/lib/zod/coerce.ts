@@ -1,7 +1,25 @@
 import * as R from 'remeda';
-import { z } from 'zod';
+import { z, type ZodAny, type ZodEffects } from 'zod';
 import { isValidDate } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
+
+interface CoerceOpt {
+  message?: string;
+}
+
+interface ToBooleanOpt extends CoerceOpt {}
+interface ToIsoDateOpt extends CoerceOpt {}
+interface ToNumberOpt extends CoerceOpt {
+  nullable?: boolean;
+  /**
+   * Validation function
+   *
+   * - If validation fails, return an error message
+   * - Otherwise return null
+   */
+  validateFn?: (val: number) => string | null;
+}
+interface ToFileArrayOpt extends CoerceOpt {}
 
 export class Coerce {
   /**
@@ -10,7 +28,7 @@ export class Coerce {
    * - Only `true` or `1` returns true,
    * - All other string will return false
    */
-  toBoolean() {
+  toBoolean(opt?: ToBooleanOpt) {
     return z
       .string()
       .trim()
@@ -25,27 +43,39 @@ export class Coerce {
    *
    * In contrast, `z.coerce.number()` transforms '' to 0.
    *
-   * Error condition:
+   * Normally, all non number input will be flagged as error:
    *
    * - Null/undefined
    * - Empty string (useful for reject empty selection)
    * - NaN
+   *
+   * If you don't want to flag non number as error, set `opt.nullable` to true
    */
-  toNumber(msg?: string) {
+  toNumber<T extends ToNumberOpt>(
+    opt?: T
+  ): ZodEffects<ZodAny, T['nullable'] extends true ? number | null : number> {
     return z.any().transform((val, ctx) => {
-      const onError = () => {
+      const onError = (message: string) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: msg ?? 'Not a valid number',
+          message,
         });
         return z.NEVER;
       };
 
       const num = parseAsNumber(val);
       if (num == null) {
-        return onError();
+        if (!opt?.nullable) {
+          return onError(opt?.message ?? 'Not a valid number');
+        }
+      } else if (opt?.validateFn) {
+        const message = opt.validateFn(num);
+        if (message) {
+          return onError(message);
+        }
       }
-      return num;
+
+      return num as unknown as number;
     });
   }
 
@@ -65,12 +95,12 @@ export class Coerce {
    *
    * @example `2023-02-26T00:00:00.000Z`
    */
-  toIsoDate(msg?: string) {
+  toIsoDate(opt?: ToIsoDateOpt) {
     return z.any().transform((val, ctx) => {
       const onError = () => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: msg ?? 'Not a valid date',
+          message: opt?.message ?? 'Not a valid date',
         });
         return z.NEVER;
       };
@@ -98,12 +128,12 @@ export class Coerce {
    * - Array of browser specific File object (if file is successfully uploaded)
    * - Empty array if no file has been uploaded
    */
-  toFileArray(msg?: string) {
+  toFileArray(opt?: ToFileArrayOpt) {
     return z.any().transform<File[]>((val, ctx) => {
       const onError = () => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: msg ?? 'Please upload a valid file object',
+          message: opt?.message ?? 'Please upload a valid file object',
         });
         return z.NEVER;
       };

@@ -17,6 +17,7 @@ export const supportedPathTemplates = {
   communityCreate: '/community/create',
   communityImport: '/community/:communityId/import-xlsx',
   communityExport: '/community/:communityId/export-xlsx',
+  contactExport: '/community/:communityId/export-contact',
   communityShare: '/community/:communityId/share',
   propertyList: '/community/:communityId/property-list',
   property: '/community/:communityId/property/:propertyId',
@@ -77,6 +78,7 @@ export function appPath(
   template:
     | 'communityImport'
     | 'communityExport'
+    | 'contactExport'
     | 'communityShare'
     | 'propertyList'
     | 'communityDashboard',
@@ -143,6 +145,8 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Import Community';
     case 'communityExport':
       return 'Export to Excel';
+    case 'contactExport':
+      return 'Export Contacts';
     case 'communityShare':
       return 'Share';
     case 'propertyList':

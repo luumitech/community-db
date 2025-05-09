@@ -22,7 +22,7 @@ export function useMenuItem(opt: MenuItemOpt) {
       {
         key: 'communityModify',
         onPress: opt.communityModifyOpen,
-        endContent: <Icon icon="settings" />,
+        endContent: <Icon icon="modify-community" />,
         children: 'Modify Community',
       },
       {

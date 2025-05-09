@@ -1,6 +1,7 @@
 import { Coerce } from './coerce';
 import { String } from './string';
 export { z } from 'zod';
+export * from './validate';
 
 class ZZ {
   /** Coercion utility */
