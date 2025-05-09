@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
+import { appLabel } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 import { usePageContext } from '../page-context';
@@ -22,30 +23,30 @@ export function useMenuItem() {
       {
         key: 'membershipEditor',
         onPress: () => membershipEditor.open({}),
-        children: 'Edit Membership Detail',
+        children: appLabel('membershipEditor'),
       },
       {
         key: 'occupantEditor',
         onPress: () => occupantEditor.open({}),
-        children: 'Edit Member Details',
+        children: appLabel('occupantEditor'),
         showDivider: true,
       },
       {
-        key: 'modifyProperty',
+        key: 'propertyModify',
         onPress: () => propertyModify.open({}),
-        children: 'Modify Property',
+        children: appLabel('propertyModify'),
       },
       {
-        key: 'deleteProperty',
+        key: 'propertyDelete',
         className: 'text-danger',
         onPress: () => propertyDelete.open({}),
-        children: 'Delete Property',
+        children: appLabel('propertyDelete'),
       },
       {
         key: 'communityModify',
         onPress: () => communityModify.open({ community }),
         endContent: <Icon icon="modify-community" />,
-        children: 'Modify Community',
+        children: appLabel('communityModify'),
       },
     ];
   }, [

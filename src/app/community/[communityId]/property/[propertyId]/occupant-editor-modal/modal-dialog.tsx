@@ -1,6 +1,7 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { FormProvider, useFieldArray } from '~/custom-hooks/hook-form';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
@@ -61,7 +62,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Membership Contact Information</ModalHeader>
+                <ModalHeader>{appLabel('occupantEditor')}</ModalHeader>
                 <ModalBody>
                   <Editor fieldArrayMethods={occupantMethods} />
                 </ModalBody>

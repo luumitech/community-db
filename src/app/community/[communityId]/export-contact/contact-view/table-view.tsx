@@ -1,11 +1,12 @@
 import {
-  cn,
+  ScrollShadow,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  cn,
 } from '@heroui/react';
 import React from 'react';
 import { Loading } from '~/view/base/loading';
@@ -34,36 +35,38 @@ export function TableView({
   }, []);
 
   return (
-    <Table
-      aria-label="Contact List"
-      classNames={{
-        base: ['p-1 h-full'],
-        wrapper: 'p-0',
-      }}
-      isHeaderSticky
-      isVirtualized
-    >
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.key} className={column.className}>
-            {column.label}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody
-        isLoading={isLoading}
-        loadingContent={<Loading />}
-        emptyContent={emptyContent}
-        items={contactList ?? []}
+    <ScrollShadow className="h-full" orientation="horizontal">
+      <Table
+        aria-label="Contact List"
+        classNames={{
+          base: ['h-full'],
+        }}
+        isHeaderSticky
+        isVirtualized
+        removeWrapper
       >
-        {(entry) => (
-          <TableRow key={entry.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(entry, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key} className={column.className}>
+              {column.label}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          isLoading={isLoading}
+          loadingContent={<Loading />}
+          emptyContent={emptyContent}
+          items={contactList ?? []}
+        >
+          {(entry) => (
+            <TableRow key={entry.id}>
+              {(columnKey) => (
+                <TableCell>{renderCell(entry, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </ScrollShadow>
   );
 }

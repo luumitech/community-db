@@ -8,6 +8,7 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { appLabel } from '~/lib/app-path';
 import { decMul } from '~/lib/decimal-util';
 import { insertIf } from '~/lib/insert-if';
 import { FlatButton } from '~/view/base/flat-button';
@@ -61,7 +62,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
           <div>
             Please configure ticket items in{' '}
             <span className="text-sm text-foreground-500">
-              Modify Community
+              {appLabel('communityModify')}
             </span>
           </div>
         }

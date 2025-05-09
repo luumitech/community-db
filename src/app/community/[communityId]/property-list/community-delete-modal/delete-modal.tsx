@@ -1,5 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import {
   Modal,
@@ -54,7 +55,7 @@ export const DeleteModal: React.FC<Props> = ({
       <ModalContent>
         {(closeModal) => (
           <>
-            <ModalHeader>Delete Community</ModalHeader>
+            <ModalHeader>{appLabel('communityDelete')}</ModalHeader>
             <ModalBody>
               <div>
                 This will delete community &apos;{community.name}&apos; and all

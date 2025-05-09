@@ -4,6 +4,7 @@ import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appLabel } from '~/lib/app-path';
 import { getCurrentDate } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
@@ -84,7 +85,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
             <ModalContent>
               {(closeModal) => (
                 <>
-                  <ModalHeader>Event Registration</ModalHeader>
+                  <ModalHeader>{appLabel('eventRegister')}</ModalHeader>
                   <ModalBody className="gap-6">
                     <div className="flex flex-col gap-2">
                       <MemberStatusChip isMember={isMember} hideText>

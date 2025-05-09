@@ -1,6 +1,20 @@
 import { compile } from 'path-to-regexp';
 import queryString from 'query-string';
 
+/** List of supported modal routes and its corresponding label */
+const supportedModals = {
+  communityModify: 'Community Settings',
+  communityDelete: 'Delete Community',
+  propertyCreate: 'Create Property',
+  propertyModify: 'Modify Property',
+  propertyDelete: 'Delete Property',
+  batchPropertyModify: 'Batch Modify Property',
+  membershipEditor: 'Edit Membership Detail',
+  occupantEditor: 'Edit Contact Information',
+  eventRegister: 'Register Event',
+};
+type SupportedModal = typeof supportedModals;
+
 /** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
@@ -114,11 +128,11 @@ export function appPath(
 /**
  * Label for various UI endpoints within the app
  *
- * @param template Template name
- * @returns
+ * @param key Key for representing modal/route within the app
+ * @returns Human readable label represented by the key
  */
-export function appLabel(template: keyof SupportedPath) {
-  switch (template) {
+export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
+  switch (key) {
     case 'home':
       return 'Home';
     case 'about':
@@ -157,6 +171,9 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Property';
 
     default:
-      throw new Error(`unhandled app template ${template}`);
+      if (Object.hasOwn(supportedModals, key)) {
+        return supportedModals[key as keyof SupportedModal];
+      }
+      throw new Error(`unhandled app key ${key}`);
   }
 }

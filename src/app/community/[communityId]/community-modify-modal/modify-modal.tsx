@@ -2,6 +2,7 @@ import { Tab, Tabs } from '@heroui/tabs';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -72,11 +73,11 @@ export const ModifyModal: React.FC<Props> = ({
             {(closeModal) => (
               <>
                 <ModalHeader className="flex justify-between">
-                  Edit Community
+                  {appLabel('communityModify')}
                 </ModalHeader>
                 <ModalBody>
                   <Tabs
-                    aria-label="Edit Community Options"
+                    aria-label={`${appLabel('communityModify')} Options`}
                     classNames={{
                       tabList:
                         'gap-6 w-full relative rounded-none p-0 border-b border-divider',
