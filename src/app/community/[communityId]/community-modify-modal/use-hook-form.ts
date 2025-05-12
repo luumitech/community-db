@@ -30,6 +30,9 @@ const ModifyFragment = graphql(/* GraphQL */ `
     defaultSetting {
       membershipFee
     }
+    mailchimpSetting {
+      apiKey
+    }
     updatedAt
     updatedBy {
       ...User
@@ -68,6 +71,9 @@ function schema() {
     ),
     defaultSetting: z.object({
       membershipFee: z.string().nullable(),
+    }),
+    mailchimpSetting: z.object({
+      apiKey: z.string().nullable(),
     }),
     // Used for rendering UI only, not submitted
     // to server
@@ -119,6 +125,9 @@ function defaultInputData(
       .map((entry) => ({ name: entry.name })),
     defaultSetting: {
       membershipFee: item.defaultSetting?.membershipFee ?? null,
+    },
+    mailchimpSetting: {
+      apiKey: item.mailchimpSetting?.apiKey ?? null,
     },
     hidden: {
       eventList: item.eventList

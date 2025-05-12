@@ -15,6 +15,7 @@ import {
 import { LastModified } from '~/view/last-modified';
 import { EventListEditor } from './event-list-editor';
 import { GeneralTab } from './general-tab';
+import { Integration } from './integration';
 import { PaymentMethodListEditor } from './payment-method-list-editor';
 import { TicketListEditor } from './ticket-list-editor';
 import {
@@ -41,19 +42,27 @@ export const ModifyModal: React.FC<Props> = ({
   const [pending, startTransition] = React.useTransition();
   const { formMethods, community } = useHookForm(fragment);
   const { formState, handleSubmit } = formMethods;
-  const { isDirty } = formState;
+  const { isDirty, dirtyFields } = formState;
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
       startTransition(async () => {
         try {
+          if (!dirtyFields.mailchimpSetting?.apiKey) {
+            /**
+             * Mailchimp API fields has been obfuscated by the server, if user
+             * did not change it explicitly, don't save it.
+             */
+            // @ts-expect-error It's okay to ignore this error
+            delete input.mailchimpSetting.apiKey;
+          }
           await onSave(input);
           onClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, onClose, dirtyFields]
   );
 
   return (
@@ -97,6 +106,9 @@ export const ModifyModal: React.FC<Props> = ({
                     </Tab>
                     <Tab key="paymentMethodTab" title="Payment Methods">
                       <PaymentMethodListEditor />
+                    </Tab>
+                    <Tab key="integration" title="Integration">
+                      <Integration />
                     </Tab>
                   </Tabs>
                 </ModalBody>

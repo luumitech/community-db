@@ -14,5 +14,3 @@ export class GeoapifyApi {
     return new GeoapifyApi(credential);
   }
 }
-
-export { Geocode };

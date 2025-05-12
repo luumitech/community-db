@@ -1,6 +1,7 @@
 import {
   DefaultSetting,
   EmailSetting,
+  MailchimpSetting,
   Property,
   Role,
   SupportedEventItem,
@@ -59,6 +60,21 @@ const defaultSettingRef = builder
         type: emailSettingRef,
         nullable: true,
         resolve: (entry) => entry.membershipEmail,
+      }),
+    }),
+  });
+
+const mailchimpSettingRef = builder
+  .objectRef<MailchimpSetting>('MailchimpSetting')
+  .implement({
+    fields: (t) => ({
+      apiKey: t.field({
+        type: 'String',
+        nullable: true,
+        resolve: (entry) => {
+          // TODO: obfuscate key, so it's not exposed to user
+          return entry.apiKey;
+        },
       }),
     }),
   });
@@ -297,6 +313,11 @@ builder.prismaObject('Community', {
       type: defaultSettingRef,
       nullable: true,
       resolve: (entry) => entry.defaultSetting,
+    }),
+    mailchimpSetting: t.field({
+      type: mailchimpSettingRef,
+      nullable: true,
+      resolve: (entry) => entry.mailchimpSetting,
     }),
     /** Return context user's access document */
     access: t.prismaField({

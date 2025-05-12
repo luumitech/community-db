@@ -154,6 +154,8 @@ model Community {
   paymentMethodList SupportedPaymentMethod[]
   /// default settings
   defaultSetting    DefaultSetting?
+  /// mailchimp settings
+  mailchimpSetting  MailchimpSetting?
 
   accessList   Access[]   @relation("accessCommunity")
   propertyList Property[] @relation("propertyCommunity")
@@ -171,6 +173,11 @@ type DefaultSetting {
   membershipFee   String?
   /// Membership confirmation email template
   membershipEmail EmailSetting?
+}
+
+/// Mailchimp integrationSetting
+type MailchimpSetting {
+  apiKey String?
 }
 
 type SupportedEventItem {
