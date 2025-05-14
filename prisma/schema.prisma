@@ -175,7 +175,7 @@ type DefaultSetting {
   membershipEmail EmailSetting?
 }
 
-/// Mailchimp integrationSetting
+/// Mailchimp integration setting
 type MailchimpSetting {
   apiKey String?
 }

@@ -24,6 +24,7 @@ export const MoreMenu: React.FC<Props> = ({ communityId, omitKeys }) => {
         'communityShare',
         'contactExport',
         'communityExport',
+        'thirdPartyIntegration',
         'divider',
         ...insertIf(isAdmin, 'communityImport'),
       ]}

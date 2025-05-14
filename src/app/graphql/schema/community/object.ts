@@ -11,7 +11,9 @@ import {
 import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
+import { Cipher } from '~/lib/cipher';
 import { getCurrentYear } from '~/lib/date-util';
+import { Logger } from '~/lib/logger';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
@@ -71,9 +73,17 @@ const mailchimpSettingRef = builder
       apiKey: t.field({
         type: 'String',
         nullable: true,
+        description: 'Obfuscated API key for hinting what it looks like',
         resolve: (entry) => {
-          // TODO: obfuscate key, so it's not exposed to user
-          return entry.apiKey;
+          const { apiKey } = entry;
+          if (apiKey) {
+            const cipher = Cipher.fromConfig();
+            // apiKey should be in the format of
+            // xxxxxxxxxx-usxx
+            const obfuscatedApiKey = cipher.decryptAndObfuscate(apiKey, 4, 5);
+            return obfuscatedApiKey;
+          }
+          return null;
         },
       }),
     }),

@@ -24,6 +24,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       isControlled,
       onBlur,
       onChange,
+      onClear,
       onValueChange,
       isReadOnly,
       ...props
@@ -65,6 +66,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             onChange={(evt) => {
               field.onChange(evt);
               onChange?.(evt);
+            }}
+            onClear={() => {
+              field.onChange('');
+              onClear?.();
             }}
             errorMessage={error}
             isInvalid={!!error}

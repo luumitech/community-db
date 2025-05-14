@@ -4,6 +4,7 @@ import './access';
 import './community';
 import './geocode';
 import './job';
+import './mailchimp';
 import './offset-pagination';
 import './payment';
 import './property';

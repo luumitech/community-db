@@ -2,6 +2,8 @@ import { Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MessageType } from '~/graphql/pubsub';
+import { Cipher } from '~/lib/cipher';
+import { Logger } from '~/lib/logger';
 import { MailchimpApi } from '~/lib/mailchimp';
 import { isNonEmpty } from '~/lib/obj-util';
 import prisma from '~/lib/prisma';
@@ -9,6 +11,8 @@ import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { NameListUtil } from './name-list-util';
 import { getCommunityEntry } from './util';
+
+const logger = Logger('graphql/schema/community/modify');
 
 const EmailSettingInput = builder.inputType('EmailSettingInput', {
   fields: (t) => ({
@@ -98,6 +102,20 @@ builder.mutationField('communityModify', (t) =>
 
       const nameListUtil = await NameListUtil.fromDB(entry.id);
 
+      // Encrypt any fields that needs to be encrypted
+      if (mailchimpSetting?.apiKey) {
+        try {
+          const api = MailchimpApi.fromApiKey(mailchimpSetting.apiKey);
+          await api.ping.ping();
+        } catch (err) {
+          logger.error(err);
+          throw new GraphQLError('Invalid API key');
+        }
+
+        const cipher = Cipher.fromConfig();
+        mailchimpSetting.apiKey = cipher.encrypt(mailchimpSetting.apiKey);
+      }
+
       const community = await prisma.community.update({
         ...query,
         where: {
@@ -137,19 +155,6 @@ builder.mutationField('communityModify', (t) =>
           ...optionalInput,
         },
       });
-
-      // TODO: mailchimp API
-      // try {
-      //   const mailchimp = new MailchimpApi({
-      //     server: 'us10',
-      //     apiKey: '5fd363c5ff30b3515552f06895751157-us10',
-      //   });
-      //   // const resp = await mailchimp.audience.lists();
-      //   const resp = await mailchimp.audience.memberLists('9e1f03ec3e');
-      //   console.log({ resp: resp.length });
-      // } catch (err) {
-      //   console.log({ err });
-      // }
 
       // broadcast modification to community
       pubSub.publish(`community/${shortId}/`, {

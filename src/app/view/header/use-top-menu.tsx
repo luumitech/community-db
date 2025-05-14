@@ -121,6 +121,14 @@ export function useTopMenu() {
           });
           break;
 
+        case 'third-party-integration':
+          items.push({
+            id: 'thirdPartyIntegration',
+            href: appPath('thirdPartyIntegration', { path: { communityId } }),
+            children: appLabel('thirdPartyIntegration'),
+          });
+          break;
+
         case 'share':
           items.push({
             id: 'communityExport',

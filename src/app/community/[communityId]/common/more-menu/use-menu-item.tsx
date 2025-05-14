@@ -43,6 +43,12 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: appLabel('communityExport'),
       },
       {
+        key: 'thirdPartyIntegration',
+        href: appPath('thirdPartyIntegration', { path: { communityId } }),
+        endContent: <Icon icon="mailchimp" />,
+        children: appLabel('thirdPartyIntegration'),
+      },
+      {
         key: 'communityImport',
         href: appPath('communityImport', { path: { communityId } }),
         children: appLabel('communityImport'),

@@ -12,11 +12,8 @@ import {
   type InputData,
 } from './filter-select/use-hook-form';
 
-const GenerateEmailList_PropertyListQuery = graphql(/* GraphQL */ `
-  query generateEmailListPropertyList(
-    $id: String!
-    $filter: PropertyFilterInput!
-  ) {
+const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
+  query exportContactPropertyList($id: String!, $filter: PropertyFilterInput!) {
     communityFromId(id: $id) {
       id
       rawPropertyList(filter: $filter) {
@@ -49,7 +46,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
       },
     })
   );
-  const result = useQuery(GenerateEmailList_PropertyListQuery, {
+  const result = useQuery(ExportContact_PropertyListQuery, {
     variables: filterArgs,
   });
   useGraphqlErrorHandler(result);

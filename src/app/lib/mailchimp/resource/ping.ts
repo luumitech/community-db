@@ -14,6 +14,8 @@ export class Ping {
     const output = await this.res.call('ping', { method: 'GET' });
 
     const { health_status } = output;
-    return health_status;
+    if (health_status !== "Everything's Chimpy!") {
+      throw new GraphQLError(health_status);
+    }
   }
 }

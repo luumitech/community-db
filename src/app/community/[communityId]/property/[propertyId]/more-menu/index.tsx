@@ -19,6 +19,7 @@ export const MoreMenu: React.FC<Props> = (props) => {
         'communityShare',
         'contactExport',
         'communityExport',
+        'thirdPartyIntegration',
         'divider',
         ...insertIf(canEdit, 'membershipEditor'),
         ...insertIf(canEdit, 'occupantEditor'),
