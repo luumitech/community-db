@@ -45,7 +45,7 @@ export function useMenuItem(opt: MenuItemOpt) {
       {
         key: 'thirdPartyIntegration',
         href: appPath('thirdPartyIntegration', { path: { communityId } }),
-        endContent: <Icon icon="mailchimp" />,
+        endContent: <Icon icon="integration" />,
         children: appLabel('thirdPartyIntegration'),
       },
       {

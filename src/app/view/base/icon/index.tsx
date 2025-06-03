@@ -44,6 +44,7 @@ const supportedIcon = {
   sunMoon: 'lucide:sun-moon',
   google: 'flat-color-icons:google',
   'modify-community': 'bi:house-gear',
+  integration: 'eos-icons:api-outlined',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

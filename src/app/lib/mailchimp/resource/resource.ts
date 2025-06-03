@@ -63,14 +63,19 @@ export class Resource {
     return result;
   }
 
-  public async getAll(requestPath: string, listName: string, fields: string[]) {
+  /** Get all array entries with */
+  public async getAll<T, K extends keyof T>(
+    requestPath: string,
+    listName: string,
+    fields: K[]
+  ): Promise<Pick<T, K>[]> {
     const recordPerCall = 1000; // # of records to retrieve per call
     let itemCount = 0; // actual # of items returned this call
     let offset = 0; // offset to start retrieving items
-    const result = []; // lists to be returned to user
+    const result: Pick<T, K>[] = []; // lists to be returned to user
 
     // List of property names within list to retrieve
-    const fieldNames = fields.map((field) => `${listName}.${field}`);
+    const fieldNames = fields.map((field) => `${listName}.${field as string}`);
 
     do {
       const resp = await this.call(requestPath, {
@@ -81,7 +86,7 @@ export class Resource {
           count: recordPerCall,
         },
       });
-      const items = resp[listName];
+      const items = resp[listName] as T[];
       result.push(...items);
       itemCount = items.length;
       offset += itemCount;
