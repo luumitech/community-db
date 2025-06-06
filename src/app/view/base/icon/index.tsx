@@ -25,7 +25,8 @@ const supportedIcon = {
   download: 'ph:download-bold',
   dashboard: 'ion:bar-chart-outline',
   copy: 'fa-regular:copy',
-  'property-list': 'ri:home-6-line',
+  'property-list': 'tabler:home',
+  'property-editor': 'tabler:home-edit',
   logout: 'material-symbols:logout',
   settings: 'gravity-ui:gear',
   about: 'ion:information-outline',
@@ -45,6 +46,8 @@ const supportedIcon = {
   google: 'flat-color-icons:google',
   'modify-community': 'bi:house-gear',
   integration: 'eos-icons:api-outlined',
+  warning: 'cuida:warning-outline',
+  refresh: 'mdi:refresh',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

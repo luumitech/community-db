@@ -5,7 +5,7 @@ import * as GQL from '~/graphql/generated/graphql';
 
 interface Props {
   className?: string;
-  membership?: GQL.PropertyId_MembershipDisplayFragment['membershipList'][0];
+  membership?: GQL.PropertyId_MembershipDisplayFragment['membershipList'][number];
 }
 
 export const RegisteredEventList: React.FC<Props> = ({

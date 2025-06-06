@@ -10,4 +10,4 @@ export type AccessEntry = {
    * is owned by context user
    */
   isSelf?: boolean;
-} & CommunityEntry['otherAccessList'][0];
+} & CommunityEntry['otherAccessList'][number];

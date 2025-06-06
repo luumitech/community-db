@@ -1,9 +1,9 @@
 import * as GQL from '~/graphql/generated/graphql';
 
 type PropertyEntry =
-  GQL.GenerateEmailListPropertyListQuery['communityFromId']['rawPropertyList'][0];
+  GQL.ExportContactPropertyListQuery['communityFromId']['rawPropertyList'][number];
 
-type OccupantEntry = PropertyEntry['occupantList'][0];
+type OccupantEntry = PropertyEntry['occupantList'][number];
 
 export interface ContactListEntry extends OccupantEntry {
   /** Unique ID for each contact entry, required for Table rendering */

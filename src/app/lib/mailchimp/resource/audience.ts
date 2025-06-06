@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { Resource } from '.';
+import { type MailchimpSubscriberStatus } from './_type';
 
 interface AudienceEntry {
   id: string;
@@ -30,13 +31,7 @@ interface MemberEntry {
   contact_id: string;
   full_name: string;
   web_id: number;
-  status:
-    | 'subscribed'
-    | 'unsubscribed'
-    | 'cleaned'
-    | 'pending'
-    | 'transactional'
-    | 'archive';
+  status: MailchimpSubscriberStatus;
 }
 
 export class Audience {

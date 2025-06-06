@@ -5,7 +5,7 @@ import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 
-const ModifyFragment = graphql(/* GraphQL */ `
+export const ModifyFragment = graphql(/* GraphQL */ `
   fragment ThirdPartyIntegration_Mailchimp_Settings on Community {
     id
     mailchimpSetting {
@@ -21,10 +21,6 @@ export type ModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 function schema() {
   return z.object({
-    self: z.object({
-      id: zz.string.nonEmpty(),
-      updatedAt: zz.string.nonEmpty(),
-    }),
     mailchimpSetting: z.object({
       apiKey: z
         .string()
@@ -41,10 +37,6 @@ function defaultInputData(
   item: GQL.ThirdPartyIntegration_Mailchimp_SettingsFragment
 ): InputData {
   return {
-    self: {
-      id: item.id,
-      updatedAt: item.updatedAt,
-    },
     mailchimpSetting: {
       apiKey: item.mailchimpSetting?.apiKey ?? null,
     },

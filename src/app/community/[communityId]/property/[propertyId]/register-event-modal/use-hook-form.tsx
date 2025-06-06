@@ -154,4 +154,4 @@ export type TicketListFieldArray = UseFieldArrayReturn<
   'event.ticketList'
 >;
 
-export type TicketField = TicketListFieldArray['fields'][0];
+export type TicketField = TicketListFieldArray['fields'];

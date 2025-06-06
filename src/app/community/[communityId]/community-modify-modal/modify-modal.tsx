@@ -41,7 +41,7 @@ export const ModifyModal: React.FC<Props> = ({
   const [pending, startTransition] = React.useTransition();
   const { formMethods, community } = useHookForm(fragment);
   const { formState, handleSubmit } = formMethods;
-  const { isDirty, dirtyFields } = formState;
+  const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -53,7 +53,7 @@ export const ModifyModal: React.FC<Props> = ({
           // error handled by parent
         }
       }),
-    [onSave, onClose, dirtyFields]
+    [onSave, onClose]
   );
 
   return (

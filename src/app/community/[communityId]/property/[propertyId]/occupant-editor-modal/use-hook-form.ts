@@ -60,7 +60,7 @@ export type OccupantFieldArrayReturn = UseFieldArrayReturn<
   'id'
 >;
 
-export const occupantDefault: InputData['occupantList'][0] = {
+export const occupantDefault: InputData['occupantList'][number] = {
   firstName: '',
   lastName: '',
   optOut: false,

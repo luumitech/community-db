@@ -21,7 +21,7 @@ export default function thirdPartyIntegration({ params }: RouteArgs) {
         omitKeys={['thirdPartyIntegration']}
       />
       <PageContent
-        className="flex flex-col gap-2 h-main-height"
+        className="flex flex-col h-main-height overflow-hidden"
         communityId={communityId}
       />
     </>

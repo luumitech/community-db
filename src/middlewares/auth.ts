@@ -31,7 +31,6 @@ export const authMiddleware: MiddlewareFactory =
           // Add callback, to redirect to this page after login
           query: { callbackUrl: pathname },
         });
-        console.log({ homeURL });
         return NextResponse.redirect(homeURL);
       }
     }
