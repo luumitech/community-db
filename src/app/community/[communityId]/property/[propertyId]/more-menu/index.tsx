@@ -17,15 +17,16 @@ export const MoreMenu: React.FC<Props> = (props) => {
         'propertyList',
         'communityDashboard',
         'communityShare',
-        // 'exportEmail',
+        'contactExport',
         'communityExport',
+        'thirdPartyIntegration',
         'divider',
         ...insertIf(canEdit, 'membershipEditor'),
         ...insertIf(canEdit, 'occupantEditor'),
         'divider',
         ...insertIf(canEdit, 'communityModify'),
-        ...insertIf(canEdit, 'modifyProperty'),
-        ...insertIf(isAdmin, 'deleteProperty'),
+        ...insertIf(canEdit, 'propertyModify'),
+        ...insertIf(isAdmin, 'propertyDelete'),
       ]}
       shortcutKeys={['propertyList', 'communityDashboard', 'communityModify']}
     />

@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { startDownloadBlob } from '~/lib/dom';
 import { Icon } from '~/view/base/icon';
-import type { OccupantEntry } from './_type';
+import { type ContactInfo } from '../contact-util';
 
 /**
  * Convert contact list into Mailchimp compatible CSV
@@ -13,7 +13,7 @@ import type { OccupantEntry } from './_type';
  * @param propertyList PropertyList obtained after filtering
  * @returns Mailchimp compatible CSV
  */
-function toMailchimpCSV(contactList: OccupantEntry[]) {
+function toMailchimpCSV(contactList: ContactInfo['contactList']) {
   const aoa = [
     ['Email Address', 'First Name', 'Last Name'],
     ...contactList.map((entry) => [
@@ -29,11 +29,14 @@ function toMailchimpCSV(contactList: OccupantEntry[]) {
 
 interface Props {
   className?: string;
-  contactList: OccupantEntry[];
+  contactInfo?: ContactInfo;
 }
 
-export const MailchimpCSV: React.FC<Props> = ({ className, contactList }) => {
+export const MailchimpCSV: React.FC<Props> = ({ className, contactInfo }) => {
   const { communityName } = useAppContext();
+  const contactList = React.useMemo(() => {
+    return contactInfo?.contactList ?? [];
+  }, [contactInfo]);
   const contactCount = contactList.length;
 
   const onDownload = React.useCallback(() => {
@@ -47,8 +50,8 @@ export const MailchimpCSV: React.FC<Props> = ({ className, contactList }) => {
     <Button
       className={cn(className)}
       color="primary"
-      variant="faded"
-      size="sm"
+      variant="bordered"
+      fullWidth
       isDisabled={contactCount === 0}
       endContent={<Icon icon="mailchimp" size={16} />}
       onPress={onDownload}

@@ -1,6 +1,7 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -67,7 +68,7 @@ export const ModifyModal: React.FC<Props> = ({
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Batch Property Modify</ModalHeader>
+                <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
                 <ModalBody>
                   <FilterSelect className="mb-4" />
                   <MembershipInfoEditor />

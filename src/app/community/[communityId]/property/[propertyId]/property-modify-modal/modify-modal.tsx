@@ -2,6 +2,7 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -60,7 +61,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Edit Property</ModalHeader>
+                <ModalHeader>{appLabel('propertyModify')}</ModalHeader>
                 <ModalBody>
                   <AddressEditorForm />
                 </ModalBody>

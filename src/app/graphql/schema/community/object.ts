@@ -1,6 +1,7 @@
 import {
   DefaultSetting,
   EmailSetting,
+  MailchimpSetting,
   Property,
   Role,
   SupportedEventItem,
@@ -10,7 +11,9 @@ import {
 import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
+import { Cipher } from '~/lib/cipher';
 import { getCurrentYear } from '~/lib/date-util';
+import { Logger } from '~/lib/logger';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
@@ -59,6 +62,29 @@ const defaultSettingRef = builder
         type: emailSettingRef,
         nullable: true,
         resolve: (entry) => entry.membershipEmail,
+      }),
+    }),
+  });
+
+const mailchimpSettingRef = builder
+  .objectRef<MailchimpSetting>('MailchimpSetting')
+  .implement({
+    fields: (t) => ({
+      apiKey: t.field({
+        type: 'String',
+        nullable: true,
+        description: 'Obfuscated API key for hinting what it looks like',
+        resolve: (entry) => {
+          const { apiKey } = entry;
+          if (apiKey) {
+            const cipher = Cipher.fromConfig();
+            // apiKey should be in the format of
+            // xxxxxxxxxx-usxx
+            const obfuscatedApiKey = cipher.decryptAndObfuscate(apiKey, 4, 5);
+            return obfuscatedApiKey;
+          }
+          return null;
+        },
       }),
     }),
   });
@@ -297,6 +323,11 @@ builder.prismaObject('Community', {
       type: defaultSettingRef,
       nullable: true,
       resolve: (entry) => entry.defaultSetting,
+    }),
+    mailchimpSetting: t.field({
+      type: mailchimpSettingRef,
+      nullable: true,
+      resolve: (entry) => entry.mailchimpSetting,
     }),
     /** Return context user's access document */
     access: t.prismaField({

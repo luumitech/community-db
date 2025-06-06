@@ -1,5 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import {
   Modal,
@@ -50,7 +51,7 @@ export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
       <ModalContent>
         {(closeModal) => (
           <>
-            <ModalHeader>Delete Property</ModalHeader>
+            <ModalHeader>{appLabel('propertyDelete')}</ModalHeader>
             <ModalBody>
               <div>
                 This will delete property &apos;{property.address}&apos; and all

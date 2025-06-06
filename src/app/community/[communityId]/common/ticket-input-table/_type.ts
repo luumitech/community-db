@@ -1,16 +1,16 @@
 import { type UseFieldArrayReturn } from '~/custom-hooks/hook-form';
 import { isNonZeroDec } from '~/lib/decimal-util';
-import { z, zz } from '~/lib/zod';
+import { isPositive, z, zz } from '~/lib/zod';
 
 export const ticketListSchema = z.array(
   z
     .object({
       ticketName: zz.string.nonEmpty('Must specify a value'),
-      count: z.coerce
-        .number({ message: 'Must be a number' })
-        .int()
-        .min(0)
-        .nullable(),
+      count: zz.coerce.toNumber({
+        message: 'Must be a number',
+        nullable: true,
+        validateFn: isPositive(),
+      }),
       paymentMethod: z.string().nullable(),
       price: z.string().nullable(),
     })
@@ -30,7 +30,7 @@ export const ticketListSchema = z.array(
     .refine(
       (form) => {
         // Price is required if count is not specified
-        const hasCount = form.count != null && form.count > 0;
+        const hasCount = form.count != null && form.count !== 0;
         if (!hasCount) {
           return isNonZeroDec(form.price);
         }

@@ -2,11 +2,17 @@ import { Role } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MessageType } from '~/graphql/pubsub';
+import { Cipher } from '~/lib/cipher';
+import { Logger } from '~/lib/logger';
+import { MailchimpApi } from '~/lib/mailchimp';
+import { isNonEmpty } from '~/lib/obj-util';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { NameListUtil } from './name-list-util';
 import { getCommunityEntry } from './util';
+
+const logger = Logger('graphql/schema/community/modify');
 
 const EmailSettingInput = builder.inputType('EmailSettingInput', {
   fields: (t) => ({
@@ -20,6 +26,12 @@ const DefaultSettingInput = builder.inputType('DefaultSettingInput', {
   fields: (t) => ({
     membershipFee: t.string(),
     membershipEmail: t.field({ type: EmailSettingInput }),
+  }),
+});
+
+const MailchimpSettingInput = builder.inputType('MailchimpSettingInput', {
+  fields: (t) => ({
+    apiKey: t.string(),
   }),
 });
 
@@ -49,6 +61,7 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
     ticketList: t.field({ type: [TicketItemInput] }),
     paymentMethodList: t.field({ type: [PaymentMethodInput] }),
     defaultSetting: t.field({ type: DefaultSettingInput }),
+    mailchimpSetting: t.field({ type: MailchimpSettingInput }),
   }),
 });
 
@@ -83,10 +96,25 @@ builder.mutationField('communityModify', (t) =>
         ticketList,
         paymentMethodList,
         defaultSetting,
+        mailchimpSetting,
         ...optionalInput
       } = input;
 
       const nameListUtil = await NameListUtil.fromDB(entry.id);
+
+      // Encrypt any fields that needs to be encrypted
+      if (mailchimpSetting?.apiKey) {
+        try {
+          const api = MailchimpApi.fromApiKey(mailchimpSetting.apiKey);
+          await api.ping.ping();
+        } catch (err) {
+          logger.error(err);
+          throw new GraphQLError('Invalid API key');
+        }
+
+        const cipher = Cipher.fromConfig();
+        mailchimpSetting.apiKey = cipher.encrypt(mailchimpSetting.apiKey);
+      }
 
       const community = await prisma.community.update({
         ...query,
@@ -114,9 +142,14 @@ builder.mutationField('communityModify', (t) =>
           // defaultSetting is a composite type, we want to to be able to modify
           // individual properties without overriding the entire structure
           // See: https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/composite-types#changing-composite-types-within-update-and-updatemany
-          ...(!!defaultSetting && {
+          ...(isNonEmpty(defaultSetting) && {
             defaultSetting: {
               upsert: { set: defaultSetting, update: defaultSetting },
+            },
+          }),
+          ...(isNonEmpty(mailchimpSetting) && {
+            mailchimpSetting: {
+              upsert: { set: mailchimpSetting, update: mailchimpSetting },
             },
           }),
           ...optionalInput,

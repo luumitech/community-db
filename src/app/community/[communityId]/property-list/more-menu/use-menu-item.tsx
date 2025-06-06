@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
+import { appLabel } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 
@@ -22,24 +23,24 @@ export function useMenuItem(opt: MenuItemOpt) {
       {
         key: 'communityModify',
         onPress: opt.communityModifyOpen,
-        endContent: <Icon icon="settings" />,
-        children: 'Modify Community',
+        endContent: <Icon icon="modify-community" />,
+        children: appLabel('communityModify'),
       },
       {
         key: 'batchPropertyModify',
         onPress: opt.batchPropertyModifyOpen,
-        children: 'Batch Modify Property',
+        children: appLabel('batchPropertyModify'),
       },
       {
         key: 'propertyCreate',
         onPress: opt.propertyCreateOpen,
-        children: 'Create Property',
+        children: appLabel('propertyCreate'),
       },
       {
         key: 'communityDelete',
         className: 'text-danger',
         onPress: opt.communityDeleteOpen,
-        children: 'Delete Community',
+        children: appLabel('communityDelete'),
       },
     ];
   }, [opt, baseMenuItems]);

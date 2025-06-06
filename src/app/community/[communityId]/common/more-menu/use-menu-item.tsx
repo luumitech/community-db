@@ -1,5 +1,4 @@
 import React from 'react';
-import { useGenerateEmail } from '~/custom-hooks/generate-email';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
@@ -10,8 +9,6 @@ interface MenuItemOpt {
 
 /** Configure all possible menu items */
 export function useMenuItem(opt: MenuItemOpt) {
-  const generateEmail = useGenerateEmail();
-
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
     const { communityId } = opt;
     return [
@@ -34,16 +31,22 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: appLabel('communityShare'),
       },
       {
-        key: 'exportEmail',
-        endContent: <Icon icon="copy" />,
-        onPress: () => generateEmail(),
-        children: 'Export Email List',
-        description: 'Modify filter to alter list',
+        key: 'contactExport',
+        href: appPath('contactExport', { path: { communityId } }),
+        endContent: <Icon icon="export-contact" />,
+        children: appLabel('contactExport'),
       },
       {
         key: 'communityExport',
         href: appPath('communityExport', { path: { communityId } }),
+        endContent: <Icon icon="export-xlsx" />,
         children: appLabel('communityExport'),
+      },
+      {
+        key: 'thirdPartyIntegration',
+        href: appPath('thirdPartyIntegration', { path: { communityId } }),
+        endContent: <Icon icon="integration" />,
+        children: appLabel('thirdPartyIntegration'),
       },
       {
         key: 'communityImport',
@@ -51,7 +54,7 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: appLabel('communityImport'),
       },
     ];
-  }, [opt, generateEmail]);
+  }, [opt]);
 
   return menuItemList;
 }

@@ -2,6 +2,7 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -58,7 +59,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Membership Detail</ModalHeader>
+                <ModalHeader>{appLabel('membershipEditor')}</ModalHeader>
                 <ModalBody className="gap-4">
                   <MembershipInfoEditor property={property} />
                   <NotesEditor controlName="notes" />

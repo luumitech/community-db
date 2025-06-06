@@ -12,6 +12,8 @@ const supportedIcon = {
   undo: 'grommet-icons:undo',
   edit: 'carbon:edit',
   email: 'mdi:email-outline',
+  'export-contact': 'ri:contacts-book-upload-line',
+  'export-xlsx': 'tdesign:file-export',
   'thumb-up': 'mdi:thumbs-up-outline',
   'thumb-down': 'mdi:thumbs-down-outline',
   checkmark: 'ion:checkmark-outline',
@@ -23,7 +25,8 @@ const supportedIcon = {
   download: 'ph:download-bold',
   dashboard: 'ion:bar-chart-outline',
   copy: 'fa-regular:copy',
-  'property-list': 'ri:home-6-line',
+  'property-list': 'tabler:home',
+  'property-editor': 'tabler:home-edit',
   logout: 'material-symbols:logout',
   settings: 'gravity-ui:gear',
   about: 'ion:information-outline',
@@ -41,6 +44,10 @@ const supportedIcon = {
   hamburgerMenu: 'radix-icons:hamburger-menu',
   sunMoon: 'lucide:sun-moon',
   google: 'flat-color-icons:google',
+  'modify-community': 'bi:house-gear',
+  integration: 'eos-icons:api-outlined',
+  warning: 'cuida:warning-outline',
+  refresh: 'mdi:refresh',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

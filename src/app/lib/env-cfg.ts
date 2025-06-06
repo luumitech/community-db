@@ -54,6 +54,10 @@ const baseSchema = z.object({
   /** Log environment variable values for debuggin purpose */
   CONFIG_DEBUG: zz.coerce.toBoolean(),
 
+  /** Cypher keys */
+  CIPHER_KEY: zz.string.nonEmpty(),
+  CIPHER_IV: zz.string.nonEmpty(),
+
   /** Google related env vars */
   /** For google login */
   GOOGLE_CLIENT_ID: zz.string.nonEmpty(),

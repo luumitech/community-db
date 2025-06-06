@@ -55,7 +55,7 @@ function schema() {
     membershipList: z.array(
       z
         .object({
-          year: zz.coerce.toNumber('Must select a year'),
+          year: zz.coerce.toNumber({ message: 'Must select a year' }),
           eventAttendedList: z
             .array(
               z.object({
@@ -108,7 +108,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 export function membershipDefault(
   year: number
-): InputData['membershipList'][0] {
+): InputData['membershipList'][number] {
   return {
     year,
     eventAttendedList: [],
@@ -206,6 +206,6 @@ export type TicketListFieldArray = UseFieldArrayReturn<
   `membershipList.${number}.eventAttendedList.${number}.ticketList`
 >;
 
-export type MembershipField = MembershipListFieldArray['fields'][0];
-export type EventField = EventAttendedListFieldArray['fields'][0];
-export type TicketField = TicketListFieldArray['fields'][0];
+export type MembershipField = MembershipListFieldArray['fields'][number];
+export type EventField = EventAttendedListFieldArray['fields'][number];
+export type TicketField = TicketListFieldArray['fields'][number];

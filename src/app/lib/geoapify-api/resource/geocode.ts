@@ -30,14 +30,10 @@ export class Geocode {
    * See: https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#api
    */
   async searchFreeForm(text: string) {
-    const output: SearchFreeFormOutput = await this.res.call(
-      'geocode/search',
-      {
-        text,
-        format: 'json',
-      },
-      { method: 'GET' }
-    );
+    const output: SearchFreeFormOutput = await this.res.call('geocode/search', {
+      method: 'GET',
+      query: { text, format: 'json' },
+    });
 
     const { results } = output;
     if (results.length === 0) {

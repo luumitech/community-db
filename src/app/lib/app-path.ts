@@ -1,6 +1,20 @@
 import { compile } from 'path-to-regexp';
 import queryString from 'query-string';
 
+/** List of supported modal routes and its corresponding label */
+const supportedModals = {
+  communityModify: 'Community Settings',
+  communityDelete: 'Delete Community',
+  propertyCreate: 'Create Property',
+  propertyModify: 'Modify Property',
+  propertyDelete: 'Delete Property',
+  batchPropertyModify: 'Batch Modify Property',
+  membershipEditor: 'Edit Membership Detail',
+  occupantEditor: 'Edit Contact Information',
+  eventRegister: 'Register Event',
+};
+type SupportedModal = typeof supportedModals;
+
 /** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
@@ -17,10 +31,12 @@ export const supportedPathTemplates = {
   communityCreate: '/community/create',
   communityImport: '/community/:communityId/import-xlsx',
   communityExport: '/community/:communityId/export-xlsx',
+  contactExport: '/community/:communityId/export-contact',
   communityShare: '/community/:communityId/share',
   propertyList: '/community/:communityId/property-list',
   property: '/community/:communityId/property/:propertyId',
   communityDashboard: '/community/:communityId/dashboard',
+  thirdPartyIntegration: '/community/:communityId/third-party-integration',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -77,9 +93,11 @@ export function appPath(
   template:
     | 'communityImport'
     | 'communityExport'
+    | 'contactExport'
     | 'communityShare'
     | 'propertyList'
-    | 'communityDashboard',
+    | 'communityDashboard'
+    | 'thirdPartyIntegration',
   sub: {
     path: {
       communityId: string;
@@ -112,11 +130,11 @@ export function appPath(
 /**
  * Label for various UI endpoints within the app
  *
- * @param template Template name
- * @returns
+ * @param key Key for representing modal/route within the app
+ * @returns Human readable label represented by the key
  */
-export function appLabel(template: keyof SupportedPath) {
-  switch (template) {
+export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
+  switch (key) {
     case 'home':
       return 'Home';
     case 'about':
@@ -143,6 +161,8 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Import Community';
     case 'communityExport':
       return 'Export to Excel';
+    case 'contactExport':
+      return 'Export Contacts';
     case 'communityShare':
       return 'Share';
     case 'propertyList':
@@ -151,8 +171,13 @@ export function appLabel(template: keyof SupportedPath) {
       return 'Dashboard';
     case 'property':
       return 'Property';
+    case 'thirdPartyIntegration':
+      return 'Third-Party Integration';
 
     default:
-      throw new Error(`unhandled app template ${template}`);
+      if (Object.hasOwn(supportedModals, key)) {
+        return supportedModals[key as keyof SupportedModal];
+      }
+      throw new Error(`unhandled app key ${key}`);
   }
 }

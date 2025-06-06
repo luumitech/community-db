@@ -25,7 +25,7 @@ function schema() {
     }),
     notes: z.string().nullable(),
     membership: z.object({
-      year: zz.coerce.toNumber('Must select a year'),
+      year: zz.coerce.toNumber({ message: 'Must select a year' }),
       price: z.string().nullable(),
       paymentMethod: zz.string.nonEmpty('Must select a payment method'),
     }),
@@ -154,4 +154,4 @@ export type TicketListFieldArray = UseFieldArrayReturn<
   'event.ticketList'
 >;
 
-export type TicketField = TicketListFieldArray['fields'][0];
+export type TicketField = TicketListFieldArray['fields'];

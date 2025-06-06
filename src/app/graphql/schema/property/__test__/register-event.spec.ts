@@ -35,8 +35,8 @@ const communityInfoDocument = graphql(/* GraphQL */ `
 `);
 
 type Community =
-  GQL.RegisterEventSpec_CommunityInfoQuery['userCurrent']['accessList'][0]['community'];
-type Property = Community['propertyList']['edges'][0]['node'];
+  GQL.RegisterEventSpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
+type Property = Community['propertyList']['edges'][number]['node'];
 
 const registerEventDocument = graphql(/* GraphQL */ `
   mutation RegisterEventSpec_RegisterEvent($input: RegisterEventInput!) {

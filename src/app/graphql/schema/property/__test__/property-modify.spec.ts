@@ -32,8 +32,8 @@ const communityInfoDocument = graphql(/* GraphQL */ `
 `);
 
 type Community =
-  GQL.PropertyModifySpec_CommunityInfoQuery['userCurrent']['accessList'][0]['community'];
-type Property = Community['propertyList']['edges'][0]['node'];
+  GQL.PropertyModifySpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
+type Property = Community['propertyList']['edges'][number]['node'];
 
 const propertyModifyDocument = graphql(/* GraphQL */ `
   mutation PropertyModifySpec_PropertyModify($input: PropertyModifyInput!) {
