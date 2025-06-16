@@ -3,8 +3,8 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { ByEvent } from './by-event';
 import { EventParticipation } from './event-participation';
-import { EventTicketSale } from './event-ticket-sale';
 import { MembershipFee } from './membership-fee';
 import { MembershipSource } from './membership-source';
 import { YearlyProvider } from './yearly-context';
@@ -62,11 +62,7 @@ export const YearlyChart: React.FC<Props> = ({
         year={year}
         isLoading={result.loading}
       />
-      <EventTicketSale
-        fragment={community}
-        year={year}
-        isLoading={result.loading}
-      />
+      <ByEvent fragment={community} year={year} isLoading={result.loading} />
     </YearlyProvider>
   );
 };

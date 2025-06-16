@@ -57,10 +57,6 @@ class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
     }));
   }
 
-  yVal(entry: ChartDataEntry) {
-    return entry.existing + entry.renewed + entry.new;
-  }
-
   getDataColor(label: keyof ChartDataEntry) {
     const itemIdx = this.chartKeys.indexOf(label as string);
     if (itemIdx !== -1) {
@@ -157,8 +153,12 @@ export const EventParticipation: React.FC<Props> = ({
       }),
     [chartData, CustomTooltip, setEventSelected]
   );
-  const tickValues = React.useMemo(
-    () => chartHelper.getYTicks(10),
+  const gridYValues = React.useMemo(
+    () =>
+      chartHelper.getIntegerTicks(
+        10,
+        (data) => data.existing + data.renewed + data.new
+      ),
     [chartHelper]
   );
 
@@ -183,6 +183,7 @@ export const EventParticipation: React.FC<Props> = ({
             keys={chartHelper.chartKeys}
             indexBy="eventName"
             margin={{
+              top: 40,
               bottom: 100,
             }}
             axisBottom={{
@@ -190,10 +191,10 @@ export const EventParticipation: React.FC<Props> = ({
               tickRotation: -15,
               legendOffset: 55,
             }}
-            gridYValues={tickValues}
+            gridYValues={gridYValues}
             axisLeft={{
               legend: 'Member Count',
-              tickValues,
+              tickValues: gridYValues,
             }}
             enableTotals
             legendPos="bottom"

@@ -77,25 +77,32 @@ export function BarChart<T extends BarDatum>({
         }}
         axisTop={null}
         axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'Event',
-          legendPosition: 'middle',
-          legendOffset: 32,
-          truncateTickAt: 0,
-          ...axisBottom,
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legendPosition: 'middle',
-          legendOffset: -40,
-          truncateTickAt: 0,
-          ...axisLeft,
-        }}
+        axisBottom={
+          axisBottom === null
+            ? null
+            : {
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legendPosition: 'middle',
+                legendOffset: 32,
+                truncateTickAt: 0,
+                ...axisBottom,
+              }
+        }
+        axisLeft={
+          axisLeft === null
+            ? null
+            : {
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legendPosition: 'middle',
+                legendOffset: -40,
+                truncateTickAt: 0,
+                ...axisLeft,
+              }
+        }
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{

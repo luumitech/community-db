@@ -13,29 +13,25 @@ export class ChartDataHelperUtil<DataT> {
     return n + ((5 - (n % 5)) % 5) || n + 5;
   }
 
-  /** Get the y value given a chart data point */
-  yVal(entry: DataT): number {
-    throw new Error('This needs to be implemented');
-  }
-
   /**
-   * In order to avoid Y ticks from landing on non-integer numbers, we will
+   * In order to avoid ticks from landing on non-integer numbers, we will
    * generate our own ticks
    *
-   * @param numTicks Maximum number of ticks to show on axis
+   * @param maxTicks Maximum number of ticks to show on axis
+   * @param valFn Callback function to return value given a chart data point
    * @returns
    */
-  getYTicks(numTicks: number) {
+  getIntegerTicks(maxTicks: number, valFn: (entry: DataT) => number) {
     if (this.chartData.length === 0) {
       return undefined;
     }
-    const yValues = this.chartData.map(this.yVal);
-    const maxY = Math.max(...yValues);
+    const values = this.chartData.map(valFn);
+    const maxValue = Math.max(...values);
     const step = ChartDataHelperUtil.nextDivisibleBy5(
-      Math.ceil(maxY / numTicks)
+      Math.ceil(maxValue / maxTicks)
     );
     const ticks = [];
-    for (let i = 0; i <= maxY; i += step) {
+    for (let i = 0; i <= maxValue; i += step) {
       ticks.push(i);
     }
 

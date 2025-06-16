@@ -1,9 +1,9 @@
-import { Divider, ScrollShadow, cn } from '@heroui/react';
+import { CardBody, Divider, ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { useLocalStorage } from 'usehooks-ts';
 import { lsFlags } from '~/lib/env-var';
-import { type TicketStat } from './_type';
+import { type TicketStat } from '../_type';
 import { GroupBy } from './group-by';
 import { TableHeader, TableRow, TableSumRow } from './table-row';
 
@@ -12,30 +12,18 @@ export interface Props {
   ticketList: TicketStat;
 }
 
-export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
+export const TicketTable: React.FC<Props> = ({ className, ticketList }) => {
   const [groupBy, setGroupBy] = useLocalStorage(
     lsFlags.dashboardEventTicketSaleGroupBy,
     'none'
   );
 
   return (
-    <div className={cn(className, 'flex flex-col gap-2')}>
+    <CardBody className={cn(className, 'gap-2')}>
       <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div className="grid grid-cols-[repeat(5,max-content)] gap-x-6 gap-y-2">
           <TableHeader />
-          {ticketList.length === 0 && (
-            <div
-              className={cn(
-                'col-span-full h-8',
-                'justify-self-center content-center'
-              )}
-            >
-              <div className="text-sm text-foreground-500">
-                No data to display
-              </div>
-            </div>
-          )}
           {groupBy === 'none' &&
             ticketList.map((ticket) => (
               <TableRow key={ticket.key} ticket={ticket} />
@@ -82,6 +70,6 @@ export const TicketSaleTable: React.FC<Props> = ({ className, ticketList }) => {
           <TableSumRow ticketList={ticketList} />
         </div>
       </ScrollShadow>
-    </div>
+    </CardBody>
   );
 };
