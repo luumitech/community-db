@@ -4,7 +4,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
-  query RegisterEventSpec_CommunityInfo {
+  query RegisterEventCommunitySpec_CommunityInfo {
     userCurrent {
       accessList {
         community {
@@ -35,11 +35,13 @@ const communityInfoDocument = graphql(/* GraphQL */ `
 `);
 
 type Community =
-  GQL.RegisterEventSpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
+  GQL.RegisterEventCommunitySpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
 type Property = Community['propertyList']['edges'][number]['node'];
 
 const registerEventDocument = graphql(/* GraphQL */ `
-  mutation RegisterEventSpec_RegisterEvent($input: RegisterEventInput!) {
+  mutation RegisterEventCommunitySpec_RegisterEvent(
+    $input: RegisterEventInput!
+  ) {
     registerEvent(input: $input) {
       community {
         id

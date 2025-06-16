@@ -26,15 +26,6 @@ export class MemberSource {
     });
   }
 
-  /** Get statistic entry for a given event */
-  private getByEvent(eventName: string): MemberSourceStat {
-    const entry = this.statMap.get(eventName);
-    if (!entry) {
-      throw new GraphQLError(`Statistics not available for event ${eventName}`);
-    }
-    return entry;
-  }
-
   /**
    * Process the event attended list, and collect statistics
    *
@@ -55,14 +46,14 @@ export class MemberSource {
     // `isMemberThisYear` guarantees `entry.eventAttendedList` to have at least one entry
     const [joinEvent, ...otherEvent] = eventAttendedList;
 
-    const stat = this.getByEvent(joinEvent.eventName);
+    const stat = this.getOneStat(joinEvent.eventName);
     if (renew) {
       stat.renew++;
     } else {
       stat.new++;
     }
     otherEvent.forEach((event) => {
-      this.getByEvent(event.eventName).existing++;
+      this.getOneStat(event.eventName).existing++;
     });
   }
 
