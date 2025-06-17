@@ -58,7 +58,7 @@ function schema() {
           .int()
           .min(0)
           .nullable(),
-        unitPrice: z.string().nullable(),
+        unitPrice: zz.coerce.toCurrency(),
       })
     ),
     paymentMethodList: z.array(
@@ -67,7 +67,7 @@ function schema() {
       })
     ),
     defaultSetting: z.object({
-      membershipFee: z.string().nullable(),
+      membershipFee: zz.coerce.toCurrency(),
     }),
     // Used for rendering UI only, not submitted
     // to server

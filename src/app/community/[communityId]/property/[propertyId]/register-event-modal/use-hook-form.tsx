@@ -26,7 +26,7 @@ function schema() {
     notes: z.string().nullable(),
     membership: z.object({
       year: zz.coerce.toNumber({ message: 'Must select a year' }),
-      price: z.string().nullable(),
+      price: zz.coerce.toCurrency(),
       paymentMethod: zz.string.nonEmpty('Must select a payment method'),
     }),
     event: z.object({
