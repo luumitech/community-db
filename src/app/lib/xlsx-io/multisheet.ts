@@ -19,6 +19,10 @@ export interface WorksheetRows {
 export interface CommunityRow {
   name: string | null;
   defaultSetting: string | null;
+  eventList: string | null;
+  ticketList: string | null;
+  paymentMethodList: string | null;
+  mailchimpSetting: string | null;
   updatedAt: string | null;
   updatedBy: string | null;
 }

@@ -19,7 +19,7 @@ import { useTableData } from './use-table-data';
 
 interface Props {}
 
-export const SyncContact: React.FC<Props> = () => {
+export const AudienceList: React.FC<Props> = () => {
   const { community } = usePageContext();
   const [listId, setListId] = React.useState<string>();
   const [statusFilter, setStatusFilter] = useStatusFilter();
