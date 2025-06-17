@@ -19,7 +19,11 @@ export class StatUtil {
     propertyList.forEach(({ membershipList }) => {
       membershipList.forEach((entry, idx) => {
         const isMemberThisYear = isMember(entry);
-        const isMemberLastYear = isMember(membershipList[idx - 1]);
+        /**
+         * MembershipList are sorted in descending order, so previous year would
+         * be the next entry
+         */
+        const isMemberLastYear = isMember(membershipList[idx + 1]);
         this.byYear.add(entry, isMemberThisYear, isMemberLastYear);
       });
     });

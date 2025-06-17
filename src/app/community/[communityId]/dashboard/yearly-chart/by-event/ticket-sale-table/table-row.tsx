@@ -2,7 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
-import { type TicketStatEntry } from './_type';
+import { type TicketStatEntry } from '../_type';
 
 interface TableHeaderProps {
   className?: string;

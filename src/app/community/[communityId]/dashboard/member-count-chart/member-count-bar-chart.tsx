@@ -58,10 +58,6 @@ class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
     }));
   }
 
-  yVal(entry: ChartDataEntry) {
-    return entry.new + entry.renewed;
-  }
-
   getDataColor(label: keyof ChartDataEntry) {
     if (label === 'no renewal') {
       return getItemColor(0);
@@ -282,8 +278,8 @@ export const MemberCountBarChart: React.FC<Props> = ({
     () => customLegend(chartHelper),
     [chartHelper]
   );
-  const tickValues = React.useMemo(
-    () => chartHelper.getYTicks(10),
+  const gridYValues = React.useMemo(
+    () => chartHelper.getIntegerTicks(10, (data) => data.new + data.renewed),
     [chartHelper]
   );
 
@@ -308,10 +304,10 @@ export const MemberCountBarChart: React.FC<Props> = ({
           }
         },
       }}
-      gridYValues={tickValues}
+      gridYValues={gridYValues}
       axisLeft={{
         legend: 'Member Count',
-        tickValues,
+        tickValues: gridYValues,
       }}
       // These tooltip would only show if you hover over the bar
       // We want to show tooltip as long as we are hovering over the column

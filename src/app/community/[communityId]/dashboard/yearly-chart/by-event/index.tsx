@@ -11,6 +11,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import { type DashboardEntry } from '../_type';
 import { useYearlyContext } from '../yearly-context';
 import { EventNameSelect } from './event-name-select';
+import { ParticipationChart } from './participation-chart';
 import { TicketSaleTable } from './ticket-sale-table';
 
 const EventTicketFragment = graphql(/* GraphQL */ `
@@ -18,6 +19,9 @@ const EventTicketFragment = graphql(/* GraphQL */ `
     communityStat {
       memberSourceStat(year: $year) {
         eventName
+        new
+        renew
+        existing
       }
       ticketStat(year: $year) {
         key
@@ -39,7 +43,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-export const EventTicketSale: React.FC<Props> = ({
+export const ByEvent: React.FC<Props> = ({
   className,
   fragment,
   year,
@@ -48,26 +52,33 @@ export const EventTicketSale: React.FC<Props> = ({
   const { eventSelected } = useYearlyContext();
   const entry = getFragment(EventTicketFragment, fragment);
   const ticketStat = entry?.communityStat.ticketStat ?? [];
+  const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
   const ticketList = ticketStat.filter(
     ({ eventName }) => eventName === eventSelected
   );
-  const eventList = (entry?.communityStat.memberSourceStat ?? []).map(
-    ({ eventName }) => eventName
+  const eventList = memberSourceStat.map(({ eventName }) => eventName);
+  const eventMemberSourceStat = memberSourceStat.filter(
+    ({ eventName }) => eventName === eventSelected
   );
 
   return (
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="font-bold text-md">{`${year} Event Ticket Sale`}</p>
+          <p className="font-bold text-md">{`${year} Event Details`}</p>
         </div>
       </CardHeader>
       <CardBody>
-        <Skeleton className="rounded-lg min-h-[400px]" isLoaded={!isLoading}>
+        <Skeleton
+          className="flex flex-col rounded-lg min-h-[400px]"
+          isLoaded={!isLoading}
+        >
           <EventNameSelect eventList={eventList} />
           {!!eventSelected && (
             <>
-              <Spacer y={2} />
+              <Spacer y={4} />
+              <ParticipationChart stat={eventMemberSourceStat} />
+              <Spacer y={4} />
               <TicketSaleTable ticketList={ticketList} />
             </>
           )}

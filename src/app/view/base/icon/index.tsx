@@ -44,7 +44,7 @@ const supportedIcon = {
   hamburgerMenu: 'radix-icons:hamburger-menu',
   sunMoon: 'lucide:sun-moon',
   google: 'flat-color-icons:google',
-  'modify-community': 'bi:house-gear',
+  'modify-community': 'gravity-ui:gear',
   integration: 'eos-icons:api-outlined',
   warning: 'cuida:warning-outline',
   refresh: 'mdi:refresh',
