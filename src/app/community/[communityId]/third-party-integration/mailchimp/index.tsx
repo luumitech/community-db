@@ -1,13 +1,10 @@
-import { useQuery } from '@apollo/client';
-import { Button, Tab, Tabs, cn } from '@heroui/react';
+import { Tab, Tabs, cn } from '@heroui/react';
 import React from 'react';
-import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
-import { Icon } from '~/view/base/icon';
+import { getFragment } from '~/graphql/generated';
 import { usePageContext } from '../page-context';
+import { AudienceList } from './audience-list';
 import { Settings } from './settings';
 import { ModifyFragment } from './settings/use-hook-form';
-import { SyncContact } from './sync-contact';
 
 interface Props {
   className?: string;
@@ -32,8 +29,8 @@ export const Mailchimp: React.FC<Props> = ({ className }) => {
       aria-label="Mailchimp Menu"
       isVertical
     >
-      <Tab key="sync-contacts" title="Sync Contacts" isDisabled={!hasApiKey}>
-        <SyncContact />
+      <Tab key="audience-list" title="Audience List" isDisabled={!hasApiKey}>
+        <AudienceList />
       </Tab>
       <Tab key="settings" title="Settings">
         <Settings />

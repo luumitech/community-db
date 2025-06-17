@@ -11,6 +11,15 @@ import { OccupantUtil } from './occupant-util';
 import { PropertyUtil } from './property-util';
 import { TicketUtil } from './ticket-util';
 
+function safeJsonParse(jsonStr: string) {
+  try {
+    return JSON.parse(jsonStr);
+  } catch (err) {
+    // ignore JSON parse error
+    return undefined;
+  }
+}
+
 export class CommunityUtil {
   private community: ReturnType<typeof this.parseXlsx>;
 
@@ -29,6 +38,22 @@ export class CommunityUtil {
       },
       defaultSettingJson: {
         colIdx: importHelper.labelColumn('defaultSetting'),
+        type: 'string',
+      },
+      eventListJson: {
+        colIdx: importHelper.labelColumn('eventList'),
+        type: 'string',
+      },
+      ticketListJson: {
+        colIdx: importHelper.labelColumn('ticketList'),
+        type: 'string',
+      },
+      paymentMethodListJson: {
+        colIdx: importHelper.labelColumn('paymentMethodList'),
+        type: 'string',
+      },
+      mailchimpSettingJson: {
+        colIdx: importHelper.labelColumn('mailchimpSetting'),
         type: 'string',
       },
       updatedAt: {
@@ -52,7 +77,15 @@ export class CommunityUtil {
     eventUtil: EventUtil;
     ticketUtil: TicketUtil;
   }): CommunityEntry {
-    const { updatedByEmail, defaultSettingJson, ...community } = this.community;
+    const {
+      updatedByEmail,
+      defaultSettingJson,
+      eventListJson,
+      ticketListJson,
+      paymentMethodListJson,
+      mailchimpSettingJson,
+      ...community
+    } = this.community;
     const updatedBy = updatedByEmail
       ? {
           connectOrCreate: {
@@ -62,36 +95,24 @@ export class CommunityUtil {
         }
       : undefined;
 
-    let defaultSetting = undefined;
-    try {
-      defaultSetting = JSON.parse(defaultSettingJson);
-    } catch (err) {
-      // ignore JSON parse error
-    }
+    const defaultSetting = safeJsonParse(defaultSettingJson);
+    const eventList = safeJsonParse(eventListJson);
+    const ticketList = safeJsonParse(ticketListJson);
+    const paymentMethodList = safeJsonParse(paymentMethodListJson);
+    const mailchimpSetting = safeJsonParse(mailchimpSettingJson);
 
     const propertyList = opt.propertyUtil.propertyList(opt);
-    const eventNameList = extractEventList(propertyList);
-    const paymentMethodList = extractPaymentMethodList(propertyList);
-    const ticketList = extractTicketList(propertyList);
     const yearRange = extractYearRange(propertyList);
 
     return {
       ...community,
       ...(!!defaultSetting && { defaultSetting }),
+      ...(!!eventList && { eventList }),
+      ...(!!ticketList && { ticketList }),
+      ...(!!paymentMethodList && { paymentMethodList }),
+      ...(!!mailchimpSetting && { mailchimpSetting }),
       ...(updatedBy && { updatedBy }),
       ...yearRange,
-      eventList: eventNameList.map((eventName) => ({
-        name: eventName,
-        hidden: false,
-      })),
-      ticketList: ticketList.map((ticketName) => ({
-        name: ticketName,
-        hidden: false,
-      })),
-      paymentMethodList: paymentMethodList.map((method) => ({
-        name: method,
-        hidden: false,
-      })),
       propertyList: {
         create: propertyList,
       },

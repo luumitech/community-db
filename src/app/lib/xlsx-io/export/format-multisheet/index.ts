@@ -112,6 +112,10 @@ export class ExportMultisheet extends ExportHelper {
     this.rows.community.push({
       name: community.name,
       defaultSetting: ExportHelper.toJson(community.defaultSetting),
+      eventList: ExportHelper.toJson(community.eventList),
+      ticketList: ExportHelper.toJson(community.ticketList),
+      paymentMethodList: ExportHelper.toJson(community.paymentMethodList),
+      mailchimpSetting: ExportHelper.toJson(community.mailchimpSetting),
       updatedAt: ExportHelper.toDate(community.updatedAt),
       updatedBy: community.updatedBy?.email ?? null,
     });

@@ -65,8 +65,8 @@ export const Settings: React.FC<Props> = () => {
           <CardBody>
             <div className="flex flex-col gap-4">
               <p className="text-foreground-500 text-sm">
-                Adding a Mailchimp API key enables synchronization between the
-                Mailchimp audience list and the community contact list.
+                Adding a Mailchimp API key enables reading of Mailchimp audience
+                list.
               </p>
               <ApiKey />
             </div>
