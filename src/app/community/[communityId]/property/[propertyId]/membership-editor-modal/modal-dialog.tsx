@@ -1,5 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { type FieldPath } from 'react-hook-form';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
@@ -16,19 +17,41 @@ import { LastModified } from '~/view/last-modified';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
-export interface ModalArg {}
+export interface ModalArg {
+  /**
+   * Focus on a specific input field initially
+   *
+   * `notes-helper`: The One line Notes helper above the TextArea
+   */
+  autoFocus?: FieldPath<InputData> | 'notes-helper';
+}
 
 interface Props extends ModalArg {
   disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
+export const ModalDialog: React.FC<Props> = ({
+  disclosure,
+  onSave,
+  autoFocus,
+}) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
   const { formMethods, property } = useHookForm();
-  const { formState, handleSubmit } = formMethods;
+  const { formState, handleSubmit, setFocus } = formMethods;
   const { isDirty } = formState;
+
+  React.useEffect(() => {
+    if (setFocus && autoFocus != null) {
+      switch (autoFocus) {
+        case 'notes-helper':
+          break;
+        default:
+          setFocus(autoFocus);
+      }
+    }
+  }, [setFocus, autoFocus]);
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -62,7 +85,10 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
                 <ModalHeader>{appLabel('membershipEditor')}</ModalHeader>
                 <ModalBody className="gap-4">
                   <MembershipInfoEditor property={property} />
-                  <NotesEditor controlName="notes" />
+                  <NotesEditor
+                    controlName="notes"
+                    autoFocus={autoFocus === 'notes-helper'}
+                  />
                 </ModalBody>
                 <ModalFooter className="flex items-center justify-between">
                   <LastModified

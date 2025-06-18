@@ -55,7 +55,6 @@ export const MenuOptions: React.FC<Props> = ({ className, onSelect }) => {
           }}
           href={item.path}
           key={item.key}
-          value={item.key}
           onPress={() => onSelect?.(item)}
         >
           {item.label}

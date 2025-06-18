@@ -1,17 +1,14 @@
-import { Input, InputProps, cn } from '@heroui/react';
+import {
+  NumberInput as NextUINumberInput,
+  NumberInputProps as NextUINumberInputProps,
+  cn,
+} from '@heroui/react';
 import React from 'react';
-import { NumericFormat, type NumericFormatProps } from 'react-number-format';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
-export { SelectItem, SelectSection } from '@heroui/react';
-
-type CustomInputProps = Omit<InputProps, keyof NumericFormatProps>;
-
-export interface CurrencyInputProps
-  extends NumericFormatProps,
-    CustomInputProps {
+export interface NumberInputProps extends NextUINumberInputProps {
   controlName: string;
   /**
    * Force component into a controlled component, useful if you need setValue to
@@ -20,17 +17,15 @@ export interface CurrencyInputProps
   isControlled?: boolean;
 }
 
-export const CurrencyInput = React.forwardRef<
-  HTMLInputElement,
-  CurrencyInputProps
->(
+export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   (
     {
       classNames,
       controlName,
       isControlled,
       onBlur,
-      onChange,
+      onClear,
+      onValueChange,
       isReadOnly,
       ...props
     },
@@ -49,51 +44,44 @@ export const CurrencyInput = React.forwardRef<
         control={control}
         name={controlName}
         render={({ field }) => (
-          <NumericFormat
+          <NextUINumberInput
             ref={mergeRefs(field.ref, ref)}
             classNames={{
               ...classNames,
               // Render readonly field by removing all input decoration
-              base: cn(
-                classNames?.base,
-                // Enough space for $99.99
-                'min-w-20',
-                { 'opacity-100': isReadOnly }
-              ),
+              base: cn(classNames?.base, {
+                'opacity-100': isReadOnly,
+              }),
               inputWrapper: cn(classNames?.inputWrapper, {
                 'border-none shadow-none bg-transparent': isReadOnly,
               }),
             }}
-            // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
-            customInput={Input}
-            defaultValue={field.value ?? ''}
+            defaultValue={field.value ?? NaN}
             // Force component into a controlled component
-            {...(isControlled && { value: field.value ?? '' })}
+            {...(isControlled && { value: field.value ?? NaN })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);
             }}
-            onChange={(evt) => {
-              field.onChange(evt);
-              onChange?.(evt);
+            onValueChange={(val) => {
+              field.onChange(val);
+              onValueChange?.(val);
             }}
-            errorMessage={error}
-            isInvalid={!!error}
-            thousandSeparator=","
-            decimalSeparator="."
-            decimalScale={2}
-            fixedDecimalScale
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">$</span>
-              </div>
-            }
+            {...(onClear != null && {
+              onClear: () => {
+                field.onChange('');
+                onClear();
+              },
+            })}
             onKeyDown={(e) => {
               // Prevent Enter key inside input from submitting form
               if (e.key === 'Enter') {
                 e.preventDefault();
               }
             }}
+            errorMessage={error}
+            isInvalid={!!error}
+            labelPlacement="outside"
             {...(!!isReadOnly && {
               isReadOnly: true,
               isDisabled: true,
@@ -106,4 +94,4 @@ export const CurrencyInput = React.forwardRef<
   }
 );
 
-CurrencyInput.displayName = 'CurrencyInput';
+NumberInput.displayName = 'NumberInput';

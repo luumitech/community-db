@@ -5,6 +5,7 @@ import {
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
@@ -33,7 +34,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         name={controlName}
         render={({ field }) => (
           <NextUITextarea
-            ref={ref}
+            ref={mergeRefs(field.ref, ref)}
             // Force component into a controlled component
             {...(isControlled && { value: field.value ?? '' })}
             defaultValue={field.value ?? ''}

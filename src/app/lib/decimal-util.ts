@@ -2,9 +2,12 @@ import { Decimal } from 'decimal.js';
 export { Decimal } from 'decimal.js';
 
 /**
- * Check if input is a valid Decimal input. Normally `new Decimal()` throws an
- * error when the constructor argument is invalid, so we catch the error and
- * return false in that case.
+ * Check if input is a valid Decimal input.
+ *
+ * Returns false if:
+ *
+ * - Invalid number string (i.e. `new Decimal()` throws exception)
+ * - Number is NaN
  */
 export function isValidDecInput(
   input?: Decimal.Value | null
@@ -13,7 +16,10 @@ export function isValidDecInput(
     if (input == null) {
       return false;
     }
-    new Decimal(input);
+    const dec = new Decimal(input);
+    if (dec.isNaN()) {
+      return false;
+    }
     return true;
   } catch (e) {
     // Error initializng decimal, so input must not be a valid decimal input
@@ -53,7 +59,8 @@ export function decIsEqual(
 }
 
 /**
- * Multiply one or more decimal strings
+ * Multiply one or more decimal strings. Invalid decimal entries are treated as
+ * 0.
  *
  * Return result in string
  */

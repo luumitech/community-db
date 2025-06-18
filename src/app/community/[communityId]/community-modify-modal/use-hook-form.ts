@@ -7,7 +7,7 @@ import {
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zz } from '~/lib/zod';
+import { isInteger, isPositive, z, zz } from '~/lib/zod';
 
 const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_CommunityModifyModal on Community {
@@ -53,11 +53,11 @@ function schema() {
     ticketList: z.array(
       z.object({
         name: zz.string.nonEmpty(),
-        count: z.coerce
-          .number({ message: 'Must be a number' })
-          .int()
-          .min(0)
-          .nullable(),
+        count: zz.coerce.toNumber({
+          message: 'Must be a number',
+          nullable: true,
+          validateFn: [isPositive(), isInteger()],
+        }),
         unitPrice: zz.coerce.toCurrency(),
       })
     ),

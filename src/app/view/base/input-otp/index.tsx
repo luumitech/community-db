@@ -6,6 +6,7 @@ import {
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export interface InputProps extends NextUIInputOtpProps {
   controlName: string;
@@ -43,7 +44,7 @@ export const InputOtp = React.forwardRef<HTMLInputElement, InputProps>(
         name={controlName}
         render={({ field }) => (
           <NextUIInputOtp
-            ref={ref}
+            ref={mergeRefs(ref, field.ref)}
             classNames={{
               ...classNames,
             }}
