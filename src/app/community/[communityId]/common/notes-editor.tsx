@@ -9,9 +9,15 @@ import { Textarea } from '~/view/base/textarea';
 interface Props {
   className?: string;
   controlName: string;
+  /** Set auto focus on the one line input */
+  autoFocus?: boolean;
 }
 
-export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
+export const NotesEditor: React.FC<Props> = ({
+  className,
+  controlName,
+  autoFocus,
+}) => {
   const { shortName } = useUserInfo();
   const [line, setLine] = React.useState<string>('');
   const { setValue, watch } = useFormContext();
@@ -23,8 +29,9 @@ export const NotesEditor: React.FC<Props> = ({ className, controlName }) => {
         <Input
           label="Notes"
           labelPlacement="outside"
-          isClearable
           variant="bordered"
+          isClearable
+          autoFocus={autoFocus}
           value={line}
           onValueChange={setLine}
         />

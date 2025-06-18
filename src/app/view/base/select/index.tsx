@@ -6,6 +6,7 @@ import {
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
@@ -79,7 +80,7 @@ export function Select<T extends object>(props: SelectProps<T>) {
           name={controlName}
           render={({ field }) => (
             <NextUISelect<T>
-              ref={ref}
+              ref={mergeRefs(field.ref, ref)}
               classNames={{
                 ...classNames,
                 // Render readonly field by removing all input decoration

@@ -7,6 +7,7 @@ import { toCalendarDate } from '@internationalized/date';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 import { parseAsDate } from '~/lib/date-util';
 
 interface DatePickerProps extends NextUIDatePickerProps {
@@ -41,7 +42,7 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
 
           return (
             <NextUIDatePicker
-              ref={ref}
+              ref={mergeRefs(field.ref, ref)}
               // Reserve enough space for 12/31/9999
               className={cn(className, 'min-w-32')}
               // Force component into a controlled component

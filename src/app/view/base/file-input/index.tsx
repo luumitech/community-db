@@ -3,6 +3,7 @@ import React from 'react';
 import * as R from 'remeda';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 import { FlatButton } from '~/view/base/flat-button';
 
 type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
@@ -75,7 +76,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
             <input
               type="file"
               hidden
-              ref={inputRef}
+              ref={mergeRefs(field.ref, inputRef)}
               onBlur={(evt) => {
                 field.onBlur();
                 onBlur?.(evt);

@@ -6,6 +6,7 @@ import {
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export interface NumberInputProps extends NextUINumberInputProps {
   controlName: string;
@@ -44,7 +45,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         name={controlName}
         render={({ field }) => (
           <NextUINumberInput
-            ref={ref}
+            ref={mergeRefs(field.ref, ref)}
             classNames={{
               ...classNames,
               // Render readonly field by removing all input decoration

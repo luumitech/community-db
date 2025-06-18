@@ -6,6 +6,7 @@ import {
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export interface InputProps extends NextUIInputProps {
   controlName: string;
@@ -45,7 +46,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         name={controlName}
         render={({ field }) => (
           <NextUIInput
-            ref={ref}
+            ref={mergeRefs(field.ref, ref)}
             classNames={{
               ...classNames,
               // Render readonly field by removing all input decoration

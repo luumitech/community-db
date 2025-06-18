@@ -3,6 +3,7 @@ import React from 'react';
 import { NumericFormat, type NumericFormatProps } from 'react-number-format';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
@@ -49,7 +50,7 @@ export const CurrencyInput = React.forwardRef<
         name={controlName}
         render={({ field }) => (
           <NumericFormat
-            ref={ref}
+            ref={mergeRefs(field.ref, ref)}
             classNames={{
               ...classNames,
               // Render readonly field by removing all input decoration
