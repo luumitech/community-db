@@ -72,7 +72,7 @@ function schema() {
               { message: 'Event Name must be unique', path: [''] }
             ),
           paymentMethod: z.string().nullable(),
-          price: z.string().nullable(),
+          price: zz.coerce.toCurrency(),
         })
         .refine(
           (form) => {

@@ -20,6 +20,7 @@ interface ToNumberOpt extends CoerceOpt {
   validateFn?: (val: number) => string | null;
 }
 interface ToFileArrayOpt extends CoerceOpt {}
+interface ToCurrencyOpt extends CoerceOpt {}
 
 export class Coerce {
   /**
@@ -151,6 +152,38 @@ export class Coerce {
       }
 
       return Array.from(val);
+    });
+  }
+
+  /**
+   * Coerce input as currencyInput(string). This is useful for used for
+   * CurrencyInput when you want empty value (i.e. '') to be converted to null
+   *
+   * Normally, `z.string().nullable()` will accept '' as valid input
+   */
+  toCurrency(opt?: ToCurrencyOpt): ZodEffects<ZodAny, string | null> {
+    return z.any().transform((val, ctx) => {
+      const onError = (message: string) => {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message,
+        });
+        return z.NEVER;
+      };
+
+      if (val == null) {
+        return null;
+      }
+
+      const trimmedStr = val.trim();
+      if (!trimmedStr) {
+        // Coerce empty string into null
+        return null;
+      }
+
+      // TODO: perform further checking to see if it is valid currency format
+
+      return trimmedStr as unknown as string;
     });
   }
 }

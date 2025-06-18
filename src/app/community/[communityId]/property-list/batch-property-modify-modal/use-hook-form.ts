@@ -33,7 +33,7 @@ function schema() {
         eventDate: zz.coerce.toIsoDate(),
         ticketList: ticketListSchema,
       }),
-      price: z.string().nullable(),
+      price: zz.coerce.toCurrency(),
       paymentMethod: zz.string.nonEmpty('Must specify payment method'),
     }),
   });

@@ -12,7 +12,7 @@ export const ticketListSchema = z.array(
         validateFn: isPositive(),
       }),
       paymentMethod: z.string().nullable(),
-      price: z.string().nullable(),
+      price: zz.coerce.toCurrency(),
     })
     .refine(
       (form) => {
