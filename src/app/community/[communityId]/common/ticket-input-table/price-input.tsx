@@ -21,13 +21,13 @@ export const PriceInput: React.FC<Props> = ({
   const { ticketDefault } = useAppContext();
   const { setValue, watch, clearErrors } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
-  const ticketCount = watch(`${controlNamePrefix}.count`);
+  const ticketCount = watch(`${controlNamePrefix}.count`) as number;
   const price = watch(`${controlNamePrefix}.price`);
 
   const ticketDef = ticketDefault.get(ticketType);
   const unitPrice = ticketDef?.unitPrice;
   const defaultPrice = React.useMemo(() => {
-    if (unitPrice == null || ticketCount == null) {
+    if (unitPrice == null || ticketCount == null || isNaN(ticketCount)) {
       return null;
     }
     return decMul(unitPrice, ticketCount);
@@ -41,6 +41,7 @@ export const PriceInput: React.FC<Props> = ({
          * based on value of price
          */
         clearErrors(`${controlNamePrefix}.paymentMethod`);
+        clearErrors(`${controlNamePrefix}.price`);
       },
       [clearErrors, controlNamePrefix]
     );

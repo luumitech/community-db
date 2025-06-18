@@ -18,7 +18,7 @@ export const Mailchimp: React.FC<Props> = ({ className }) => {
   return (
     <Tabs
       classNames={{
-        wrapper: 'h-full',
+        tabWrapper: 'h-full',
         tabList: 'bg-background',
         tab: 'justify-start',
         cursor: cn('rounded-none shadow-none', 'border-l-4 border-primary'),

@@ -1,6 +1,6 @@
 import { type UseFieldArrayReturn } from '~/custom-hooks/hook-form';
 import { isNonZeroDec } from '~/lib/decimal-util';
-import { isPositive, z, zz } from '~/lib/zod';
+import { isInteger, isPositive, z, zz } from '~/lib/zod';
 
 export const ticketListSchema = z.array(
   z
@@ -9,7 +9,7 @@ export const ticketListSchema = z.array(
       count: zz.coerce.toNumber({
         message: 'Must be a number',
         nullable: true,
-        validateFn: isPositive(),
+        validateFn: [isPositive(), isInteger()],
       }),
       paymentMethod: z.string().nullable(),
       price: zz.coerce.toCurrency(),

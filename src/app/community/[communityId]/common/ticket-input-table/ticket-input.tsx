@@ -4,11 +4,11 @@ import { useAppContext } from '~/custom-hooks/app-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { Decimal, decMul } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
-import { Input, InputProps } from '~/view/base/input';
+import { NumberInput, NumberInputProps } from '~/view/base/number-input';
 
-type CustomInputProps = Omit<InputProps, 'controlName'>;
+type TicketInputProps = Omit<NumberInputProps, 'controlName'>;
 
-interface Props extends CustomInputProps {
+interface Props extends TicketInputProps {
   className?: string;
   controlNamePrefix: string;
 }
@@ -37,16 +37,8 @@ export const TicketInput: React.FC<Props> = ({
     [controlNamePrefix, setValue, unitPrice]
   );
 
-  const onChange: NonNullable<InputProps['onChange']> = React.useCallback(
-    (evt) => {
-      const ticketCount = evt.currentTarget.value;
-      updatePrice(ticketCount);
-    },
-    [updatePrice]
-  );
-
   return (
-    <Input
+    <NumberInput
       classNames={{
         base: cn(className, 'min-w-16'),
         // This will align input and select items text on the same line
@@ -71,7 +63,9 @@ export const TicketInput: React.FC<Props> = ({
           />
         )
       }
-      onChange={onChange}
+      onValueChange={updatePrice}
+      hideStepper
+      isWheelDisabled
       {...props}
     />
   );

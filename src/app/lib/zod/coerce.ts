@@ -2,6 +2,7 @@ import * as R from 'remeda';
 import { z, type ZodAny, type ZodEffects } from 'zod';
 import { isValidDate } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
+import { type ValidateFn } from './validate';
 
 interface CoerceOpt {
   message?: string;
@@ -17,10 +18,28 @@ interface ToNumberOpt extends CoerceOpt {
    * - If validation fails, return an error message
    * - Otherwise return null
    */
-  validateFn?: (val: number) => string | null;
+  validateFn?: ValidateFn<number> | ValidateFn<number>[];
 }
 interface ToFileArrayOpt extends CoerceOpt {}
 interface ToCurrencyOpt extends CoerceOpt {}
+
+/**
+ * Loop through validation functions and determine if input `val` has passed
+ * validation
+ */
+function validate<T>(valFn: ValidateFn<T> | ValidateFn<T>[], val: T) {
+  const fnList = Array.isArray(valFn) ? valFn : [valFn];
+
+  // Loop through validation function and return first failed validation
+  let message: string | null = null;
+  for (const fn of fnList) {
+    message = fn(val);
+    if (message != null) {
+      break;
+    }
+  }
+  return message;
+}
 
 export class Coerce {
   /**
@@ -70,7 +89,7 @@ export class Coerce {
           return onError(opt?.message ?? 'Not a valid number');
         }
       } else if (opt?.validateFn) {
-        const message = opt.validateFn(num);
+        const message = validate(opt.validateFn, num);
         if (message) {
           return onError(message);
         }

@@ -1,13 +1,13 @@
 import {
-  Input as NextUIInput,
-  InputProps as NextUIInputProps,
+  NumberInput as NextUINumberInput,
+  NumberInputProps as NextUINumberInputProps,
   cn,
 } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 
-export interface InputProps extends NextUIInputProps {
+export interface NumberInputProps extends NextUINumberInputProps {
   controlName: string;
   /**
    * Force component into a controlled component, useful if you need setValue to
@@ -16,14 +16,13 @@ export interface InputProps extends NextUIInputProps {
   isControlled?: boolean;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   (
     {
       classNames,
       controlName,
       isControlled,
       onBlur,
-      onChange,
       onClear,
       onValueChange,
       isReadOnly,
@@ -44,7 +43,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         control={control}
         name={controlName}
         render={({ field }) => (
-          <NextUIInput
+          <NextUINumberInput
             ref={ref}
             classNames={{
               ...classNames,
@@ -56,16 +55,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 'border-none shadow-none bg-transparent': isReadOnly,
               }),
             }}
-            defaultValue={field.value ?? ''}
+            defaultValue={field.value ?? NaN}
             // Force component into a controlled component
-            {...(isControlled && { value: field.value ?? '' })}
+            {...(isControlled && { value: field.value ?? NaN })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);
             }}
-            onChange={(evt) => {
-              field.onChange(evt);
-              onChange?.(evt);
+            onValueChange={(val) => {
+              field.onChange(val);
+              onValueChange?.(val);
             }}
             {...(onClear != null && {
               onClear: () => {
@@ -73,8 +72,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 onClear();
               },
             })}
+            onKeyDown={(e) => {
+              // Prevent Enter key inside input from submitting form
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
             errorMessage={error}
             isInvalid={!!error}
+            labelPlacement="outside"
             {...(!!isReadOnly && {
               isReadOnly: true,
               isDisabled: true,
@@ -87,4 +93,4 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+NumberInput.displayName = 'NumberInput';

@@ -8,7 +8,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { CurrencyInput } from '~/view/base/currency-input';
 import { FlatButton } from '~/view/base/flat-button';
-import { Input } from '~/view/base/input';
+import { NumberInput } from '~/view/base/number-input';
 
 // Enable animation when item is removed
 const animateLayoutChanges: AnimateLayoutChanges = (args) => {
@@ -64,11 +64,12 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
         allowNegative={false}
         variant="underlined"
       />
-      <Input
+      <NumberInput
         controlName={`ticketList.${ticketIdx}.count`}
         aria-label="Ticket #"
         variant="underlined"
-        type="number"
+        hideStepper
+        isWheelDisabled
       />
       <FlatButton
         className="text-danger mt-3"
