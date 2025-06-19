@@ -28,73 +28,55 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
   });
 
   function addOccupant(rowIdx: number, num: number): OccupantEntry {
-    const occupant = importHelper.mapping(rowIdx, {
-      firstName: {
-        colIdx: importHelper.labelColumn(`FirstName${num}`),
-        type: 'string',
+    const occupant = importHelper.mapping(
+      rowIdx,
+      {
+        firstName: 'string',
+        lastName: 'string',
+        optOut: 'boolean',
+        email: 'string',
+        home: 'string',
+        work: 'string',
+        cell: 'string',
       },
-      lastName: {
-        colIdx: importHelper.labelColumn(`LastName${num}`),
-        type: 'string',
-      },
-      optOut: {
-        colIdx: importHelper.labelColumn(`EMail${num}OptOut`),
-        type: 'boolean',
-      },
-      email: {
-        colIdx: importHelper.labelColumn(`EMail${num}`),
-        type: 'string',
-      },
-      home: {
-        colIdx: importHelper.labelColumn(`HomePhone${num}`),
-        type: 'string',
-      },
-      work: {
-        colIdx: importHelper.labelColumn(`WorkPhone${num}`),
-        type: 'string',
-      },
-      cell: {
-        colIdx: importHelper.labelColumn(`CellPhone${num}`),
-        type: 'string',
-      },
-    });
+      {
+        firstName: importHelper.labelColumn(`FirstName${num}`),
+        lastName: importHelper.labelColumn(`LastName${num}`),
+        optOut: importHelper.labelColumn(`EMail${num}OptOut`),
+        email: importHelper.labelColumn(`EMail${num}`),
+        home: importHelper.labelColumn(`HomePhone${num}`),
+        work: importHelper.labelColumn(`WorkPhone${num}`),
+        cell: importHelper.labelColumn(`CellPhone${num}`),
+      }
+    );
     return occupant;
   }
 
   function addMembership(rowIdx: number, year: number): MembershipEntry {
     const prefix = `Y${year}`;
-    const _membership = importHelper.mapping(rowIdx, {
-      // isMember: {
-      //   colIdx: importHelper.labelColumn(`${prefix}`),
-      //   type: 'boolean',
-      // },
-      // event names separated by semi-colons
-      eventNames: {
-        colIdx: importHelper.labelColumn(`${prefix}-event`),
-        type: 'string',
+    const _membership = importHelper.mapping(
+      rowIdx,
+      {
+        // isMember: 'boolean',
+        eventNames: 'string',
+        eventDates: 'string',
+        eventTickets: 'string',
+        paymentMethod: 'string',
+        paymentDeposited: 'boolean',
+        price: 'string',
       },
-      // event dates separated by semi-colons
-      eventDates: {
-        colIdx: importHelper.labelColumn(`${prefix}-date`),
-        type: 'string',
-      },
-      eventTickets: {
-        colIdx: importHelper.labelColumn(`${prefix}-ticket`),
-        type: 'string',
-      },
-      paymentMethod: {
-        colIdx: importHelper.labelColumn(`${prefix}-payment`),
-        type: 'string',
-      },
-      paymentDeposited: {
-        colIdx: importHelper.labelColumn(`${prefix}-deposited`),
-        type: 'boolean',
-      },
-      price: {
-        colIdx: importHelper.labelColumn(`${prefix}-price`),
-        type: 'string',
-      },
-    });
+      {
+        // isMember: importHelper.labelColumn(`${prefix}`),
+        // event names separated by semi-colons
+        eventNames: importHelper.labelColumn(`${prefix}-event`),
+        // event dates separated by semi-colons
+        eventDates: importHelper.labelColumn(`${prefix}-date`),
+        eventTickets: importHelper.labelColumn(`${prefix}-ticket`),
+        paymentMethod: importHelper.labelColumn(`${prefix}-payment`),
+        paymentDeposited: importHelper.labelColumn(`${prefix}-deposited`),
+        price: importHelper.labelColumn(`${prefix}-price`),
+      }
+    );
     // Map eventNameList/eventDateList into the format of
     // eventAttendedList
     const { eventNames, eventDates, eventTickets, ...membership } = _membership;
@@ -121,36 +103,27 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
 
   const propertyList: PropertyEntry[] = [];
   for (let rowIdx = 1; rowIdx < wsHelper.rowCount; rowIdx++) {
-    const _property = importHelper.mapping(rowIdx, {
-      address: {
-        colIdx: importHelper.labelColumn('Address'),
-        type: 'string',
+    const _property = importHelper.mapping(
+      rowIdx,
+      {
+        address: 'string',
+        streetNo: 'number',
+        streetName: 'string',
+        postalCode: 'string',
+        notes: 'string',
+        updatedAt: 'date',
+        updatedByEmail: 'string',
       },
-      streetNo: {
-        colIdx: importHelper.labelColumn('StreetNo'),
-        type: 'number',
-      },
-      streetName: {
-        colIdx: importHelper.labelColumn('StreetName'),
-        type: 'string',
-      },
-      postalCode: {
-        colIdx: importHelper.labelColumn('PostalCode'),
-        type: 'string',
-      },
-      notes: {
-        colIdx: importHelper.labelColumn('Notes'),
-        type: 'string',
-      },
-      updatedAt: {
-        colIdx: importHelper.labelColumn('LastModDate'),
-        type: 'date',
-      },
-      updatedByEmail: {
-        colIdx: importHelper.labelColumn('LastModBy'),
-        type: 'string',
-      },
-    });
+      {
+        address: importHelper.labelColumn('Address'),
+        streetNo: importHelper.labelColumn('StreetNo'),
+        streetName: importHelper.labelColumn('StreetName'),
+        postalCode: importHelper.labelColumn('PostalCode'),
+        notes: importHelper.labelColumn('Notes'),
+        updatedAt: importHelper.labelColumn('LastModDate'),
+        updatedByEmail: importHelper.labelColumn('LastModBy'),
+      }
+    );
 
     // Map updatedByEmail into a user database document
     const { updatedByEmail, ...property } = _property;

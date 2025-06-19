@@ -18,7 +18,11 @@ import { TicketUtil } from './ticket-util';
  */
 export function importMultisheet(wb: XLSX.WorkBook) {
   const wsHelper = R.mapValues(worksheetNames, (wsName) => {
-    return new WorksheetHelper(wb, wsName);
+    try {
+      return new WorksheetHelper(wb, wsName);
+    } catch (err) {
+      // If worksheet is missing, ignore it
+    }
   });
 
   const propertyUtil = new PropertyUtil(wsHelper.property);

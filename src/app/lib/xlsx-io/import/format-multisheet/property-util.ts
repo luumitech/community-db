@@ -1,69 +1,56 @@
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import type { PropertyEntry } from '../_type';
-import { ImportHelper, type MappingOutput } from '../import-helper';
+import {
+  ImportHelper,
+  type MappingColIdxSchema,
+  type MappingResult,
+  type MappingTypeSchema,
+} from '../import-helper';
 import { EventUtil } from './event-util';
 import { MembershipUtil } from './membership-util';
 import { OccupantUtil } from './occupant-util';
 import { TicketUtil } from './ticket-util';
 
-export class PropertyUtil {
-  private byPropertyId: ReturnType<typeof this.parseXlsx>['byPropertyId'];
+const mappingType = {
+  propertyId: 'number',
+  address: 'string',
+  streetNo: 'number',
+  streetName: 'string',
+  postalCode: 'string',
+  notes: 'string',
+  updatedAt: 'date',
+  updatedByEmail: 'string',
+} satisfies MappingTypeSchema;
+type MappingEntry = MappingResult<typeof mappingType>;
 
-  constructor(private wsHelper: WorksheetHelper) {
-    const parseResult = this.parseXlsx();
-    this.byPropertyId = parseResult.byPropertyId;
+export class PropertyUtil {
+  private byPropertyId = new Map<number, MappingEntry>();
+
+  constructor(wsHelper?: WorksheetHelper) {
+    if (wsHelper) {
+      this.parseXlsx(wsHelper);
+    }
   }
 
-  private parseXlsx() {
-    const importHelper = new ImportHelper(this.wsHelper, { headerCol: 0 });
+  private parseXlsx(wsHelper: WorksheetHelper) {
+    const importHelper = new ImportHelper(wsHelper, { headerCol: 0 });
 
-    const mappingSchema = {
-      propertyId: {
-        colIdx: importHelper.labelColumn('propertyId'),
-        type: 'number',
-      },
-      address: {
-        colIdx: importHelper.labelColumn('address'),
-        type: 'string',
-      },
-      streetNo: {
-        colIdx: importHelper.labelColumn('streetNo'),
-        type: 'number',
-      },
-      streetName: {
-        colIdx: importHelper.labelColumn('streetName'),
-        type: 'string',
-      },
-      postalCode: {
-        colIdx: importHelper.labelColumn('postalCode'),
-        type: 'string',
-      },
-      notes: {
-        colIdx: importHelper.labelColumn('notes'),
-        type: 'string',
-      },
-      updatedAt: {
-        colIdx: importHelper.labelColumn('updatedAt'),
-        type: 'date',
-      },
-      updatedByEmail: {
-        colIdx: importHelper.labelColumn('updatedBy'),
-        type: 'string',
-      },
-    } as const;
-
-    type Entry = MappingOutput<typeof mappingSchema>;
-    const byPropertyId = new Map<number, Entry>();
+    const mappingColIdx: MappingColIdxSchema<typeof mappingType> = {
+      propertyId: importHelper.labelColumn('propertyId'),
+      address: importHelper.labelColumn('address'),
+      streetNo: importHelper.labelColumn('streetNo'),
+      streetName: importHelper.labelColumn('streetName'),
+      postalCode: importHelper.labelColumn('postalCode'),
+      notes: importHelper.labelColumn('notes'),
+      updatedAt: importHelper.labelColumn('updatedAt'),
+      updatedByEmail: importHelper.labelColumn('updatedBy'),
+    };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {
-      const entry = importHelper.mapping(rowIdx, mappingSchema);
+      const entry = importHelper.mapping(rowIdx, mappingType, mappingColIdx);
 
-      byPropertyId.set(entry.propertyId, entry);
+      this.byPropertyId.set(entry.propertyId, entry);
     }
-
-    return {
-      byPropertyId,
-    };
   }
 
   propertyList(opt: {

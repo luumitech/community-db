@@ -1,7 +1,13 @@
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { worksheetNames } from '~/lib/xlsx-io/multisheet';
 import type { CommunityEntry } from '../_type';
 import { extractEventList } from '../event-list-util';
-import { ImportHelper } from '../import-helper';
+import {
+  ImportHelper,
+  type MappingColIdxSchema,
+  type MappingResult,
+  type MappingTypeSchema,
+} from '../import-helper';
 import { extractPaymentMethodList } from '../payment-method-list-util';
 import { extractTicketList } from '../ticket-list-util';
 import { extractYearRange } from '../year-range-util';
@@ -20,53 +26,46 @@ function safeJsonParse(jsonStr: string) {
   }
 }
 
-export class CommunityUtil {
-  private community: ReturnType<typeof this.parseXlsx>;
+const mappingType = {
+  name: 'string',
+  defaultSettingJson: 'string',
+  eventListJson: 'string',
+  ticketListJson: 'string',
+  paymentMethodListJson: 'string',
+  mailchimpSettingJson: 'string',
+  updatedAt: 'date',
+  updatedByEmail: 'string',
+} satisfies MappingTypeSchema;
+type MappingEntry = MappingResult<typeof mappingType>;
 
-  constructor(private wsHelper: WorksheetHelper) {
-    const parseResult = this.parseXlsx();
-    this.community = parseResult;
+export class CommunityUtil {
+  private community: MappingEntry;
+
+  constructor(wsHelper?: WorksheetHelper) {
+    if (wsHelper) {
+      this.community = this.parseXlsx(wsHelper);
+    } else {
+      throw new Error(
+        `Worksheet "${worksheetNames.community}" is missing and is required`
+      );
+    }
   }
 
-  private parseXlsx() {
-    const importHelper = new ImportHelper(this.wsHelper, { headerCol: 0 });
+  private parseXlsx(wsHelper: WorksheetHelper) {
+    const importHelper = new ImportHelper(wsHelper, { headerCol: 0 });
 
-    const mappingSchema = {
-      name: {
-        colIdx: importHelper.labelColumn('name'),
-        type: 'string',
-      },
-      defaultSettingJson: {
-        colIdx: importHelper.labelColumn('defaultSetting'),
-        type: 'string',
-      },
-      eventListJson: {
-        colIdx: importHelper.labelColumn('eventList'),
-        type: 'string',
-      },
-      ticketListJson: {
-        colIdx: importHelper.labelColumn('ticketList'),
-        type: 'string',
-      },
-      paymentMethodListJson: {
-        colIdx: importHelper.labelColumn('paymentMethodList'),
-        type: 'string',
-      },
-      mailchimpSettingJson: {
-        colIdx: importHelper.labelColumn('mailchimpSetting'),
-        type: 'string',
-      },
-      updatedAt: {
-        colIdx: importHelper.labelColumn('updatedAt'),
-        type: 'date',
-      },
-      updatedByEmail: {
-        colIdx: importHelper.labelColumn('updatedBy'),
-        type: 'string',
-      },
-    } as const;
+    const mappingColIdx: MappingColIdxSchema<typeof mappingType> = {
+      name: importHelper.labelColumn('name'),
+      defaultSettingJson: importHelper.labelColumn('defaultSetting'),
+      eventListJson: importHelper.labelColumn('eventList'),
+      ticketListJson: importHelper.labelColumn('ticketList'),
+      paymentMethodListJson: importHelper.labelColumn('paymentMethodList'),
+      mailchimpSettingJson: importHelper.labelColumn('mailchimpSetting'),
+      updatedAt: importHelper.labelColumn('updatedAt'),
+      updatedByEmail: importHelper.labelColumn('updatedBy'),
+    };
 
-    const entry = importHelper.mapping(1, mappingSchema);
+    const entry = importHelper.mapping(1, mappingType, mappingColIdx);
     return entry;
   }
 
