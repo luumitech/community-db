@@ -1,11 +1,11 @@
 import { CardBody, cn } from '@heroui/react';
 import React from 'react';
 import { ChartDataHelperUtil } from '~/community/[communityId]/dashboard/chart-data-helper';
-import { BarChart, getItemColor } from '~/view/base/chart';
+import { BarChart, barTotal, getItemColor } from '~/view/base/chart';
 import { type MemberSourceStat } from '../_type';
 
 interface ChartDataEntry extends Record<string, string | number> {
-  eventName: string;
+  year: number;
   new: number;
   renewed: number;
   existing: number;
@@ -14,14 +14,26 @@ interface ChartDataEntry extends Record<string, string | number> {
 class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
   public chartKeys = ['existing', 'renewed', 'new'];
 
-  constructor(private stat: MemberSourceStat) {
+  constructor(
+    private year: number,
+    private yearStat: MemberSourceStat,
+    private prevYearStat: MemberSourceStat
+  ) {
     super();
-    this.chartData = this.stat.map((entry) => ({
-      eventName: entry.eventName,
-      new: entry.new,
-      renewed: entry.renew,
-      existing: entry.existing,
-    }));
+    this.chartData = [
+      {
+        year,
+        new: yearStat[0].new,
+        renewed: yearStat[0].renew,
+        existing: yearStat[0].existing,
+      },
+      {
+        year: year - 1,
+        new: prevYearStat[0]?.new ?? 0,
+        renewed: prevYearStat[0]?.renew ?? 0,
+        existing: prevYearStat[0]?.existing ?? 0,
+      },
+    ];
   }
 
   xVal(entry: ChartDataEntry) {
@@ -39,14 +51,21 @@ class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
 
 interface Props {
   className?: string;
-  stat: MemberSourceStat;
+  year: number;
+  yearStat: MemberSourceStat;
+  prevYearStat: MemberSourceStat;
 }
 
-export const MemberCount: React.FC<Props> = ({ className, stat }) => {
+export const MemberCount: React.FC<Props> = ({
+  className,
+  year,
+  yearStat,
+  prevYearStat,
+}) => {
   const chartHelper = React.useMemo(() => {
-    const helper = new ChartDataHelper(stat);
+    const helper = new ChartDataHelper(year, yearStat, prevYearStat);
     return helper;
-  }, [stat]);
+  }, [year, yearStat, prevYearStat]);
 
   const { chartData } = chartHelper;
 
@@ -59,27 +78,52 @@ export const MemberCount: React.FC<Props> = ({ className, stat }) => {
     [chartHelper]
   );
 
+  const CustomTotals = React.useMemo(() => {
+    return barTotal(chartData, 'horizontal');
+  }, [chartData]);
+
   return (
     <CardBody className={cn(className, 'h-[150px]')}>
       <BarChart
         data={chartData}
         keys={chartHelper.chartKeys}
-        indexBy="eventName"
+        indexBy="year"
         layout="horizontal"
         margin={{
           top: 0,
-          bottom: 80,
-          left: 15,
+          bottom: 40,
+          left: 35,
           right: 50,
         }}
         gridXValues={gridXValues}
-        axisLeft={null}
-        axisBottom={{
-          tickValues: gridXValues,
-        }}
-        enableTotals
-        legendPos="bottom"
-        layers={['grid', 'axes', 'bars', 'totals', 'markers', 'legends']}
+        enableGridY={false}
+        // axisLeft={null}
+        axisBottom={null}
+        // enableTotals
+        legends={[
+          {
+            dataFrom: 'keys',
+            justify: false,
+            itemsSpacing: 2,
+            itemWidth: 80,
+            itemHeight: 20,
+            itemDirection: 'left-to-right',
+            symbolSize: 20,
+            direction: 'row',
+            anchor: 'bottom',
+            translateX: 0,
+            translateY: 30,
+          },
+        ]}
+        layers={[
+          'grid',
+          'axes',
+          'bars',
+          // 'totals',
+          CustomTotals,
+          'markers',
+          'legends',
+        ]}
       />
     </CardBody>
   );

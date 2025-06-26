@@ -13,12 +13,13 @@ import {
   BarChart,
   barHighlightSelected,
   barSelectable,
+  barTotal,
   getItemColor,
 } from '~/view/base/chart';
 import { TableTooltip } from '~/view/base/chart/tooltip';
-import { ChartDataHelperUtil } from '../chart-data-helper';
-import { type DashboardEntry } from './_type';
-import { useYearlyContext } from './yearly-context';
+import { ChartDataHelperUtil } from '../../chart-data-helper';
+import { type DashboardEntry } from '../_type';
+import { useYearlyContext } from '../yearly-context';
 
 const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
@@ -145,6 +146,7 @@ export const EventParticipation: React.FC<Props> = ({
     () => customTooltip(chartHelper),
     [chartHelper]
   );
+
   const SelectableBar = React.useMemo(
     () =>
       barSelectable(chartData, {
@@ -153,6 +155,11 @@ export const EventParticipation: React.FC<Props> = ({
       }),
     [chartData, CustomTooltip, setEventSelected]
   );
+
+  const CustomTotals = React.useMemo(() => {
+    return barTotal(chartData, 'vertical');
+  }, [chartData]);
+
   const gridYValues = React.useMemo(
     () =>
       chartHelper.getIntegerTicks(
@@ -196,7 +203,7 @@ export const EventParticipation: React.FC<Props> = ({
               legend: 'Member Count',
               tickValues: gridYValues,
             }}
-            enableTotals
+            // enableTotals
             legendPos="bottom"
             legendProp={{
               translateY: 90,
@@ -209,7 +216,8 @@ export const EventParticipation: React.FC<Props> = ({
               // 'bars',
               CustomBar,
               SelectableBar,
-              'totals',
+              // 'totals',
+              CustomTotals,
               'markers',
               'legends',
             ]}

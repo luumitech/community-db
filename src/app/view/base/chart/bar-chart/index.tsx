@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import {
+  BarTotals,
   ResponsiveBar,
   type BarDatum,
   type BarLegendProps,
