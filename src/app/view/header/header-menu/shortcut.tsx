@@ -44,7 +44,7 @@ export const HeaderMenuShortcut: React.FC<Props> = ({
           className="text-lg"
           key={menuItem.key}
           isIconOnly={hasIcon}
-          {...(hasIcon && { tooltip })}
+          {...(!!tooltip && { tooltip })}
           onPress={menuItem.onPress ?? (() => router.push(menuItem.href!))}
         >
           {menuItem.endContent ?? menuItem.children}

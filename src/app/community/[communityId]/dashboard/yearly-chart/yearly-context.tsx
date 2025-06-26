@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 
 type ContextT = Readonly<{
+  communityId: string;
   eventSelected: string;
   setEventSelected: (event: string) => void;
 }>;
@@ -10,10 +11,11 @@ type ContextT = Readonly<{
 const Context = React.createContext<ContextT>();
 
 interface Props {
+  communityId: string;
   children: React.ReactNode;
 }
 
-export function YearlyProvider(props: Props) {
+export function YearlyProvider({ communityId, ...props }: Props) {
   const { lastEventSelected } = useSelector((state) => state.ui);
   const [eventSelected, setEventSelected] = React.useState(
     lastEventSelected ?? ''
@@ -21,6 +23,7 @@ export function YearlyProvider(props: Props) {
   return (
     <Context.Provider
       value={{
+        communityId,
         eventSelected,
         setEventSelected,
       }}

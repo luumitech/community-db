@@ -17,7 +17,7 @@ export const StartImport: React.FC<Props> = ({ className }) => {
       <Button
         color="primary"
         type="submit"
-        confirmation={true}
+        confirmation
         beforeConfirm={async () => {
           const validated = await trigger();
           return validated;

@@ -1,56 +1,48 @@
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import type { EventEntry } from '../_type';
-import { ImportHelper, type MappingOutput } from '../import-helper';
+import {
+  ImportHelper,
+  type MappingColIdxSchema,
+  type MappingResult,
+  type MappingTypeSchema,
+} from '../import-helper';
 import { getMapValue } from './map-util';
 import { TicketUtil } from './ticket-util';
 
-export class EventUtil {
-  private byEventId: ReturnType<typeof this.parseXlsx>['byEventId'];
-  private byMembershipId: ReturnType<typeof this.parseXlsx>['byMembershipId'];
+const mappingType = {
+  eventId: 'number',
+  membershipId: 'number',
+  eventName: 'string',
+  eventDate: 'date',
+} satisfies MappingTypeSchema;
+type MappingEntry = MappingResult<typeof mappingType>;
 
-  constructor(private wsHelper: WorksheetHelper) {
-    const parseResult = this.parseXlsx();
-    this.byEventId = parseResult.byEventId;
-    this.byMembershipId = parseResult.byMembershipId;
+export class EventUtil {
+  private byEventId = new Map<number, MappingEntry>();
+  private byMembershipId = new Map<number, MappingEntry[]>();
+
+  constructor(wsHelper?: WorksheetHelper) {
+    if (wsHelper) {
+      this.parseXlsx(wsHelper);
+    }
   }
 
-  private parseXlsx() {
-    const importHelper = new ImportHelper(this.wsHelper, { headerCol: 0 });
+  private parseXlsx(wsHelper: WorksheetHelper) {
+    const importHelper = new ImportHelper(wsHelper, { headerCol: 0 });
 
-    const mappingSchema = {
-      eventId: {
-        colIdx: importHelper.labelColumn('eventId'),
-        type: 'number',
-      },
-      membershipId: {
-        colIdx: importHelper.labelColumn('membershipId'),
-        type: 'number',
-      },
-      eventName: {
-        colIdx: importHelper.labelColumn('eventName'),
-        type: 'string',
-      },
-      eventDate: {
-        colIdx: importHelper.labelColumn('eventDate'),
-        type: 'date',
-      },
-    } as const;
-
-    type Entry = MappingOutput<typeof mappingSchema>;
-    const byEventId = new Map<number, Entry>();
-    const byMembershipId = new Map<number, Entry[]>();
+    const mappingColIdx: MappingColIdxSchema<typeof mappingType> = {
+      eventId: importHelper.labelColumn('eventId'),
+      membershipId: importHelper.labelColumn('membershipId'),
+      eventName: importHelper.labelColumn('eventName'),
+      eventDate: importHelper.labelColumn('eventDate'),
+    };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {
-      const entry = importHelper.mapping(rowIdx, mappingSchema);
+      const entry = importHelper.mapping(rowIdx, mappingType, mappingColIdx);
 
-      byEventId.set(entry.eventId, entry);
-      getMapValue(byMembershipId, entry.membershipId).push(entry);
+      this.byEventId.set(entry.eventId, entry);
+      getMapValue(this.byMembershipId, entry.membershipId).push(entry);
     }
-
-    return {
-      byEventId,
-      byMembershipId,
-    };
   }
 
   eventAttendedList(

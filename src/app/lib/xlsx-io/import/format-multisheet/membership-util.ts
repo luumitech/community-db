@@ -1,65 +1,53 @@
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import type { MembershipEntry } from '../_type';
-import { ImportHelper, type MappingOutput } from '../import-helper';
+import {
+  ImportHelper,
+  type MappingColIdxSchema,
+  type MappingResult,
+  type MappingTypeSchema,
+} from '../import-helper';
 import { EventUtil } from './event-util';
 import { getMapValue } from './map-util';
 import { TicketUtil } from './ticket-util';
 
-export class MembershipUtil {
-  private byMembershipId: ReturnType<typeof this.parseXlsx>['byMembershipId'];
-  private byPropertyId: ReturnType<typeof this.parseXlsx>['byPropertyId'];
+const mappingType = {
+  membershipId: 'number',
+  propertyId: 'number',
+  year: 'number',
+  paymentMethod: 'string',
+  paymentDeposited: 'boolean',
+  price: 'string',
+} satisfies MappingTypeSchema;
+type MappingEntry = MappingResult<typeof mappingType>;
 
-  constructor(private wsHelper: WorksheetHelper) {
-    const parseResult = this.parseXlsx();
-    this.byMembershipId = parseResult.byMembershipId;
-    this.byPropertyId = parseResult.byPropertyId;
+export class MembershipUtil {
+  private byMembershipId = new Map<number, MappingEntry>();
+  private byPropertyId = new Map<number, MappingEntry[]>();
+
+  constructor(wsHelper?: WorksheetHelper) {
+    if (wsHelper) {
+      this.parseXlsx(wsHelper);
+    }
   }
 
-  private parseXlsx() {
-    const importHelper = new ImportHelper(this.wsHelper, { headerCol: 0 });
+  private parseXlsx(wsHelper: WorksheetHelper) {
+    const importHelper = new ImportHelper(wsHelper, { headerCol: 0 });
 
-    const mappingSchema = {
-      membershipId: {
-        colIdx: importHelper.labelColumn('membershipId'),
-        type: 'number',
-      },
-      propertyId: {
-        colIdx: importHelper.labelColumn('propertyId'),
-        type: 'number',
-      },
-      year: {
-        colIdx: importHelper.labelColumn('year'),
-        type: 'number',
-      },
-      paymentMethod: {
-        colIdx: importHelper.labelColumn('paymentMethod'),
-        type: 'string',
-      },
-      paymentDeposited: {
-        colIdx: importHelper.labelColumn('paymentDeposited'),
-        type: 'boolean',
-      },
-      price: {
-        colIdx: importHelper.labelColumn('price'),
-        type: 'string',
-      },
-    } as const;
-
-    type Entry = MappingOutput<typeof mappingSchema>;
-    const byMembershipId = new Map<number, Entry>();
-    const byPropertyId = new Map<number, Entry[]>();
+    const mappingColIdx: MappingColIdxSchema<typeof mappingType> = {
+      membershipId: importHelper.labelColumn('membershipId'),
+      propertyId: importHelper.labelColumn('propertyId'),
+      year: importHelper.labelColumn('year'),
+      paymentMethod: importHelper.labelColumn('paymentMethod'),
+      paymentDeposited: importHelper.labelColumn('paymentDeposited'),
+      price: importHelper.labelColumn('price'),
+    };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {
-      const entry = importHelper.mapping(rowIdx, mappingSchema);
+      const entry = importHelper.mapping(rowIdx, mappingType, mappingColIdx);
 
-      byMembershipId.set(entry.membershipId, entry);
-      getMapValue(byPropertyId, entry.propertyId).push(entry);
+      this.byMembershipId.set(entry.membershipId, entry);
+      getMapValue(this.byPropertyId, entry.propertyId).push(entry);
     }
-
-    return {
-      byMembershipId,
-      byPropertyId,
-    };
   }
 
   membershipList(

@@ -21,7 +21,7 @@ export const ExportMethodSelect: React.FC<Props> = ({
   const description = React.useMemo(() => {
     switch (exportMethod) {
       case ExportMethod.Singlesheet:
-        return 'Export data on a single sheet';
+        return 'Export data on a single sheet, useful for reading/printing';
       case ExportMethod.Multisheet:
         return 'Export data on multiple sheets, useful for backup/restore';
       default:

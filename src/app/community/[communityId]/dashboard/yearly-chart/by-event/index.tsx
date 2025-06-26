@@ -57,9 +57,33 @@ export const ByEvent: React.FC<Props> = ({
     ({ eventName }) => eventName === eventSelected
   );
   const eventList = memberSourceStat.map(({ eventName }) => eventName);
-  const eventMemberSourceStat = memberSourceStat.filter(
+  const yearMemberSourceStat = memberSourceStat.filter(
     ({ eventName }) => eventName === eventSelected
   );
+
+  const EventSelect = React.useCallback(() => {
+    if (!eventList.length) {
+      return null;
+    }
+    return <EventNameSelect eventList={eventList} />;
+  }, [eventList]);
+
+  const EventDetails = React.useCallback(() => {
+    if (!eventList.length || !eventSelected) {
+      return null;
+    }
+    return (
+      <>
+        <Spacer y={4} />
+        <ParticipationChart
+          year={year}
+          memberSourceStat={yearMemberSourceStat}
+        />
+        <Spacer y={4} />
+        <TicketSaleTable ticketList={ticketList} />
+      </>
+    );
+  }, [eventList.length, eventSelected, year, yearMemberSourceStat, ticketList]);
 
   return (
     <Card className={cn(className)}>
@@ -73,15 +97,8 @@ export const ByEvent: React.FC<Props> = ({
           className="flex flex-col rounded-lg min-h-[400px]"
           isLoaded={!isLoading}
         >
-          <EventNameSelect eventList={eventList} />
-          {!!eventSelected && (
-            <>
-              <Spacer y={4} />
-              <ParticipationChart stat={eventMemberSourceStat} />
-              <Spacer y={4} />
-              <TicketSaleTable ticketList={ticketList} />
-            </>
-          )}
+          <EventSelect />
+          <EventDetails />
         </Skeleton>
       </CardBody>
     </Card>

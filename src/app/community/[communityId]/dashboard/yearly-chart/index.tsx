@@ -46,7 +46,7 @@ export const YearlyChart: React.FC<Props> = ({
   const community = result.data?.communityFromId;
 
   return (
-    <YearlyProvider>
+    <YearlyProvider communityId={communityId}>
       <MembershipSource
         fragment={community}
         year={year}

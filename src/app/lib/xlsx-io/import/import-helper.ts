@@ -24,39 +24,33 @@ interface TypeMap {
 type MappingType = keyof TypeMap;
 
 /**
- * We assume each column in xlsx are translated into a particular javascript
- * type
- */
-interface MappingEntry {
-  /** Contains column index (0-based) that contains the value of the spreadsheet */
-  colIdx: number;
-  type: MappingType;
-}
-
-/**
- * For defining a list of Mapping entries for each column in xlsx
+ * Provides a schema for specifying the type of each column
  *
- * For example, if column B in xlsx corresponds to a boolean to be saved in
- * Prisma as field 'optOut', then:
+ * For example:
  *
- * ```js
- * {
- *   "optOut": {
- *     "colIdx": 1,
- *     "type": "boolean"
- *   }
- * }
+ * ```ts
+ * const mappingSchema = {
+ *   propertyId: 'number',
+ *   address: 'string',
+ *   streetNo: 'number',
+ *   updatedAt: 'date',
+ * } satisfies MappingTypeSchema;
  * ```
  */
-type Mapping = Record<string, MappingEntry>;
+export type MappingTypeSchema = Record<string, MappingType>;
+export type MappingColIdxSchema<T extends MappingTypeSchema> = {
+  /** Contains column index (0-based) that contains the value of the spreadsheet */
+  [K in keyof T]: number;
+};
 
-/** The output of mapping function */
-export type MappingOutput<T extends Mapping> = {
-  [K in keyof T]: T[K] extends { type: infer R }
-    ? R extends keyof TypeMap
-      ? TypeMap[R]
-      : never
-    : never;
+/**
+ * Result of calling `mapping` function
+ *
+ * Contains an object where each property contains the actual cell value in the
+ * worksheet
+ */
+export type MappingResult<T extends MappingTypeSchema> = {
+  [K in keyof T]: TypeMap[T[K]];
 };
 
 export class ImportHelper {
@@ -141,9 +135,13 @@ export class ImportHelper {
    * Given the mapping information, read the property information from the
    * spreadsheet, and propagate the information into the returned object
    */
-  mapping<T extends Mapping>(rowIdx: number, mapping: T): MappingOutput<T> {
-    const allColIdxInvalid = Object.values(mapping).every(
-      ({ colIdx }) => colIdx === -1
+  mapping<M extends MappingTypeSchema>(
+    rowIdx: number,
+    typeMapping: M,
+    colIdxMapping: MappingColIdxSchema<M>
+  ): MappingResult<M> {
+    const allColIdxInvalid = Object.values(colIdxMapping).every(
+      (colIdx) => colIdx === -1
     );
     if (allColIdxInvalid) {
       throw new GraphQLError('Unrecognized format');
@@ -151,16 +149,16 @@ export class ImportHelper {
 
     const result = {
       ...R.pipe(
-        mapping as Mapping,
-        R.mapValues((entry) => {
-          const val = this.cellAs(entry.colIdx, rowIdx, entry.type);
+        typeMapping as MappingTypeSchema,
+        R.mapValues((type, key) => {
+          const val = this.cellAs(colIdxMapping[key], rowIdx, type);
           return val;
         }),
         // Remove fields with nullish value
         R.omitBy((val) => val == null)
       ),
     };
-    // @ts-expect-error force into MappingOutput type
+    // @ts-expect-error force into MappingResult type
     return result;
   }
 }

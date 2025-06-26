@@ -3,9 +3,9 @@ import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
-import { ChartDataHelperUtil } from '../chart-data-helper';
-import { type DashboardEntry } from './_type';
-import { useYearlyContext } from './yearly-context';
+import { ChartDataHelperUtil } from '../../chart-data-helper';
+import { type DashboardEntry } from '../_type';
+import { useYearlyContext } from '../yearly-context';
 
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
