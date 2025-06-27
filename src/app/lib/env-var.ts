@@ -1,3 +1,5 @@
+import { PHASE_PRODUCTION_BUILD } from 'next/constants';
+
 export const appTitle = 'Community Database';
 export const appDescription =
   'Community Membership Database designed specifically for nonprofits. Easy to use, keep tracks of events and membership information.';
@@ -13,6 +15,15 @@ export const lsFlags = {
   /** Reach import dialog for the first time */
   importFirstTime: 'cd-import-first-time',
 };
+
+/**
+ * Is the app in build phase?
+ *
+ * - I.e. yarn build
+ */
+export function isBuilding() {
+  return process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
+}
 
 /** Is the app running in production mode? */
 export function isProduction() {
