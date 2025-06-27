@@ -23,7 +23,7 @@
     "reset-prisma-db": "dotenv -e .env.local -- npx prisma db push --force-reset",
     "seed-prisma-db": "dotenv -e .env.local -- npx prisma db seed",
     "seed-db": "yarn reset-prisma-db && yarn seed-prisma-db",
-    "graphql-codegen": "graphql-codegen --require tsconfig-paths/register --config codegen.ts",
+    "graphql-codegen": "dotenv -v NEXT_PHASE=phase-production-build -- graphql-codegen --require tsconfig-paths/register --config codegen.ts",
     "prisma-generate": "npx prisma generate",
     "generate": "yarn prisma-generate && yarn graphql-codegen",
     "ts-node": "node -r ts-node/register -r tsconfig-paths/register",
