@@ -16,6 +16,10 @@ const PropertyCreateInput = builder.inputType('PropertyCreateInput', {
     streetNo: t.int({ description: 'street number' }),
     streetName: t.string({ description: 'street name', required: true }),
     postalCode: t.string({ description: 'postal code' }),
+    city: t.string({ description: 'city' }),
+    country: t.string({ description: 'country' }),
+    lat: t.string({ description: 'GPS latitude' }),
+    lon: t.string({ description: 'GPS longitude' }),
   }),
 });
 

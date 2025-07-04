@@ -5,12 +5,17 @@ import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { Input } from '~/view/base/input';
+import { NumberInput } from '~/view/base/number-input';
 
 interface InputData {
   address: string;
   streetNo: number;
   streetName: string;
   postalCode: string;
+  city: string;
+  country: string;
+  lat: number;
+  lon: number;
 }
 
 const GeocodeLookupAddress = graphql(/* GraphQL */ `
@@ -23,6 +28,8 @@ const GeocodeLookupAddress = graphql(/* GraphQL */ `
       postalCode
       city
       country
+      lat
+      lon
     }
   }
 `);
@@ -59,6 +66,10 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
         setFormValue('streetNo', output.streetNo);
         setFormValue('streetName', output.streetName);
         setFormValue('postalCode', output.postalCode);
+        setFormValue('city', output.city);
+        setFormValue('country', output.country);
+        setFormValue('lat', output.lat);
+        setFormValue('lon', output.lon);
       }
     }
   }, [address, geocodeLookupAddress, setValue]);
@@ -71,7 +82,7 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           className={className}
           variant="bordered"
           label="Mailing Address"
-          placeholder="eg. 6587 Roller Derby Lane"
+          placeholder="eg. 6587 Roller Derby Lane, Springfeld, USA"
           onChange={(evt) => setAddress(evt.currentTarget.value)}
           endContent={
             <Button
@@ -114,10 +125,50 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
         />
         <Input
           className={className}
+          controlName="city"
+          variant="bordered"
+          label="City"
+          isControlled
+        />
+        <Input
+          className={className}
+          controlName="country"
+          variant="bordered"
+          label="Country"
+          isControlled
+        />
+        <Input
+          className={className}
           controlName="postalCode"
           variant="bordered"
           label="Postal Code"
           isControlled
+        />
+        <NumberInput
+          className={className}
+          controlName="lat"
+          variant="bordered"
+          label="Latitude"
+          isControlled
+          hideStepper
+          isWheelDisabled
+          formatOptions={{
+            // 7 digits are sufficient to store coordinates with centimeter accuracy
+            maximumFractionDigits: 7,
+          }}
+        />
+        <NumberInput
+          className={className}
+          controlName="lon"
+          variant="bordered"
+          label="Longtitude"
+          isControlled
+          hideStepper
+          isWheelDisabled
+          formatOptions={{
+            // 7 digits are sufficient to store coordinates with centimeter accuracy
+            maximumFractionDigits: 7,
+          }}
         />
       </div>
     </>

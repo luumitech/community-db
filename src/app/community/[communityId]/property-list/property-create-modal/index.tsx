@@ -20,6 +20,10 @@ const PropertyMutation = graphql(/* GraphQL */ `
       streetNo
       streetName
       postalCode
+      city
+      country
+      lat
+      lon
     }
   }
 `);
@@ -33,10 +37,17 @@ export const PropertyCreateModal: React.FC<Props> = ({ modalControl }) => {
   const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
-    async (input: InputData) => {
+    async (_input: InputData) => {
+      const { lat, lon, ...input } = _input;
       await toast.promise(
         createProperty({
-          variables: { input },
+          variables: {
+            input: {
+              lat: lat?.toString() ?? null,
+              lon: lon?.toString() ?? null,
+              ...input,
+            },
+          },
           update: (cache, result) => {
             // Adding property will disrupt the existing property list because the new entry
             // could be anywhere in the list, so wipe the cache, so property list can be

@@ -21,13 +21,10 @@ export const NotesView: React.FC<Props> = ({ className, notes }) => {
           className="absolute top-2 right-2"
           color="primary"
           variant="bordered"
-          isIconOnly
-          onPress={() =>
-            membershipEditor.open({
-              autoFocus: 'notes-helper',
-            })
-          }
-        />
+          onPress={() => membershipEditor.open({ autoFocus: 'notes-helper' })}
+        >
+          Edit Notes
+        </ModalButton>
       </CardHeader>
       <CardBody>
         <ScrollShadow className="h-28">

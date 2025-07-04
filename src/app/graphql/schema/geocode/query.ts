@@ -27,6 +27,8 @@ builder.queryField('geocodeFromText', (t) =>
         postalCode: result.postcode,
         city: result.city,
         country: result.country,
+        lat: parseAsNumber(result.lat),
+        lon: parseAsNumber(result.lon),
       };
     },
   })

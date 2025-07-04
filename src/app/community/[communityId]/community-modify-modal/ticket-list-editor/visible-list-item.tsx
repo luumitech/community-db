@@ -67,6 +67,7 @@ export const VisibleListItem: React.FC<React.PropsWithChildren<Props>> = ({
       <NumberInput
         controlName={`ticketList.${ticketIdx}.count`}
         aria-label="Ticket #"
+        labelPlacement="outside"
         variant="underlined"
         hideStepper
         isWheelDisabled

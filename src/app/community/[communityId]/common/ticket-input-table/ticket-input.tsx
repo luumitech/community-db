@@ -47,6 +47,7 @@ export const TicketInput: React.FC<Props> = ({
       controlName={`${controlNamePrefix}.count`}
       isControlled
       aria-label="Ticket #"
+      labelPlacement="outside"
       variant="underlined"
       type="number"
       endContent={
