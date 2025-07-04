@@ -7,7 +7,7 @@ import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
-import { z, zz } from '~/lib/zod';
+import { isInteger, z, zz } from '~/lib/zod';
 
 const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
@@ -23,7 +23,11 @@ function schema() {
   return z.object({
     communityId: zz.string.nonEmpty(),
     filter: z.object({
-      memberYear: zz.coerce.toNumber({ message: 'Must select a year' }),
+      memberYear: zz.coerce.toNumber({
+        message: 'Must select a year',
+        nullable: true,
+        validateFn: isInteger('Must select a year'),
+      }),
       memberEvent: z.string().nullable(),
     }),
     membership: z.object({
@@ -49,8 +53,8 @@ function defaultInputData(
   return {
     communityId,
     filter: {
+      memberYear: filter.memberYear ?? null,
       memberEvent: filter.memberEvent ?? null,
-      memberYear: filter.memberYear ?? NaN,
     },
     membership: {
       year: getCurrentYear(),

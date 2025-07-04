@@ -48,6 +48,7 @@ const supportedIcon = {
   integration: 'eos-icons:api-outlined',
   warning: 'cuida:warning-outline',
   refresh: 'mdi:refresh',
+  circle: 'material-symbols:circle',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

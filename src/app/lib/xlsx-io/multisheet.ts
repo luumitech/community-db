@@ -33,6 +33,10 @@ export interface PropertyRow {
   streetNo: number | null;
   streetName: string | null;
   postalCode: string | null;
+  city: string | null;
+  country: string | null;
+  lat: string | null;
+  lon: string | null;
   notes: string | null;
   updatedAt: string | null;
   updatedBy: string | null;

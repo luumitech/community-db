@@ -81,7 +81,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
             }}
             errorMessage={error}
             isInvalid={!!error}
-            labelPlacement="outside"
+            labelPlacement="inside"
             {...(!!isReadOnly && {
               isReadOnly: true,
               isDisabled: true,

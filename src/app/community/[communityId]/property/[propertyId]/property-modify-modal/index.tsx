@@ -32,10 +32,17 @@ export const PropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
   const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(
-    async (input: InputData) => {
+    async (_input: InputData) => {
+      const { lat, lon, ...input } = _input;
       await toast.promise(
         updateProperty({
-          variables: { input },
+          variables: {
+            input: {
+              lat: lat?.toString() ?? null,
+              lon: lon?.toString() ?? null,
+              ...input,
+            },
+          },
           refetchQueries: [
             // Updating property address may cause property to change order within
             // the property list

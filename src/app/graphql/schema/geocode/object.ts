@@ -8,6 +8,8 @@ interface Geocode {
   postalCode: string | null;
   city: string | null;
   country: string | null;
+  lat: number | null;
+  lon: number | null;
 }
 
 export const geocodeRef = builder.objectRef<Geocode>('Geocode').implement({
@@ -19,5 +21,23 @@ export const geocodeRef = builder.objectRef<Geocode>('Geocode').implement({
     postalCode: t.exposeString('postalCode', { nullable: true }),
     city: t.exposeString('city', { nullable: true }),
     country: t.exposeString('country', { nullable: true }),
+    lat: t.field({
+      description: 'GPS Latitude',
+      type: 'String',
+      nullable: true,
+      resolve: async (parent, args, ctx) => {
+        const { lat } = parent;
+        return lat?.toString();
+      },
+    }),
+    lon: t.field({
+      description: 'GPS Longitude',
+      type: 'String',
+      nullable: true,
+      resolve: async (parent, args, ctx) => {
+        const { lon } = parent;
+        return lon?.toString();
+      },
+    }),
   }),
 });

@@ -16,12 +16,16 @@ function schema() {
   return z.object({
     communityId: zz.string.nonEmpty(),
     address: zz.string.nonEmpty('Please provide an address'),
-    streetNo: z.coerce
-      .number({ message: 'Please provide a street number' })
-      .int()
-      .nullable(),
+    streetNo: zz.coerce.toNumber({
+      msg: 'Please provide a street number',
+      nullable: true,
+    }),
     streetName: zz.string.nonEmpty('Please provide a street name'),
     postalCode: z.string(),
+    city: z.string(),
+    country: z.string(),
+    lat: zz.coerce.toNumber({ nullable: true }),
+    lon: zz.coerce.toNumber({ nullable: true }),
   });
 }
 
@@ -36,6 +40,10 @@ function defaultInputData(
     streetNo: null,
     streetName: '',
     postalCode: '',
+    city: '',
+    country: '',
+    lat: null,
+    lon: null,
   };
 }
 
