@@ -144,6 +144,14 @@ export function useTopMenu() {
             children: appLabel('communityDashboard'),
           });
           break;
+
+        case 'map-view':
+          items.push({
+            id: 'communityMapView',
+            href: appPath('communityMapView', { path: { communityId } }),
+            children: appLabel('communityMapView'),
+          });
+          break;
       }
     }
 

@@ -1,14 +1,30 @@
 import { Marker } from '@adamscybot/react-leaflet-component-marker';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { Popup } from 'react-leaflet';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { usePageContext } from './page-context';
+
+export interface LocEntry {
+  id: string;
+  address: string;
+  loc: L.LatLngExpression;
+}
 
 interface Props {
-  loc: L.LatLngExpression;
+  locEntry: LocEntry;
+  isMember?: boolean;
   zoom?: number;
 }
 
-export const PropertyMarker: React.FC<Props> = ({ loc, zoom }) => {
+export const PropertyMarker: React.FC<Props> = ({
+  locEntry,
+  isMember,
+  zoom,
+}) => {
+  const { community } = usePageContext();
+
   const size = React.useMemo(() => {
     if (!zoom) {
       return 0;
@@ -35,15 +51,25 @@ export const PropertyMarker: React.FC<Props> = ({ loc, zoom }) => {
     <Marker
       icon={
         <Icon
-          className="text-success-600 opacity-25"
+          className={cn(
+            'text-success-600',
+            isMember ? 'opacity-30' : 'opacity-0'
+          )}
           size={size}
           icon="circle"
         />
       }
-      position={loc}
+      position={locEntry.loc}
     >
       <Popup>
-        A pretty CSS3 popup. <br /> Easily customizable.
+        <Link
+          href={appPath('property', {
+            path: { communityId: community.id, propertyId: locEntry.id },
+          })}
+          target="_blank"
+        >
+          {locEntry.address}
+        </Link>
       </Popup>
     </Marker>
   );

@@ -175,8 +175,8 @@ export class Coerce {
   }
 
   /**
-   * Coerce input as currencyInput(string). This is useful for used for
-   * CurrencyInput when you want empty value (i.e. '') to be converted to null
+   * Coerce input as currencyInput(string). This is useful for CurrencyInput
+   * when you want empty value (i.e. '') to be converted to null
    *
    * Normally, `z.string().nullable()` will accept '' as valid input
    */

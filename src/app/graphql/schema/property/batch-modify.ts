@@ -29,6 +29,9 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
     memberEvent: t.string({
       description: 'Only property who attended this event',
     }),
+    withGps: t.boolean({
+      description: 'Only property with GPS coordinates',
+    }),
   }),
 });
 

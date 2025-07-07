@@ -18,7 +18,7 @@ interface SearchFreeFormOutput {
   };
 }
 
-export class Geocode {
+export class ForwardGeocode {
   constructor(private res: Resource) {}
 
   /**

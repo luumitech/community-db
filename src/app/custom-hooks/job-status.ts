@@ -2,6 +2,7 @@
 import { useLazyQuery } from '@apollo/client';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
+import { timeout } from '~/lib/date-util';
 
 const JobStatusQuery = graphql(/* GraphQL */ `
   query jobStatus($jobId: String!) {
@@ -22,10 +23,6 @@ interface WaitUntilDoneOpt {
   pollInterval?: number;
   /** Job status progress (0-1) */
   cb?: (progress: number) => void;
-}
-
-async function timeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

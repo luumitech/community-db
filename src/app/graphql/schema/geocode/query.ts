@@ -18,7 +18,8 @@ builder.queryField('geocodeFromText', (t) =>
     resolve: async (parent, args, ctx) => {
       const { text } = args.input;
       const api = await GeoapifyApi.fromConfig();
-      const result = await api.geocode.searchFreeForm(text);
+      const result = await api.forwardGeocode.searchFreeForm(text);
+
       return {
         addressLine1: result.address_line1,
         addressLine2: result.address_line2,

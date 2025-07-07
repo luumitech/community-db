@@ -1,16 +1,7 @@
 'use client';
-import dynamic from 'next/dynamic';
 import React from 'react';
 import { MoreMenu } from '../common/more-menu';
-
-// Load leaflet dynamically to avoid 'undefined window' error
-const Map = dynamic(
-  async () => {
-    const { Map } = await import('./map');
-    return Map;
-  },
-  { ssr: false }
-);
+import { PageContent } from './page-content';
 
 interface Params {
   communityId: string;
@@ -29,8 +20,11 @@ export default function MapView({ params }: RouteArgs) {
 
   return (
     <>
-      <MoreMenu communityId={communityId} />
-      <Map />
+      <MoreMenu communityId={communityId} omitKeys={['communityMapView']} />
+      <PageContent
+        className="flex flex-col h-main-height"
+        communityId={communityId}
+      />
     </>
   );
 }

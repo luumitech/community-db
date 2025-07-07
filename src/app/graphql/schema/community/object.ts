@@ -39,6 +39,8 @@ interface CommunityStat {
   id: string;
   /** Community Id */
   communityId: string;
+  /** Total number of properties within community */
+  propertyCount: number;
   /** Community statistics */
   statUtil: StatUtil;
 }
@@ -213,6 +215,9 @@ const communityStatRef = builder
   .implement({
     fields: (t) => ({
       id: t.exposeID('id'),
+      propertyCount: t.exposeInt('propertyCount', {
+        description: 'Total number of properties within community',
+      }),
       dbSize: t.field({
         description: 'bytes used to store all properties within community',
         type: 'Int',
@@ -448,6 +453,7 @@ builder.prismaObject('Community', {
         return {
           id: parent.shortId,
           communityId,
+          propertyCount: propertyList.length,
           statUtil,
         };
       },
