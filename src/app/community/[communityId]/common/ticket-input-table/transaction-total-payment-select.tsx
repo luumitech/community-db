@@ -6,7 +6,7 @@ import {
   type SelectProps,
 } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 
 type CustomSelectProps = Omit<SelectProps, 'items' | 'children'>;
 
@@ -21,7 +21,7 @@ export const TransactionTotalPaymentSelect: React.FC<Props> = ({
   ...props
 }) => {
   const { selectPaymentMethodSections, visiblePaymentMethods } =
-    useAppContext();
+    useLayoutContext();
 
   const items = includeHiddenFields
     ? selectPaymentMethodSections

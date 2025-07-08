@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
-import { useSetupSubscription } from './setup-subscription';
+import { LayoutProvider } from './layout-context';
+import { useCommunityQuery } from './layout-util/community-query';
+import { useSetupSubscription } from './layout-util/setup-subscription';
 
 interface Params {
   communityId: string;
@@ -17,6 +19,11 @@ export default function CommunityFromIdLayout({
 }: LayoutProps) {
   const { communityId } = params;
   useSetupSubscription(communityId);
+  const community = useCommunityQuery(communityId);
 
-  return <>{children}</>;
+  if (community == null) {
+    return null;
+  }
+
+  return <LayoutProvider community={community}>{children}</LayoutProvider>;
 }

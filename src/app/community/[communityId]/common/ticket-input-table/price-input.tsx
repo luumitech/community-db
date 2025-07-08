@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { decIsEqual, decMul } from '~/lib/decimal-util';
 import { CurrencyInput, CurrencyInputProps } from '~/view/base/currency-input';
@@ -18,7 +18,7 @@ export const PriceInput: React.FC<Props> = ({
   controlNamePrefix,
   ...props
 }) => {
-  const { ticketDefault } = useAppContext();
+  const { ticketDefault } = useLayoutContext();
   const { setValue, watch, clearErrors } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
   const ticketCount = watch(`${controlNamePrefix}.count`) as number;

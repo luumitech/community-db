@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
 import { useMenuItem } from './use-menu-item';
@@ -7,7 +7,7 @@ import { useMenuItem } from './use-menu-item';
 interface Props {}
 
 export const MoreMenu: React.FC<Props> = (props) => {
-  const { canEdit, isAdmin } = useAppContext();
+  const { canEdit, isAdmin } = useLayoutContext();
   const menuItems = useMenuItem();
 
   return (

@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { Decimal, decMul } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
@@ -18,7 +18,7 @@ export const TicketInput: React.FC<Props> = ({
   controlNamePrefix,
   ...props
 }) => {
-  const { ticketDefault } = useAppContext();
+  const { ticketDefault } = useLayoutContext();
   const { setValue, watch } = useFormContext();
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
 

@@ -1,6 +1,6 @@
 import { Card, CardBody, CardFooter, CardHeader, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { RegisteredEventList } from './registered-event-list';
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
   const dispatch = useDispatch();
   const { yearSelected } = useSelector((state) => state.ui);
   const { membershipList } = property;

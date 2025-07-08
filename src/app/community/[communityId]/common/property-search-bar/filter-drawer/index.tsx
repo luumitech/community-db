@@ -8,7 +8,7 @@ import {
 } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from '../use-hook-form';
@@ -31,7 +31,7 @@ export const FilterDrawer: React.FC<Props> = ({
   onFilterChange,
   ...arg
 }) => {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
   const { formMethods } = useHookForm(
     arg.memberYear,
     arg.nonMemberYear,

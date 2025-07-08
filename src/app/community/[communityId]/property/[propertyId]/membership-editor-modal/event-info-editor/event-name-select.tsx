@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   Select,
   SelectItem,
@@ -20,7 +20,7 @@ export const EventNameSelect: React.FC<Props> = ({
   yearIdx,
   eventIdx,
 }) => {
-  const { selectEventSections } = useAppContext();
+  const { selectEventSections } = useLayoutContext();
   const { clearErrors } = useHookFormContext();
 
   const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =

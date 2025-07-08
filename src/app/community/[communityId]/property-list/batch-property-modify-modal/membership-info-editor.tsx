@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { EventInfoEditor } from './event-info-editor';
 import { YearSelect } from './year-select';
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
 
   return (
     <div className={cn(className)}>

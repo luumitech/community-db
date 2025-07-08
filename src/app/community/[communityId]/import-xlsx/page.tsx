@@ -106,7 +106,7 @@ export default function ImportXlsx({ params }: RouteArgs) {
 
   return (
     <FormProvider {...formMethods}>
-      <MoreMenu communityId={communityId} omitKeys={['communityImport']} />
+      <MoreMenu omitKeys={['communityImport']} />
       <PageProvider>
         <Form
           className="flex flex-col h-main-height"

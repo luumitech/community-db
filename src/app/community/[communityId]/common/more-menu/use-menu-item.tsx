@@ -1,22 +1,27 @@
 import React from 'react';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 
-interface MenuItemOpt {
-  communityId: string;
-}
-
 /** Configure all possible menu items */
-export function useMenuItem(opt: MenuItemOpt) {
+export function useMenuItem() {
+  const { community, communityModify } = useLayoutContext();
+
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
-    const { communityId } = opt;
+    const communityId = community.id;
     return [
       {
         key: 'propertyList',
         href: appPath('propertyList', { path: { communityId } }),
         endContent: <Icon icon="property-list" />,
         children: appLabel('propertyList'),
+      },
+      {
+        key: 'communityModify',
+        onPress: () => communityModify.open({ community }),
+        endContent: <Icon icon="modify-community" />,
+        children: appLabel('communityModify'),
       },
       {
         key: 'communityDashboard',
@@ -54,7 +59,7 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: appLabel('communityImport'),
       },
     ];
-  }, [opt]);
+  }, [community, communityModify]);
 
   return menuItemList;
 }

@@ -13,9 +13,8 @@ export function useMenuItem() {
     propertyModify,
     membershipEditor,
     propertyDelete,
-    communityModify,
   } = usePageContext();
-  const baseMenuItem = useBaseMenuItem({ communityId: community.id });
+  const baseMenuItem = useBaseMenuItem();
 
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
     return [
@@ -42,12 +41,6 @@ export function useMenuItem() {
         onPress: () => propertyDelete.open({}),
         children: appLabel('propertyDelete'),
       },
-      {
-        key: 'communityModify',
-        onPress: () => communityModify.open({ community }),
-        endContent: <Icon icon="modify-community" />,
-        children: appLabel('communityModify'),
-      },
     ];
   }, [
     baseMenuItem,
@@ -55,8 +48,6 @@ export function useMenuItem() {
     occupantEditor,
     propertyModify,
     propertyDelete,
-    communityModify,
-    community,
   ]);
 
   return menuItemList;

@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { Select, SelectItem, SelectProps } from '~/view/base/select';
 import {
   YearItemLabel,
@@ -15,7 +15,7 @@ interface Props extends CustomSelectProps {
 }
 
 export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
 
   const yearItems = React.useMemo(() => {
     return yearSelectItems([minYear, maxYear]);

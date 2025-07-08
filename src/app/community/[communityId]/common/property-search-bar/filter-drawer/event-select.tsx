@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { Select, SelectItem } from '~/view/base/select';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const EventSelect: React.FC<Props> = ({ className }) => {
-  const { visibleEventItems } = useAppContext();
+  const { visibleEventItems } = useLayoutContext();
 
   return (
     <Select

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
@@ -70,7 +70,7 @@ function defaultInputData(
 }
 
 export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
-  const { defaultSetting } = useAppContext();
+  const { defaultSetting } = useLayoutContext();
   const { filterArg } = useSelector((state) => state.searchBar);
   const community = getFragment(BatchPropertyModifyFragment, fragment);
   const defaultValues = React.useMemo(

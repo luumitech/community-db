@@ -7,7 +7,7 @@ import {
   cn,
 } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { appLabel } from '~/lib/app-path';
 import { decMul } from '~/lib/decimal-util';
 import { insertIf } from '~/lib/insert-if';
@@ -33,7 +33,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   const { selectTicketSections, visibleTicketItems, ticketDefault } =
-    useAppContext();
+    useLayoutContext();
 
   const sections = includeHiddenFields
     ? selectTicketSections

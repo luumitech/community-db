@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps, Skeleton } from '@heroui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContextForHeader } from '~/community/[communityId]/layout-context';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 
@@ -14,7 +14,8 @@ interface MenuItemEntry extends BreadcrumbItemProps {
 export function useTopMenu() {
   const router = useRouter();
   const pathname = usePathname();
-  const { communityId: ctxCommunityId, communityName } = useAppContext();
+  const { communityId: ctxCommunityId, communityName } =
+    useLayoutContextForHeader();
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];

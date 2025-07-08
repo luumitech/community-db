@@ -16,10 +16,7 @@ export default function thirdPartyIntegration({ params }: RouteArgs) {
 
   return (
     <>
-      <MoreMenu
-        communityId={communityId}
-        omitKeys={['thirdPartyIntegration']}
-      />
+      <MoreMenu omitKeys={['thirdPartyIntegration']} />
       <PageContent
         className="flex flex-col h-main-height overflow-hidden"
         communityId={communityId}

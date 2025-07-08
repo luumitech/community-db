@@ -3,7 +3,6 @@ import { Divider } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
-import { CommunityModifyModal } from '~/community/[communityId]/community-modify-modal';
 import { appPath } from '~/lib/app-path';
 import { LastModified } from '~/view/last-modified';
 import { MembershipDisplay } from './membership-display';
@@ -30,7 +29,6 @@ export const PageContent: React.FC<Props> = (props) => {
     occupantEditor,
     propertyDelete,
     registerEvent,
-    communityModify,
     sendMail,
   } = usePageContext();
   const routerCalled = React.useRef(false);
@@ -62,7 +60,6 @@ export const PageContent: React.FC<Props> = (props) => {
       <OccupantEditorModal modalControl={occupantEditor} />
       <PropertyDeleteModal modalControl={propertyDelete} />
       <RegisterEventModal modalControl={registerEvent} />
-      <CommunityModifyModal modalControl={communityModify} />
       <SendMailModal modalControl={sendMail} />
     </div>
   );

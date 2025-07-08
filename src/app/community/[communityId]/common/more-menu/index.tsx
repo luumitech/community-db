@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
 import { useMenuItem } from './use-menu-item';
@@ -7,13 +7,12 @@ import { useMenuItem } from './use-menu-item';
 export { useMenuItem as useBaseMenuItem } from './use-menu-item';
 
 interface Props {
-  communityId: string;
   omitKeys?: string[];
 }
 
-export const MoreMenu: React.FC<Props> = ({ communityId, omitKeys }) => {
-  const { canEdit, isAdmin } = useAppContext();
-  const menuItems = useMenuItem({ communityId });
+export const MoreMenu: React.FC<Props> = ({ omitKeys }) => {
+  const { canEdit, isAdmin } = useLayoutContext();
+  const menuItems = useMenuItem();
 
   return (
     <HeaderMenu
@@ -26,9 +25,16 @@ export const MoreMenu: React.FC<Props> = ({ communityId, omitKeys }) => {
         'communityExport',
         'thirdPartyIntegration',
         'divider',
+        ...insertIf(canEdit, 'communityModify'),
+        'divider',
         ...insertIf(isAdmin, 'communityImport'),
       ]}
-      shortcutKeys={['propertyList', 'communityDashboard', 'communityShare']}
+      shortcutKeys={[
+        'propertyList',
+        'communityDashboard',
+        'communityShare',
+        'communityModify',
+      ]}
       omitKeys={omitKeys}
     />
   );

@@ -122,9 +122,7 @@ export default function Share({ params }: RouteArgs) {
 
   return (
     <>
-      {community && (
-        <MoreMenu communityId={community.id} omitKeys={['communityShare']} />
-      )}
+      <MoreMenu omitKeys={['communityShare']} />
       <Table
         aria-label="Community Access List"
         classNames={{

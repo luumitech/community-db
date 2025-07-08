@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { insertIf } from '~/lib/insert-if';
 import {
   Select,
@@ -26,7 +26,7 @@ export const TicketTypeSelect: React.FC<Props> = ({
   includeHiddenFields,
   ...props
 }) => {
-  const { selectTicketSections, visibleTicketItems } = useAppContext();
+  const { selectTicketSections, visibleTicketItems } = useLayoutContext();
 
   const items = includeHiddenFields
     ? selectTicketSections

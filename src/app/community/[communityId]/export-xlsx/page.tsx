@@ -16,7 +16,7 @@ export default function ExportXlsx({ params }: RouteArgs) {
 
   return (
     <>
-      <MoreMenu communityId={communityId} omitKeys={['communityExport']} />
+      <MoreMenu omitKeys={['communityExport']} />
       <ExportForm
         className="flex flex-col gap-2 h-main-height"
         communityId={communityId}

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -171,7 +171,7 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
   const { property: fragment } = usePageContext();
   const property = getFragment(MembershipEditorFragment, fragment);

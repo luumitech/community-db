@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
@@ -31,7 +31,7 @@ interface Props {
 }
 
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
-  const { canEdit } = useAppContext();
+  const { canEdit } = useLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
   const {
     property: fragment,
