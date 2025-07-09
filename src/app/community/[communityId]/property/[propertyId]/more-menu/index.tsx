@@ -25,7 +25,9 @@ export const MoreMenu: React.FC<Props> = (props) => {
         ...insertIf(canEdit, 'occupantEditor'),
         'divider',
         ...insertIf(canEdit, 'communityModify'),
+        ...insertIf(canEdit, 'batchPropertyModify'),
         ...insertIf(canEdit, 'propertyModify'),
+        ...insertIf(isAdmin, 'propertyCreate'),
         ...insertIf(isAdmin, 'propertyDelete'),
       ]}
       shortcutKeys={['propertyList', 'communityDashboard', 'communityModify']}

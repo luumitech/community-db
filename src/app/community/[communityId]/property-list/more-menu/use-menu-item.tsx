@@ -5,9 +5,7 @@ import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 
 interface MenuItemOpt {
-  batchPropertyModifyOpen: () => void;
   communityDeleteOpen: () => void;
-  propertyCreateOpen: () => void;
 }
 
 /** Configure all possible menu items */
@@ -17,16 +15,6 @@ export function useMenuItem(opt: MenuItemOpt) {
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
     return [
       ...baseMenuItems,
-      {
-        key: 'batchPropertyModify',
-        onPress: opt.batchPropertyModifyOpen,
-        children: appLabel('batchPropertyModify'),
-      },
-      {
-        key: 'propertyCreate',
-        onPress: opt.propertyCreateOpen,
-        children: appLabel('propertyCreate'),
-      },
       {
         key: 'communityDelete',
         className: 'text-danger',

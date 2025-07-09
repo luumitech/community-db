@@ -26,8 +26,10 @@ export const MoreMenu: React.FC<Props> = ({ omitKeys }) => {
         'thirdPartyIntegration',
         'divider',
         ...insertIf(canEdit, 'communityModify'),
+        ...insertIf(canEdit, 'batchPropertyModify'),
         'divider',
         ...insertIf(isAdmin, 'communityImport'),
+        ...insertIf(isAdmin, 'propertyCreate'),
       ]}
       shortcutKeys={[
         'propertyList',
