@@ -57,14 +57,3 @@ export function useLayoutContext() {
   }
   return context;
 }
-
-/**
- * A special context reader for header, because we want to be able to access
- * context even if we are outside the context provider
- *
- * @returns
- */
-export function useLayoutContextForHeader(): Partial<ContextT> {
-  const context = React.useContext(Context);
-  return context ?? {};
-}

@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { BreadcrumbItemProps, Skeleton } from '@heroui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { useLayoutContextForHeader } from '~/community/[communityId]/layout-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { appLabel, appPath } from '~/lib/app-path';
 
@@ -14,8 +14,7 @@ interface MenuItemEntry extends BreadcrumbItemProps {
 export function useTopMenu() {
   const router = useRouter();
   const pathname = usePathname();
-  const { communityId: ctxCommunityId, communityName } =
-    useLayoutContextForHeader();
+  const { communityName } = useSelector((state) => state.community);
 
   const menuItems = React.useMemo(() => {
     const items: MenuItemEntry[] = [];
@@ -71,12 +70,12 @@ export function useTopMenu() {
           });
           break;
         default:
-          if (op != null && op === ctxCommunityId) {
+          if (op != null) {
             items.pop();
             items.push({
               id: 'propertyList',
               href: appPath('propertyList', {
-                path: { communityId: ctxCommunityId },
+                path: { communityId: op },
               }),
               children: (
                 <BreadcrumbLabel
@@ -85,7 +84,7 @@ export function useTopMenu() {
                 />
               ),
             });
-            handleSingleCommunity(ctxCommunityId);
+            handleSingleCommunity(op);
           }
           break;
       }
@@ -171,7 +170,7 @@ export function useTopMenu() {
         });
       }
     }
-  }, [pathname, ctxCommunityId, communityName]);
+  }, [pathname, communityName]);
 
   return menuItems;
 }

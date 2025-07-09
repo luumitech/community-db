@@ -39,12 +39,6 @@ export type CommunityState = Readonly<{
   /** Ticket default configurations */
   ticketDefault: Map<string, GQL.SupportedTicketItem>;
   defaultSetting: GQL.DefaultSetting;
-  /** Current user's role in this community */
-  role: GQL.Role;
-  /** Base on current user's role, can user modify content within this community? */
-  canEdit: boolean;
-  /** Is user an admin? */
-  isAdmin: boolean;
 }>;
 
 /**
@@ -92,7 +86,6 @@ export function useCommunityContext(community: CommunityEntry) {
     const eventList = community.eventList ?? [];
     const ticketList = community.ticketList ?? [];
     const paymentMethodList = community.paymentMethodList ?? [];
-    const role = community.access.role ?? GQL.Role.Viewer;
 
     const roleItems: SelectItem[] = [
       { label: 'Admin', value: GQL.Role.Admin },
@@ -120,9 +113,6 @@ export function useCommunityContext(community: CommunityEntry) {
       defaultSetting: community.defaultSetting ?? {
         __typename: 'DefaultSetting',
       },
-      role,
-      canEdit: role === GQL.Role.Admin || role === GQL.Role.Editor,
-      isAdmin: role === GQL.Role.Admin,
     };
   }, [community]);
 

@@ -2,7 +2,7 @@ import { LinkProps } from '@heroui/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
-import { useLayoutContextForHeader } from '~/community/[communityId]/layout-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { appLabel, appPath } from '~/lib/app-path';
 import { matchCommunityEditor } from './matcher-util';
 
@@ -25,7 +25,7 @@ function indentMenuItem(label: string, indentLevel = 0) {
 /** Controls content of hamburger menu located on the left of the header */
 export function useNavMenu() {
   const pathname = usePathname();
-  const { isAdmin } = useLayoutContextForHeader();
+  const { communityName, isAdmin } = useSelector((state) => state.community);
 
   /** Return menu arg for a given pathname */
   const pathMenuArg = React.useCallback(

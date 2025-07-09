@@ -1,9 +1,8 @@
 import React from 'react';
-import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
-import * as propertyCreateModal from '../../property-create-modal';
 import * as communityDeleteModal from '../community-delete-modal';
 import { useMenuItem } from './use-menu-item';
 
@@ -12,7 +11,7 @@ interface Props {
 }
 
 export const MoreMenu: React.FC<Props> = ({ community }) => {
-  const { canEdit, isAdmin } = useLayoutContext();
+  const { canEdit, isAdmin } = useSelector((state) => state.community);
 
   const communityDelete = communityDeleteModal.useModalControl();
 

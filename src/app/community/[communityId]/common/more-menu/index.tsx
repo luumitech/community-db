@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
 import { useMenuItem } from './use-menu-item';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const MoreMenu: React.FC<Props> = ({ omitKeys }) => {
-  const { canEdit, isAdmin } = useLayoutContext();
+  const { canEdit, isAdmin } = useSelector((state) => state.community);
   const menuItems = useMenuItem();
 
   return (
