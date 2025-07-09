@@ -11,6 +11,7 @@ const communityInfoDocument = graphql(/* GraphQL */ `
       accessList {
         community {
           id
+          updatedAt
         }
       }
     }
@@ -85,9 +86,12 @@ type TestCaseEntry = [
   Expected, // expected results
 ];
 
+type Community =
+  GQL.BatchPropertyModifySpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
+
 describe('BatchPropertyModify', () => {
   const testUtil = new TestUtil();
-  let communityId: string | undefined;
+  let targetCommunity: Community | undefined;
 
   beforeAll(async () => {
     await testUtil.initialize();
@@ -104,7 +108,7 @@ describe('BatchPropertyModify', () => {
     const result = await testUtil.graphql.executeSingle({
       document: communityInfoDocument,
     });
-    communityId = result.data?.userCurrent.accessList[0].community.id;
+    targetCommunity = result.data?.userCurrent.accessList[0].community;
   });
 
   afterEach(async () => {
@@ -220,7 +224,7 @@ describe('BatchPropertyModify', () => {
     const oldPropertyListResult = await testUtil.graphql.executeSingle({
       document: filteredPropertyListDocument,
       variables: {
-        id: communityId!,
+        id: targetCommunity!.id,
         filter,
       },
     });
@@ -231,7 +235,10 @@ describe('BatchPropertyModify', () => {
       document: batchModifyDocument,
       variables: {
         input: {
-          communityId: communityId!,
+          self: {
+            id: targetCommunity!.id,
+            updatedAt: targetCommunity!.updatedAt,
+          },
           filter,
           membership: {
             year: newEvent.year,

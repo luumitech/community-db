@@ -2,7 +2,6 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { Select, SelectItem } from '~/view/base/select';
-import { useHookFormContext } from '../use-hook-form';
 
 interface Props {
   className?: string;
@@ -10,7 +9,6 @@ interface Props {
 
 export const EventSelect: React.FC<Props> = ({ className }) => {
   const { visibleEventItems } = useLayoutContext();
-  const { register } = useHookFormContext();
 
   return (
     <Select

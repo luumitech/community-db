@@ -1,23 +1,16 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import { Wizard } from 'react-use-wizard';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
-import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
-import { FilterSelect } from './filter-select';
-import { MembershipInfoEditor } from './membership-info-editor';
+import { Modal, ModalContent, ModalHeader } from '~/view/base/modal';
 import {
   InputData,
   useHookForm,
   type BatchPropertyModifyFragmentType,
 } from './use-hook-form';
+import { Step0, Step1, Step2 } from './wizard';
 
 export interface ModalArg {
   community: BatchPropertyModifyFragmentType;
@@ -69,27 +62,11 @@ export const ModifyModal: React.FC<Props> = ({
             {(closeModal) => (
               <>
                 <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
-                <ModalBody>
-                  <FilterSelect className="mb-4" />
-                  <MembershipInfoEditor />
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    variant="bordered"
-                    isDisabled={pending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    isDisabled={!formState.isDirty}
-                    isLoading={pending}
-                  >
-                    Save
-                  </Button>
-                </ModalFooter>
+                <Wizard>
+                  <Step0 />
+                  <Step1 />
+                  <Step2 isSubmitting={pending} closeModal={closeModal} />
+                </Wizard>
               </>
             )}
           </ModalContent>

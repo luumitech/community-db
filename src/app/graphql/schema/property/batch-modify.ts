@@ -4,6 +4,7 @@ import { builder } from '~/graphql/builder';
 import { MessageType } from '~/graphql/pubsub';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
+import { UpdateInput } from '../common';
 import {
   communityMinMaxYearUpdateArgs,
   getCommunityEntry,
@@ -46,7 +47,7 @@ const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
 
 const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
   fields: (t) => ({
-    communityId: t.string({ required: true }),
+    self: t.field({ type: UpdateInput, required: true }),
     filter: t.field({ type: PropertyFilterInput }),
     membership: t.field({ type: BatchMembershipInput, required: true }),
   }),
@@ -81,8 +82,9 @@ builder.mutationField('batchPropertyModify', (t) =>
     resolve: async (_parent, args, ctx) => {
       const { user, pubSub } = ctx;
       const { input } = args;
-      const { communityId: shortId, filter } = input;
+      const { self, filter } = input;
       const { eventAttended } = input.membership;
+      const shortId = self.id;
 
       // Make sure user has permission to modify
       await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);

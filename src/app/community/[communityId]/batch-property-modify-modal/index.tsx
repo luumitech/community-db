@@ -18,6 +18,7 @@ const BatchPropertyMutation = graphql(/* GraphQL */ `
         id
         minYear
         maxYear
+        ...CommunityId_BatchPropertyModifyModal
       }
       propertyList {
         id

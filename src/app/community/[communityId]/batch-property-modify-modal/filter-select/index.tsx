@@ -1,23 +1,19 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { Icon } from '~/view/base/icon';
 import { EventSelect } from './event-select';
 import { YearSelect } from './year-select';
 
 interface Props {
   className?: string;
+  yearRequired?: boolean;
 }
 
-export const FilterSelect: React.FC<Props> = ({ className }) => {
+export const FilterSelect: React.FC<Props> = ({ className, yearRequired }) => {
   return (
-    <div className={cn(className, 'flex flex-col gap-2')}>
-      Apply changes to all properties who are members in the year:
+    <div className={cn(className, 'flex flex-col gap-4')}>
+      Select filters to apply changes to a subset of properties:
       <div className="ml-4 flex gap-2 items-center">
-        <YearSelect />
-      </div>
-      <div className="flex gap-2 items-center">
-        <Icon icon="filter" />
-        Optional filters to apply:
+        <YearSelect isRequired={yearRequired} />
       </div>
       <div className="ml-4 flex gap-2 items-center">
         <EventSelect />

@@ -13,6 +13,10 @@ const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
     id
     name
+    updatedAt
+    updatedBy {
+      ...User
+    }
   }
 `);
 export type BatchPropertyModifyFragmentType = FragmentType<
@@ -21,7 +25,10 @@ export type BatchPropertyModifyFragmentType = FragmentType<
 
 function schema() {
   return z.object({
-    communityId: zz.string.nonEmpty(),
+    self: z.object({
+      id: zz.string.nonEmpty(),
+      updatedAt: zz.string.nonEmpty(),
+    }),
     filter: z.object({
       memberYear: zz.coerce.toNumber({
         message: 'Must select a year',
@@ -46,12 +53,15 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
-  communityId: string,
+  community: GQL.CommunityId_BatchPropertyModifyModalFragment,
   filter: GQL.PropertyFilterInput,
   defaultSetting: GQL.DefaultSetting
 ): InputData {
   return {
-    communityId,
+    self: {
+      id: community.id,
+      updatedAt: community.updatedAt,
+    },
     filter: {
       memberYear: filter.memberYear ?? null,
       memberEvent: filter.memberEvent ?? null,
@@ -74,7 +84,7 @@ export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
   const { filterArg } = useSelector((state) => state.searchBar);
   const community = getFragment(BatchPropertyModifyFragment, fragment);
   const defaultValues = React.useMemo(
-    () => defaultInputData(community.id, filterArg, defaultSetting),
+    () => defaultInputData(community, filterArg, defaultSetting),
     [community, filterArg, defaultSetting]
   );
   const formMethods = useForm({
