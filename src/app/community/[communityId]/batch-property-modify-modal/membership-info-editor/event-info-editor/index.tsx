@@ -1,6 +1,6 @@
 import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
-import { useHookFormContext } from '../use-hook-form';
+import { useHookFormContext } from '../../use-hook-form';
 import { EventRow, EventRowHeader } from './event-row';
 
 interface Props {

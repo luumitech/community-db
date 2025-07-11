@@ -69,7 +69,13 @@ export const BatchPropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
         }),
         {
           pending: 'Saving...',
-          // success: 'Saved',
+          success: {
+            render: ({ data, toastProps }) => {
+              const propertyList = data.data?.batchPropertyModify.propertyList;
+              const count = propertyList?.length ?? 0;
+              return `${count} properties modified`;
+            },
+          },
         }
       );
     },

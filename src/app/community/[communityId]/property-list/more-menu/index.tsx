@@ -29,6 +29,7 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           'contactExport',
           'communityExport',
           'thirdPartyIntegration',
+          'communityMapView',
           'divider',
           ...insertIf(canEdit, 'communityModify'),
           ...insertIf(canEdit, 'batchPropertyModify'),

@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { StatusCodes } from 'http-status-codes';
 import { jsonc } from 'jsonc';
+import * as R from 'remeda';
 import { timeout } from '~/lib/date-util';
 import type { GeocodeResult } from './_type';
 import { Resource } from './resource';
@@ -65,22 +66,32 @@ export class BatchGeocode {
    * See: https://apidocs.geoapify.com/docs/geocoding/batch/#api
    */
   async searchFreeForm(textList: string[]) {
-    // TODO; Need to batch into 1000 calls
+    if (textList.length === 0) {
+      return [];
+    }
 
-    const batchOutput: BatchOutput = await this.res.call(
-      'batch/geocode/search',
-      {
-        method: 'POST',
-        body: jsonc.stringify(textList),
-      }
-    );
+    const result: BatchSearchFreeFormOutput = [];
 
-    const { url } = batchOutput;
-    const result = await this.jobResult<BatchSearchFreeFormOutput>(
-      url,
-      10000,
-      5
-    );
+    // geoapify batch call limits 1000 address per call
+    const MAX_ADDR = 1000;
+    const addressChunk = R.chunk(textList, MAX_ADDR);
+    for (const [idx, chunk] of addressChunk.entries()) {
+      const batchOutput = await this.res.call<BatchOutput>(
+        'batch/geocode/search',
+        {
+          method: 'POST',
+          body: jsonc.stringify(chunk),
+        }
+      );
+
+      const jobResult = await this.jobResult<BatchSearchFreeFormOutput>(
+        batchOutput.url,
+        10000,
+        5
+      );
+      result.push(...jobResult);
+    }
+
     return result;
   }
 }

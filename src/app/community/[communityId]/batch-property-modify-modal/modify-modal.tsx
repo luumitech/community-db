@@ -30,7 +30,7 @@ export const ModifyModal: React.FC<Props> = ({
   const [pending, startTransition] = React.useTransition();
   const { formMethods } = useHookForm(fragment);
   const { formState, handleSubmit } = formMethods;
-  const { isDirty } = formState;
+  const { isDirty, errors } = formState;
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>

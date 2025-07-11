@@ -248,15 +248,21 @@ function propertyListFilterArgs(
     });
   }
 
-  // Filter only ones with GPS coordinates
-  if (withGps) {
-    AND.push({
-      AND: [
-        // Shortcut for non-empty string check (checks for null/undefined as well)
-        { lat: { gte: ' ' } },
-        { lon: { gte: ' ' } },
-      ],
-    });
+  // Filter only ones with/without GPS coordinates
+  if (withGps != null) {
+    if (withGps) {
+      AND.push({
+        lat: { gte: ' ' },
+        lon: { gte: ' ' },
+      });
+    } else {
+      AND.push({
+        AND: [
+          { OR: [{ lat: { isSet: false } }, { lat: null }] },
+          { OR: [{ lon: { isSet: false } }, { lon: null }] },
+        ],
+      });
+    }
   }
 
   // Only include AND if it contains instruction

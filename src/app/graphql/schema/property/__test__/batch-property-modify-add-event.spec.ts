@@ -6,7 +6,7 @@ import { TestUtil } from '~/graphql/test-util';
 import { getPropertyEntry } from '../util';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
-  query BatchPropertyModifySpec_CommunityInfo {
+  query BatchPropertyModifyAddEventSpec_CommunityInfo {
     userCurrent {
       accessList {
         community {
@@ -19,7 +19,7 @@ const communityInfoDocument = graphql(/* GraphQL */ `
 `);
 
 const filteredPropertyListDocument = graphql(/* GraphQL */ `
-  query BatchPropertyModifySpec_FilteredPropertyList(
+  query BatchPropertyModifyAddEventSpec_FilteredPropertyList(
     $id: String!
     $filter: PropertyFilterInput!
   ) {
@@ -39,7 +39,7 @@ const filteredPropertyListDocument = graphql(/* GraphQL */ `
 `);
 
 const batchModifyDocument = graphql(/* GraphQL */ `
-  mutation BatchPropertyModifySpec_BatchModify(
+  mutation BatchPropertyModifyAddEventSpec_BatchModify(
     $input: BatchPropertyModifyInput!
   ) {
     batchPropertyModify(input: $input) {
@@ -87,9 +87,9 @@ type TestCaseEntry = [
 ];
 
 type Community =
-  GQL.BatchPropertyModifySpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
+  GQL.BatchPropertyModifyAddEventSpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
 
-describe('BatchPropertyModify', () => {
+describe('BatchPropertyModify - Add Event', () => {
   const testUtil = new TestUtil();
   let targetCommunity: Community | undefined;
 
@@ -239,6 +239,7 @@ describe('BatchPropertyModify', () => {
             id: targetCommunity!.id,
             updatedAt: targetCommunity!.updatedAt,
           },
+          method: GQL.BatchModifyMethod.AddEvent,
           filter,
           membership: {
             year: newEvent.year,

@@ -1,7 +1,9 @@
-import { Button, Tooltip } from '@heroui/react';
+import { Button } from '@heroui/react';
 import React from 'react';
 import { useWizard } from 'react-use-wizard';
+import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
+import { GpsInputEditor } from '../gps-input-editor';
 import { MembershipInfoEditor } from '../membership-info-editor';
 import { useHookFormContext } from '../use-hook-form';
 import { StepTemplate } from './step-template';
@@ -12,15 +14,35 @@ interface Props {
 }
 
 export const Step2: React.FC<Props> = (props) => {
-  return (
-    <StepTemplate body={<Body {...props} />} footer={<Footer {...props} />} />
-  );
+  const { watch } = useHookFormContext();
+  const method = watch('method');
+
+  const body = React.useMemo(() => {
+    switch (method) {
+      case GQL.BatchModifyMethod.AddEvent:
+        return <AddEventBody {...props} />;
+
+      case GQL.BatchModifyMethod.AddGps:
+        return <AddGpsBody {...props} />;
+
+      default:
+        throw new Error('Unsupported method');
+    }
+  }, [method, props]);
+
+  return <StepTemplate body={body} footer={<Footer {...props} />} />;
 };
 
-const Body: React.FC<Props> = ({}) => {
+const AddEventBody: React.FC<Props> = ({}) => {
   const { previousStep } = useWizard();
 
   return <MembershipInfoEditor />;
+};
+
+const AddGpsBody: React.FC<Props> = ({}) => {
+  const { previousStep } = useWizard();
+
+  return <GpsInputEditor />;
 };
 
 const Footer: React.FC<Props> = ({ isSubmitting, closeModal }) => {

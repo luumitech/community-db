@@ -8,10 +8,13 @@ interface CoerceOpt {
   message?: string;
 }
 
-interface ToBooleanOpt extends CoerceOpt {}
-interface ToIsoDateOpt extends CoerceOpt {}
-interface ToNumberOpt extends CoerceOpt {
+interface NullableCoerceOpt extends CoerceOpt {
   nullable?: boolean;
+}
+
+interface ToBooleanOpt extends NullableCoerceOpt {}
+interface ToIsoDateOpt extends NullableCoerceOpt {}
+interface ToNumberOpt extends NullableCoerceOpt {
   /**
    * Validation function
    *
@@ -22,6 +25,12 @@ interface ToNumberOpt extends CoerceOpt {
 }
 interface ToFileArrayOpt extends CoerceOpt {}
 interface ToCurrencyOpt extends CoerceOpt {}
+
+/** Results for coerce API that accepts 'nullable' as an option */
+type CoerceResult<T extends NullableCoerceOpt, R> = ZodEffects<
+  ZodAny,
+  T['nullable'] extends true ? R | null : R
+>;
 
 /**
  * Loop through validation functions and determine if input `val` has passed
@@ -46,15 +55,18 @@ export class Coerce {
    * Coerce string `true` or `1` to boolean:
    *
    * - Only `true` or `1` returns true,
-   * - All other string will return false
+   * - All other values will return false
+   *
+   * If you don't want to keep null or empty string as null, set `opt.nullable`
+   * to true
    */
-  toBoolean(opt?: ToBooleanOpt) {
-    return z
-      .string()
-      .trim()
-      .optional()
-      .nullable()
-      .transform((val) => val === 'true' || val === '1');
+  toBoolean<T extends ToBooleanOpt>(opt?: T): CoerceResult<T, boolean> {
+    return z.any().transform((val, ctx) => {
+      if (opt?.nullable && !val?.trim()) {
+        return null as unknown as boolean;
+      }
+      return val === 'true' || val === '1';
+    });
   }
 
   /**
@@ -71,9 +83,7 @@ export class Coerce {
    *
    * If you don't want to flag non number as error, set `opt.nullable` to true
    */
-  toNumber<T extends ToNumberOpt>(
-    opt?: T
-  ): ZodEffects<ZodAny, T['nullable'] extends true ? number | null : number> {
+  toNumber<T extends ToNumberOpt>(opt?: T): CoerceResult<T, number> {
     return z.any().transform((val, ctx) => {
       const onError = (message: string) => {
         ctx.addIssue({
@@ -113,9 +123,11 @@ export class Coerce {
    *
    * - Null
    *
+   * If you don't want to flag null as error, set `opt.nullable` to true
+   *
    * @example `2023-02-26T00:00:00.000Z`
    */
-  toIsoDate(opt?: ToIsoDateOpt) {
+  toIsoDate<T extends ToIsoDateOpt>(opt?: T): CoerceResult<T, string> {
     return z.any().transform((val, ctx) => {
       const onError = () => {
         ctx.addIssue({
@@ -126,7 +138,11 @@ export class Coerce {
       };
 
       if (val == null) {
-        return onError();
+        if (opt?.nullable) {
+          return null as unknown as string;
+        } else {
+          return onError();
+        }
       }
       const date = new Date(val);
       if (!isValidDate(date)) {

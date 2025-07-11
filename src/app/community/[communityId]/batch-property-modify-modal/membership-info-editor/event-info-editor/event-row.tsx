@@ -5,7 +5,7 @@ import {
   TicketInputTable,
 } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { useHookFormContext } from '../use-hook-form';
+import { useHookFormContext } from '../../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 import { EventNameSelect } from './event-name-select';
 

@@ -55,6 +55,12 @@ export function useMenuItem() {
         children: appLabel('thirdPartyIntegration'),
       },
       {
+        key: 'communityMapView',
+        href: appPath('communityMapView', { path: { communityId } }),
+        endContent: <Icon icon="map" />,
+        children: appLabel('communityMapView'),
+      },
+      {
         key: 'communityImport',
         href: appPath('communityImport', { path: { communityId } }),
         children: appLabel('communityImport'),

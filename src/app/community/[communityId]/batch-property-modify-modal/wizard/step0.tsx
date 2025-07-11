@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWizard } from 'react-use-wizard';
-import { Icon } from '~/view/base/icon';
+import { MethodSelect } from '../method-select';
 import { FooterDefault } from './footer-default';
 import { StepTemplate } from './step-template';
 
@@ -11,7 +11,7 @@ export const Step0: React.FC<Props> = ({}) => {
 };
 
 const Body: React.FC<Props> = ({}) => {
-  const { previousStep } = useWizard();
+  const { nextStep } = useWizard();
 
-  return <>step1</>;
+  return <MethodSelect />;
 };

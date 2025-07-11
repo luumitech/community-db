@@ -66,8 +66,8 @@ export interface GeocodeResult {
   /** House number component of an address */
   housenumber: string;
   /** Coordinates of the location */
-  lon: number;
-  lat: number;
+  lon?: number;
+  lat?: number;
   /** Fully formatted address for display purpose */
   formatted: string;
   /**

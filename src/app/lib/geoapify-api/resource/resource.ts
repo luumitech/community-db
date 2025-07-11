@@ -28,7 +28,7 @@ export class Resource {
    * @param init Arguments to pass into fetch call
    * @returns
    */
-  public async call(requestPath: string, opt?: CallOpt) {
+  public async call<T>(requestPath: string, opt?: CallOpt) {
     const { query, headers, ...init } = opt ?? {};
     const url = urlJoin(this.baseUrl, {
       paths: [DEFAULT_API_VERSION, requestPath],
@@ -55,6 +55,6 @@ export class Resource {
       throw new GraphQLError(`${error}: ${message}`);
     }
 
-    return result;
+    return result as T;
   }
 }

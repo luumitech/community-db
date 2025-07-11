@@ -18,6 +18,7 @@ export const EventSelect: React.FC<Props> = ({ className }) => {
       label="Membership Event"
       items={visibleEventItems}
       selectionMode="single"
+      placeholder="Unspecified"
       // disallowEmptySelection
     >
       {(item) => (
