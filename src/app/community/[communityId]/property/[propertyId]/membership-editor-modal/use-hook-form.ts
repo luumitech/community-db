@@ -120,7 +120,7 @@ export function membershipDefault(
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   yearRange: [number, number],
-  yearSelected: string
+  yearSelected?: number | null
 ): InputData {
   const membershipList = yearSelectItems(
     yearRange,

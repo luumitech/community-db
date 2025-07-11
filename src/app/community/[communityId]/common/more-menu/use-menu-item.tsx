@@ -76,7 +76,7 @@ export function useMenuItem() {
         children: appLabel('propertyCreate'),
       },
     ];
-  }, [community, communityModify, batchPropertyModify]);
+  }, [community, communityModify, batchPropertyModify, propertyCreate]);
 
   return menuItemList;
 }

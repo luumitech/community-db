@@ -18,24 +18,13 @@ export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
   const { membershipList } = property;
 
   const membership = React.useMemo(() => {
-    const matched = membershipList.find(
-      ({ year }) => yearSelected === year.toString()
-    );
+    const matched = membershipList.find(({ year }) => yearSelected === year);
     if (matched) {
       return matched;
     }
     // Return an empty membership entry, if it's not in database
-    return {
-      year: parseInt(yearSelected, 10),
-    } as GQL.Membership;
+    return { year: yearSelected } as GQL.Membership;
   }, [membershipList, yearSelected]);
-
-  const onYearChange = React.useCallback(
-    (year: string) => {
-      dispatch(actions.ui.setYearSelected(year));
-    },
-    [dispatch]
-  );
 
   return (
     <Card className={className}>
@@ -44,8 +33,8 @@ export const MembershipStatus: React.FC<Props> = ({ className, property }) => {
         <YearSelect
           yearRange={[minYear, maxYear]}
           membershipList={property.membershipList}
-          selectedYear={yearSelected}
-          onYearChange={onYearChange}
+          selectedYear={yearSelected?.toString()}
+          onYearChange={(year) => dispatch(actions.ui.setYearSelected(year))}
         />
       </CardBody>
       <CardFooter>

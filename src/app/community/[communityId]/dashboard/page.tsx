@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { MoreMenu } from '../common/more-menu';
 import { MemberCountChart } from './member-count-chart';
 import { YearlyChart } from './yearly-chart';
@@ -14,7 +15,8 @@ interface RouteArgs {
 
 export default function Dashboard({ params }: RouteArgs) {
   const { communityId } = params;
-  const [selectedYear, setSelectedYear] = React.useState<number>();
+  const dispatch = useDispatch();
+  const { yearSelected } = useSelector((state) => state.ui);
 
   return (
     <>
@@ -24,13 +26,11 @@ export default function Dashboard({ params }: RouteArgs) {
           // Top chart always occupy first row
           className="col-span-full"
           communityId={communityId}
-          selectedYear={selectedYear}
-          onYearSelect={setSelectedYear}
+          selectedYear={yearSelected}
+          onYearSelect={(year) => dispatch(actions.ui.setYearSelected(year))}
         />
-        {selectedYear && (
-          <>
-            <YearlyChart communityId={communityId} year={selectedYear} />
-          </>
+        {yearSelected != null && (
+          <YearlyChart communityId={communityId} year={yearSelected} />
         )}
       </div>
     </>

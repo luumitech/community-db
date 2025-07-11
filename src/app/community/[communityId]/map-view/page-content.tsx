@@ -4,7 +4,9 @@ import { cn } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { getCurrentYear } from '~/lib/date-util';
 import { PageProvider } from './page-context';
 import { YearSelect } from './year-select';
 
@@ -12,6 +14,7 @@ const MapView_CommunityQuery = graphql(/* GraphQL */ `
   query mapViewCommunity($id: String!) {
     communityFromId(id: $id) {
       id
+      maxYear
       rawPropertyList(filter: { withGps: true }) {
         id
         address
@@ -32,7 +35,8 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
-  const [selectedYear, setSelectedYear] = React.useState<number>();
+  const dispatch = useDispatch();
+  const { yearSelected } = useSelector((state) => state.ui);
   const result = useQuery(MapView_CommunityQuery, {
     variables: { id: communityId },
   });
@@ -51,7 +55,22 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     []
   );
 
+  const setYearSelected = React.useCallback(
+    (year: string | number) => {
+      dispatch(actions.ui.setYearSelected(year));
+    },
+    [dispatch]
+  );
+
   const community = result.data?.communityFromId;
+
+  React.useEffect(() => {
+    if (community && yearSelected == null) {
+      // By default, show current year (unless it's not available)
+      setYearSelected(Math.min(getCurrentYear(), community.maxYear));
+    }
+  }, [community, yearSelected, setYearSelected]);
+
   if (community == null) {
     return null;
   }
@@ -59,14 +78,14 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   return (
     <div className={cn(className, 'flex flex-col gap-3')}>
       <YearSelect
-        defaultSelectedKeys={selectedYear ? [selectedYear.toString()] : []}
+        selectedKeys={yearSelected ? [yearSelected.toString()] : []}
         onSelectionChange={(keys) => {
           const [firstKey] = keys;
-          setSelectedYear?.(parseInt(firstKey as string, 10));
+          setYearSelected(firstKey);
         }}
       />
       <PageProvider community={community}>
-        <Map className="grow" selectedYear={selectedYear} />
+        <Map className="grow" selectedYear={yearSelected} />
       </PageProvider>
     </div>
   );

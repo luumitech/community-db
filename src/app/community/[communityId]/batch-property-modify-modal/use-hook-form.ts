@@ -40,14 +40,14 @@ function schema() {
         withGps: zz.coerce.toBoolean({ nullable: true }),
       }),
       membership: z.object({
-        year: zz.coerce.toNumber({ nullable: true }),
+        year: zz.coerce.toNumber({ message: 'Must select a year' }),
         eventAttended: z.object({
-          eventName: z.string().nullable(),
+          eventName: z.string(),
           eventDate: zz.coerce.toIsoDate(),
           ticketList: ticketListSchema,
         }),
         price: zz.coerce.toCurrency(),
-        paymentMethod: z.string().nullable(),
+        paymentMethod: z.string(),
       }),
       gps: z.object({
         city: z.string().nullable(),
@@ -57,13 +57,6 @@ function schema() {
     .superRefine((form, ctx) => {
       if (form.method === GQL.BatchModifyMethod.AddEvent) {
         if (isInteger()(form.filter.memberYear) != null) {
-          return ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Must select a year',
-            path: ['filter', 'memberYear'],
-          });
-        }
-        if (isInteger()(form.membership.year) != null) {
           return ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Must select a year',

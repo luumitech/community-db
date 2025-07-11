@@ -22,9 +22,10 @@ export interface YearItem {
  */
 export function yearSelectItems(
   yearRange: [number, number],
-  yearToIncludeStr?: string
+  _yearToInclude?: string | number | null
 ) {
-  const yearToInclude = parseInt(yearToIncludeStr ?? '', 10);
+  const yearToIncludeNum = Number(_yearToInclude);
+  const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;
   const minYear = Math.min(
     ...[yearRange[0], yearToInclude].filter((v) => !isNaN(v))
   );

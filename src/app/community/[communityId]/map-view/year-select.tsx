@@ -38,9 +38,10 @@ export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
 
   return (
     <Select
-      className={cn(className, 'max-w-[180px]')}
-      label="Membership Year"
+      className={cn(className, 'max-w-xs')}
+      label="Highlight Membership Year"
       items={yearItems}
+      disallowEmptySelection
       {...props}
     >
       {(item) => (

@@ -44,7 +44,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const canSendEmail = React.useMemo(() => {
     const hasEmail = occupantList.some(({ email }) => !!email?.trim());
     const membership = property.membershipList.find(
-      (entry) => entry.year.toString() === yearSelected
+      (entry) => entry.year === yearSelected
     );
     return hasEmail && membership?.isMember;
   }, [occupantList, property.membershipList, yearSelected]);
@@ -59,7 +59,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             onPress={() =>
               sendMail.open({
                 community,
-                membershipYear: yearSelected,
+                membershipYear: yearSelected?.toString() ?? '',
                 occupantList,
               })
             }

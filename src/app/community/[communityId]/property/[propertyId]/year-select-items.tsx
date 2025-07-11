@@ -32,9 +32,10 @@ export interface YearItem {
 export function yearSelectItems(
   yearRange: [number, number],
   membershipList: Pick<GQL.Membership, 'year' | 'isMember'>[],
-  yearToIncludeStr: string
+  _yearToInclude?: string | number | null
 ) {
-  const yearToInclude = parseInt(yearToIncludeStr ?? '', 10);
+  const yearToIncludeNum = Number(_yearToInclude);
+  const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;
   const currentYear = getCurrentYear();
   const minYear = Math.min(
     ...[yearRange[0], yearToInclude, currentYear].filter((v) => !isNaN(v))

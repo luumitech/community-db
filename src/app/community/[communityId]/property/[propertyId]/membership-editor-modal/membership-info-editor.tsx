@@ -19,7 +19,9 @@ export const MembershipInfoEditor: React.FC<Props> = ({
 }) => {
   const { minYear, maxYear } = useLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
-  const [selectedYear, setSelectedYear] = React.useState(yearSelected);
+  const [selectedYear, setSelectedYear] = React.useState(
+    yearSelected?.toString()
+  );
   const { control } = useHookFormContext();
   const membershipMethods = useFieldArray({
     control,

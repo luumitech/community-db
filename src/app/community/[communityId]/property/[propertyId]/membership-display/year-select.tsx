@@ -1,5 +1,4 @@
 import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
-import { useSet } from '@uidotdev/usehooks';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import {
@@ -15,7 +14,7 @@ interface Props extends CustomSelectProps {
   className?: string;
   yearRange: [number, number];
   membershipList: GQL.PropertyId_MembershipDisplayFragment['membershipList'];
-  selectedYear: string;
+  selectedYear?: string | null;
   onYearChange: (year: string) => void;
 }
 
@@ -27,7 +26,6 @@ export const YearSelect: React.FC<Props> = ({
   onYearChange,
   ...props
 }) => {
-  const year = useSet([selectedYear]);
   const yearItems = React.useMemo(() => {
     return yearSelectItems(yearRange, membershipList, selectedYear);
   }, [yearRange, membershipList, selectedYear]);
@@ -44,15 +42,13 @@ export const YearSelect: React.FC<Props> = ({
       aria-label="Membership Info For Year"
       placeholder="Select a year"
       items={yearItems}
-      selectedKeys={year.values()}
+      selectedKeys={selectedYear ? [selectedYear] : []}
       selectionMode="single"
       disallowEmptySelection
       renderValue={(items) => <SelectedYearItem items={items} />}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
         const yearSelected = firstKey as string;
-        year.clear();
-        year.add(yearSelected);
         onYearChange(yearSelected);
       }}
       {...props}

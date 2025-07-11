@@ -63,10 +63,10 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
  */
 function findEvent(
   property: GQL.PropertyId_MembershipEditorFragment,
-  yearStr: string,
+  yearNum: number | null,
   eventName: string | undefined
 ) {
-  const year = parseAsNumber(yearStr) ?? getCurrentYear();
+  const year = yearNum ?? getCurrentYear();
   const membership = property.membershipList.find(
     (entry) => entry.year === year
   );

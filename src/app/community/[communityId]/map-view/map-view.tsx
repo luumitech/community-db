@@ -4,25 +4,21 @@ import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { parseAsNumber } from '~/lib/number-util';
 import type { MembershipList } from './_type';
+import { FitBound } from './fit-bound';
 import { MapEventListener } from './map-event-listener';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
 
 import 'leaflet/dist/leaflet.css';
 
-const center: L.LatLngExpression[] = [
-  [43.862293, -79.23649398214286],
-  [43.860956, -79.2339754],
-];
-
 interface Props {
   className?: string;
-  selectedYear?: number;
+  selectedYear?: number | null;
 }
 
 export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
   const { community } = usePageContext();
-  const [zoom, setZoom] = React.useState(17);
+  const [zoom, setZoom] = React.useState<number>();
 
   /** Check if property has membership for a given year */
   const isMember = React.useCallback(
@@ -30,7 +26,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       const found = membershipList.find((entry) => entry.year === year);
       return !!found?.isMember;
     },
-    [community]
+    []
   );
 
   const propertyWithGps = React.useMemo(() => {
@@ -40,15 +36,18 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       loc: [
         parseAsNumber(entry.lat)!,
         parseAsNumber(entry.lon)!,
-      ] as L.LatLngExpression,
+      ] as L.LatLngTuple,
       isMemberInYear: isMember(entry.membershipList),
     }));
   }, [community, isMember]);
 
+  const bounds = React.useMemo(() => {
+    return propertyWithGps.map((entry) => entry.loc);
+  }, [propertyWithGps]);
+
   return (
     <MapContainer
       className={className}
-      center={center[0]}
       zoom={zoom}
       zoomSnap={0}
       zoomDelta={0.25}
@@ -59,6 +58,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <MapEventListener onZoomChange={setZoom} />
+      <FitBound bounds={bounds} />
       {propertyWithGps.map((entry) => (
         <PropertyMarker
           key={entry.id}
