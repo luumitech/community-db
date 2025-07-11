@@ -5,18 +5,8 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
-import { GpsStatus } from './gps-status';
 import { PageProvider } from './page-context';
 import { YearSelect } from './year-select';
-
-// Load leaflet dynamically to avoid 'undefined window' error
-const Map = dynamic(
-  async () => {
-    const { MapView } = await import('./map-view');
-    return MapView;
-  },
-  { ssr: false }
-);
 
 const MapView_CommunityQuery = graphql(/* GraphQL */ `
   query mapViewCommunity($id: String!) {
@@ -27,6 +17,10 @@ const MapView_CommunityQuery = graphql(/* GraphQL */ `
         address
         lat
         lon
+        membershipList {
+          year
+          isMember
+        }
       }
     }
   }
@@ -44,13 +38,26 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   });
   useGraphqlErrorHandler(result);
 
+  // Load leaflet dynamically to avoid 'undefined window' error
+  const Map = React.useMemo(
+    () =>
+      dynamic(
+        async () => {
+          const { MapView } = await import('./map-view');
+          return MapView;
+        },
+        { ssr: false }
+      ),
+    []
+  );
+
   const community = result.data?.communityFromId;
   if (community == null) {
     return null;
   }
 
   return (
-    <div className={cn(className)}>
+    <div className={cn(className, 'flex flex-col gap-3')}>
       <YearSelect
         defaultSelectedKeys={selectedYear ? [selectedYear.toString()] : []}
         onSelectionChange={(keys) => {
@@ -59,8 +66,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
         }}
       />
       <PageProvider community={community}>
-        <GpsStatus />
-        <Map className="grow" />
+        <Map className="grow" selectedYear={selectedYear} />
       </PageProvider>
     </div>
   );

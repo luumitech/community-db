@@ -30,10 +30,10 @@ export class BatchGeocode {
   private async jobResult<T>(
     url: string,
     timeoutMs: number,
-    maxAttempt: number
+    maxAttempt?: number
   ) {
     async function repeatUntilSuccess(attempt: number) {
-      if (attempt >= maxAttempt) {
+      if (maxAttempt != null && attempt >= maxAttempt) {
         throw new GraphQLError('Tried too many attempts');
       }
 
@@ -86,8 +86,7 @@ export class BatchGeocode {
 
       const jobResult = await this.jobResult<BatchSearchFreeFormOutput>(
         batchOutput.url,
-        10000,
-        5
+        10000
       );
       result.push(...jobResult);
     }
