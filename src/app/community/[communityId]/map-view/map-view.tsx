@@ -45,6 +45,10 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
     return propertyWithGps.map((entry) => entry.loc);
   }, [propertyWithGps]);
 
+  if (propertyWithGps.length === 0) {
+    return <div>No GPS Information available</div>;
+  }
+
   return (
     <MapContainer
       className={className}

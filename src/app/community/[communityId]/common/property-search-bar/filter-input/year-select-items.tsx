@@ -14,24 +14,13 @@ export interface YearItem {
  * the years in:
  *
  * - YearRange (min/maxYear inclusive)
- * - YearToInclude (in input argument)
  *
  * @param yearRange
- * @param yearToInclude
  * @returns SelectItems with years in descending order
  */
-export function yearSelectItems(
-  yearRange: [number, number],
-  _yearToInclude?: string | number | null
-) {
-  const yearToIncludeNum = Number(_yearToInclude);
-  const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;
-  const minYear = Math.min(
-    ...[yearRange[0], yearToInclude].filter((v) => !isNaN(v))
-  );
-  const maxYear = Math.max(
-    ...[yearRange[1], yearToInclude].filter((v) => !isNaN(v))
-  );
+export function yearSelectItems(yearRange: [number, number]) {
+  const minYear = yearRange[0];
+  const maxYear = yearRange[1];
 
   const range = R.range(minYear, maxYear + 1);
   return R.reverse(range).map((yr) => {

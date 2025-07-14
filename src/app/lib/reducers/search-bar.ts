@@ -21,9 +21,10 @@ type State = Readonly<{
   debouncedSearchText?: string;
 
   /** Filter controls */
-  memberYear?: string;
-  nonMemberYear?: string;
-  event?: string;
+  memberYear: number | null;
+  nonMemberYear: number | null;
+  event: string | null;
+  withGps: boolean | null;
 
   /** Has Filter control been specified */
   isFilterSpecified: boolean;
@@ -35,9 +36,10 @@ type State = Readonly<{
 const initialState: State = {
   searchText: undefined,
   debouncedSearchText: undefined,
-  memberYear: undefined,
-  nonMemberYear: undefined,
-  event: undefined,
+  memberYear: null,
+  nonMemberYear: null,
+  event: null,
+  withGps: null,
   isFilterSpecified: false,
   filterArg: {},
 };
@@ -48,7 +50,12 @@ const initialState: State = {
  * @param state
  */
 function isFilterSpecified(state: State) {
-  return !!state.memberYear || !!state.nonMemberYear || !!state.event;
+  return (
+    state.memberYear != null ||
+    state.nonMemberYear != null ||
+    state.event != null ||
+    state.withGps != null
+  );
 }
 
 /**
@@ -61,16 +68,17 @@ function filterArg(state: State) {
   if (state.debouncedSearchText) {
     arg.searchText = state.debouncedSearchText;
   }
-  const selectedMemberYear = parseInt(state.memberYear ?? '', 10);
-  if (!isNaN(selectedMemberYear)) {
-    arg.memberYear = selectedMemberYear;
+  if (state.memberYear != null && !isNaN(state.memberYear)) {
+    arg.memberYear = state.memberYear;
   }
-  const selectedNonMemberYear = parseInt(state.nonMemberYear ?? '', 10);
-  if (!isNaN(selectedNonMemberYear)) {
-    arg.nonMemberYear = selectedNonMemberYear;
+  if (state.nonMemberYear != null && !isNaN(state.nonMemberYear)) {
+    arg.nonMemberYear = state.nonMemberYear;
   }
-  if (state.event) {
+  if (state.event != null) {
     arg.memberEvent = state.event;
+  }
+  if (state.withGps != null) {
+    arg.withGps = state.withGps;
   }
   return arg;
 }
@@ -90,21 +98,23 @@ export const searchBarSlice = createSlice({
       state.debouncedSearchText = payload;
       state.filterArg = filterArg(state);
     },
-    setMemberYear: (state, { payload }: PayloadAction<string | undefined>) => {
+    setMemberYear: (state, { payload }: PayloadAction<number | null>) => {
       state.memberYear = payload;
       state.isFilterSpecified = isFilterSpecified(state);
       state.filterArg = filterArg(state);
     },
-    setNonMemberYear: (
-      state,
-      { payload }: PayloadAction<string | undefined>
-    ) => {
+    setNonMemberYear: (state, { payload }: PayloadAction<number | null>) => {
       state.nonMemberYear = payload;
       state.isFilterSpecified = isFilterSpecified(state);
       state.filterArg = filterArg(state);
     },
-    setEvent: (state, { payload }: PayloadAction<string | undefined>) => {
+    setEvent: (state, { payload }: PayloadAction<string | null>) => {
       state.event = payload;
+      state.isFilterSpecified = isFilterSpecified(state);
+      state.filterArg = filterArg(state);
+    },
+    setWithGps: (state, { payload }: PayloadAction<boolean | null>) => {
+      state.withGps = payload;
       state.isFilterSpecified = isFilterSpecified(state);
       state.filterArg = filterArg(state);
     },

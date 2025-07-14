@@ -62,6 +62,9 @@ export class Coerce {
    */
   toBoolean<T extends ToBooleanOpt>(opt?: T): CoerceResult<T, boolean> {
     return z.any().transform((val, ctx) => {
+      if (typeof val === 'boolean') {
+        return val;
+      }
       if (opt?.nullable && !val?.trim()) {
         return null as unknown as boolean;
       }

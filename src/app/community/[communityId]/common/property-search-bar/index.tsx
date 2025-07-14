@@ -21,7 +21,7 @@ export const PropertySearchBar: React.FC<Props> = ({
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const dispatch = useDispatch();
-  const { searchText, memberYear, nonMemberYear, event } = useSelector(
+  const { searchText, memberYear, nonMemberYear, event, withGps } = useSelector(
     (state) => state.searchBar
   );
 
@@ -35,14 +35,15 @@ export const PropertySearchBar: React.FC<Props> = ({
       dispatch(actions.searchBar.setMemberYear(input.memberYear));
       dispatch(actions.searchBar.setNonMemberYear(input.nonMemberYear));
       dispatch(actions.searchBar.setEvent(input.event));
+      dispatch(actions.searchBar.setWithGps(input.withGps));
       onChange?.();
     },
     [dispatch, onChange]
   );
 
   const openDrawer = React.useCallback(() => {
-    open({ memberYear, nonMemberYear, event });
-  }, [open, memberYear, nonMemberYear, event]);
+    open({ memberYear, nonMemberYear, event, withGps });
+  }, [open, memberYear, nonMemberYear, event, withGps]);
 
   return (
     <>

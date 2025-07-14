@@ -1,25 +1,32 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { Select, SelectItem } from '~/view/base/select';
+import { Select, SelectItem, SelectProps } from '~/view/base/select';
 
-interface Props {
+type EventItem = ReturnType<
+  typeof useLayoutContext
+>['visibleEventItems'][number];
+
+type CustomProps = Omit<SelectProps<EventItem>, 'children'>;
+
+interface Props extends CustomProps {
   className?: string;
 }
 
-export const EventSelect: React.FC<Props> = ({ className }) => {
+export const EventSelect: React.FC<Props> = ({ className, ...props }) => {
   const { visibleEventItems } = useLayoutContext();
 
   return (
     <Select
-      className={cn(className, 'min-w-32 max-w-xs')}
-      controlName="filter.memberEvent"
-      size="sm"
+      classNames={{
+        base: className,
+      }}
       label="Membership Event"
       items={visibleEventItems}
       selectionMode="single"
+      isDisabled={!visibleEventItems.length}
       placeholder="Unspecified"
-      // disallowEmptySelection
+      {...props}
     >
       {(item) => (
         <SelectItem key={item.value} textValue={item.label}>

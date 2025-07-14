@@ -1,10 +1,10 @@
+import { Job } from '@hokify/agenda';
 import { Community, Property, Role } from '@prisma/client';
-import { tsRestFetchApi } from '@ts-rest/core';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
-import { MessageType } from '~/graphql/pubsub';
 import { type ContextUser } from '~/lib/context-user';
 import { GeoapifyApi } from '~/lib/geoapify-api';
+import { JobHandler } from '~/lib/job-handler';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
@@ -12,6 +12,7 @@ import {
   communityMinMaxYearUpdateArgs,
   getCommunityEntry,
 } from '../community/util';
+import { jobPayloadRef } from '../job/object';
 import { EventInput } from './modify';
 import {
   findOrAddEvent,
@@ -70,25 +71,37 @@ const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
   }),
 });
 
-interface BatchPropertyModifyPayload {
-  community: Community;
-  propertyList: Property[];
-}
+builder.mutationField('batchPropertyModify', (t) =>
+  t.field({
+    type: jobPayloadRef,
+    args: {
+      input: t.arg({ type: BatchPropertyModifyInput, required: true }),
+    },
+    resolve: async (_parent, args, ctx) => {
+      const { user, pubSub } = ctx;
+      const { input } = args;
+      const shortId = input.self.id;
 
-const batchPropertyModifyPayloadRef = builder
-  .objectRef<BatchPropertyModifyPayload>('BatchPropertyModifyPayload')
-  .implement({
-    fields: (t) => ({
-      community: t.prismaField({
-        type: 'Community',
-        resolve: (query, result, args, ctx) => result.community,
-      }),
-      propertyList: t.prismaField({
-        type: ['Property'],
-        resolve: (query, result, args, ctx) => result.propertyList,
-      }),
-    }),
-  });
+      // Make sure user has permission to modify
+      await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
+
+      const agenda = await JobHandler.init();
+
+      const job = await agenda.start<BatchPropertyModifyJobArg>(
+        'batchPropertyModify',
+        { user, input }
+      );
+
+      return job;
+    },
+  })
+);
+
+type BatchPropertyModifyInput = typeof BatchPropertyModifyInput.$inferInput;
+interface BatchPropertyModifyJobArg {
+  user: ContextUser;
+  input: BatchPropertyModifyInput;
+}
 
 /**
  * Process BatchMembershipInput for batch modify
@@ -103,7 +116,7 @@ async function updateMembership(
   community: Pick<Community, 'id' | 'minYear' | 'maxYear'>,
   propertyList: Property[],
   input: typeof BatchMembershipInput.$inferInput
-): Promise<BatchPropertyModifyPayload> {
+) {
   // Modify the propertyList in memory, and then write them to
   // database afterwards
   propertyList.forEach(({ membershipList }) => {
@@ -158,8 +171,8 @@ async function updateMembership(
   ]);
 
   return {
-    community: updatedCommunity,
-    propertyList: updatedPropertyList,
+    updatedCommunity,
+    updatedPropertyList,
   };
 }
 
@@ -168,7 +181,7 @@ async function updateGpsInfo(
   community: Pick<Community, 'id'>,
   propertyList: Property[],
   input: typeof BatchGpsInput.$inferInput
-): Promise<BatchPropertyModifyPayload> {
+) {
   // Get geocode information for each address and update database with
   // information
   const api = await GeoapifyApi.fromConfig();
@@ -177,10 +190,7 @@ async function updateGpsInfo(
   });
   const results = await api.batchGeocode.searchFreeForm(addressList);
 
-  const [updatedCommunity, ...updatedPropertyList] = await prisma.$transaction([
-    prisma.community.findUniqueOrThrow({
-      where: { id: community.id },
-    }),
+  const [...updatedPropertyList] = await prisma.$transaction([
     ...propertyList.map((property, idx) => {
       const geocodeResult = results[idx];
       return prisma.property.update({
@@ -195,79 +205,77 @@ async function updateGpsInfo(
     }),
   ]);
 
-  return {
-    community: updatedCommunity,
-    propertyList: updatedPropertyList,
-  };
+  return updatedPropertyList;
 }
 
-builder.mutationField('batchPropertyModify', (t) =>
-  t.field({
-    type: batchPropertyModifyPayloadRef,
-    args: {
-      input: t.arg({ type: BatchPropertyModifyInput, required: true }),
-    },
-    resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = ctx;
-      const { input } = args;
-      const { self, filter, method } = input;
-      const shortId = self.id;
+export async function batchPropertyModify(
+  user: ContextUser,
+  input: BatchPropertyModifyInput,
+  job?: Job<BatchPropertyModifyJobArg>
+) {
+  const { self, filter, method } = input;
+  const shortId = self.id;
 
-      // Make sure user has permission to modify
-      await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
+  const community = await getCommunityEntry(user, shortId, {
+    select: { id: true, minYear: true, maxYear: true },
+  });
 
-      const community = await getCommunityEntry(user, shortId, {
-        select: { id: true, minYear: true, maxYear: true },
-      });
+  const findManyArgs = await propertyListFindManyArgs(community.id, filter);
+  const propertyList = await prisma.property.findMany(findManyArgs);
 
-      const findManyArgs = await propertyListFindManyArgs(community.id, filter);
-      const propertyList = await prisma.property.findMany(findManyArgs);
+  let updatedPropertyList: Property[];
 
-      let result: BatchPropertyModifyPayload;
+  await job?.touch(30);
 
-      switch (method) {
-        case 'ADD_EVENT':
-          if (input.membership == null) {
-            throw new GraphQLError(
-              `Method ${method} requires input.membership to be specified`
-            );
-          }
-          result = await updateMembership(
-            user,
-            community,
-            propertyList,
-            input.membership
-          );
-          break;
-
-        case 'ADD_GPS':
-          if (input.gps == null) {
-            throw new GraphQLError(
-              `Method ${method} requires input.gps to be specified`
-            );
-          }
-          result = await updateGpsInfo(
-            user,
-            community,
-            propertyList,
-            input.gps
-          );
-          break;
-
-        default:
-          throw new GraphQLError(`Unhandled method "${method}" specified.`);
+  switch (method) {
+    case 'ADD_EVENT':
+      if (input.membership == null) {
+        throw new GraphQLError(
+          `Method ${method} requires input.membership to be specified`
+        );
       }
+      const result = await updateMembership(
+        user,
+        community,
+        propertyList,
+        input.membership
+      );
+      updatedPropertyList = result.updatedPropertyList;
+      break;
 
-      // broadcast modification to property(s)
-      result.propertyList.forEach((property) => {
-        pubSub.publish(`community/${shortId}/property`, {
-          broadcasterId: user.email,
-          messageType: MessageType.UPDATED,
-          property,
-        });
-      });
+    case 'ADD_GPS':
+      if (input.gps == null) {
+        throw new GraphQLError(
+          `Method ${method} requires input.gps to be specified`
+        );
+      }
+      updatedPropertyList = await updateGpsInfo(
+        user,
+        community,
+        propertyList,
+        input.gps
+      );
 
-      return result;
-    },
-  })
-);
+      break;
+
+    default:
+      throw new GraphQLError(`Unhandled method "${method}" specified.`);
+  }
+
+  await job?.touch(100);
+  return updatedPropertyList;
+}
+
+export async function batchPropertyModifyTask(
+  job: Job<BatchPropertyModifyJobArg>
+) {
+  const { user, input } = job.attrs.data;
+
+  const propertyList = await batchPropertyModify(user, input, job);
+  /**
+   * Would be nice to store this information in agenda queue output, so we can
+   * display number of properties modified by the batch command. But I don't
+   * think this is currently possible
+   */
+  return propertyList.length;
+}

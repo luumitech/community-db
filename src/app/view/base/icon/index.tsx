@@ -49,7 +49,8 @@ const supportedIcon = {
   warning: 'cuida:warning-outline',
   refresh: 'mdi:refresh',
   circle: 'material-symbols:circle',
-  map: 'carbon:map',
+  map: 'lucide:map-pin',
+  noMap: 'lucide:map-pin-off',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

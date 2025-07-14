@@ -1,7 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
-import { Select, SelectItem } from '~/view/base/select';
+import { Select, SelectItem, SelectProps } from '~/view/base/select';
 
 interface GpsItem {
   /** Label to appear in selection list */
@@ -21,21 +20,24 @@ export const gpsItems: GpsItem[] = [
   },
 ];
 
-interface Props {
+type CustomProps = Omit<SelectProps<GpsItem>, 'children'>;
+
+interface Props extends CustomProps {
   className?: string;
 }
 
-export const GpsSelect: React.FC<Props> = ({ className }) => {
+export const GpsSelect: React.FC<Props> = ({ className, ...props }) => {
   return (
     <Select
-      className={cn(className, 'min-w-32 max-w-xs')}
-      controlName="filter.withGps"
+      classNames={{
+        base: className,
+      }}
       label="GPS coordinate"
       items={gpsItems}
       isDisabled={!gpsItems.length}
       selectionMode="single"
       placeholder="Unspecified"
-      // disallowEmptySelection
+      {...props}
     >
       {(item) => {
         return (

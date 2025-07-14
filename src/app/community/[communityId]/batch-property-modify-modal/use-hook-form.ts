@@ -9,10 +9,9 @@ import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { isInteger, isNonEmpty, z, zz } from '~/lib/zod';
 
-const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
+const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
     id
-    name
     updatedAt
     updatedBy {
       ...User
@@ -20,7 +19,7 @@ const BatchPropertyModifyFragment = graphql(/* GraphQL */ `
   }
 `);
 export type BatchPropertyModifyFragmentType = FragmentType<
-  typeof BatchPropertyModifyFragment
+  typeof ModifyFragment
 >;
 
 function schema() {
@@ -84,14 +83,14 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
-  community: GQL.CommunityId_BatchPropertyModifyModalFragment,
+  item: GQL.CommunityId_BatchPropertyModifyModalFragment,
   filter: GQL.PropertyFilterInput,
   defaultSetting: GQL.DefaultSetting
 ): InputData {
   return {
     self: {
-      id: community.id,
-      updatedAt: community.updatedAt,
+      id: item.id,
+      updatedAt: item.updatedAt,
     },
     method: GQL.BatchModifyMethod.AddEvent,
     filter: {
@@ -117,9 +116,9 @@ function defaultInputData(
 }
 
 export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
+  const community = getFragment(ModifyFragment, fragment);
   const { defaultSetting } = useLayoutContext();
   const { filterArg } = useSelector((state) => state.searchBar);
-  const community = getFragment(BatchPropertyModifyFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(community, filterArg, defaultSetting),
     [community, filterArg, defaultSetting]
@@ -129,7 +128,7 @@ export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
     resolver: zodResolver(schema()),
   });
 
-  return { formMethods, community };
+  return { formMethods, self };
 }
 
 export function useHookFormContext() {

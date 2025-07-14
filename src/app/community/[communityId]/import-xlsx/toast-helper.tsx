@@ -11,7 +11,7 @@ interface Props {
 }
 
 /**
- * Renders the content wihtin the import progress toast
+ * Renders the content within the import progress toast
  *
  * It shows:
  *

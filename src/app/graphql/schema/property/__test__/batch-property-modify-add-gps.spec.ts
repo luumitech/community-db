@@ -3,7 +3,7 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
 import { MockBatchGeocode, mockGeocodeResult } from '~/lib/geoapify-api/mock';
-import { getPropertyEntry } from '../util';
+import { batchPropertyModify } from '../batch-modify';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddGpsSpec_CommunityInfo {
@@ -26,24 +26,6 @@ const filteredPropertyListDocument = graphql(/* GraphQL */ `
     communityFromId(id: $id) {
       id
       rawPropertyList(filter: $filter) {
-        id
-        address
-        lat
-        lon
-      }
-    }
-  }
-`);
-
-const batchModifyDocument = graphql(/* GraphQL */ `
-  mutation BatchPropertyModifyAddGpsSpec_BatchModify(
-    $input: BatchPropertyModifyInput!
-  ) {
-    batchPropertyModify(input: $input) {
-      community {
-        id
-      }
-      propertyList {
         id
         address
         lat
@@ -129,7 +111,6 @@ describe('BatchPropertyModify - Add GPS', () => {
     });
     const oldPropertyList =
       oldPropertyListResult.data?.communityFromId.rawPropertyList ?? [];
-    const addressList = oldPropertyList.map(({ address }) => address);
 
     const expectedGeoData = Array.from({ length: oldPropertyList.length }, () =>
       mockGeocodeResult()
@@ -137,31 +118,28 @@ describe('BatchPropertyModify - Add GPS', () => {
     const spy = MockBatchGeocode.searchFreeForm.mockImplementation(
       async () => expectedGeoData
     );
-    const result = await testUtil.graphql.executeSingle({
-      document: batchModifyDocument,
-      variables: {
-        input: {
-          self: {
-            id: targetCommunity!.id,
-            updatedAt: targetCommunity!.updatedAt,
-          },
-          method: GQL.BatchModifyMethod.AddGps,
-          filter,
-          gps: {
-            city: 'city',
-            country: 'country',
-          },
-        },
+    const result = await batchPropertyModify(testUtil.graphql.context.user, {
+      self: {
+        id: targetCommunity!.id,
+        updatedAt: targetCommunity!.updatedAt,
+      },
+      method: GQL.BatchModifyMethod.AddGps,
+      filter,
+      gps: {
+        city: 'city',
+        country: 'country',
       },
     });
 
-    expect(result.errors).toBeUndefined();
-    expect(spy).toHaveBeenCalledWith(addressList);
+    const expectedAddressList = oldPropertyList.map(({ address }) =>
+      [address, 'city', 'country'].join(',')
+    );
+    expect(spy).toHaveBeenCalledWith(expectedAddressList);
 
-    const { propertyList } = result.data?.batchPropertyModify ?? {};
+    const propertyList = result;
     expect(oldPropertyList).toHaveLength(expected.matchCount);
     expect(propertyList).toHaveLength(expected.matchCount);
-    for (const [idx, property] of (propertyList ?? []).entries()) {
+    for (const [idx, property] of propertyList.entries()) {
       // Compare GPS information between old and new property
       expect(property.lat).toBe(expectedGeoData[idx].lat?.toString());
       expect(property.lon).toBe(expectedGeoData[idx].lon?.toString());

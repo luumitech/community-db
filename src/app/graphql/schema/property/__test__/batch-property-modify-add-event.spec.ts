@@ -3,7 +3,7 @@ import path from 'path';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
-import { getPropertyEntry } from '../util';
+import { batchPropertyModify } from '../batch-modify';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddEventSpec_CommunityInfo {
@@ -25,6 +25,8 @@ const filteredPropertyListDocument = graphql(/* GraphQL */ `
   ) {
     communityFromId(id: $id) {
       id
+      minYear
+      maxYear
       rawPropertyList(filter: $filter) {
         id
         membershipList {
@@ -32,32 +34,6 @@ const filteredPropertyListDocument = graphql(/* GraphQL */ `
           price
           paymentMethod
           isMember
-        }
-      }
-    }
-  }
-`);
-
-const batchModifyDocument = graphql(/* GraphQL */ `
-  mutation BatchPropertyModifyAddEventSpec_BatchModify(
-    $input: BatchPropertyModifyInput!
-  ) {
-    batchPropertyModify(input: $input) {
-      community {
-        id
-        minYear
-        maxYear
-      }
-      propertyList {
-        id
-        address
-        membershipList {
-          year
-          price
-          eventAttendedList {
-            eventName
-            eventDate
-          }
         }
       }
     }
@@ -231,41 +207,41 @@ describe('BatchPropertyModify - Add Event', () => {
     const oldPropertyList =
       oldPropertyListResult.data?.communityFromId.rawPropertyList ?? [];
 
-    const result = await testUtil.graphql.executeSingle({
-      document: batchModifyDocument,
-      variables: {
-        input: {
-          self: {
-            id: targetCommunity!.id,
-            updatedAt: targetCommunity!.updatedAt,
-          },
-          method: GQL.BatchModifyMethod.AddEvent,
-          filter,
-          membership: {
-            year: newEvent.year,
-            paymentMethod: newEvent.paymentMethod,
-            price: newEvent.price,
-            eventAttended: {
-              eventName: newEvent.eventName,
-              eventDate: newEvent.eventDate.toISOString(),
-            },
-          },
+    const result = await batchPropertyModify(testUtil.graphql.context.user, {
+      self: {
+        id: targetCommunity!.id,
+        updatedAt: targetCommunity!.updatedAt,
+      },
+      method: GQL.BatchModifyMethod.AddEvent,
+      filter,
+      membership: {
+        year: newEvent.year,
+        paymentMethod: newEvent.paymentMethod,
+        price: newEvent.price,
+        eventAttended: {
+          eventName: newEvent.eventName,
+          eventDate: newEvent.eventDate.toISOString(),
         },
       },
     });
 
-    expect(result.errors).toBeUndefined();
-    const { community, propertyList } = result.data?.batchPropertyModify ?? {};
+    const newPropertyListResult = await testUtil.graphql.executeSingle({
+      document: filteredPropertyListDocument,
+      variables: {
+        id: targetCommunity!.id,
+        filter,
+      },
+    });
+
+    const community = newPropertyListResult.data?.communityFromId;
     expect(community?.minYear).toBe(expected.minYear);
     expect(community?.maxYear).toBe(expected.maxYear);
+
+    const propertyList = result;
     expect(oldPropertyList).toHaveLength(expected.matchCount);
     expect(propertyList).toHaveLength(expected.matchCount);
-    for (const { id } of propertyList ?? []) {
-      const oldProperty = oldPropertyList.find((entry) => entry.id === id)!;
-      const property = await getPropertyEntry(
-        testUtil.graphql.context.user,
-        id
-      );
+    for (const [idx, property] of propertyList.entries()) {
+      const oldProperty = oldPropertyList[idx];
       const oldMembership = oldProperty.membershipList.find(
         ({ year }) => year === newEvent.year
       );

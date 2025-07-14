@@ -90,7 +90,7 @@ builder.mutationField('communityImport', (t) =>
       const community = importXlsx(workbook);
       const agenda = await JobHandler.init();
 
-      const job = await agenda.start<CommunityJobArg>('communityImport', {
+      const job = await agenda.start<ImportJobArg>('communityImport', {
         user,
         shortId,
         community,
@@ -101,14 +101,14 @@ builder.mutationField('communityImport', (t) =>
   })
 );
 
-interface CommunityJobArg {
+interface ImportJobArg {
   user: ContextUser;
   /** Community short ID */
   shortId: string;
   community: CommunityEntry;
 }
 
-export async function communityImportTask(job: Job<CommunityJobArg>) {
+export async function communityImportTask(job: Job<ImportJobArg>) {
   const { user, shortId, community: communityEntry } = job.attrs.data;
   const {
     propertyList: { create: propertyList },
