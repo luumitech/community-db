@@ -4,9 +4,8 @@ import L from 'leaflet';
 import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { parseAsNumber } from '~/lib/number-util';
+import { FitBound, MapEventListener, PrintControl } from '~/view/base/leaflet';
 import type { MembershipList } from './_type';
-import { FitBound } from './fit-bound';
-import { MapEventListener } from './map-event-listener';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
 
@@ -62,6 +61,12 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <PrintControl
+        position="topleft"
+        sizeModes={['A4Portrait', 'A4Landscape']}
+        title="Export as PNG"
+        exportOnly
       />
       <MapEventListener onZoomChange={setZoom} />
       <FitBound bounds={bounds} />
