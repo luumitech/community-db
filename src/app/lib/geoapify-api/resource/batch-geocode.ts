@@ -14,6 +14,18 @@ interface BatchOutput {
   url: string;
 }
 
+interface JobResultOpt {
+  /** Time to wait between polls (in ms), Default 10000 (10 seconds) */
+  timeoutMs?: number;
+  /**
+   * Maximum number of polling attempts. If not specified, then will poll
+   * indefinitely until job completes
+   */
+  maxAttempt?: number;
+  /** Callback trigger on each polling attempt */
+  onPoll?: (attempt: number) => void;
+}
+
 export class BatchGeocode {
   constructor(private res: Resource) {}
 
@@ -26,17 +38,21 @@ export class BatchGeocode {
    * of addresses in one request.
    *
    * See: https://apidocs.geoapify.com/docs/geocoding/batch/#about
+   *
+   * @param url URL to get geocoding result
+   * @param timeoutMs Timeout (ms) between polling attempts
+   * @param opt Optional configurations
+   * @returns
    */
-  private async jobResult<T>(
-    url: string,
-    timeoutMs: number,
-    maxAttempt?: number
-  ) {
+  private async jobResult<T>(url: string, opt?: JobResultOpt) {
     async function repeatUntilSuccess(attempt: number) {
-      if (maxAttempt != null && attempt >= maxAttempt) {
-        throw new GraphQLError('Tried too many attempts');
+      if (opt?.maxAttempt != null && attempt >= opt.maxAttempt) {
+        throw new GraphQLError(
+          `Request did not complete after ${opt.maxAttempt} attempts`
+        );
       }
 
+      opt?.onPoll?.(attempt + 1);
       const resp = await fetch(url);
       switch (resp.status) {
         case StatusCodes.OK: {
@@ -45,14 +61,17 @@ export class BatchGeocode {
         }
         case StatusCodes.ACCEPTED:
           // Job is still running, check result later
-          await timeout(timeoutMs);
+          await timeout(opt?.timeoutMs ?? 10000);
           return repeatUntilSuccess(attempt + 1);
         default:
           throw new GraphQLError(`Error: ${resp.statusText}`);
       }
     }
 
-    // Wait a second to give a chance for the batch request do its thing, then check for result
+    /**
+     * Wait a second to give a chance for the initial batch request do its
+     * thing, then poll for completion status
+     */
     await timeout(1000);
     return repeatUntilSuccess(0);
   }
@@ -65,12 +84,25 @@ export class BatchGeocode {
    *
    * See: https://apidocs.geoapify.com/docs/geocoding/batch/#api
    */
-  async searchFreeForm(textList: string[]) {
+  async searchFreeForm(
+    textList: string[],
+    /** Progress from 0-100 */
+    onProgress?: (progress: number) => void
+  ) {
     if (textList.length === 0) {
+      onProgress?.(100);
       return [];
     }
 
+    onProgress?.(0);
     const result: BatchSearchFreeFormOutput = [];
+
+    /**
+     * Estimate attempts it takes to complete the request. We assume each poll
+     * can process 100 addresses.
+     */
+    const estimateAttempt = Math.ceil(textList.length / 100);
+    let attempt = 1;
 
     // geoapify batch call limits 1000 address per call
     const MAX_ADDR = 1000;
@@ -86,11 +118,22 @@ export class BatchGeocode {
 
       const jobResult = await this.jobResult<BatchSearchFreeFormOutput>(
         batchOutput.url,
-        10000
+        {
+          timeoutMs: 10000,
+          onPoll: () => {
+            const progress =
+              attempt < estimateAttempt
+                ? attempt / estimateAttempt
+                : attempt / (attempt + 1);
+            attempt++;
+            onProgress?.(progress * 100);
+          },
+        }
       );
       result.push(...jobResult);
     }
 
+    onProgress?.(100);
     return result;
   }
 }

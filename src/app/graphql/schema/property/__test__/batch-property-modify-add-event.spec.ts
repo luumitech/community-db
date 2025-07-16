@@ -3,7 +3,7 @@ import path from 'path';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
-import { batchPropertyModify } from '../batch-modify';
+import { BatchModify } from '../batch-modify/batch-modify';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddEventSpec_CommunityInfo {
@@ -207,7 +207,7 @@ describe('BatchPropertyModify - Add Event', () => {
     const oldPropertyList =
       oldPropertyListResult.data?.communityFromId.rawPropertyList ?? [];
 
-    const result = await batchPropertyModify(testUtil.graphql.context.user, {
+    const batchModify = new BatchModify(testUtil.graphql.context.user, {
       self: {
         id: targetCommunity!.id,
         updatedAt: targetCommunity!.updatedAt,
@@ -224,6 +224,7 @@ describe('BatchPropertyModify - Add Event', () => {
         },
       },
     });
+    const result = await batchModify.modify();
 
     const newPropertyListResult = await testUtil.graphql.executeSingle({
       document: filteredPropertyListDocument,

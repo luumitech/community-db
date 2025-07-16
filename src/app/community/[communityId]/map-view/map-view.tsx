@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@heroui/react';
 import L from 'leaflet';
 import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
@@ -51,7 +52,8 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
 
   return (
     <MapContainer
-      className={className}
+      // z-index is used so other modals don't show behind the map
+      className={cn(className, 'z-0')}
       zoom={zoom}
       zoomSnap={0}
       zoomDelta={0.25}

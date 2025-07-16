@@ -3,7 +3,7 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
 import { MockBatchGeocode, mockGeocodeResult } from '~/lib/geoapify-api/mock';
-import { batchPropertyModify } from '../batch-modify';
+import { BatchModify } from '../batch-modify/batch-modify';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddGpsSpec_CommunityInfo {
@@ -118,7 +118,8 @@ describe('BatchPropertyModify - Add GPS', () => {
     const spy = MockBatchGeocode.searchFreeForm.mockImplementation(
       async () => expectedGeoData
     );
-    const result = await batchPropertyModify(testUtil.graphql.context.user, {
+
+    const batchModify = new BatchModify(testUtil.graphql.context.user, {
       self: {
         id: targetCommunity!.id,
         updatedAt: targetCommunity!.updatedAt,
@@ -130,11 +131,13 @@ describe('BatchPropertyModify - Add GPS', () => {
         country: 'country',
       },
     });
+    const result = await batchModify.modify();
 
     const expectedAddressList = oldPropertyList.map(({ address }) =>
       [address, 'city', 'country'].join(',')
     );
-    expect(spy).toHaveBeenCalledWith(expectedAddressList);
+    expect(spy).toHaveBeenCalledOnce();
+    expect(spy).toHaveBeenCalledWith(expectedAddressList, expect.anything());
 
     const propertyList = result;
     expect(oldPropertyList).toHaveLength(expected.matchCount);

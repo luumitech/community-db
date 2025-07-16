@@ -31,7 +31,7 @@ const BatchPropertyModifyProgress: React.FC<Props> = ({
         isDisabled
         isSelected={complete}
       >
-        {complete ? 'Saved Successfully' : 'Saving (Please wait)...'}
+        {complete ? 'Saved Successfully' : 'Processing, please wait...'}
       </Checkbox>
     </div>
   );
@@ -44,7 +44,7 @@ export class ToastHelper {
 
   constructor() {
     this._progress = 0;
-    this.toastId = toast.loading('Saving (Please wait)...');
+    this.toastId = toast.loading('Processing, please wait...');
   }
 
   get progress() {
