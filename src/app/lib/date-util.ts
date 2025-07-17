@@ -114,3 +114,13 @@ export function getCurrentDateAsISOString() {
 export function formatAsDate(input: Date) {
   return format(input, 'yyyy-MM-dd');
 }
+
+/**
+ * Promisified timeout function
+ *
+ * @param ms Second to wait (in ms)
+ * @returns
+ */
+export async function timeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

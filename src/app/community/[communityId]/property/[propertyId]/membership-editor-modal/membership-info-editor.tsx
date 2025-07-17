@@ -1,6 +1,6 @@
 import { Spacer, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
@@ -17,9 +17,11 @@ export const MembershipInfoEditor: React.FC<Props> = ({
   className,
   property,
 }) => {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
-  const [selectedYear, setSelectedYear] = React.useState(yearSelected);
+  const [selectedYear, setSelectedYear] = React.useState(
+    yearSelected?.toString()
+  );
   const { control } = useHookFormContext();
   const membershipMethods = useFieldArray({
     control,

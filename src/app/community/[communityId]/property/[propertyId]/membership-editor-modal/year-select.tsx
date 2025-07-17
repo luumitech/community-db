@@ -14,7 +14,7 @@ interface Props {
   yearRange: [number, number];
   membershipList: GQL.PropertyId_MembershipEditorFragment['membershipList'];
   /** Currently selected year in Select */
-  selectedYear: string;
+  selectedYear?: string | null;
   /** Handler when user selects a year */
   onChange: (year: string) => void;
   /** When user chooses to add a year to selection list */
@@ -94,7 +94,7 @@ export const YearSelect: React.FC<Props> = ({
       placeholder="Select a year to view in detail"
       disallowEmptySelection
       items={yearItems}
-      selectedKeys={[selectedYear.toString()]}
+      selectedKeys={selectedYear ? [selectedYear.toString()] : []}
       selectionMode="single"
       onChange={handleSelectionChange}
       renderValue={(items) => <SelectedYearItem items={items} />}

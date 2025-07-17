@@ -12,7 +12,7 @@ import { useTooltip } from '~/view/base/chart/tooltip';
  */
 export function barHighlightSelected<T = BarDatum>(
   chartData: T[],
-  selectedIndexValue?: string | number
+  selectedIndexValue?: string | number | null
 ) {
   const Bar: React.FC<BarCustomLayerProps<T>> = ({ bars }) => {
     const tip = useTooltip();

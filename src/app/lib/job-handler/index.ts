@@ -2,6 +2,7 @@ import { Agenda } from '@hokify/agenda';
 import { GraphQLError } from 'graphql';
 import { ObjectId } from 'mongodb';
 import { communityImportTask } from '~/graphql/schema/community/import';
+import { batchPropertyModifyTask } from '~/graphql/schema/property/batch-modify';
 import { env } from '~/lib/env-cfg';
 import { JobEntry } from './job-entry';
 
@@ -21,6 +22,7 @@ export class JobHandler {
     if (this._agenda == null) {
       this._agenda = new Agenda({ db: { address: env.MONGODB_URI } });
       this._agenda.define('communityImport', communityImportTask);
+      this._agenda.define('batchPropertyModify', batchPropertyModifyTask);
       await this._agenda.start();
     }
 

@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import type { PropertyEntry } from '~/community/[communityId]/property-list/_type';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { insertIf } from '~/lib/insert-if';
 import { Loading } from '~/view/base/loading';
@@ -33,7 +33,7 @@ interface Props {
 
 export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
   const { property } = usePageContext();
-  const { canEdit } = useAppContext();
+  const { canEdit } = useSelector((state) => state.community);
   const entry = getFragment(PropertyDisplayFragment, property);
   const tableData = useTableData();
   const rows = entry ? [{ key: entry.id, ...entry }] : [];

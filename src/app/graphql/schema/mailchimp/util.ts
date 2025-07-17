@@ -4,8 +4,7 @@ import { type ContextUser } from '~/lib/context-user';
 import { MailchimpApi } from '~/lib/mailchimp';
 
 /**
- * Get community database entry of a given ID and verify if user has access to
- * it
+ * Get mailchimp API instance using the API key stored in user setting
  *
  * @param user Context user performing search
  * @param communityId Community shortID

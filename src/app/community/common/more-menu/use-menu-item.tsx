@@ -3,10 +3,8 @@ import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 
-interface MenuItemOpt {}
-
 /** Configure all possible menu items */
-export function useMenuItem(opt: MenuItemOpt) {
+export function useMenuItem() {
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
     return [
       {

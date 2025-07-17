@@ -37,6 +37,7 @@ export const supportedPathTemplates = {
   property: '/community/:communityId/property/:propertyId',
   communityDashboard: '/community/:communityId/dashboard',
   thirdPartyIntegration: '/community/:communityId/third-party-integration',
+  communityMapView: '/community/:communityId/map-view',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -97,7 +98,8 @@ export function appPath(
     | 'communityShare'
     | 'propertyList'
     | 'communityDashboard'
-    | 'thirdPartyIntegration',
+    | 'thirdPartyIntegration'
+    | 'communityMapView',
   sub: {
     path: {
       communityId: string;
@@ -173,6 +175,8 @@ export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
       return 'Property';
     case 'thirdPartyIntegration':
       return 'Third-Party Integration';
+    case 'communityMapView':
+      return 'Map';
 
     default:
       if (Object.hasOwn(supportedModals, key)) {

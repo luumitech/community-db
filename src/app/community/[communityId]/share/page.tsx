@@ -10,6 +10,7 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { Loading } from '~/view/base/loading';
@@ -62,16 +63,13 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
 
 export default function Share({ params }: RouteArgs) {
   const { communityId } = params;
+  const { isAdmin } = useSelector((state) => state.community);
   const result = useQuery(CommunityAccessListQuery, {
     variables: { id: communityId },
   });
   useGraphqlErrorHandler(result);
   const { data, loading } = result;
   const community = React.useMemo(() => data?.communityFromId, [data]);
-
-  const isAdmin = React.useMemo(() => {
-    return community?.access.role === GQL.Role.Admin;
-  }, [community]);
 
   const { columns, renderCell } = useTableData(isAdmin);
 
@@ -122,9 +120,7 @@ export default function Share({ params }: RouteArgs) {
 
   return (
     <>
-      {community && (
-        <MoreMenu communityId={community.id} omitKeys={['communityShare']} />
-      )}
+      <MoreMenu omitKeys={['communityShare']} />
       <Table
         aria-label="Community Access List"
         classNames={{

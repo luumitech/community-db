@@ -1,16 +1,22 @@
 import { useLazyQuery } from '@apollo/client';
 import { Button, Divider, Input as NInput } from '@heroui/react';
 import React from 'react';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { Input } from '~/view/base/input';
+import { NumberInput } from '~/view/base/number-input';
 
 interface InputData {
   address: string;
   streetNo: number;
   streetName: string;
   postalCode: string;
+  city: string;
+  country: string;
+  lat: number;
+  lon: number;
 }
 
 const GeocodeLookupAddress = graphql(/* GraphQL */ `
@@ -23,6 +29,8 @@ const GeocodeLookupAddress = graphql(/* GraphQL */ `
       postalCode
       city
       country
+      lat
+      lon
     }
   }
 `);
@@ -32,6 +40,7 @@ interface Props {
 }
 
 export const AddressEditorForm: React.FC<Props> = ({ className }) => {
+  const { community, hasGeoapifyApiKey } = useLayoutContext();
   const { setValue } = useFormContext<InputData>();
   const [address, setAddress] = React.useState<string>();
   const [geocodeLookupAddress, lookupResult] =
@@ -41,7 +50,7 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
   const lookupAddress = React.useCallback(async () => {
     if (address) {
       const result = await geocodeLookupAddress({
-        variables: { input: { text: address } },
+        variables: { input: { communityId: community.id, text: address } },
       });
       const output = result.data?.geocodeFromText;
       if (output) {
@@ -59,9 +68,13 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
         setFormValue('streetNo', output.streetNo);
         setFormValue('streetName', output.streetName);
         setFormValue('postalCode', output.postalCode);
+        setFormValue('city', output.city);
+        setFormValue('country', output.country);
+        setFormValue('lat', output.lat);
+        setFormValue('lon', output.lon);
       }
     }
-  }, [address, geocodeLookupAddress, setValue]);
+  }, [community.id, address, geocodeLookupAddress, setValue]);
 
   return (
     <>
@@ -71,8 +84,17 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           className={className}
           variant="bordered"
           label="Mailing Address"
-          placeholder="eg. 6587 Roller Derby Lane"
+          placeholder="eg. 6587 Roller Derby Lane, Springfeld, USA"
           onChange={(evt) => setAddress(evt.currentTarget.value)}
+          {...(!hasGeoapifyApiKey && {
+            isDisabled: true,
+            description: (
+              <div className="text-warning">
+                Please enter Geoapify API key in Third-Party Integration to
+                enable this feature
+              </div>
+            ),
+          })}
           endContent={
             <Button
               onPress={lookupAddress}
@@ -114,10 +136,50 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
         />
         <Input
           className={className}
+          controlName="city"
+          variant="bordered"
+          label="City"
+          isControlled
+        />
+        <Input
+          className={className}
+          controlName="country"
+          variant="bordered"
+          label="Country"
+          isControlled
+        />
+        <Input
+          className={className}
           controlName="postalCode"
           variant="bordered"
           label="Postal Code"
           isControlled
+        />
+        <NumberInput
+          className={className}
+          controlName="lat"
+          variant="bordered"
+          label="Latitude"
+          isControlled
+          hideStepper
+          isWheelDisabled
+          formatOptions={{
+            // 7 digits are sufficient to store coordinates with centimeter accuracy
+            maximumFractionDigits: 7,
+          }}
+        />
+        <NumberInput
+          className={className}
+          controlName="lon"
+          variant="bordered"
+          label="Longtitude"
+          isControlled
+          hideStepper
+          isWheelDisabled
+          formatOptions={{
+            // 7 digits are sufficient to store coordinates with centimeter accuracy
+            maximumFractionDigits: 7,
+          }}
         />
       </div>
     </>

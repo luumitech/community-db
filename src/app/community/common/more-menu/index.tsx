@@ -1,6 +1,4 @@
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
-import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
 import { useMenuItem } from './use-menu-item';
 
@@ -11,8 +9,7 @@ interface Props {
 }
 
 export const MoreMenu: React.FC<Props> = ({ omitKeys }) => {
-  const { canEdit, isAdmin } = useAppContext();
-  const menuItems = useMenuItem({});
+  const menuItems = useMenuItem();
 
   return (
     <HeaderMenu

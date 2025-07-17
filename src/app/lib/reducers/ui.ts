@@ -1,16 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getCurrentYear } from '~/lib/date-util';
 
 type State = Readonly<{
   /** Last event selected while editing membership detail */
   lastEventSelected?: string;
-  /** Year selected In membership editor/membership display */
-  yearSelected: string;
+  /**
+   * Year selected In:
+   *
+   * - Membership editor
+   * - Dashboard
+   * - Map view
+   */
+  yearSelected: number | null;
 }>;
 
 const initialState: State = {
   lastEventSelected: undefined,
-  yearSelected: getCurrentYear().toString(),
+  /**
+   * Not defaulting to current year because membership data is not necessarily
+   * available for current year
+   */
+  yearSelected: null,
 };
 
 export const uiSlice = createSlice({
@@ -24,8 +33,10 @@ export const uiSlice = createSlice({
     ) => {
       state.lastEventSelected = payload ?? undefined;
     },
-    setYearSelected: (state, { payload }: PayloadAction<string>) => {
-      state.yearSelected = payload;
+    setYearSelected: (state, { payload }: PayloadAction<number | string>) => {
+      const yearNum =
+        typeof payload === 'string' ? parseInt(payload, 10) : payload;
+      state.yearSelected = isNaN(yearNum) ? null : yearNum;
     },
   },
 });

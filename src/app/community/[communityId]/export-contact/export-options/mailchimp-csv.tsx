@@ -2,7 +2,7 @@ import { Button, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { startDownloadBlob } from '~/lib/dom';
 import { Icon } from '~/view/base/icon';
 import { type ContactInfo } from '../contact-util';
@@ -33,7 +33,7 @@ interface Props {
 }
 
 export const MailchimpCSV: React.FC<Props> = ({ className, contactInfo }) => {
-  const { communityName } = useAppContext();
+  const { communityName } = useLayoutContext();
   const contactList = React.useMemo(() => {
     return contactInfo?.contactList ?? [];
   }, [contactInfo]);

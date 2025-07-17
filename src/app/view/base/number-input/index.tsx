@@ -67,10 +67,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
               field.onChange(val);
               onValueChange?.(val);
             }}
-            {...(onClear != null && {
+            {...(!!props.isClearable && {
               onClear: () => {
                 field.onChange('');
-                onClear();
+                onClear?.();
               },
             })}
             onKeyDown={(e) => {
@@ -81,7 +81,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
             }}
             errorMessage={error}
             isInvalid={!!error}
-            labelPlacement="outside"
+            labelPlacement="inside"
             {...(!!isReadOnly && {
               isReadOnly: true,
               isDisabled: true,

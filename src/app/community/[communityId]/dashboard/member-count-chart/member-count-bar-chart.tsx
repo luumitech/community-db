@@ -230,7 +230,7 @@ interface Props {
   fragment?: MemberCountEntry;
   /** Number of years to show on the chart */
   yearRange: number;
-  selectedYear?: number;
+  selectedYear?: number | null;
   onYearSelect?: (year: number) => void;
 }
 

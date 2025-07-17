@@ -70,10 +70,6 @@ const baseSchema = z.object({
   /** Uploadthing configuration */
   UPLOADTHING_TOKEN: zz.string.envVar(),
 
-  /** Geoapify */
-  GEOAPIFY_URL: zz.string.envVar(),
-  GEOAPIFY_KEY: zz.string.envVar(),
-
   /** Payment Configuration */
   PAYMENT_HELCIM_PLAN_ID: z.coerce.number(),
   PAYMENT_HELCIM_API_KEY: zz.string.envVar(),

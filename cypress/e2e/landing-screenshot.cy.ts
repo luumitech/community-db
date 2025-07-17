@@ -25,7 +25,7 @@ class ScreenShot {
       .click();
 
     // Wait for property detail page
-    cy.findByLabelText('Membership Info For Year', { timeout });
+    cy.findByText('Membership Status', { timeout });
     this.takeScreenshot('property-detail');
   }
 
@@ -39,8 +39,8 @@ class ScreenShot {
 
   occupantEditor() {
     cy.clickHeaderMoreMenu();
-    cy.clickRoleMenuItem('Edit Member Details');
-    cy.findByRole('dialog').contains('Membership Contact Information');
+    cy.clickRoleMenuItem('Edit Contact Information');
+    cy.findByRole('dialog').contains('Edit Contact Information');
     this.takeScreenshot('occupant-editor');
     cy.clickButton('Cancel');
   }

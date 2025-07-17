@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   useForm,
   useFormContext,
@@ -63,10 +63,10 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
  */
 function findEvent(
   property: GQL.PropertyId_MembershipEditorFragment,
-  yearStr: string,
+  yearNum: number | null,
   eventName: string | undefined
 ) {
-  const year = parseAsNumber(yearStr) ?? getCurrentYear();
+  const year = yearNum ?? getCurrentYear();
   const membership = property.membershipList.find(
     (entry) => entry.year === year
   );
@@ -119,7 +119,7 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { defaultSetting } = useAppContext();
+  const { defaultSetting } = useLayoutContext();
   const { property: fragment } = usePageContext();
   const { yearSelected, lastEventSelected } = useSelector((state) => state.ui);
   const property = getFragment(MembershipEditorFragment, fragment);

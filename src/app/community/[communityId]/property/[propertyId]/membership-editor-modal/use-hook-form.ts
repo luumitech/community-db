@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -120,7 +120,7 @@ export function membershipDefault(
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   yearRange: [number, number],
-  yearSelected: string
+  yearSelected?: number | null
 ): InputData {
   const membershipList = yearSelectItems(
     yearRange,
@@ -171,7 +171,7 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
   const { property: fragment } = usePageContext();
   const property = getFragment(MembershipEditorFragment, fragment);

@@ -8,17 +8,17 @@ import {
 } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
+import { EventSelect, GpsSelect, YearSelect } from '../filter-input';
 import { useHookForm, type InputData } from '../use-hook-form';
-import { EventSelect } from './event-select';
-import { YearSelect } from './year-select';
 
 export interface DrawerArg {
-  memberYear?: string;
-  nonMemberYear?: string;
-  event?: string;
+  memberYear: number | null;
+  nonMemberYear: number | null;
+  event: string | null;
+  withGps: boolean | null;
 }
 
 interface Props extends DrawerArg {
@@ -31,11 +31,12 @@ export const FilterDrawer: React.FC<Props> = ({
   onFilterChange,
   ...arg
 }) => {
-  const { minYear, maxYear } = useAppContext();
+  const { minYear, maxYear } = useLayoutContext();
   const { formMethods } = useHookForm(
     arg.memberYear,
     arg.nonMemberYear,
-    arg.event
+    arg.event,
+    arg.withGps
   );
   const { formState, handleSubmit, setValue, watch } = formMethods;
   const { isOpen, onOpenChange, onClose } = disclosure;
@@ -65,18 +66,27 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
-                yearRange={[minYear, maxYear]}
-                controlName="memberYear"
                 label="Member In Year"
                 description="Show properties who are members in the specified year"
+                controlName="memberYear"
+                size="sm"
               />
               <YearSelect
-                yearRange={[minYear, maxYear]}
-                controlName="nonMemberYear"
                 label="Non-Member In Year"
                 description="Show properties who are not members in the specified year"
+                controlName="nonMemberYear"
+                size="sm"
               />
-              <EventSelect />
+              <EventSelect
+                description="Show properties who registered at the specified event"
+                controlName="event"
+                size="sm"
+              />
+              <GpsSelect
+                description="Show properties with or without GPS coordinate"
+                controlName="withGps"
+                size="sm"
+              />
             </DrawerBody>
             <DrawerFooter>
               <Button variant="light" onPress={onClose}>
@@ -87,9 +97,10 @@ export const FilterDrawer: React.FC<Props> = ({
                 color="danger"
                 isDisabled={!canClear}
                 onPress={() => {
-                  setValue('memberYear', '', { shouldDirty: true });
-                  setValue('nonMemberYear', '', { shouldDirty: true });
-                  setValue('event', '', { shouldDirty: true });
+                  setValue('memberYear', null, { shouldDirty: true });
+                  setValue('nonMemberYear', null, { shouldDirty: true });
+                  setValue('event', null, { shouldDirty: true });
+                  setValue('withGps', null, { shouldDirty: true });
                 }}
               >
                 Clear

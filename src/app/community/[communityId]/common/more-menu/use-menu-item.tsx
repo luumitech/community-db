@@ -1,22 +1,28 @@
 import React from 'react';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 
-interface MenuItemOpt {
-  communityId: string;
-}
-
 /** Configure all possible menu items */
-export function useMenuItem(opt: MenuItemOpt) {
+export function useMenuItem() {
+  const { community, communityModify, batchPropertyModify, propertyCreate } =
+    useLayoutContext();
+
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
-    const { communityId } = opt;
+    const communityId = community.id;
     return [
       {
         key: 'propertyList',
         href: appPath('propertyList', { path: { communityId } }),
         endContent: <Icon icon="property-list" />,
         children: appLabel('propertyList'),
+      },
+      {
+        key: 'communityModify',
+        onPress: () => communityModify.open({ community }),
+        endContent: <Icon icon="modify-community" />,
+        children: appLabel('communityModify'),
       },
       {
         key: 'communityDashboard',
@@ -49,12 +55,28 @@ export function useMenuItem(opt: MenuItemOpt) {
         children: appLabel('thirdPartyIntegration'),
       },
       {
+        key: 'communityMapView',
+        href: appPath('communityMapView', { path: { communityId } }),
+        endContent: <Icon icon="map" />,
+        children: appLabel('communityMapView'),
+      },
+      {
         key: 'communityImport',
         href: appPath('communityImport', { path: { communityId } }),
         children: appLabel('communityImport'),
       },
+      {
+        key: 'batchPropertyModify',
+        onPress: () => batchPropertyModify.open({ community }),
+        children: appLabel('batchPropertyModify'),
+      },
+      {
+        key: 'propertyCreate',
+        onPress: () => propertyCreate.open({ community }),
+        children: appLabel('propertyCreate'),
+      },
     ];
-  }, [opt]);
+  }, [community, communityModify, batchPropertyModify, propertyCreate]);
 
   return menuItemList;
 }

@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { MessageType } from '~/graphql/pubsub';
 import { Cipher } from '~/lib/cipher';
+import { GeoapifyApi } from '~/lib/geoapify-api';
 import { Logger } from '~/lib/logger';
 import { MailchimpApi } from '~/lib/mailchimp';
 import { isNonEmpty } from '~/lib/obj-util';
@@ -35,6 +36,12 @@ const MailchimpSettingInput = builder.inputType('MailchimpSettingInput', {
   }),
 });
 
+const GeoapifySettingInput = builder.inputType('GeoapifySettingInput', {
+  fields: (t) => ({
+    apiKey: t.string(),
+  }),
+});
+
 const EventItemInput = builder.inputType('EventItemInput', {
   fields: (t) => ({
     name: t.string({ required: true }),
@@ -62,6 +69,7 @@ const CommunityModifyInput = builder.inputType('CommunityModifyInput', {
     paymentMethodList: t.field({ type: [PaymentMethodInput] }),
     defaultSetting: t.field({ type: DefaultSettingInput }),
     mailchimpSetting: t.field({ type: MailchimpSettingInput }),
+    geoapifySetting: t.field({ type: GeoapifySettingInput }),
   }),
 });
 
@@ -97,6 +105,7 @@ builder.mutationField('communityModify', (t) =>
         paymentMethodList,
         defaultSetting,
         mailchimpSetting,
+        geoapifySetting,
         ...optionalInput
       } = input;
 
@@ -114,6 +123,19 @@ builder.mutationField('communityModify', (t) =>
 
         const cipher = Cipher.fromConfig();
         mailchimpSetting.apiKey = cipher.encrypt(mailchimpSetting.apiKey);
+      }
+
+      if (geoapifySetting?.apiKey) {
+        try {
+          const api = GeoapifyApi.fromApiKey(geoapifySetting.apiKey);
+          // await api.ping.ping();
+        } catch (err) {
+          logger.error(err);
+          throw new GraphQLError('Invalid API key');
+        }
+
+        const cipher = Cipher.fromConfig();
+        geoapifySetting.apiKey = cipher.encrypt(geoapifySetting.apiKey);
       }
 
       const community = await prisma.community.update({
@@ -150,6 +172,11 @@ builder.mutationField('communityModify', (t) =>
           ...(isNonEmpty(mailchimpSetting) && {
             mailchimpSetting: {
               upsert: { set: mailchimpSetting, update: mailchimpSetting },
+            },
+          }),
+          ...(isNonEmpty(geoapifySetting) && {
+            geoapifySetting: {
+              upsert: { set: geoapifySetting, update: geoapifySetting },
             },
           }),
           ...optionalInput,

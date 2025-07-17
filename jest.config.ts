@@ -1,14 +1,14 @@
+import dotenv from 'dotenv';
 import type { Config } from 'jest';
 import nextJest from 'next/jest';
 
 const createJestConfig = nextJest({});
 
+// Process .env.test files
+dotenv.config({ path: './.env.test' });
+
 const customJestConfig: Config = {
-  setupFiles: [
-    // Process .env files
-    'dotenv/config',
-    '<rootDir>/.jest/set-env-vars.ts',
-  ],
+  setupFiles: ['<rootDir>/.jest/set-env-vars.ts'],
   globalSetup: '<rootDir>/.jest/global-setup.ts',
   globalTeardown: '<rootDir>/.jest/global-teardown.ts',
   setupFilesAfterEnv: [

@@ -1,6 +1,7 @@
 import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
+
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { getCurrentDate } from '~/lib/date-util';
 
@@ -9,7 +10,7 @@ interface Props {
 }
 
 export const EventNameSelect: React.FC<Props> = ({ className }) => {
-  const { visibleEventItems } = useAppContext();
+  const { visibleEventItems } = useLayoutContext();
   const { lastEventSelected } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 

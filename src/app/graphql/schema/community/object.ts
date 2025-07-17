@@ -1,6 +1,7 @@
 import {
   DefaultSetting,
   EmailSetting,
+  GeoapifySetting,
   MailchimpSetting,
   Property,
   Role,
@@ -39,6 +40,8 @@ interface CommunityStat {
   id: string;
   /** Community Id */
   communityId: string;
+  /** Total number of properties within community */
+  propertyCount: number;
   /** Community statistics */
   statUtil: StatUtil;
 }
@@ -68,6 +71,29 @@ const defaultSettingRef = builder
 
 const mailchimpSettingRef = builder
   .objectRef<MailchimpSetting>('MailchimpSetting')
+  .implement({
+    fields: (t) => ({
+      apiKey: t.field({
+        type: 'String',
+        nullable: true,
+        description: 'Obfuscated API key for hinting what it looks like',
+        resolve: (entry) => {
+          const { apiKey } = entry;
+          if (apiKey) {
+            const cipher = Cipher.fromConfig();
+            // apiKey should be in the format of
+            // xxxxxxxxxx-usxx
+            const obfuscatedApiKey = cipher.decryptAndObfuscate(apiKey, 4, 5);
+            return obfuscatedApiKey;
+          }
+          return null;
+        },
+      }),
+    }),
+  });
+
+const geoapifySettingRef = builder
+  .objectRef<GeoapifySetting>('GeoapifySetting')
   .implement({
     fields: (t) => ({
       apiKey: t.field({
@@ -213,6 +239,9 @@ const communityStatRef = builder
   .implement({
     fields: (t) => ({
       id: t.exposeID('id'),
+      propertyCount: t.exposeInt('propertyCount', {
+        description: 'Total number of properties within community',
+      }),
       dbSize: t.field({
         description: 'bytes used to store all properties within community',
         type: 'Int',
@@ -328,6 +357,11 @@ builder.prismaObject('Community', {
       type: mailchimpSettingRef,
       nullable: true,
       resolve: (entry) => entry.mailchimpSetting,
+    }),
+    geoapifySetting: t.field({
+      type: geoapifySettingRef,
+      nullable: true,
+      resolve: (entry) => entry.geoapifySetting,
     }),
     /** Return context user's access document */
     access: t.prismaField({
@@ -448,6 +482,7 @@ builder.prismaObject('Community', {
         return {
           id: parent.shortId,
           communityId,
+          propertyCount: propertyList.length,
           statUtil,
         };
       },

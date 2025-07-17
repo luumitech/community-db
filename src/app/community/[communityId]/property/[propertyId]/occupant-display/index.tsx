@@ -1,6 +1,5 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
@@ -31,7 +30,7 @@ interface Props {
 }
 
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
-  const { canEdit } = useAppContext();
+  const { canEdit } = useSelector((state) => state.community);
   const { yearSelected } = useSelector((state) => state.ui);
   const {
     property: fragment,
@@ -45,7 +44,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const canSendEmail = React.useMemo(() => {
     const hasEmail = occupantList.some(({ email }) => !!email?.trim());
     const membership = property.membershipList.find(
-      (entry) => entry.year.toString() === yearSelected
+      (entry) => entry.year === yearSelected
     );
     return hasEmail && membership?.isMember;
   }, [occupantList, property.membershipList, yearSelected]);
@@ -60,7 +59,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             onPress={() =>
               sendMail.open({
                 community,
-                membershipYear: yearSelected,
+                membershipYear: yearSelected?.toString() ?? '',
                 occupantList,
               })
             }

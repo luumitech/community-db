@@ -68,10 +68,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               field.onChange(evt);
               onChange?.(evt);
             }}
-            {...(onClear != null && {
+            {...(!!props.isClearable && {
               onClear: () => {
                 field.onChange('');
-                onClear();
+                onClear?.();
               },
             })}
             errorMessage={error}

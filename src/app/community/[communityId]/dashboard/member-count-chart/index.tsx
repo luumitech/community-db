@@ -24,7 +24,7 @@ const MemberCountStatQuery = graphql(/* GraphQL */ `
 interface Props {
   className?: string;
   communityId: string;
-  selectedYear?: number;
+  selectedYear?: number | null;
   onYearSelect?: (year: number) => void;
 }
 
@@ -43,13 +43,6 @@ export const MemberCountChart: React.FC<Props> = ({
   });
   useGraphqlErrorHandler(result);
   const community = result.data?.communityFromId;
-
-  React.useEffect(() => {
-    if (community) {
-      // Default selected year when new statistics are loaded
-      onYearSelect?.(Math.min(getCurrentYear(), community.maxYear));
-    }
-  }, [community, onYearSelect]);
 
   return (
     <Card className={cn(className)}>

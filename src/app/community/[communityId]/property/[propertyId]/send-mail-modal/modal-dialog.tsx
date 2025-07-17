@@ -1,7 +1,7 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { useSelector } from '~/custom-hooks/redux';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -39,7 +39,7 @@ export const ModalDialog: React.FC<Props> = ({
   onSave,
   onSend,
 }) => {
-  const { canEdit } = useAppContext();
+  const { canEdit } = useSelector((state) => state.community);
   const { formMethods } = useHookForm(fragment, membershipYear, occupantList);
   const [saveTemplatePending, saveTemplateStartTransition] =
     React.useTransition();

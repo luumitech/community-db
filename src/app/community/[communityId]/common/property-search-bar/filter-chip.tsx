@@ -1,6 +1,7 @@
 import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
+import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
 import { useSelector } from '~/custom-hooks/redux';
 import { Icon } from '~/view/base/icon';
 import { defaultInputData, type InputData } from './use-hook-form';
@@ -22,19 +23,19 @@ export const FilterChip: React.FC<Props> = ({
     return null;
   }
 
-  const { memberYear, nonMemberYear, event } = searchBar;
-  const state = defaultInputData(memberYear, nonMemberYear, event);
+  const { memberYear, nonMemberYear, event, withGps } = searchBar;
+  const state = defaultInputData(memberYear, nonMemberYear, event, withGps);
 
   return (
     <div
       className={cn(className, 'hidden sm:flex gap-2 cursor-pointer')}
       onClick={openDrawer}
     >
-      {!!memberYear && (
+      {memberYear != null && (
         <Chip
           variant="bordered"
           color="success"
-          onClose={() => onFilterChange?.({ ...state, memberYear: '' })}
+          onClose={() => onFilterChange?.({ ...state, memberYear: null })}
         >
           <div className="flex items-center gap-2">
             {searchBar.memberYear}
@@ -42,10 +43,10 @@ export const FilterChip: React.FC<Props> = ({
           </div>
         </Chip>
       )}
-      {!!nonMemberYear && (
+      {nonMemberYear != null && (
         <Chip
           variant="bordered"
-          onClose={() => onFilterChange?.({ ...state, nonMemberYear: '' })}
+          onClose={() => onFilterChange?.({ ...state, nonMemberYear: null })}
         >
           <div className="flex items-center gap-2">
             {nonMemberYear}
@@ -53,11 +54,18 @@ export const FilterChip: React.FC<Props> = ({
           </div>
         </Chip>
       )}
-      {!!event && (
+      {event != null && (
         <EventChip
           eventName={event}
           variant="faded"
-          onClose={() => onFilterChange?.({ ...state, event: '' })}
+          onClose={() => onFilterChange?.({ ...state, event: null })}
+        />
+      )}
+      {withGps != null && (
+        <WithGpsChip
+          withGps={withGps}
+          variant="faded"
+          onClose={() => onFilterChange?.({ ...state, withGps: null })}
         />
       )}
     </div>

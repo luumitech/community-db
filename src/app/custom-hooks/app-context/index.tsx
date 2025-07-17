@@ -1,11 +1,10 @@
 import React from 'react';
-import { useCommunityContext, type CommunityState } from './community';
 import {
   useConfirmationModalContext,
   type ConfirmationState,
 } from './confirmation-modal';
 
-interface ContextT extends Readonly<ConfirmationState & CommunityState> {}
+interface ContextT extends Readonly<ConfirmationState> {}
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
@@ -16,13 +15,11 @@ interface Props {
 
 export function AppProvider(props: Props) {
   const confirmValues = useConfirmationModalContext();
-  const communityValues = useCommunityContext();
 
   return (
     <Context.Provider
       value={{
         ...confirmValues,
-        ...communityValues,
       }}
       {...props}
     />

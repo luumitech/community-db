@@ -1,5 +1,4 @@
 import React from 'react';
-import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as membershipEditorModal from './membership-editor-modal';
 import * as occupantEditorModal from './occupant-editor-modal';
@@ -16,7 +15,6 @@ type ContextT = Readonly<{
   membershipEditor: membershipEditorModal.ModalControl;
   propertyDelete: propertyDeleteModal.ModalControl;
   registerEvent: registerEventModal.ModalControl;
-  communityModify: communityModifyModal.ModalControl;
   sendMail: sendMailModal.ModalControl;
 }>;
 
@@ -35,7 +33,6 @@ export function PageProvider({ community, property, ...props }: Props) {
   const membershipEditor = membershipEditorModal.useModalControl();
   const propertyDelete = propertyDeleteModal.useModalControl();
   const registerEvent = registerEventModal.useModalControl();
-  const communityModify = communityModifyModal.useModalControl();
   const sendMail = sendMailModal.useModalControl();
 
   return (
@@ -48,7 +45,6 @@ export function PageProvider({ community, property, ...props }: Props) {
         membershipEditor,
         propertyDelete,
         registerEvent,
-        communityModify,
         sendMail,
       }}
       {...props}

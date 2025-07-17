@@ -1,0 +1,85 @@
+'use client';
+import { cn } from '@heroui/react';
+import L from 'leaflet';
+import React from 'react';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import { parseAsNumber } from '~/lib/number-util';
+import { FitBound, MapEventListener, PrintControl } from '~/view/base/leaflet';
+import type { MembershipList } from './_type';
+import { usePageContext } from './page-context';
+import { PropertyMarker } from './property-marker';
+
+import 'leaflet/dist/leaflet.css';
+
+interface Props {
+  className?: string;
+  selectedYear?: number | null;
+}
+
+export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
+  const { community } = usePageContext();
+  const [zoom, setZoom] = React.useState<number>();
+
+  /** Check if property has membership for a given year */
+  const isMember = React.useCallback(
+    (membershipList: MembershipList) => (year: number) => {
+      const found = membershipList.find((entry) => entry.year === year);
+      return !!found?.isMember;
+    },
+    []
+  );
+
+  const propertyWithGps = React.useMemo(() => {
+    return community.rawPropertyList.map((entry) => ({
+      id: entry.id,
+      address: entry.address,
+      loc: [
+        parseAsNumber(entry.lat)!,
+        parseAsNumber(entry.lon)!,
+      ] as L.LatLngTuple,
+      isMemberInYear: isMember(entry.membershipList),
+    }));
+  }, [community, isMember]);
+
+  const bounds = React.useMemo(() => {
+    return propertyWithGps.map((entry) => entry.loc);
+  }, [propertyWithGps]);
+
+  if (propertyWithGps.length === 0) {
+    return <div>No GPS Information available</div>;
+  }
+
+  return (
+    <MapContainer
+      // z-index is used so other modals don't show behind the map
+      className={cn(className, 'z-0')}
+      zoom={zoom}
+      zoomSnap={0}
+      zoomDelta={0.25}
+      scrollWheelZoom
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <PrintControl
+        position="topleft"
+        sizeModes={['A4Portrait', 'A4Landscape']}
+        title="Export as PNG"
+        exportOnly
+      />
+      <MapEventListener onZoomChange={setZoom} />
+      <FitBound bounds={bounds} />
+      {propertyWithGps.map((entry) => (
+        <PropertyMarker
+          key={entry.id}
+          locEntry={entry}
+          {...(selectedYear != null && {
+            isMember: entry.isMemberInYear(selectedYear),
+          })}
+          zoom={zoom}
+        />
+      ))}
+    </MapContainer>
+  );
+};

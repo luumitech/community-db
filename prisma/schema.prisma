@@ -156,6 +156,8 @@ model Community {
   defaultSetting    DefaultSetting?
   /// mailchimp settings
   mailchimpSetting  MailchimpSetting?
+  /// Geoapify settings
+  geoapifySetting   GeoapifySetting?
 
   accessList   Access[]   @relation("accessCommunity")
   propertyList Property[] @relation("propertyCommunity")
@@ -177,6 +179,11 @@ type DefaultSetting {
 
 /// Mailchimp integration setting
 type MailchimpSetting {
+  apiKey String?
+}
+
+/// Geoapify integration setting
+type GeoapifySetting {
   apiKey String?
 }
 
@@ -215,7 +222,15 @@ model Property {
   address        String
   streetNo       Int?
   streetName     String?
+  city           String?
+  country        String?
   postalCode     String?
+  /**
+   * Since Prisma mongo connector does not support Decimal type,
+   * both lat and lon are stored as string type
+   */
+  lat            String?
+  lon            String?
   notes          String?
   occupantList   Occupant[]
   membershipList Membership[]
@@ -227,7 +242,7 @@ model Property {
 type Occupant {
   firstName String?
   lastName  String?
-  // Opt out of communication
+  /// Opt out of communication (i.e. unsubscribed)
   optOut    Boolean?
   email     String?
   home      String?
