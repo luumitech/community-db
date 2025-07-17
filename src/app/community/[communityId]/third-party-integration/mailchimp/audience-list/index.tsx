@@ -71,7 +71,7 @@ export const AudienceList: React.FC<Props> = () => {
       aria-label="Mailchimp Audience List"
       classNames={{
         base: ['h-full'],
-        wrapper: 'p-0 rounded-none shadow-none',
+        wrapper: 'p-0 rounded-none shadow-none grow',
       }}
       isHeaderSticky
       isVirtualized
