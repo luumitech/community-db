@@ -23,7 +23,7 @@ interface JobResultOpt {
    */
   maxAttempt?: number;
   /** Callback trigger on each polling attempt */
-  onPoll?: (attempt: number) => void;
+  onPoll?: (attempt: number) => Promise<void>;
 }
 
 export class BatchGeocode {
@@ -52,7 +52,7 @@ export class BatchGeocode {
         );
       }
 
-      opt?.onPoll?.(attempt + 1);
+      await opt?.onPoll?.(attempt + 1);
       const resp = await fetch(url);
       switch (resp.status) {
         case StatusCodes.OK: {
@@ -87,14 +87,14 @@ export class BatchGeocode {
   async searchFreeForm(
     textList: string[],
     /** Progress from 0-100 */
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => Promise<void>
   ) {
     if (textList.length === 0) {
       onProgress?.(100);
       return [];
     }
 
-    onProgress?.(0);
+    await onProgress?.(0);
     const result: BatchSearchFreeFormOutput = [];
 
     /**
@@ -120,20 +120,20 @@ export class BatchGeocode {
         batchOutput.url,
         {
           timeoutMs: 10000,
-          onPoll: () => {
+          onPoll: async () => {
             const progress =
               attempt < estimateAttempt
                 ? attempt / estimateAttempt
                 : attempt / (attempt + 1);
             attempt++;
-            onProgress?.(progress * 100);
+            await onProgress?.(progress * 100);
           },
         }
       );
       result.push(...jobResult);
     }
 
-    onProgress?.(100);
+    await onProgress?.(100);
     return result;
   }
 }

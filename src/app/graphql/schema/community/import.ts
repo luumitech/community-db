@@ -127,13 +127,13 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
     }
   );
 
-  stepProgress.checkSubscription.set(0);
+  await stepProgress.checkSubscription.set(0);
 
   const community = await getCommunityEntry(user, shortId, {
     select: { id: true, owner: true },
   });
 
-  stepProgress.checkSubscription.set(50);
+  await stepProgress.checkSubscription.set(50);
   // Check community owner's subscription status to determine
   // limitation
   const existingSub = await getSubscriptionEntry(community.owner);
@@ -146,7 +146,7 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
     }
   }
 
-  stepProgress.checkSubscription.set(100);
+  await stepProgress.checkSubscription.set(100);
 
   /**
    * It's possible to do the update in an interactive transaction
@@ -172,7 +172,7 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
       },
     },
   });
-  stepProgress.updateCommunity.set(100);
+  await stepProgress.updateCommunity.set(100);
 
   // Inserting in bulk by chunks would allow progress report
   const propertyChunk = R.chunk(propertyList, 100);
@@ -186,6 +186,6 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
       },
     });
     const chunkProgress = ((chunkIdx + 1) / propertyChunk.length) * 100;
-    stepProgress.updateProperty.set(chunkProgress);
+    await stepProgress.updateProperty.set(chunkProgress);
   }
 }
