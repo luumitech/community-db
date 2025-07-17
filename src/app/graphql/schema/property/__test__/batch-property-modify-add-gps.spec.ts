@@ -18,6 +18,16 @@ const communityInfoDocument = graphql(/* GraphQL */ `
   }
 `);
 
+const addGeoapifyApikeyDocument = graphql(/* GraphQL */ `
+  mutation BatchPropertyModifyAddGpsSpec_AddGeoapifyKey(
+    $input: CommunityModifyInput!
+  ) {
+    communityModify(input: $input) {
+      id
+    }
+  }
+`);
+
 const filteredPropertyListDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddGpsSpec_FilteredPropertyList(
     $id: String!
@@ -69,6 +79,21 @@ describe('BatchPropertyModify - Add GPS', () => {
       document: communityInfoDocument,
     });
     targetCommunity = result.data?.userCurrent.accessList[0].community;
+    // Add Geoapify API key for testing purpose
+    await testUtil.graphql.executeSingle({
+      document: addGeoapifyApikeyDocument,
+      variables: {
+        input: {
+          self: {
+            id: targetCommunity!.id,
+            updatedAt: targetCommunity!.updatedAt,
+          },
+          geoapifySetting: {
+            apiKey: 'test-geoapify-api',
+          },
+        },
+      },
+    });
   });
 
   afterEach(async () => {

@@ -44,13 +44,6 @@ export const MemberCountChart: React.FC<Props> = ({
   useGraphqlErrorHandler(result);
   const community = result.data?.communityFromId;
 
-  React.useEffect(() => {
-    if (community && selectedYear == null) {
-      // By default, show current year (unless it's not available)
-      onYearSelect?.(Math.min(getCurrentYear(), community.maxYear));
-    }
-  }, [community, selectedYear, onYearSelect]);
-
   return (
     <Card className={cn(className)}>
       <CardHeader className="items-start gap-2">

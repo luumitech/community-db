@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
@@ -84,6 +85,17 @@ function createSelectionItems(
 }
 
 export function useCommunityContext(community: CommunityEntry) {
+  const dispatch = useDispatch();
+  const { yearSelected } = useSelector((state) => state.ui);
+
+  React.useEffect(() => {
+    if (community && yearSelected == null) {
+      // By default, show current year (unless it's not available)
+      const defaultYear = Math.min(getCurrentYear(), community.maxYear);
+      dispatch(actions.ui.setYearSelected(defaultYear));
+    }
+  }, [community, dispatch, yearSelected]);
+
   const stateValue = React.useMemo<CommunityState>(() => {
     const eventList = community.eventList ?? [];
     const ticketList = community.ticketList ?? [];
