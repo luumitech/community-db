@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { type StringifiableRecord } from 'query-string';
-import { GeoapifyCredential } from '~/lib/geoapify-api/credential';
 import { urlJoin } from '~/lib/url-util';
+import { type GeoapifyCredential } from './_type';
 
 const DEFAULT_API_VERSION = 'v1';
 

@@ -5,6 +5,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import { appLabel } from '~/lib/app-path';
+import { Geoapify } from './geoapify';
 import { Mailchimp } from './mailchimp';
 import { PageProvider } from './page-context';
 
@@ -13,6 +14,7 @@ const ThirdPartyIntegration_CommunityQuery = graphql(/* GraphQL */ `
     communityFromId(id: $id) {
       id
       ...ThirdPartyIntegration_Mailchimp_Settings
+      ...ThirdPartyIntegration_Geoapify_Settings
     }
   }
 `);
@@ -49,6 +51,9 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
         >
           <Tab key="mailchimp" title="Mailchimp">
             <Mailchimp />
+          </Tab>
+          <Tab key="geoapify" title="Geoapify">
+            <Geoapify />
           </Tab>
         </Tabs>
       </div>

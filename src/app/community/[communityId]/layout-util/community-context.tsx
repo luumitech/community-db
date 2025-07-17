@@ -39,6 +39,8 @@ export type CommunityState = Readonly<{
   /** Ticket default configurations */
   ticketDefault: Map<string, GQL.SupportedTicketItem>;
   defaultSetting: GQL.DefaultSetting;
+  /** Has Geoapify API key been specified */
+  hasGeoapifyApiKey: boolean;
 }>;
 
 /**
@@ -96,6 +98,8 @@ export function useCommunityContext(community: CommunityEntry) {
     const ticketSelect = createSelectionItems(ticketList);
     const paymentMethodSelect = createSelectionItems(paymentMethodList);
 
+    const hasGeoapifyApiKey = !!community.geoapifySetting?.apiKey;
+
     return {
       community,
       communityId: community.id,
@@ -113,6 +117,7 @@ export function useCommunityContext(community: CommunityEntry) {
       defaultSetting: community.defaultSetting ?? {
         __typename: 'DefaultSetting',
       },
+      hasGeoapifyApiKey,
     };
   }, [community]);
 

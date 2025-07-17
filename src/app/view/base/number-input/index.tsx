@@ -67,10 +67,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
               field.onChange(val);
               onValueChange?.(val);
             }}
-            {...(onClear != null && {
+            {...(!!props.isClearable && {
               onClear: () => {
                 field.onChange('');
-                onClear();
+                onClear?.();
               },
             })}
             onKeyDown={(e) => {

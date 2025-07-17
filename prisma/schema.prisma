@@ -156,6 +156,8 @@ model Community {
   defaultSetting    DefaultSetting?
   /// mailchimp settings
   mailchimpSetting  MailchimpSetting?
+  /// Geoapify settings
+  geoapifySetting   GeoapifySetting?
 
   accessList   Access[]   @relation("accessCommunity")
   propertyList Property[] @relation("propertyCommunity")
@@ -177,6 +179,11 @@ type DefaultSetting {
 
 /// Mailchimp integration setting
 type MailchimpSetting {
+  apiKey String?
+}
+
+/// Geoapify integration setting
+type GeoapifySetting {
   apiKey String?
 }
 

@@ -5,8 +5,8 @@ import {
   communityMinMaxYearUpdateArgs,
   getCommunityEntry,
 } from '~/graphql/schema/community/util';
+import { getGeoapifyApi } from '~/graphql/schema/geocode/util';
 import { type ContextUser } from '~/lib/context-user';
-import { GeoapifyApi } from '~/lib/geoapify-api';
 import prisma from '~/lib/prisma';
 import { StepProgress } from '~/lib/step-progress';
 import {
@@ -124,7 +124,7 @@ export class BatchModify {
   }
 
   private async updateGpsInfo(
-    community: Pick<Community, 'id'>,
+    community: Pick<Community, 'shortId' | 'id'>,
     propertyList: Property[],
     input: NonNullable<BatchPropertyModifyInput['gps']>
   ) {
@@ -132,7 +132,7 @@ export class BatchModify {
 
     // Get geocode information for each address and update database with
     // information
-    const api = await GeoapifyApi.fromConfig();
+    const api = await getGeoapifyApi(this.user, community.shortId);
     const addressList = propertyList.map((property) => {
       return [property.address, input.city ?? '', input.country ?? ''].join(
         ','
@@ -169,7 +169,7 @@ export class BatchModify {
     this.progress.findProperty.set(10);
 
     const community = await getCommunityEntry(this.user, shortId, {
-      select: { id: true, minYear: true, maxYear: true },
+      select: { id: true, shortId: true, minYear: true, maxYear: true },
     });
 
     const findManyArgs = await propertyListFindManyArgs(community.id, filter);

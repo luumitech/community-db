@@ -1,6 +1,7 @@
 import {
   DefaultSetting,
   EmailSetting,
+  GeoapifySetting,
   MailchimpSetting,
   Property,
   Role,
@@ -70,6 +71,29 @@ const defaultSettingRef = builder
 
 const mailchimpSettingRef = builder
   .objectRef<MailchimpSetting>('MailchimpSetting')
+  .implement({
+    fields: (t) => ({
+      apiKey: t.field({
+        type: 'String',
+        nullable: true,
+        description: 'Obfuscated API key for hinting what it looks like',
+        resolve: (entry) => {
+          const { apiKey } = entry;
+          if (apiKey) {
+            const cipher = Cipher.fromConfig();
+            // apiKey should be in the format of
+            // xxxxxxxxxx-usxx
+            const obfuscatedApiKey = cipher.decryptAndObfuscate(apiKey, 4, 5);
+            return obfuscatedApiKey;
+          }
+          return null;
+        },
+      }),
+    }),
+  });
+
+const geoapifySettingRef = builder
+  .objectRef<GeoapifySetting>('GeoapifySetting')
   .implement({
     fields: (t) => ({
       apiKey: t.field({
@@ -333,6 +357,11 @@ builder.prismaObject('Community', {
       type: mailchimpSettingRef,
       nullable: true,
       resolve: (entry) => entry.mailchimpSetting,
+    }),
+    geoapifySetting: t.field({
+      type: geoapifySettingRef,
+      nullable: true,
+      resolve: (entry) => entry.geoapifySetting,
     }),
     /** Return context user's access document */
     access: t.prismaField({

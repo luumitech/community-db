@@ -11,7 +11,10 @@ const MailchimpAudienceListInput = builder.inputType(
   'MailchimpAudienceListInput',
   {
     fields: (t) => ({
-      communityId: t.string({ required: true }),
+      communityId: t.string({
+        description: 'community short ID',
+        required: true,
+      }),
     }),
   }
 );
@@ -43,7 +46,10 @@ builder.queryField('mailchimpAudienceList', (t) =>
 
 const MailchimpMemberListInput = builder.inputType('MailchimpMemberListInput', {
   fields: (t) => ({
-    communityId: t.string({ required: true }),
+    communityId: t.string({
+      description: 'community short ID',
+      required: true,
+    }),
     listId: t.string({ required: true }),
   }),
 });

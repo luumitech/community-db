@@ -7,7 +7,10 @@ import { createAccess, verifyAccess } from './util';
 
 const AccessCreateInput = builder.inputType('AccessCreateInput', {
   fields: (t) => ({
-    communityId: t.string({ description: 'community ID', required: true }),
+    communityId: t.string({
+      description: 'community short ID',
+      required: true,
+    }),
     email: t.string({ required: true }),
     role: t.field({
       description: 'Access role',

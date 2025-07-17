@@ -38,6 +38,9 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
       access {
         role
       }
+      geoapifySetting {
+        apiKey
+      }
       ...CommunityId_CommunityModifyModal
       ...CommunityId_BatchPropertyModifyModal
       ...CommunityId_PropertyCreateModal

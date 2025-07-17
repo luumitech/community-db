@@ -1,5 +1,10 @@
-import { GeoapifyCredential } from './credential';
-import { BatchGeocode, ForwardGeocode, Resource } from './resource';
+import { Cipher } from '~/lib/cipher';
+import {
+  BatchGeocode,
+  ForwardGeocode,
+  Resource,
+  type GeoapifyCredential,
+} from './resource';
 
 export class GeoapifyApi {
   public forwardGeocode: ForwardGeocode;
@@ -11,8 +16,26 @@ export class GeoapifyApi {
     this.batchGeocode = new BatchGeocode(resource);
   }
 
-  static async fromConfig() {
-    const credential = await GeoapifyCredential.fromConfig();
-    return new GeoapifyApi(credential);
+  /**
+   * Create Geoapify instance by deciphering the apiKey from database
+   *
+   * @param apiKey Encrypted API key (from database)
+   * @returns
+   */
+  static fromEncryptedApiKey(encryptedApiKey: string) {
+    const cipher = Cipher.fromConfig();
+    const apiKey = cipher.decrypt(encryptedApiKey);
+    return GeoapifyApi.fromApiKey(apiKey);
+  }
+
+  /**
+   * Create Mailchimp instance by deciphering the apiKey from database
+   *
+   * @param apiKey Mailchip API key
+   * @returns
+   */
+  static fromApiKey(apiKey: string) {
+    const serverUrl = 'https://api.geoapify.com';
+    return new GeoapifyApi({ apiKey, serverUrl });
   }
 }
