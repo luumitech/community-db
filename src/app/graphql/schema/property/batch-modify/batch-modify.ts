@@ -25,11 +25,12 @@ export class BatchModify {
   constructor(
     private user: ContextUser,
     private input: BatchPropertyModifyInput,
+    /** Progress from 0-100 */
     onProgress?: (progress: number) => Promise<void>
   ) {
     this.progress = StepProgress.fromSteps(
       {
-        findProperty: 30,
+        findProperty: 10,
         update: 90,
         cleanup: 100,
       },
@@ -59,7 +60,7 @@ export class BatchModify {
     propertyList: Property[],
     input: NonNullable<BatchPropertyModifyInput['membership']>
   ) {
-    this.progress.update.set(0);
+    await this.progress.update.set(0);
 
     // Modify the propertyList in memory, and then write them to
     // database afterwards
@@ -93,7 +94,7 @@ export class BatchModify {
       input.year
     );
 
-    this.progress.update.set(80);
+    await this.progress.update.set(80);
     const [updatedCommunity, ...updatedPropertyList] =
       await prisma.$transaction([
         // Update minYear/maxYear when appropriate
@@ -116,7 +117,7 @@ export class BatchModify {
         ),
       ]);
 
-    this.progress.update.set(100);
+    await this.progress.update.set(100);
     return {
       updatedCommunity,
       updatedPropertyList,
@@ -128,7 +129,7 @@ export class BatchModify {
     propertyList: Property[],
     input: NonNullable<BatchPropertyModifyInput['gps']>
   ) {
-    this.progress.update.set(0);
+    await this.progress.update.set(0);
 
     // Get geocode information for each address and update database with
     // information
@@ -138,35 +139,46 @@ export class BatchModify {
         ','
       );
     });
-    const results = await api.batchGeocode.searchFreeForm(
+    const geocodeResults = await api.batchGeocode.searchFreeForm(
       addressList,
-      // interpolate geocoding progress to specified range
+      // interpolate geocoding progress to (0-80)
       (progress) => this.progress.update.set(progress * 0.8)
     );
 
-    const [...updatedPropertyList] = await prisma.$transaction([
-      ...propertyList.map((property, idx) => {
-        const geocodeResult = results[idx];
-        return prisma.property.update({
-          where: { id: property.id },
-          data: {
-            updatedBy: { connect: { email: this.user.email } },
-            // It's possible that lat/lon cannot be found
-            lat: geocodeResult.lat?.toString() ?? null,
-            lon: geocodeResult.lon?.toString() ?? null,
-          },
-        });
-      }),
-    ]);
+    /**
+     * For unknown reason, when updating >800 properties within a single
+     * transaction, the transaction operation fails in production instance.
+     * (works fine locally)
+     *
+     * Will update the properties without transaction, upside is that it would
+     * allow progress report
+     */
+    const updatedPropertyList: Property[] = [];
+    for (const [idx, property] of propertyList.entries()) {
+      const geocode = geocodeResults[idx];
+      const updatedProperty = await prisma.property.update({
+        where: { id: property.id },
+        data: {
+          updatedBy: { connect: { email: this.user.email } },
+          // It's possible that lat/lon cannot be found
+          lat: geocode.lat?.toString() ?? null,
+          lon: geocode.lon?.toString() ?? null,
+        },
+      });
+      updatedPropertyList.push(updatedProperty);
+      const progress = ((idx + 1) / propertyList.length) * 100;
+      // interpolate progress to (80-100)
+      await this.progress.update.set(80 + progress * 0.2);
+    }
 
-    this.progress.update.set(100);
+    await this.progress.update.set(100);
     return updatedPropertyList;
   }
 
   async modify() {
     const { self, filter, method } = this.input;
     const shortId = self.id;
-    this.progress.findProperty.set(10);
+    await this.progress.findProperty.set(0);
 
     const community = await getCommunityEntry(this.user, shortId, {
       select: { id: true, shortId: true, minYear: true, maxYear: true },
@@ -175,7 +187,7 @@ export class BatchModify {
     const findManyArgs = await propertyListFindManyArgs(community.id, filter);
     const propertyList = await prisma.property.findMany(findManyArgs);
 
-    this.progress.findProperty.set(100);
+    await this.progress.findProperty.set(100);
     let updatedPropertyList: Property[];
 
     switch (method) {
@@ -211,7 +223,7 @@ export class BatchModify {
     }
 
     // Done
-    this.progress.cleanup.set(100);
+    await this.progress.cleanup.set(100);
     return updatedPropertyList;
   }
 }

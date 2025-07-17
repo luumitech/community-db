@@ -7,6 +7,7 @@ import { builder } from '~/graphql/builder';
 import { type ContextUser } from '~/lib/context-user';
 import { JobHandler } from '~/lib/job-handler';
 import prisma from '~/lib/prisma';
+import { StepProgress } from '~/lib/step-progress';
 import { utapi } from '~/lib/uploadthing';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { importXlsx, type CommunityEntry } from '~/lib/xlsx-io/import';
@@ -115,12 +116,24 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
     ...others
   } = communityEntry;
 
-  await job.touch(10);
+  const stepProgress = StepProgress.fromSteps(
+    {
+      checkSubscription: 20,
+      updateCommunity: 30,
+      updateProperty: 100,
+    },
+    async (progress) => {
+      await job.touch(Math.ceil(progress));
+    }
+  );
+
+  await stepProgress.checkSubscription.set(0);
 
   const community = await getCommunityEntry(user, shortId, {
     select: { id: true, owner: true },
   });
 
+  await stepProgress.checkSubscription.set(50);
   // Check community owner's subscription status to determine
   // limitation
   const existingSub = await getSubscriptionEntry(community.owner);
@@ -133,7 +146,7 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
     }
   }
 
-  await job.touch(20);
+  await stepProgress.checkSubscription.set(100);
 
   /**
    * It's possible to do the update in an interactive transaction
@@ -145,7 +158,6 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
    * know how long an import action may take. So we decided not to do
    * transaction here.
    */
-
   await prisma.community.update({
     where: { id: community.id },
     data: {
@@ -160,10 +172,11 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
       },
     },
   });
+  await stepProgress.updateCommunity.set(100);
 
   // Inserting in bulk by chunks would allow progress report
   const propertyChunk = R.chunk(propertyList, 100);
-  for (const [idx, chunk] of propertyChunk.entries()) {
+  for (const [chunkIdx, chunk] of propertyChunk.entries()) {
     await prisma.community.update({
       where: { id: community.id },
       data: {
@@ -172,6 +185,7 @@ export async function communityImportTask(job: Job<ImportJobArg>) {
         },
       },
     });
-    await job.touch(20 + Math.ceil((idx / propertyChunk.length) * 80));
+    const chunkProgress = ((chunkIdx + 1) / propertyChunk.length) * 100;
+    await stepProgress.updateProperty.set(chunkProgress);
   }
 }

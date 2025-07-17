@@ -1,6 +1,7 @@
 import * as R from 'remeda';
 
-type ProgressCB = (progress: number) => void;
+/** Progress from 0-100 */
+type ProgressCB = (progress: number) => Promise<void>;
 
 /**
  * Implement progress tracking for each step
@@ -64,11 +65,11 @@ export class StepProgress {
    *
    * @param progress Progress percentage for the step (0-100)
    */
-  set(progress: number) {
+  async set(progress: number) {
     const min = this.range[0];
     const max = this.range[1];
     const total = max - min;
     const overAllProgress = min + total * (progress / 100);
-    this.onProgress(overAllProgress);
+    await this.onProgress(overAllProgress);
   }
 }
