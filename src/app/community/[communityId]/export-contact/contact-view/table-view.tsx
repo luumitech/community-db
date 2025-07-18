@@ -40,10 +40,10 @@ export function TableView({
         aria-label="Contact List"
         classNames={{
           base: ['h-full'],
+          wrapper: 'p-0 rounded-none shadow-none grow',
         }}
         isHeaderSticky
         isVirtualized
-        removeWrapper
       >
         <TableHeader columns={columns}>
           {(column) => (

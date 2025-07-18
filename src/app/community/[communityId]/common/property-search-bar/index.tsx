@@ -1,11 +1,11 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
+import { FilterChip } from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
-import { FilterChip } from './filter-chip';
 import { FilterDrawer, type DrawerArg } from './filter-drawer';
 import { type InputData } from './use-hook-form';
 
@@ -21,9 +21,8 @@ export const PropertySearchBar: React.FC<Props> = ({
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const dispatch = useDispatch();
-  const { searchText, memberYear, nonMemberYear, event, withGps } = useSelector(
-    (state) => state.searchBar
-  );
+  const { searchText, memberYear, nonMemberYear, memberEvent, withGps } =
+    useSelector((state) => state.searchBar);
 
   const setSearchText = (input?: string) => {
     dispatch(actions.searchBar.setSearchText(input));
@@ -34,7 +33,7 @@ export const PropertySearchBar: React.FC<Props> = ({
     async (input: InputData) => {
       dispatch(actions.searchBar.setMemberYear(input.memberYear));
       dispatch(actions.searchBar.setNonMemberYear(input.nonMemberYear));
-      dispatch(actions.searchBar.setEvent(input.event));
+      dispatch(actions.searchBar.setMemberEvent(input.memberEvent));
       dispatch(actions.searchBar.setWithGps(input.withGps));
       onChange?.();
     },
@@ -42,8 +41,8 @@ export const PropertySearchBar: React.FC<Props> = ({
   );
 
   const openDrawer = React.useCallback(() => {
-    open({ memberYear, nonMemberYear, event, withGps });
-  }, [open, memberYear, nonMemberYear, event, withGps]);
+    open({ memberYear, nonMemberYear, memberEvent, withGps });
+  }, [open, memberYear, nonMemberYear, memberEvent, withGps]);
 
   return (
     <>
@@ -66,6 +65,7 @@ export const PropertySearchBar: React.FC<Props> = ({
             <FilterButton openDrawer={openDrawer} />
             <FilterChip
               openDrawer={openDrawer}
+              filters={{ memberYear, nonMemberYear, memberEvent, withGps }}
               onFilterChange={onFilterChange}
             />
           </div>
