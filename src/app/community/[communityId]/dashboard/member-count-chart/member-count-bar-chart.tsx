@@ -3,7 +3,7 @@ import { BarCustomLayerProps, BarLegendProps } from '@nivo/bar';
 import { SymbolProps } from '@nivo/legends';
 import { line } from 'd3-shape';
 import React from 'react';
-import { getFragment, graphql } from '~/graphql/generated';
+import { FragmentType, getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import {
   BarChart,
@@ -29,6 +29,9 @@ const MemberCountFragment = graphql(/* GraphQL */ `
   }
 `);
 
+type ByYearStat =
+  GQL.Dashboard_MemberCountFragment['communityStat']['memberCountStat'][number];
+
 interface ChartDataEntry extends Record<string, number> {
   year: number;
   new: number;
@@ -37,12 +40,12 @@ interface ChartDataEntry extends Record<string, number> {
 }
 
 class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
-  private stat: GQL.ByYearStat[];
+  private stat: ByYearStat[];
   // There is also a 'no renewal' key in the data that is represented by
   // a customLine plot
   public chartKeys = ['renewed', 'new'];
 
-  constructor(stat: GQL.ByYearStat[], yearRange: number) {
+  constructor(stat: ByYearStat[], yearRange: number) {
     super();
     if (yearRange > 0) {
       this.stat = stat.slice(-yearRange);

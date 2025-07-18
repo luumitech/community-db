@@ -1,8 +1,14 @@
 import React from 'react';
-import { CommunityEntry } from './_type';
+import type { CommunityEntry, MemberCountStat, PropertyEntry } from './_type';
+
+type MemberCountStatFn = (year?: number | null) => MemberCountStat | undefined;
+type IsMemberInYearFn = (property: PropertyEntry, year: number) => boolean;
 
 type ContextT = Readonly<{
   community: CommunityEntry;
+  propertyCount: number;
+  memberCountStat: MemberCountStatFn;
+  isMemberInYear: IsMemberInYearFn;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -14,10 +20,44 @@ interface Props {
 }
 
 export function PageProvider({ community, ...props }: Props) {
+  /**
+   * Check member count statistic of a given year
+   *
+   * @param selectedYear Year to check for member
+   */
+  const memberCountStat = React.useCallback<MemberCountStatFn>(
+    (selectedYear) => {
+      const stat = community.communityStat.memberCountStat.find(
+        ({ year }) => year === selectedYear
+      );
+      return stat;
+    },
+    [community]
+  );
+
+  /**
+   * Check if property has membership for a given year
+   *
+   * @param entry Property entry
+   * @param selectedYear Year to check for member
+   */
+  const isMemberInYear = React.useCallback<IsMemberInYearFn>(
+    (entry, selectedYear) => {
+      const found = entry.membershipList.find(
+        ({ year }) => year === selectedYear
+      );
+      return !!found?.isMember;
+    },
+    []
+  );
+
   return (
     <Context.Provider
       value={{
         community,
+        propertyCount: community.communityStat.propertyCount,
+        memberCountStat,
+        isMemberInYear,
       }}
       {...props}
     />

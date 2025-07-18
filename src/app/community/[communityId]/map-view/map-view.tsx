@@ -5,7 +5,6 @@ import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { parseAsNumber } from '~/lib/number-util';
 import { FitBound, MapEventListener, PrintControl } from '~/view/base/leaflet';
-import type { MembershipList } from './_type';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
 
@@ -17,17 +16,8 @@ interface Props {
 }
 
 export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
-  const { community } = usePageContext();
+  const { community, isMemberInYear } = usePageContext();
   const [zoom, setZoom] = React.useState<number>();
-
-  /** Check if property has membership for a given year */
-  const isMember = React.useCallback(
-    (membershipList: MembershipList) => (year: number) => {
-      const found = membershipList.find((entry) => entry.year === year);
-      return !!found?.isMember;
-    },
-    []
-  );
 
   const propertyWithGps = React.useMemo(() => {
     return community.rawPropertyList.map((entry) => ({
@@ -37,9 +27,9 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
         parseAsNumber(entry.lat)!,
         parseAsNumber(entry.lon)!,
       ] as L.LatLngTuple,
-      isMemberInYear: isMember(entry.membershipList),
+      isMemberInYear: (year: number) => isMemberInYear(entry, year),
     }));
-  }, [community, isMember]);
+  }, [community, isMemberInYear]);
 
   const bounds = React.useMemo(() => {
     return propertyWithGps.map((entry) => entry.loc);
