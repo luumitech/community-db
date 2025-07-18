@@ -32,9 +32,9 @@ export const communitySlice = createSlice({
     reset: () => initialState,
     setCommunity: (
       state,
-      { payload }: PayloadAction<GQL.CommunityLayoutQuery>
+      { payload }: PayloadAction<GQL.CommunityLayoutQuery['communityFromId']>
     ) => {
-      const community = payload.communityFromId;
+      const community = payload;
       state.communityName = community.name;
       state.role = community.access.role;
       state.canEdit =
