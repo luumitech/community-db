@@ -23,6 +23,13 @@ export const GpsInputEditor: React.FC<Props> = ({ className }) => {
         classNames={{
           base: 'px-4 min-w-16',
         }}
+        controlName="gps.province"
+        label="Province"
+      />
+      <Input
+        classNames={{
+          base: 'px-4 min-w-16',
+        }}
         controlName="gps.country"
         label="Country"
       />

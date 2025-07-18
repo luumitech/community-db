@@ -50,6 +50,7 @@ function schema() {
       }),
       gps: z.object({
         city: z.string().nullable(),
+        province: z.string().nullable(),
         country: z.string().nullable(),
       }),
     })
@@ -110,6 +111,7 @@ function defaultInputData(
     },
     gps: {
       city: null,
+      province: null,
       country: null,
     },
   };

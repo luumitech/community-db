@@ -10,7 +10,7 @@ import {
   useHookForm,
   type BatchPropertyModifyFragmentType,
 } from './use-hook-form';
-import { Step0, Step1, Step2 } from './wizard';
+import { Header, Step0, Step1, Step2 } from './wizard';
 
 export interface ModalArg {
   community: BatchPropertyModifyFragmentType;
@@ -62,7 +62,7 @@ export const ModifyModal: React.FC<Props> = ({
             {(closeModal) => (
               <>
                 <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
-                <Wizard>
+                <Wizard header={<Header />}>
                   <Step0 />
                   <Step1 />
                   <Step2 isSubmitting={pending} closeModal={closeModal} />
