@@ -3,6 +3,7 @@ import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { Select, SelectItem, SelectProps } from '~/view/base/select';
 import {
+  SelectedYearItem,
   YearItemLabel,
   yearSelectItems,
   type YearItem,
@@ -23,14 +24,16 @@ export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
 
   return (
     <Select
-      className={cn(className, 'min-w-32 max-w-xs')}
-      label="Membership Year"
-      size="sm"
+      classNames={{
+        base: className,
+      }}
       items={yearItems}
       isDisabled={!yearItems.length}
       selectionMode="single"
+      placeholder="Unspecified"
       // disallowEmptySelection
       {...props}
+      renderValue={(items) => <SelectedYearItem items={items} />}
     >
       {(item) => {
         return (

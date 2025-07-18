@@ -36,18 +36,15 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
-  const [filterArgs, setFilterArgs] = React.useState(
+  const [filter, setFilter] = React.useState(
     defaultInputData({
-      id: communityId,
-      filter: {
-        memberYear: null,
-        nonMemberYear: null,
-        memberEvent: null,
-      },
+      memberYear: null,
+      nonMemberYear: null,
+      memberEvent: null,
     })
   );
   const result = useQuery(ExportContact_PropertyListQuery, {
-    variables: filterArgs,
+    variables: { id: communityId, filter },
   });
   useGraphqlErrorHandler(result);
 
@@ -61,10 +58,10 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      result.refetch(input);
-      setFilterArgs(input);
+      result.refetch({ id: communityId, filter: input });
+      setFilter(input);
     },
-    [result]
+    [result, communityId]
   );
 
   const isLoading = result.loading || contactInfo == null;
@@ -73,7 +70,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     <div className={cn(className)}>
       <FilterSelect
         isDisabled={isLoading}
-        filterArgs={filterArgs}
+        filters={filter}
         onFilterChange={onFilterChange}
       />
       <ExportOptions contactInfo={contactInfo} />

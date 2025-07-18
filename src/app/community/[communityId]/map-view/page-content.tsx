@@ -6,7 +6,7 @@ import React from 'react';
 import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
-import { getCurrentYear } from '~/lib/date-util';
+import { MemberStat } from './member-stat';
 import { PageProvider } from './page-context';
 import { YearSelect } from './year-select';
 
@@ -15,6 +15,13 @@ const MapView_CommunityQuery = graphql(/* GraphQL */ `
     communityFromId(id: $id) {
       id
       maxYear
+      communityStat {
+        propertyCount
+        memberCountStat {
+          year
+          total
+        }
+      }
       rawPropertyList(filter: { withGps: true }) {
         id
         address
@@ -63,28 +70,21 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   );
 
   const community = result.data?.communityFromId;
-
-  React.useEffect(() => {
-    if (community && yearSelected == null) {
-      // By default, show current year (unless it's not available)
-      setYearSelected(Math.min(getCurrentYear(), community.maxYear));
-    }
-  }, [community, yearSelected, setYearSelected]);
-
   if (community == null) {
     return null;
   }
 
   return (
     <div className={cn(className, 'flex flex-col gap-3')}>
-      <YearSelect
-        selectedKeys={yearSelected ? [yearSelected.toString()] : []}
-        onSelectionChange={(keys) => {
-          const [firstKey] = keys;
-          setYearSelected(firstKey);
-        }}
-      />
       <PageProvider community={community}>
+        <YearSelect
+          selectedKeys={yearSelected ? [yearSelected.toString()] : []}
+          onSelectionChange={(keys) => {
+            const [firstKey] = keys;
+            setYearSelected(firstKey);
+          }}
+          description={<MemberStat selectedYear={yearSelected} />}
+        />
         <Map className="grow" selectedYear={yearSelected} />
       </PageProvider>
     </div>

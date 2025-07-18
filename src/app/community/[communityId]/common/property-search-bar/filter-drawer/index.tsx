@@ -8,16 +8,19 @@ import {
 } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import {
+  EventSelect,
+  GpsSelect,
+  YearSelect,
+} from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
-import { EventSelect, GpsSelect, YearSelect } from '../filter-input';
 import { useHookForm, type InputData } from '../use-hook-form';
 
 export interface DrawerArg {
   memberYear: number | null;
   nonMemberYear: number | null;
-  event: string | null;
+  memberEvent: string | null;
   withGps: boolean | null;
 }
 
@@ -31,11 +34,10 @@ export const FilterDrawer: React.FC<Props> = ({
   onFilterChange,
   ...arg
 }) => {
-  const { minYear, maxYear } = useLayoutContext();
   const { formMethods } = useHookForm(
     arg.memberYear,
     arg.nonMemberYear,
-    arg.event,
+    arg.memberEvent,
     arg.withGps
   );
   const { formState, handleSubmit, setValue, watch } = formMethods;
@@ -52,11 +54,11 @@ export const FilterDrawer: React.FC<Props> = ({
 
   const memberYear = watch('memberYear');
   const nonMemberYear = watch('nonMemberYear');
-  const event = watch('event');
+  const memberEvent = watch('memberEvent');
 
   const canClear = React.useMemo(() => {
-    return !!memberYear || !!nonMemberYear || !!event;
-  }, [memberYear, nonMemberYear, event]);
+    return !!memberYear || !!nonMemberYear || !!memberEvent;
+  }, [memberYear, nonMemberYear, memberEvent]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -79,7 +81,7 @@ export const FilterDrawer: React.FC<Props> = ({
               />
               <EventSelect
                 description="Show properties who registered at the specified event"
-                controlName="event"
+                controlName="memberEvent"
                 size="sm"
               />
               <GpsSelect
@@ -99,7 +101,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 onPress={() => {
                   setValue('memberYear', null, { shouldDirty: true });
                   setValue('nonMemberYear', null, { shouldDirty: true });
-                  setValue('event', null, { shouldDirty: true });
+                  setValue('memberEvent', null, { shouldDirty: true });
                   setValue('withGps', null, { shouldDirty: true });
                 }}
               >

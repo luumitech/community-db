@@ -135,9 +135,12 @@ export class BatchModify {
     // information
     const api = await getGeoapifyApi(this.user, community.shortId);
     const addressList = propertyList.map((property) => {
-      return [property.address, input.city ?? '', input.country ?? ''].join(
-        ','
-      );
+      return [
+        property.address,
+        input.city ?? '',
+        input.province ?? '',
+        input.country ?? '',
+      ].join(',');
     });
     const geocodeResults = await api.batchGeocode.searchFreeForm(
       addressList,

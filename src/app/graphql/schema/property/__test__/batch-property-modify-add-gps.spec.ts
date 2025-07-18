@@ -153,13 +153,14 @@ describe('BatchPropertyModify - Add GPS', () => {
       filter,
       gps: {
         city: 'city',
+        province: 'province',
         country: 'country',
       },
     });
     const result = await batchModify.modify();
 
     const expectedAddressList = oldPropertyList.map(({ address }) =>
-      [address, 'city', 'country'].join(',')
+      [address, 'city', 'province', 'country'].join(',')
     );
     expect(spy).toHaveBeenCalledOnce();
     expect(spy).toHaveBeenCalledWith(expectedAddressList, expect.anything());

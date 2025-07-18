@@ -159,6 +159,11 @@ const byYearStatRef = builder.objectRef<ByYearStat>('ByYearStat').implement({
       description:
         'number of members who were member last year but did not renew this year',
     }),
+    total: t.field({
+      description: 'total number of members this year',
+      type: 'Int',
+      resolve: (entry) => entry.renew + entry.new,
+    }),
   }),
 });
 

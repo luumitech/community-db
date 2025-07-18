@@ -47,6 +47,7 @@ const batchModifyMethodRef = builder.enumType('BatchModifyMethod', {
 const BatchGpsInput = builder.inputType('BatchGpsInput', {
   fields: (t) => ({
     city: t.string(),
+    province: t.string(),
     country: t.string(),
   }),
 });

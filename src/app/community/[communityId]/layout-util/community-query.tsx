@@ -88,14 +88,19 @@ export function useCommunityQuery(communityId: string) {
   const result = useQuery(CommunityLayoutQuery, {
     variables: { communityId },
     onCompleted: (data) => {
-      // Reset ui state whenever community changes
+      // Reset ui state whenever community switches to a different one
       dispatch(actions.ui.reset());
-      // Update header state whenever community changes
-      dispatch(actions.community.setCommunity(data));
     },
   });
   useGraphqlErrorHandler(result, { onError });
 
   const community = result.data?.communityFromId;
+  React.useEffect(() => {
+    if (community) {
+      // Update header state whenever community changes
+      dispatch(actions.community.setCommunity(community));
+    }
+  }, [dispatch, community]);
+
   return community;
 }

@@ -4,7 +4,7 @@ import {
   EventSelect,
   GpsSelect,
   YearSelect,
-} from '~/community/[communityId]/common/property-search-bar/filter-input';
+} from '~/community/[communityId]/common/filter-component';
 
 interface Props {
   className?: string;

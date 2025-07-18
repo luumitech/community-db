@@ -2,29 +2,43 @@ import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
-import { useSelector } from '~/custom-hooks/redux';
 import { Icon } from '~/view/base/icon';
-import { defaultInputData, type InputData } from './use-hook-form';
+
+interface FilterItems {
+  memberYear?: number | null;
+  nonMemberYear?: number | null;
+  memberEvent?: string | null;
+  withGps?: boolean | null;
+}
 
 interface Props {
   className?: string;
   openDrawer: () => void;
-  onFilterChange?: (input: InputData) => Promise<void>;
+  filters: FilterItems;
+  isDisabled?: boolean;
+  onFilterChange?: (input: Required<FilterItems>) => Promise<void>;
 }
 
 export const FilterChip: React.FC<Props> = ({
   className,
   openDrawer,
+  filters,
+  isDisabled,
   onFilterChange,
 }) => {
-  const searchBar = useSelector((state) => state.searchBar);
+  const { memberYear, nonMemberYear, memberEvent, withGps } = filters;
 
-  if (!searchBar.isFilterSpecified) {
-    return null;
-  }
-
-  const { memberYear, nonMemberYear, event, withGps } = searchBar;
-  const state = defaultInputData(memberYear, nonMemberYear, event, withGps);
+  const onChange = React.useCallback(
+    (_filters: FilterItems) => {
+      onFilterChange?.({
+        memberYear: _filters.memberYear ?? null,
+        nonMemberYear: _filters.nonMemberYear ?? null,
+        memberEvent: _filters.memberEvent ?? null,
+        withGps: _filters.withGps ?? null,
+      });
+    },
+    [onFilterChange]
+  );
 
   return (
     <div
@@ -35,10 +49,11 @@ export const FilterChip: React.FC<Props> = ({
         <Chip
           variant="bordered"
           color="success"
-          onClose={() => onFilterChange?.({ ...state, memberYear: null })}
+          isDisabled={isDisabled}
+          onClose={() => onChange({ ...filters, memberYear: null })}
         >
           <div className="flex items-center gap-2">
-            {searchBar.memberYear}
+            {memberYear}
             <Icon icon="thumb-up" size={16} />
           </div>
         </Chip>
@@ -46,7 +61,8 @@ export const FilterChip: React.FC<Props> = ({
       {nonMemberYear != null && (
         <Chip
           variant="bordered"
-          onClose={() => onFilterChange?.({ ...state, nonMemberYear: null })}
+          isDisabled={isDisabled}
+          onClose={() => onChange({ ...filters, nonMemberYear: null })}
         >
           <div className="flex items-center gap-2">
             {nonMemberYear}
@@ -54,18 +70,20 @@ export const FilterChip: React.FC<Props> = ({
           </div>
         </Chip>
       )}
-      {event != null && (
+      {memberEvent != null && (
         <EventChip
-          eventName={event}
+          eventName={memberEvent}
           variant="faded"
-          onClose={() => onFilterChange?.({ ...state, event: null })}
+          isDisabled={isDisabled}
+          onClose={() => onChange({ ...filters, memberEvent: null })}
         />
       )}
       {withGps != null && (
         <WithGpsChip
           withGps={withGps}
           variant="faded"
-          onClose={() => onFilterChange?.({ ...state, withGps: null })}
+          isDisabled={isDisabled}
+          onClose={() => onChange({ ...filters, withGps: null })}
         />
       )}
     </div>

@@ -1,8 +1,8 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
+import { FilterChip } from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { Icon } from '~/view/base/icon';
-import { FilterChip } from './filter-chip';
 import { FilterDrawer, type DrawerArg } from './filter-drawer';
 import { type InputData } from './use-hook-form';
 
@@ -10,22 +10,22 @@ const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
 interface Props {
   className?: string;
-  filterArgs: InputData;
+  filters: InputData;
   onFilterChange?: (input: InputData) => Promise<void>;
   isDisabled?: boolean;
 }
 
 export const FilterSelect: React.FC<Props> = ({
   className,
-  filterArgs,
+  filters,
   onFilterChange,
   isDisabled,
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
 
   const openDrawer = React.useCallback(() => {
-    open(filterArgs);
-  }, [open, filterArgs]);
+    open(filters);
+  }, [open, filters]);
 
   return (
     <div className={cn(className)}>
@@ -41,7 +41,7 @@ export const FilterSelect: React.FC<Props> = ({
         </Button>
         <FilterChip
           isDisabled={isDisabled}
-          filterArgs={filterArgs}
+          filters={filters}
           onFilterChange={onFilterChange}
           openDrawer={openDrawer}
         />

@@ -8,11 +8,13 @@ import {
 } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import {
+  EventSelect,
+  YearSelect,
+} from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
-import { EventSelect } from './event-select';
 import { useHookForm, type InputData } from './use-hook-form';
-import { YearSelect } from './year-select';
 
 export type DrawerArg = InputData;
 
@@ -39,9 +41,9 @@ export const FilterDrawer: React.FC<Props> = ({
     [onClose, onFilterChange]
   );
 
-  const memberYear = watch('filter.memberYear');
-  const nonMemberYear = watch('filter.nonMemberYear');
-  const event = watch('filter.memberEvent');
+  const memberYear = watch('memberYear');
+  const nonMemberYear = watch('nonMemberYear');
+  const event = watch('memberEvent');
 
   const canClear = React.useMemo(() => {
     return !!memberYear || !!nonMemberYear || !!event;
@@ -55,17 +57,24 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
-                controlName="filter.memberYear"
+                controlName="memberYear"
+                size="sm"
                 label="Member In Year"
                 description="Include only members who have memberships in the specified year"
                 autoFocus
               />
               <YearSelect
-                controlName="filter.nonMemberYear"
+                controlName="nonMemberYear"
+                size="sm"
                 label="Non-Member In Year"
                 description="Include only members who do have memberships in the specified year"
               />
-              <EventSelect />
+              <EventSelect
+                controlName="memberEvent"
+                size="sm"
+                label="Membership Event"
+                description="Include only members who registered at the specified event"
+              />
             </DrawerBody>
             <DrawerFooter>
               <Button variant="light" onPress={onClose}>
@@ -76,9 +85,9 @@ export const FilterDrawer: React.FC<Props> = ({
                 color="danger"
                 isDisabled={!canClear}
                 onPress={() => {
-                  setValue('filter.memberYear', null, { shouldDirty: true });
-                  setValue('filter.nonMemberYear', null, { shouldDirty: true });
-                  setValue('filter.memberEvent', null, { shouldDirty: true });
+                  setValue('memberYear', null, { shouldDirty: true });
+                  setValue('nonMemberYear', null, { shouldDirty: true });
+                  setValue('memberEvent', null, { shouldDirty: true });
                 }}
               >
                 Clear
