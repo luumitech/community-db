@@ -13,9 +13,9 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import * as R from 'remeda';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
 import { MoreMenu } from './more-menu';
@@ -69,8 +69,8 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
       // Requests without a debounce key are passed to the next link unchanged.
       debounceKey: 'CommunityFromIdQuery',
     },
+    onError,
   });
-  useGraphqlErrorHandler(result);
   const { data, loading, fetchMore } = result;
   const pageInfo = data?.communityFromId.propertyList.pageInfo;
   const [loadingRef] = useInfiniteScroll({

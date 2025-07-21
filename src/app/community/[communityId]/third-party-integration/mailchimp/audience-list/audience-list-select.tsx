@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
 import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 
 const ThirdPartyIntegration_MailchimpAudienceListQuery = graphql(/* GraphQL */ `
   query mailchimpAudienceList($input: MailchimpAudienceListInput!) {
@@ -29,8 +29,8 @@ export const AudienceListSelect: React.FC<Props> = ({
       input: { communityId },
     },
     fetchPolicy: 'cache-and-network', // Ensures we get the latest data
+    onError,
   });
-  useGraphqlErrorHandler(result);
 
   const audienceItems = React.useMemo(() => {
     const list = result.data?.mailchimpAudienceList ?? [];

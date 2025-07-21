@@ -2,10 +2,10 @@
 import { ApolloError, useQuery } from '@apollo/client';
 import { Button, Link } from '@heroui/react';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 
@@ -48,7 +48,7 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
   }
 `);
 
-function onError(err: ApolloError) {
+function customOnError(err: ApolloError) {
   const extensions = err.graphQLErrors?.[0]?.extensions;
   // prisma error code are defined in
   // See: https://www.prisma.io/docs/orm/reference/error-reference
@@ -91,8 +91,8 @@ export function useCommunityQuery(communityId: string) {
       // Reset ui state whenever community switches to a different one
       dispatch(actions.ui.reset());
     },
+    onError: (error) => onError(error, { customOnError }),
   });
-  useGraphqlErrorHandler(result, { onError });
 
   const community = result.data?.communityFromId;
   React.useEffect(() => {

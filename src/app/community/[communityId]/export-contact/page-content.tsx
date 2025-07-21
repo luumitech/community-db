@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
 import { cn, Divider } from '@heroui/react';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { toContactList } from './contact-util';
 import { ContactView } from './contact-view';
 import { ExportOptions } from './export-options';
@@ -45,8 +45,8 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   );
   const result = useQuery(ExportContact_PropertyListQuery, {
     variables: { id: communityId, filter },
+    onError,
   });
-  useGraphqlErrorHandler(result);
 
   const contactInfo = React.useMemo(() => {
     const propertyList = result.data?.communityFromId.rawPropertyList;

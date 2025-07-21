@@ -2,8 +2,8 @@
 import { useQuery } from '@apollo/client';
 import { Skeleton } from '@heroui/react';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { PageContent } from './page-content';
 import { PageProvider } from './page-context';
 
@@ -43,8 +43,8 @@ export default function Property({ params }: RouteArgs) {
   const { communityId, propertyId } = params;
   const result = useQuery(PropertyFromIdQuery, {
     variables: { communityId, propertyId },
+    onError,
   });
-  useGraphqlErrorHandler(result);
   const community = result.data?.communityFromId;
   const property = community?.propertyFromId;
 

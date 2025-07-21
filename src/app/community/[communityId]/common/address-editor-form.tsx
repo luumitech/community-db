@@ -2,9 +2,9 @@ import { useLazyQuery } from '@apollo/client';
 import { Button, Divider, Input as NInput } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { Input } from '~/view/base/input';
 import { NumberInput } from '~/view/base/number-input';
 
@@ -43,14 +43,17 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
   const { setValue } = useFormContext<InputData>();
   const [address, setAddress] = React.useState<string>();
-  const [geocodeLookupAddress, lookupResult] =
-    useLazyQuery(GeocodeLookupAddress);
-  useGraphqlErrorHandler(lookupResult);
+  const [geocodeLookupAddress, lookupResult] = useLazyQuery(
+    GeocodeLookupAddress,
+    { onError }
+  );
 
   const lookupAddress = React.useCallback(async () => {
     if (address) {
       const result = await geocodeLookupAddress({
-        variables: { input: { communityId: community.id, text: address } },
+        variables: {
+          input: { communityId: community.id, text: address },
+        },
       });
       const output = result.data?.geocodeFromText;
       if (output) {

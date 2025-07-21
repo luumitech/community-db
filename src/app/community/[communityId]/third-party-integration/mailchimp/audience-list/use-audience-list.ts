@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { type SortDescriptor } from '@heroui/react';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { onError } from '~/graphql/on-error';
 import { type AudienceMember } from './_type';
 
 const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
@@ -38,8 +38,8 @@ export function useAudienceList(arg: UseAudienceListOpt) {
       input: { communityId: arg.communityId, listId: arg.listId! },
     },
     skip: arg.listId == null,
+    onError,
   });
-  useGraphqlErrorHandler(result);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>();
 
   const rawAudienceList = React.useMemo(() => {
