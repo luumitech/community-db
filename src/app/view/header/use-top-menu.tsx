@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 
 interface MenuItemEntry extends BreadcrumbItemProps {
@@ -205,6 +206,7 @@ const PropertyAddress: React.FC<{
 }> = ({ communityId, propertyId }) => {
   const result = useQuery(PropertyNameQuery, {
     variables: { communityId, propertyId },
+    onError,
   });
   const address = result.data?.communityFromId.propertyFromId.address;
 

@@ -2,9 +2,10 @@ import { useQuery } from '@apollo/client';
 import { cn } from '@heroui/react';
 import { Tab, Tabs } from '@heroui/tabs';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { appLabel } from '~/lib/app-path';
+import Loading from '~/loading';
 import { Geoapify } from './geoapify';
 import { Mailchimp } from './mailchimp';
 import { PageProvider } from './page-context';
@@ -27,12 +28,12 @@ interface Props {
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   const result = useQuery(ThirdPartyIntegration_CommunityQuery, {
     variables: { id: communityId },
+    onError,
   });
-  useGraphqlErrorHandler(result);
 
   const community = result.data?.communityFromId;
   if (community == null) {
-    return null;
+    return <Loading />;
   }
 
   return (

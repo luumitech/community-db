@@ -1,8 +1,8 @@
 'use client';
 import { useQuery } from '@apollo/client';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
 import { ByEvent } from './by-event';
 import { EventParticipation } from './event-participation';
 import { MembershipFee } from './membership-fee';
@@ -40,8 +40,8 @@ export const YearlyChart: React.FC<Props> = ({
       id: communityId,
       year,
     },
+    onError,
   });
-  useGraphqlErrorHandler(result);
 
   const community = result.data?.communityFromId;
 

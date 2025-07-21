@@ -3,9 +3,10 @@ import { useQuery } from '@apollo/client';
 import { cn } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import { onError } from '~/graphql/on-error';
+import Loading from '~/loading';
 import { MemberStat } from './member-stat';
 import { PageProvider } from './page-context';
 import { YearSelect } from './year-select';
@@ -46,8 +47,8 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   const { yearSelected } = useSelector((state) => state.ui);
   const result = useQuery(MapView_CommunityQuery, {
     variables: { id: communityId },
+    onError,
   });
-  useGraphqlErrorHandler(result);
 
   // Load leaflet dynamically to avoid 'undefined window' error
   const Map = React.useMemo(
@@ -71,7 +72,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
 
   const community = result.data?.communityFromId;
   if (community == null) {
-    return null;
+    return <Loading />;
   }
 
   return (

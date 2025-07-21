@@ -9,10 +9,10 @@ import {
   TableRow,
 } from '@heroui/react';
 import React from 'react';
-import { useGraphqlErrorHandler } from '~/custom-hooks/graphql-error-handler';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
+import { onError } from '~/graphql/on-error';
 import { Loading } from '~/view/base/loading';
 import { MoreMenu } from '../common/more-menu';
 import { CopyShareLink } from './copy-share-link';
@@ -66,8 +66,8 @@ export default function Share({ params }: RouteArgs) {
   const { isAdmin } = useSelector((state) => state.community);
   const result = useQuery(CommunityAccessListQuery, {
     variables: { id: communityId },
+    onError,
   });
-  useGraphqlErrorHandler(result);
   const { data, loading } = result;
   const community = React.useMemo(() => data?.communityFromId, [data]);
 
