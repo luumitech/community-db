@@ -1,7 +1,12 @@
 import * as R from 'remeda';
 
-/** Progress from 0-100 */
-type ProgressCB = (progress: number) => Promise<void>;
+type ProgressCB =
+  /**
+   * Valid Progress input:
+   *
+   * Any float: from 0-100
+   */
+  (progress: number) => Promise<void>;
 
 /**
  * Implement progress tracking for each step
@@ -14,7 +19,7 @@ type ProgressCB = (progress: number) => Promise<void>;
  * ```ts
  * const progress = new StepProgress([0, 80], cb);
  * progress.set(0); // overall progress is now 0
- * progress.set(50); // overall progress is now 40
+ * progress.set(50); // overall progress is now 40 (50% of 80)
  * progress.set(100); // overall progress is now 80
  * ```
  */
@@ -30,31 +35,42 @@ export class StepProgress {
   ) {}
 
   /**
-   * Given a `stepDefinition` of the max percentage for each step, construct the
-   * associated `StepProgress` for each step.
+   * A `stepDefinition` consists of the starting percentage for each step.
+   *
+   * This method takes the `stepDefinition` and create StepProgress object for
+   * each step, to allow you to update the progress percentage for each step
+   * individually. When the last step completes, the overall percentage will be
+   * set to 100.
    *
    * @example
    *
    * ```ts
-   * const progress = StepProgress.fromSteps({ step1: 20, step2: 100 });
-   * progress.step1.set(50); // overall progress now 10
-   * progress.step1.set(100); // overall progress now 20
-   * progress.step2.set(50); // overall progress now 60
+   * const progress = StepProgress.fromSteps({ step1: 10, step2: 80 });
+   * progress.step1.set(0); // overall progress now 10
+   * progress.step1.set(50); // overall progress now 45 (half way between step1 and step2)
+   * progress.step1.set(100); // overall progress now 80
+   * progress.step2.set(50); // overall progress now 90 (half way between step2 and 100%)
    * ```
    *
-   * @param stepDefinition Definition containing maximum percentage for each
-   *   step
+   * @param stepDefinition Definition containing minimum percentage for each
+   *   step,
    * @returns StepProgress for each key in given step definition
    */
   static fromSteps<T extends Record<string, number>>(
     stepDefinition: T,
     onProgress: ProgressCB
   ) {
-    let min = 0;
+    // Initialize progress to 0
+    onProgress(0);
+
+    let stepIdx = 0;
+    const minValues = Object.values(stepDefinition);
     return R.mapValues(stepDefinition, (value) => {
-      const max = value as number;
+      const nextStepIdx = stepIdx + 1;
+      const min = value as number;
+      const max = minValues[nextStepIdx] ?? 100;
       const step = new StepProgress([min, max], onProgress);
-      min = max;
+      stepIdx++;
       return step;
     });
   }

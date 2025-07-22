@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import L from 'leaflet';
 import 'leaflet-easyprint';
 import React from 'react';

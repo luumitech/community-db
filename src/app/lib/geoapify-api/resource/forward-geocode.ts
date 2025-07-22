@@ -4,18 +4,6 @@ import { Resource } from './resource';
 
 interface SearchFreeFormOutput {
   results: GeocodeResult[];
-  query: {
-    text: string;
-    parsed: {
-      housenumber: string;
-      street: string;
-      postcode: string;
-      city: string;
-      state: string;
-      country: string;
-      expected_type: string;
-    };
-  };
 }
 
 export class ForwardGeocode {

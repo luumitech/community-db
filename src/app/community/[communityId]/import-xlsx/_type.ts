@@ -7,6 +7,10 @@ interface ImportMethodSelectItem {
 export const importMethodSelectionList: ImportMethodSelectItem[] = [
   { label: 'Excel', value: GQL.ImportMethod.Xlsx },
   {
+    label: 'Add addresses within a map boundary',
+    value: GQL.ImportMethod.Map,
+  },
+  {
     label: 'Randomly generate sample data',
     value: GQL.ImportMethod.Random,
   },

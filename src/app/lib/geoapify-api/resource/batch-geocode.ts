@@ -7,6 +7,7 @@ import type { GeocodeResult } from './_type';
 import { Resource } from './resource';
 
 type BatchSearchFreeFormOutput = GeocodeResult[];
+type BatchSearchReverseOutput = GeocodeResult[];
 
 interface BatchOutput {
   id: string;
@@ -24,6 +25,19 @@ interface JobResultOpt {
   maxAttempt?: number;
   /** Callback trigger on each polling attempt */
   onPoll?: (attempt: number) => Promise<void>;
+}
+
+interface BatchReverseOpt {
+  /** Location type */
+  type?:
+    | 'country'
+    | 'state'
+    | 'city'
+    | 'postcode'
+    | 'street'
+    | 'amenity'
+    | 'locality'
+    | 'building';
 }
 
 export class BatchGeocode {
@@ -117,6 +131,70 @@ export class BatchGeocode {
       );
 
       const jobResult = await this.jobResult<BatchSearchFreeFormOutput>(
+        batchOutput.url,
+        {
+          timeoutMs: 10000,
+          onPoll: async () => {
+            const progress =
+              attempt < estimateAttempt
+                ? attempt / estimateAttempt
+                : attempt / (attempt + 1);
+            attempt++;
+            await onProgress?.(progress * 100);
+          },
+        }
+      );
+      result.push(...jobResult);
+    }
+
+    await onProgress?.(100);
+    return result;
+  }
+
+  /**
+   * The Geocoder API accepts both structured and free-form addresses as an
+   * input and returns JSON, GeoJSON, and XML objects as a response. In
+   * addition, you can specify location filters and preferred geographical areas
+   * to make the address search more accurate and focused.
+   *
+   * See: https://apidocs.geoapify.com/docs/geocoding/batch/#api-reverse
+   */
+  async searchReverse(
+    locList: L.LatLng[],
+    opt?: BatchReverseOpt,
+    /** Progress from 0-100 */
+    onProgress?: (progress: number) => Promise<void>
+  ) {
+    if (locList.length === 0) {
+      onProgress?.(100);
+      return [];
+    }
+
+    await onProgress?.(0);
+    const result: BatchSearchReverseOutput = [];
+
+    /**
+     * Estimate attempts it takes to complete the request. We assume each poll
+     * can process 100 locations.
+     */
+    const estimateAttempt = Math.ceil(locList.length / 100);
+    let attempt = 1;
+
+    // geoapify batch call limits 1000 locations per call
+    const MAX_LOC = 1000;
+    const locChunk = R.chunk(locList, MAX_LOC);
+    for (const [idx, chunk] of locChunk.entries()) {
+      const body = chunk.map((loc) => [loc.lng, loc.lat]);
+      const batchOutput = await this.res.call<BatchOutput>(
+        'batch/geocode/reverse',
+        {
+          method: 'POST',
+          body: jsonc.stringify(body),
+          ...(opt != null && { query: { ...opt } }),
+        }
+      );
+
+      const jobResult = await this.jobResult<BatchSearchReverseOutput>(
         batchOutput.url,
         {
           timeoutMs: 10000,
