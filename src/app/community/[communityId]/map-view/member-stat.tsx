@@ -9,17 +9,31 @@ interface Props {
 
 export const MemberStat: React.FC<Props> = ({ className, selectedYear }) => {
   const { community, memberCountStat, propertyCount } = usePageContext();
-  const memberCount = memberCountStat(selectedYear);
 
   const missingGps = React.useMemo(() => {
     return propertyCount - community.rawPropertyList.length;
   }, [community, propertyCount]);
 
+  const description = React.useMemo(() => {
+    switch (selectedYear) {
+      case 0:
+        /**
+         * SelectedYear === 0: All properties
+         *
+         * See: `year-select.tsx`
+         */
+        return `${propertyCount} properties`;
+      default: {
+        const memberCount = memberCountStat(selectedYear);
+        return `${memberCount?.total ?? 0} / ${propertyCount} are
+          members`;
+      }
+    }
+  }, [memberCountStat, propertyCount, selectedYear]);
+
   return (
     <div className={cn(className, 'flex flex-col')}>
-      <span>
-        {memberCount?.total ?? 0} / {propertyCount} are members
-      </span>
+      <span>{description}</span>
       {missingGps > 0 && (
         <span className="text-warning">
           (warning: {missingGps} properties missing GPS location)

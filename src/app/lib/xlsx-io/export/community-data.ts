@@ -24,10 +24,32 @@ export async function communityData(user: ContextUser, communityId: string) {
   return data;
 }
 
-/** Data type returned from communityData */
-export type Community = Awaited<ReturnType<typeof communityData>>;
-export type Property = Community['propertyList'][number];
-export type Occupant = Property['occupantList'][number];
-export type Membership = Property['membershipList'][number];
-export type Event = Membership['eventAttendedList'][number];
-export type Ticket = Event['ticketList'][number];
+type PartialExcept<T, K extends keyof T = never> = [K] extends [never]
+  ? Partial<T>
+  : {
+      /** Keys in K stay required */
+      [P in K]-?: T[P];
+    } & {
+      /** All other keys become optional */
+      [P in Exclude<keyof T, K>]?: T[P];
+    };
+
+/** Data type used to export data into workbooks */
+export type Community = PartialExcept<
+  Awaited<ReturnType<typeof communityData>>,
+  'name' | 'propertyList'
+>;
+export type Property = PartialExcept<
+  Community['propertyList'][number],
+  'address' | 'occupantList' | 'membershipList'
+>;
+export type Occupant = PartialExcept<Property['occupantList'][number]>;
+export type Membership = PartialExcept<
+  Property['membershipList'][number],
+  'eventAttendedList'
+>;
+export type Event = PartialExcept<
+  Membership['eventAttendedList'][number],
+  'ticketList'
+>;
+export type Ticket = PartialExcept<Event['ticketList'][number]>;

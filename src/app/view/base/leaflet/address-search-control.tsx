@@ -1,3 +1,4 @@
+import { useGeolocation } from '@uidotdev/usehooks';
 import L from 'leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import React from 'react';
@@ -51,6 +52,7 @@ interface Props {
 
 export const AddressSearchControl: React.FC<Props> = (props) => {
   const map = useMap();
+  const geoState = useGeolocation();
 
   React.useEffect(() => {
     // @ts-expect-error leaflet-geosearch does not provide a typescript definition
@@ -84,6 +86,14 @@ export const AddressSearchControl: React.FC<Props> = (props) => {
       map.removeControl(control);
     };
   }, [map, props]);
+
+  /** If user gives permission for geo location, set it as new center for map */
+  React.useEffect(() => {
+    const { latitude, longitude } = geoState;
+    if (latitude != null && longitude != null) {
+      map.setView([latitude, longitude]);
+    }
+  }, [map, geoState]);
 
   return null;
 };

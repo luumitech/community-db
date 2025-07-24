@@ -41,8 +41,8 @@ describe('StepProgress', () => {
   ];
 
   test.each(tc)('tc: %s', (description, definition, detail) => {
-    let currentProgress: number;
-    const progress = StepProgress.fromSteps(definition, (p) => {
+    let currentProgress: number | undefined = undefined;
+    const progress = StepProgress.fromSteps(definition, async (p) => {
       currentProgress = p;
     });
 

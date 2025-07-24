@@ -2,6 +2,7 @@ import { GraphQLError } from 'graphql';
 import { StatusCodes } from 'http-status-codes';
 import { jsonc } from 'jsonc';
 import * as R from 'remeda';
+import * as GQL from '~/graphql/generated/graphql';
 import { timeout } from '~/lib/date-util';
 import type { GeocodeResult } from './_type';
 import { Resource } from './resource';
@@ -160,7 +161,7 @@ export class BatchGeocode {
    * See: https://apidocs.geoapify.com/docs/geocoding/batch/#api-reverse
    */
   async searchReverse(
-    locList: L.LatLng[],
+    locList: GQL.GeoPointInput[],
     opt?: BatchReverseOpt,
     /** Progress from 0-100 */
     onProgress?: (progress: number) => Promise<void>
@@ -175,21 +176,20 @@ export class BatchGeocode {
 
     /**
      * Estimate attempts it takes to complete the request. We assume each poll
-     * can process 100 locations.
+     * can process 500 locations.
      */
-    const estimateAttempt = Math.ceil(locList.length / 100);
+    const estimateAttempt = Math.ceil(locList.length / 500);
     let attempt = 1;
 
     // geoapify batch call limits 1000 locations per call
     const MAX_LOC = 1000;
     const locChunk = R.chunk(locList, MAX_LOC);
     for (const [idx, chunk] of locChunk.entries()) {
-      const body = chunk.map((loc) => [loc.lng, loc.lat]);
       const batchOutput = await this.res.call<BatchOutput>(
         'batch/geocode/reverse',
         {
           method: 'POST',
-          body: jsonc.stringify(body),
+          body: jsonc.stringify(chunk),
           ...(opt != null && { query: { ...opt } }),
         }
       );

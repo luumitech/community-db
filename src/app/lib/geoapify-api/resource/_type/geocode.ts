@@ -68,6 +68,8 @@ export interface GeocodeResult {
   /** Coordinates of the location */
   lon?: number;
   lat?: number;
+  /** Distance from actual building */
+  distance?: number;
   /** Fully formatted address for display purpose */
   formatted: string;
   /**

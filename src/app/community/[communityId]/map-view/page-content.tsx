@@ -44,7 +44,8 @@ interface Props {
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   const dispatch = useDispatch();
-  const { yearSelected } = useSelector((state) => state.ui);
+  const uiYearSelected = useSelector((state) => state.ui.yearSelected);
+  const [year, setYear] = React.useState<number>();
   const result = useQuery(MapView_CommunityQuery, {
     variables: { id: communityId },
     onError,
@@ -64,11 +65,18 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   );
 
   const setYearSelected = React.useCallback(
-    (year: string | number) => {
-      dispatch(actions.ui.setYearSelected(year));
+    (yr: number) => {
+      setYear(yr);
+      if (yr > 0) {
+        dispatch(actions.ui.setYearSelected(yr));
+      }
     },
     [dispatch]
   );
+
+  const yearSelected = React.useMemo(() => {
+    return year ?? uiYearSelected;
+  }, [year, uiYearSelected]);
 
   const community = result.data?.communityFromId;
   if (community == null) {
@@ -79,10 +87,11 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     <div className={cn(className, 'flex flex-col gap-3')}>
       <PageProvider community={community}>
         <YearSelect
-          selectedKeys={yearSelected ? [yearSelected.toString()] : []}
+          selectedKeys={yearSelected != null ? [yearSelected.toString()] : []}
           onSelectionChange={(keys) => {
             const [firstKey] = keys;
-            setYearSelected(firstKey);
+            const asNum = parseInt(firstKey as string, 10);
+            setYearSelected(asNum);
           }}
           description={<MemberStat selectedYear={yearSelected} />}
         />

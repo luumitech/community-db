@@ -43,7 +43,7 @@ describe('export to xlsx (multisheet format)', () => {
     };
     community.defaultSetting = expectedDefaultSetting;
 
-    const helper = new ExportMultisheet(community);
+    const helper = new ExportMultisheet(community, community.propertyList);
     const xlsxBuf = helper.toXlsx();
 
     // Compare exported XLSX against original XLSX

@@ -9,6 +9,6 @@ import { type Community } from '~/lib/xlsx-io/export';
  */
 export function getDefaultXlsxFn(community: Community) {
   const { createdAt, updatedAt } = community;
-  const dateStr = format(updatedAt ?? createdAt, 'yyyyMMdd');
+  const dateStr = format(updatedAt ?? createdAt ?? new Date(), 'yyyyMMdd');
   return `db-${dateStr}.xlsx`;
 }

@@ -1,15 +1,38 @@
 import * as turf from '@turf/turf';
 import type {
   Feature,
-  FeatureCollection,
+  GeoJsonGeometryTypes,
+  Geometry,
   MultiPolygon,
   Point,
   Polygon,
   Position,
 } from 'geojson';
 import L from 'leaflet';
+import * as GQL from '~/graphql/generated/graphql';
 
 type pointGridFn = typeof turf.pointGrid;
+
+/**
+ * Generic `Feature` type guard
+ *
+ * @example
+ *
+ * ```ts
+ * features.forEach((feature) => {
+ *   if (isFeatureOfTypes(feature, ['Polygon', 'Point'])) {
+ *     // Type is narrowed to Feature<Polygon | Point>
+ *     console.log('Point or Polygon:', feature.geometry.type);
+ *   }
+ * });
+ * ```
+ */
+export function isFeatureOfTypes<T extends GeoJsonGeometryTypes>(
+  feature: Feature,
+  types: T[]
+): feature is Feature<Extract<Geometry, { type: T }>> {
+  return types.includes(feature.geometry?.type as T);
+}
 
 /**
  * Generate grid points within the input `polygon` and return the points.
@@ -55,4 +78,16 @@ export function pointInPolygon(
 export function toLeafletPoint(point: Feature<Point>) {
   const [lng, lat] = point.geometry.coordinates;
   return L.latLng(lat, lng);
+}
+
+/**
+ * Convert GeoJSON point to Graphql GeoPoint Input
+ *
+ * @param point Geojson point
+ * @returns Graphql GeoPoint Input
+ */
+export function toGeoPointInput(point: Feature<Point>) {
+  const [lng, lat] = point.geometry.coordinates;
+  const result: GQL.GeoPointInput = { lat, lon: lng };
+  return result;
 }

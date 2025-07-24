@@ -1,22 +1,35 @@
 import { Job } from '@hokify/agenda';
+import { Community } from '@prisma/client';
+import fs from 'fs';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
+import * as GQL from '~/graphql/generated/graphql';
 import { getGeoapifyApi } from '~/graphql/schema/geocode/util';
 import { jobProgress, type JobProgressOutput } from '~/graphql/schema/job/util';
 import { getSubscriptionEntry } from '~/graphql/schema/payment/util';
 import { ContextUser } from '~/lib/context-user';
+import { GeocodeResult } from '~/lib/geoapify-api/resource';
 import prisma from '~/lib/prisma';
 import { utapi } from '~/lib/uploadthing';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
+import { ExportMultisheet } from '~/lib/xlsx-io/export';
 import { importXlsx } from '~/lib/xlsx-io/import';
 import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 import { getCommunityEntry } from '../util';
 import type { CommunityImportInput, CommunityImportJobArg } from './index';
 
 const stepDefinition = {
-  updateCommunity: 20,
-  updateProperty: 30,
+  createWorkbook: 10,
+  /**
+   * Community and properties are updated individually because transaction DB
+   * mutations are not successful in production environment.
+   *
+   * However, this allows the capability to update the progress and the entries
+   * are being written to the database
+   */
+  updateCommunity: 50,
+  updateProperty: 60,
 };
 
 export class CommunityImport {
@@ -35,6 +48,11 @@ export class CommunityImport {
   async start() {
     const { id: shortId, method, xlsx, map } = this.input;
 
+    const community = await getCommunityEntry(this.user, shortId, {
+      select: { id: true, owner: true, name: true },
+    });
+
+    await this.progress?.createWorkbook.set(0);
     let workbook: XLSX.WorkBook;
     switch (method) {
       case 'random':
@@ -56,21 +74,18 @@ export class CommunityImport {
             'When Import Method is Map, you must supply GPS coordinates'
           );
         }
-        workbook = await this.importMap(map);
+        workbook = await this.importMap(community, map);
         break;
 
       default:
         throw new GraphQLError(`Unrecognized import method ${method}`);
     }
+    await this.progress?.createWorkbook.set(100);
 
     const {
       propertyList: { create: propertyList },
       ...others
     } = importXlsx(workbook);
-
-    const community = await getCommunityEntry(this.user, shortId, {
-      select: { id: true, owner: true },
-    });
 
     // Check community owner's subscription status to determine
     // limitation
@@ -147,10 +162,42 @@ export class CommunityImport {
     return workbook;
   }
 
-  private async importMap(map: NonNullable<CommunityImportInput['map']>) {
-    const seedJson = seedCommunityData(10);
-    const wsHelper = WorksheetHelper.fromJson(seedJson, 'Membership');
-    const workbook = wsHelper.wb;
+  private async importMap(
+    community: Pick<Community, 'name'>,
+    map: NonNullable<CommunityImportInput['map']>
+  ) {
+    // Get geocode information for each address and update database with
+    // information
+    const api = await getGeoapifyApi(this.user, this.input.id);
+    const geocodeResults = await api.batchGeocode.searchReverse(
+      map,
+      { type: 'building' },
+      // interpolate geocoding progress to (0-90)
+      async (progress) => {
+        await this.progress?.createWorkbook.set(progress * 0.9);
+      }
+    );
+
+    await this.progress?.createWorkbook.set(90);
+    // Deduplicate geo data and keep unique addresses
+    const dedupGeoResult = R.pipe(
+      geocodeResults,
+      R.groupBy(({ address_line1 }) => address_line1),
+      /**
+       * If there are multiple hits with same address, choose the one closest to
+       * building
+       */
+      R.mapValues((group) =>
+        R.firstBy(group, [({ distance }) => distance ?? 0, 'asc'])
+      ),
+      R.values<Record<string, GeocodeResult>>
+    );
+
+    const helper = ExportMultisheet.fromGeoResult(
+      community.name,
+      dedupGeoResult
+    );
+    const workbook = helper.createWorkbook();
     return workbook;
   }
 }

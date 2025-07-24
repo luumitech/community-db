@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import { isMember } from '~/graphql/schema/property/util';
+import { type GeocodeResult } from '~/lib/geoapify-api/resource';
 import { worksheetNames, type WorksheetRows } from '~/lib/xlsx-io/multisheet';
 import type {
   Community,
@@ -37,14 +38,14 @@ export class ExportMultisheet extends ExportHelper {
     this.rows.property.push({
       propertyId,
       address: property.address,
-      streetNo: property.streetNo,
-      streetName: property.streetName,
-      postalCode: property.postalCode,
-      city: property.city,
-      country: property.country,
-      lat: property.lat,
-      lon: property.lon,
-      notes: property.notes,
+      streetNo: property.streetNo ?? null,
+      streetName: property.streetName ?? null,
+      postalCode: property.postalCode ?? null,
+      city: property.city ?? null,
+      country: property.country ?? null,
+      lat: property.lat ?? null,
+      lon: property.lon ?? null,
+      notes: property.notes ?? null,
       updatedAt: ExportHelper.toDate(property.updatedAt),
       updatedBy: property.updatedBy?.email ?? null,
     });
@@ -61,13 +62,13 @@ export class ExportMultisheet extends ExportHelper {
     this.rows.occupant.push({
       occupantId,
       propertyId,
-      firstName: occupant.firstName,
-      lastName: occupant.lastName,
+      firstName: occupant.firstName ?? null,
+      lastName: occupant.lastName ?? null,
       optOut: ExportHelper.toBool(occupant.optOut),
-      email: occupant.email,
-      home: occupant.home,
-      work: occupant.work,
-      cell: occupant.cell,
+      email: occupant.email ?? null,
+      home: occupant.home ?? null,
+      work: occupant.work ?? null,
+      cell: occupant.cell ?? null,
     });
   }
 
@@ -76,10 +77,10 @@ export class ExportMultisheet extends ExportHelper {
     this.rows.membership.push({
       membershipId,
       propertyId,
-      year: membership.year,
+      year: membership.year ?? null,
       isMember: ExportHelper.toBool(isMember(membership)),
-      paymentMethod: membership.paymentMethod,
-      price: membership.price,
+      paymentMethod: membership.paymentMethod ?? null,
+      price: membership.price ?? null,
       paymentDeposited: ExportHelper.toBool(membership.paymentDeposited),
     });
     membership.eventAttendedList.forEach((event) => {
@@ -92,7 +93,7 @@ export class ExportMultisheet extends ExportHelper {
     this.rows.event.push({
       eventId,
       membershipId,
-      eventName: event.eventName,
+      eventName: event.eventName ?? null,
       eventDate: ExportHelper.toDate(event.eventDate),
     });
     event.ticketList.forEach((ticket) => {
@@ -105,10 +106,10 @@ export class ExportMultisheet extends ExportHelper {
     this.rows.ticket.push({
       ticketId,
       eventId,
-      ticketName: ticket.ticketName,
-      count: ticket.count,
-      price: ticket.price,
-      paymentMethod: ticket.paymentMethod,
+      ticketName: ticket.ticketName ?? null,
+      count: ticket.count ?? null,
+      price: ticket.price ?? null,
+      paymentMethod: ticket.paymentMethod ?? null,
     });
   }
 
@@ -123,15 +124,23 @@ export class ExportMultisheet extends ExportHelper {
       updatedAt: ExportHelper.toDate(community.updatedAt),
       updatedBy: community.updatedBy?.email ?? null,
     });
-    community.propertyList.forEach((property) =>
-      this.processProperty(property)
-    );
   }
 
   /** Create workbook containing community data */
-  private createWorkbook() {
+  public createWorkbook() {
     const workbook = XLSX.utils.book_new();
     this.processCommunity(this.community);
+    /**
+     * NOTE: we don't use the propertyList from `this.community` because
+     * `this.community` may not be extracted from database directly.
+     *
+     * For the purpose of export, we only use a subset of properties from the
+     * database, so we want to cater for other methods of `propertyList`
+     * creation. For example, when importing via geodata (from Method.Map), the
+     * propertyList is created manually.
+     */
+
+    this.propertyList.forEach((property) => this.processProperty(property));
 
     Object.keys(worksheetNames).forEach((_key) => {
       const key = _key as keyof WorksheetRows;
@@ -145,7 +154,7 @@ export class ExportMultisheet extends ExportHelper {
   /**
    * Get community as xlsx buffer
    *
-   * @returns
+   * @returns Xlsx formatted buffer
    */
   public toXlsx() {
     const workbook = this.createWorkbook();
@@ -161,5 +170,34 @@ export class ExportMultisheet extends ExportHelper {
       compression: true,
     });
     return xlsxBuf;
+  }
+
+  /**
+   * Leverage format-multisheet to create a worksheet that contains all property
+   * information stored in Geoapify result
+   */
+  static fromGeoResult(communityName: string, input: GeocodeResult[]) {
+    const community: Community = {
+      name: communityName,
+      eventList: [],
+      ticketList: [],
+      paymentMethodList: [],
+      propertyList: [],
+    };
+
+    const propertyList: Property[] = input.map((entry) => ({
+      address: entry.address_line1,
+      streetNo: parseInt(entry.housenumber, 10) ?? 0,
+      streetName: entry.street,
+      postalCode: entry.postcode,
+      city: entry.city,
+      country: entry.country,
+      lat: entry.lat?.toString() ?? null,
+      lon: entry.lon?.toString() ?? null,
+      occupantList: [],
+      membershipList: [],
+    }));
+
+    return new ExportMultisheet(community, propertyList);
   }
 }

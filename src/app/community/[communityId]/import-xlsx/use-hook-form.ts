@@ -9,6 +9,14 @@ function schema() {
     .object({
       id: zz.string.nonEmpty(),
       method: z.nativeEnum(GQL.ImportMethod),
+      map: z
+        .array(
+          z.object({
+            lat: z.number(),
+            lon: z.number(),
+          })
+        )
+        .nullable(),
       hidden: z.object({
         // To be mapped to xlsx argument later
         importList: zz.coerce.toFileArray({
@@ -27,6 +35,18 @@ function schema() {
         message: 'Please upload a valid xlsx file',
         path: ['hidden', 'importList'],
       }
+    )
+    .refine(
+      (form) => {
+        if (form.method !== GQL.ImportMethod.Map) {
+          return true;
+        }
+        return form.map && form.map.length > 0;
+      },
+      {
+        message: 'Please draw a boundary containing properties to import',
+        path: ['map'],
+      }
     );
 }
 
@@ -36,6 +56,7 @@ function defaultInputData(communityId: string): InputData {
   return {
     id: communityId,
     method: GQL.ImportMethod.Xlsx,
+    map: null,
     hidden: {
       importList: [],
     },

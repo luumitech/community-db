@@ -43,6 +43,14 @@ export function PageProvider({ community, ...props }: Props) {
    */
   const isMemberInYear = React.useCallback<IsMemberInYearFn>(
     (entry, selectedYear) => {
+      /**
+       * SelectedYear === 0: All properties
+       *
+       * See: `year-select.tsx`
+       */
+      if (selectedYear === 0) {
+        return true;
+      }
       const found = entry.membershipList.find(
         ({ year }) => year === selectedYear
       );

@@ -51,6 +51,7 @@ const supportedIcon = {
   circle: 'material-symbols:circle',
   map: 'lucide:map-pin',
   noMap: 'lucide:map-pin-off',
+  externalLink: 'mi:external-link',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

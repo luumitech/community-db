@@ -1,15 +1,14 @@
+import { Prisma } from '@prisma/client';
+import { jsonc } from 'jsonc';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { worksheetNames } from '~/lib/xlsx-io/multisheet';
 import type { CommunityEntry } from '../_type';
-import { extractEventList } from '../event-list-util';
 import {
   ImportHelper,
   type MappingColIdxSchema,
   type MappingResult,
   type MappingTypeSchema,
 } from '../import-helper';
-import { extractPaymentMethodList } from '../payment-method-list-util';
-import { extractTicketList } from '../ticket-list-util';
 import { extractYearRange } from '../year-range-util';
 import { EventUtil } from './event-util';
 import { MembershipUtil } from './membership-util';
@@ -17,13 +16,10 @@ import { OccupantUtil } from './occupant-util';
 import { PropertyUtil } from './property-util';
 import { TicketUtil } from './ticket-util';
 
-function safeJsonParse(jsonStr: string) {
-  try {
-    return JSON.parse(jsonStr);
-  } catch (err) {
-    // ignore JSON parse error
-    return undefined;
-  }
+function safeJsonParse<T>(jsonStr: string) {
+  const [err, result] = jsonc.safe.parse(jsonStr);
+  // ignore JSON parse error
+  return result as T | undefined;
 }
 
 const mappingType = {
@@ -94,11 +90,18 @@ export class CommunityUtil {
         }
       : undefined;
 
-    const defaultSetting = safeJsonParse(defaultSettingJson);
-    const eventList = safeJsonParse(eventListJson);
-    const ticketList = safeJsonParse(ticketListJson);
-    const paymentMethodList = safeJsonParse(paymentMethodListJson);
-    const mailchimpSetting = safeJsonParse(mailchimpSettingJson);
+    const defaultSetting =
+      safeJsonParse<Prisma.DefaultSettingCreateInput>(defaultSettingJson);
+    const eventList =
+      safeJsonParse<Prisma.SupportedEventItemCreateInput>(eventListJson);
+    const ticketList =
+      safeJsonParse<Prisma.SupportedTicketItemCreateInput>(ticketListJson);
+    const paymentMethodList =
+      safeJsonParse<Prisma.SupportedPaymentMethodCreateInput>(
+        paymentMethodListJson
+      );
+    const mailchimpSetting =
+      safeJsonParse<Prisma.MailchimpSettingCreateInput>(mailchimpSettingJson);
 
     const propertyList = opt.propertyUtil.propertyList(opt);
     const yearRange = extractYearRange(propertyList);
