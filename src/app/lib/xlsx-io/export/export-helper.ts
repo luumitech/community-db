@@ -1,10 +1,8 @@
 import { isValidDate } from '~/lib/date-util';
 import { type Community, type Property } from './community-data';
 
-/** Export community using LCRA db format */
+/** Export community helper */
 export abstract class ExportHelper {
-  protected propertyList: Property[];
-
   /** Convert Date to xlsx cell value (ISO date string) */
   static toDate(input?: Date | null) {
     if (!isValidDate(input)) {
@@ -32,9 +30,11 @@ export abstract class ExportHelper {
     return JSON.stringify(input);
   }
 
-  constructor(protected community: Community) {
-    this.propertyList = community.propertyList;
-  }
+  /** Initialize helper using community entry retrieved from database */
+  constructor(
+    protected community: Community,
+    protected propertyList: Property[]
+  ) {}
 
   /** Convert a community from database to XLSX format (return buffer) */
   abstract toXlsx(): Buffer;

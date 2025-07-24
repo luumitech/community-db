@@ -98,11 +98,21 @@ export function appPath(
     | 'communityShare'
     | 'propertyList'
     | 'communityDashboard'
-    | 'thirdPartyIntegration'
     | 'communityMapView',
   sub: {
     path: {
       communityId: string;
+    };
+  }
+): string;
+export function appPath(
+  template: 'thirdPartyIntegration',
+  sub: {
+    path: {
+      communityId: string;
+    };
+    query?: {
+      tab?: 'mailchimp' | 'geoapify';
     };
   }
 ): string;

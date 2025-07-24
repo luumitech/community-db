@@ -99,12 +99,5 @@ export async function batchPropertyModifyTask(
   job: Job<BatchPropertyModifyJobArg>
 ) {
   const batchModify = BatchModify.fromJob(job);
-
-  const propertyList = await batchModify.modify();
-  /**
-   * Would be nice to store this information in agenda queue output, so we can
-   * display number of properties modified by the batch command. But I don't
-   * think this is currently possible
-   */
-  return propertyList.length;
+  await batchModify.start();
 }

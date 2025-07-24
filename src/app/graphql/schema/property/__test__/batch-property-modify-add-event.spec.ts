@@ -224,7 +224,7 @@ describe('BatchPropertyModify - Add Event', () => {
         },
       },
     });
-    const result = await batchModify.modify();
+    const result = await batchModify.start();
 
     const newPropertyListResult = await testUtil.graphql.executeSingle({
       document: filteredPropertyListDocument,

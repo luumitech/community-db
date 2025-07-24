@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { cn } from '@heroui/react';
 import { Tab, Tabs } from '@heroui/tabs';
+import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -26,10 +27,13 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
+  const searchParams = useSearchParams();
   const result = useQuery(ThirdPartyIntegration_CommunityQuery, {
     variables: { id: communityId },
     onError,
   });
+
+  const defaultTab = searchParams.get('tab') ?? 'mailchimp';
 
   const community = result.data?.communityFromId;
   if (community == null) {
@@ -49,6 +53,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
           }}
           color="primary"
           variant="underlined"
+          defaultSelectedKey={defaultTab}
         >
           <Tab key="mailchimp" title="Mailchimp">
             <Mailchimp />

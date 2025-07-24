@@ -1,10 +1,12 @@
 import { useLazyQuery } from '@apollo/client';
-import { Button, Divider, Input as NInput } from '@heroui/react';
+import { Button, Divider, Link, Input as NInput } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
+import { appLabel, appPath } from '~/lib/app-path';
+import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
 import { NumberInput } from '~/view/base/number-input';
 
@@ -89,15 +91,7 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           label="Mailing Address"
           placeholder="eg. 6587 Roller Derby Lane, Springfeld, USA"
           onChange={(evt) => setAddress(evt.currentTarget.value)}
-          {...(!hasGeoapifyApiKey && {
-            isDisabled: true,
-            description: (
-              <div className="text-warning">
-                Please enter Geoapify API key in Third-Party Integration to
-                enable this feature
-              </div>
-            ),
-          })}
+          isDisabled={!hasGeoapifyApiKey}
           endContent={
             <Button
               onPress={lookupAddress}
@@ -109,6 +103,24 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           }
         />
       </div>
+      {!hasGeoapifyApiKey && (
+        <p className="text-warning text-sm">
+          Address lookup requires a valid Geoapify API key. To enable this
+          feature, please enter your API key in the{' '}
+          <Link
+            size="sm"
+            href={appPath('thirdPartyIntegration', {
+              path: { communityId: community.id },
+              query: { tab: 'geoapify' },
+            })}
+            target="_blank"
+          >
+            {appLabel('thirdPartyIntegration')}{' '}
+            <Icon className="ml-1" icon="externalLink" />
+          </Link>{' '}
+          settings.
+        </p>
+      )}
       <div className="flex items-center gap-4">
         <Divider className="w-auto grow" />
         or

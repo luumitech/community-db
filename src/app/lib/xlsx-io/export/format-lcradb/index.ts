@@ -20,7 +20,7 @@ export class ExportLcra extends ExportHelper {
   private minYear = Number.POSITIVE_INFINITY;
 
   constructor(protected community: Community) {
-    super(community);
+    super(community, community.propertyList);
     // Find:
     // - maximum number of occupants in a property
     // - maximum year in membership list

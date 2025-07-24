@@ -103,7 +103,7 @@ export async function getPropertyEntryWithinCommunity<T extends FindArgs>(
  * @param entry Membership entry
  * @returns
  */
-export function isMember(entry?: Membership | null) {
+export function isMember(entry?: Pick<Membership, 'eventAttendedList'> | null) {
   if (!entry) {
     return false;
   }

@@ -2,13 +2,15 @@
 import { cn } from '@heroui/react';
 import L from 'leaflet';
 import React from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
 import { parseAsNumber } from '~/lib/number-util';
-import { FitBound, MapEventListener, PrintControl } from '~/view/base/leaflet';
+import {
+  FitBound,
+  MapContainer,
+  MapEventListener,
+  PrintControl,
+} from '~/view/base/leaflet';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
-
-import 'leaflet/dist/leaflet.css';
 
 interface Props {
   className?: string;
@@ -41,17 +43,12 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
 
   return (
     <MapContainer
-      // z-index is used so other modals don't show behind the map
-      className={cn(className, 'z-0')}
+      className={cn(className)}
       zoom={zoom}
       zoomSnap={0}
       zoomDelta={0.25}
       scrollWheelZoom
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
       <PrintControl
         position="topleft"
         sizeModes={['A4Portrait', 'A4Landscape']}

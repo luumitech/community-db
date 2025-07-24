@@ -3,12 +3,12 @@ import * as XLSX from 'xlsx';
 import { XlsxView } from '~/community/[communityId]/common/xlsx-view';
 import { FileInput } from '~/view/base/file-input';
 import { toast } from '~/view/base/toastify';
-import { StartImport } from './start-import';
-import { useHookFormContext } from './use-hook-form';
+import { StartImport } from '../start-import';
+import { useHookFormContext } from '../use-hook-form';
 
 interface Props {}
 
-export const SelectXlsxFile: React.FC<Props> = ({}) => {
+export const MethodXlsx: React.FC<Props> = ({}) => {
   const formMethods = useHookFormContext();
   const { setValue } = formMethods;
   const [workbook, setWorkbook] = React.useState<XLSX.WorkBook>();

@@ -94,7 +94,7 @@ export const YearSelect: React.FC<Props> = ({
       placeholder="Select a year to view in detail"
       disallowEmptySelection
       items={yearItems}
-      selectedKeys={selectedYear ? [selectedYear.toString()] : []}
+      selectedKeys={selectedYear ? [selectedYear] : []}
       selectionMode="single"
       onChange={handleSelectionChange}
       renderValue={(items) => <SelectedYearItem items={items} />}

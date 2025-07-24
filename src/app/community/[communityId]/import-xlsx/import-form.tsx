@@ -4,9 +4,11 @@ import { useMediaQuery } from 'usehooks-ts';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem } from '~/view/base/select';
 import { importMethodSelectionList } from './_type';
+import { MethodMap } from './method-map';
+import { useCheckMethodRequirement } from './method-map/check-method-requirement';
+import { MethodRandom } from './method-random';
+import { MethodXlsx } from './method-xlsx';
 import { usePageContext } from './page-context';
-import { SelectXlsxFile } from './select-xlsx-file';
-import { StartImport } from './start-import';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -19,6 +21,7 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
   const { watch } = formMethods;
   const importMethod = watch('method');
   const { selectTooltip } = usePageContext();
+  const msg = useCheckMethodRequirement();
 
   return (
     <div className={cn(className, 'flex flex-col h-full gap-2')}>
@@ -52,8 +55,10 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
           </Select>
         </div>
       </Tooltip>
-      {importMethod === GQL.ImportMethod.Random && <StartImport />}
-      {importMethod === GQL.ImportMethod.Xlsx && <SelectXlsxFile />}
+      {msg}
+      {importMethod === GQL.ImportMethod.Xlsx && <MethodXlsx />}
+      {importMethod === GQL.ImportMethod.Map && <MethodMap />}
+      {importMethod === GQL.ImportMethod.Random && <MethodRandom />}
     </div>
   );
 };

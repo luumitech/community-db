@@ -53,7 +53,7 @@ export const MemberCountChart: React.FC<Props> = ({
           <YearSelect
             minYear={community.minYear}
             maxYear={community.maxYear}
-            selectedKeys={selectedYear ? [selectedYear.toString()] : []}
+            selectedKeys={selectedYear != null ? [selectedYear.toString()] : []}
             onSelectionChange={(keys) => {
               const [firstKey] = keys;
               onYearSelect?.(parseInt(firstKey as string, 10));

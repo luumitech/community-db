@@ -59,7 +59,7 @@ export async function exportCommunityAsBase64(
 
     case ExportMethod.Multisheet:
       {
-        const helper = new ExportMultisheet(community);
+        const helper = new ExportMultisheet(community, community.propertyList);
         xlsxBuf = helper.toXlsx();
       }
       break;

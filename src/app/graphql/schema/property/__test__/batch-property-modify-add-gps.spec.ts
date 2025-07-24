@@ -157,7 +157,7 @@ describe('BatchPropertyModify - Add GPS', () => {
         country: 'country',
       },
     });
-    const result = await batchModify.modify();
+    const result = await batchModify.start();
 
     const expectedAddressList = oldPropertyList.map(({ address }) =>
       [address, 'city', 'province', 'country'].join(',')

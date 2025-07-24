@@ -16,12 +16,19 @@ interface YearItem {
  * @returns SelectItems with years in descending order
  */
 function yearSelectItems(minYear: number, maxYear: number): YearItem[] {
-  return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
+  const yearItems = R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
     return {
-      label: yr.toString(),
+      label: `Members in ${yr}`,
       value: yr,
     };
   });
+  return [
+    {
+      label: 'All properties',
+      value: 0,
+    },
+    ...yearItems,
+  ];
 }
 
 type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
@@ -39,7 +46,7 @@ export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
   return (
     <Select
       className={cn(className, 'max-w-xs')}
-      label="Highlight Membership Year"
+      label="Highlight..."
       items={yearItems}
       disallowEmptySelection
       {...props}

@@ -5,7 +5,7 @@ export const worksheetNames = {
   membership: 'Membership',
   event: 'Event',
   ticket: 'Ticket',
-};
+} as const;
 
 export interface WorksheetRows {
   community: CommunityRow[];

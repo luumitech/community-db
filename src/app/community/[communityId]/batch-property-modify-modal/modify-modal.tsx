@@ -63,7 +63,7 @@ export const ModifyModal: React.FC<Props> = ({
               <>
                 <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
                 <Wizard header={<Header />}>
-                  <Step0 />
+                  <Step0 forceCloseModal={onClose} />
                   <Step1 />
                   <Step2 isSubmitting={pending} closeModal={closeModal} />
                 </Wizard>
