@@ -4,6 +4,9 @@ import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 
+const ONE_SQUARE_KILOMETER = 1000000; // 1 km² in square meters
+const SQUARE_KILOMETER_LIMIT = 3; // Maximum area of drawn boundary in km²
+
 function schema() {
   return z
     .object({
@@ -22,6 +25,8 @@ function schema() {
         importList: zz.coerce.toFileArray({
           message: 'Please upload a valid xlsx file',
         }),
+        /** Area of the map drawn by user */
+        mapArea: z.number(),
       }),
     })
     .refine(
@@ -47,6 +52,22 @@ function schema() {
         message: 'Please draw a boundary containing properties to import',
         path: ['map'],
       }
+    )
+    .refine(
+      (form) => {
+        if (form.method !== GQL.ImportMethod.Map) {
+          return true;
+        }
+        const { mapArea } = form.hidden;
+
+        return (
+          mapArea > 0 && mapArea < SQUARE_KILOMETER_LIMIT * ONE_SQUARE_KILOMETER
+        );
+      },
+      {
+        message: `Boundary exceeded ${SQUARE_KILOMETER_LIMIT} km², please reduce the area`,
+        path: ['map'],
+      }
     );
 }
 
@@ -59,6 +80,7 @@ function defaultInputData(communityId: string): InputData {
     map: null,
     hidden: {
       importList: [],
+      mapArea: 0,
     },
   };
 }

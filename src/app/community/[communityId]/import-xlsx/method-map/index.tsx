@@ -1,4 +1,5 @@
 import { cn, Spacer } from '@heroui/react';
+import * as turf from '@turf/turf';
 import L from 'leaflet';
 import React from 'react';
 import {
@@ -31,8 +32,11 @@ export const MethodMap: React.FC<Props> = ({ className }) => {
 
   const onDrawChange = React.useCallback<OnDrawChangeFn>(
     (geoData) => {
+      let mapArea = 0;
       const geoPoints = geoData.features.flatMap((feature) => {
         if (isFeatureOfTypes(feature, ['Polygon', 'MultiPolygon'])) {
+          const featureArea = turf.area(feature);
+          mapArea += featureArea;
           // Assume minimum distance between each property is 20 meters
           return pointInPolygon(feature, 20, { units: 'meters' });
         } else {
@@ -42,6 +46,9 @@ export const MethodMap: React.FC<Props> = ({ className }) => {
       const mapPoints = geoPoints.map(toGeoPointInput);
       setValue('map', mapPoints);
       clearErrors('map');
+      setValue('hidden.mapArea', mapArea);
+      clearErrors('hidden.mapArea');
+
       // const lfPoints = geoPoints.map(toLeafletPoint);
       // setPts(lfPoints);
     },
