@@ -10,14 +10,15 @@ interface Params {
 }
 
 interface LayoutProps {
-  params: Params;
+  params: Promise<Params>;
   children: React.ReactNode;
 }
 
-export default function CommunityFromIdLayout({
-  params,
-  children,
-}: LayoutProps) {
+export default function CommunityFromIdLayout(props: LayoutProps) {
+  const params = React.use(props.params);
+
+  const { children } = props;
+
   const { communityId } = params;
   useSetupSubscription(communityId);
   const community = useCommunityQuery(communityId);

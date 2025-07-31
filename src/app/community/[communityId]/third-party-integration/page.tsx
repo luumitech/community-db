@@ -8,10 +8,11 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
-export default function thirdPartyIntegration({ params }: RouteArgs) {
+export default function ThirdPartyIntegration(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId } = params;
 
   return (

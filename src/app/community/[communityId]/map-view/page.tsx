@@ -8,10 +8,11 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
-export default function MapView({ params }: RouteArgs) {
+export default function MapView(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId } = params;
 
   if (communityId == null) {

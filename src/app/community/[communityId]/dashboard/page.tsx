@@ -10,10 +10,11 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
-export default function Dashboard({ params }: RouteArgs) {
+export default function Dashboard(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId } = params;
   const dispatch = useDispatch();
   const { yearSelected } = useSelector((state) => state.ui);

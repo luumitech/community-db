@@ -42,12 +42,16 @@ async function config() {
   const createConfig = createJestConfig(customJestConfig);
   const jestConfig = await createConfig();
 
-  // Override the default '/node_modules/'
-  if (jestConfig.transformIgnorePatterns?.[0] === '/node_modules/') {
-    jestConfig.transformIgnorePatterns[0] += `(?!${esModules.join('|')})`;
-  }
+  // Replace the default '/node_modules/' with a custom one
+  const transformIgnorePatterns = (
+    jestConfig.transformIgnorePatterns ?? []
+  ).filter((entry) => !entry.startsWith('/node_modules/'));
+  transformIgnorePatterns.push(`/node_modules/(?!${esModules.join('|')})`);
 
-  return jestConfig;
+  return {
+    ...jestConfig,
+    transformIgnorePatterns,
+  };
 }
 
 export default config;

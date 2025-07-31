@@ -12,7 +12,9 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
 }) => {
   const { width: windowWidth } = useWindowSize();
   const divRef = React.useRef<HTMLDivElement>(null);
-  const { width: menuWidth } = useResizeObserver({ ref: divRef });
+  const { width: menuWidth } = useResizeObserver({
+    ref: divRef as React.RefObject<HTMLDivElement>,
+  });
   const [leftPos, setLeftPos] = React.useState<number>();
 
   React.useEffect(() => {

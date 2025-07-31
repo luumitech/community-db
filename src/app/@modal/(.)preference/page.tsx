@@ -8,10 +8,10 @@ import { SelectTheme } from './select-theme';
 interface Params {}
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
-export default function Preference({ params }: RouteArgs) {
+export default function Preference(props: RouteArgs) {
   const router = useRouter();
   return (
     <Modal

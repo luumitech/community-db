@@ -8,10 +8,11 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
-export default function ExportXlsx({ params }: RouteArgs) {
+export default function ExportXlsx(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId } = params;
 
   return (

@@ -25,7 +25,7 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
 const CommunityAccessListQuery = graphql(/* GraphQL */ `
@@ -61,7 +61,8 @@ const CommunityAccessListQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export default function Share({ params }: RouteArgs) {
+export default function Share(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId } = params;
   const { isAdmin } = useSelector((state) => state.community);
   const result = useQuery(CommunityAccessListQuery, {

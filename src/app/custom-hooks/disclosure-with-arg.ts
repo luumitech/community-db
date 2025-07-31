@@ -13,10 +13,10 @@ import React from 'react';
  * the `open()` method without caching previous rendering
  */
 export function useDisclosureWithArg<T>() {
-  const arg = React.useRef<T>();
+  const arg = React.useRef<T>(null);
   const disclosure = useDisclosure({
     onClose: () => {
-      arg.current = undefined;
+      arg.current = null;
     },
   });
   const { onOpen } = disclosure;

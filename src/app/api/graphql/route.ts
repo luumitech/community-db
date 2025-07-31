@@ -1,10 +1,6 @@
 import { usePersistedOperations } from '@graphql-yoga/plugin-persisted-operations';
 import { createYoga, useErrorHandler } from 'graphql-yoga';
-import {
-  createContext,
-  type Context,
-  type YogaServerContext,
-} from '~/graphql/context';
+import { createContext, type Context } from '~/graphql/context';
 import persistedOperations from '~/graphql/generated/persisted-documents.json';
 import { schema } from '~/graphql/schema';
 import { Logger } from '~/lib/logger';
@@ -27,7 +23,11 @@ const errorHandlerPlugin = useErrorHandler(({ errors, context, phase }) => {
   });
 });
 
-const yoga = createYoga<YogaServerContext, Context>({
+interface NextContext {
+  params: Promise<Context>;
+}
+
+const yoga = createYoga<NextContext>({
   /**
    * GraphiQL is enabled only in development and served under this endpoint
    *

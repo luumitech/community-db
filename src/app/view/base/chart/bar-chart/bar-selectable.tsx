@@ -4,7 +4,7 @@ import React from 'react';
 import { useTooltip } from '~/view/base/chart/tooltip';
 
 interface BarSelectableOpt<T> {
-  renderToolTip?: (data: T) => JSX.Element;
+  renderToolTip?: (data: T) => React.ReactNode;
   onDataClick?: (data: T) => void;
 }
 
