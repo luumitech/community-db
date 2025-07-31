@@ -44,6 +44,7 @@ export function makeApolloClient() {
             query: '',
           },
           {
+            // @ts-expect-error avoid error: Type '(value: FetchResult) => void' is not assignable to type '(value: ExecutionResult<FetchResult, unknown>) => void'.
             next: sink.next.bind(sink),
             complete: sink.complete.bind(sink),
             error: sink.error.bind(sink),

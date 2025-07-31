@@ -13,9 +13,9 @@ export const RoleItem: React.FC<Props> = ({ className, role, children }) => {
       <span className="font-bold">{role}</span> role:
       {children && (
         <ul className="list-disc pl-6">
-          {React.Children.map(children, (child, idx) => {
+          {React.Children.map(children, (child) => {
             if (React.isValidElement(child)) {
-              return <li>{React.cloneElement(child, child.props)}</li>;
+              return <li>{React.cloneElement(child)}</li>;
             }
             return null;
           })}

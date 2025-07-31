@@ -13,7 +13,7 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
 const PropertyFromIdQuery = graphql(/* GraphQL */ `
@@ -39,7 +39,8 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export default function Property({ params }: RouteArgs) {
+export default function Property(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId, propertyId } = params;
   const result = useQuery(PropertyFromIdQuery, {
     variables: { communityId, propertyId },

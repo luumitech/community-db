@@ -3,7 +3,7 @@ import { type NextRequest } from 'next/server';
 import { contextUser } from '~/lib/context-user';
 import { pubSub } from './pubsub';
 
-export interface YogaServerContext extends YogaInitialContext {
+interface YogaServerContext extends YogaInitialContext {
   request: NextRequest;
 }
 

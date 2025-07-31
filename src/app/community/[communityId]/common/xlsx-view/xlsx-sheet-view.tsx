@@ -87,7 +87,7 @@ export function XlsxSheetView<T>({
     virtualPaddingLeft =
       (virtualColumns[1]?.start ?? 0) - (virtualColumns[0]?.start ?? 0) >
       visibleColumns[0].getSize()
-        ? virtualColumns[1]?.start ?? 0
+        ? (virtualColumns[1]?.start ?? 0)
         : 0;
     virtualPaddingRight =
       columnVirtualizer.getTotalSize() -

@@ -93,7 +93,8 @@ export const ProcessPaymentButton: React.FC<Props> = ({
 }) => {
   const [payInitialize, payInitializeResult] = useMutation(HelcimPayInitialize);
   const [purchase, purchaseResult] = useMutation(HelcimPurchase);
-  const payInitializeResultRef = React.useRef<GQL.HelcimPayInitializeOutput>();
+  const payInitializeResultRef =
+    React.useRef<GQL.HelcimPayInitializeOutput>(null);
 
   /**
    * HelcimPay.js Validation

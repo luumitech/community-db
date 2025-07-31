@@ -7,10 +7,11 @@ interface Params {
 }
 
 interface RouteArgs {
-  params: Params;
+  params: Promise<Params>;
 }
 
-export default function PropertyList({ params }: RouteArgs) {
+export default function PropertyList(props: RouteArgs) {
+  const params = React.use(props.params);
   const { communityId } = params;
 
   if (communityId == null) {

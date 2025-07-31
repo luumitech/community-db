@@ -12,7 +12,7 @@ import { XlsxCache } from './xlsx-cache';
 
 /** Export community information */
 export async function exportCommunityAsUrl(communityId: string) {
-  const hdrs = headers();
+  const hdrs = await headers();
   const session = await getServerSession(hdrs);
   if (!session) {
     throw new Error('Not authorized');
@@ -37,7 +37,7 @@ export async function exportCommunityAsBase64(
   communityId: string,
   exportMethod: ExportMethod
 ) {
-  const hdrs = headers();
+  const hdrs = await headers();
   const session = await getServerSession(hdrs);
   if (!session) {
     throw new Error('Not authorized');

@@ -19,7 +19,8 @@ export async function sample(req: SInput): Promise<SOutput> {
    *
    * I.e. the session could be null
    */
-  const session = await getServerSession(headers());
+  const hdrs = await headers();
+  const session = await getServerSession(hdrs);
 
   return {
     status: StatusCodes.OK,

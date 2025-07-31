@@ -7,6 +7,7 @@ import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import Loading from '~/loading';
+import { MapView } from './map-view';
 import { MemberStat } from './member-stat';
 import { PageProvider } from './page-context';
 import { YearSelect } from './year-select';
@@ -51,19 +52,6 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     onError,
   });
 
-  // Load leaflet dynamically to avoid 'undefined window' error
-  const Map = React.useMemo(
-    () =>
-      dynamic(
-        async () => {
-          const { MapView } = await import('./map-view');
-          return MapView;
-        },
-        { ssr: false }
-      ),
-    []
-  );
-
   const setYearSelected = React.useCallback(
     (yr: number) => {
       setYear(yr);
@@ -95,7 +83,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
           }}
           description={<MemberStat selectedYear={yearSelected} />}
         />
-        <Map className="grow" selectedYear={yearSelected} />
+        <MapView className="grow" selectedYear={yearSelected} />
       </PageProvider>
     </div>
   );
