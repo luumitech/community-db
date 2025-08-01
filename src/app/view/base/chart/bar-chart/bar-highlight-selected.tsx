@@ -10,7 +10,7 @@ import { useTooltip } from '~/view/base/chart/tooltip';
  * @param selectedIndexValue - Index value of the selected bar
  * @returns Custom layer component for stacked bar chart
  */
-export function barHighlightSelected<T = BarDatum>(
+export function barHighlightSelected<T extends BarDatum>(
   chartData: T[],
   selectedIndexValue?: string | number | null
 ) {

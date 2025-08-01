@@ -1,4 +1,5 @@
 import { cn, Spacer } from '@heroui/react';
+import * as turf from '@turf/turf';
 import L from 'leaflet';
 import React from 'react';
 import {
@@ -16,6 +17,7 @@ import {
 } from '~/view/base/leaflet';
 import { StartImport } from '../start-import';
 import { useHookFormContext } from '../use-hook-form';
+import { StatusBar } from './status-bar';
 
 // Toronto (That's where I live!)
 const defaultPosition: L.LatLngTuple = [43.6425701, -79.3896317];
@@ -26,13 +28,19 @@ interface Props {
 
 export const MethodMap: React.FC<Props> = ({ className }) => {
   // const [pts, setPts] = React.useState<L.LatLng[]>([]);
+  const [editMode, setEditMode] = React.useState(false);
   const formMethods = useHookFormContext();
   const { setValue, clearErrors } = formMethods;
 
   const onDrawChange = React.useCallback<OnDrawChangeFn>(
     (geoData) => {
+      let area = 0;
+      let shapeNo = 0;
       const geoPoints = geoData.features.flatMap((feature) => {
         if (isFeatureOfTypes(feature, ['Polygon', 'MultiPolygon'])) {
+          const featureArea = turf.area(feature);
+          area += featureArea;
+          shapeNo += 1;
           // Assume minimum distance between each property is 20 meters
           return pointInPolygon(feature, 20, { units: 'meters' });
         } else {
@@ -40,8 +48,14 @@ export const MethodMap: React.FC<Props> = ({ className }) => {
         }
       });
       const mapPoints = geoPoints.map(toGeoPointInput);
-      setValue('map', mapPoints);
       clearErrors('map');
+      setValue('map', mapPoints);
+      setValue(
+        'hidden.map.area',
+        turf.convertArea(area, 'meters', 'kilometers')
+      );
+      setValue('hidden.map.shapeNo', shapeNo);
+
       // const lfPoints = geoPoints.map(toLeafletPoint);
       // setPts(lfPoints);
     },
@@ -74,13 +88,16 @@ export const MethodMap: React.FC<Props> = ({ className }) => {
             cutPolygon: false,
           }}
           onDrawChange={onDrawChange}
+          onEditModeChange={setEditMode}
         />
         {/* For debug purpose, to show where the grid points are */}
         {/* {pts.map((pt, idx) => (
           <LeafletMarker key={idx} position={pt} />
         ))} */}
       </MapContainer>
-      <StartImport />
+      {/* Negate the gap-2 specification on parent element */}
+      <StatusBar className="mt-[-8px]" editMode={editMode} />
+      <StartImport isDisabled={editMode} />
       <Spacer y={1} />
     </>
   );

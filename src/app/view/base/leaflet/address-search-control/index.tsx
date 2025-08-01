@@ -3,9 +3,10 @@ import L from 'leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import React from 'react';
 import { useMap } from 'react-leaflet';
-import { leafletMarkerIcon } from './leaflet-marker';
+import { leafletMarkerIcon } from '../leaflet-marker';
 
 import 'leaflet-geosearch/dist/geosearch.css';
+import './styles.css';
 
 /**
  * React wrapper for leaflet-geosearch

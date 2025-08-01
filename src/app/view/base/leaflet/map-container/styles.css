@@ -1,0 +1,13 @@
+.dark {
+  .leaflet-container {
+    background: gray
+  }
+
+  .leaflet-layer,
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out,
+  .leaflet-control-attribution,
+  .leaflet-bar a {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
+}

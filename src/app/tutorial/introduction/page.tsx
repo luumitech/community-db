@@ -1,3 +1,4 @@
+'use client';
 import { Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
 import { GUIDE_ITEMS } from '../guide-menu/guide-items';

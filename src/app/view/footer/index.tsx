@@ -1,3 +1,4 @@
+'use client';
 import { Link, cn } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
