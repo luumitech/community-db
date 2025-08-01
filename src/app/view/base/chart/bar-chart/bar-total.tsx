@@ -42,7 +42,7 @@ import * as R from 'remeda';
  * @param totalFn Custom callback for calculating total of each data point
  * @returns
  */
-export function barTotal<T = BarDatum>(
+export function barTotal<T extends BarDatum>(
   chartData: T[],
   layout: 'vertical' | 'horizontal',
   totalFn?: (data: T) => string
@@ -94,7 +94,7 @@ export function barTotal<T = BarDatum>(
  * - If all bars have NaN value (i.e. not existent), then return 'n/a'
  * - Otherwise sum up all total (treat NaN as 0)
  */
-function defaultTotalFn<T>(bars: ComputedBarDatum<T>[]) {
+function defaultTotalFn<T extends BarDatum>(bars: ComputedBarDatum<T>[]) {
   // Interpret datapoint value
   const barValue = (bar: ComputedBarDatum<T>) => {
     const { data } = bar;

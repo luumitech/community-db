@@ -17,7 +17,7 @@ interface BarSelectableOpt<T> {
  * @param opt - Additional options on configuring the bar rendering
  * @returns Custom layer component for stacked bar chart
  */
-export function barSelectable<T = BarDatum>(
+export function barSelectable<T extends BarDatum>(
   chartData: T[],
   opt?: BarSelectableOpt<T>
 ) {

@@ -7,9 +7,10 @@ import { useHookFormContext } from './use-hook-form';
 
 interface Props {
   className?: string;
+  isDisabled?: boolean;
 }
 
-export const StartImport: React.FC<Props> = ({ className }) => {
+export const StartImport: React.FC<Props> = ({ className, isDisabled }) => {
   const msg = useCheckMethodRequirement();
   const formMethods = useHookFormContext();
   const { trigger, formState } = formMethods;
@@ -36,7 +37,7 @@ export const StartImport: React.FC<Props> = ({ className }) => {
             </p>
           ),
         }}
-        isDisabled={!!msg}
+        isDisabled={!!isDisabled || !!msg}
       >
         Import
       </Button>

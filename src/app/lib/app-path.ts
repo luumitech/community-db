@@ -186,7 +186,7 @@ export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
     case 'thirdPartyIntegration':
       return 'Third-Party Integration';
     case 'communityMapView':
-      return 'Map';
+      return 'Map View';
 
     default:
       if (Object.hasOwn(supportedModals, key)) {

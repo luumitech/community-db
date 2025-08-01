@@ -7,6 +7,7 @@ import {
 } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
+import './styles.css';
 
 interface Props extends MapContainerProps {
   className?: string;

@@ -1,4 +1,4 @@
-import { useTheme } from '@nivo/core';
+import { cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {
@@ -8,25 +8,27 @@ interface Props {
 }
 
 export const TableTooltip: React.FC<Props> = ({ className, title, rows }) => {
-  const theme = useTheme();
-
   if (!rows?.length) {
     return null;
   }
   const numCol = Math.max(...rows.map((row) => row.length));
 
   return (
-    <div className={className} style={theme.tooltip.container}>
+    <div
+      className={cn(
+        className,
+        'bg-white dark:bg-gray-800 text-xs rounded-sm p-2 shadow-md'
+      )}
+    >
       {!!title && title}
-      <table style={theme.tooltip.table}>
+      <table>
         <tbody>
           {rows.map((row, i) => (
             <tr key={i}>
               {row.map((column, j) => (
                 <td
                   key={j}
-                  className="align-middle"
-                  style={theme.tooltip.tableCell}
+                  className="align-middle py-[3px] px-[5px] text-nowrap"
                   colSpan={j === row.length - 1 ? numCol - j : 1}
                 >
                   {column}

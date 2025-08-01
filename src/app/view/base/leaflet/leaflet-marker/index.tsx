@@ -1,14 +1,12 @@
 import L from 'leaflet';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import React from 'react';
 import { Marker, MarkerProps } from 'react-leaflet';
 
 export const leafletMarkerIcon = L.icon({
-  iconUrl: markerIcon.src,
+  iconUrl: '/image/leaflet/marker-icon.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
-  shadowUrl: markerShadow.src,
+  shadowUrl: '/image/leaflet/marker-shadow.png',
   shadowSize: [41, 41],
   shadowAnchor: [12, 41],
 });

@@ -1,0 +1,16 @@
+.dark {
+  .leaflet-control-geosearch.leaflet-geosearch-bar {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+
+    /* Search input bar */
+    .glass {
+      background-color: transparent;
+      color: black;
+    }
+
+    /* Search results */
+    .results {
+      color: black;
+    }
+  }
+}
