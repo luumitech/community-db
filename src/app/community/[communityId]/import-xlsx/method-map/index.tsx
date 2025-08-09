@@ -1,15 +1,14 @@
 import { cn, Spacer } from '@heroui/react';
 import * as turf from '@turf/turf';
-import L from 'leaflet';
 import React from 'react';
 import {
   isFeatureOfTypes,
   pointInPolygon,
   toGeoPointInput,
-  toLeafletPoint,
 } from '~/lib/geojson-util';
 import {
   AddressSearchControl,
+  GeoLocationCenter,
   LeafletDraw,
   LeafletMarker,
   MapContainer,
@@ -18,9 +17,6 @@ import {
 import { StartImport } from '../start-import';
 import { useHookFormContext } from '../use-hook-form';
 import { StatusBar } from './status-bar';
-
-// Toronto (That's where I live!)
-const defaultPosition: L.LatLngTuple = [43.6425701, -79.3896317];
 
 interface Props {
   className?: string;
@@ -64,12 +60,8 @@ export const MethodMap: React.FC<Props> = ({ className }) => {
 
   return (
     <>
-      <MapContainer
-        className={cn(className, 'grow')}
-        center={defaultPosition}
-        zoom={15}
-        scrollWheelZoom
-      >
+      <MapContainer className={cn(className, 'grow')} zoom={15} scrollWheelZoom>
+        <GeoLocationCenter />
         <AddressSearchControl />
         <LeafletDraw
           controls={{

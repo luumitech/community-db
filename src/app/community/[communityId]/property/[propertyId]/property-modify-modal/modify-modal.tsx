@@ -1,6 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
+import { AddressEditor } from '~/community/[communityId]/common/address-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
@@ -63,7 +63,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('propertyModify')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditorForm />
+                  <AddressEditor />
                 </ModalBody>
                 <ModalFooter className="flex items-center justify-between">
                   <LastModified

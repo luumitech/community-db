@@ -13,9 +13,33 @@ export const leafletMarkerIcon = L.icon({
 
 type CustomMarkerProps = Omit<MarkerProps, 'icon'>;
 
-interface Props extends CustomMarkerProps {}
+interface Props extends CustomMarkerProps {
+  onDragEnd?: (loc: L.LatLng) => void;
+}
 
 /** Render default leaflet location marker */
-export const LeafletMarker: React.FC<Props> = (props) => {
-  return <Marker icon={leafletMarkerIcon} {...props} />;
+export const LeafletMarker: React.FC<Props> = ({ onDragEnd, ...props }) => {
+  const ref = React.useRef<L.Marker>(null);
+
+  /** Installer event handlers for marker */
+  const eventHandlers = React.useMemo(
+    () => ({
+      dragend: () => {
+        const loc = ref.current?.getLatLng();
+        if (loc != null) {
+          onDragEnd?.(loc);
+        }
+      },
+    }),
+    []
+  );
+
+  return (
+    <Marker
+      ref={ref}
+      icon={leafletMarkerIcon}
+      eventHandlers={eventHandlers}
+      {...props}
+    />
+  );
 };

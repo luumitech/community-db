@@ -1,6 +1,8 @@
+'use client';
 import { useLazyQuery } from '@apollo/client';
-import { Button, Divider, Link, Input as NInput } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
+import { Popup } from 'react-leaflet';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
@@ -8,17 +10,24 @@ import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
+import {
+  AddressSearchControl,
+  GeoLocationCenter,
+  LeafletMarker,
+  MapContainer,
+  type ShowLocationResult,
+} from '~/view/base/leaflet';
 import { NumberInput } from '~/view/base/number-input';
 
 interface InputData {
   address: string;
-  streetNo: number;
+  streetNo: number | null;
   streetName: string;
   postalCode: string;
   city: string;
   country: string;
-  lat: number;
-  lon: number;
+  lat: number | null;
+  lon: number | null;
 }
 
 const GeocodeLookupAddress = graphql(/* GraphQL */ `
@@ -31,8 +40,6 @@ const GeocodeLookupAddress = graphql(/* GraphQL */ `
       postalCode
       city
       country
-      lat
-      lon
     }
   }
 `);
@@ -41,17 +48,36 @@ interface Props {
   className?: string;
 }
 
-export const AddressEditorForm: React.FC<Props> = ({ className }) => {
+export const AddressEditor: React.FC<Props> = ({ className }) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
-  const { setValue } = useFormContext<InputData>();
-  const [address, setAddress] = React.useState<string>();
-  const [geocodeLookupAddress, lookupResult] = useLazyQuery(
-    GeocodeLookupAddress,
-    { onError }
+  const { setValue, watch } = useFormContext<InputData>();
+  const [geocodeLookupAddress] = useLazyQuery(GeocodeLookupAddress, {
+    onError,
+  });
+  const address = watch('address');
+  const lat = watch('lat');
+  const lng = watch('lon');
+
+  const setFormValue = React.useCallback(
+    (name: keyof InputData, value?: string | number | null) => {
+      setValue(name, value ?? '', {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    },
+    [setValue]
   );
 
-  const lookupAddress = React.useCallback(async () => {
-    if (address) {
+  const lookupAddress = React.useCallback(
+    async (locationResult: ShowLocationResult) => {
+      const address = locationResult.label.trim();
+      if (!address) {
+        return;
+      }
+
+      setFormValue('lat', locationResult.y);
+      setFormValue('lon', locationResult.x);
+
       const result = await geocodeLookupAddress({
         variables: {
           input: { communityId: community.id, text: address },
@@ -59,75 +85,81 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
       });
       const output = result.data?.geocodeFromText;
       if (output) {
-        const setFormValue = (
-          name: keyof InputData,
-          value?: string | number | null
-        ) => {
-          setValue(name, value ?? '', {
-            shouldDirty: true,
-            shouldValidate: true,
-          });
-        };
-
         setFormValue('address', output.addressLine1);
         setFormValue('streetNo', output.streetNo);
         setFormValue('streetName', output.streetName);
         setFormValue('postalCode', output.postalCode);
         setFormValue('city', output.city);
         setFormValue('country', output.country);
-        setFormValue('lat', output.lat);
-        setFormValue('lon', output.lon);
       }
+    },
+    [community.id, geocodeLookupAddress, setFormValue]
+  );
+
+  const onMarkerDragEnd = React.useCallback(
+    async (location: L.LatLng) => {
+      setFormValue('lat', location.lat);
+      setFormValue('lon', location.lng);
+    },
+    [setFormValue]
+  );
+
+  const CustomMarker = React.useCallback(() => {
+    if (lat == null || lng == null) {
+      return null;
     }
-  }, [community.id, address, geocodeLookupAddress, setValue]);
+    return (
+      <LeafletMarker
+        position={{ lat, lng }}
+        draggable
+        onDragEnd={onMarkerDragEnd}
+      >
+        <Popup>{address}</Popup>
+      </LeafletMarker>
+    );
+  }, [lat, lng, address]);
 
   return (
-    <>
-      Enter full mailing address to propagate the fields automatically:
-      <div className="flex flex-col gap-2 mx-4">
-        <NInput
-          className={className}
-          variant="bordered"
-          label="Mailing Address"
-          placeholder="eg. 6587 Roller Derby Lane, Springfeld, USA"
-          onChange={(evt) => setAddress(evt.currentTarget.value)}
-          isDisabled={!hasGeoapifyApiKey}
-          endContent={
-            <Button
-              onPress={lookupAddress}
-              isLoading={lookupResult.loading}
-              isDisabled={!address}
+    <div
+      className={cn(className, 'grid grid-cols-1 sm:grid-cols-2 gap-4 mx-4')}
+    >
+      <div className="flex flex-col gap-2">
+        {!hasGeoapifyApiKey && (
+          <p className="text-warning text-sm">
+            A valid Geoapify API key is required for address lookup. To enable
+            this feature, please enter your API key in the{' '}
+            <Link
+              size="sm"
+              href={appPath('thirdPartyIntegration', {
+                path: { communityId: community.id },
+                query: { tab: 'geoapify' },
+              })}
+              target="_blank"
             >
-              Lookup
-            </Button>
-          }
-        />
+              {appLabel('thirdPartyIntegration')}{' '}
+              <Icon className="ml-1" icon="externalLink" />
+            </Link>{' '}
+            settings.
+          </p>
+        )}
+        <MapContainer
+          className="h-full min-h-[300px]"
+          zoom={15}
+          scrollWheelZoom
+        >
+          <GeoLocationCenter />
+          {hasGeoapifyApiKey && (
+            <AddressSearchControl
+              searchLabel="Lookup address to propagate input fields"
+              // Customize marker handling locally
+              showMarker={false}
+              onShowLocation={lookupAddress}
+            />
+          )}
+          <CustomMarker />
+        </MapContainer>
       </div>
-      {!hasGeoapifyApiKey && (
-        <p className="text-warning text-sm">
-          Address lookup requires a valid Geoapify API key. To enable this
-          feature, please enter your API key in the{' '}
-          <Link
-            size="sm"
-            href={appPath('thirdPartyIntegration', {
-              path: { communityId: community.id },
-              query: { tab: 'geoapify' },
-            })}
-            target="_blank"
-          >
-            {appLabel('thirdPartyIntegration')}{' '}
-            <Icon className="ml-1" icon="externalLink" />
-          </Link>{' '}
-          settings.
-        </p>
-      )}
-      <div className="flex items-center gap-4">
-        <Divider className="w-auto grow" />
-        or
-        <Divider className="w-auto grow" />
-      </div>
-      Enter the fields manually:
-      <div className="flex flex-col gap-2 mx-4">
+      <div className="flex flex-col grow gap-2">
         <Input
           className={className}
           controlName="address"
@@ -197,6 +229,6 @@ export const AddressEditorForm: React.FC<Props> = ({ className }) => {
           }}
         />
       </div>
-    </>
+    </div>
   );
 };
