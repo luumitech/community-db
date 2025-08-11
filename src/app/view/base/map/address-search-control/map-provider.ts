@@ -1,4 +1,4 @@
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import type { GSMod } from './_type';
 
 /**
  * OpenStreetMap Nominatim supports a number of optional parameters. As the api
@@ -7,8 +7,8 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
  *
  * See: https://nominatim.org/release-docs/develop/api/Search/#parameters
  */
-export function openStreetMapProvider() {
-  return new OpenStreetMapProvider({
+export function openStreetMapProvider(gsMod: GSMod) {
+  return new gsMod.OpenStreetMapProvider({
     params: {
       layer: 'address',
     },

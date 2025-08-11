@@ -7,7 +7,7 @@ import {
   MapContainer,
   MapEventListener,
   PrintControl,
-} from '~/view/base/leaflet';
+} from '~/view/base/map';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
 

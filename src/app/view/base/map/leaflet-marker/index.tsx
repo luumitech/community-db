@@ -1,17 +1,18 @@
-import L from 'leaflet';
+import dynamic from 'next/dynamic';
 import React from 'react';
-import { Marker, MarkerProps } from 'react-leaflet';
+import { type MarkerProps } from 'react-leaflet';
+import { useMapContext } from '~/view/base/map';
+import { leafletMarkerIcon } from './leaflet-marker-icon';
 
-export const leafletMarkerIcon = L.icon({
-  iconUrl: '/image/leaflet/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  shadowUrl: '/image/leaflet/marker-shadow.png',
-  shadowSize: [41, 41],
-  shadowAnchor: [12, 41],
-});
+export type CustomMarkerProps = Omit<MarkerProps, 'icon'>;
 
-type CustomMarkerProps = Omit<MarkerProps, 'icon'>;
+const Marker = dynamic(
+  async () => {
+    const mod = await import('react-leaflet');
+    return mod.Marker;
+  },
+  { ssr: false }
+);
 
 interface Props extends CustomMarkerProps {
   onDragEnd?: (loc: L.LatLng) => void;
@@ -19,6 +20,8 @@ interface Props extends CustomMarkerProps {
 
 /** Render default leaflet location marker */
 export const LeafletMarker: React.FC<Props> = ({ onDragEnd, ...props }) => {
+  const { L } = useMapContext();
+
   const ref = React.useRef<L.Marker>(null);
 
   /** Installer event handlers for marker */
@@ -31,13 +34,13 @@ export const LeafletMarker: React.FC<Props> = ({ onDragEnd, ...props }) => {
         }
       },
     }),
-    []
+    [onDragEnd]
   );
 
   return (
     <Marker
       ref={ref}
-      icon={leafletMarkerIcon}
+      icon={leafletMarkerIcon(L)}
       eventHandlers={eventHandlers}
       {...props}
     />

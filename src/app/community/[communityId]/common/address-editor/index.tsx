@@ -1,48 +1,13 @@
 'use client';
-import { useLazyQuery } from '@apollo/client';
 import { Link, cn } from '@heroui/react';
 import React from 'react';
-import { Popup } from 'react-leaflet';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { useFormContext } from '~/custom-hooks/hook-form';
-import { graphql } from '~/graphql/generated';
-import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
-import {
-  AddressSearchControl,
-  GeoLocationCenter,
-  LeafletMarker,
-  MapContainer,
-  type ShowLocationResult,
-} from '~/view/base/leaflet';
+import { MapContextProvider } from '~/view/base/map';
 import { NumberInput } from '~/view/base/number-input';
-
-interface InputData {
-  address: string;
-  streetNo: number | null;
-  streetName: string;
-  postalCode: string;
-  city: string;
-  country: string;
-  lat: number | null;
-  lon: number | null;
-}
-
-const GeocodeLookupAddress = graphql(/* GraphQL */ `
-  query geocodeFromText($input: GeocodeFromTextInput!) {
-    geocodeFromText(input: $input) {
-      addressLine1
-      addressLine2
-      streetNo
-      streetName
-      postalCode
-      city
-      country
-    }
-  }
-`);
+import { Map } from './map';
 
 interface Props {
   className?: string;
@@ -50,74 +15,6 @@ interface Props {
 
 export const AddressEditor: React.FC<Props> = ({ className }) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
-  const { setValue, watch } = useFormContext<InputData>();
-  const [geocodeLookupAddress] = useLazyQuery(GeocodeLookupAddress, {
-    onError,
-  });
-  const address = watch('address');
-  const lat = watch('lat');
-  const lng = watch('lon');
-
-  const setFormValue = React.useCallback(
-    (name: keyof InputData, value?: string | number | null) => {
-      setValue(name, value ?? '', {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-    },
-    [setValue]
-  );
-
-  const lookupAddress = React.useCallback(
-    async (locationResult: ShowLocationResult) => {
-      const address = locationResult.label.trim();
-      if (!address) {
-        return;
-      }
-
-      setFormValue('lat', locationResult.y);
-      setFormValue('lon', locationResult.x);
-
-      const result = await geocodeLookupAddress({
-        variables: {
-          input: { communityId: community.id, text: address },
-        },
-      });
-      const output = result.data?.geocodeFromText;
-      if (output) {
-        setFormValue('address', output.addressLine1);
-        setFormValue('streetNo', output.streetNo);
-        setFormValue('streetName', output.streetName);
-        setFormValue('postalCode', output.postalCode);
-        setFormValue('city', output.city);
-        setFormValue('country', output.country);
-      }
-    },
-    [community.id, geocodeLookupAddress, setFormValue]
-  );
-
-  const onMarkerDragEnd = React.useCallback(
-    async (location: L.LatLng) => {
-      setFormValue('lat', location.lat);
-      setFormValue('lon', location.lng);
-    },
-    [setFormValue]
-  );
-
-  const CustomMarker = React.useCallback(() => {
-    if (lat == null || lng == null) {
-      return null;
-    }
-    return (
-      <LeafletMarker
-        position={{ lat, lng }}
-        draggable
-        onDragEnd={onMarkerDragEnd}
-      >
-        <Popup>{address}</Popup>
-      </LeafletMarker>
-    );
-  }, [lat, lng, address]);
 
   return (
     <div
@@ -142,22 +39,9 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
             settings.
           </p>
         )}
-        <MapContainer
-          className="h-full min-h-[300px]"
-          zoom={15}
-          scrollWheelZoom
-        >
-          <GeoLocationCenter />
-          {hasGeoapifyApiKey && (
-            <AddressSearchControl
-              searchLabel="Lookup address to propagate input fields"
-              // Customize marker handling locally
-              showMarker={false}
-              onShowLocation={lookupAddress}
-            />
-          )}
-          <CustomMarker />
-        </MapContainer>
+        <MapContextProvider>
+          <Map className="h-full min-h-[300px]" />
+        </MapContextProvider>
       </div>
       <div className="flex flex-col grow gap-2">
         <Input

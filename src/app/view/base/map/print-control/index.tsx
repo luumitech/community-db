@@ -1,5 +1,3 @@
-import L from 'leaflet';
-import 'leaflet-easyprint';
 import React from 'react';
 import { useMap } from 'react-leaflet';
 

@@ -36,6 +36,7 @@ export const CreateModal: React.FC<Props> = ({
   const [pending, startTransition] = React.useTransition();
   const { community, formMethods } = useHookForm(fragment);
   const { handleSubmit, formState } = formMethods;
+  const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -59,6 +60,7 @@ export const CreateModal: React.FC<Props> = ({
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      confirmation={isDirty}
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>

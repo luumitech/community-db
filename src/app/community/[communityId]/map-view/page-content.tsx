@@ -1,12 +1,12 @@
 'use client';
 import { useQuery } from '@apollo/client';
 import { cn } from '@heroui/react';
-import dynamic from 'next/dynamic';
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import Loading from '~/loading';
+import { MapContextProvider } from '~/view/base/map';
 import { MapView } from './map-view';
 import { MemberStat } from './member-stat';
 import { PageProvider } from './page-context';
@@ -83,7 +83,9 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
           }}
           description={<MemberStat selectedYear={yearSelected} />}
         />
-        <MapView className="grow" selectedYear={yearSelected} />
+        <MapContextProvider>
+          <MapView className="grow" selectedYear={yearSelected} />
+        </MapContextProvider>
       </PageProvider>
     </div>
   );

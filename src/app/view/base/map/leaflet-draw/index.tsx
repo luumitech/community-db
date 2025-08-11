@@ -1,4 +1,3 @@
-import '@geoman-io/leaflet-geoman-free';
 import type { FeatureCollection, Geometry } from 'geojson';
 import React from 'react';
 import { useMap } from 'react-leaflet';
@@ -92,7 +91,7 @@ export const LeafletDraw: React.FC<LeafletDrawProps> = ({
       map.off('pm:drawend');
       map.pm.removeControls();
     };
-  }, [controls, map, onChange, onEditModeChange]);
+  }, [map, controls, onChange, onEditModeChange]);
 
   return null;
 };
