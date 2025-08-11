@@ -1,6 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
-import { AddressEditorForm } from '~/community/[communityId]/common/address-editor-form';
+import { AddressEditor } from '~/community/[communityId]/common/address-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
@@ -36,6 +36,7 @@ export const CreateModal: React.FC<Props> = ({
   const [pending, startTransition] = React.useTransition();
   const { community, formMethods } = useHookForm(fragment);
   const { handleSubmit, formState } = formMethods;
+  const { isDirty } = formState;
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
@@ -59,6 +60,7 @@ export const CreateModal: React.FC<Props> = ({
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      confirmation={isDirty}
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -67,7 +69,7 @@ export const CreateModal: React.FC<Props> = ({
               <>
                 <ModalHeader>{appLabel('propertyCreate')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditorForm />
+                  <AddressEditor />
                 </ModalBody>
                 <ModalFooter>
                   <Button

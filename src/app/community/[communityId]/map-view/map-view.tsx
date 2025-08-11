@@ -1,6 +1,5 @@
 'use client';
 import { cn } from '@heroui/react';
-import L from 'leaflet';
 import React from 'react';
 import { parseAsNumber } from '~/lib/number-util';
 import {
@@ -8,7 +7,7 @@ import {
   MapContainer,
   MapEventListener,
   PrintControl,
-} from '~/view/base/leaflet';
+} from '~/view/base/map';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
 
