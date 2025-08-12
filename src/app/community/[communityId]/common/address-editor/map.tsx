@@ -8,6 +8,7 @@ import {
   AddressSearchControl,
   GeoLocationCenter,
   LeafletMarker,
+  MapCenter,
   MapContainer,
   useMapContext,
   type ShowLocationResult,
@@ -30,9 +31,15 @@ const GeocodeLookupAddress = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
+  /**
+   * Starting to lookup address
+   *
+   * - Resolves when lookup completes
+   */
+  onStartLookup: React.TransitionStartFunction;
 }
 
-export const Map: React.FC<Props> = ({ className }) => {
+export const Map: React.FC<Props> = ({ className, onStartLookup }) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
   const { watch, setValue } = useFormContext<InputData>();
   const {
@@ -45,6 +52,14 @@ export const Map: React.FC<Props> = ({ className }) => {
   const lat = watch('lat');
   const lng = watch('lon');
 
+  const markerPos = React.useMemo(() => {
+    if (lat == null || lng == null) {
+      return;
+    }
+    const pos = { lat, lng } as L.LatLng;
+    return pos;
+  }, [lat, lng]);
+
   const setFormValue = React.useCallback(
     (name: keyof InputData, value?: string | number | null) => {
       setValue(name, value ?? '', {
@@ -56,30 +71,31 @@ export const Map: React.FC<Props> = ({ className }) => {
   );
 
   const lookupAddress = React.useCallback(
-    async (locationResult: ShowLocationResult) => {
-      const addr = locationResult.label.trim();
-      if (!addr) {
-        return;
-      }
+    async (locationResult: ShowLocationResult) =>
+      onStartLookup(async () => {
+        const addr = locationResult.label.trim();
+        if (!addr) {
+          return;
+        }
 
-      setFormValue('lat', locationResult.y);
-      setFormValue('lon', locationResult.x);
+        setFormValue('lat', locationResult.y);
+        setFormValue('lon', locationResult.x);
 
-      const result = await geocodeLookupAddress({
-        variables: {
-          input: { communityId: community.id, text: addr },
-        },
-      });
-      const output = result.data?.geocodeFromText;
-      if (output) {
-        setFormValue('address', output.addressLine1);
-        setFormValue('streetNo', output.streetNo);
-        setFormValue('streetName', output.streetName);
-        setFormValue('postalCode', output.postalCode);
-        setFormValue('city', output.city);
-        setFormValue('country', output.country);
-      }
-    },
+        const result = await geocodeLookupAddress({
+          variables: {
+            input: { communityId: community.id, text: addr },
+          },
+        });
+        const output = result.data?.geocodeFromText;
+        if (output) {
+          setFormValue('address', output.addressLine1);
+          setFormValue('streetNo', output.streetNo);
+          setFormValue('streetName', output.streetName);
+          setFormValue('postalCode', output.postalCode);
+          setFormValue('city', output.city);
+          setFormValue('country', output.country);
+        }
+      }),
     [community.id, geocodeLookupAddress, setFormValue]
   );
 
@@ -91,24 +107,14 @@ export const Map: React.FC<Props> = ({ className }) => {
     [setFormValue]
   );
 
-  const CustomMarker = React.useCallback(() => {
-    if (lat == null || lng == null) {
-      return null;
-    }
-    return (
-      <LeafletMarker
-        position={{ lat, lng }}
-        draggable
-        onDragEnd={onMarkerDragEnd}
-      >
-        <Popup>{address}</Popup>
-      </LeafletMarker>
-    );
-  }, [Popup, lat, lng, address, onMarkerDragEnd]);
-
   return (
     <MapContainer className={className} zoom={15} scrollWheelZoom>
-      <GeoLocationCenter />
+      {/** Set center to current location if GPS position is not available for property */}
+      {!!markerPos ? (
+        <MapCenter center={markerPos} zoom={18} />
+      ) : (
+        <GeoLocationCenter />
+      )}
       {hasGeoapifyApiKey && (
         <AddressSearchControl
           searchLabel="Lookup address to propagate input fields"
@@ -117,7 +123,15 @@ export const Map: React.FC<Props> = ({ className }) => {
           onShowLocation={lookupAddress}
         />
       )}
-      <CustomMarker />
+      {!!markerPos && (
+        <LeafletMarker
+          position={markerPos}
+          draggable
+          onDragEnd={onMarkerDragEnd}
+        >
+          <Popup>{address}</Popup>
+        </LeafletMarker>
+      )}
     </MapContainer>
   );
 };

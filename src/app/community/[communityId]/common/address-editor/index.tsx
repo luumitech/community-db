@@ -15,6 +15,7 @@ interface Props {
 
 export const AddressEditor: React.FC<Props> = ({ className }) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
+  const [pending, onStartLookup] = React.useTransition();
 
   return (
     <div
@@ -40,7 +41,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           </p>
         )}
         <MapContextProvider>
-          <Map className="h-full min-h-[300px]" />
+          <Map className="h-full min-h-[300px]" onStartLookup={onStartLookup} />
         </MapContextProvider>
       </div>
       <div className="flex flex-col grow gap-2">
@@ -49,6 +50,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="address"
           variant="bordered"
           label="Display Address"
+          isDisabled={pending}
           isControlled
         />
         <Input
@@ -56,6 +58,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="streetNo"
           variant="bordered"
           label="Street Number"
+          isDisabled={pending}
           isControlled
         />
         <Input
@@ -63,6 +66,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="streetName"
           variant="bordered"
           label="Street Name"
+          isDisabled={pending}
           isControlled
         />
         <Input
@@ -70,6 +74,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="city"
           variant="bordered"
           label="City"
+          isDisabled={pending}
           isControlled
         />
         <Input
@@ -77,6 +82,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="country"
           variant="bordered"
           label="Country"
+          isDisabled={pending}
           isControlled
         />
         <Input
@@ -84,6 +90,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="postalCode"
           variant="bordered"
           label="Postal Code"
+          isDisabled={pending}
           isControlled
         />
         <NumberInput
@@ -91,6 +98,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="lat"
           variant="bordered"
           label="Latitude"
+          isDisabled={pending}
           isControlled
           hideStepper
           isWheelDisabled
@@ -104,6 +112,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           controlName="lon"
           variant="bordered"
           label="Longtitude"
+          isDisabled={pending}
           isControlled
           hideStepper
           isWheelDisabled

@@ -4,9 +4,11 @@ import { useMap } from 'react-leaflet';
 
 /** Access browser's geolocation and center the map on it. */
 
-interface Props {}
+interface Props {
+  zoom?: number;
+}
 
-export const GeoLocationCenter: React.FC<Props> = (props) => {
+export const GeoLocationCenter: React.FC<Props> = ({ zoom }) => {
   const map = useMap();
   const geoState = useGeolocation();
 
@@ -14,7 +16,7 @@ export const GeoLocationCenter: React.FC<Props> = (props) => {
   React.useEffect(() => {
     const { latitude, longitude } = geoState;
     if (latitude != null && longitude != null) {
-      map.setView([latitude, longitude]);
+      map.setView([latitude, longitude], zoom);
     }
   }, [map, geoState]);
 

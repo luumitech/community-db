@@ -81,7 +81,8 @@ builder.subscriptionType({
           pubSub.subscribe(`community/${communityId}/`),
           filter((event) => {
             // Don't subscribe to events that context user publish themselves
-            return event.broadcasterId !== user.email;
+            // return event.broadcasterId !== user.email;
+            return true;
           })
         );
       },
@@ -100,7 +101,8 @@ builder.subscriptionType({
           pubSub.subscribe(`community/${args.communityId}/property`),
           filter((event) => {
             // Don't subscribe to events that context user publish themselves
-            return event.broadcasterId !== user.email;
+            // return event.broadcasterId !== user.email;
+            return true;
           })
         );
       },

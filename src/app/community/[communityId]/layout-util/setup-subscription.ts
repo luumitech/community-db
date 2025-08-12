@@ -1,4 +1,5 @@
 import { useSubscription } from '@apollo/client';
+import { useUserInfo } from '~/custom-hooks/user-info';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -29,6 +30,8 @@ const PropertySubscription = graphql(/* GraphQL */ `
       property {
         id
         address
+        lat
+        lon
       }
     }
   }
@@ -46,6 +49,8 @@ function messageVerb(messageType: GQL.MessageType) {
 }
 
 export function useSetupSubscription(communityId: string) {
+  const contextUser = useUserInfo();
+
   // Subscribe to changes within community
   useSubscription(CommunitySubscription, {
     variables: { id: communityId },
@@ -53,9 +58,12 @@ export function useSetupSubscription(communityId: string) {
       const { cache } = client;
       const communityFromId = data.data?.communityFromId;
       if (communityFromId) {
-        const community = communityFromId.community;
+        const { community, broadcaster, messageType } = communityFromId;
+        if (broadcaster.email === contextUser.email) {
+          // Modified by context user, cache should already been handled
+          return;
+        }
         if (community) {
-          const { broadcaster, messageType } = communityFromId;
           evictCache(cache, 'Community', communityId);
           toast.info(
             `${community.name} was ${messageVerb(messageType)} by ${
@@ -73,7 +81,11 @@ export function useSetupSubscription(communityId: string) {
       const { cache } = client;
       const propertyInCommunity = data.data?.propertyInCommunity;
       if (propertyInCommunity) {
-        const property = propertyInCommunity.property;
+        const { property, broadcaster, messageType } = propertyInCommunity;
+        if (broadcaster.email === contextUser.email) {
+          // Modified by context user, cache should already been handled
+          return;
+        }
         if (property) {
           evictCache(cache, 'Property', property.id);
           // community may changed if things like minYear/maxYear changes
@@ -81,7 +93,6 @@ export function useSetupSubscription(communityId: string) {
           // community stat may changed if property content changes
           evictCache(cache, 'CommunityStat', communityId);
 
-          const { broadcaster, messageType } = propertyInCommunity;
           toast.info(
             `${property.address} was ${messageVerb(messageType)} by ${
               broadcaster.email
