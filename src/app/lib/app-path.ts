@@ -29,7 +29,7 @@ export const supportedPathTemplates = {
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
-  communityImport: '/community/:communityId/import-xlsx',
+  communityImport: '/community/:communityId/import-community',
   communityExport: '/community/:communityId/export-xlsx',
   contactExport: '/community/:communityId/export-contact',
   communityShare: '/community/:communityId/share',

@@ -46,6 +46,7 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
             items={importMethodSelectionList}
             placeholder="Select an import method"
             disallowEmptySelection
+            isControlled
           >
             {(item) => (
               <SelectItem key={item.value} textValue={item.label}>

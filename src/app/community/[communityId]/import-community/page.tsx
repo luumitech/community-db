@@ -36,7 +36,7 @@ interface RouteArgs {
   params: Promise<Params>;
 }
 
-export default function ImportXlsx(props: RouteArgs) {
+export default function ImportCommunity(props: RouteArgs) {
   const params = React.use(props.params);
   const router = useRouter();
   const client = useApolloClient();

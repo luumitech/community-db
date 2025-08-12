@@ -7,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export const Step3: React.FC<Props> = ({ className }) => {
+export const StepMethodXlsx2: React.FC<Props> = ({ className }) => {
   const { setSelectTooltip } = usePageContext();
   const wizardValues = useWizard();
 
