@@ -43,7 +43,7 @@ export const StepMethodXlsx1: React.FC<Props> = ({ className }) => {
 
   React.useEffect(() => {
     setValue('method', GQL.ImportMethod.Xlsx);
-  }, []);
+  }, [setValue]);
 
   return null;
 };

@@ -14,6 +14,8 @@ export const lsFlags = {
   dashboardEventTicketSaleGroupBy: 'cd-dashboard-event-ticket-sale-group-by',
   /** Reach import dialog for the first time */
   importFirstTime: 'cd-import-first-time',
+  /** MapView: show boundary around properties */
+  mapViewShowBoundary: 'cd-mapview-show-boundary',
 };
 
 /**

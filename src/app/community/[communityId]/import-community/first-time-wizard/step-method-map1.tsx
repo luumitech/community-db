@@ -48,7 +48,7 @@ export const StepMethodMap1: React.FC<Props> = ({ className }) => {
 
   React.useEffect(() => {
     setValue('method', GQL.ImportMethod.Map);
-  }, []);
+  }, [setValue]);
 
   return null;
 };

@@ -1,15 +1,39 @@
 import React from 'react';
+import { parseAsNumber } from '~/lib/number-util';
 import type { CommunityEntry, MemberCountStat, PropertyEntry } from './_type';
 
 type MemberCountStatFn = (year?: number | null) => MemberCountStat | undefined;
-type IsMemberInYearFn = (property: PropertyEntry, year: number) => boolean;
+
+interface PropertyWithGpsEntry extends Pick<PropertyEntry, 'id' | 'address'> {
+  loc: L.LatLngTuple;
+  isMemberInYear: (year: number) => boolean;
+}
 
 type ContextT = Readonly<{
   community: CommunityEntry;
+  propertyWithGps: PropertyWithGpsEntry[];
   propertyCount: number;
   memberCountStat: MemberCountStatFn;
-  isMemberInYear: IsMemberInYearFn;
 }>;
+
+/**
+ * Check if property has membership for a given year
+ *
+ * @param entry Property entry
+ * @param selectedYear Year to check for member
+ */
+function isMemberInYear(entry: PropertyEntry, selectedYear: number) {
+  /**
+   * SelectedYear === 0: All properties
+   *
+   * See: `year-select.tsx`
+   */
+  if (selectedYear === 0) {
+    return true;
+  }
+  const found = entry.membershipList.find(({ year }) => year === selectedYear);
+  return !!found?.isMember;
+}
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
@@ -35,29 +59,22 @@ export function PageProvider({ community, ...props }: Props) {
     [community]
   );
 
-  /**
-   * Check if property has membership for a given year
-   *
-   * @param entry Property entry
-   * @param selectedYear Year to check for member
-   */
-  const isMemberInYear = React.useCallback<IsMemberInYearFn>(
-    (entry, selectedYear) => {
-      /**
-       * SelectedYear === 0: All properties
-       *
-       * See: `year-select.tsx`
-       */
-      if (selectedYear === 0) {
-        return true;
+  const propertyWithGps = React.useMemo(() => {
+    const result: PropertyWithGpsEntry[] = [];
+    community.rawPropertyList.forEach((entry) => {
+      const lat = parseAsNumber(entry.lat);
+      const lon = parseAsNumber(entry.lon);
+      if (lat != null && lon != null) {
+        result.push({
+          id: entry.id,
+          address: entry.address,
+          loc: [lat, lon] as L.LatLngTuple,
+          isMemberInYear: (year: number) => isMemberInYear(entry, year),
+        });
       }
-      const found = entry.membershipList.find(
-        ({ year }) => year === selectedYear
-      );
-      return !!found?.isMember;
-    },
-    []
-  );
+    });
+    return result;
+  }, [community]);
 
   return (
     <Context.Provider
@@ -65,7 +82,7 @@ export function PageProvider({ community, ...props }: Props) {
         community,
         propertyCount: community.communityStat.propertyCount,
         memberCountStat,
-        isMemberInYear,
+        propertyWithGps,
       }}
       {...props}
     />

@@ -18,7 +18,7 @@ export const GeoLocationCenter: React.FC<Props> = ({ zoom }) => {
     if (latitude != null && longitude != null) {
       map.setView([latitude, longitude], zoom);
     }
-  }, [map, geoState]);
+  }, [map, geoState, zoom]);
 
   return null;
 };

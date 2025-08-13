@@ -18,6 +18,7 @@ export * from './map-center';
 export * from './map-container';
 export * from './map-event-listener';
 export * from './print-control';
+export * from './toolbar-control';
 
 interface ContextT {
   L: LMod;

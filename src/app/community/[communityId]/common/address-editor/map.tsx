@@ -53,7 +53,7 @@ export const Map: React.FC<Props> = ({ className, onStartLookup }) => {
   const lng = watch('lon');
 
   const markerPos = React.useMemo(() => {
-    if (lat == null || lng == null) {
+    if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) {
       return;
     }
     const pos = { lat, lng } as L.LatLng;
@@ -96,7 +96,7 @@ export const Map: React.FC<Props> = ({ className, onStartLookup }) => {
           setFormValue('country', output.country);
         }
       }),
-    [community.id, geocodeLookupAddress, setFormValue]
+    [community.id, onStartLookup, geocodeLookupAddress, setFormValue]
   );
 
   const onMarkerDragEnd = React.useCallback(

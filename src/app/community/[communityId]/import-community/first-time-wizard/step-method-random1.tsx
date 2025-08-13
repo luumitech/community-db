@@ -46,7 +46,7 @@ export const StepMethodRandom1: React.FC<Props> = ({ className }) => {
 
   React.useEffect(() => {
     setValue('method', GQL.ImportMethod.Random);
-  }, []);
+  }, [setValue]);
 
   return null;
 };
