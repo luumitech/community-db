@@ -1,13 +1,14 @@
 'use client';
 import { cn } from '@heroui/react';
 import React from 'react';
-import { parseAsNumber } from '~/lib/number-util';
 import {
   FitBound,
   MapContainer,
   MapEventListener,
   PrintControl,
 } from '~/view/base/map';
+import { HullBoundary } from './hull-boundary';
+import { MapReset } from './map-reset';
 import { usePageContext } from './page-context';
 import { PropertyMarker } from './property-marker';
 
@@ -17,22 +18,10 @@ interface Props {
 }
 
 export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
-  const { community, isMemberInYear } = usePageContext();
+  const { propertyWithGps } = usePageContext();
   const [zoom, setZoom] = React.useState<number>();
 
-  const propertyWithGps = React.useMemo(() => {
-    return community.rawPropertyList.map((entry) => ({
-      id: entry.id,
-      address: entry.address,
-      loc: [
-        parseAsNumber(entry.lat)!,
-        parseAsNumber(entry.lon)!,
-      ] as L.LatLngTuple,
-      isMemberInYear: (year: number) => isMemberInYear(entry, year),
-    }));
-  }, [community, isMemberInYear]);
-
-  const bounds = React.useMemo(() => {
+  const positions = React.useMemo(() => {
     return propertyWithGps.map((entry) => entry.loc);
   }, [propertyWithGps]);
 
@@ -48,6 +37,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       zoomDelta={0.25}
       scrollWheelZoom
     >
+      <MapReset positions={positions} />
       <PrintControl
         position="topleft"
         sizeModes={['A4Portrait', 'A4Landscape']}
@@ -55,7 +45,8 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
         exportOnly
       />
       <MapEventListener onZoomChange={setZoom} />
-      <FitBound bounds={bounds} />
+      <FitBound bounds={positions} />
+      <HullBoundary positions={positions} />
       {propertyWithGps.map((entry) => (
         <PropertyMarker
           key={entry.id}

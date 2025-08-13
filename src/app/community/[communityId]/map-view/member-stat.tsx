@@ -8,11 +8,11 @@ interface Props {
 }
 
 export const MemberStat: React.FC<Props> = ({ className, selectedYear }) => {
-  const { community, memberCountStat, propertyCount } = usePageContext();
+  const { propertyWithGps, memberCountStat, propertyCount } = usePageContext();
 
   const missingGps = React.useMemo(() => {
-    return propertyCount - community.rawPropertyList.length;
-  }, [community, propertyCount]);
+    return propertyCount - propertyWithGps.length;
+  }, [propertyWithGps, propertyCount]);
 
   const description = React.useMemo(() => {
     switch (selectedYear) {
@@ -34,7 +34,7 @@ export const MemberStat: React.FC<Props> = ({ className, selectedYear }) => {
   return (
     <div className={cn(className, 'flex flex-col')}>
       <span>{description}</span>
-      {missingGps > 0 && (
+      {propertyWithGps.length > 0 && missingGps > 0 && (
         <span className="text-warning">
           (warning: {missingGps} properties missing GPS location)
         </span>

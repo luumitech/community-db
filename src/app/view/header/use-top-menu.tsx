@@ -98,7 +98,7 @@ export function useTopMenu() {
           handlePropertyEditor(communityId);
           break;
 
-        case 'import-xlsx':
+        case 'import-community':
           items.push({
             id: 'communityImport',
             href: appPath('communityImport', { path: { communityId } }),

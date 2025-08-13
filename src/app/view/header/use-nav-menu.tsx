@@ -105,7 +105,7 @@ export function useNavMenu() {
 
       if (isAdmin) {
         items.push({
-          id: 'import-xlsx',
+          id: 'import-community',
           ...pathMenuArg(appPath('communityImport', { path: { communityId } })),
           children: indentMenuItem(appLabel('communityImport'), 1),
         });

@@ -3,6 +3,7 @@ import { useWizard } from 'react-use-wizard';
 import * as GQL from '~/graphql/generated/graphql';
 import { importMethodSelectionList } from '../_type';
 import { usePageContext } from '../page-context';
+import { useHookFormContext } from '../use-hook-form';
 import { SampleXlsx } from './sample-xlsx';
 import { StepTemplate } from './step-template';
 
@@ -14,9 +15,11 @@ interface Props {
   className?: string;
 }
 
-export const Step2: React.FC<Props> = ({ className }) => {
+export const StepMethodXlsx1: React.FC<Props> = ({ className }) => {
   const { setSelectTooltip } = usePageContext();
   const wizardValues = useWizard();
+  const formMethods = useHookFormContext();
+  const { setValue } = formMethods;
 
   React.useEffect(() => {
     setSelectTooltip(
@@ -37,6 +40,10 @@ export const Step2: React.FC<Props> = ({ className }) => {
       />
     );
   }, [setSelectTooltip, wizardValues]);
+
+  React.useEffect(() => {
+    setValue('method', GQL.ImportMethod.Xlsx);
+  }, [setValue]);
 
   return null;
 };

@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/community/[communityId]/import-xlsx/first-time-guide"
+    "src/app/community/[communityId]/import-community/first-time-guide"
   ],
   "exclude": ["node_modules", "./cypress.config.ts", "cypress"],
   "ts-node": {
