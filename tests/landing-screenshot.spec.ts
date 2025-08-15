@@ -33,20 +33,16 @@ test.describe.serial('Take @screenshot for landing screen', () => {
 
   test('Property Details', async () => {
     const rows = page.getByLabel('Property Table').locator('tbody > tr');
-
-    // Look for the first property that is member in current year
-    for (const tr of await rows.all()) {
-      const td = tr.locator('td');
-      const members = td.nth(1);
-      const curYear = td.nth(2);
-      const memberText = (await members.innerText()).trim();
-      const isMember = (await curYear.locator('svg').count()) > 0;
-
-      if (memberText && isMember) {
-        await tr.click();
-        break;
-      }
-    }
+    const membersInCurYear = rows
+      // Members name is non empty
+      .filter({
+        has: page.locator('td:nth-child(2)').filter({ hasText: /./ }),
+      })
+      // Current year has checkmark
+      .filter({
+        has: page.locator('td:nth-child(3) svg'),
+      });
+    await membersInCurYear.nth(0).click();
 
     await expect(page.getByText('Membership Status')).not.toBeEmpty();
     await takeScreenshot(page, 'property-detail');

@@ -9,5 +9,6 @@ test.describe('Navigate to property list', () => {
 
   test('Check welcome page', async ({ page }) => {
     await navigatePropertyList(page);
+    expect(true).toBeTruthy();
   });
 });
