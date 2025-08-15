@@ -23,7 +23,7 @@ export async function navigatePropertyList(page: Page) {
        * with attribute `data-list="true"` exists
        */
       .locator('tbody > tr[data-last="true"]')
-  ).toBeAttached();
+  ).toBeVisible();
 }
 
 /**

@@ -1,5 +1,10 @@
 FROM node:20-alpine AS base
 
+# Install Yarn 4.x
+ENV YARN_VERSION=4.9.2
+RUN corepack enable \
+  && corepack prepare yarn@${YARN_VERSION}
+
 #
 # This layer is for node dependencies
 #
@@ -10,8 +15,8 @@ WORKDIR /app
 RUN apk add --no-cache \
   libc6-compat
 
-COPY package.json yarn.lock ./
-RUN yarn --frozen-lockfile --network-timeout 100000
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN yarn --immutable --network-timeout 100000
 
 #
 # This layer is for building production image

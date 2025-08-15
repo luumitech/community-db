@@ -42,5 +42,20 @@ module.exports = {
         'jest/globals': true,
       },
     },
+    {
+      files: ['tests/**/*.ts', 'tests/**/*.tsx'],
+      parserOptions: {
+        project: './tests/tsconfig.json',
+      },
+      extends: ['plugin:playwright/recommended'],
+      rules: {
+        'playwright/expect-expect': [
+          'error',
+          {
+            assertFunctionNames: ['takeScreenshot'],
+          },
+        ],
+      },
+    },
   ],
 };

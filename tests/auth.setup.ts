@@ -1,3 +1,4 @@
+/* eslint-disable playwright/no-standalone-expect */
 import { expect, test as setup } from '@playwright/test';
 import path from 'path';
 
@@ -10,6 +11,14 @@ const authFile = path.join(process.cwd(), 'playwright', '.setup', 'auth.json');
 
 setup('authenticate', async ({ page }) => {
   await page.goto('/');
+
+  await page.request.post('/api/auth/sign-up/email', {
+    data: {
+      name: 'Test User',
+      email: process.env.AUTH_TEST_EMAIL!,
+      password: process.env.AUTH_TEST_PASSWORD!,
+    },
+  });
 
   const resp = await page.request.post('/api/auth/sign-in/email', {
     data: {
