@@ -31,7 +31,7 @@
     ".next/types/**/*.ts",
     "src/app/community/[communityId]/import-community/first-time-guide"
   ],
-  "exclude": ["node_modules", "./cypress.config.ts", "cypress"],
+  "exclude": ["node_modules"],
   "ts-node": {
     "files": true,
     "compilerOptions": {

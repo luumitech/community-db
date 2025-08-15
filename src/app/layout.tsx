@@ -51,14 +51,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/**
-         * The suspense is to get around a hydration warning when using cypress
-         *
-         * See: https://github.com/expatfile/next-runtime-env/issues/107
-         */}
-        <React.Suspense>
-          <PublicEnvScript />
-        </React.Suspense>
+        <PublicEnvScript />
       </head>
       <body className={cn(inter.className, 'text-foreground bg-background')}>
         {/**
