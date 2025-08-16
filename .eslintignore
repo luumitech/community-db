@@ -4,3 +4,6 @@ node_modules
 src/app/graphql/generated
 # don't link generated build assets
 .next
+# playwright generated report or assets
+playwright-report
+test-results

@@ -32,11 +32,11 @@ export function isProduction() {
   return process.env.NODE_ENV === 'production';
 }
 
-/** Is running Jest or Cypress tests */
+/** Is running Jest or e2e tests */
 export function isRunningTest() {
   return (
     process.env.JEST_RUNNING === 'true' ||
-    process.env.CYPRESS_RUNNING === 'true'
+    process.env.PLAYWRIGHT_RUNNING === 'true'
   );
 }
 

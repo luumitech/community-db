@@ -43,19 +43,18 @@ module.exports = {
       },
     },
     {
-      files: [
-        'cypress.config.ts',
-        'cypress/**/*.ts',
-        'cypress/**/*.tsx',
-        'cypress/**/*.d.ts',
-      ],
+      files: ['tests/**/*.ts', 'tests/**/*.tsx'],
       parserOptions: {
-        project: './cypress/tsconfig.json',
+        project: './tests/tsconfig.json',
       },
-      extends: ['plugin:cypress/recommended'],
+      extends: ['plugin:playwright/recommended'],
       rules: {
-        // Want to allow `expect(value).to.be.true`
-        '@babel/no-unused-expressions': 'off',
+        'playwright/expect-expect': [
+          'error',
+          {
+            assertFunctionNames: ['takeScreenshot'],
+          },
+        ],
       },
     },
   ],
