@@ -1,10 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
-import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { DeleteModal, type ModalArg } from './delete-modal';
 
@@ -25,33 +23,25 @@ interface Props {
 }
 
 export const PropertyDeleteModal: React.FC<Props> = ({ modalControl }) => {
-  const router = useRouter();
   const [deleteProperty] = useMutation(PropertyMutation);
   const { arg, disclosure } = modalControl;
 
   const onDelete = React.useCallback(
-    async (communityId: string, propertyId: string) => {
+    async (
+      communityId: string,
+      property: GQL.PropertyId_PropertyDeleteFragment
+    ) => {
+      const { id: propertyId, address } = property;
       await toast.promise(
-        deleteProperty({
-          variables: { id: propertyId },
-          update: (cache) => {
-            router.push(appPath('propertyList', { path: { communityId } }));
-            /**
-             * Add timeout to make sure route is changed before updating the
-             * cache
-             */
-            setTimeout(() => {
-              evictCache(cache, 'Property', propertyId);
-            }, 1000);
-          },
-        }),
+        // Cache handling will be handled by subscription
+        deleteProperty({ variables: { id: propertyId } }),
         {
-          pending: 'Deleting...',
-          success: 'Deleted',
+          pending: `Deleting '${address}'...`,
+          success: `Deleted '${address}'`,
         }
       );
     },
-    [deleteProperty, router]
+    [deleteProperty]
   );
 
   if (arg == null) {

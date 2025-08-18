@@ -1,5 +1,6 @@
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
+import * as GQL from '~/graphql/generated/graphql';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import {
@@ -16,7 +17,10 @@ export interface ModalArg {}
 
 interface Props extends ModalArg {
   disclosure: UseDisclosureReturn;
-  onDelete: (communityId: string, propertyId: string) => Promise<void>;
+  onDelete: (
+    communityId: string,
+    property: GQL.PropertyId_PropertyDeleteFragment
+  ) => Promise<void>;
 }
 
 export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
@@ -29,7 +33,7 @@ export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
     async () =>
       startTransition(async () => {
         try {
-          await onDelete(community.id, property.id);
+          await onDelete(community.id, property);
           onClose();
         } catch (err) {
           // error handled by parent

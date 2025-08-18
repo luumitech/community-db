@@ -1,9 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { DeleteModal, type ModalArg } from './delete-modal';
 
@@ -24,40 +23,21 @@ interface Props {
 }
 
 export const CommunityDeleteModal: React.FC<Props> = ({ modalControl }) => {
-  const router = useRouter();
   const [deleteCommunity] = useMutation(CommunityMutation);
   const { arg, disclosure } = modalControl;
 
   const onDelete = React.useCallback(
-    async (communityId: string) => {
+    async (community: GQL.CommunityId_CommunityDeleteModalFragment) => {
       await toast.promise(
-        deleteCommunity({
-          variables: { id: communityId },
-          onCompleted: () => {
-            router.push(appPath('communitySelect'));
-          },
-          update: (cache) => {
-            const normalizedId = cache.identify({
-              id: communityId,
-              __typename: 'Community',
-            });
-            /**
-             * Add timeout to make sure route is changed before updating the
-             * cache
-             */
-            setTimeout(() => {
-              cache.evict({ id: normalizedId });
-              cache.gc();
-            }, 1000);
-          },
-        }),
+        // Cache handling will be handled by subscription
+        deleteCommunity({ variables: { id: community.id } }),
         {
-          pending: 'Deleting...',
-          success: 'Deleted',
+          pending: `Deleting '${community.name}'...`,
+          success: `Deleted '${community.name}'`,
         }
       );
     },
-    [deleteCommunity, router]
+    [deleteCommunity]
   );
 
   if (arg == null) {

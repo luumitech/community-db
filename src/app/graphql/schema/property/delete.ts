@@ -46,14 +46,11 @@ builder.mutationField('propertyDelete', (t) =>
       });
 
       // broadcast deletion to community
-      pubSub.publish(
-        `community/${entry.community.shortId}/property/${propertyShortId}`,
-        {
-          broadcasterId: user.email,
-          messageType: MessageType.DELETED,
-          property,
-        }
-      );
+      pubSub.publish(`community/${entry.community.shortId}/property`, {
+        broadcasterId: user.email,
+        messageType: MessageType.DELETED,
+        property,
+      });
 
       return property;
     },
