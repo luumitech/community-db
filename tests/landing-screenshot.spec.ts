@@ -1,5 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
-import { mongodbSeedRandom } from './utils/mongodb-seed';
+import {
+  mongodbSeedFromFixture,
+  mongodbSeedRandom,
+} from './utils/mongodb-seed';
 import {
   clickButton,
   headerMoreMenu,
@@ -18,7 +21,9 @@ test.describe.serial('Take @screenshot for landing screen', () => {
   let page: Page;
 
   test.beforeAll('Mongo DB Seed', async ({ browser }) => {
-    // Seed data if database doesn't exist
+    await mongodbSeedFromFixture('db-screenshot.xlsx');
+
+    // Seed data randomly to introduce current year into data
     // await mongodbSeedRandom(10);
 
     page = await browser.newPage();
