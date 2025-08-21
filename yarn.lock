@@ -14694,7 +14694,6 @@ __metadata:
     eslint-plugin-playwright: "npm:^2.2.2"
     eslint-plugin-prettier: "npm:^5.0.1"
     favicons: "npm:^7.2.0"
-    framer-motion: "npm:^12.23.12"
     graphql: "npm:^16.11.0"
     graphql-scalars: "npm:^1.23.0"
     graphql-sse: "npm:^2.5.3"
@@ -14710,6 +14709,7 @@ __metadata:
     lexical: "npm:^0.27.1"
     lexical-beautiful-mentions: "npm:^0.1.47"
     mongodb-memory-server: "npm:^9.2.0"
+    motion: "npm:^12.23.12"
     next: "npm:15.4.5"
     next-recaptcha-v3: "npm:^1.5.2"
     next-runtime-env: "npm:^3.3.0"
@@ -21344,6 +21344,27 @@ __metadata:
   version: 12.23.6
   resolution: "motion-utils@npm:12.23.6"
   checksum: 10c0/c058e8ba6423b3baa63e985bcc669877ee7d9579d938f5348b4e60c5ea1b4b33dd7f4877434436a4a5807f3cf00370d3fd4079a6fdd6309c5c87aa62b311a897
+  languageName: node
+  linkType: hard
+
+"motion@npm:^12.23.12":
+  version: 12.23.12
+  resolution: "motion@npm:12.23.12"
+  dependencies:
+    framer-motion: "npm:^12.23.12"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/48137c82b4fc8e55e06031f17219b2eb4385f028e77717aa6b2e87238c1e42d4222fb4b59b6527ebb66f98ea5f1234edd17c15682985e690b8cf48a5f3e44e67
   languageName: node
   linkType: hard
 

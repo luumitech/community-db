@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@heroui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { InitiateSignIn } from './initiate-sign-in';
