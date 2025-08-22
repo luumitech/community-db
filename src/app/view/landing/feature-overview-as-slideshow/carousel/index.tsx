@@ -4,19 +4,21 @@ import Autoplay from 'embla-carousel-autoplay';
 import ClassNames from 'embla-carousel-class-names';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
-import { imageList } from '../image-list';
+import { type ScreenshotEntry } from '../../feature-overview-image-list';
 import { useEmblaApi } from '../use-embla-api';
 import { Slide } from './slide';
 import { DotButton } from './slide-button';
 
 interface Props {
   className?: string;
+  imageList: ScreenshotEntry[];
   startIndex: number;
   onSelect?: (imageIdx: number) => void;
 }
 
 export const Carousel: React.FC<Props> = ({
   className,
+  imageList,
   startIndex,
   onSelect,
 }) => {

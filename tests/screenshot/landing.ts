@@ -1,5 +1,6 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import path from 'path';
+import { type ScreenshotId } from '~/view/landing/feature-overview-image-list';
 import {
   mongodbSeedFromFixture,
   mongodbSeedRandom,
@@ -28,7 +29,7 @@ const test = base.extend<ScreenshotOptions>({
 async function takeScreenshot(
   page: Page,
   theme: 'light' | 'dark',
-  name: string
+  name: ScreenshotId
 ) {
   await page.screenshot({
     path: path.join(
@@ -37,7 +38,7 @@ async function takeScreenshot(
       'app',
       'view',
       'landing',
-      'feature-overview',
+      'feature-overview-image-list',
       'screenshots',
       theme,
       `${name}.png`
