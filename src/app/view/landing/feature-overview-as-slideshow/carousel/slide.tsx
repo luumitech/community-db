@@ -1,10 +1,10 @@
 import { cn } from '@heroui/react';
 import Image from 'next/image';
 import React from 'react';
-import { type SlideProps } from '../image-list';
+import { type ScreenshotEntry } from '../../feature-overview-image-list';
 import styles from './styles.module.css';
 
-export const Slide: React.FC<SlideProps> = ({
+export const Slide: React.FC<ScreenshotEntry> = ({
   className,
   caption,
   alt,

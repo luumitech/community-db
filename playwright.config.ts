@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+import { insertIf } from '~/lib/insert-if';
+import { SETUP_FILE } from './tests/setup/setup-file';
 
 /**
  * Read environment variables using dotenv
@@ -20,14 +22,17 @@ const SERVER_URL = 'http://localhost:3000';
 /** See https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
   testDir: 'tests',
-  /* Run tests in files in parallel */
+  /** Run tests in a single file in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /**
+   * We don't want to run different spec test in parallel because most tests
+   * rely on mongo seeded data from start of the test.
+   */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'github' : 'list',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -47,22 +52,33 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
+      name: 'authenticate',
+      testMatch: 'setup/auth.ts',
     },
+    /** Generate screenshots for landing page */
+    ...(['dark', 'light'] as const).map((theme) => ({
+      name: `screenshot-${theme}`,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: SETUP_FILE,
+        theme,
+      },
+      dependencies: ['authenticate'],
+      testMatch: 'screenshot/*.ts',
+    })),
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'playwright/.setup/auth.json',
+        storageState: SETUP_FILE,
       },
-      dependencies: ['setup'],
+      dependencies: ['authenticate'],
+      testMatch: '*.spec.ts',
     },
-
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
-    // },
+    // }
 
     // {
     //   name: 'webkit',

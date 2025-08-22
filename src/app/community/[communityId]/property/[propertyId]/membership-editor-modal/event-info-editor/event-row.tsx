@@ -1,5 +1,5 @@
 import { Badge, cn } from '@heroui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import {
   TicketAddButton,

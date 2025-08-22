@@ -43,6 +43,8 @@ const supportedIcon = {
   bug: 'famicons:bug-outline',
   hamburgerMenu: 'radix-icons:hamburger-menu',
   sunMoon: 'lucide:sun-moon',
+  sun: 'lucide:sun',
+  moon: 'lucide:moon',
   google: 'flat-color-icons:google',
   'modify-community': 'gravity-ui:gear',
   integration: 'eos-icons:api-outlined',

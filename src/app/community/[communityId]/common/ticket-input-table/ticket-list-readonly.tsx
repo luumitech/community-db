@@ -1,5 +1,5 @@
 import { cn } from '@heroui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { useToggle } from 'usehooks-ts';
 import { useFormContext } from '~/custom-hooks/hook-form';

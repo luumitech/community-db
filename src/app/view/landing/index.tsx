@@ -1,6 +1,8 @@
+'use client';
 import { cn } from '@heroui/react';
 import React from 'react';
-import { GettingStarted } from './getting-started';
+import { FeatureOverviewAsGallery } from './feature-overview-as-gallery';
+import { FeatureOverviewAsSlideshow } from './feature-overview-as-slideshow';
 import { Hero } from './hero';
 import { SignUpReason } from './sign-up-reason';
 
@@ -12,7 +14,8 @@ export const Landing: React.FC<Props> = ({ className }) => {
   return (
     <div className={cn(className)}>
       <Hero />
-      <GettingStarted />
+      <FeatureOverviewAsGallery />
+      {/* <FeatureOverviewAsSlideshow /> */}
       <SignUpReason />
     </div>
   );

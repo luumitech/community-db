@@ -12,12 +12,13 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
-import { imageList } from '../image-list';
+import { type ScreenshotEntry } from '../../feature-overview-image-list';
 import { useEmblaApi } from '../use-embla-api';
 import { Slide } from './slide';
 
 interface Props {
   className?: string;
+  imageList: ScreenshotEntry[];
   disclosure: UseDisclosureReturn;
   startIndex: number;
   onClose?: (imageIndex: number) => void;
@@ -25,6 +26,7 @@ interface Props {
 
 export const Lightbox: React.FC<Props> = ({
   className,
+  imageList,
   disclosure,
   startIndex,
   onClose,
