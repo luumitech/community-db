@@ -33,6 +33,7 @@ const supportedIcon = {
   pricing: 'la:donate',
   'premium-plan': 'fa6-solid:award',
   back: 'ion:arrow-back',
+  forward: 'ion:arrow-forward',
   filter: 'iconoir:filter',
   ticket: 'heroicons:ticket',
   mailchimp: 'cib:mailchimp',

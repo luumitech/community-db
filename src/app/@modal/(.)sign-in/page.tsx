@@ -18,7 +18,7 @@ export default function SignIn() {
       isKeyboardDismissDisabled
       isDismissable={false}
     >
-      <ModalContent>
+      <ModalContent className="overflow-x-hidden">
         <div className="m-auto mt-6">
           <AppLogo size={64} />
         </div>

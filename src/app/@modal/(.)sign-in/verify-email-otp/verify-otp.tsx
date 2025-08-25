@@ -23,7 +23,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
   const [signingIn, onSignIn] = React.useTransition();
   const { callbackURL, signIn } = useSignIn();
   const formMethods = useHookFormContext();
-  const { setError, clearErrors } = formMethods;
+  const { setError, clearErrors, setValue } = formMethods;
 
   const doSendOtp = React.useCallback(
     () =>
@@ -36,6 +36,8 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           toast.error(error.message);
         }
         if (data?.success) {
+          clearErrors('otp');
+          setValue('otp', '');
           toast.success('New OTP code sent to your email');
         }
       }),
@@ -84,20 +86,22 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           classNames={{
             // width of 6 digit OTP input
             // This is necessary, so lengthy error message does not
-            // expand the OTP inptu field
+            // expand the OTP input field
             helperWrapper: 'max-w-[260px]',
           }}
-          autoFocus
+          /**
+           * AutoFocus currently has some issue with the panel transition. When
+           * autoFocus is set, the panel does not slide in properly.
+           */
+          // autoFocus
           controlName="otp"
+          isControlled
           variant="bordered"
           length={6}
           size="md"
           isDisabled={signingIn}
-          onValueChange={(value) => {
-            clearErrors('otp');
-            if (value?.length === 6) {
-              doSignIn({ otp: value });
-            }
+          onComplete={(value) => {
+            doSignIn({ otp: value });
           }}
         />
         <span className="pt-6 text-sm font-normal text-default-400">
