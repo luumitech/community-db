@@ -14,8 +14,16 @@ function schema() {
       map: z
         .array(
           z.object({
-            lat: z.number(),
-            lon: z.number(),
+            polygon: z.array(
+              z.object({
+                ring: z.array(
+                  z.object({
+                    lat: z.number(),
+                    lon: z.number(),
+                  })
+                ),
+              })
+            ),
           })
         )
         .nullable(),

@@ -41,7 +41,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           toast.success('New OTP code sent to your email');
         }
       }),
-    [email]
+    [email, clearErrors, setValue]
   );
 
   const doSignIn = React.useCallback(

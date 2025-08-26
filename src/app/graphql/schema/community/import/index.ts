@@ -26,6 +26,26 @@ const GeoPointInput = builder.inputType('GeoPointInput', {
   }),
 });
 
+const GeoRingInput = builder.inputType('GeoRingInput', {
+  fields: (t) => ({
+    ring: t.field({
+      description: 'A set of coordinates that form a closed ring',
+      type: [GeoPointInput],
+      required: true,
+    }),
+  }),
+});
+
+const GeoPolygonInput = builder.inputType('GeoPolygonInput', {
+  fields: (t) => ({
+    polygon: t.field({
+      description: 'A set of rings that form a polygon',
+      type: [GeoRingInput],
+      required: true,
+    }),
+  }),
+});
+
 const CommunityImportInput = builder.inputType('CommunityImportInput', {
   fields: (t) => ({
     id: t.string({ description: 'community ID', required: true }),
@@ -41,8 +61,8 @@ const CommunityImportInput = builder.inputType('CommunityImportInput', {
     }),
     // Only required when ImportMethod == 'map'
     map: t.field({
-      description: 'GPS coordinates of properties to import',
-      type: [GeoPointInput],
+      description: 'A set of polygons that define the import area',
+      type: [GeoPolygonInput],
     }),
   }),
 });
