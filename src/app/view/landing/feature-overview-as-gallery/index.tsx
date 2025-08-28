@@ -30,12 +30,19 @@ export const FeatureOverviewAsGallery: React.FC<Props> = ({ className }) => {
       </div>
       <div
         className={cn(
-          'grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1',
-          'gap-3'
+          // 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3',
+          // 'gap-3'
+          'flex flex-wrap justify-center gap-4'
         )}
       >
         {imageList.map((entry) => (
           <motion.div
+            className={cn(
+              // Each item takes 50% of the row minus half the gap
+              'basis-[calc(100%-0.5rem)]',
+              'sm:basis-[calc(50%-0.5rem)]',
+              'xl:basis-[calc(33%-0.5rem)]'
+            )}
             key={entry.id}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -43,11 +50,15 @@ export const FeatureOverviewAsGallery: React.FC<Props> = ({ className }) => {
             // triggers once, when 50% in view
             viewport={{ once: true, amount: 0.5 }}
           >
-            <Thumbnail {...entry} onPress={() => setImage(entry)} />
+            <Thumbnail
+              className="h-full"
+              {...entry}
+              onPress={() => setImage(entry)}
+            />
           </motion.div>
         ))}
-        {image && <FullImage {...image} onPress={() => setImage(null)} />}
       </div>
+      {image && <FullImage {...image} onPress={() => setImage(null)} />}
     </div>
   );
 };

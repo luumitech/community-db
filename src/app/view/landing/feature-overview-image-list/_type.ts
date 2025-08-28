@@ -1,6 +1,10 @@
 import { type ImageProps } from 'next/image';
 
 export const screenshotConfig = {
+  ['import-community-map']: {
+    caption: 'Draw boundary on map to import addresses into database',
+    alt: 'Import community with map',
+  },
   ['property-list']: {
     caption: 'Easily search membership information within community',
     alt: 'Property list screenshot',
