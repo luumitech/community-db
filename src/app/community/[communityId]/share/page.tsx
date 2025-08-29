@@ -109,13 +109,15 @@ export default function Share(props: RouteArgs) {
     if (!community) {
       return null;
     }
+    return <CopyShareLink communityId={community.id} />;
+  }, [community]);
+
+  const bottomContent = React.useMemo(() => {
+    if (!community || !isAdmin) {
+      return null;
+    }
     return (
-      <div className="flex gap-2 items-center justify-end">
-        <CopyShareLink communityId={community.id} />
-        {isAdmin && (
-          <NewAccessButton communityId={community.id} accessList={accessList} />
-        )}
-      </div>
+      <NewAccessButton communityId={community.id} accessList={accessList} />
     );
   }, [community, isAdmin, accessList]);
 
@@ -136,6 +138,8 @@ export default function Share(props: RouteArgs) {
         isHeaderSticky
         topContent={topContent}
         topContentPlacement="outside"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
       >
         <TableHeader columns={columns}>
           {(column) => (
