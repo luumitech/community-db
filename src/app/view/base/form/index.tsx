@@ -1,11 +1,10 @@
 import React from 'react';
 
-interface Props extends React.HTMLAttributes<HTMLFormElement> {
-  className?: string;
-}
-
 /** Custom Form that prevents enter key from submitting forms */
-export const Form: React.FC<Props> = (props) => {
+export const Form = React.forwardRef<
+  HTMLFormElement,
+  React.HTMLProps<HTMLFormElement>
+>((props, ref) => {
   const onKeyDown = (evt: React.KeyboardEvent<HTMLFormElement>) => {
     // Prevent 'enter' key from submitting forms
     if (evt.key === 'Enter') {
@@ -24,5 +23,7 @@ export const Form: React.FC<Props> = (props) => {
     }
   };
 
-  return <form onKeyDown={onKeyDown} {...props} />;
-};
+  return <form ref={ref} onKeyDown={onKeyDown} {...props} />;
+});
+
+Form.displayName = 'Form';

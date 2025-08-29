@@ -84,7 +84,16 @@ export function Select<T extends object>(props: SelectProps<T>) {
           name={controlName}
           render={({ field }) => (
             <NextUISelect<T>
-              ref={mergeRefs(field.ref, ref)}
+              ref={mergeRefs(
+                /**
+                 * Adding the `field.ref`, causes focus problem after react hook
+                 * form focuses on an input with error
+                 *
+                 * I think this is a bug with @heroui/react@2.8.2
+                 */
+                // field.ref,
+                ref
+              )}
               classNames={{
                 ...classNames,
                 // Render readonly field by removing all input decoration

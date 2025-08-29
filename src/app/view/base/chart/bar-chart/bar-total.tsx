@@ -1,3 +1,4 @@
+import { cn } from '@heroui/react';
 import {
   BarCustomLayerProps,
   type BarDatum,
@@ -69,7 +70,10 @@ export function barTotal<T extends BarDatum>(
       return (
         <text
           key={firstBar.data.indexValue}
-          className="font-sans font-bold text-[11px] fill-[rgb(17,24,28)]"
+          className={cn(
+            'font-sans font-bold text-[11px]',
+            'fill-[rgb(17,24,28)] dark:fill-[rgb(161,161,170)]'
+          )}
           x={x}
           y={y}
           {...(layout === 'vertical'

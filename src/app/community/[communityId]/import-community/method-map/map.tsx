@@ -1,10 +1,6 @@
 import * as turf from '@turf/turf';
 import React from 'react';
-import {
-  isFeatureOfTypes,
-  pointInPolygon,
-  toGeoPointInput,
-} from '~/lib/geojson-util';
+import { isFeatureOfTypes, toGqlGeoPolygonInput } from '~/lib/geojson-util';
 import {
   AddressSearchControl,
   GeoLocationCenter,
@@ -29,28 +25,23 @@ export const Map: React.FC<Props> = ({ className, setEditMode }) => {
     (geoData) => {
       let area = 0;
       let shapeNo = 0;
-      const geoPoints = geoData.features.flatMap((feature) => {
-        if (isFeatureOfTypes(feature, ['Polygon', 'MultiPolygon'])) {
+      const mapInput = geoData.features.flatMap((feature) => {
+        if (isFeatureOfTypes(feature, ['Polygon'])) {
           const featureArea = turf.area(feature);
           area += featureArea;
           shapeNo += 1;
-          // Assume minimum distance between each property is 20 meters
-          return pointInPolygon(feature, 20, { units: 'meters' });
+          return toGqlGeoPolygonInput(feature);
         } else {
           throw new Error(`Unexpected geometry type: ${feature.geometry.type}`);
         }
       });
-      const mapPoints = geoPoints.map(toGeoPointInput);
       clearErrors('map');
-      setValue('map', mapPoints);
+      setValue('map', mapInput);
       setValue(
         'hidden.map.area',
         turf.convertArea(area, 'meters', 'kilometers')
       );
       setValue('hidden.map.shapeNo', shapeNo);
-
-      // const lfPoints = geoPoints.map(toLeafletPoint);
-      // setPts(lfPoints);
     },
     [setValue, clearErrors]
   );

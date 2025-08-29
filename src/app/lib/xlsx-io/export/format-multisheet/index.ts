@@ -121,6 +121,7 @@ export class ExportMultisheet extends ExportHelper {
       ticketList: ExportHelper.toJson(community.ticketList),
       paymentMethodList: ExportHelper.toJson(community.paymentMethodList),
       mailchimpSetting: ExportHelper.toJson(community.mailchimpSetting),
+      geoapifySetting: ExportHelper.toJson(community.geoapifySetting),
       updatedAt: ExportHelper.toDate(community.updatedAt),
       updatedBy: community.updatedBy?.email ?? null,
     });

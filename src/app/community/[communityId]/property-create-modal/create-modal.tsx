@@ -69,7 +69,7 @@ export const CreateModal: React.FC<Props> = ({
               <>
                 <ModalHeader>{appLabel('propertyCreate')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditor />
+                  <AddressEditor forceCloseModal={onClose} />
                 </ModalBody>
                 <ModalFooter>
                   <Button

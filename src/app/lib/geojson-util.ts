@@ -3,15 +3,29 @@ import type {
   Feature,
   GeoJsonGeometryTypes,
   Geometry,
-  MultiPolygon,
   Point,
   Polygon,
   Position,
 } from 'geojson';
-import L from 'leaflet';
 import * as GQL from '~/graphql/generated/graphql';
 
 type pointGridFn = typeof turf.pointGrid;
+
+/** Check if the given coordinate is a valid geo coordinate */
+export function isValidCoordinate(coord: {
+  lat?: number | null;
+  lon?: number | null;
+}): coord is GQL.GeoPointInput {
+  const { lat, lon } = coord;
+  return (
+    typeof lon === 'number' &&
+    typeof lat === 'number' &&
+    lon >= -180 &&
+    lon <= 180 &&
+    lat >= -90 &&
+    lat <= 90
+  );
+}
 
 /**
  * Generic `Feature` type guard
@@ -48,11 +62,11 @@ export function isFeatureOfTypes<T extends GeoJsonGeometryTypes>(
  * @param options
  */
 export function pointInPolygon(
-  geo: Feature<Polygon | MultiPolygon>,
+  geo: Feature<Polygon>,
   cellSide: number,
   options: Parameters<pointGridFn>[2]
 ) {
-  const coords = geo.geometry.coordinates as Position[][];
+  const coords = geo.geometry.coordinates;
   const polygon = turf.polygon(coords);
   // Create bounding box on the input data
   const bbox = turf.bbox(geo);
@@ -70,24 +84,45 @@ export function pointInPolygon(
 }
 
 /**
- * Convert GeoJSON point to Leaflet coordinates
- *
- * @param point Geojson point
- * @returns Leaflet LatLng
- */
-export function toLeafletPoint(point: Feature<Point>) {
-  const [lng, lat] = point.geometry.coordinates;
-  return L.latLng(lat, lng);
-}
-
-/**
  * Convert GeoJSON point to Graphql GeoPoint Input
  *
  * @param point Geojson point
  * @returns Graphql GeoPoint Input
  */
-export function toGeoPointInput(point: Feature<Point>) {
+export function toGqlGeoPointInput(point: Feature<Point>) {
   const [lng, lat] = point.geometry.coordinates;
   const result: GQL.GeoPointInput = { lat, lon: lng };
   return result;
+}
+
+/**
+ * Convert GeoJSON polygon to Graphql GeoPolygon Input
+ *
+ * @param polygon Geojson polygon
+ * @returns Graphql GeoPolygon Input
+ */
+export function toGqlGeoPolygonInput(polygon: Feature<Polygon>) {
+  const rings: GQL.GeoRingInput[] = polygon.geometry.coordinates.map((ring) => {
+    const ringCoords: GQL.GeoPointInput[] = ring.map(([lng, lat]) => ({
+      lat,
+      lon: lng,
+    }));
+    return { ring: ringCoords };
+  });
+
+  const result: GQL.GeoPolygonInput = { polygon: rings };
+  return result;
+}
+
+/**
+ * Convert Graphql GeoPolygon Input to GeoJSON polygon feature
+ *
+ * @param input Graphql GeoPolygon Input
+ * @returns Geojson polygon
+ */
+export function toGeoPolygon(input: GQL.GeoPolygonInput): Feature<Polygon> {
+  const coordinates: Position[][] = input.polygon.map(({ ring }) =>
+    ring.map(({ lon: lng, lat }) => [lng, lat])
+  );
+  return turf.polygon(coordinates);
 }

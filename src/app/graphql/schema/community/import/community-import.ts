@@ -1,6 +1,6 @@
 import { Job } from '@hokify/agenda';
 import { Community } from '@prisma/client';
-import fs from 'fs';
+import * as turf from '@turf/turf';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
@@ -10,6 +10,12 @@ import { jobProgress, type JobProgressOutput } from '~/graphql/schema/job/util';
 import { getSubscriptionEntry } from '~/graphql/schema/payment/util';
 import { ContextUser } from '~/lib/context-user';
 import { GeocodeResult } from '~/lib/geoapify-api/resource';
+import {
+  isValidCoordinate,
+  pointInPolygon,
+  toGeoPolygon,
+  toGqlGeoPointInput,
+} from '~/lib/geojson-util';
 import prisma from '~/lib/prisma';
 import { utapi } from '~/lib/uploadthing';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
@@ -164,13 +170,21 @@ export class CommunityImport {
 
   private async importMap(
     community: Pick<Community, 'name'>,
-    map: NonNullable<CommunityImportInput['map']>
+    polygonList: NonNullable<CommunityImportInput['map']>
   ) {
+    // Generate grid points from map boundaries
+    const geoPolygon = polygonList.map(toGeoPolygon);
+    const gridPoints = geoPolygon.flatMap((feature) => {
+      // Assume minimum distance between each property is 20 meters
+      const points = pointInPolygon(feature, 20, { units: 'meters' });
+      return points.map(toGqlGeoPointInput);
+    });
+
     // Get geocode information for each address and update database with
     // information
     const api = await getGeoapifyApi(this.user, this.input.id);
     const geocodeResults = await api.batchGeocode.searchReverse(
-      map,
+      gridPoints,
       { type: 'building' },
       // interpolate geocoding progress to (0-90)
       async (progress) => {
@@ -190,7 +204,21 @@ export class CommunityImport {
       R.mapValues((group) =>
         R.firstBy(group, [({ distance }) => distance ?? 0, 'asc'])
       ),
-      R.values<Record<string, GeocodeResult>>
+      R.values<Record<string, GeocodeResult>>,
+      /**
+       * Filter results, and keep only those that are within the specified
+       * boundary
+       */
+      R.filter((geoResult) => {
+        if (!isValidCoordinate(geoResult)) {
+          return false;
+        }
+        const { lat, lon } = geoResult;
+        const withinBound = geoPolygon.some((polygon) =>
+          turf.booleanPointInPolygon([lon, lat], polygon)
+        );
+        return withinBound;
+      })
     );
 
     const helper = ExportMultisheet.fromGeoResult(

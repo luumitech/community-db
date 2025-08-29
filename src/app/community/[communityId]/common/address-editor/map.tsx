@@ -4,6 +4,7 @@ import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
+import { isValidCoordinate } from '~/lib/geojson-util';
 import {
   AddressSearchControl,
   GeoLocationCenter,
@@ -53,10 +54,10 @@ export const Map: React.FC<Props> = ({ className, onStartLookup }) => {
   const lng = watch('lon');
 
   const markerPos = React.useMemo(() => {
-    if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) {
+    const pos = { lat, lng } as L.LatLng;
+    if (!isValidCoordinate(pos)) {
       return;
     }
-    const pos = { lat, lng } as L.LatLng;
     return pos;
   }, [lat, lng]);
 

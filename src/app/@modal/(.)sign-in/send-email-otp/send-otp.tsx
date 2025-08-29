@@ -1,11 +1,11 @@
-import { Button, cn } from '@heroui/react';
+import { Button, cn, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import React from 'react';
 import { authClient } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
 import { toast } from '~/view/base/toastify';
-import { usePanelContext } from '../../panel-context';
+import { usePanelContext } from '../panel-context';
 import { useHookFormContext, type InputData } from './use-hook-form';
 
 interface Props {
@@ -42,23 +42,33 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
       className={cn(className, 'flex flex-col gap-4')}
       onSubmit={handleSubmit(onSendOtp)}
     >
-      <Input
-        isRequired
-        controlName="email"
-        label="Email Address"
-        name="email"
-        placeholder="Enter your email"
-        variant="bordered"
-      />
-      <Button
-        startContent={<Icon icon="email" size={24} />}
-        type="submit"
-        variant="bordered"
-        isDisabled={!isDirty}
-        isLoading={pending}
-      >
-        Continue with Email
-      </Button>
+      <ModalHeader className="flex flex-col items-center gap-2">
+        <span className="text-3xl font-semibold ">Enter your email</span>
+        <p className="text-center text-sm font-normal text-default-400">
+          We will send an OTP code to your email
+        </p>
+      </ModalHeader>
+      <ModalBody className="flex flex-col gap-2 items-center">
+        <Input
+          isRequired
+          controlName="email"
+          label="Email Address"
+          name="email"
+          placeholder="Enter your email"
+          variant="bordered"
+        />
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          type="submit"
+          variant="bordered"
+          isIconOnly
+          isDisabled={!isDirty}
+          isLoading={pending}
+        >
+          <Icon icon="forward" />
+        </Button>
+      </ModalFooter>
     </Form>
   );
 };

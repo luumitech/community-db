@@ -3,7 +3,6 @@ import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { appLabel, appPath } from '~/lib/app-path';
-import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
 import { MapContextProvider } from '~/view/base/map';
 import { NumberInput } from '~/view/base/number-input';
@@ -11,9 +10,13 @@ import { Map } from './map';
 
 interface Props {
   className?: string;
+  forceCloseModal: () => void;
 }
 
-export const AddressEditor: React.FC<Props> = ({ className }) => {
+export const AddressEditor: React.FC<Props> = ({
+  className,
+  forceCloseModal,
+}) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
   const [pending, onStartLookup] = React.useTransition();
 
@@ -32,10 +35,9 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
                 path: { communityId: community.id },
                 query: { tab: 'geoapify' },
               })}
-              target="_blank"
+              onClick={() => forceCloseModal()}
             >
-              {appLabel('thirdPartyIntegration')}{' '}
-              <Icon className="ml-1" icon="externalLink" />
+              {appLabel('thirdPartyIntegration')}
             </Link>{' '}
             settings.
           </p>
