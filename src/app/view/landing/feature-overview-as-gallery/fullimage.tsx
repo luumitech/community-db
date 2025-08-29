@@ -2,7 +2,7 @@ import { cn } from '@heroui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { type ScreenshotEntry } from '../feature-overview-image-list';
-import { ImageWithFrame } from './image-with-frame';
+import { DisplayImage } from './display-image';
 
 interface FullImageProps extends ScreenshotEntry {
   onPress?: () => void;
@@ -38,8 +38,11 @@ export const FullImage: React.FC<FullImageProps> = ({ onPress, ...props }) => {
           role="button"
           layoutId={props.id}
         >
-          <ImageWithFrame
-            className="max-w-[calc(100vw-3em)] max-h-[calc(100vh-3em)]"
+          <DisplayImage
+            className={cn(
+              'max-w-[100vw] max-h-[100vh]',
+              'sm:max-w-[calc(100vw-3em)] sm:max-h-[calc(100vh-3em)]'
+            )}
             {...props}
           />
         </motion.div>

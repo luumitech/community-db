@@ -4,6 +4,7 @@ export const screenshotConfig = {
   ['import-community-map']: {
     caption: 'Draw boundary on map to import addresses into database',
     alt: 'Import community with map',
+    imageClassName: 'scale-[1.3] origin-top-left object-left',
   },
   ['property-list']: {
     caption: 'Easily search membership information within community',
@@ -37,4 +38,18 @@ export interface ScreenshotEntry extends ImageProps {
   id: ScreenshotId;
   alt: string;
   caption?: string;
+  /**
+   * Additional classnames to pass into image
+   *
+   * Useful, if you want to scale the input image, for example:
+   *
+   * ```css
+   * img {
+   *   transform: scale(2);
+   *   transform-origin: top left;
+   *   object-position: left;
+   * }
+   * ```
+   */
+  imageClassName?: string;
 }

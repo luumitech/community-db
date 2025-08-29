@@ -2,7 +2,8 @@ import { cn } from '@heroui/react';
 import { motion } from 'motion/react';
 import React from 'react';
 import { type ScreenshotEntry } from '../feature-overview-image-list';
-import { ImageWithFrame } from './image-with-frame';
+import { DisplayCaption } from './display-caption';
+import { DisplayImage } from './display-image';
 
 interface ThumbnailProps extends ScreenshotEntry {
   onPress?: () => void;
@@ -11,6 +12,7 @@ interface ThumbnailProps extends ScreenshotEntry {
 export const Thumbnail: React.FC<ThumbnailProps> = ({
   className,
   onPress,
+  caption,
   ...props
 }) => {
   return (
@@ -20,10 +22,9 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({
       layoutId={props.id}
       onClick={() => onPress?.()}
     >
-      <ImageWithFrame
-        className="h-full shadow-lg shadow-slate-400"
-        {...props}
-      />
+      <DisplayImage className="h-full shadow-lg shadow-slate-400" {...props}>
+        <DisplayCaption caption={caption} />
+      </DisplayImage>
     </motion.div>
   );
 };

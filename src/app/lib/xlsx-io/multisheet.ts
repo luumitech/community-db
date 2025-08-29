@@ -23,6 +23,7 @@ export interface CommunityRow {
   ticketList: string | null;
   paymentMethodList: string | null;
   mailchimpSetting: string | null;
+  geoapifySetting: string | null;
   updatedAt: string | null;
   updatedBy: string | null;
 }

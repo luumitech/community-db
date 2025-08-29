@@ -6,6 +6,7 @@ import {
   useFeatureOverviewImageList,
   type ScreenshotEntry,
 } from '../feature-overview-image-list';
+import { DisplayTitle } from './display-title';
 import { FullImage } from './fullimage';
 import { Thumbnail } from './thumbnail';
 
@@ -19,22 +20,8 @@ export const FeatureOverviewAsGallery: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn(className, 'p-3 bg-green-200')}>
-      <div
-        className={cn(
-          'text-slate-700',
-          'text-3xl sm:text-4xl font-bold text-center',
-          'my-10'
-        )}
-      >
-        Feature Highlights
-      </div>
-      <div
-        className={cn(
-          // 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3',
-          // 'gap-3'
-          'flex flex-wrap justify-center gap-4'
-        )}
-      >
+      <DisplayTitle title="Feature Highlights" />
+      <div className={cn('flex flex-wrap justify-center gap-4')}>
         {imageList.map((entry) => (
           <motion.div
             className={cn(

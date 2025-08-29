@@ -29,6 +29,7 @@ const mappingType = {
   ticketListJson: 'string',
   paymentMethodListJson: 'string',
   mailchimpSettingJson: 'string',
+  geoapifySettingJson: 'string',
   updatedAt: 'date',
   updatedByEmail: 'string',
 } satisfies MappingTypeSchema;
@@ -57,6 +58,7 @@ export class CommunityUtil {
       ticketListJson: importHelper.labelColumn('ticketList'),
       paymentMethodListJson: importHelper.labelColumn('paymentMethodList'),
       mailchimpSettingJson: importHelper.labelColumn('mailchimpSetting'),
+      geoapifySettingJson: importHelper.labelColumn('geoapifySetting'),
       updatedAt: importHelper.labelColumn('updatedAt'),
       updatedByEmail: importHelper.labelColumn('updatedBy'),
     };
@@ -79,6 +81,7 @@ export class CommunityUtil {
       ticketListJson,
       paymentMethodListJson,
       mailchimpSettingJson,
+      geoapifySettingJson,
       ...community
     } = this.community;
     const updatedBy = updatedByEmail
@@ -102,6 +105,8 @@ export class CommunityUtil {
       );
     const mailchimpSetting =
       safeJsonParse<Prisma.MailchimpSettingCreateInput>(mailchimpSettingJson);
+    const geoapifySetting =
+      safeJsonParse<Prisma.GeoapifySettingCreateInput>(geoapifySettingJson);
 
     const propertyList = opt.propertyUtil.propertyList(opt);
     const yearRange = extractYearRange(propertyList);
@@ -113,6 +118,7 @@ export class CommunityUtil {
       ...(!!ticketList && { ticketList }),
       ...(!!paymentMethodList && { paymentMethodList }),
       ...(!!mailchimpSetting && { mailchimpSetting }),
+      ...(!!geoapifySetting && { geoapifySetting }),
       ...(updatedBy && { updatedBy }),
       ...yearRange,
       propertyList: {

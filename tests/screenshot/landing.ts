@@ -1,6 +1,7 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import path from 'path';
 import { type ScreenshotId } from '~/view/landing/feature-overview-image-list';
+import * as mapUtil from '../utils/leaflet-map';
 import {
   mongodbSeedFromFixture,
   mongodbSeedRandom,
@@ -69,13 +70,16 @@ test.describe.serial('Take @screenshot for landing screen', () => {
       ([_theme]) => {
         // Set theme to light theme
         localStorage.setItem('theme', _theme);
+        localStorage.setItem('cd-import-first-time', 'false');
       },
       [theme]
     );
+
+    // Select the first community
+    await navigatePropertyList(page);
   });
 
   test('Property List', async ({ theme }) => {
-    await navigatePropertyList(page);
     await takeScreenshot(page, theme, 'property-list');
   });
 
@@ -131,5 +135,43 @@ test.describe.serial('Take @screenshot for landing screen', () => {
     await expect(rows.nth(5)).toBeVisible();
 
     await takeScreenshot(page, theme, 'export-to-xlsx');
+  });
+
+  test('Import with map', async ({ theme }) => {
+    await headerMoreMenu(page, /Import Community/);
+
+    // Change import method
+    await select(page, 'Import Method', 'Draw map boundary');
+
+    // Wait for address bar to show
+    await mapUtil.searchAddress(
+      page,
+      'King Georges Road, Kingsway South, Etobicoke, Toronto'
+    );
+
+    // Once address is found, the zoom level is at maximum level
+    await mapUtil.zoomOut(page);
+
+    /**
+     * Draw a polygon
+     *
+     * - Between King Georges Road and Varley Lane
+     * - Between Jackson Avenue and Grenview Boulevard
+     */
+    await mapUtil.drawPolygon(page, [
+      { x: 20, y: 255 },
+      { x: 145, y: 275 },
+      { x: 175, y: 380 },
+      { x: 70, y: 415 },
+    ]);
+
+    await mapUtil.moveMap(page, [
+      'ArrowDown',
+      'ArrowDown',
+      'ArrowDown',
+      'ArrowLeft',
+    ]);
+
+    await takeScreenshot(page, theme, 'import-community-map');
   });
 });
