@@ -63,7 +63,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('propertyModify')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditor />
+                  <AddressEditor forceCloseModal={onClose} />
                 </ModalBody>
                 <ModalFooter className="flex items-center justify-between">
                   <LastModified
