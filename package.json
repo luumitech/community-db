@@ -43,7 +43,7 @@
     "@geoman-io/leaflet-geoman-free": "^2.18.3",
     "@graphql-tools/executor-http": "^1.0.9",
     "@graphql-yoga/plugin-persisted-operations": "^3.4.0",
-    "@heroui/react": "^2.8.2",
+    "@heroui/react": "^2.8.3",
     "@hokify/agenda": "^6.3.0",
     "@hookform/resolvers": "^3.3.4",
     "@iconify/react": "^5.2.1",

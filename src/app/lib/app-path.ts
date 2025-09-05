@@ -1,20 +1,6 @@
 import { compile } from 'path-to-regexp';
 import queryString from 'query-string';
 
-/** List of supported modal routes and its corresponding label */
-const supportedModals = {
-  communityModify: 'Community Settings',
-  communityDelete: 'Delete Community',
-  propertyCreate: 'Create Property',
-  propertyModify: 'Modify Property',
-  propertyDelete: 'Delete Property',
-  batchPropertyModify: 'Batch Modify Property',
-  membershipEditor: 'Edit Membership Detail',
-  occupantEditor: 'Edit Contact Information',
-  eventRegister: 'Register Event',
-};
-type SupportedModal = typeof supportedModals;
-
 /** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
@@ -29,15 +15,28 @@ export const supportedPathTemplates = {
   communityWelcome: '/community',
   communitySelect: '/community/select',
   communityCreate: '/community/create',
+
   communityImport: '/community/:communityId/import-community',
   communityExport: '/community/:communityId/export-xlsx',
   contactExport: '/community/:communityId/export-contact',
   communityShare: '/community/:communityId/share',
   propertyList: '/community/:communityId/property-list',
-  property: '/community/:communityId/property/:propertyId',
   communityDashboard: '/community/:communityId/dashboard',
   thirdPartyIntegration: '/community/:communityId/third-party-integration',
   communityMapView: '/community/:communityId/map-view',
+  batchPropertyModify: '/community/:communityId/batch-property-modify',
+  communityModify: '/community/:communityId/community-modify',
+  communityDelete: '/community/:communityId/community-delete',
+  propertyCreate: '/community/:communityId/property-create',
+  membershipEditor: '/community/:communityId/membership-editor',
+  occupantEditor: '/community/:communityId/occupant-editor',
+  eventRegister: '/community/:communityId/event-register',
+
+  property: '/community/:communityId/property/:propertyId',
+  propertyModify:
+    '/community/:communityId/property/:propertyId/property-modify',
+  propertyDelete:
+    '/community/:communityId/property/:propertyId/property-delete',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -98,7 +97,14 @@ export function appPath(
     | 'communityShare'
     | 'propertyList'
     | 'communityDashboard'
-    | 'communityMapView',
+    | 'communityMapView'
+    | 'batchPropertyModify'
+    | 'communityModify'
+    | 'propertyModify'
+    | 'propertyDelete'
+    | 'membershipEditor'
+    | 'occupantEditor'
+    | 'eventRegister',
   sub: {
     path: {
       communityId: string;
@@ -117,7 +123,8 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template: 'property',
+  template: 'property' | 'communityDelete' | 'propertyCreate',
+
   sub: {
     path: {
       communityId: string;
@@ -145,7 +152,7 @@ export function appPath(
  * @param key Key for representing modal/route within the app
  * @returns Human readable label represented by the key
  */
-export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
+export function appLabel(key: keyof SupportedPath) {
   switch (key) {
     case 'home':
       return 'Home';
@@ -181,6 +188,24 @@ export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
       return 'Property List';
     case 'communityDashboard':
       return 'Dashboard';
+    case 'batchPropertyModify':
+      return 'Batch Modify Property';
+    case 'communityModify':
+      return 'Community Settings';
+    case 'communityDelete':
+      return 'Delete Community';
+    case 'propertyCreate':
+      return 'Create Property';
+    case 'propertyModify':
+      return 'Modify Property';
+    case 'propertyDelete':
+      return 'Delete Property';
+    case 'membershipEditor':
+      return 'Edit Membership Detail';
+    case 'occupantEditor':
+      return 'Edit Contact Information';
+    case 'eventRegister':
+      return 'Register Event';
     case 'property':
       return 'Property';
     case 'thirdPartyIntegration':
@@ -189,9 +214,6 @@ export function appLabel(key: keyof SupportedPath | keyof SupportedModal) {
       return 'Map View';
 
     default:
-      if (Object.hasOwn(supportedModals, key)) {
-        return supportedModals[key as keyof SupportedModal];
-      }
       throw new Error(`unhandled app key ${key}`);
   }
 }

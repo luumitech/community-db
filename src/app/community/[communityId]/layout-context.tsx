@@ -1,5 +1,4 @@
 import React from 'react';
-import * as batchPropertyModifyModal from '~/community/[communityId]/batch-property-modify-modal';
 import * as communityModifyModal from '~/community/[communityId]/community-modify-modal';
 import * as propertyCreateModal from '~/community/[communityId]/property-create-modal';
 import {
@@ -10,7 +9,6 @@ import { type CommunityEntry } from './layout-util/community-query';
 
 interface ContextT extends Readonly<CommunityState> {
   readonly communityModify: communityModifyModal.ModalControl;
-  readonly batchPropertyModify: batchPropertyModifyModal.ModalControl;
   readonly propertyCreate: propertyCreateModal.ModalControl;
 }
 
@@ -25,7 +23,6 @@ interface Props {
 export function LayoutProvider({ community, children, ...props }: Props) {
   const stateValues = useCommunityContext(community);
   const communityModify = communityModifyModal.useModalControl();
-  const batchPropertyModify = batchPropertyModifyModal.useModalControl();
   const propertyCreate = propertyCreateModal.useModalControl();
 
   return (
@@ -33,7 +30,6 @@ export function LayoutProvider({ community, children, ...props }: Props) {
       value={{
         ...stateValues,
         communityModify,
-        batchPropertyModify,
         propertyCreate,
       }}
       {...props}
@@ -41,9 +37,6 @@ export function LayoutProvider({ community, children, ...props }: Props) {
       {children}
       <communityModifyModal.CommunityModifyModal
         modalControl={communityModify}
-      />
-      <batchPropertyModifyModal.BatchPropertyModifyModal
-        modalControl={batchPropertyModify}
       />
       <propertyCreateModal.PropertyCreateModal modalControl={propertyCreate} />
     </Context.Provider>
