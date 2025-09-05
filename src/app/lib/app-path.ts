@@ -100,8 +100,8 @@ export function appPath(
     | 'communityMapView'
     | 'batchPropertyModify'
     | 'communityModify'
-    | 'propertyModify'
-    | 'propertyDelete'
+    | 'communityDelete'
+    | 'propertyCreate'
     | 'membershipEditor'
     | 'occupantEditor'
     | 'eventRegister',
@@ -123,7 +123,7 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template: 'property' | 'communityDelete' | 'propertyCreate',
+  template: 'property' | 'propertyModify' | 'propertyDelete',
 
   sub: {
     path: {

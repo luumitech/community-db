@@ -10,7 +10,7 @@ const CreateFragment = graphql(/* GraphQL */ `
     id
   }
 `);
-export type CreateFragmentType = FragmentType<typeof CreateFragment>;
+type CreateFragmentType = FragmentType<typeof CreateFragment>;
 
 function schema() {
   return z.object({

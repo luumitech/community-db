@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { AddressEditor } from '~/community/[communityId]/common/address-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
@@ -12,51 +12,44 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import {
-  useHookForm,
-  type CreateFragmentType,
-  type InputData,
-} from './use-hook-form';
+import { useLayoutContext } from '../../layout-context';
+import { useHookForm, type InputData } from './use-hook-form';
 
-export interface ModalArg {
-  community: CreateFragmentType;
-}
-
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
+interface Props {
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const CreateModal: React.FC<Props> = ({
-  community: fragment,
-  disclosure,
-  onSave,
-}) => {
-  const { isOpen, onOpenChange, onClose } = disclosure;
+export const CreateModal: React.FC<Props> = ({ onSave }) => {
+  const router = useRouter();
+  const { community: fragment } = useLayoutContext();
   const [pending, startTransition] = React.useTransition();
   const { community, formMethods } = useHookForm(fragment);
   const { handleSubmit, formState } = formMethods;
   const { isDirty } = formState;
+
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
@@ -69,7 +62,7 @@ export const CreateModal: React.FC<Props> = ({
               <>
                 <ModalHeader>{appLabel('propertyCreate')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditor forceCloseModal={onClose} />
+                  <AddressEditor forceCloseModal={forceClose} />
                 </ModalBody>
                 <ModalFooter>
                   <Button

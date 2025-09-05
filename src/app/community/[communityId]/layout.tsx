@@ -28,8 +28,10 @@ export default function CommunityFromIdLayout(props: LayoutProps) {
 
   return (
     <LayoutProvider community={community}>
-      {children}
-      <>{modal}</>
+      <>
+        {children}
+        {modal}
+      </>
     </LayoutProvider>
   );
 }

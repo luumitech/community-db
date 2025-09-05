@@ -43,7 +43,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
       size="5xl"
       placement="top-center"
       isOpen
-      onOpenChange={() => router.back()}
+      onOpenChange={forceClose}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}

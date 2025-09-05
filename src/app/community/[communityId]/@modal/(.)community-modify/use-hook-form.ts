@@ -36,7 +36,7 @@ const ModifyFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-export type ModifyFragmentType = FragmentType<typeof ModifyFragment>;
+type ModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 function schema() {
   return z.object({

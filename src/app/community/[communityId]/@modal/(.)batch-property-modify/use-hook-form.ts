@@ -18,9 +18,7 @@ const ModifyFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-export type BatchPropertyModifyFragmentType = FragmentType<
-  typeof ModifyFragment
->;
+type BatchPropertyModifyFragmentType = FragmentType<typeof ModifyFragment>;
 
 function schema() {
   return z

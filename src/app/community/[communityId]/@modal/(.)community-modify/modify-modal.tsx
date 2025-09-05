@@ -1,5 +1,5 @@
 import { Tab, Tabs } from '@heroui/tabs';
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
@@ -13,55 +13,48 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
+import { useLayoutContext } from '../../layout-context';
 import { EventListEditor } from './event-list-editor';
 import { GeneralTab } from './general-tab';
 import { PaymentMethodListEditor } from './payment-method-list-editor';
 import { TicketListEditor } from './ticket-list-editor';
-import {
-  InputData,
-  useHookForm,
-  type ModifyFragmentType,
-} from './use-hook-form';
+import { InputData, useHookForm } from './use-hook-form';
 
-export interface ModalArg {
-  community: ModifyFragmentType;
-}
-
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
+interface Props {
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModifyModal: React.FC<Props> = ({
-  community: fragment,
-  disclosure,
-  onSave,
-}) => {
-  const { isOpen, onOpenChange, onClose } = disclosure;
+export const ModifyModal: React.FC<Props> = ({ onSave }) => {
+  const router = useRouter();
+  const { community: fragment } = useLayoutContext();
   const [pending, startTransition] = React.useTransition();
   const { formMethods, community } = useHookForm(fragment);
   const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
+
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
