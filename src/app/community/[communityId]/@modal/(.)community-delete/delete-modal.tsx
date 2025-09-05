@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel } from '~/lib/app-path';
@@ -10,47 +10,44 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { useHookForm, type DeleteFragmentType } from './use-hook-form';
+import { useLayoutContext } from '../../layout-context';
+import { useHookForm } from './use-hook-form';
 
-export interface ModalArg {
-  community: DeleteFragmentType;
-}
-
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
+interface Props {
   onDelete: (
     community: GQL.CommunityId_CommunityDeleteModalFragment
   ) => Promise<void>;
 }
 
-export const DeleteModal: React.FC<Props> = ({
-  community: fragment,
-  disclosure,
-  onDelete,
-}) => {
-  const { isOpen, onOpenChange, onClose } = disclosure;
+export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
+  const router = useRouter();
+  const { community: fragment } = useLayoutContext();
   const [pending, startTransition] = React.useTransition();
   const { community } = useHookForm(fragment);
+
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
 
   const onSubmit = React.useCallback(
     async () =>
       startTransition(async () => {
         try {
           await onDelete(community);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onDelete, community, onClose]
+    [onDelete, community, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
