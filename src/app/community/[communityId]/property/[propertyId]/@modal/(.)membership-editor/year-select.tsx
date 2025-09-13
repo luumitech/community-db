@@ -6,7 +6,7 @@ import {
   SelectedYearItem,
   YearItemLabel,
   yearSelectItems,
-} from '../year-select-items';
+} from '../../year-select-items';
 import { membershipDefault, useHookFormContext } from './use-hook-form';
 
 interface Props {

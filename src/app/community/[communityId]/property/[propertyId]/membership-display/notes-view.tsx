@@ -1,9 +1,10 @@
-import { Button, Card, CardBody, CardHeader, cn } from '@heroui/react';
+import { Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
 import { ScrollShadow } from '@heroui/scroll-shadow';
 import React from 'react';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { useLayoutContext } from '../layout-context';
 import { ModalButton } from '../modal-button';
-import { usePageContext } from '../page-context';
 
 interface Props {
   className?: string;
@@ -11,17 +12,21 @@ interface Props {
 }
 
 export const NotesView: React.FC<Props> = ({ className, notes }) => {
-  const { membershipEditor } = usePageContext();
+  const { community, property } = useLayoutContext();
 
   return (
     <Card className={cn(className)}>
       <CardHeader>
         Notes
         <ModalButton
+          as={Link}
           className="absolute top-2 right-2"
           color="primary"
           variant="bordered"
-          onPress={() => membershipEditor.open({ autoFocus: 'notes-helper' })}
+          href={appPath('membershipEditor', {
+            path: { communityId: community.id, propertyId: property.id },
+            query: { autoFocus: 'notes-helper' },
+          })}
         >
           Edit Notes
         </ModalButton>

@@ -5,7 +5,7 @@ import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 
 const PropertyEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyEditor on Property {
@@ -67,7 +67,7 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { property: fragment } = usePageContext();
+  const { property: fragment } = useLayoutContext();
   const property = getFragment(PropertyEditorFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(property),

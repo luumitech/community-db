@@ -1,15 +1,11 @@
+'use client';
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { ModalDialog, type ModalArg } from './modal-dialog';
+import { ModalDialog } from './modal-dialog';
 import { InputData } from './use-hook-form';
-
-export { type ModalArg } from './modal-dialog';
-export const useModalControl = useDisclosureWithArg<ModalArg>;
-export type ModalControl = ReturnType<typeof useModalControl>;
 
 const PropertyMutation = graphql(/* GraphQL */ `
   mutation membershipModify($input: PropertyModifyInput!) {
@@ -27,13 +23,23 @@ const PropertyMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
-  modalControl: ModalControl;
+interface SearchParams {
+  autoFocus?: 'notes-helper';
 }
 
-export const MembershipEditorModal: React.FC<Props> = ({ modalControl }) => {
+interface Params {
+  communityId: string;
+  propertyId: string;
+}
+
+interface RouteArgs {
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
+}
+
+export default function MembershipEditor(props: RouteArgs) {
+  const searchParams = React.use(props.searchParams);
   const [updateProperty] = useMutation(PropertyMutation);
-  const { arg, disclosure } = modalControl;
 
   const onSave = async (_input: InputData) => {
     const { hidden, ...input } = _input;
@@ -54,9 +60,5 @@ export const MembershipEditorModal: React.FC<Props> = ({ modalControl }) => {
     );
   };
 
-  if (arg == null) {
-    return null;
-  }
-
-  return <ModalDialog {...arg} disclosure={disclosure} onSave={onSave} />;
-};
+  return <ModalDialog onSave={onSave} autoFocus={searchParams.autoFocus} />;
+}

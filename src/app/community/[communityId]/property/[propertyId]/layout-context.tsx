@@ -1,6 +1,5 @@
 import React from 'react';
 import { CommunityEntry, PropertyEntry } from './_type';
-import * as membershipEditorModal from './membership-editor-modal';
 import * as occupantEditorModal from './occupant-editor-modal';
 import * as propertyDeleteModal from './property-delete-modal';
 import * as propertyModifyModal from './property-modify-modal';
@@ -12,7 +11,6 @@ type ContextT = Readonly<{
   property: PropertyEntry;
   occupantEditor: occupantEditorModal.ModalControl;
   propertyModify: propertyModifyModal.ModalControl;
-  membershipEditor: membershipEditorModal.ModalControl;
   propertyDelete: propertyDeleteModal.ModalControl;
   registerEvent: registerEventModal.ModalControl;
   sendMail: sendMailModal.ModalControl;
@@ -27,10 +25,9 @@ interface Props {
   children: React.ReactNode;
 }
 
-export function PageProvider({ community, property, ...props }: Props) {
+export function LayoutProvider({ community, property, ...props }: Props) {
   const occupantEditor = occupantEditorModal.useModalControl();
   const propertyModify = propertyModifyModal.useModalControl();
-  const membershipEditor = membershipEditorModal.useModalControl();
   const propertyDelete = propertyDeleteModal.useModalControl();
   const registerEvent = registerEventModal.useModalControl();
   const sendMail = sendMailModal.useModalControl();
@@ -42,7 +39,6 @@ export function PageProvider({ community, property, ...props }: Props) {
         property,
         occupantEditor,
         propertyModify,
-        membershipEditor,
         propertyDelete,
         registerEvent,
         sendMail,
@@ -52,10 +48,10 @@ export function PageProvider({ community, property, ...props }: Props) {
   );
 }
 
-export function usePageContext() {
+export function useLayoutContext() {
   const context = React.useContext(Context);
   if (!context) {
-    throw new Error(`usePageContext must be used within a PageProvider`);
+    throw new Error(`useLayoutContext must be used within a LayoutProvider`);
   }
   return context;
 }

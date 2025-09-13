@@ -1,19 +1,19 @@
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
-import { appLabel } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 
 /** Configure all possible menu items */
 export function useMenuItem() {
   const {
     community,
+    property,
     occupantEditor,
     propertyModify,
-    membershipEditor,
     propertyDelete,
-  } = usePageContext();
+  } = useLayoutContext();
   const baseMenuItem = useBaseMenuItem();
 
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
@@ -21,7 +21,9 @@ export function useMenuItem() {
       ...baseMenuItem,
       {
         key: 'membershipEditor',
-        onPress: () => membershipEditor.open({}),
+        href: appPath('membershipEditor', {
+          path: { communityId: community.id, propertyId: property.id },
+        }),
         children: appLabel('membershipEditor'),
       },
       {
@@ -44,7 +46,8 @@ export function useMenuItem() {
     ];
   }, [
     baseMenuItem,
-    membershipEditor,
+    community,
+    property,
     occupantEditor,
     propertyModify,
     propertyDelete,

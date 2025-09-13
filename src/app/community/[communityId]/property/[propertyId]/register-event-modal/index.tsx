@@ -4,7 +4,7 @@ import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { ModalDialog, type ModalArg } from './modal-dialog';
 import { SuccessDialog } from './success-dialog';
 import { type InputData } from './use-hook-form';
@@ -44,7 +44,7 @@ interface Props {
 export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(RegisterEventMutation);
   const { arg, disclosure } = modalControl;
-  const { sendMail } = usePageContext();
+  const { sendMail } = useLayoutContext();
 
   const onSave = React.useCallback(
     async (_input: InputData) => {

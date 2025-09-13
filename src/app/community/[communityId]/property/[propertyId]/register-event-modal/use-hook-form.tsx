@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import { useLayoutContext as useCommunityLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   useForm,
   useFormContext,
@@ -14,8 +14,8 @@ import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
-import { MembershipEditorFragment } from '../membership-editor-modal/use-hook-form';
-import { usePageContext } from '../page-context';
+import { MembershipEditorFragment } from '../@modal/(.)membership-editor/use-hook-form';
+import { useLayoutContext } from '../layout-context';
 
 function schema() {
   return z.object({
@@ -119,8 +119,8 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { defaultSetting } = useLayoutContext();
-  const { property: fragment } = usePageContext();
+  const { defaultSetting } = useCommunityLayoutContext();
+  const { property: fragment } = useLayoutContext();
   const { yearSelected, lastEventSelected } = useSelector((state) => state.ui);
   const property = getFragment(MembershipEditorFragment, fragment);
   const findEventResult = React.useMemo(() => {

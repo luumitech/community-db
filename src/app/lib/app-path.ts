@@ -28,15 +28,17 @@ export const supportedPathTemplates = {
   communityModify: '/community/:communityId/community-modify',
   communityDelete: '/community/:communityId/community-delete',
   propertyCreate: '/community/:communityId/property-create',
-  membershipEditor: '/community/:communityId/membership-editor',
-  occupantEditor: '/community/:communityId/occupant-editor',
-  eventRegister: '/community/:communityId/event-register',
 
   property: '/community/:communityId/property/:propertyId',
   propertyModify:
     '/community/:communityId/property/:propertyId/property-modify',
   propertyDelete:
     '/community/:communityId/property/:propertyId/property-delete',
+  membershipEditor:
+    '/community/:communityId/property/:propertyId/membership-editor',
+  occupantEditor:
+    '/community/:communityId/property/:propertyId/occupant-editor',
+  eventRegister: '/community/:communityId/property/:propertyId/event-register',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -101,10 +103,7 @@ export function appPath(
     | 'batchPropertyModify'
     | 'communityModify'
     | 'communityDelete'
-    | 'propertyCreate'
-    | 'membershipEditor'
-    | 'occupantEditor'
-    | 'eventRegister',
+    | 'propertyCreate',
   sub: {
     path: {
       communityId: string;
@@ -123,12 +122,28 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template: 'property' | 'propertyModify' | 'propertyDelete',
-
+  template:
+    | 'property'
+    | 'propertyModify'
+    | 'propertyDelete'
+    | 'occupantEditor'
+    | 'eventRegister',
   sub: {
     path: {
       communityId: string;
       propertyId: string;
+    };
+  }
+): string;
+export function appPath(
+  template: 'membershipEditor',
+  sub: {
+    path: {
+      communityId: string;
+      propertyId: string;
+    };
+    query?: {
+      autoFocus?: 'notes-helper';
     };
   }
 ): string;

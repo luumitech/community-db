@@ -14,7 +14,7 @@ import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { insertIf } from '~/lib/insert-if';
 import { Loading } from '~/view/base/loading';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { EditMembershipButton } from './edit-membership-button';
 
 const PropertyDisplayFragment = graphql(/* GraphQL */ `
@@ -32,7 +32,7 @@ interface Props {
 }
 
 export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
-  const { property } = usePageContext();
+  const { property } = useLayoutContext();
   const { canEdit } = useSelector((state) => state.community);
   const entry = getFragment(PropertyDisplayFragment, property);
   const tableData = useTableData();

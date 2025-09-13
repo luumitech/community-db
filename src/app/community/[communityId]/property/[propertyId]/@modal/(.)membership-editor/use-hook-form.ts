@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
-import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import { useLayoutContext as useCommunityLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   UseFieldArrayReturn,
   useForm,
@@ -11,8 +11,8 @@ import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { usePageContext } from '../page-context';
-import { yearSelectItems } from '../year-select-items';
+import { useLayoutContext } from '../../layout-context';
+import { yearSelectItems } from '../../year-select-items';
 
 export const MembershipEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_MembershipEditor on Property {
@@ -41,7 +41,7 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
     }
   }
 `);
-export type MembershipEditorFragmentType = FragmentType<
+type MembershipEditorFragmentType = FragmentType<
   typeof MembershipEditorFragment
 >;
 
@@ -171,9 +171,9 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { minYear, maxYear } = useLayoutContext();
+  const { minYear, maxYear } = useCommunityLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
-  const { property: fragment } = usePageContext();
+  const { property: fragment } = useLayoutContext();
   const property = getFragment(MembershipEditorFragment, fragment);
   const defaultValues = React.useMemo(() => {
     const data = defaultInputData(property, [minYear, maxYear], yearSelected);

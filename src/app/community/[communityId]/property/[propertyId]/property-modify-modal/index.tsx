@@ -4,7 +4,7 @@ import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { ModifyModal, type ModalArg } from './modify-modal';
 import { InputData } from './use-hook-form';
 
@@ -28,7 +28,7 @@ interface Props {
 
 export const PropertyModifyModal: React.FC<Props> = ({ modalControl }) => {
   const [updateProperty] = useMutation(PropertyMutation);
-  const { community } = usePageContext();
+  const { community } = useLayoutContext();
   const { arg, disclosure } = modalControl;
 
   const onSave = React.useCallback(

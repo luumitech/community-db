@@ -5,12 +5,11 @@ import React from 'react';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
 import { appPath } from '~/lib/app-path';
 import { LastModified } from '~/view/last-modified';
+import { useLayoutContext } from './layout-context';
 import { MembershipDisplay } from './membership-display';
-import { MembershipEditorModal } from './membership-editor-modal';
 import { MoreMenu } from './more-menu';
 import { OccupantDisplay } from './occupant-display';
 import { OccupantEditorModal } from './occupant-editor-modal';
-import { usePageContext } from './page-context';
 import { PropertyDeleteModal } from './property-delete-modal';
 import { PropertyDisplay } from './property-display';
 import { PropertyModifyModal } from './property-modify-modal';
@@ -19,18 +18,17 @@ import { SendMailModal } from './send-mail-modal';
 
 interface Props {}
 
-export const PageContent: React.FC<Props> = (props) => {
+export const LayoutContent: React.FC<Props> = (props) => {
   const router = useRouter();
   const {
     property,
     community,
     propertyModify,
-    membershipEditor,
     occupantEditor,
     propertyDelete,
     registerEvent,
     sendMail,
-  } = usePageContext();
+  } = useLayoutContext();
   const routerCalled = React.useRef(false);
 
   const onSearchChanged = React.useCallback(() => {
@@ -56,7 +54,6 @@ export const PageContent: React.FC<Props> = (props) => {
         updatedBy={property.updatedBy}
       />
       <PropertyModifyModal modalControl={propertyModify} />
-      <MembershipEditorModal modalControl={membershipEditor} />
       <OccupantEditorModal modalControl={occupantEditor} />
       <PropertyDeleteModal modalControl={propertyDelete} />
       <RegisterEventModal modalControl={registerEvent} />

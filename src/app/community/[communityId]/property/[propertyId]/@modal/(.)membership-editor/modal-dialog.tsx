@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { type FieldPath } from 'react-hook-form';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
@@ -17,26 +17,22 @@ import { LastModified } from '~/view/last-modified';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
-export interface ModalArg {
-  /**
-   * Focus on a specific input field initially
-   *
-   * `notes-helper`: The One line Notes helper above the TextArea
-   */
+// export interface ModalArg {
+//   /**
+//    * Focus on a specific input field initially
+//    *
+//    * `notes-helper`: The One line Notes helper above the TextArea
+//    */
+//   autoFocus?: FieldPath<InputData> | 'notes-helper';
+// }
+
+interface Props {
+  onSave: (input: InputData) => Promise<void>;
   autoFocus?: FieldPath<InputData> | 'notes-helper';
 }
 
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
-  onSave: (input: InputData) => Promise<void>;
-}
-
-export const ModalDialog: React.FC<Props> = ({
-  disclosure,
-  onSave,
-  autoFocus,
-}) => {
-  const { isOpen, onOpenChange, onClose } = disclosure;
+export const ModalDialog: React.FC<Props> = ({ onSave, autoFocus }) => {
+  const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods, property } = useHookForm();
   const { formState, handleSubmit, setFocus } = formMethods;
@@ -53,25 +49,29 @@ export const ModalDialog: React.FC<Props> = ({
     }
   }, [setFocus, autoFocus]);
 
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
+
   const onSubmit = React.useCallback(
     async (input: InputData) =>
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}

@@ -3,8 +3,8 @@ import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
+import { useLayoutContext } from '../layout-context';
 import { ModalButton } from '../modal-button';
-import { usePageContext } from '../page-context';
 import { OccupantTable } from './occupant-table';
 
 const OccupantDisplayFragment = graphql(/* GraphQL */ `
@@ -37,7 +37,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
     community,
     occupantEditor,
     sendMail,
-  } = usePageContext();
+  } = useLayoutContext();
   const property = getFragment(OccupantDisplayFragment, fragment);
   const { occupantList } = property;
 

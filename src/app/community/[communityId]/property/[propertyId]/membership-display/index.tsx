@@ -1,6 +1,6 @@
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { CurrentEvent } from './current-event';
 import { MembershipStatus } from './membership-status';
 import { NotesView } from './notes-view';
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const MembershipDisplay: React.FC<Props> = ({ className }) => {
-  const { property } = usePageContext();
+  const { property } = useLayoutContext();
   const entry = getFragment(MembershipDisplayFragment, property);
 
   return (

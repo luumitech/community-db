@@ -10,7 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { useHookForm } from './use-hook-form';
 
 export interface ModalArg {}
@@ -26,7 +26,7 @@ interface Props extends ModalArg {
 export const DeleteModal: React.FC<Props> = ({ disclosure, onDelete }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { community } = usePageContext();
+  const { community } = useLayoutContext();
   const { property } = useHookForm();
 
   const onSubmit = React.useCallback(

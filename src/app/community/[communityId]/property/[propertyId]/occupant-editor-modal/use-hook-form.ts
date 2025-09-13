@@ -8,7 +8,7 @@ import {
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 
 const OccupantEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantEditor on Property {
@@ -91,7 +91,7 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { property: fragment } = usePageContext();
+  const { property: fragment } = useLayoutContext();
   const property = getFragment(OccupantEditorFragment, fragment);
   const defaultValues = React.useMemo(
     () => defaultInputData(property),

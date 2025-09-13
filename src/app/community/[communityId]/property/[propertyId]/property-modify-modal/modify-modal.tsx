@@ -13,7 +13,7 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { useHookForm, type InputData } from './use-hook-form';
 
 export interface ModalArg {}
@@ -24,7 +24,7 @@ interface Props extends ModalArg {
 }
 
 export const ModifyModal: React.FC<Props> = ({ onSave }) => {
-  const { propertyModify } = usePageContext();
+  const { propertyModify } = useLayoutContext();
   const { disclosure } = propertyModify;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
