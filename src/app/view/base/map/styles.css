@@ -10,4 +10,20 @@
   .leaflet-bar a {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
   }
+
+  /* react-leaflet PopUp component */
+  .leaflet-popup {
+    .leaflet-popup-content-wrapper {
+      background: black;
+      color: var(--heroui-foreground);
+      box-shadow: var(--heroui-box-shadow-large);
+    }
+
+    .leaflet-popup-tip-container {
+      .leaflet-popup-tip {
+        background: black;
+        box-shadow: var(--heroui-box-shadow-large);
+      }
+    }
+  }
 }

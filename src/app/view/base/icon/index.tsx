@@ -56,6 +56,8 @@ const supportedIcon = {
   noMap: 'lucide:map-pin-off',
   externalLink: 'mi:external-link',
   mapCenter: 'lsicon:map-location-filled',
+  eye: 'carbon:view',
+  leftArrow: 'entypo:arrow-left',
 } as const;
 
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;

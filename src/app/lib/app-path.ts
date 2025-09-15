@@ -238,7 +238,7 @@ export function appLabel(key: keyof SupportedPath) {
     case 'composeMembershipMail':
       return 'Compose Confirmation Email';
     case 'property':
-      return 'Property';
+      return 'View Property';
     case 'thirdPartyIntegration':
       return 'Third-Party Integration';
     case 'communityMapView':
