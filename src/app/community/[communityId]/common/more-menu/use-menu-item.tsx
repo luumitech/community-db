@@ -6,8 +6,7 @@ import { type MenuItemEntry } from '~/view/header';
 
 /** Configure all possible menu items */
 export function useMenuItem() {
-  const { community, communityModify, batchPropertyModify, propertyCreate } =
-    useLayoutContext();
+  const { community } = useLayoutContext();
 
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
     const communityId = community.id;
@@ -20,7 +19,7 @@ export function useMenuItem() {
       },
       {
         key: 'communityModify',
-        onPress: () => communityModify.open({ community }),
+        href: appPath('communityModify', { path: { communityId } }),
         endContent: <Icon icon="modify-community" />,
         children: appLabel('communityModify'),
       },
@@ -67,16 +66,16 @@ export function useMenuItem() {
       },
       {
         key: 'batchPropertyModify',
-        onPress: () => batchPropertyModify.open({ community }),
+        href: appPath('batchPropertyModify', { path: { communityId } }),
         children: appLabel('batchPropertyModify'),
       },
       {
         key: 'propertyCreate',
-        onPress: () => propertyCreate.open({ community }),
+        href: appPath('propertyCreate', { path: { communityId } }),
         children: appLabel('propertyCreate'),
       },
     ];
-  }, [community, communityModify, batchPropertyModify, propertyCreate]);
+  }, [community]);
 
   return menuItemList;
 }

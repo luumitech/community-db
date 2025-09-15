@@ -1,8 +1,9 @@
-import { Card, CardBody, CardHeader, cn } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
-import { ModalButton } from '../modal-button';
-import { usePageContext } from '../page-context';
+import { appPath } from '~/lib/app-path';
+import { Icon } from '~/view/base/icon';
+import { useLayoutContext } from '../layout-context';
 import { EventNameSelect } from './event-name-select';
 
 interface Props {
@@ -10,8 +11,8 @@ interface Props {
 }
 
 export const CurrentEvent: React.FC<Props> = ({ className }) => {
+  const { community, property } = useLayoutContext();
   const { lastEventSelected } = useSelector((state) => state.ui);
-  const { registerEvent } = usePageContext();
 
   return (
     <Card className={className}>
@@ -19,14 +20,19 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
       <CardBody>
         <div className="flex gap-2 items-start">
           <EventNameSelect />
-          <ModalButton
+          <Button
+            as={Link}
             className="h-10"
             isDisabled={!lastEventSelected}
             color="primary"
-            onPress={() => registerEvent.open({})}
+            size="sm"
+            endContent={<Icon icon="edit" />}
+            href={appPath('registerEvent', {
+              path: { communityId: community.id, propertyId: property.id },
+            })}
           >
             I&apos;m here!
-          </ModalButton>
+          </Button>
         </div>
       </CardBody>
     </Card>

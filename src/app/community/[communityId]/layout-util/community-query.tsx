@@ -44,6 +44,7 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
       ...CommunityId_CommunityModifyModal
       ...CommunityId_BatchPropertyModifyModal
       ...CommunityId_PropertyCreateModal
+      ...CommunityId_CommunityDeleteModal
     }
   }
 `);

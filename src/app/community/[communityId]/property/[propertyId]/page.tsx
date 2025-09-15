@@ -1,11 +1,15 @@
 'use client';
-import { useQuery } from '@apollo/client';
-import { Skeleton } from '@heroui/react';
+import { Divider } from '@heroui/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import { graphql } from '~/graphql/generated';
-import { onError } from '~/graphql/on-error';
-import { PageContent } from './page-content';
-import { PageProvider } from './page-context';
+import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
+import { appPath } from '~/lib/app-path';
+import { LastModified } from '~/view/last-modified';
+import { useLayoutContext } from './layout-context';
+import { MembershipDisplay } from './membership-display';
+import { MoreMenu } from './more-menu';
+import { OccupantDisplay } from './occupant-display';
+import { PropertyDisplay } from './property-display';
 
 interface Params {
   communityId: string;
@@ -16,45 +20,33 @@ interface RouteArgs {
   params: Promise<Params>;
 }
 
-const PropertyFromIdQuery = graphql(/* GraphQL */ `
-  query propertyFromId($communityId: String!, $propertyId: String!) {
-    communityFromId(id: $communityId) {
-      id
-      ...SendMail_CommunityModifyModal
-      propertyFromId(id: $propertyId) {
-        id
-        updatedAt
-        updatedBy {
-          ...User
-        }
-        ...PropertyId_PropertyEditor
-        ...PropertyId_MembershipDisplay
-        ...PropertyId_MembershipEditor
-        ...PropertyId_OccupantDisplay
-        ...PropertyId_OccupantEditor
-        ...PropertyId_PropertyDisplay
-        ...PropertyId_PropertyDelete
-      }
-    }
-  }
-`);
-
 export default function Property(props: RouteArgs) {
-  const params = React.use(props.params);
-  const { communityId, propertyId } = params;
-  const result = useQuery(PropertyFromIdQuery, {
-    variables: { communityId, propertyId },
-    onError,
-  });
-  const community = result.data?.communityFromId;
-  const property = community?.propertyFromId;
+  const { property, community } = useLayoutContext();
+  const router = useRouter();
+  const routerCalled = React.useRef(false);
 
-  if (!community || !property) {
-    return <Skeleton className="h-main-height" />;
-  }
+  const onSearchChanged = React.useCallback(() => {
+    if (!routerCalled.current) {
+      const propertyListPath = appPath('propertyList', {
+        path: { communityId: community.id },
+      });
+      routerCalled.current = true;
+      router.push(propertyListPath);
+    }
+  }, [router, community.id]);
+
   return (
-    <PageProvider community={community} property={property}>
-      <PageContent />
-    </PageProvider>
+    <div className="flex flex-col gap-3">
+      <MoreMenu />
+      <PropertySearchBar onChange={onSearchChanged} />
+      <PropertyDisplay />
+      <Divider />
+      <MembershipDisplay />
+      <OccupantDisplay />
+      <LastModified
+        updatedAt={property.updatedAt}
+        updatedBy={property.updatedBy}
+      />
+    </div>
   );
 }

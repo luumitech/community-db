@@ -3,7 +3,6 @@ import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
-import * as communityDeleteModal from '../community-delete-modal';
 import { useMenuItem } from './use-menu-item';
 
 interface Props {
@@ -13,11 +12,7 @@ interface Props {
 export const MoreMenu: React.FC<Props> = ({ community }) => {
   const { canEdit, isAdmin } = useSelector((state) => state.community);
 
-  const communityDelete = communityDeleteModal.useModalControl();
-
-  const menuItems = useMenuItem({
-    communityDeleteOpen: () => communityDelete.open({ community }),
-  });
+  const menuItems = useMenuItem();
 
   return (
     <>
@@ -43,9 +38,6 @@ export const MoreMenu: React.FC<Props> = ({ community }) => {
           'communityShare',
           'communityModify',
         ]}
-      />
-      <communityDeleteModal.CommunityDeleteModal
-        modalControl={communityDelete}
       />
     </>
   );

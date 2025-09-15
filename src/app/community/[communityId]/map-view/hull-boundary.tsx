@@ -51,7 +51,7 @@ export const HullBoundary: React.FC<Props> = ({ positions }) => {
     const points = turf.featureCollection(toTurf(positions));
 
     // Compute convex hull
-    const convexPts = turf.convex(points);
+    const convexPts = turf.convex(points, { concavity: 6 });
     if (convexPts) {
       const hullPts = turf.buffer(convexPts, 50, { units: 'meters' });
       if (hullPts) {

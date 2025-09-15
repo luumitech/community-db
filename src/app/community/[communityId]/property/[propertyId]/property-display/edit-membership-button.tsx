@@ -1,23 +1,28 @@
-import { cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
+import { appLabel, appPath } from '~/lib/app-path';
 import { FlatButton } from '~/view/base/flat-button';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 
 interface Props {
   className?: string;
 }
 
 export const EditMembershipButton: React.FC<Props> = ({ className }) => {
-  const { membershipEditor } = usePageContext();
+  const { community, property } = useLayoutContext();
 
   return (
-    <div className={cn(className)}>
+    <Link
+      className={cn(className)}
+      href={appPath('membershipEditor', {
+        path: { communityId: community.id, propertyId: property.id },
+      })}
+    >
       <FlatButton
         className="text-primary"
         icon="edit"
-        tooltip="Edit Membership Detail"
-        onClick={() => membershipEditor.open({})}
+        tooltip={appLabel('membershipEditor')}
       />
-    </div>
+    </Link>
   );
 };

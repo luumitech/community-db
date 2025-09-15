@@ -2,7 +2,8 @@ import { Marker } from '@adamscybot/react-leaflet-component-marker';
 import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { Popup } from 'react-leaflet';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
+import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { usePageContext } from './page-context';
 
@@ -24,6 +25,8 @@ export const PropertyMarker: React.FC<Props> = ({
   zoom,
 }) => {
   const { community } = usePageContext();
+  const communityId = community.id;
+  const propertyId = locEntry.id;
 
   const size = React.useMemo(() => {
     if (!zoom) {
@@ -62,14 +65,39 @@ export const PropertyMarker: React.FC<Props> = ({
       position={locEntry.loc}
     >
       <Popup>
-        <Link
-          href={appPath('property', {
-            path: { communityId: community.id, propertyId: locEntry.id },
-          })}
-          target="_blank"
-        >
-          {locEntry.address}
-        </Link>
+        <div>
+          <div className="text-medium mb-1">{locEntry.address}</div>
+          <div className="flex gap-2">
+            <Link
+              href={appPath('property', {
+                path: { communityId, propertyId },
+              })}
+              target="_blank"
+            >
+              <FlatButton
+                className="text-primary"
+                icon="eye"
+                tooltip={appLabel('property')}
+              />
+              <Icon
+                className="absolute right-0 bottom-0 bg-background rotate-[135deg]"
+                icon="leftArrow"
+                size={9}
+              />
+            </Link>
+            <Link
+              href={appPath('propertyModify', {
+                path: { communityId, propertyId },
+              })}
+            >
+              <FlatButton
+                className="text-primary"
+                icon="edit"
+                tooltip={appLabel('propertyModify')}
+              />
+            </Link>
+          </div>
+        </div>
       </Popup>
     </Marker>
   );

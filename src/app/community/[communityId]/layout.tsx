@@ -12,13 +12,12 @@ interface Params {
 interface LayoutProps {
   params: Promise<Params>;
   children: React.ReactNode;
+  modal: React.ReactNode;
 }
 
 export default function CommunityFromIdLayout(props: LayoutProps) {
+  const { children, modal } = props;
   const params = React.use(props.params);
-
-  const { children } = props;
-
   const { communityId } = params;
   useSetupSubscription(communityId);
   const community = useCommunityQuery(communityId);
@@ -27,5 +26,12 @@ export default function CommunityFromIdLayout(props: LayoutProps) {
     return <Loading />;
   }
 
-  return <LayoutProvider community={community}>{children}</LayoutProvider>;
+  return (
+    <LayoutProvider community={community}>
+      <>
+        {children}
+        {modal}
+      </>
+    </LayoutProvider>
+  );
 }

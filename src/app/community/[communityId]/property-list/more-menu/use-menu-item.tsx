@@ -1,15 +1,13 @@
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
-import { appLabel } from '~/lib/app-path';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 
-interface MenuItemOpt {
-  communityDeleteOpen: () => void;
-}
-
 /** Configure all possible menu items */
-export function useMenuItem(opt: MenuItemOpt) {
+export function useMenuItem() {
+  const { communityId } = useLayoutContext();
   const baseMenuItems = useBaseMenuItem();
 
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
@@ -18,11 +16,11 @@ export function useMenuItem(opt: MenuItemOpt) {
       {
         key: 'communityDelete',
         className: 'text-danger',
-        onPress: opt.communityDeleteOpen,
+        href: appPath('communityDelete', { path: { communityId } }),
         children: appLabel('communityDelete'),
       },
     ];
-  }, [opt, baseMenuItems]);
+  }, [baseMenuItems, communityId]);
 
   return menuItemList;
 }

@@ -1,14 +1,15 @@
-import { Card, CardBody, CardHeader } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader, Link } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
-import { ModalButton } from '../modal-button';
-import { usePageContext } from '../page-context';
+import { useLayoutContext } from '../layout-context';
 import { OccupantTable } from './occupant-table';
 
-const OccupantDisplayFragment = graphql(/* GraphQL */ `
+export const OccupantDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantDisplay on Property {
+    id
     occupantList {
       firstName
       lastName
@@ -32,12 +33,7 @@ interface Props {
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const { canEdit } = useSelector((state) => state.community);
   const { yearSelected } = useSelector((state) => state.ui);
-  const {
-    property: fragment,
-    community,
-    occupantEditor,
-    sendMail,
-  } = usePageContext();
+  const { property: fragment, community } = useLayoutContext();
   const property = getFragment(OccupantDisplayFragment, fragment);
   const { occupantList } = property;
 
@@ -54,29 +50,35 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
       <CardHeader>Contact</CardHeader>
       <CardBody className="gap-2">
         <div className="flex flex-wrap gap-2 self-end">
-          <ModalButton
+          <Button
+            as={Link}
             isDisabled={!canSendEmail}
-            onPress={() =>
-              sendMail.open({
-                community,
-                membershipYear: yearSelected?.toString() ?? '',
-                occupantList,
-              })
-            }
+            size="sm"
             endContent={<Icon icon="email" />}
             color="primary"
             variant="bordered"
+            href={appPath('composeMembershipMail', {
+              path: { communityId: community.id, propertyId: property.id },
+              query: {
+                membershipYear: yearSelected?.toString() ?? '',
+              },
+            })}
           >
-            Send Membership Confirmation
-          </ModalButton>
+            {appLabel('composeMembershipMail')}
+          </Button>
           {canEdit && (
-            <ModalButton
-              onPress={() => occupantEditor.open({})}
+            <Button
+              as={Link}
               color="primary"
               variant="bordered"
+              size="sm"
+              endContent={<Icon icon="edit" />}
+              href={appPath('occupantEditor', {
+                path: { communityId: community.id, propertyId: property.id },
+              })}
             >
               Edit Member Details
-            </ModalButton>
+            </Button>
           )}
         </div>
         <OccupantTable occupantList={occupantList} />

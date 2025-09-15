@@ -51,15 +51,16 @@ export const Map: React.FC<Props> = ({ className, onStartLookup }) => {
   });
   const address = watch('address');
   const lat = watch('lat');
-  const lng = watch('lon');
+  const lon = watch('lon');
 
   const markerPos = React.useMemo(() => {
-    const pos = { lat, lng } as L.LatLng;
+    const pos = { lat, lon };
     if (!isValidCoordinate(pos)) {
       return;
     }
-    return pos;
-  }, [lat, lng]);
+
+    return { lat, lng: lon } as L.LatLng;
+  }, [lat, lon]);
 
   const setFormValue = React.useCallback(
     (name: keyof InputData, value?: string | number | null) => {
