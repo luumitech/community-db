@@ -1,14 +1,10 @@
+'use client';
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { ModalDialog, type ModalArg } from './modal-dialog';
+import { ModalDialog } from './modal-dialog';
 import { InputData } from './use-hook-form';
-
-export { type ModalArg } from './modal-dialog';
-export const useModalControl = useDisclosureWithArg<ModalArg>;
-export type ModalControl = ReturnType<typeof useModalControl>;
 
 const OccupantMutation = graphql(/* GraphQL */ `
   mutation occupantModify($input: PropertyModifyInput!) {
@@ -20,12 +16,16 @@ const OccupantMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
-  modalControl: ModalControl;
+interface Params {
+  communityId: string;
+  propertyId: string;
 }
 
-export const OccupantEditorModal: React.FC<Props> = ({ modalControl }) => {
-  const { arg, disclosure } = modalControl;
+interface RouteArgs {
+  params: Promise<Params>;
+}
+
+export default function OccupantEditor(props: RouteArgs) {
   const [updateProperty] = useMutation(OccupantMutation);
 
   const onSave = async (input: InputData) => {
@@ -40,9 +40,5 @@ export const OccupantEditorModal: React.FC<Props> = ({ modalControl }) => {
     );
   };
 
-  if (arg == null) {
-    return null;
-  }
-
-  return <ModalDialog {...arg} disclosure={disclosure} onSave={onSave} />;
-};
+  return <ModalDialog onSave={onSave} />;
+}

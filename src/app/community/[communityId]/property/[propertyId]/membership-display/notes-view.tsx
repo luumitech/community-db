@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
 import { ScrollShadow } from '@heroui/scroll-shadow';
 import React from 'react';
-import { appLabel, appPath } from '~/lib/app-path';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { useLayoutContext } from '../layout-context';
 

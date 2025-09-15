@@ -5,7 +5,6 @@ import {
   CardFooter,
   CardHeader,
   Checkbox,
-  ScrollShadow,
 } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';

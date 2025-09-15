@@ -1,4 +1,4 @@
-import { cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { FlatButton } from '~/view/base/flat-button';
@@ -12,7 +12,7 @@ export const EditMembershipButton: React.FC<Props> = ({ className }) => {
   const { community, property } = useLayoutContext();
 
   return (
-    <a
+    <Link
       className={cn(className)}
       href={appPath('membershipEditor', {
         path: { communityId: community.id, propertyId: property.id },
@@ -23,6 +23,6 @@ export const EditMembershipButton: React.FC<Props> = ({ className }) => {
         icon="edit"
         tooltip={appLabel('membershipEditor')}
       />
-    </a>
+    </Link>
   );
 };

@@ -1,13 +1,15 @@
-import { Button, Card, CardBody, CardHeader } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader, Link } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { useLayoutContext } from '../layout-context';
 import { OccupantTable } from './occupant-table';
 
 const OccupantDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantDisplay on Property {
+    id
     occupantList {
       firstName
       lastName
@@ -31,12 +33,7 @@ interface Props {
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const { canEdit } = useSelector((state) => state.community);
   const { yearSelected } = useSelector((state) => state.ui);
-  const {
-    property: fragment,
-    community,
-    occupantEditor,
-    sendMail,
-  } = useLayoutContext();
+  const { property: fragment, community, sendMail } = useLayoutContext();
   const property = getFragment(OccupantDisplayFragment, fragment);
   const { occupantList } = property;
 
@@ -71,11 +68,14 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
           </Button>
           {canEdit && (
             <Button
-              onPress={() => occupantEditor.open({})}
+              as={Link}
               color="primary"
               variant="bordered"
               size="sm"
               endContent={<Icon icon="edit" />}
+              href={appPath('occupantEditor', {
+                path: { communityId: community.id, propertyId: property.id },
+              })}
             >
               Edit Member Details
             </Button>

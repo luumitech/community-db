@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider, useFieldArray } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
@@ -15,15 +15,12 @@ import {
 import { Editor } from './editor';
 import { InputData, occupantDefault, useHookForm } from './use-hook-form';
 
-export interface ModalArg {}
-
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
+interface Props {
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
-  const { isOpen, onOpenChange, onClose } = disclosure;
+export const ModalDialog: React.FC<Props> = ({ onSave }) => {
+  const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods } = useHookForm();
   const { control, formState, handleSubmit } = formMethods;
@@ -33,25 +30,29 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
     name: 'occupantList',
   });
 
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
+
   const onSubmit = React.useCallback(
     async (input: InputData) =>
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
