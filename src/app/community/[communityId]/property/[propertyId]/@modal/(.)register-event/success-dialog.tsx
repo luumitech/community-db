@@ -1,14 +1,14 @@
-import { Button, cn } from '@heroui/react';
+import { Button, Link, cn } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
-import { type ModalControl } from '../send-mail-modal';
+import { useLayoutContext } from '../../layout-context';
 
 interface Props {
   className?: string;
   membershipYear: string;
   registerEvent?: GQL.RegisterEventMutation['registerEvent'];
-  sendMail: ModalControl;
   closeToast?: () => void;
 }
 
@@ -16,9 +16,10 @@ export const SuccessDialog: React.FC<Props> = ({
   className,
   membershipYear,
   registerEvent,
-  sendMail,
   closeToast,
 }) => {
+  const { community, property } = useLayoutContext();
+
   if (!registerEvent) {
     return null;
   }
@@ -39,18 +40,20 @@ export const SuccessDialog: React.FC<Props> = ({
     <div className={cn(className, 'flex flex-wrap items-center gap-2')}>
       Membership registered
       <Button
+        as={Link}
         color="primary"
         variant="faded"
         size="sm"
         endContent={<Icon icon="email" />}
         onPress={() => {
           closeToast?.();
-          sendMail.open({
-            community: registerEvent.community,
-            membershipYear,
-            occupantList,
-          });
         }}
+        href={appPath('sendMail', {
+          path: { communityId: community.id, propertyId: property.id },
+          query: {
+            membershipYear,
+          },
+        })}
       >
         Compose Confirmation Email
       </Button>

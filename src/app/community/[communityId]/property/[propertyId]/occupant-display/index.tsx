@@ -2,12 +2,12 @@ import { Button, Card, CardBody, CardHeader, Link } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { useLayoutContext } from '../layout-context';
 import { OccupantTable } from './occupant-table';
 
-const OccupantDisplayFragment = graphql(/* GraphQL */ `
+export const OccupantDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantDisplay on Property {
     id
     occupantList {
@@ -33,7 +33,7 @@ interface Props {
 export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const { canEdit } = useSelector((state) => state.community);
   const { yearSelected } = useSelector((state) => state.ui);
-  const { property: fragment, community, sendMail } = useLayoutContext();
+  const { property: fragment, community } = useLayoutContext();
   const property = getFragment(OccupantDisplayFragment, fragment);
   const { occupantList } = property;
 
@@ -51,20 +51,20 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
       <CardBody className="gap-2">
         <div className="flex flex-wrap gap-2 self-end">
           <Button
+            as={Link}
             isDisabled={!canSendEmail}
-            onPress={() =>
-              sendMail.open({
-                community,
-                membershipYear: yearSelected?.toString() ?? '',
-                occupantList,
-              })
-            }
             size="sm"
             endContent={<Icon icon="email" />}
             color="primary"
             variant="bordered"
+            href={appPath('sendMail', {
+              path: { communityId: community.id, propertyId: property.id },
+              query: {
+                membershipYear: yearSelected?.toString() ?? '',
+              },
+            })}
           >
-            Send Membership Confirmation
+            {appLabel('sendMail')}
           </Button>
           {canEdit && (
             <Button

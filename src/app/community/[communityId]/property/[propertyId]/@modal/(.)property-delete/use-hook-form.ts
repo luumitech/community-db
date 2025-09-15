@@ -1,5 +1,5 @@
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import { useLayoutContext } from '../layout-context';
+import { useLayoutContext } from '../../layout-context';
 
 const DeleteFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyDelete on Property {

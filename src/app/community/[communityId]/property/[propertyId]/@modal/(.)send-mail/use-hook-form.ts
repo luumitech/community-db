@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
+import { type PropertyEntry } from '~/community/[communityId]/property/[propertyId]/_type';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import { z, zz } from '~/lib/zod';
 import { MentionUtil } from '~/view/base/rich-text-editor';
-import { type OccupantList } from './_type';
+import { useLayoutContext } from '../../layout-context';
+import { OccupantDisplayFragment } from '../../occupant-display';
 import { createMentionMapping, createMentionValues } from './editor-util';
 
 const ModifyFragment = graphql(/* GraphQL */ `
@@ -235,13 +237,15 @@ const defaultMessage = JSON.stringify({
 
 export function defaultInputData(
   fragment: ModifyFragmentType,
-  membershipYear: string,
-  occupantList: OccupantList
+  propertyFragment: PropertyEntry,
+  membershipYear: string
 ): InputData {
   const community = getFragment(ModifyFragment, fragment);
+  const property = getFragment(OccupantDisplayFragment, propertyFragment);
   const toItems: InputData['hidden']['toItems'] = [];
-  occupantList.forEach((entry) => {
-    if (entry.email) {
+
+  property.occupantList.forEach((entry) => {
+    if (entry.email?.trim()) {
       const fullName =
         `${entry.firstName ?? ''} ${entry.lastName ?? ''}`.trim() || 'n/a';
       toItems.push({
@@ -279,14 +283,16 @@ export function defaultInputData(
   };
 }
 
-export function useHookForm(
-  fragment: ModifyFragmentType,
-  membershipYear: string,
-  occupantList: OccupantList
-) {
+export function useHookForm(membershipYear: string) {
+  const { community: communityFragment, property: propertyFragment } =
+    useLayoutContext();
   const defaultValues = React.useMemo(() => {
-    return defaultInputData(fragment, membershipYear, occupantList);
-  }, [fragment, membershipYear, occupantList]);
+    return defaultInputData(
+      communityFragment,
+      propertyFragment,
+      membershipYear
+    );
+  }, [communityFragment, propertyFragment, membershipYear]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

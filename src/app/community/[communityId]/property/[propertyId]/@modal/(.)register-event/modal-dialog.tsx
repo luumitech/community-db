@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
@@ -19,15 +19,12 @@ import { LastModified } from '~/view/last-modified';
 import { EventInfoEditor } from './event-info-editor';
 import { InputData, XtraArgProvider, useHookForm } from './use-hook-form';
 
-export interface ModalArg {}
-
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
+interface Props {
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
-  const { isOpen, onOpenChange, onClose } = disclosure;
+export const ModalDialog: React.FC<Props> = ({ onSave }) => {
+  const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods, ...xtraProps } = useHookForm();
   const { getValues, formState, handleSubmit } = formMethods;
@@ -36,6 +33,10 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
   const memberYear = getValues('membership.year');
   const eventName = getValues('event.eventName');
   const { isDirty } = formState;
+
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
 
   const canSave = React.useMemo(() => {
     if (canRegister) {
@@ -49,20 +50,20 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       confirmation={canSave}
       {...(canRegister && {
         confirmationArg: {
@@ -85,7 +86,7 @@ export const ModalDialog: React.FC<Props> = ({ disclosure, onSave }) => {
             <ModalContent>
               {(closeModal) => (
                 <>
-                  <ModalHeader>{appLabel('eventRegister')}</ModalHeader>
+                  <ModalHeader>{appLabel('registerEvent')}</ModalHeader>
                   <ModalBody className="gap-6">
                     <div className="flex flex-col gap-2">
                       <MemberStatusChip isMember={isMember} hideText>

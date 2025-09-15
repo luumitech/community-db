@@ -1,7 +1,8 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
+import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -11,7 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { type OccupantList } from './_type';
+import { useLayoutContext } from '../../layout-context';
 import { MailForm } from './mail-form';
 import {
   defaultInputData,
@@ -20,31 +21,24 @@ import {
   type ModifyFragmentType,
 } from './use-hook-form';
 
-export interface ModalArg {
-  community: ModifyFragmentType;
-  occupantList: OccupantList;
+interface Props {
   membershipYear: string;
-}
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
   onSave: (input: InputData) => Promise<ModifyFragmentType | undefined>;
   onSend: (input: InputData) => Promise<void>;
 }
 
 export const ModalDialog: React.FC<Props> = ({
-  community: fragment,
   membershipYear,
-  occupantList,
-  disclosure,
   onSave,
   onSend,
 }) => {
+  const router = useRouter();
+  const { property: propertyFragment } = useLayoutContext();
   const { canEdit } = useSelector((state) => state.community);
-  const { formMethods } = useHookForm(fragment, membershipYear, occupantList);
+  const { formMethods } = useHookForm(membershipYear);
   const [saveTemplatePending, saveTemplateStartTransition] =
     React.useTransition();
   const [sendMailPending, sendMailStartTransition] = React.useTransition();
-  const { isOpen, onOpenChange, onClose } = disclosure;
   const { formState, reset } = formMethods;
   const { isDirty } = formState;
 
@@ -54,34 +48,40 @@ export const ModalDialog: React.FC<Props> = ({
         try {
           const community = await onSave(inputData);
           if (community) {
-            reset(defaultInputData(community, membershipYear, occupantList));
+            reset(
+              defaultInputData(community, propertyFragment, membershipYear)
+            );
           }
         } catch (err) {
           // error handled by parent
         }
       }),
-    [membershipYear, occupantList, onSave, reset]
+    [membershipYear, propertyFragment, onSave, reset]
   );
+
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
 
   const onSendMail = React.useCallback(
     async (inputData: InputData) =>
       sendMailStartTransition(async () => {
         try {
           await onSend(inputData);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onClose, onSend]
+    [forceClose, onSend]
   );
 
   return (
     <Modal
       size="2xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
@@ -92,7 +92,7 @@ export const ModalDialog: React.FC<Props> = ({
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Compose Confirmation Email</ModalHeader>
+                <ModalHeader>{appLabel('sendMail')}</ModalHeader>
                 <ModalBody>
                   <MailForm />
                 </ModalBody>

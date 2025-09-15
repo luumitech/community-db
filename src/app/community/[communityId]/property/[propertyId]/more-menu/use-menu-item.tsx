@@ -6,8 +6,7 @@ import { useLayoutContext } from '../layout-context';
 
 /** Configure all possible menu items */
 export function useMenuItem() {
-  const { community, property, occupantEditor, propertyDelete } =
-    useLayoutContext();
+  const { community, property } = useLayoutContext();
   const baseMenuItem = useBaseMenuItem();
 
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
@@ -22,7 +21,9 @@ export function useMenuItem() {
       },
       {
         key: 'occupantEditor',
-        onPress: () => occupantEditor.open({}),
+        href: appPath('occupantEditor', {
+          path: { communityId: community.id, propertyId: property.id },
+        }),
         children: appLabel('occupantEditor'),
         showDivider: true,
       },
@@ -36,11 +37,13 @@ export function useMenuItem() {
       {
         key: 'propertyDelete',
         className: 'text-danger',
-        onPress: () => propertyDelete.open({}),
+        href: appPath('propertyDelete', {
+          path: { communityId: community.id, propertyId: property.id },
+        }),
         children: appLabel('propertyDelete'),
       },
     ];
-  }, [baseMenuItem, community, property, occupantEditor, propertyDelete]);
+  }, [baseMenuItem, community, property]);
 
   return menuItemList;
 }

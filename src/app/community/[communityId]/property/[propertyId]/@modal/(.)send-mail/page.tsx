@@ -1,17 +1,13 @@
+'use client';
 import { useMutation } from '@apollo/client';
 import queryString from 'query-string';
 import React from 'react';
-import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { toast } from '~/view/base/toastify';
 import { createMentionMapping } from './editor-util';
-import { ModalDialog, type ModalArg } from './modal-dialog';
+import { ModalDialog } from './modal-dialog';
 import { type InputData } from './use-hook-form';
-
-export { type ModalArg } from './modal-dialog';
-export const useModalControl = useDisclosureWithArg<ModalArg>;
-export type ModalControl = ReturnType<typeof useModalControl>;
 
 const CommunityMutation = graphql(/* GraphQL */ `
   mutation sendMailCommunityModify($input: CommunityModifyInput!) {
@@ -22,13 +18,23 @@ const CommunityMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
-  modalControl: ModalControl;
+interface Params {
+  communityId: string;
+  propertyId: string;
 }
 
-export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
+interface SearchParams {
+  membershipYear: string;
+}
+
+interface RouteArgs {
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
+}
+
+export default function SendMail(props: RouteArgs) {
+  const { membershipYear } = React.use(props.searchParams);
   const [updateCommunity] = useMutation(CommunityMutation);
-  const { arg, disclosure } = modalControl;
 
   const onSend = React.useCallback(async (input: InputData) => {
     const {
@@ -76,16 +82,11 @@ export const SendMailModal: React.FC<Props> = ({ modalControl }) => {
     [updateCommunity]
   );
 
-  if (arg == null) {
-    return null;
-  }
-
   return (
     <ModalDialog
-      {...arg}
-      disclosure={disclosure}
+      membershipYear={membershipYear}
       onSave={onSave}
       onSend={onSend}
     />
   );
-};
+}

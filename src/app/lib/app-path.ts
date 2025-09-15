@@ -38,7 +38,8 @@ export const supportedPathTemplates = {
     '/community/:communityId/property/:propertyId/membership-editor',
   occupantEditor:
     '/community/:communityId/property/:propertyId/occupant-editor',
-  eventRegister: '/community/:communityId/property/:propertyId/event-register',
+  registerEvent: '/community/:communityId/property/:propertyId/register-event',
+  sendMail: '/community/:communityId/property/:propertyId/send-mail',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -127,7 +128,7 @@ export function appPath(
     | 'propertyModify'
     | 'propertyDelete'
     | 'occupantEditor'
-    | 'eventRegister',
+    | 'registerEvent',
   sub: {
     path: {
       communityId: string;
@@ -144,6 +145,18 @@ export function appPath(
     };
     query?: {
       autoFocus?: 'notes-helper';
+    };
+  }
+): string;
+export function appPath(
+  template: 'sendMail',
+  sub: {
+    path: {
+      communityId: string;
+      propertyId: string;
+    };
+    query: {
+      membershipYear: string;
     };
   }
 ): string;
@@ -219,8 +232,10 @@ export function appLabel(key: keyof SupportedPath) {
       return 'Edit Membership Detail';
     case 'occupantEditor':
       return 'Edit Contact Information';
-    case 'eventRegister':
+    case 'registerEvent':
       return 'Register Event';
+    case 'sendMail':
+      return 'Send Confirmation Email';
     case 'property':
       return 'Property';
     case 'thirdPartyIntegration':

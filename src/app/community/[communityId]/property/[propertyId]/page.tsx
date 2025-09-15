@@ -5,7 +5,6 @@ import React from 'react';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
 import { appPath } from '~/lib/app-path';
 import { LastModified } from '~/view/last-modified';
-import { LayoutContent } from './layout-content';
 import { useLayoutContext } from './layout-context';
 import { MembershipDisplay } from './membership-display';
 import { MoreMenu } from './more-menu';
@@ -48,7 +47,6 @@ export default function Property(props: RouteArgs) {
         updatedAt={property.updatedAt}
         updatedBy={property.updatedBy}
       />
-      <LayoutContent />
     </div>
   );
 }

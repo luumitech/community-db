@@ -1,6 +1,7 @@
-import { Button, Card, CardBody, CardHeader, cn } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
+import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { useLayoutContext } from '../layout-context';
 import { EventNameSelect } from './event-name-select';
@@ -10,8 +11,8 @@ interface Props {
 }
 
 export const CurrentEvent: React.FC<Props> = ({ className }) => {
+  const { community, property } = useLayoutContext();
   const { lastEventSelected } = useSelector((state) => state.ui);
-  const { registerEvent } = useLayoutContext();
 
   return (
     <Card className={className}>
@@ -20,12 +21,15 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
         <div className="flex gap-2 items-start">
           <EventNameSelect />
           <Button
+            as={Link}
             className="h-10"
             isDisabled={!lastEventSelected}
             color="primary"
             size="sm"
             endContent={<Icon icon="edit" />}
-            onPress={() => registerEvent.open({})}
+            href={appPath('registerEvent', {
+              path: { communityId: community.id, propertyId: property.id },
+            })}
           >
             I&apos;m here!
           </Button>

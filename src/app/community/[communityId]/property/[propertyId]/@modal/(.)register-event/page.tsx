@@ -1,17 +1,12 @@
+'use client';
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
-import { useLayoutContext } from '../layout-context';
-import { ModalDialog, type ModalArg } from './modal-dialog';
+import { ModalDialog } from './modal-dialog';
 import { SuccessDialog } from './success-dialog';
 import { type InputData } from './use-hook-form';
-
-export { type ModalArg } from './modal-dialog';
-export const useModalControl = useDisclosureWithArg<ModalArg>;
-export type ModalControl = ReturnType<typeof useModalControl>;
 
 const RegisterEventMutation = graphql(/* GraphQL */ `
   mutation registerEvent($input: RegisterEventInput!) {
@@ -37,14 +32,17 @@ const RegisterEventMutation = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
-  modalControl: ModalControl;
+interface Params {
+  communityId: string;
+  propertyId: string;
 }
 
-export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
+interface RouteArgs {
+  params: Promise<Params>;
+}
+
+export default function RegisterEvent(props: RouteArgs) {
   const [updateProperty] = useMutation(RegisterEventMutation);
-  const { arg, disclosure } = modalControl;
-  const { sendMail } = useLayoutContext();
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -60,7 +58,7 @@ export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
               }
             },
           });
-          return { result, sendMail };
+          return { result };
         })(),
         {
           pending: 'Saving...',
@@ -72,7 +70,6 @@ export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
                   <SuccessDialog
                     membershipYear={input.membership.year.toString()}
                     registerEvent={data.result.data?.registerEvent}
-                    sendMail={data.sendMail}
                     closeToast={toastProps.closeToast}
                   />
                 ),
@@ -81,12 +78,8 @@ export const RegisterEventModal: React.FC<Props> = ({ modalControl }) => {
         }
       );
     },
-    [updateProperty, sendMail]
+    [updateProperty]
   );
 
-  if (arg == null) {
-    return null;
-  }
-
-  return <ModalDialog {...arg} disclosure={disclosure} onSave={onSave} />;
-};
+  return <ModalDialog onSave={onSave} />;
+}
