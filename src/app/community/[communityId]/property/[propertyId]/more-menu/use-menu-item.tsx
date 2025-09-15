@@ -1,19 +1,13 @@
 import React from 'react';
 import { useBaseMenuItem } from '~/community/[communityId]/common/more-menu';
 import { appLabel, appPath } from '~/lib/app-path';
-import { Icon } from '~/view/base/icon';
 import { type MenuItemEntry } from '~/view/header';
 import { useLayoutContext } from '../layout-context';
 
 /** Configure all possible menu items */
 export function useMenuItem() {
-  const {
-    community,
-    property,
-    occupantEditor,
-    propertyModify,
-    propertyDelete,
-  } = useLayoutContext();
+  const { community, property, occupantEditor, propertyDelete } =
+    useLayoutContext();
   const baseMenuItem = useBaseMenuItem();
 
   const menuItemList: MenuItemEntry[] = React.useMemo(() => {
@@ -34,7 +28,9 @@ export function useMenuItem() {
       },
       {
         key: 'propertyModify',
-        onPress: () => propertyModify.open({}),
+        href: appPath('propertyModify', {
+          path: { communityId: community.id, propertyId: property.id },
+        }),
         children: appLabel('propertyModify'),
       },
       {
@@ -44,14 +40,7 @@ export function useMenuItem() {
         children: appLabel('propertyDelete'),
       },
     ];
-  }, [
-    baseMenuItem,
-    community,
-    property,
-    occupantEditor,
-    propertyModify,
-    propertyDelete,
-  ]);
+  }, [baseMenuItem, community, property, occupantEditor, propertyDelete]);
 
   return menuItemList;
 }

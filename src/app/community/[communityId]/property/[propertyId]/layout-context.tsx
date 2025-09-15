@@ -2,7 +2,6 @@ import React from 'react';
 import { CommunityEntry, PropertyEntry } from './_type';
 import * as occupantEditorModal from './occupant-editor-modal';
 import * as propertyDeleteModal from './property-delete-modal';
-import * as propertyModifyModal from './property-modify-modal';
 import * as registerEventModal from './register-event-modal';
 import * as sendMailModal from './send-mail-modal';
 
@@ -10,7 +9,6 @@ type ContextT = Readonly<{
   community: CommunityEntry;
   property: PropertyEntry;
   occupantEditor: occupantEditorModal.ModalControl;
-  propertyModify: propertyModifyModal.ModalControl;
   propertyDelete: propertyDeleteModal.ModalControl;
   registerEvent: registerEventModal.ModalControl;
   sendMail: sendMailModal.ModalControl;
@@ -27,7 +25,6 @@ interface Props {
 
 export function LayoutProvider({ community, property, ...props }: Props) {
   const occupantEditor = occupantEditorModal.useModalControl();
-  const propertyModify = propertyModifyModal.useModalControl();
   const propertyDelete = propertyDeleteModal.useModalControl();
   const registerEvent = registerEventModal.useModalControl();
   const sendMail = sendMailModal.useModalControl();
@@ -38,7 +35,6 @@ export function LayoutProvider({ community, property, ...props }: Props) {
         community,
         property,
         occupantEditor,
-        propertyModify,
         propertyDelete,
         registerEvent,
         sendMail,

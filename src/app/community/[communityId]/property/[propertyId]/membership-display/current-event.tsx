@@ -1,8 +1,8 @@
-import { Card, CardBody, CardHeader, cn } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader, cn } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
+import { Icon } from '~/view/base/icon';
 import { useLayoutContext } from '../layout-context';
-import { ModalButton } from '../modal-button';
 import { EventNameSelect } from './event-name-select';
 
 interface Props {
@@ -19,14 +19,16 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
       <CardBody>
         <div className="flex gap-2 items-start">
           <EventNameSelect />
-          <ModalButton
+          <Button
             className="h-10"
             isDisabled={!lastEventSelected}
             color="primary"
+            size="sm"
+            endContent={<Icon icon="edit" />}
             onPress={() => registerEvent.open({})}
           >
             I&apos;m here!
-          </ModalButton>
+          </Button>
         </div>
       </CardBody>
     </Card>

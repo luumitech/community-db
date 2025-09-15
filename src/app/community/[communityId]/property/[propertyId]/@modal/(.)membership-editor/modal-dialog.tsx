@@ -17,17 +17,13 @@ import { LastModified } from '~/view/last-modified';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
-// export interface ModalArg {
-//   /**
-//    * Focus on a specific input field initially
-//    *
-//    * `notes-helper`: The One line Notes helper above the TextArea
-//    */
-//   autoFocus?: FieldPath<InputData> | 'notes-helper';
-// }
-
 interface Props {
   onSave: (input: InputData) => Promise<void>;
+  /**
+   * Focus on a specific input field initially
+   *
+   * `notes-helper`: The One line Notes helper above the TextArea
+   */
   autoFocus?: FieldPath<InputData> | 'notes-helper';
 }
 

@@ -1,4 +1,4 @@
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { AddressEditor } from '~/community/[communityId]/common/address-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
@@ -13,44 +13,42 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
-import { useLayoutContext } from '../layout-context';
 import { useHookForm, type InputData } from './use-hook-form';
 
-export interface ModalArg {}
-
-interface Props extends ModalArg {
-  disclosure: UseDisclosureReturn;
+interface Props {
   onSave: (input: InputData) => Promise<void>;
 }
 
 export const ModifyModal: React.FC<Props> = ({ onSave }) => {
-  const { propertyModify } = useLayoutContext();
-  const { disclosure } = propertyModify;
-  const { isOpen, onOpenChange, onClose } = disclosure;
+  const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods, property } = useHookForm();
   const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
+
+  const forceClose = React.useCallback(() => {
+    router.back();
+  }, [router]);
 
   const onSubmit = React.useCallback(
     async (input: InputData) =>
       startTransition(async () => {
         try {
           await onSave(input);
-          onClose();
+          forceClose();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, onClose]
+    [onSave, forceClose]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      isOpen
+      onOpenChange={forceClose}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
@@ -63,7 +61,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('propertyModify')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditor forceCloseModal={onClose} />
+                  <AddressEditor forceCloseModal={forceClose} />
                 </ModalBody>
                 <ModalFooter className="flex items-center justify-between">
                   <LastModified

@@ -5,7 +5,7 @@ import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { parseAsNumber } from '~/lib/number-util';
 import { z, zz } from '~/lib/zod';
-import { useLayoutContext } from '../layout-context';
+import { useLayoutContext } from '../../layout-context';
 
 const PropertyEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_PropertyEditor on Property {

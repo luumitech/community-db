@@ -1,10 +1,9 @@
-import { Card, CardBody, CardHeader } from '@heroui/react';
+import { Button, Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
 import { useLayoutContext } from '../layout-context';
-import { ModalButton } from '../modal-button';
 import { OccupantTable } from './occupant-table';
 
 const OccupantDisplayFragment = graphql(/* GraphQL */ `
@@ -54,7 +53,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
       <CardHeader>Contact</CardHeader>
       <CardBody className="gap-2">
         <div className="flex flex-wrap gap-2 self-end">
-          <ModalButton
+          <Button
             isDisabled={!canSendEmail}
             onPress={() =>
               sendMail.open({
@@ -63,20 +62,23 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
                 occupantList,
               })
             }
+            size="sm"
             endContent={<Icon icon="email" />}
             color="primary"
             variant="bordered"
           >
             Send Membership Confirmation
-          </ModalButton>
+          </Button>
           {canEdit && (
-            <ModalButton
+            <Button
               onPress={() => occupantEditor.open({})}
               color="primary"
               variant="bordered"
+              size="sm"
+              endContent={<Icon icon="edit" />}
             >
               Edit Member Details
-            </ModalButton>
+            </Button>
           )}
         </div>
         <OccupantTable occupantList={occupantList} />

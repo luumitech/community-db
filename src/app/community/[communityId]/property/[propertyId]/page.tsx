@@ -1,11 +1,16 @@
 'use client';
-import { useQuery } from '@apollo/client';
-import { Skeleton } from '@heroui/react';
+import { Divider } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { graphql } from '~/graphql/generated';
-import { onError } from '~/graphql/on-error';
+import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
+import { appPath } from '~/lib/app-path';
+import { LastModified } from '~/view/last-modified';
 import { LayoutContent } from './layout-content';
+import { useLayoutContext } from './layout-context';
+import { MembershipDisplay } from './membership-display';
+import { MoreMenu } from './more-menu';
+import { OccupantDisplay } from './occupant-display';
+import { PropertyDisplay } from './property-display';
 
 interface Params {
   communityId: string;
@@ -17,9 +22,33 @@ interface RouteArgs {
 }
 
 export default function Property(props: RouteArgs) {
-  const params = React.use(props.params);
-  const { communityId, propertyId } = params;
+  const { property, community } = useLayoutContext();
+  const router = useRouter();
+  const routerCalled = React.useRef(false);
 
-  // TODO: Move layout-content inline
-  return <LayoutContent />;
+  const onSearchChanged = React.useCallback(() => {
+    if (!routerCalled.current) {
+      const propertyListPath = appPath('propertyList', {
+        path: { communityId: community.id },
+      });
+      routerCalled.current = true;
+      router.push(propertyListPath);
+    }
+  }, [router, community.id]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <MoreMenu />
+      <PropertySearchBar onChange={onSearchChanged} />
+      <PropertyDisplay />
+      <Divider />
+      <MembershipDisplay />
+      <OccupantDisplay />
+      <LastModified
+        updatedAt={property.updatedAt}
+        updatedBy={property.updatedBy}
+      />
+      <LayoutContent />
+    </div>
+  );
 }
