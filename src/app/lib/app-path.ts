@@ -39,7 +39,8 @@ export const supportedPathTemplates = {
   occupantEditor:
     '/community/:communityId/property/:propertyId/occupant-editor',
   registerEvent: '/community/:communityId/property/:propertyId/register-event',
-  sendMail: '/community/:communityId/property/:propertyId/send-mail',
+  composeMembershipMail:
+    '/community/:communityId/property/:propertyId/compose-membership-mail',
 };
 type SupportedPath = typeof supportedPathTemplates;
 
@@ -149,7 +150,7 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template: 'sendMail',
+  template: 'composeMembershipMail',
   sub: {
     path: {
       communityId: string;
@@ -234,8 +235,8 @@ export function appLabel(key: keyof SupportedPath) {
       return 'Edit Contact Information';
     case 'registerEvent':
       return 'Register Event';
-    case 'sendMail':
-      return 'Send Confirmation Email';
+    case 'composeMembershipMail':
+      return 'Compose Confirmation Email';
     case 'property':
       return 'Property';
     case 'thirdPartyIntegration':

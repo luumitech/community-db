@@ -92,7 +92,7 @@ export const ModalDialog: React.FC<Props> = ({
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('sendMail')}</ModalHeader>
+                <ModalHeader>{appLabel('composeMembershipMail')}</ModalHeader>
                 <ModalBody>
                   <MailForm />
                 </ModalBody>

@@ -1,8 +1,10 @@
 'use client';
 import { useMutation } from '@apollo/client';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { ModalDialog } from './modal-dialog';
 import { SuccessDialog } from './success-dialog';
@@ -42,7 +44,23 @@ interface RouteArgs {
 }
 
 export default function RegisterEvent(props: RouteArgs) {
+  const router = useRouter();
+  const { communityId, propertyId } = React.use(props.params);
   const [updateProperty] = useMutation(RegisterEventMutation);
+
+  const onSendConfirmation = React.useCallback(
+    (membershipYear: string) => {
+      router.push(
+        appPath('composeMembershipMail', {
+          path: { communityId, propertyId },
+          query: {
+            membershipYear,
+          },
+        })
+      );
+    },
+    [router, communityId, propertyId]
+  );
 
   const onSave = React.useCallback(
     async (_input: InputData) => {
@@ -52,10 +70,7 @@ export default function RegisterEvent(props: RouteArgs) {
           const result = await updateProperty({
             variables: { input },
             update: (cache, { data }) => {
-              const communityId = data?.registerEvent.community.id;
-              if (communityId) {
-                evictCache(cache, 'CommunityStat', communityId);
-              }
+              evictCache(cache, 'CommunityStat', communityId);
             },
           });
           return { result };
@@ -68,9 +83,11 @@ export default function RegisterEvent(props: RouteArgs) {
                 autoClose: 10000, // 10s
                 render: ({ data, toastProps }) => (
                   <SuccessDialog
-                    membershipYear={input.membership.year.toString()}
                     registerEvent={data.result.data?.registerEvent}
-                    closeToast={toastProps.closeToast}
+                    onSend={() => {
+                      toastProps.closeToast();
+                      onSendConfirmation(input.membership.year.toString());
+                    }}
                   />
                 ),
               },
@@ -78,7 +95,7 @@ export default function RegisterEvent(props: RouteArgs) {
         }
       );
     },
-    [updateProperty]
+    [communityId, onSendConfirmation, updateProperty]
   );
 
   return <ModalDialog onSave={onSave} />;

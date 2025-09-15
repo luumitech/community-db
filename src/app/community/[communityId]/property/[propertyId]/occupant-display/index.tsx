@@ -57,14 +57,14 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             endContent={<Icon icon="email" />}
             color="primary"
             variant="bordered"
-            href={appPath('sendMail', {
+            href={appPath('composeMembershipMail', {
               path: { communityId: community.id, propertyId: property.id },
               query: {
                 membershipYear: yearSelected?.toString() ?? '',
               },
             })}
           >
-            {appLabel('sendMail')}
+            {appLabel('composeMembershipMail')}
           </Button>
           {canEdit && (
             <Button
