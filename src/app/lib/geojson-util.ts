@@ -11,11 +11,13 @@ import * as GQL from '~/graphql/generated/graphql';
 
 type pointGridFn = typeof turf.pointGrid;
 
+// Partial and Nullable
+type PartialNullable<T> = { [K in keyof T]?: T[K] | null };
+
 /** Check if the given coordinate is a valid geo coordinate */
-export function isValidCoordinate(coord: {
-  lat?: number | null;
-  lon?: number | null;
-}): coord is GQL.GeoPointInput {
+export function isValidCoordinate(
+  coord: PartialNullable<GQL.GeoPointInput>
+): coord is GQL.GeoPointInput {
   const { lat, lon } = coord;
   return (
     typeof lon === 'number' &&

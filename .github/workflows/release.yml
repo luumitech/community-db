@@ -1,0 +1,51 @@
+name: Release Published
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write  # Required to push to GHCR
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Define Step Variables
+        id: vars
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/community-db
+          APP_VERSION=${{ github.event.release.tag_name }}
+          GIT_BRANCH=${{ github.ref_name }}
+          GIT_COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
+          echo "IMAGE_NAME=${IMAGE_NAME}" | tee -a $GITHUB_OUTPUT
+          echo "APP_VERSION=${APP_VERSION}" | tee -a $GITHUB_OUTPUT
+          echo "GIT_BRANCH=${GIT_BRANCH}" | tee -a $GITHUB_OUTPUT
+          echo "GIT_COMMIT_HASH=${GIT_COMMIT_HASH}" | tee -a $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: true
+          tags: ${{ steps.vars.outputs.IMAGE_NAME }}:main
+          build-args: |
+            APP_VERSION=${{ steps.vars.outputs.APP_VERSION }}
+            GIT_BRANCH=${{ steps.vars.outputs.GIT_BRANCH }}
+            GIT_COMMIT_HASH=${{ steps.vars.outputs.GIT_COMMIT_HASH }}
+
