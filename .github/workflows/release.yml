@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -30,7 +28,8 @@ jobs:
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/community-db
           APP_VERSION=${{ github.event.release.tag_name }}
-          GIT_BRANCH=${{ github.ref_name }}
+          # This should be the branch where the release is created from
+          GIT_BRANCH=main
           GIT_COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
           echo "IMAGE_NAME=${IMAGE_NAME}" | tee -a $GITHUB_OUTPUT
           echo "APP_VERSION=${APP_VERSION}" | tee -a $GITHUB_OUTPUT
@@ -43,7 +42,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: ${{ steps.vars.outputs.IMAGE_NAME }}:main
+          tags: ${{ steps.vars.outputs.IMAGE_NAME }}:${{ steps.vars.outputs.GIT_BRANCH }}
           build-args: |
             APP_VERSION=${{ steps.vars.outputs.APP_VERSION }}
             GIT_BRANCH=${{ steps.vars.outputs.GIT_BRANCH }}
