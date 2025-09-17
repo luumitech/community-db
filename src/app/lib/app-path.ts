@@ -1,6 +1,9 @@
 import { compile } from 'path-to-regexp';
 import queryString from 'query-string';
 
+const SPECIFIC_COMMUNITY_PATH = '/community/:communityId';
+const SPECIFIC_PROPERTY_PATH = `${SPECIFIC_COMMUNITY_PATH}/property/:propertyId`;
+
 /** List of supported URL within app */
 export const supportedPathTemplates = {
   home: '/',
@@ -16,31 +19,26 @@ export const supportedPathTemplates = {
   communitySelect: '/community/select',
   communityCreate: '/community/create',
 
-  communityImport: '/community/:communityId/import-community',
-  communityExport: '/community/:communityId/export-xlsx',
-  contactExport: '/community/:communityId/export-contact',
-  communityShare: '/community/:communityId/share',
-  propertyList: '/community/:communityId/property-list',
-  communityDashboard: '/community/:communityId/dashboard',
-  thirdPartyIntegration: '/community/:communityId/third-party-integration',
-  communityMapView: '/community/:communityId/map-view',
-  batchPropertyModify: '/community/:communityId/batch-property-modify',
-  communityModify: '/community/:communityId/community-modify',
-  communityDelete: '/community/:communityId/community-delete',
-  propertyCreate: '/community/:communityId/property-create',
+  communityImport: `${SPECIFIC_COMMUNITY_PATH}/import-community`,
+  communityExport: `${SPECIFIC_COMMUNITY_PATH}/export-xlsx`,
+  contactExport: `${SPECIFIC_COMMUNITY_PATH}/export-contact`,
+  communityShare: `${SPECIFIC_COMMUNITY_PATH}/share`,
+  propertyList: `${SPECIFIC_COMMUNITY_PATH}/property-list`,
+  communityDashboard: `${SPECIFIC_COMMUNITY_PATH}/dashboard`,
+  thirdPartyIntegration: `${SPECIFIC_COMMUNITY_PATH}/third-party-integration`,
+  communityMapView: `${SPECIFIC_COMMUNITY_PATH}/map-view`,
+  batchPropertyModify: `${SPECIFIC_COMMUNITY_PATH}/batch-property-modify`,
+  communityModify: `${SPECIFIC_COMMUNITY_PATH}/community-modify`,
+  communityDelete: `${SPECIFIC_COMMUNITY_PATH}/community-delete`,
+  propertyCreate: `${SPECIFIC_COMMUNITY_PATH}/property-create`,
 
-  property: '/community/:communityId/property/:propertyId',
-  propertyModify:
-    '/community/:communityId/property/:propertyId/property-modify',
-  propertyDelete:
-    '/community/:communityId/property/:propertyId/property-delete',
-  membershipEditor:
-    '/community/:communityId/property/:propertyId/membership-editor',
-  occupantEditor:
-    '/community/:communityId/property/:propertyId/occupant-editor',
-  registerEvent: '/community/:communityId/property/:propertyId/register-event',
-  composeMembershipMail:
-    '/community/:communityId/property/:propertyId/compose-membership-mail',
+  property: `${SPECIFIC_PROPERTY_PATH}/view`,
+  propertyModify: `${SPECIFIC_PROPERTY_PATH}/property-modify`,
+  propertyDelete: `${SPECIFIC_PROPERTY_PATH}/property-delete`,
+  membershipEditor: `${SPECIFIC_PROPERTY_PATH}/membership-editor`,
+  occupantEditor: `${SPECIFIC_PROPERTY_PATH}/occupant-editor`,
+  registerEvent: `${SPECIFIC_PROPERTY_PATH}/register-event`,
+  composeMembershipMail: `${SPECIFIC_PROPERTY_PATH}/compose-membership-mail`,
 };
 type SupportedPath = typeof supportedPathTemplates;
 

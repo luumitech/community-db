@@ -1,11 +1,10 @@
-import { Chip } from '@heroui/chip';
+import { Chip, type ChipProps } from '@heroui/chip';
 import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import { getFragment, graphql } from '~/graphql/generated';
-import { type PropertyEntry } from './_type';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 
-const EntryFragment = graphql(/* GraphQL */ `
+const OccupantFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Occupant on Property {
     occupantList {
       firstName
@@ -13,14 +12,19 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+type OccupantFragmentType = FragmentType<typeof OccupantFragment>;
 
-interface Props {
+interface Props extends ChipProps {
   className?: string;
-  fragment: PropertyEntry;
+  fragment: OccupantFragmentType;
 }
 
-export const Occupant: React.FC<Props> = ({ className, fragment }) => {
-  const entry = getFragment(EntryFragment, fragment);
+export const Occupant: React.FC<Props> = ({
+  className,
+  fragment,
+  ...props
+}) => {
+  const entry = getFragment(OccupantFragment, fragment);
   const nameList = entry.occupantList
     .map(({ firstName, lastName }) => {
       const name = `${firstName ?? ''} ${lastName ?? ''}`;
@@ -31,7 +35,7 @@ export const Occupant: React.FC<Props> = ({ className, fragment }) => {
   return (
     <div className={cn(className, 'flex items-center gap-2')}>
       {nameList.map((name, idx) => (
-        <Chip key={idx} size="sm">
+        <Chip key={idx} size="sm" {...props}>
           {name}
         </Chip>
       ))}

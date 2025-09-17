@@ -14,7 +14,7 @@ export function useTableData(
 ) {
   /** Sort _year1 and _year2, so yearCol1 always show the greater year */
   const year1 = _year1 ?? getCurrentYear();
-  const year2 = _year2 ?? year1 - 1;
+  const year2 = _year2 != null && _year2 !== year1 ? _year2 : year1 - 1;
   const yearCol1 = Math.max(year1, year2);
   const yearCol2 = Math.min(year1, year2);
 
