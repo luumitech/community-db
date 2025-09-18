@@ -95,7 +95,7 @@ function defaultInputData(
     filter: {
       memberYear: filter.memberYear ?? null,
       memberEvent: filter.memberEvent ?? null,
-      withGps: null,
+      withGps: filter.withGps ?? null,
     },
     membership: {
       year: getCurrentYear(),

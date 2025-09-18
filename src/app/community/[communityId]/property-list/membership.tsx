@@ -1,10 +1,9 @@
 import { Tooltip } from '@heroui/react';
 import React from 'react';
-import { getFragment, graphql } from '~/graphql/generated';
+import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
-import { type PropertyEntry } from './_type';
 
-const EntryFragment = graphql(/* GraphQL */ `
+const MembershipFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Membership on Property {
     membershipList {
       year
@@ -16,10 +15,11 @@ const EntryFragment = graphql(/* GraphQL */ `
     }
   }
 `);
+type MembershipFragmentType = FragmentType<typeof MembershipFragment>;
 
 interface Props {
   className?: string;
-  fragment: PropertyEntry;
+  fragment: MembershipFragmentType;
   year: number;
 }
 
@@ -28,7 +28,7 @@ export const Membership: React.FC<Props> = ({
   fragment,
   ...props
 }) => {
-  const entry = getFragment(EntryFragment, fragment);
+  const entry = getFragment(MembershipFragment, fragment);
   const membership = entry.membershipList.find(
     ({ year }) => year === props.year
   );
