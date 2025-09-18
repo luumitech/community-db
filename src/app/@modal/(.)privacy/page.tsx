@@ -1,15 +1,10 @@
 'use client';
-import {
-  Link,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-} from '@heroui/react';
+import { Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
+import { Link } from '~/view/base/link';
 import { Item } from './item';
 
 export default function Privacy() {
@@ -82,7 +77,6 @@ export default function Privacy() {
               href={appPath('contactUs', {
                 query: { subject: 'Privay Policy' },
               })}
-              showAnchorIcon
             >
               {appLabel('contactUs')}
             </Link>

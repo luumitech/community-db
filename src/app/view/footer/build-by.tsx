@@ -22,7 +22,7 @@ export const BuiltBy: React.FC<Props> = ({ className }) => {
       <div>
         <div className="font-bold text-gray-600">
           <span>Built by </span>
-          <Link href="https://luumitech.com" className="leading-5">
+          <Link href="https://luumitech.com" className="leading-5" isExternal>
             LuumiTech
           </Link>
         </div>

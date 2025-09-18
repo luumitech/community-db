@@ -1,8 +1,8 @@
-import { Link } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Link } from '~/view/base/link';
 import { useHookFormContext } from '../use-hook-form';
 
 /**
@@ -12,7 +12,7 @@ import { useHookFormContext } from '../use-hook-form';
  *
  * - AddGps requires Geoapify keys to be specified
  */
-export function useCheckMethodRequirement(forceCloseModal: () => void) {
+export function useCheckMethodRequirement() {
   const { communityId, hasGeoapifyApiKey } = useLayoutContext();
   const { watch } = useHookFormContext();
   const method = watch('method');
@@ -32,7 +32,6 @@ export function useCheckMethodRequirement(forceCloseModal: () => void) {
                   path: { communityId },
                   query: { tab: 'geoapify' },
                 })}
-                onClick={() => forceCloseModal()}
               >
                 {appLabel('thirdPartyIntegration')}
               </Link>{' '}
@@ -43,7 +42,7 @@ export function useCheckMethodRequirement(forceCloseModal: () => void) {
         break;
     }
     return null;
-  }, [communityId, forceCloseModal, hasGeoapifyApiKey, method]);
+  }, [communityId, hasGeoapifyApiKey, method]);
 
   return msg;
 }

@@ -5,14 +5,10 @@ import { useCheckMethodRequirement } from './check-method-requirement';
 
 interface Props {
   className?: string;
-  forceCloseModal: () => void;
 }
 
-export const MethodSelect: React.FC<Props> = ({
-  className,
-  forceCloseModal,
-}) => {
-  const msg = useCheckMethodRequirement(forceCloseModal);
+export const MethodSelect: React.FC<Props> = ({ className }) => {
+  const msg = useCheckMethodRequirement();
 
   return (
     <div className={cn(className, 'flex flex-col gap-4')}>

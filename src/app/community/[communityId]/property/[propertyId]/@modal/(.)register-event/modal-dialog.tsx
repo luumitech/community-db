@@ -20,21 +20,21 @@ import { EventInfoEditor } from './event-info-editor';
 import { InputData, XtraArgProvider, useHookForm } from './use-hook-form';
 
 interface Props {
+  eventName: string;
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const ModalDialog: React.FC<Props> = ({ onSave }) => {
+export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
-  const { formMethods, ...xtraProps } = useHookForm();
+  const { formMethods, ...xtraProps } = useHookForm(eventName);
   const { getValues, formState, handleSubmit } = formMethods;
   const canRegister = getValues('hidden.canRegister');
   const isMember = getValues('hidden.isMember');
   const memberYear = getValues('membership.year');
-  const eventName = getValues('event.eventName');
   const { isDirty } = formState;
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -50,20 +50,21 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, forceClose]
+    [onSave, goBack]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="registerEvent"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       confirmation={canSave}
       {...(canRegister && {
         confirmationArg: {

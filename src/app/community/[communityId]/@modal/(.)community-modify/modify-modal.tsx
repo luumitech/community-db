@@ -22,9 +22,13 @@ import { InputData, useHookForm } from './use-hook-form';
 
 interface Props {
   onSave: (input: InputData) => Promise<void>;
+  defaultTab?: string;
 }
 
-export const ModifyModal: React.FC<Props> = ({ onSave }) => {
+export const ModifyModal: React.FC<Props> = ({
+  onSave,
+  defaultTab = 'general',
+}) => {
   const router = useRouter();
   const { community: fragment } = useLayoutContext();
   const [pending, startTransition] = React.useTransition();
@@ -32,7 +36,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
   const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -41,20 +45,21 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, forceClose]
+    [onSave, goBack]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="communityModify"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
@@ -78,17 +83,18 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
                     }}
                     color="primary"
                     variant="underlined"
+                    defaultSelectedKey={defaultTab}
                   >
-                    <Tab key="generalTab" title="General">
+                    <Tab key="general" title="General">
                       <GeneralTab />
                     </Tab>
-                    <Tab key="eventTab" title="Events">
+                    <Tab key="events" title="Events">
                       <EventListEditor />
                     </Tab>
-                    <Tab key="ticketListTab" title="Tickets">
+                    <Tab key="tickets" title="Tickets">
                       <TicketListEditor />
                     </Tab>
-                    <Tab key="paymentMethodTab" title="Payment Methods">
+                    <Tab key="paymentMethods" title="Payment Methods">
                       <PaymentMethodListEditor />
                     </Tab>
                   </Tabs>

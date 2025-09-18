@@ -1,16 +1,12 @@
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownSection,
-  DropdownTrigger,
-  cn,
-} from '@heroui/react';
+import { Dropdown, DropdownMenu, DropdownTrigger, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { appLabel } from '~/lib/app-path';
+import {
+  PleaseConfigureTickets,
+  renderDropdownItems,
+  renderDropdownSections,
+} from '~/community/[communityId]/layout-util/render-select';
 import { decMul } from '~/lib/decimal-util';
-import { insertIf } from '~/lib/insert-if';
 import { FlatButton } from '~/view/base/flat-button';
 import { Ticket } from './_type';
 
@@ -32,18 +28,12 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
   onClick,
   children,
 }) => {
-  const { selectTicketSections, visibleTicketItems, ticketDefault } =
-    useLayoutContext();
-
-  const sections = includeHiddenFields
-    ? selectTicketSections
-    : [
-        ...insertIf(visibleTicketItems.length > 0, {
-          title: '',
-          items: visibleTicketItems,
-          showDivider: false,
-        }),
-      ];
+  const {
+    communityId,
+    selectTicketSections,
+    visibleTicketItems,
+    ticketDefault,
+  } = useLayoutContext();
 
   return (
     <Dropdown placement="bottom-start">
@@ -58,14 +48,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Add ticket item"
-        emptyContent={
-          <div>
-            Please configure ticket items in{' '}
-            <span className="text-sm text-foreground-500">
-              {appLabel('communityModify')}
-            </span>
-          </div>
-        }
+        emptyContent={<PleaseConfigureTickets communityId={communityId} />}
         onAction={(key) => {
           const ticketName = key as string;
           const ticketDef = ticketDefault.get(ticketName);
@@ -77,17 +60,9 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
           });
         }}
       >
-        {sections.map((section, idx) => (
-          <DropdownSection
-            key={idx}
-            title={section.title}
-            showDivider={section.showDivider}
-          >
-            {section.items.map((item) => (
-              <DropdownItem key={item.value}>{item.label}</DropdownItem>
-            ))}
-          </DropdownSection>
-        ))}
+        {includeHiddenFields
+          ? renderDropdownSections(selectTicketSections)
+          : renderDropdownItems(visibleTicketItems)}
       </DropdownMenu>
     </Dropdown>
   );

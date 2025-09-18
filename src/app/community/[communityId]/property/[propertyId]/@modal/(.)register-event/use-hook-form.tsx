@@ -63,7 +63,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 function findEvent(
   property: GQL.PropertyId_MembershipEditorFragment,
   yearNum: number | null,
-  eventName: string | undefined
+  eventName: string
 ) {
   const year = yearNum ?? getCurrentYear();
   const membership = property.membershipList.find(
@@ -117,14 +117,14 @@ function defaultInputData(
   };
 }
 
-export function useHookForm() {
+export function useHookForm(eventName: string) {
   const { defaultSetting } = useCommunityLayoutContext();
   const { property: fragment } = useLayoutContext();
-  const { yearSelected, lastEventSelected } = useSelector((state) => state.ui);
+  const { yearSelected } = useSelector((state) => state.ui);
   const property = getFragment(MembershipEditorFragment, fragment);
   const findEventResult = React.useMemo(() => {
-    return findEvent(property, yearSelected, lastEventSelected);
-  }, [property, yearSelected, lastEventSelected]);
+    return findEvent(property, yearSelected, eventName);
+  }, [property, yearSelected, eventName]);
   const defaultValues = React.useMemo(() => {
     return defaultInputData(property, findEventResult, defaultSetting);
   }, [property, findEventResult, defaultSetting]);

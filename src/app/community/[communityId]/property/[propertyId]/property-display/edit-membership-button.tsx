@@ -1,7 +1,7 @@
-import { Link, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
-import { FlatButton } from '~/view/base/flat-button';
+import { Link } from '~/view/base/link';
 import { useLayoutContext } from '../layout-context';
 
 interface Props {
@@ -17,12 +17,10 @@ export const EditMembershipButton: React.FC<Props> = ({ className }) => {
       href={appPath('membershipEditor', {
         path: { communityId: community.id, propertyId: property.id },
       })}
-    >
-      <FlatButton
-        className="text-primary"
-        icon="edit"
-        tooltip={appLabel('membershipEditor')}
-      />
-    </Link>
+      iconOnly={{
+        icon: 'edit',
+        tooltip: appLabel('membershipEditor'),
+      }}
+    />
   );
 };

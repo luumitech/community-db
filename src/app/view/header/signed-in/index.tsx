@@ -3,6 +3,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Link,
   User,
 } from '@heroui/react';
 import { env } from 'next-runtime-env';
@@ -41,7 +42,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
       </DropdownTrigger>
       <DropdownMenu
         className={styles['drop-down']}
-        aria-label="Profile Actions"
+        aria-label="Profile Menu"
         variant="flat"
         disabledKeys={[subscriptionPlanEnable ? 'buyMeACoffee' : 'pricingPlan']}
       >
@@ -92,6 +93,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
           key="buyMeACoffee"
           href={BmcUrl}
           target="_blank"
+          rel="noopener noreferrer"
           startContent={<BmcLogo />}
           textValue="Buy me a coffee"
           showDivider

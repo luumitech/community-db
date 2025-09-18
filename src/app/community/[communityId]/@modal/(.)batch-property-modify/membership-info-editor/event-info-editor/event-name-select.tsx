@@ -1,38 +1,37 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { Select, SelectItem, SelectSection } from '~/view/base/select';
+import {
+  PleaseConfigureEvents,
+  renderEmptyResult,
+  renderSections,
+} from '~/community/[communityId]/layout-util/render-select';
+import { Select } from '~/view/base/select';
 
 interface Props {
   className?: string;
 }
 
 export const EventNameSelect: React.FC<Props> = ({ className }) => {
-  const { selectEventSections } = useLayoutContext();
+  const { communityId, selectEventSections } = useLayoutContext();
+
+  const hasNoItem = selectEventSections.length === 0;
 
   return (
     <Select
       className={cn(className, 'min-w-32 max-w-sm')}
       controlName="membership.eventAttended.eventName"
       aria-label="Event Name"
-      items={selectEventSections}
       variant="underlined"
       // placeholder="Select an event"
     >
-      {(section) => (
-        <SelectSection
-          key={section.title}
-          title={section.title}
-          items={section.items}
-          showDivider={section.showDivider}
-        >
-          {(item) => (
-            <SelectItem key={item.value} textValue={item.label}>
-              {item.label}
-            </SelectItem>
+      <>
+        {hasNoItem &&
+          renderEmptyResult(
+            <PleaseConfigureEvents communityId={communityId} />
           )}
-        </SelectSection>
-      )}
+        {renderSections(selectEventSections)}
+      </>
     </Select>
   );
 };

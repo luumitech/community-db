@@ -1,8 +1,8 @@
-import { Link } from '@heroui/link';
 import { cn } from '@heroui/react';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { Link } from '~/view/base/link';
 import { FreePlan } from './free-plan';
 import { PremiumPlan } from './premium-plan';
 
@@ -30,11 +30,8 @@ export const SelectPlan: React.FC<Props> = ({ className }) => {
                 - number of addresses required`,
               },
             })}
-            isBlock
-            showAnchorIcon
-            anchorIcon={<Icon className="mx-1" icon="email" />}
           >
-            Contact our team
+            Contact our team <Icon className="mx-1" icon="email" />
           </Link>
         </p>
       </div>

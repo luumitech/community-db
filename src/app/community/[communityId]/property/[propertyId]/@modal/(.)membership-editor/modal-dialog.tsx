@@ -45,7 +45,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave, autoFocus }) => {
     }
   }, [setFocus, autoFocus]);
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -54,20 +54,21 @@ export const ModalDialog: React.FC<Props> = ({ onSave, autoFocus }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, forceClose]
+    [onSave, goBack]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="membershipEditor"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}

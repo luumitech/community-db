@@ -14,7 +14,7 @@ export const Item: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <div className={cn(className)}>
       <h2 className="text-xl font-semibold">{title}</h2>
-      <p className="text-sm mt-2">{children}</p>
+      <div className="text-sm mt-2">{children}</div>
     </div>
   );
 };

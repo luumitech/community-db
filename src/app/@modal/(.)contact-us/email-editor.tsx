@@ -1,17 +1,17 @@
 import { Divider } from '@heroui/react';
-import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { Input } from '~/view/base/input';
 import { Textarea } from '~/view/base/textarea';
 
 interface Props {
   className?: string;
+  messageDescription?: string;
 }
 
-export const EmailEditor: React.FC<Props> = ({ className }) => {
-  const searchParams = useSearchParams();
-  const messageDescription = searchParams.get('messageDescription');
-
+export const EmailEditor: React.FC<Props> = ({
+  className,
+  messageDescription,
+}) => {
   return (
     <>
       <Input
