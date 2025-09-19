@@ -21,7 +21,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
   const { formState, handleSubmit } = formMethods;
   const { isDirty, errors } = formState;
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -30,20 +30,21 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, forceClose]
+    [onSave, goBack]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="batchPropertyModify"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}
@@ -56,7 +57,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
                 <Wizard header={<Header />}>
-                  <Step0 forceCloseModal={forceClose} />
+                  <Step0 />
                   <Step1 />
                   <Step2 isSubmitting={pending} closeModal={closeModal} />
                 </Wizard>

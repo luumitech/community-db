@@ -59,7 +59,7 @@ export const ModalDialog: React.FC<Props> = ({
     [membershipYear, propertyFragment, onSave, reset]
   );
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -68,20 +68,21 @@ export const ModalDialog: React.FC<Props> = ({
       sendMailStartTransition(async () => {
         try {
           await onSend(inputData);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [forceClose, onSend]
+    [onSend, goBack]
   );
 
   return (
     <Modal
       size="2xl"
       placement="top-center"
+      modalPath="composeMembershipMail"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       confirmation={isDirty}
       scrollBehavior="outside"
       isDismissable={false}

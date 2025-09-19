@@ -29,6 +29,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
             endContent={<Icon icon="edit" />}
             href={appPath('registerEvent', {
               path: { communityId: community.id, propertyId: property.id },
+              query: { eventName: lastEventSelected! },
             })}
           >
             I&apos;m here!

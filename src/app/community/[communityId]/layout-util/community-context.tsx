@@ -6,13 +6,13 @@ import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
 import { type CommunityEntry } from './community-query';
 
-interface SelectItem {
+export interface SelectItemT {
   label: string;
   value: string;
 }
-interface SelectSection {
+export interface SelectSectionT {
   title: string;
-  items: SelectItem[];
+  items: SelectItemT[];
   showDivider?: boolean;
 }
 
@@ -24,19 +24,19 @@ export type CommunityState = Readonly<{
   /** Community name */
   communityName: string;
   /** Access role items */
-  roleItems: SelectItem[];
+  roleItems: SelectItemT[];
   /** Minimum membership year recorded within membership */
   minYear: number;
   /** Maximum membership year recorded within membership */
   maxYear: number;
   /** Visible items (suitable for 'Add new --') */
-  visibleEventItems: SelectItem[];
-  visibleTicketItems: SelectItem[];
-  visiblePaymentMethods: SelectItem[];
+  visibleEventItems: SelectItemT[];
+  visibleTicketItems: SelectItemT[];
+  visiblePaymentMethods: SelectItemT[];
   /** All items (including hidden, suitable for modify existing selection) */
-  selectEventSections: SelectSection[];
-  selectTicketSections: SelectSection[];
-  selectPaymentMethodSections: SelectSection[];
+  selectEventSections: SelectSectionT[];
+  selectTicketSections: SelectSectionT[];
+  selectPaymentMethodSections: SelectSectionT[];
   /** Ticket default configurations */
   ticketDefault: Map<string, GQL.SupportedTicketItem>;
   defaultSetting: GQL.DefaultSetting;
@@ -58,8 +58,8 @@ function createSelectionItems(
     | GQL.SupportedPaymentMethod
   )[]
 ) {
-  const visibleItems: SelectItem[] = [];
-  const hiddenItems: SelectItem[] = [];
+  const visibleItems: SelectItemT[] = [];
+  const hiddenItems: SelectItemT[] = [];
   list.forEach((entry) => {
     if (entry.hidden) {
       hiddenItems.push({ label: entry.name, value: entry.name });
@@ -101,7 +101,7 @@ export function useCommunityContext(community: CommunityEntry) {
     const ticketList = community.ticketList ?? [];
     const paymentMethodList = community.paymentMethodList ?? [];
 
-    const roleItems: SelectItem[] = [
+    const roleItems: SelectItemT[] = [
       { label: 'Admin', value: GQL.Role.Admin },
       { label: 'Editor', value: GQL.Role.Editor },
       { label: 'Viewer', value: GQL.Role.Viewer },

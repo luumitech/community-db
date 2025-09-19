@@ -101,12 +101,22 @@ export function appPath(
     | 'communityDashboard'
     | 'communityMapView'
     | 'batchPropertyModify'
-    | 'communityModify'
     | 'communityDelete'
     | 'propertyCreate',
   sub: {
     path: {
       communityId: string;
+    };
+  }
+): string;
+export function appPath(
+  template: 'communityModify',
+  sub: {
+    path: {
+      communityId: string;
+    };
+    query?: {
+      tab?: 'general' | 'events' | 'tickets' | 'paymentMethods';
     };
   }
 ): string;
@@ -122,12 +132,7 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template:
-    | 'property'
-    | 'propertyModify'
-    | 'propertyDelete'
-    | 'occupantEditor'
-    | 'registerEvent',
+  template: 'property' | 'propertyModify' | 'propertyDelete' | 'occupantEditor',
   sub: {
     path: {
       communityId: string;
@@ -148,6 +153,18 @@ export function appPath(
   }
 ): string;
 export function appPath(
+  template: 'registerEvent',
+  sub: {
+    path: {
+      communityId: string;
+      propertyId: string;
+    };
+    query: {
+      eventName: string;
+    };
+  }
+): string;
+export function appPath(
   template: 'composeMembershipMail',
   sub: {
     path: {
@@ -162,8 +179,8 @@ export function appPath(
 export function appPath(
   template: keyof SupportedPath,
   sub?: {
-    query?: Record<string, string>;
     path?: Record<string, string>;
+    query?: Record<string, string>;
   }
 ) {
   const { query, path } = sub ?? {};

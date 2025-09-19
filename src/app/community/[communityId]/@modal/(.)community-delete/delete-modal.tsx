@@ -25,7 +25,7 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
   const [pending, startTransition] = React.useTransition();
   const { community } = useHookForm(fragment);
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -34,20 +34,21 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
       startTransition(async () => {
         try {
           await onDelete(community);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onDelete, community, forceClose]
+    [onDelete, community, goBack]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="communityDelete"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}

@@ -1,9 +1,9 @@
-import { en } from '@faker-js/faker';
-import { Link, Tooltip, getKeyValue } from '@heroui/react';
+import { Tooltip, getKeyValue } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { appPath } from '~/lib/app-path';
+import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
+import { Link } from '~/view/base/link';
 import { usePageContext } from '../../page-context';
 import { type AudienceMember } from './_type';
 import { StatusChip } from './status-filter';
@@ -57,17 +57,17 @@ export function useTableData() {
           }
           return (
             <Link
-              anchorIcon={<Icon icon="property-editor" />}
-              showAnchorIcon
               href={appPath('property', {
                 path: {
                   communityId: community.id,
                   propertyId: property.id,
                 },
               })}
-              color="foreground"
-              isBlock
-              target="_blank"
+              iconOnly={{
+                icon: 'property-editor',
+                tooltip: appLabel('property'),
+                openInNewWindow: true,
+              }}
             />
           );
 

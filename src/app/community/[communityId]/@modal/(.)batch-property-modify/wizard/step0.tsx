@@ -5,12 +5,10 @@ import { useCheckMethodRequirement } from '../method-select/check-method-require
 import { FooterDefault } from './footer-default';
 import { StepTemplate } from './step-template';
 
-interface Props {
-  forceCloseModal: () => void;
-}
+interface Props {}
 
 export const Step0: React.FC<Props> = (props) => {
-  const msg = useCheckMethodRequirement(props.forceCloseModal);
+  const msg = useCheckMethodRequirement();
 
   return (
     <StepTemplate

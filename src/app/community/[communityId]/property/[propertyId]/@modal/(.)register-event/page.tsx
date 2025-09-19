@@ -6,6 +6,7 @@ import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
+import { ErrorDialog } from './error-dialog';
 import { ModalDialog } from './modal-dialog';
 import { SuccessDialog } from './success-dialog';
 import { type InputData } from './use-hook-form';
@@ -34,6 +35,10 @@ const RegisterEventMutation = graphql(/* GraphQL */ `
   }
 `);
 
+interface SearchParams {
+  eventName: string;
+}
+
 interface Params {
   communityId: string;
   propertyId: string;
@@ -41,11 +46,13 @@ interface Params {
 
 interface RouteArgs {
   params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
 }
 
 export default function RegisterEvent(props: RouteArgs) {
   const router = useRouter();
   const { communityId, propertyId } = React.use(props.params);
+  const { eventName } = React.use(props.searchParams);
   const [updateProperty] = useMutation(RegisterEventMutation);
 
   const onSendConfirmation = React.useCallback(
@@ -53,9 +60,7 @@ export default function RegisterEvent(props: RouteArgs) {
       router.push(
         appPath('composeMembershipMail', {
           path: { communityId, propertyId },
-          query: {
-            membershipYear,
-          },
+          query: { membershipYear },
         })
       );
     },
@@ -98,5 +103,9 @@ export default function RegisterEvent(props: RouteArgs) {
     [communityId, onSendConfirmation, updateProperty]
   );
 
-  return <ModalDialog onSave={onSave} />;
+  if (!eventName?.trim()) {
+    return <ErrorDialog />;
+  }
+
+  return <ModalDialog eventName={eventName} onSave={onSave} />;
 }

@@ -1,22 +1,19 @@
 'use client';
-import { Link, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Input } from '~/view/base/input';
+import { Link } from '~/view/base/link';
 import { MapContextProvider } from '~/view/base/map';
 import { NumberInput } from '~/view/base/number-input';
 import { Map } from './map';
 
 interface Props {
   className?: string;
-  forceCloseModal: () => void;
 }
 
-export const AddressEditor: React.FC<Props> = ({
-  className,
-  forceCloseModal,
-}) => {
+export const AddressEditor: React.FC<Props> = ({ className }) => {
   const { community, hasGeoapifyApiKey } = useLayoutContext();
   const [pending, onStartLookup] = React.useTransition();
 
@@ -35,7 +32,6 @@ export const AddressEditor: React.FC<Props> = ({
                 path: { communityId: community.id },
                 query: { tab: 'geoapify' },
               })}
-              onClick={() => forceCloseModal()}
             >
               {appLabel('thirdPartyIntegration')}
             </Link>{' '}

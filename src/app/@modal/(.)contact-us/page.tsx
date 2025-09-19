@@ -8,7 +8,7 @@ import {
   ModalHeader,
 } from '@heroui/react';
 import { useReCaptcha } from 'next-recaptcha-v3';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
 import { FormProvider } from '~/custom-hooks/hook-form';
@@ -21,13 +21,33 @@ import { toast } from '~/view/base/toastify';
 import { EmailEditor } from './email-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
-export default function ContactUs() {
+interface SearchParams {
+  /** Title of the modal */
+  title?: string;
+  /** Subject of contact form */
+  subject?: string;
+  /** Description to be included under the message input field */
+  messageDescription?: string;
+  /** Include server log in the email */
+  log?: 'true';
+}
+
+interface Params {}
+
+interface RouteArgs {
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
+}
+
+export default function ContactUs(props: RouteArgs) {
+  const {
+    title = 'Contact Us',
+    subject: defaultSubject = 'General Inquiry',
+    messageDescription,
+    log,
+  } = React.use(props.searchParams);
   const router = useRouter();
   const { executeRecaptcha } = useReCaptcha();
-  const searchParams = useSearchParams();
-  const title = searchParams.get('title') ?? 'Contact Us';
-  const defaultSubject = searchParams.get('subject') ?? 'General Inquiry';
-  const log = searchParams.get('log');
   const mailSend = tsr.mail.send.useMutation();
   const { formMethods } = useHookForm(defaultSubject);
   const { formState, handleSubmit } = formMethods;
@@ -80,7 +100,7 @@ export default function ContactUs() {
           <ModalContent>
             <ModalHeader>{title}</ModalHeader>
             <ModalBody>
-              <EmailEditor />
+              <EmailEditor messageDescription={messageDescription} />
             </ModalBody>
             <ModalFooter className="items-center">
               <div className="text-xs">
@@ -88,6 +108,8 @@ export default function ContactUs() {
                 <Link
                   className="text-xs"
                   href="https://policies.google.com/privacy"
+                  isExternal
+                  showAnchorIcon
                 >
                   Privacy Policy
                 </Link>{' '}
@@ -95,6 +117,8 @@ export default function ContactUs() {
                 <Link
                   className="text-xs"
                   href="https://policies.google.com/terms"
+                  isExternal
+                  showAnchorIcon
                 >
                   Terms of Service
                 </Link>{' '}

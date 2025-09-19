@@ -2,11 +2,12 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
-  Select,
-  SelectItem,
-  SelectSection,
-  type SelectProps,
-} from '~/view/base/select';
+  PleaseConfigurePaymentMethods,
+  renderEmptyResult,
+  renderItems,
+  renderSections,
+} from '~/community/[communityId]/layout-util/render-select';
+import { Select, type SelectProps } from '~/view/base/select';
 
 type CustomSelectProps = Omit<
   SelectProps,
@@ -25,12 +26,14 @@ export const PaymentSelect: React.FC<Props> = ({
   includeHiddenFields,
   ...props
 }) => {
-  const { selectPaymentMethodSections, visiblePaymentMethods } =
+  const { communityId, selectPaymentMethodSections, visiblePaymentMethods } =
     useLayoutContext();
 
-  const items = includeHiddenFields
-    ? selectPaymentMethodSections
-    : [{ title: '', items: visiblePaymentMethods, showDivider: false }];
+  const hasNoItems = React.useMemo(() => {
+    return includeHiddenFields
+      ? selectPaymentMethodSections.length === 0
+      : visiblePaymentMethods.length === 0;
+  }, [includeHiddenFields, selectPaymentMethodSections, visiblePaymentMethods]);
 
   return (
     <div className={cn(className)}>
@@ -40,25 +43,19 @@ export const PaymentSelect: React.FC<Props> = ({
         // This is being controlled by the transaction total payment select
         isControlled
         aria-label="Payment Method"
-        items={items}
         variant="underlined"
         selectionMode="single"
         {...props}
       >
-        {(section) => (
-          <SelectSection
-            key={section.title}
-            title={section.title}
-            items={section.items}
-            showDivider={section.showDivider}
-          >
-            {(item) => (
-              <SelectItem key={item.value} textValue={item.label}>
-                {item.label}
-              </SelectItem>
+        <>
+          {hasNoItems &&
+            renderEmptyResult(
+              <PleaseConfigurePaymentMethods communityId={communityId} />
             )}
-          </SelectSection>
-        )}
+          {includeHiddenFields
+            ? renderSections(selectPaymentMethodSections)
+            : renderItems(visiblePaymentMethods)}
+        </>
       </Select>
     </div>
   );

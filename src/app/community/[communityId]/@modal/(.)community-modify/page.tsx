@@ -16,7 +16,22 @@ const CommunityMutation = graphql(/* GraphQL */ `
   }
 `);
 
-export default function CommunityModify() {
+interface Params {
+  communityId: string;
+}
+
+interface SearchParams {
+  tab?: string;
+}
+
+interface RouteArgs {
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
+}
+
+export default function CommunityModify(props: RouteArgs) {
+  const { communityId } = React.use(props.params);
+  const { tab } = React.use(props.searchParams);
   const [updateCommunity] = useMutation(CommunityMutation);
 
   const onSave = React.useCallback(
@@ -27,10 +42,7 @@ export default function CommunityModify() {
         updateCommunity({
           variables: { input },
           update: (cache, result) => {
-            const communityId = result.data?.communityModify.id;
-            if (communityId) {
-              evictCache(cache, 'CommunityStat', communityId);
-            }
+            evictCache(cache, 'CommunityStat', communityId);
           },
         }),
         {
@@ -39,8 +51,8 @@ export default function CommunityModify() {
         }
       );
     },
-    [updateCommunity]
+    [communityId, updateCommunity]
   );
 
-  return <ModifyModal onSave={onSave} />;
+  return <ModifyModal defaultTab={tab} onSave={onSave} />;
 }

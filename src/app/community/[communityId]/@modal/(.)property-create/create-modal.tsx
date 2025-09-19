@@ -27,7 +27,7 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
   const { handleSubmit, formState } = formMethods;
   const { isDirty } = formState;
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -36,20 +36,21 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
       startTransition(async () => {
         try {
           await onSave(input);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onSave, forceClose]
+    [onSave, goBack]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="propertyCreate"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
@@ -62,7 +63,7 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('propertyCreate')}</ModalHeader>
                 <ModalBody>
-                  <AddressEditor forceCloseModal={forceClose} />
+                  <AddressEditor />
                 </ModalBody>
                 <ModalFooter>
                   <Button

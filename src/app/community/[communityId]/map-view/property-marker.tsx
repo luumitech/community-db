@@ -1,10 +1,10 @@
 import { Marker } from '@adamscybot/react-leaflet-component-marker';
-import { Link, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { Popup } from 'react-leaflet';
 import { appLabel, appPath } from '~/lib/app-path';
-import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
+import { Link } from '~/view/base/link';
 import { usePageContext } from './page-context';
 
 export interface LocEntry {
@@ -67,35 +67,26 @@ export const PropertyMarker: React.FC<Props> = ({
       <Popup>
         <div>
           <div className="text-medium mb-1">{locEntry.address}</div>
-          <div className="flex gap-2">
+          <div className="flex">
             <Link
               href={appPath('property', {
                 path: { communityId, propertyId },
               })}
-              target="_blank"
-            >
-              <FlatButton
-                className="text-primary"
-                icon="eye"
-                tooltip={appLabel('property')}
-              />
-              <Icon
-                className="absolute right-0 bottom-0 bg-background rotate-[135deg]"
-                icon="leftArrow"
-                size={9}
-              />
-            </Link>
+              iconOnly={{
+                icon: 'eye',
+                tooltip: appLabel('property'),
+                openInNewWindow: true,
+              }}
+            />
             <Link
               href={appPath('propertyModify', {
                 path: { communityId, propertyId },
               })}
-            >
-              <FlatButton
-                className="text-primary"
-                icon="edit"
-                tooltip={appLabel('propertyModify')}
-              />
-            </Link>
+              iconOnly={{
+                icon: 'edit',
+                tooltip: appLabel('propertyModify'),
+              }}
+            />
           </div>
         </div>
       </Popup>

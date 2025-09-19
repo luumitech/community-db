@@ -1,13 +1,11 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { insertIf } from '~/lib/insert-if';
 import {
-  Select,
-  SelectItem,
-  SelectSection,
-  type SelectProps,
-} from '~/view/base/select';
+  renderItems,
+  renderSections,
+} from '~/community/[communityId]/layout-util/render-select';
+import { Select, type SelectProps } from '~/view/base/select';
 
 type CustomSelectProps = Omit<
   SelectProps,
@@ -28,15 +26,11 @@ export const TicketTypeSelect: React.FC<Props> = ({
 }) => {
   const { selectTicketSections, visibleTicketItems } = useLayoutContext();
 
-  const items = includeHiddenFields
-    ? selectTicketSections
-    : [
-        ...insertIf(visibleTicketItems.length > 0, {
-          title: '',
-          items: visibleTicketItems,
-          showDivider: false,
-        }),
-      ];
+  /**
+   * Due to the way the app is designed, when we show ticket selection box,
+   * there should always be some ticket items to display (i.e. the items are
+   * never empty, so not handling empty items)
+   */
 
   return (
     <div className={cn(className)}>
@@ -44,25 +38,13 @@ export const TicketTypeSelect: React.FC<Props> = ({
         className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.ticketName`}
         aria-label="Ticket Name"
-        items={items}
         variant="underlined"
         selectionMode="single"
         {...props}
       >
-        {(section) => (
-          <SelectSection
-            key={section.title}
-            title={section.title}
-            items={section.items}
-            showDivider={section.showDivider}
-          >
-            {(item) => (
-              <SelectItem key={item.value} textValue={item.label}>
-                {item.label}
-              </SelectItem>
-            )}
-          </SelectSection>
-        )}
+        {includeHiddenFields
+          ? renderSections(selectTicketSections)
+          : renderItems(visibleTicketItems)}
       </Select>
     </div>
   );

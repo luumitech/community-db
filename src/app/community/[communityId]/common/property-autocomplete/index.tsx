@@ -6,6 +6,7 @@ import { Occupant } from '~/community/[communityId]/property-list/occupant';
 import { PropertyAddress } from '~/community/[communityId]/property-list/property-address';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
@@ -31,6 +32,9 @@ const PropertyAutocompleteSearchQuery = graphql(/* GraphQL */ `
     }
   }
 `);
+
+type PropertyEntry =
+  GQL.PropertyAutocompleteSearchQuery['communityFromId']['propertyList']['edges'][number]['node'];
 
 /** Define a few special item keys used when displaying autoComplete menuItems, */
 const ITEM_KEY_EMPTY = 'empty';
@@ -84,41 +88,47 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     return data?.communityFromId.propertyList.totalCount ?? 0;
   }, [data]);
 
-  const renderEmptyResults = React.useCallback(() => {
-    if (searchTextIsEmpty) {
+  const renderEmptyResults = React.useCallback(
+    (itemList: PropertyEntry[]) => {
+      if (searchTextIsEmpty) {
+        return null;
+      }
+
+      if (itemList.length === 0) {
+        return (
+          <AutocompleteItem key={ITEM_KEY_EMPTY} textValue="empty">
+            <EmptyContent />
+          </AutocompleteItem>
+        );
+      }
+
       return null;
-    }
+    },
+    [searchTextIsEmpty, EmptyContent]
+  );
 
-    if (properties.length === 0) {
-      return (
-        <AutocompleteItem key={ITEM_KEY_EMPTY} textValue="empty">
-          <EmptyContent />
-        </AutocompleteItem>
-      );
-    }
-
-    return null;
-  }, [searchTextIsEmpty, properties, EmptyContent]);
-
-  const renderSearchItems = React.useCallback(() => {
-    return properties.slice(0, 5).map((item) => {
-      const propertyId = item.id;
-      return (
-        <AutocompleteItem
-          classNames={{
-            title: 'flex items-center gap-6',
-          }}
-          key={propertyId}
-          textValue={item.id}
-          href={appPath('property', { path: { communityId, propertyId } })}
-          onPress={() => setSearchBarText('')}
-        >
-          <PropertyAddress fragment={item} />
-          <Occupant fragment={item} />
-        </AutocompleteItem>
-      );
-    });
-  }, [properties, communityId, setSearchBarText]);
+  const renderSearchItems = React.useCallback(
+    (itemList: PropertyEntry[]) => {
+      return itemList.slice(0, 5).map((item) => {
+        const propertyId = item.id;
+        return (
+          <AutocompleteItem
+            classNames={{
+              title: 'flex items-center gap-6',
+            }}
+            key={propertyId}
+            textValue={item.id}
+            href={appPath('property', { path: { communityId, propertyId } })}
+            onPress={() => setSearchBarText('')}
+          >
+            <PropertyAddress fragment={item} />
+            <Occupant fragment={item} />
+          </AutocompleteItem>
+        );
+      });
+    },
+    [communityId, setSearchBarText]
+  );
 
   const renderViewAllItems = React.useCallback(() => {
     if (totalCount <= 5) {
@@ -162,8 +172,8 @@ export const PropertyAutocomplete: React.FC<Props> = ({
          * entered), the `allowsEmptyCollection` is not working correctly, so
          * `renderEmptyREsults` is introduced as replacement logic
          */}
-        {renderEmptyResults()}
-        {renderSearchItems()}
+        {renderEmptyResults(properties)}
+        {renderSearchItems(properties)}
         {renderViewAllItems()}
       </>
     </Autocomplete>

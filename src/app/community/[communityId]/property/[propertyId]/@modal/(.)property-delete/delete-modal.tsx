@@ -21,7 +21,7 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
   const [pending, startTransition] = React.useTransition();
   const { property } = useHookForm();
 
-  const forceClose = React.useCallback(() => {
+  const goBack = React.useCallback(() => {
     router.back();
   }, [router]);
 
@@ -30,20 +30,21 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
       startTransition(async () => {
         try {
           await onDelete(property);
-          forceClose();
+          goBack();
         } catch (err) {
           // error handled by parent
         }
       }),
-    [onDelete, forceClose, property]
+    [onDelete, goBack, property]
   );
 
   return (
     <Modal
       size="5xl"
       placement="top-center"
+      modalPath="propertyDelete"
       isOpen
-      onOpenChange={forceClose}
+      onOpenChange={goBack}
       scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}

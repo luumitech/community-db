@@ -10,7 +10,7 @@ interface Props {
 
 export const BmcButton: React.FC<Props> = ({ className }) => {
   return (
-    <Link className={cn(className)} href={BmcUrl} target="_blank">
+    <Link className={cn(className)} href={BmcUrl} isExternal>
       <Image
         src={buyMeACoffeeButtonImg}
         alt="Buy Me A Coffee"
