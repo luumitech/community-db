@@ -13,6 +13,7 @@ export {
   useFormContext,
   type Path,
   type UseFieldArrayReturn,
+  type UseFormReturn,
 } from 'react-hook-form';
 
 /**

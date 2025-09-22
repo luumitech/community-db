@@ -67,6 +67,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
             'ml-[40px] p-1'
           )}
           transactionConfig={{
+            controlNamePrefix: 'hidden.transaction',
             ticketList: ticketList ?? [],
           }}
           ticketListConfig={{

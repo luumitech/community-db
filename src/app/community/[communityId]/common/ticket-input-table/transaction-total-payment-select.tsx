@@ -1,4 +1,4 @@
-import { Select, cn, type SelectProps } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -7,6 +7,7 @@ import {
   renderItems,
   renderSections,
 } from '~/community/[communityId]/layout-util/render-select';
+import { Select, type SelectProps } from '~/view/base/select';
 
 type CustomSelectProps = Omit<SelectProps, 'items' | 'children'>;
 

@@ -39,7 +39,7 @@ const supportedIcon = {
   mailchimp: 'cib:mailchimp',
   'chevron-forward': 'ion:chevron-forward',
   'add-ticket': 'lucide:ticket-plus',
-  calculator: 'hugeicons:calculator',
+  calculator: 'f7:equal-circle',
   helpbook: 'grommet-icons:help-book',
   bug: 'famicons:bug-outline',
   hamburgerMenu: 'radix-icons:hamburger-menu',

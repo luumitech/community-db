@@ -30,6 +30,9 @@ interface Props {
    *
    * All new entries are added to a 'New Transaction' section, and a total is
    * displayed to make it easier to deal with new transaction.
+   *
+   * Payment Methods for membership and tickets will be hidden, payment will be
+   * selected for the whole of transaction.
    */
   transactionConfig?: TransactionConfig;
   /**

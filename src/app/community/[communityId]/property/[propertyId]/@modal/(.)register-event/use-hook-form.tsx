@@ -47,6 +47,11 @@ function schema() {
        * is useful for determining if ticketList should show membership fee
        */
       isFirstEvent: z.boolean(),
+      /** Transaction related fields */
+      transaction: z.object({
+        /** Select payment on `Current Transaction Total` */
+        paymentMethod: zz.string.nonEmpty('Must select a payment method'),
+      }),
     }),
   });
 }
@@ -113,6 +118,9 @@ function defaultInputData(
       isMember,
       canRegister,
       isFirstEvent,
+      transaction: {
+        paymentMethod: '',
+      },
     },
   };
 }
