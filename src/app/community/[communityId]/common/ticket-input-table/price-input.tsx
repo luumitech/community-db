@@ -2,7 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
-import { decIsEqual, decMul } from '~/lib/decimal-util';
+import { decIsEqual, decMul, formatCurrency } from '~/lib/decimal-util';
 import { CurrencyInput, CurrencyInputProps } from '~/view/base/currency-input';
 import { FlatButton } from '~/view/base/flat-button';
 
@@ -30,7 +30,7 @@ export const PriceInput: React.FC<Props> = ({
     if (unitPrice == null || ticketCount == null || isNaN(ticketCount)) {
       return null;
     }
-    return decMul(unitPrice, ticketCount);
+    return formatCurrency(decMul(unitPrice, ticketCount));
   }, [unitPrice, ticketCount]);
 
   const onChange: NonNullable<CurrencyInputProps['onChange']> =
@@ -68,7 +68,7 @@ export const PriceInput: React.FC<Props> = ({
         defaultPrice != null && (
           <FlatButton
             icon="calculator"
-            tooltip={`${ticketCount} * $${unitPrice} = $${defaultPrice}`}
+            tooltip={`$${unitPrice} ⨉ ${ticketCount} = $${defaultPrice}`}
             onClick={() => {
               setValue(`${controlNamePrefix}.price`, defaultPrice, {
                 shouldDirty: true,

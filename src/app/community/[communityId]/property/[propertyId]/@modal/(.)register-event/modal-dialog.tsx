@@ -17,6 +17,7 @@ import {
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { EventInfoEditor } from './event-info-editor';
+import { usePreSubmit } from './pre-submit';
 import { InputData, XtraArgProvider, useHookForm } from './use-hook-form';
 
 interface Props {
@@ -28,6 +29,7 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods, ...xtraProps } = useHookForm(eventName);
+  const { propagatePaymentMethod } = usePreSubmit(formMethods);
   const { getValues, formState, handleSubmit } = formMethods;
   const canRegister = getValues('hidden.canRegister');
   const isMember = getValues('hidden.isMember');
@@ -58,6 +60,14 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
     [onSave, goBack]
   );
 
+  const preSubmit: React.FormEventHandler<HTMLFormElement> = React.useCallback(
+    async (evt) => {
+      propagatePaymentMethod();
+      await handleSubmit(onSubmit)(evt);
+    },
+    [propagatePaymentMethod, handleSubmit, onSubmit]
+  );
+
   return (
     <Modal
       size="5xl"
@@ -83,7 +93,7 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
     >
       <XtraArgProvider {...xtraProps}>
         <FormProvider {...formMethods}>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={preSubmit}>
             <ModalContent>
               {(closeModal) => (
                 <>

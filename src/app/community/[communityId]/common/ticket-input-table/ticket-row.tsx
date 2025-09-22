@@ -1,5 +1,6 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
+import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { FlatButton } from '~/view/base/flat-button';
@@ -45,9 +46,16 @@ export const TicketRow: React.FC<TicketRowProps> = ({
   ticketIdx,
   onRemove,
 }) => {
-  const { ticketListConfig, includeHiddenFields } = useTicketContext();
+  const { ticketDefault } = useLayoutContext();
+  const { watch } = useFormContext();
+  const { ticketListConfig, includeHiddenFields, transactionConfig } =
+    useTicketContext();
   const { fieldMethods } = ticketListConfig;
   const controlNamePrefix = `${ticketListConfig.controlNamePrefix}.${ticketIdx}`;
+  const ticketType = watch(`${controlNamePrefix}.ticketName`);
+
+  const ticketDef = ticketDefault.get(ticketType);
+  const unitPrice = ticketDef?.unitPrice ?? '0.00';
 
   return (
     <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
@@ -58,16 +66,27 @@ export const TicketRow: React.FC<TicketRowProps> = ({
         />
       </div>
       <div role="cell">
-        <TicketInput controlNamePrefix={controlNamePrefix} />
+        <TicketInput
+          controlNamePrefix={controlNamePrefix}
+          startContent={
+            <div className="pointer-events-none flex items-center">
+              <span className="text-default-400 text-xs whitespace-nowrap">
+                ${unitPrice} ⨉
+              </span>
+            </div>
+          }
+        />
       </div>
       <div role="cell">
         <PriceInput controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
-        <PaymentSelect
-          controlNamePrefix={controlNamePrefix}
-          includeHiddenFields={includeHiddenFields}
-        />
+        {!transactionConfig && (
+          <PaymentSelect
+            controlNamePrefix={controlNamePrefix}
+            includeHiddenFields={includeHiddenFields}
+          />
+        )}
       </div>
       <div className="flex pt-3 gap-2" role="cell">
         <FlatButton
@@ -86,8 +105,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
 };
 
 export const TransactionHeader: React.FC<EmptyProps> = () => {
-  const { ticketListConfig, transactionUIConfig } = useTicketContext();
-  const { paymentMethod } = transactionUIConfig;
+  const { ticketListConfig } = useTicketContext();
 
   return (
     <div className={cn('grid col-span-full')}>
@@ -101,15 +119,14 @@ export const TransactionHeader: React.FC<EmptyProps> = () => {
 };
 
 export const TransactionFooter: React.FC<EmptyProps> = () => {
-  const { ticketListConfig, transactionUIConfig } = useTicketContext();
-  const { paymentMethod } = transactionUIConfig;
+  const { ticketListConfig } = useTicketContext();
 
   return (
     <div className={cn('grid col-span-full')}>
       <div className="ml-3">
         <TicketAddButton
           onClick={(ticket) => {
-            ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
+            ticketListConfig.fieldMethods.append({ ...ticket });
           }}
         >
           <Button
@@ -128,20 +145,15 @@ export const TransactionFooter: React.FC<EmptyProps> = () => {
 };
 
 export const TransactionTotal: React.FC<EmptyProps> = () => {
-  const { ticketListConfig, membershipConfig, transactionUIConfig } =
+  const { ticketListConfig, membershipConfig, transactionConfig } =
     useTicketContext();
-  const { watch, setValue } = useFormContext();
+  const { watch, clearErrors } = useFormContext();
   const ticketList: TicketList = watch(ticketListConfig.controlNamePrefix);
   const membershipPrice = watch(`${membershipConfig?.controlNamePrefix}.price`);
-  const membershipPaymentMethod = watch(
-    `${membershipConfig?.controlNamePrefix}.paymentMethod`
-  );
   const totalPrice = decSum(
     membershipConfig?.canEdit ? membershipPrice : 0,
     ...ticketList.map(({ price }) => price)
   );
-  const { paymentMethod, setPaymentMethod } = transactionUIConfig;
-
   return (
     <div
       className={cn(
@@ -163,33 +175,19 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
       </div>
       <div role="cell">
         <TransactionTotalPaymentSelect
+          controlName={`${transactionConfig?.controlNamePrefix}.paymentMethod`}
           placeholder="Select Payment"
-          onSelectionChange={(keys) => {
-            const [firstKey] = keys;
-            const selectedPaymentMethod = (firstKey as string) ?? '';
-            setPaymentMethod(selectedPaymentMethod);
-            if (membershipConfig && !membershipPaymentMethod) {
-              setValue(
-                `${membershipConfig?.controlNamePrefix}.paymentMethod`,
-                selectedPaymentMethod,
-                {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                }
-              );
-            }
-            // Backfill any tickets that don't have a payment method specified
+          onSelectionChange={() => {
+            /**
+             * Before the form is submitted, this value is expected to propagate
+             * to all the empty payment fields, so we want to prevent any errors
+             * in them, so the propagation logic can be exercised
+             */
+            clearErrors(`${membershipConfig?.controlNamePrefix}.paymentMethod`);
             ticketList.forEach((entry, idx) => {
-              if (!entry.paymentMethod) {
-                setValue(
-                  `${ticketListConfig.controlNamePrefix}.${idx}.paymentMethod`,
-                  selectedPaymentMethod,
-                  {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                  }
-                );
-              }
+              clearErrors(
+                `${ticketListConfig.controlNamePrefix}.${idx}.paymentMethod`
+              );
             });
           }}
         />
@@ -206,7 +204,8 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
 };
 
 export const MembershipRow: React.FC<EmptyProps> = () => {
-  const { membershipConfig, includeHiddenFields } = useTicketContext();
+  const { membershipConfig, includeHiddenFields, transactionConfig } =
+    useTicketContext();
 
   if (!membershipConfig?.canEdit) {
     return null;
@@ -224,10 +223,12 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
         <MembershipPriceInput controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
-        <PaymentSelect
-          controlNamePrefix={controlNamePrefix}
-          includeHiddenFields={includeHiddenFields}
-        />
+        {!transactionConfig && (
+          <PaymentSelect
+            controlNamePrefix={controlNamePrefix}
+            includeHiddenFields={includeHiddenFields}
+          />
+        )}
       </div>
       <div className="flex pt-3 gap-2" role="cell" />
     </div>

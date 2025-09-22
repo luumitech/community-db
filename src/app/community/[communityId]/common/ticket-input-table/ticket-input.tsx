@@ -50,6 +50,9 @@ export const TicketInput: React.FC<Props> = ({
       labelPlacement="outside"
       variant="underlined"
       type="number"
+      formatOptions={{
+        maximumFractionDigits: 0,
+      }}
       endContent={
         countDefault != null && (
           <FlatButton

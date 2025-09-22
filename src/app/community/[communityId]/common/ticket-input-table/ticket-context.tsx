@@ -26,6 +26,12 @@ export interface MembershipConfig {
 
 export interface TransactionConfig {
   /**
+   * Control name prefix for fields within the `Current Transaction Total`
+   *
+   * For example, used for payment method selection
+   */
+  controlNamePrefix: string;
+  /**
    * Existing ticket list
    *
    * Note: this does not include membership
@@ -33,18 +39,11 @@ export interface TransactionConfig {
   ticketList: GQL.Ticket[];
 }
 
-interface TransactionUIConfig {
-  /** Default payment method for newly added transactions */
-  paymentMethod: string;
-  setPaymentMethod: (method: string) => void;
-}
-
 type ContextT = Readonly<{
   ticketListConfig: TicketListConfig;
   membershipConfig?: MembershipConfig;
   transactionConfig?: TransactionConfig;
   includeHiddenFields?: boolean;
-  transactionUIConfig: TransactionUIConfig;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -65,8 +64,6 @@ export function TicketProvider({
   includeHiddenFields,
   ...props
 }: Props) {
-  const [paymentMethod, setPaymentMethod] = React.useState<string>('');
-
   return (
     <Context.Provider
       value={{
@@ -74,10 +71,6 @@ export function TicketProvider({
         membershipConfig,
         transactionConfig,
         includeHiddenFields,
-        transactionUIConfig: {
-          paymentMethod,
-          setPaymentMethod,
-        },
       }}
       {...props}
     />
