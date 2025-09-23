@@ -1,6 +1,6 @@
 import React from 'react';
+import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { getFragment, graphql } from '~/graphql/generated';
-import { useLayoutContext } from '../layout-context';
 import { CurrentEvent } from './current-event';
 import { MembershipStatus } from './membership-status';
 import { NotesView } from './notes-view';

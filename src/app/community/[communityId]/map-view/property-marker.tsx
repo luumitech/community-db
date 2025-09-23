@@ -72,9 +72,9 @@ export const PropertyMarker: React.FC<Props> = ({
               href={appPath('property', {
                 path: { communityId, propertyId },
               })}
+              tooltip={appLabel('property')}
               iconOnly={{
                 icon: 'eye',
-                tooltip: appLabel('property'),
                 openInNewWindow: true,
               }}
             />
@@ -82,9 +82,9 @@ export const PropertyMarker: React.FC<Props> = ({
               href={appPath('propertyModify', {
                 path: { communityId, propertyId },
               })}
+              tooltip={appLabel('propertyModify')}
               iconOnly={{
                 icon: 'edit',
-                tooltip: appLabel('propertyModify'),
               }}
             />
           </div>

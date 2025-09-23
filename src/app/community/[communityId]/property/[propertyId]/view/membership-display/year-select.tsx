@@ -1,12 +1,12 @@
 import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
 import {
   SelectedYearItem,
   YearItemLabel,
   yearSelectItems,
   type YearItem,
-} from '../year-select-items';
+} from '~/community/[communityId]/property/[propertyId]/year-select-items';
+import * as GQL from '~/graphql/generated/graphql';
 
 type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
 

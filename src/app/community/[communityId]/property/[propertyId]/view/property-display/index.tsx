@@ -10,11 +10,11 @@ import {
 import React from 'react';
 import type { PropertyEntry } from '~/community/[communityId]/property-list/_type';
 import { useTableData } from '~/community/[communityId]/property-list/use-table-data';
+import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { insertIf } from '~/lib/insert-if';
 import { Loading } from '~/view/base/loading';
-import { useLayoutContext } from '../layout-context';
 import { EditMembershipButton } from './edit-membership-button';
 
 const PropertyDisplayFragment = graphql(/* GraphQL */ `

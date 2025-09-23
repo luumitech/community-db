@@ -63,9 +63,9 @@ export function useTableData() {
                   propertyId: property.id,
                 },
               })}
+              tooltip={appLabel('property')}
               iconOnly={{
                 icon: 'property-editor',
-                tooltip: appLabel('property'),
                 openInNewWindow: true,
               }}
             />

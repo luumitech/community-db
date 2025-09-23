@@ -2,6 +2,7 @@ import {
   cn,
   Link as NextUILink,
   LinkProps as NextUILinkProps,
+  Tooltip,
 } from '@heroui/react';
 import React from 'react';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
@@ -10,7 +11,6 @@ import { Icon, IconProps } from '~/view/base/icon';
 
 interface IconOnlyOpt {
   icon: IconProps['icon'];
-  tooltip?: string;
   /** Overlay an `Open in new window` icon on the above icon */
   openInNewWindow?: boolean;
   /** Specify a new size for the openInNewWindow icon */
@@ -18,25 +18,22 @@ interface IconOnlyOpt {
 }
 
 export interface LinkProps extends NextUILinkProps {
+  /** Link contains icon only, should not provide a children in this case */
   iconOnly?: IconOnlyOpt;
+  tooltip?: string;
 }
 
 export const Link = React.forwardRef<HTMLAnchorElement | null, LinkProps>(
   (props, ref) => {
-    const { className, iconOnly, children, ...linkProps } = props;
+    const { className, iconOnly, tooltip, ...linkProps } = props;
     const linkRef = useForwardRef<HTMLAnchorElement>(ref);
 
-    const openInNewWindow = !!iconOnly?.openInNewWindow;
-    const renderIconOnly = React.useCallback(() => {
-      if (iconOnly == null) {
-        return null;
-      }
-
-      const { icon, tooltip, openInNewWindowIconSize } = iconOnly;
+    const IconOnlyButton = React.useCallback((opt: IconOnlyOpt) => {
+      const { icon, openInNewWindowIconSize } = opt;
       return (
         <>
-          <FlatButton className="text-primary" icon={icon} tooltip={tooltip} />
-          {!!openInNewWindow && (
+          <FlatButton className="text-primary" icon={icon} />
+          {!!opt.openInNewWindow && (
             <Icon
               className="absolute right-[2px] top-[1px] rotate-[135deg]"
               icon="leftArrow"
@@ -45,21 +42,30 @@ export const Link = React.forwardRef<HTMLAnchorElement | null, LinkProps>(
           )}
         </>
       );
-    }, [iconOnly, openInNewWindow]);
+    }, []);
 
-    return (
-      <NextUILink
-        ref={linkRef}
-        className={cn(
-          'underline decoration-dotted hover:decoration-solid',
-          className
-        )}
-        {...(openInNewWindow && { target: '_blank' })}
-        {...(iconOnly != null && { isBlock: true })}
-        {...linkProps}
-      >
-        {renderIconOnly() ?? children}
-      </NextUILink>
+    const renderLink = React.useMemo(() => {
+      return (
+        <NextUILink
+          ref={linkRef}
+          className={cn(
+            'underline decoration-dotted hover:decoration-solid',
+            className
+          )}
+          {...(iconOnly != null && {
+            isBlock: true,
+            ...(iconOnly?.openInNewWindow && { target: '_blank' }),
+            children: <IconOnlyButton {...iconOnly} />,
+          })}
+          {...linkProps}
+        />
+      );
+    }, [IconOnlyButton, className, iconOnly, linkProps, linkRef]);
+
+    return tooltip ? (
+      <Tooltip content={tooltip}>{renderLink}</Tooltip>
+    ) : (
+      renderLink
     );
   }
 );

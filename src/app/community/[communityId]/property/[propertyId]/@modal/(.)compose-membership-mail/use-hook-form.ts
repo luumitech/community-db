@@ -6,7 +6,7 @@ import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import { z, zz } from '~/lib/zod';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { useLayoutContext } from '../../layout-context';
-import { OccupantDisplayFragment } from '../../occupant-display';
+import { OccupantDisplayFragment } from '../../view/occupant-display';
 import { createMentionMapping, createMentionValues } from './editor-util';
 
 const ModifyFragment = graphql(/* GraphQL */ `
