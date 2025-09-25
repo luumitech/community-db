@@ -25,7 +25,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
   const { formMethods } = useHookForm();
   const { control, formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
-  const occupantMethods = useFieldArray({
+  const occupantListMethods = useFieldArray({
     control,
     name: 'occupantList',
   });
@@ -66,14 +66,14 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('occupantEditor')}</ModalHeader>
                 <ModalBody>
-                  <Editor fieldArrayMethods={occupantMethods} />
+                  <Editor occupantListMethods={occupantListMethods} />
                 </ModalBody>
                 <ModalFooter>
                   <Button
                     endContent={<Icon icon="person-add" />}
                     color="primary"
                     variant="bordered"
-                    onPress={() => occupantMethods.append(occupantDefault)}
+                    onPress={() => occupantListMethods.append(occupantDefault)}
                   >
                     Add Contact
                   </Button>

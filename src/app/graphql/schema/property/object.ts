@@ -1,6 +1,37 @@
-import type { Event, Membership, Occupant, Ticket } from '@prisma/client';
+import type {
+  ContactInfo,
+  Event,
+  Membership,
+  Occupant,
+  Ticket,
+} from '@prisma/client';
 import { builder } from '~/graphql/builder';
 import { isMember } from './util';
+
+export const contactInfoTypeRef = builder.enumType('ContactInfoType', {
+  values: {
+    EMAIL: {
+      description: 'No payment method stored',
+    },
+    PHONE: {
+      description: 'No payment method stored, but granted paid priviledge',
+    },
+    TEXT: {
+      description: 'Payment method stored in Helcim',
+    },
+  } as const,
+});
+
+const contactInfoRef = builder.objectRef<ContactInfo>('ContactInfo').implement({
+  fields: (t) => ({
+    type: t.field({
+      type: contactInfoTypeRef,
+      resolve: (entry) => entry.type,
+    }),
+    label: t.exposeString('label'),
+    value: t.exposeString('value'),
+  }),
+});
 
 const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
   fields: (t) => ({
@@ -11,6 +42,11 @@ const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
     cell: t.exposeString('cell', { nullable: true }),
     work: t.exposeString('work', { nullable: true }),
     home: t.exposeString('home', { nullable: true }),
+    info: t.field({
+      type: [contactInfoRef],
+      nullable: true,
+      resolve: (entry) => entry.info,
+    }),
   }),
 });
 

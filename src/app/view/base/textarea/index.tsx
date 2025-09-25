@@ -3,7 +3,6 @@ import {
   TextAreaProps as NextUITextareaProps,
 } from '@heroui/input';
 import React from 'react';
-import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
@@ -20,19 +19,13 @@ export interface TextareaProps extends NextUITextareaProps {
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ controlName, isControlled, onBlur, onChange, ...props }, ref) => {
-    const { control, formState } = useFormContext();
-    const { errors } = formState;
-
-    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-    const error = React.useMemo<string | undefined>(() => {
-      return errObj?.message as string;
-    }, [errObj]);
+    const { control } = useFormContext();
 
     return (
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <NextUITextarea
             ref={mergeRefs(field.ref, ref)}
             // Force component into a controlled component
@@ -46,8 +39,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
               field.onChange(evt);
               onChange?.(evt);
             }}
-            errorMessage={error}
-            isInvalid={!!error}
+            errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
             {...props}
           />
         )}

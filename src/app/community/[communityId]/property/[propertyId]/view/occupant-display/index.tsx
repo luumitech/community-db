@@ -18,6 +18,11 @@ export const OccupantDisplayFragment = graphql(/* GraphQL */ `
       cell
       work
       home
+      info {
+        type
+        label
+        value
+      }
     }
     membershipList {
       year

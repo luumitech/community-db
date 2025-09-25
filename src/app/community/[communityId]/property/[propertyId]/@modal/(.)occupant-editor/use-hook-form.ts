@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import {
-  UseFieldArrayReturn,
   useForm,
   useFormContext,
+  type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -25,6 +25,11 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
       cell
       work
       home
+      info {
+        type
+        label
+        value
+      }
     }
   }
 `);
@@ -47,6 +52,33 @@ function schema() {
         cell: z.string(),
         work: z.string(),
         home: z.string(),
+        info: z.array(
+          z
+            .object({
+              type: z.nativeEnum(GQL.ContactInfoType),
+              label: zz.string.nonEmpty('Must specify a label'),
+              value: zz.string.nonEmpty('Must specify a value'),
+            })
+            .superRefine((form, ctx) => {
+              switch (form.type) {
+                case GQL.ContactInfoType.Email:
+                  if (!z.string().email().safeParse(form.value).success) {
+                    return ctx.addIssue({
+                      code: z.ZodIssueCode.custom,
+                      message: 'Invalid email',
+                      path: ['value'],
+                    });
+                  }
+                  break;
+
+                case GQL.ContactInfoType.Phone:
+                  break;
+
+                default:
+                  break;
+              }
+            })
+        ),
       })
     ),
   });
@@ -68,6 +100,7 @@ export const occupantDefault: InputData['occupantList'][number] = {
   cell: '',
   work: '',
   home: '',
+  info: [],
 };
 
 function defaultInputData(
@@ -86,6 +119,9 @@ function defaultInputData(
       cell: entry.cell ?? occupantDefault.cell,
       work: entry.work ?? occupantDefault.work,
       home: entry.home ?? occupantDefault.home,
+      info: (entry.info ?? occupantDefault.info).map(
+        ({ type, label, value }) => ({ type, label, value })
+      ),
     })),
   };
 }

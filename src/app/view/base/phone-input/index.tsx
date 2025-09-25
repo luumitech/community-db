@@ -1,7 +1,6 @@
 import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { PatternFormat, type PatternFormatProps } from 'react-number-format';
-import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
@@ -34,19 +33,13 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
     },
     ref
   ) => {
-    const { control, formState } = useFormContext();
-    const { errors } = formState;
-
-    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-    const error = React.useMemo<string | undefined>(() => {
-      return errObj?.message as string;
-    }, [errObj]);
+    const { control } = useFormContext();
 
     return (
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <PatternFormat
             ref={mergeRefs(field.ref, ref)}
             classNames={{
@@ -75,8 +68,8 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
               field.onChange(evt);
               onChange?.(evt);
             }}
-            errorMessage={error}
-            isInvalid={!!error}
+            errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
             format="(###)###-####"
             mask="_"
             allowEmptyFormatting

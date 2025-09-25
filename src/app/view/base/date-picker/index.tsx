@@ -5,7 +5,6 @@ import {
 } from '@heroui/react';
 import { toCalendarDate } from '@internationalized/date';
 import React from 'react';
-import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 import { parseAsDate } from '~/lib/date-util';
@@ -24,19 +23,13 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
     { className, controlName, isControlled, onChange, onBlur, ...props },
     ref
   ) => {
-    const { control, formState } = useFormContext();
-    const { errors } = formState;
-
-    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-    const error = React.useMemo<string | undefined>(() => {
-      return errObj?.message as string;
-    }, [errObj]);
+    const { control } = useFormContext();
 
     return (
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => {
+        render={({ field, fieldState }) => {
           const dateVal = parseAsDate(field.value);
           const value = dateVal ? toCalendarDate(dateVal) : null;
 
@@ -57,8 +50,8 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
                 field.onChange(date);
                 onChange?.(date);
               }}
-              errorMessage={error}
-              isInvalid={!!error}
+              errorMessage={fieldState.error?.message}
+              isInvalid={fieldState.invalid}
               {...props}
             />
           );

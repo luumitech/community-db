@@ -55,13 +55,7 @@ export function Select<T extends object>(props: SelectProps<T>) {
       },
       ref
     ) => {
-      const { control, formState } = useFormContext();
-      const { errors } = formState;
-
-      const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-      const error = React.useMemo<string | undefined>(() => {
-        return errObj?.message as string;
-      }, [errObj]);
+      const { control } = useFormContext();
 
       const selectedKeys = React.useCallback(
         (values: string | number | string[] | number[]) => {
@@ -82,7 +76,7 @@ export function Select<T extends object>(props: SelectProps<T>) {
         <Controller
           control={control}
           name={controlName}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <NextUISelect<T>
               ref={mergeRefs(field.ref, ref)}
               classNames={{
@@ -109,8 +103,8 @@ export function Select<T extends object>(props: SelectProps<T>) {
                 field.onChange(evt);
                 onChange?.(evt);
               }}
-              errorMessage={error}
-              isInvalid={!!error}
+              errorMessage={fieldState.error?.message}
+              isInvalid={fieldState.invalid}
               {...(!!isReadOnly && {
                 isDisabled: true,
               })}
