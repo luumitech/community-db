@@ -4,7 +4,6 @@ import {
   cn,
 } from '@heroui/react';
 import React from 'react';
-import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
@@ -31,19 +30,13 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
     },
     ref
   ) => {
-    const { control, formState } = useFormContext();
-    const { errors } = formState;
-
-    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-    const error = React.useMemo<string | undefined>(() => {
-      return errObj?.message as string;
-    }, [errObj]);
+    const { control } = useFormContext();
 
     return (
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <NextUINumberInput
             ref={mergeRefs(field.ref, ref)}
             classNames={{
@@ -79,8 +72,8 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
                 e.preventDefault();
               }
             }}
-            errorMessage={error}
-            isInvalid={!!error}
+            errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
             labelPlacement="inside"
             {...(!!isReadOnly && {
               isReadOnly: true,

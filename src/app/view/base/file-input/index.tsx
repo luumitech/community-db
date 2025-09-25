@@ -1,6 +1,5 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
-import * as R from 'remeda';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
@@ -19,8 +18,7 @@ export interface FileInputProps extends CustomInputProps, ReactInputProps {
 export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
   ({ controlName, onBlur, onChange, onClear, ...props }, ref) => {
     const inputRef = useForwardRef<HTMLInputElement>(ref);
-    const { control, formState } = useFormContext();
-    const { errors } = formState;
+    const { control } = useFormContext();
     const [filename, setFilename] = React.useState<string>();
 
     const onFileChange = React.useCallback(
@@ -46,33 +44,28 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
       onClear?.();
     };
 
-    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-    const error = React.useMemo<string | undefined>(() => {
-      return errObj?.message as string;
-    }, [errObj]);
-
     return (
-      <>
-        <Input
-          variant="bordered"
-          readOnly
-          endContent={
-            filename ? (
-              <FlatButton icon="clear" onClick={onFileClear} />
-            ) : (
-              <FlatButton icon="folder-open" onClick={onBrowse} />
-            )
-          }
-          value={filename ?? ''}
-          onClick={onBrowse}
-          errorMessage={error}
-          isInvalid={!!error}
-          {...(props as CustomInputProps)}
-        />
-        <Controller
-          control={control}
-          name={controlName}
-          render={({ field }) => (
+      <Controller
+        control={control}
+        name={controlName}
+        render={({ field, fieldState }) => (
+          <>
+            <Input
+              variant="bordered"
+              readOnly
+              endContent={
+                filename ? (
+                  <FlatButton icon="clear" onClick={onFileClear} />
+                ) : (
+                  <FlatButton icon="folder-open" onClick={onBrowse} />
+                )
+              }
+              value={filename ?? ''}
+              onClick={onBrowse}
+              errorMessage={fieldState.error?.message}
+              isInvalid={fieldState.invalid}
+              {...(props as CustomInputProps)}
+            />
             <input
               type="file"
               hidden
@@ -86,9 +79,9 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
                 onFileChange(evt);
               }}
             />
-          )}
-        />
-      </>
+          </>
+        )}
+      />
     );
   }
 );

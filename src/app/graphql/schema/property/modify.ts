@@ -7,7 +7,20 @@ import { extractYearRange } from '~/lib/xlsx-io/import/year-range-util';
 import { verifyAccess } from '../access/util';
 import { UpdateInput } from '../common';
 import { communityMinMaxYearUpdateArgs } from '../community/util';
+import { contactInfoTypeRef } from './object';
 import { getPropertyEntry } from './util';
+
+const ContactInfoInput = builder.inputType('ContactInfoInput', {
+  fields: (t) => ({
+    type: t.field({
+      description: 'Contact Info type',
+      type: contactInfoTypeRef,
+      required: true,
+    }),
+    label: t.string({ required: true }),
+    value: t.string({ required: true }),
+  }),
+});
 
 const OccupantInput = builder.inputType('OccupantInput', {
   fields: (t) => ({
@@ -18,6 +31,7 @@ const OccupantInput = builder.inputType('OccupantInput', {
     cell: t.string(),
     work: t.string(),
     home: t.string(),
+    info: t.field({ type: [ContactInfoInput] }),
   }),
 });
 

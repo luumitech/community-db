@@ -7,6 +7,7 @@ const supportedIcon = {
   'folder-open': 'material-symbols-light:folder-open-outline',
   clear: 'ic:round-clear',
   add: 'material-symbols:add-circle-outline',
+  minus: 'lsicon:minus-outline',
   'drag-handle': 'ic:outline-drag-indicator',
   cross: 'ic:round-clear',
   undo: 'grommet-icons:undo',

@@ -1,7 +1,6 @@
 import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { NumericFormat, type NumericFormatProps } from 'react-number-format';
-import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
@@ -36,19 +35,13 @@ export const CurrencyInput = React.forwardRef<
     },
     ref
   ) => {
-    const { control, formState } = useFormContext();
-    const { errors } = formState;
-
-    const errObj = R.pathOr(errors, R.stringToPath(controlName), {});
-    const error = React.useMemo<string | undefined>(() => {
-      return errObj?.message as string;
-    }, [errObj]);
+    const { control } = useFormContext();
 
     return (
       <Controller
         control={control}
         name={controlName}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <NumericFormat
             ref={mergeRefs(field.ref, ref)}
             classNames={{
@@ -77,8 +70,8 @@ export const CurrencyInput = React.forwardRef<
               field.onChange(evt);
               onChange?.(evt);
             }}
-            errorMessage={error}
-            isInvalid={!!error}
+            errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
             thousandSeparator=","
             decimalSeparator="."
             decimalScale={2}

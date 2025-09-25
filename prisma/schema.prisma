@@ -248,6 +248,27 @@ type Occupant {
   home      String?
   work      String?
   cell      String?
+  info      ContactInfo[]
+}
+
+/// Type of contact information
+enum ContactInfoType {
+  /// email address
+  EMAIL
+  /// phone number
+  PHONE
+  /// free form text
+  TEXT
+}
+
+/// Arbitrary Contact Information (can be email, phone, website, etc..)
+type ContactInfo {
+  /// (i.e. work)
+  label String
+  /// (i.e.e)
+  type  ContactInfoType
+  /// Depending on type of
+  value String
 }
 
 /// Event Information
