@@ -2,13 +2,13 @@ import path from 'path';
 import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
 
-describe('import community xlsx (singlesheet format)', () => {
+describe('import community xlsx (multisheet format)', () => {
   const testUtil = new TestUtil();
 
   beforeAll(async () => {
     await testUtil.initialize();
     await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'simple-lcra.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple-multisheet.xlsx')
     );
   });
 

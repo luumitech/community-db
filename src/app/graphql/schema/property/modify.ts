@@ -31,7 +31,7 @@ const OccupantInput = builder.inputType('OccupantInput', {
     cell: t.string(),
     work: t.string(),
     home: t.string(),
-    info: t.field({ type: [ContactInfoInput] }),
+    infoList: t.field({ type: [ContactInfoInput] }),
   }),
 });
 

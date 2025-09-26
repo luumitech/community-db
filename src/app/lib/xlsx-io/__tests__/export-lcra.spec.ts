@@ -7,14 +7,14 @@ import { ExportLcra } from '~/lib/xlsx-io/export';
 import { CommunityEntry } from '~/lib/xlsx-io/import';
 import { importLcraDB } from '~/lib/xlsx-io/import/format-lcradb';
 
-describe('export to xlsx (singlesheet LCRA format)', () => {
+describe('export to xlsx (singlesheet format)', () => {
   const testUtil = new TestUtil();
   let expectedImportResult: CommunityEntry;
 
   beforeAll(async () => {
     await testUtil.initialize();
     expectedImportResult = await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple-lcra.xlsx')
     );
   });
 

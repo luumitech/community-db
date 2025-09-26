@@ -40,7 +40,7 @@ function findColIdx(ws: WorksheetHelper, val: string) {
 describe('Ticket Info Statistices', () => {
   const testUtil = new TestUtil();
   const workbook = XLSX.readFile(
-    path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
+    path.join(process.cwd(), '__fixtures__', 'simple-lcra.xlsx')
   );
 
   beforeAll(async () => {

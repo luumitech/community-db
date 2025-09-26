@@ -6,6 +6,7 @@ import {
   type MappingResult,
   type MappingTypeSchema,
 } from '../import-helper';
+import { type UtilOpt } from './_type';
 import { getMapValue } from './map-util';
 
 const mappingType = {
@@ -48,7 +49,7 @@ export class TicketUtil {
     }
   }
 
-  ticketList(eventId: number): TicketEntry[] {
+  ticketList(eventId: number, opt: UtilOpt): TicketEntry[] {
     const ticketList = this.byEventId.get(eventId) ?? [];
     return ticketList.map((entry) => {
       const { ticketId, eventId: _eventId, ...ticket } = entry;

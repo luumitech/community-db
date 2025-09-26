@@ -1,9 +1,14 @@
+import { ContactInfoType } from '@prisma/client';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { isMember } from '~/graphql/schema/property/util';
 import { ITEM_DELIMITER, removeDelimiter } from '~/lib/xlsx-io/delimiter-util';
 import { toTicketList } from '../../import/format-lcradb/ticket-list-util';
-import { type Community, type Property } from '../community-data';
+import {
+  type Community,
+  type Occupant,
+  type Property,
+} from '../community-data';
 import { ExportHelper } from '../export-helper';
 
 /**
@@ -52,16 +57,42 @@ export class ExportLcra extends ExportHelper {
       LastModBy: property.updatedBy?.email,
     };
 
+    const findContactInfo = (
+      entry: Occupant | undefined,
+      type: ContactInfoType,
+      label: string
+    ) => {
+      const found = entry?.infoList?.find((contact) => {
+        return contact.type === type && contact.label === label;
+      });
+      return found?.value;
+    };
+
     R.range(0, this.maxOccupantCount).forEach((idx) => {
       const occupant = property.occupantList[idx];
       row[`FirstName${idx + 1}`] = occupant?.firstName;
       row[`LastName${idx + 1}`] = occupant?.lastName;
-      row[`EMail${idx + 1}`] = occupant?.email;
-      // row[`EMail${idx + 1}Facebook`] = undefined;
       row[`EMail${idx + 1}OptOut`] = ExportHelper.toBool(occupant?.optOut);
-      row[`HomePhone${idx + 1}`] = occupant?.home;
-      row[`WorkPhone${idx + 1}`] = occupant?.work;
-      row[`CellPhone${idx + 1}`] = occupant?.cell;
+      row[`EMail${idx + 1}`] = findContactInfo(
+        occupant,
+        ContactInfoType.EMAIL,
+        'email'
+      );
+      row[`HomePhone${idx + 1}`] = findContactInfo(
+        occupant,
+        ContactInfoType.PHONE,
+        'home'
+      );
+      row[`WorkPhone${idx + 1}`] = findContactInfo(
+        occupant,
+        ContactInfoType.PHONE,
+        'work'
+      );
+      row[`CellPhone${idx + 1}`] = findContactInfo(
+        occupant,
+        ContactInfoType.PHONE,
+        'cell'
+      );
     });
 
     row.LastModDate = ExportHelper.toDate(property.updatedAt);

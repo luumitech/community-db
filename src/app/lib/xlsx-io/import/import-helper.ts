@@ -1,3 +1,4 @@
+import { type ContactInfoType } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import { isValidDate } from '~/lib/date-util';
@@ -20,6 +21,7 @@ interface TypeMap {
   number: number;
   date: Date;
   boolean: boolean;
+  contactInfoType: ContactInfoType;
 }
 type MappingType = keyof TypeMap;
 
@@ -113,6 +115,8 @@ export class ImportHelper {
           }
           return dateResult;
         }
+      case 'contactInfoType':
+        return val as ContactInfoType;
       default:
         throw new GraphQLError(`invalid cell type ${type} specified`);
     }

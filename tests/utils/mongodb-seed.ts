@@ -8,7 +8,7 @@ import { MongoSeeder } from '../../prisma/mongo-seeder';
  *   example
  *
  *   ```js
- *   cy.task('mongodb:seed', path.join('simple.xlsx'));
+ *   cy.task('mongodb:seed', path.join('simple-lcra.xlsx'));
  *   ```
  * @returns True if successful
  */

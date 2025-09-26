@@ -6,6 +6,7 @@ import {
   type MappingResult,
   type MappingTypeSchema,
 } from '../import-helper';
+import { type UtilOpt } from './_type';
 import { getMapValue } from './map-util';
 
 const mappingType = {
@@ -54,11 +55,14 @@ export class OccupantUtil {
     }
   }
 
-  occupantList(propertyId: number): OccupantEntry[] {
+  occupantList(propertyId: number, opt: UtilOpt): OccupantEntry[] {
     const occupantList = this.byPropertyId.get(propertyId) ?? [];
     return occupantList.map((entry) => {
       const { occupantId, propertyId: _propertyId, ...occupant } = entry;
-      return occupant;
+      return {
+        ...occupant,
+        infoList: opt.contactUtil.contactList(occupantId, opt),
+      };
     });
   }
 }

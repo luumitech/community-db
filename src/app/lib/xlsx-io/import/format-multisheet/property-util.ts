@@ -6,10 +6,7 @@ import {
   type MappingResult,
   type MappingTypeSchema,
 } from '../import-helper';
-import { EventUtil } from './event-util';
-import { MembershipUtil } from './membership-util';
-import { OccupantUtil } from './occupant-util';
-import { TicketUtil } from './ticket-util';
+import { type UtilOpt } from './_type';
 
 const mappingType = {
   propertyId: 'number',
@@ -61,12 +58,7 @@ export class PropertyUtil {
     }
   }
 
-  propertyList(opt: {
-    occupantUtil: OccupantUtil;
-    membershipUtil: MembershipUtil;
-    eventUtil: EventUtil;
-    ticketUtil: TicketUtil;
-  }): PropertyEntry[] {
+  propertyList(opt: UtilOpt): PropertyEntry[] {
     const propertyList = [...this.byPropertyId.values()];
     return propertyList.map((entry) => {
       const { updatedByEmail, propertyId, ...property } = entry;
@@ -81,7 +73,7 @@ export class PropertyUtil {
 
       return {
         ...property,
-        occupantList: opt.occupantUtil.occupantList(propertyId),
+        occupantList: opt.occupantUtil.occupantList(propertyId, opt),
         membershipList: opt.membershipUtil.membershipList(propertyId, opt),
         ...(updatedBy && { updatedBy }),
       };

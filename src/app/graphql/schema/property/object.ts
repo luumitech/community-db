@@ -42,10 +42,10 @@ const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
     cell: t.exposeString('cell', { nullable: true }),
     work: t.exposeString('work', { nullable: true }),
     home: t.exposeString('home', { nullable: true }),
-    info: t.field({
+    infoList: t.field({
       type: [contactInfoRef],
       nullable: true,
-      resolve: (entry) => entry.info,
+      resolve: (entry) => entry.infoList,
     }),
   }),
 });

@@ -25,7 +25,7 @@ describe('Generate Email List', () => {
   beforeAll(async () => {
     await testUtil.initialize();
     await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple-lcra.xlsx')
     );
   });
 

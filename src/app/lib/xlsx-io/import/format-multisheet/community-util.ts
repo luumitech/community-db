@@ -10,11 +10,7 @@ import {
   type MappingTypeSchema,
 } from '../import-helper';
 import { extractYearRange } from '../year-range-util';
-import { EventUtil } from './event-util';
-import { MembershipUtil } from './membership-util';
-import { OccupantUtil } from './occupant-util';
-import { PropertyUtil } from './property-util';
-import { TicketUtil } from './ticket-util';
+import { type UtilOpt } from './_type';
 
 function safeJsonParse<T>(jsonStr: string) {
   const [err, result] = jsonc.safe.parse(jsonStr);
@@ -67,13 +63,7 @@ export class CommunityUtil {
     return entry;
   }
 
-  communityCreateInput(opt: {
-    propertyUtil: PropertyUtil;
-    occupantUtil: OccupantUtil;
-    membershipUtil: MembershipUtil;
-    eventUtil: EventUtil;
-    ticketUtil: TicketUtil;
-  }): CommunityEntry {
+  communityCreateInput(opt: UtilOpt): CommunityEntry {
     const {
       updatedByEmail,
       defaultSettingJson,

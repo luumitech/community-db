@@ -25,7 +25,7 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
       cell
       work
       home
-      info {
+      infoList {
         type
         label
         value
@@ -119,7 +119,7 @@ function defaultInputData(
       cell: entry.cell ?? occupantDefault.cell,
       work: entry.work ?? occupantDefault.work,
       home: entry.home ?? occupantDefault.home,
-      info: (entry.info ?? occupantDefault.info).map(
+      info: (entry.infoList ?? occupantDefault.info).map(
         ({ type, label, value }) => ({ type, label, value })
       ),
     })),

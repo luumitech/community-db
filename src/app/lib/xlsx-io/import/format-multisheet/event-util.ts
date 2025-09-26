@@ -6,8 +6,8 @@ import {
   type MappingResult,
   type MappingTypeSchema,
 } from '../import-helper';
+import { type UtilOpt } from './_type';
 import { getMapValue } from './map-util';
-import { TicketUtil } from './ticket-util';
 
 const mappingType = {
   eventId: 'number',
@@ -45,18 +45,13 @@ export class EventUtil {
     }
   }
 
-  eventAttendedList(
-    membershipId: number,
-    opt: {
-      ticketUtil: TicketUtil;
-    }
-  ): EventEntry[] {
+  eventAttendedList(membershipId: number, opt: UtilOpt): EventEntry[] {
     const eventAttendedList = this.byMembershipId.get(membershipId) ?? [];
     return eventAttendedList.map((entry) => {
       const { eventId, membershipId: _membershipId, ...event } = entry;
       return {
         ...event,
-        ticketList: opt.ticketUtil.ticketList(eventId),
+        ticketList: opt.ticketUtil.ticketList(eventId, opt),
       };
     });
   }

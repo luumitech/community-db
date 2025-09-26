@@ -248,7 +248,7 @@ type Occupant {
   home      String?
   work      String?
   cell      String?
-  info      ContactInfo[]
+  infoList  ContactInfo[]
 }
 
 /// Type of contact information
@@ -263,11 +263,11 @@ enum ContactInfoType {
 
 /// Arbitrary Contact Information (can be email, phone, website, etc..)
 type ContactInfo {
-  /// (i.e. work)
+  /// (eg. work)
   label String
-  /// (i.e.e)
+  /// (eg. EMAIL)
   type  ContactInfoType
-  /// Depending on type of
+  /// Interpret differently base on type
   value String
 }
 

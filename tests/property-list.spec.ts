@@ -4,7 +4,7 @@ import { navigatePropertyList } from './utils/navigate';
 
 test.describe('Basic navigation', () => {
   test.beforeEach('Mongo DB Seed', async ({ page }) => {
-    await mongodbSeedFromFixture('simple.xlsx');
+    await mongodbSeedFromFixture('simple-lcra.xlsx');
   });
 
   test('Navigate to property list', async ({ page }) => {

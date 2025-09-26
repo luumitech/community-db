@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import { worksheetNames } from '~/lib/xlsx-io/multisheet';
 import { CommunityUtil } from './community-util';
+import { ContactUtil } from './contact-util';
 import { EventUtil } from './event-util';
 import { MembershipUtil } from './membership-util';
 import { OccupantUtil } from './occupant-util';
@@ -27,6 +28,7 @@ export function importMultisheet(wb: XLSX.WorkBook) {
 
   const propertyUtil = new PropertyUtil(wsHelper.property);
   const occupantUtil = new OccupantUtil(wsHelper.occupant);
+  const contactUtil = new ContactUtil(wsHelper.contact);
   const membershipUtil = new MembershipUtil(wsHelper.membership);
   const eventUtil = new EventUtil(wsHelper.event);
   const ticketUtil = new TicketUtil(wsHelper.ticket);
@@ -35,6 +37,7 @@ export function importMultisheet(wb: XLSX.WorkBook) {
   const communityCreateInput = communityUtil.communityCreateInput({
     propertyUtil,
     occupantUtil,
+    contactUtil,
     membershipUtil,
     eventUtil,
     ticketUtil,

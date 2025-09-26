@@ -82,7 +82,7 @@ describe('Property Modify (minYear/maxYear changes)', () => {
 
   beforeEach(async () => {
     await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple-lcra.xlsx')
     );
     const result = await testUtil.graphql.executeSingle({
       document: communityInfoDocument,

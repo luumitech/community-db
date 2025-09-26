@@ -4,6 +4,7 @@ import { type GeocodeResult } from '~/lib/geoapify-api/resource';
 import { worksheetNames, type WorksheetRows } from '~/lib/xlsx-io/multisheet';
 import type {
   Community,
+  ContactInfo,
   Event,
   Membership,
   Occupant,
@@ -29,6 +30,7 @@ export class ExportMultisheet extends ExportHelper {
     property: [],
     membership: [],
     occupant: [],
+    contact: [],
     event: [],
     ticket: [],
   };
@@ -57,6 +59,17 @@ export class ExportMultisheet extends ExportHelper {
     });
   }
 
+  private processContact(contact: ContactInfo, occupantId: number) {
+    const contactId = this.rows.contact.length + 1;
+    this.rows.contact.push({
+      contactId,
+      occupantId,
+      type: contact.type,
+      label: contact.label,
+      value: contact.value,
+    });
+  }
+
   private processMember(occupant: Occupant, propertyId: number) {
     const occupantId = this.rows.occupant.length + 1;
     this.rows.occupant.push({
@@ -65,10 +78,9 @@ export class ExportMultisheet extends ExportHelper {
       firstName: occupant.firstName ?? null,
       lastName: occupant.lastName ?? null,
       optOut: ExportHelper.toBool(occupant.optOut),
-      email: occupant.email ?? null,
-      home: occupant.home ?? null,
-      work: occupant.work ?? null,
-      cell: occupant.cell ?? null,
+    });
+    occupant.infoList.forEach((contact) => {
+      this.processContact(contact, occupantId);
     });
   }
 

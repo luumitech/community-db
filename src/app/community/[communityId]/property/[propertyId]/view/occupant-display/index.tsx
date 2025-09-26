@@ -18,7 +18,7 @@ export const OccupantDisplayFragment = graphql(/* GraphQL */ `
       cell
       work
       home
-      info {
+      infoList {
         type
         label
         value

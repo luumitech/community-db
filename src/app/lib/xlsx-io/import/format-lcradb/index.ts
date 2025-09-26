@@ -1,9 +1,12 @@
+import { ContactInfoType } from '@prisma/client';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { parseAsDate } from '~/lib/date-util';
+import { insertIf } from '~/lib/insert-if';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
 import type {
   CommunityEntry,
+  ContactInfoEntry,
   MembershipEntry,
   OccupantEntry,
   PropertyEntry,
@@ -27,8 +30,51 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
     headerCol: 0,
   });
 
+  function addContactInfo(rowIdx: number, num: number): ContactInfoEntry[] {
+    const { email, home, work, cell } = importHelper.mapping(
+      rowIdx,
+      {
+        email: 'string',
+        home: 'string',
+        work: 'string',
+        cell: 'string',
+      },
+      {
+        email: importHelper.labelColumn(`EMail${num}`),
+        home: importHelper.labelColumn(`HomePhone${num}`),
+        work: importHelper.labelColumn(`WorkPhone${num}`),
+        cell: importHelper.labelColumn(`CellPhone${num}`),
+      }
+    );
+
+    const infoList: ContactInfoEntry[] = [
+      ...insertIf(!!email, {
+        type: ContactInfoType.EMAIL,
+        label: 'email',
+        value: email,
+      }),
+      ...insertIf(!!home, {
+        type: ContactInfoType.PHONE,
+        label: 'home',
+        value: home,
+      }),
+      ...insertIf(!!work, {
+        type: ContactInfoType.PHONE,
+        label: 'work',
+        value: work,
+      }),
+      ...insertIf(!!cell, {
+        type: ContactInfoType.PHONE,
+        label: 'cell',
+        value: cell,
+      }),
+    ];
+
+    return infoList;
+  }
+
   function addOccupant(rowIdx: number, num: number): OccupantEntry {
-    const occupant = importHelper.mapping(
+    const occupant: OccupantEntry = importHelper.mapping(
       rowIdx,
       {
         firstName: 'string',
@@ -49,6 +95,12 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
         cell: importHelper.labelColumn(`CellPhone${num}`),
       }
     );
+
+    const infoList = addContactInfo(rowIdx, num);
+    if (!R.isEmpty(infoList)) {
+      occupant.infoList = infoList;
+    }
+
     return occupant;
   }
 
