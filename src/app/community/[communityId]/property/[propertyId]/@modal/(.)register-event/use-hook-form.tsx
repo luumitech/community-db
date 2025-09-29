@@ -49,8 +49,10 @@ function schema() {
       isFirstEvent: z.boolean(),
       /** Transaction related fields */
       transaction: z.object({
-        /** Select payment on `Current Transaction Total` */
+        /** Selected payment on `Current Transaction Total` */
         paymentMethod: zz.string.nonEmpty('Must select a payment method'),
+        /** Selected payment should apply to membership also */
+        applyToMembership: z.boolean(),
       }),
     }),
   });
@@ -120,6 +122,7 @@ function defaultInputData(
       isFirstEvent,
       transaction: {
         paymentMethod: '',
+        applyToMembership: !membership?.paymentMethod,
       },
     },
   };
