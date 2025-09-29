@@ -43,7 +43,14 @@ export type Property = PartialExcept<
   Community['propertyList'][number],
   'address' | 'occupantList' | 'membershipList'
 >;
-export type Occupant = PartialExcept<Property['occupantList'][number]>;
+export type Occupant = PartialExcept<
+  Property['occupantList'][number],
+  'infoList'
+>;
+export type ContactInfo = PartialExcept<
+  Occupant['infoList'][number],
+  'label' | 'type' | 'value'
+>;
 export type Membership = PartialExcept<
   Property['membershipList'][number],
   'eventAttendedList'

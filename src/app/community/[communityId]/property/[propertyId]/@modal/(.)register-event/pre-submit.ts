@@ -6,7 +6,7 @@ import { type InputData } from './use-hook-form';
 export function usePreSubmit(formContext: UseFormReturn<InputData>) {
   const { watch, setValue } = formContext;
   const ticketList: TicketList = watch('event.ticketList');
-  const membershipPaymentMethod = watch('membership.paymentMethod');
+  const applyToMembership = watch('hidden.transaction.applyToMembership');
   const transactionPaymentMethod = watch('hidden.transaction.paymentMethod');
 
   const propagatePaymentMethod = React.useCallback(() => {
@@ -14,25 +14,23 @@ export function usePreSubmit(formContext: UseFormReturn<InputData>) {
       return;
     }
 
-    if (!membershipPaymentMethod) {
+    if (applyToMembership) {
       setValue('membership.paymentMethod', transactionPaymentMethod, {
         shouldDirty: true,
       });
     }
 
-    // Backfill any tickets that don't have a payment method specified
+    // Apply payment methods to all tickets within current transaction
     ticketList.forEach((entry, idx) => {
-      if (!entry.paymentMethod) {
-        setValue(
-          `event.ticketList.${idx}.paymentMethod`,
-          transactionPaymentMethod,
-          {
-            shouldDirty: true,
-          }
-        );
-      }
+      setValue(
+        `event.ticketList.${idx}.paymentMethod`,
+        transactionPaymentMethod,
+        {
+          shouldDirty: true,
+        }
+      );
     });
-  }, [membershipPaymentMethod, setValue, ticketList, transactionPaymentMethod]);
+  }, [applyToMembership, setValue, ticketList, transactionPaymentMethod]);
 
   return { propagatePaymentMethod };
 }

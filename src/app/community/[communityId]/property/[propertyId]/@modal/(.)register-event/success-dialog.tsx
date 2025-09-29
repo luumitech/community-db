@@ -22,8 +22,10 @@ export const SuccessDialog: React.FC<Props> = ({
 
   // Show email confirmation only when registering for the first event
   const { occupantList } = registerEvent.property;
-  const canSendEmail = occupantList.some(({ email }) => !!email?.trim());
-  if (!canSendEmail) {
+  const hasEmail = occupantList.some(({ infoList }) =>
+    infoList?.some(({ type }) => type === GQL.ContactInfoType.Email)
+  );
+  if (!hasEmail) {
     return (
       <div className={cn(className)}>
         Membership registered, but we do not have their email addresses to send

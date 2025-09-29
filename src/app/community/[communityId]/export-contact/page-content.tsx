@@ -22,8 +22,12 @@ const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
         occupantList {
           firstName
           lastName
-          email
           optOut
+          infoList {
+            type
+            value
+            label
+          }
         }
       }
     }

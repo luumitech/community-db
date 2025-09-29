@@ -2,6 +2,7 @@ import {
   BeautifulMentionsCssClassNames,
   BeautifulMentionsTheme,
 } from 'lexical-beautiful-mentions';
+import * as R from 'remeda';
 import { InputData } from './use-hook-form';
 
 /** Construct mention values */
@@ -14,7 +15,12 @@ export function createMentionValues(
   const toList = toEmailList.map(
     (email) => toItems.find((entry) => entry.email === email)!
   );
-  const memberNames = toList.map(({ firstName }) => firstName).join(', ');
+  const memberNames = R.pipe(
+    toList,
+    R.map(({ firstName }) => firstName),
+    R.unique(),
+    R.join(', ')
+  );
   return {
     membershipYear,
     memberNames,

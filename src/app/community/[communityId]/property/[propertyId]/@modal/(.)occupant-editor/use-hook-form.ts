@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import {
-  UseFieldArrayReturn,
   useForm,
   useFormContext,
+  type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -21,10 +21,11 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
       firstName
       lastName
       optOut
-      email
-      cell
-      work
-      home
+      infoList {
+        type
+        label
+        value
+      }
     }
   }
 `);
@@ -47,6 +48,33 @@ function schema() {
         cell: z.string(),
         work: z.string(),
         home: z.string(),
+        infoList: z.array(
+          z
+            .object({
+              type: z.nativeEnum(GQL.ContactInfoType),
+              label: zz.string.nonEmpty('Must specify a label'),
+              value: zz.string.nonEmpty('Must specify a value'),
+            })
+            .superRefine((form, ctx) => {
+              switch (form.type) {
+                case GQL.ContactInfoType.Email:
+                  if (!z.string().email().safeParse(form.value).success) {
+                    return ctx.addIssue({
+                      code: z.ZodIssueCode.custom,
+                      message: 'Invalid email',
+                      path: ['value'],
+                    });
+                  }
+                  break;
+
+                case GQL.ContactInfoType.Phone:
+                  break;
+
+                default:
+                  break;
+              }
+            })
+        ),
       })
     ),
   });
@@ -68,6 +96,7 @@ export const occupantDefault: InputData['occupantList'][number] = {
   cell: '',
   work: '',
   home: '',
+  infoList: [],
 };
 
 function defaultInputData(
@@ -82,10 +111,13 @@ function defaultInputData(
       firstName: entry.firstName ?? occupantDefault.firstName,
       lastName: entry.lastName ?? occupantDefault.lastName,
       optOut: entry.optOut ?? occupantDefault.optOut,
-      email: entry.email ?? occupantDefault.email,
-      cell: entry.cell ?? occupantDefault.cell,
-      work: entry.work ?? occupantDefault.work,
-      home: entry.home ?? occupantDefault.home,
+      email: occupantDefault.email,
+      cell: occupantDefault.cell,
+      work: occupantDefault.work,
+      home: occupantDefault.home,
+      infoList: (entry.infoList ?? occupantDefault.infoList).map(
+        ({ type, label, value }) => ({ type, label, value })
+      ),
     })),
   };
 }

@@ -244,10 +244,26 @@ type Occupant {
   lastName  String?
   /// Opt out of communication (i.e. unsubscribed)
   optOut    Boolean?
-  email     String?
-  home      String?
-  work      String?
-  cell      String?
+  infoList  ContactInfo[]
+}
+
+/// Type of contact information
+enum ContactInfoType {
+  /// email address
+  EMAIL
+  /// phone number
+  PHONE
+  OTHER
+}
+
+/// Arbitrary Contact Information (can be email, phone, website, etc..)
+type ContactInfo {
+  /// (eg. work)
+  label String
+  /// (eg. EMAIL)
+  type  ContactInfoType
+  /// Interpret differently base on type
+  value String
 }
 
 /// Event Information

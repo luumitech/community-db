@@ -18,8 +18,11 @@ const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
         id
         address
         occupantList {
-          email
           optOut
+          infoList {
+            type
+            value
+          }
         }
       }
     }
@@ -44,11 +47,15 @@ export function useAudienceList(arg: UseAudienceListOpt) {
 
   const rawAudienceList = React.useMemo(() => {
     return (result.data?.mailchimpMemberList ?? []).map((entry) => {
-      const occupant = entry.property?.occupantList?.find(
-        ({ email }) =>
-          !email?.localeCompare(entry.email, undefined, {
-            sensitivity: 'accent',
-          })
+      const occupant = entry.property?.occupantList?.find(({ infoList }) =>
+        infoList?.find((info) => {
+          if (info.type === GQL.ContactInfoType.Email) {
+            return !info.value.localeCompare(entry.email, undefined, {
+              sensitivity: 'accent',
+            });
+          }
+          return false;
+        })
       );
       let warning: string | undefined;
       if (occupant != null) {

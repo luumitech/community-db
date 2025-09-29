@@ -2,6 +2,7 @@ export const worksheetNames = {
   community: 'Community',
   property: 'Property',
   occupant: 'Occupant',
+  contact: 'Contact',
   membership: 'Membership',
   event: 'Event',
   ticket: 'Ticket',
@@ -11,6 +12,7 @@ export interface WorksheetRows {
   community: CommunityRow[];
   property: PropertyRow[];
   occupant: OccupantRow[];
+  contact: ContactRow[];
   membership: MembershipRow[];
   event: EventRow[];
   ticket: TicketRow[];
@@ -49,10 +51,14 @@ export interface OccupantRow {
   firstName: string | null;
   lastName: string | null;
   optOut: number | undefined;
-  email: string | null;
-  home: string | null;
-  work: string | null;
-  cell: string | null;
+}
+
+export interface ContactRow {
+  contactId: number;
+  occupantId: number;
+  label: string | null;
+  type: string | null;
+  value: string | null;
 }
 
 export interface MembershipRow {

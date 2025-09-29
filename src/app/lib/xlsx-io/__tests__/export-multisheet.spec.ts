@@ -15,7 +15,7 @@ describe('export to xlsx (multisheet format)', () => {
   beforeAll(async () => {
     await testUtil.initialize();
     expectedImportResult = await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple-multisheet.xlsx')
     );
   });
 

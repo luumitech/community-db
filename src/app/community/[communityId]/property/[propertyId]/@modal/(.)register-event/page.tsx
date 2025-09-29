@@ -24,11 +24,11 @@ const RegisterEventMutation = graphql(/* GraphQL */ `
       property {
         ...PropertyId_MembershipEditor
 
-        # For sending confirmation email to members
+        # For checking if confirmation email can be sent after registration
         occupantList {
-          firstName
-          lastName
-          email
+          infoList {
+            type
+          }
         }
       }
     }

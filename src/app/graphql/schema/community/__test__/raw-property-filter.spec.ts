@@ -3,15 +3,12 @@ import { graphql } from '~/graphql/generated';
 import { TestUtil } from '~/graphql/test-util';
 
 const document = graphql(/* GraphQL */ `
-  query GenerateEmailListSpec_RawPropertyList($filter: PropertyFilterInput!) {
+  query RawPropertyFilterSpec_RawPropertyList($filter: PropertyFilterInput!) {
     userCurrent {
       accessList {
         community {
           rawPropertyList(filter: $filter) {
             address
-            occupantList {
-              email
-            }
           }
         }
       }
@@ -19,13 +16,13 @@ const document = graphql(/* GraphQL */ `
   }
 `);
 
-describe('Generate Email List', () => {
+describe('Raw property query', () => {
   const testUtil = new TestUtil();
 
   beforeAll(async () => {
     await testUtil.initialize();
     await testUtil.database.seed(
-      path.join(process.cwd(), '__fixtures__', 'simple.xlsx')
+      path.join(process.cwd(), '__fixtures__', 'simple-lcra.xlsx')
     );
   });
 

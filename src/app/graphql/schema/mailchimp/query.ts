@@ -1,4 +1,4 @@
-import type { Occupant, Property } from '@prisma/client';
+import { ContactInfoType, type Property } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
@@ -86,9 +86,11 @@ builder.queryField('mailchimpMemberList', (t) =>
       const occupantMap = new Map<string, [Property, number]>();
       propertyList.forEach((entry) => {
         entry.occupantList.forEach((occupant, occupantIdx) => {
-          if (occupant.email) {
-            occupantMap.set(occupant.email, [entry, occupantIdx]);
-          }
+          occupant.infoList?.forEach((info) => {
+            if (info.type === ContactInfoType.EMAIL) {
+              occupantMap.set(info.value, [entry, occupantIdx]);
+            }
+          });
         });
       });
 
