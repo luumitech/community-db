@@ -21,10 +21,6 @@ const OccupantEditorFragment = graphql(/* GraphQL */ `
       firstName
       lastName
       optOut
-      email
-      cell
-      work
-      home
       infoList {
         type
         label
@@ -52,7 +48,7 @@ function schema() {
         cell: z.string(),
         work: z.string(),
         home: z.string(),
-        info: z.array(
+        infoList: z.array(
           z
             .object({
               type: z.nativeEnum(GQL.ContactInfoType),
@@ -100,7 +96,7 @@ export const occupantDefault: InputData['occupantList'][number] = {
   cell: '',
   work: '',
   home: '',
-  info: [],
+  infoList: [],
 };
 
 function defaultInputData(
@@ -115,11 +111,11 @@ function defaultInputData(
       firstName: entry.firstName ?? occupantDefault.firstName,
       lastName: entry.lastName ?? occupantDefault.lastName,
       optOut: entry.optOut ?? occupantDefault.optOut,
-      email: entry.email ?? occupantDefault.email,
-      cell: entry.cell ?? occupantDefault.cell,
-      work: entry.work ?? occupantDefault.work,
-      home: entry.home ?? occupantDefault.home,
-      info: (entry.infoList ?? occupantDefault.info).map(
+      email: occupantDefault.email,
+      cell: occupantDefault.cell,
+      work: occupantDefault.work,
+      home: occupantDefault.home,
+      infoList: (entry.infoList ?? occupantDefault.infoList).map(
         ({ type, label, value }) => ({ type, label, value })
       ),
     })),

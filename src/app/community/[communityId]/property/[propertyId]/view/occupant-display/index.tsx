@@ -3,9 +3,10 @@ import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
-import { OccupantTable } from './occupant-table';
+import { OccupantView } from './occupant-view';
 
 export const OccupantDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantDisplay on Property {
@@ -14,10 +15,6 @@ export const OccupantDisplayFragment = graphql(/* GraphQL */ `
       firstName
       lastName
       optOut
-      email
-      cell
-      work
-      home
       infoList {
         type
         label
@@ -43,7 +40,9 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const { occupantList } = property;
 
   const canSendEmail = React.useMemo(() => {
-    const hasEmail = occupantList.some(({ email }) => !!email?.trim());
+    const hasEmail = occupantList.some(({ infoList }) =>
+      infoList?.some(({ type }) => type === GQL.ContactInfoType.Email)
+    );
     const membership = property.membershipList.find(
       (entry) => entry.year === yearSelected
     );
@@ -86,7 +85,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             </Button>
           )}
         </div>
-        <OccupantTable occupantList={occupantList} />
+        <OccupantView occupantList={occupantList} />
       </CardBody>
     </Card>
   );

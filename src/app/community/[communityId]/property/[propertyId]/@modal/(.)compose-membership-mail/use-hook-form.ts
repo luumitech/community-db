@@ -3,6 +3,7 @@ import React from 'react';
 import { type PropertyEntry } from '~/community/[communityId]/property/[propertyId]/_type';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { useLayoutContext } from '../../layout-context';
@@ -244,16 +245,18 @@ export function defaultInputData(
   const property = getFragment(OccupantDisplayFragment, propertyFragment);
   const toItems: InputData['hidden']['toItems'] = [];
 
-  property.occupantList.forEach((entry) => {
-    if (entry.email?.trim()) {
-      const fullName =
-        `${entry.firstName ?? ''} ${entry.lastName ?? ''}`.trim() || 'n/a';
-      toItems.push({
-        email: entry.email,
-        firstName: (entry.firstName ?? '').trim() || 'n/a',
-        fullName,
-      });
-    }
+  property.occupantList.forEach((occupant) => {
+    const fullName =
+      `${occupant.firstName ?? ''} ${occupant.lastName ?? ''}`.trim() || 'n/a';
+    occupant.infoList?.forEach((entry) => {
+      if (entry.type === GQL.ContactInfoType.Email) {
+        toItems.push({
+          email: entry.value,
+          firstName: (occupant.firstName ?? '').trim() || 'n/a',
+          fullName,
+        });
+      }
+    });
   });
   const toEmail = toItems.map(({ email }) => email).join(',');
   const mentionValues = createMentionValues(membershipYear, toItems, toEmail);

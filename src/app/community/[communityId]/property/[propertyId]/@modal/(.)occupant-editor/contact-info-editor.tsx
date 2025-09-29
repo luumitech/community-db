@@ -9,7 +9,7 @@ import { useHookFormContext } from './use-hook-form';
 
 interface ValueInputProps {
   className?: string;
-  controlName: `occupantList.${number}.info.${number}.value`;
+  controlName: `occupantList.${number}.infoList.${number}.value`;
   label?: string;
   ['aria-label']?: string;
   variant?: InputProps['variant'];
@@ -17,7 +17,7 @@ interface ValueInputProps {
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}.info.${number}`;
+  controlNamePrefix: `occupantList.${number}.infoList.${number}`;
   onRemove: () => void;
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ContactInfoType, PrismaClient, type Occupant } from '@prisma/client';
 
 function insertIf<T>(condition: boolean, ...elements: T[]) {
@@ -61,6 +62,8 @@ async function main() {
         },
         data: {
           occupantList,
+          // ask prisma not to updated this field
+          updatedAt: undefined,
         },
       });
 

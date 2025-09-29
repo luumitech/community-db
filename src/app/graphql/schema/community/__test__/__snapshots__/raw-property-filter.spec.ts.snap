@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Raw property query Verify properties that are NOT members 1`] = `
+{
+  "__typename": "Query",
+  "userCurrent": {
+    "__typename": "User",
+    "accessList": [
+      {
+        "__typename": "Access",
+        "community": {
+          "__typename": "Community",
+          "rawPropertyList": [
+            {
+              "__typename": "Property",
+              "address": "123 Adventure Drive",
+            },
+          ],
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`Raw property query Verify properties that are members 1`] = `
+{
+  "__typename": "Query",
+  "userCurrent": {
+    "__typename": "User",
+    "accessList": [
+      {
+        "__typename": "Access",
+        "community": {
+          "__typename": "Community",
+          "rawPropertyList": [
+            {
+              "__typename": "Property",
+              "address": "99 Fortune Drive",
+            },
+          ],
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`Raw property query Verify properties that have not been renewed 1`] = `
+{
+  "__typename": "Query",
+  "userCurrent": {
+    "__typename": "User",
+    "accessList": [
+      {
+        "__typename": "Access",
+        "community": {
+          "__typename": "Community",
+          "rawPropertyList": [
+            {
+              "__typename": "Property",
+              "address": "123 Adventure Drive",
+            },
+            {
+              "__typename": "Property",
+              "address": "99 Fortune Drive",
+            },
+          ],
+        },
+      },
+    ],
+  },
+}
+`;
