@@ -20,8 +20,8 @@ export const contactTypeItems: ContactTypeItem[] = [
     value: GQL.ContactInfoType.Phone,
   },
   {
-    label: 'Text',
-    value: GQL.ContactInfoType.Text,
+    label: 'Other',
+    value: GQL.ContactInfoType.Other,
   },
 ];
 

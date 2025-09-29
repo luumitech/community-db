@@ -80,19 +80,11 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
         firstName: 'string',
         lastName: 'string',
         optOut: 'boolean',
-        email: 'string',
-        home: 'string',
-        work: 'string',
-        cell: 'string',
       },
       {
         firstName: importHelper.labelColumn(`FirstName${num}`),
         lastName: importHelper.labelColumn(`LastName${num}`),
         optOut: importHelper.labelColumn(`EMail${num}OptOut`),
-        email: importHelper.labelColumn(`EMail${num}`),
-        home: importHelper.labelColumn(`HomePhone${num}`),
-        work: importHelper.labelColumn(`WorkPhone${num}`),
-        cell: importHelper.labelColumn(`CellPhone${num}`),
       }
     );
 

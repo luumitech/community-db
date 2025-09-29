@@ -11,13 +11,13 @@ import { isMember } from './util';
 export const contactInfoTypeRef = builder.enumType('ContactInfoType', {
   values: {
     EMAIL: {
-      description: 'No payment method stored',
+      description: 'Email',
     },
     PHONE: {
-      description: 'No payment method stored, but granted paid priviledge',
+      description: 'Phone number',
     },
-    TEXT: {
-      description: 'Payment method stored in Helcim',
+    OTHER: {
+      description: 'Other',
     },
   } as const,
 });
@@ -38,10 +38,6 @@ const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
     firstName: t.exposeString('firstName', { nullable: true }),
     lastName: t.exposeString('lastName', { nullable: true }),
     optOut: t.exposeBoolean('optOut', { nullable: true }),
-    email: t.exposeString('email', { nullable: true }),
-    cell: t.exposeString('cell', { nullable: true }),
-    work: t.exposeString('work', { nullable: true }),
-    home: t.exposeString('home', { nullable: true }),
     infoList: t.field({
       type: [contactInfoRef],
       nullable: true,

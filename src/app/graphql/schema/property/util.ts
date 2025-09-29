@@ -178,7 +178,6 @@ function propertyListFilterArgs(
               OR: [
                 { firstName: { mode: 'insensitive', startsWith: nameList[0] } },
                 { lastName: { mode: 'insensitive', startsWith: nameList[0] } },
-                { email: { mode: 'insensitive', contains: nameList[0] } },
               ],
             },
           },

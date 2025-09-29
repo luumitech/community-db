@@ -27,7 +27,6 @@
     "generate": "yarn prisma-generate && yarn graphql-codegen",
     "ts-node": "node -r ts-node/register -r tsconfig-paths/register",
     "gen-favicon": "yarn ts-node ./src/app/lib/favicon/cli/gen-favicon",
-    "migration": "dotenv -e .env.local -- yarn ts-node ./prisma/migration",
     "semantic-release": "semantic-release"
   },
   "prisma": {

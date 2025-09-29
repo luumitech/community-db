@@ -38,7 +38,7 @@ export const ContactInfoEditor: React.FC<Props> = ({
         case GQL.ContactInfoType.Email:
           return <Input aria-label="email" placeholder="email" {...props} />;
 
-        case GQL.ContactInfoType.Text:
+        case GQL.ContactInfoType.Other:
         default:
           return <Input aria-label="value" placeholder="value" {...props} />;
       }
