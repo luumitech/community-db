@@ -34,6 +34,7 @@ export const TicketListReadonly: React.FC<EmptyProps> = () => {
       <AnimatePresence initial={false}>
         {prevXact.isExpanded && (
           <motion.div
+            aria-label="Previous Transaction List"
             className="overflow-hidden grid col-span-full grid-cols-subgrid gap-1"
             initial="collapsed"
             animate="open"
@@ -129,6 +130,8 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
           'h-10 border-divider border-medium rounded-md flex items-center px-2 gap-2',
           'cursor-pointer hover:opacity-hover'
         )}
+        aria-label="Previous Transaction Toggle"
+        role="button"
         onClick={toggle}
       >
         <motion.div
