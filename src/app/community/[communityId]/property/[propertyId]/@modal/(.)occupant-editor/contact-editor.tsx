@@ -18,7 +18,8 @@ import { useHookFormContext } from './use-hook-form';
 interface Props {
   className?: string;
   controlNamePrefix: `occupantList.${number}`;
-  onRemove: () => void;
+  /** Contact removal */
+  onRemove?: () => void;
 }
 
 export const ContactEditor: React.FC<Props> = ({
@@ -72,13 +73,13 @@ export const ContactEditor: React.FC<Props> = ({
           className="self-start"
           startContent={<Icon icon="add" />}
           variant="flat"
-          onPress={() =>
+          onPress={() => {
             infoMethods.append({
               type: GQL.ContactInfoType.Email,
               label: '',
               value: '',
-            })
-          }
+            });
+          }}
         >
           Add email, phone, or others
         </Button>

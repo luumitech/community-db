@@ -12,13 +12,9 @@ import { getMapValue } from './map-util';
 const mappingType = {
   occupantId: 'number',
   propertyId: 'number',
-  email: 'string',
   firstName: 'string',
   lastName: 'string',
   optOut: 'boolean',
-  home: 'string',
-  work: 'string',
-  cell: 'string',
 } satisfies MappingTypeSchema;
 type MappingEntry = MappingResult<typeof mappingType>;
 
@@ -38,13 +34,9 @@ export class OccupantUtil {
     const mappingColIdx: MappingColIdxSchema<typeof mappingType> = {
       occupantId: importHelper.labelColumn('occupantId'),
       propertyId: importHelper.labelColumn('propertyId'),
-      email: importHelper.labelColumn('email'),
       firstName: importHelper.labelColumn('firstName'),
       lastName: importHelper.labelColumn('lastName'),
       optOut: importHelper.labelColumn('optOut'),
-      home: importHelper.labelColumn('home'),
-      work: importHelper.labelColumn('work'),
-      cell: importHelper.labelColumn('cell'),
     };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {
