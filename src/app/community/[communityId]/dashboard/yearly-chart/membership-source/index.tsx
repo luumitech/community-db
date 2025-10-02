@@ -88,6 +88,7 @@ export const MembershipSource: React.FC<Props> = ({
             base: 'rounded-lg h-full',
             content: 'h-full',
           }}
+          aria-label="skeleton"
           isLoaded={!isLoading}
         >
           <PieChart
