@@ -95,6 +95,7 @@ export const ByEvent: React.FC<Props> = ({
       <CardBody>
         <Skeleton
           className="flex flex-col rounded-lg min-h-[400px]"
+          aria-label="skeleton"
           isLoaded={!isLoading}
         >
           <EventSelect />

@@ -154,14 +154,16 @@ function newMembershipYear(year: number) {
  * @returns
  */
 function newPerson(num: number) {
+  const phoneRegExp = '([0-9]{3})[0-9]{3}-[0-9]{4}';
+
   const person = {
     [`FirstName${num}`]: faker.person.firstName(),
     [`LastName${num}`]: faker.person.lastName(),
     [`EMail${num}`]: faker.internet.email(),
     [`EMail${num}OptOut`]: faker.number.int(1),
-    [`HomePhone${num}`]: faker.phone.number(),
-    [`WorkPhone${num}`]: faker.phone.number(),
-    [`CellPhone${num}`]: faker.phone.number(),
+    [`HomePhone${num}`]: faker.helpers.fromRegExp(phoneRegExp),
+    [`WorkPhone${num}`]: faker.helpers.fromRegExp(phoneRegExp),
+    [`CellPhone${num}`]: faker.helpers.fromRegExp(phoneRegExp),
   };
   return person;
 }

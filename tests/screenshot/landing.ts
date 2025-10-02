@@ -1,6 +1,7 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import path from 'path';
 import { type ScreenshotId } from '~/view/landing/feature-overview-image-list';
+import { waitUntilStable } from '../utils/common';
 import * as mapUtil from '../utils/leaflet-map';
 import {
   mongodbSeedFromFixture,
@@ -116,9 +117,17 @@ test.describe.serial('Take @screenshot for landing screen', () => {
 
   test('Dashboard', async ({ theme }) => {
     await headerMoreMenu(page, /Dashboard/);
-    // Wait for graphs to be loaded
-    const graphList = page.locator('div.grid div[data-loaded="true"]');
-    await expect(graphList.nth(3)).toBeAttached();
+
+    // Wait for all graphs to have been loaded
+    const graphList = page.getByLabel('skeleton');
+    await expect(graphList).toHaveCount(5);
+    const items = await graphList.all();
+    for (const item of items) {
+      await expect(item).toHaveAttribute('data-loaded', 'true');
+      await waitUntilStable(item);
+    }
+
+    // Scroll down and take screenshot
     await page.evaluate(() => window.scrollBy(0, 370));
     await takeScreenshot(page, theme, 'dashboard');
   });

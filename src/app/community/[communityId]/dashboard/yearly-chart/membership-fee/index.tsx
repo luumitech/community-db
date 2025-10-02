@@ -44,7 +44,11 @@ export const MembershipFee: React.FC<Props> = ({
         </div>
       </CardHeader>
       <CardBody>
-        <Skeleton className="rounded-lg min-h-[400px]" isLoaded={!isLoading}>
+        <Skeleton
+          className="rounded-lg min-h-[400px]"
+          aria-label="skeleton"
+          isLoaded={!isLoading}
+        >
           <MembershipFeeTable membershipFeeStat={membershipFeeStat} />
         </Skeleton>
       </CardBody>

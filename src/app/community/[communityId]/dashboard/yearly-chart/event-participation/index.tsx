@@ -182,6 +182,7 @@ export const EventParticipation: React.FC<Props> = ({
             base: 'rounded-lg h-full',
             content: 'h-full',
           }}
+          aria-label="skeleton"
           isLoaded={!isLoading}
         >
           <BarChart
