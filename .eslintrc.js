@@ -52,7 +52,7 @@ module.exports = {
         'playwright/expect-expect': [
           'error',
           {
-            assertFunctionNames: ['takeScreenshot'],
+            assertFunctionNames: ['takeScreenshot', 'verifyTransaction'],
           },
         ],
       },

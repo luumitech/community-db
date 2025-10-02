@@ -27,10 +27,6 @@ const OccupantInput = builder.inputType('OccupantInput', {
     firstName: t.string(),
     lastName: t.string(),
     optOut: t.boolean(),
-    email: t.string(),
-    cell: t.string(),
-    work: t.string(),
-    home: t.string(),
     infoList: t.field({ type: [ContactInfoInput] }),
   }),
 });

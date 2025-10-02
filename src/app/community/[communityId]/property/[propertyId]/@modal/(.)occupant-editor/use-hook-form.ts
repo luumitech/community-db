@@ -44,10 +44,6 @@ function schema() {
         firstName: z.string(),
         lastName: z.string(),
         optOut: z.boolean(),
-        email: z.string(),
-        cell: z.string(),
-        work: z.string(),
-        home: z.string(),
         infoList: z.array(
           z
             .object({
@@ -92,10 +88,6 @@ export const occupantDefault: InputData['occupantList'][number] = {
   firstName: '',
   lastName: '',
   optOut: false,
-  email: '',
-  cell: '',
-  work: '',
-  home: '',
   infoList: [],
 };
 
@@ -111,10 +103,6 @@ function defaultInputData(
       firstName: entry.firstName ?? occupantDefault.firstName,
       lastName: entry.lastName ?? occupantDefault.lastName,
       optOut: entry.optOut ?? occupantDefault.optOut,
-      email: occupantDefault.email,
-      cell: occupantDefault.cell,
-      work: occupantDefault.work,
-      home: occupantDefault.home,
       infoList: (entry.infoList ?? occupantDefault.infoList).map(
         ({ type, label, value }) => ({ type, label, value })
       ),

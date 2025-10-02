@@ -1,6 +1,7 @@
 import { cn, type InputProps } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
+import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
 import { Input } from '~/view/base/input';
 import { PhoneInput } from '~/view/base/phone-input';
@@ -49,18 +50,14 @@ export const ContactInfoEditor: React.FC<Props> = ({
   return (
     <div
       className={cn(
-        'grid grid-cols-[15px_1fr]',
-        'sm:grid-cols-[15px_1fr_1fr_3fr]',
+        'grid grid-cols-[15px_1fr_15px]',
+        'sm:grid-cols-[15px_1fr_1fr_3fr_15px]',
         'items-center gap-2',
         className
       )}
       role="rowgroup"
     >
-      <FlatButton
-        className="col-start-1 text-warning"
-        icon="minus"
-        onClick={onRemove}
-      />
+      <DragHandle className="col-start-1 " />
       <ContactTypeSelect
         className="col-start-2 sm:col-start-auto"
         controlName={`${controlNamePrefix}.type`}
@@ -85,6 +82,11 @@ export const ContactInfoEditor: React.FC<Props> = ({
         controlName={`${controlNamePrefix}.value`}
         aria-label="phone number"
         variant="underlined"
+      />
+      <FlatButton
+        className="col-start-3 sm:col-start-auto text-warning"
+        icon="minus"
+        onClick={onRemove}
       />
     </div>
   );

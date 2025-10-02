@@ -1,4 +1,5 @@
 import { cn, Tab, Tabs } from '@heroui/react';
+import { usePrevious } from '@uidotdev/usehooks';
 import React from 'react';
 import * as R from 'remeda';
 import { useMediaQuery } from 'usehooks-ts';
@@ -19,7 +20,8 @@ export const Editor: React.FC<Props> = ({ className, occupantListMethods }) => {
   const { formState } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove } = occupantListMethods;
-  const [selectedKey, setSelectedKey] = React.useState(fields?.[0].id);
+  const [selectedKey, setSelectedKey] = React.useState(fields?.[0]?.id);
+  const prevFieldsLength = usePrevious(fields.length);
 
   const errObj = R.pathOr(errors, R.stringToPath('occupantList'), {});
   React.useEffect(() => {
@@ -32,6 +34,27 @@ export const Editor: React.FC<Props> = ({ className, occupantListMethods }) => {
     }
     //
   }, [errObj, fields]);
+
+  const onRemove = React.useCallback(
+    (fieldIdx: number) => {
+      remove(fieldIdx);
+      const fieldToSelect = fields[fieldIdx > 0 ? fieldIdx - 1 : 1];
+      if (fieldToSelect) {
+        setSelectedKey(fieldToSelect.id);
+      }
+    },
+    [remove, fields, setSelectedKey]
+  );
+
+  React.useEffect(() => {
+    // Switch to the newly added tab after new contact is added
+    if (!!prevFieldsLength && fields.length > prevFieldsLength) {
+      const lastField = fields[fields.length - 1];
+      if (lastField) {
+        setSelectedKey(lastField.id);
+      }
+    }
+  }, [fields, prevFieldsLength]);
 
   return (
     <Tabs
@@ -56,7 +79,7 @@ export const Editor: React.FC<Props> = ({ className, occupantListMethods }) => {
           >
             <ContactEditor
               controlNamePrefix={controlNamePrefix}
-              onRemove={() => remove(idx)}
+              onRemove={() => onRemove(idx)}
             />
           </Tab>
         );

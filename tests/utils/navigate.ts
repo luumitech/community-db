@@ -2,7 +2,7 @@ import { expect, type Page } from '@playwright/test';
 import { waitUntilStable } from './common';
 
 /**
- * Navigate the property list page
+ * Navigate to the property list page
  *
  * - Navigate from `/community`
  */
@@ -24,6 +24,42 @@ export async function navigatePropertyList(page: Page) {
        */
       .locator('tbody > tr[data-last="true"]')
   ).toBeVisible();
+}
+
+/**
+ * Navigate to the property page
+ *
+ * - Navigate from `/community`
+ */
+export async function navigateProperty(page: Page, address: string) {
+  await navigatePropertyList(page);
+
+  // Go to address matching input
+  const rows = page
+    .getByLabel('Property Table')
+    .locator('tbody > tr')
+    .filter({
+      has: page.locator('td:nth-child(1)').filter({ hasText: address }),
+    });
+  await rows.nth(0).click();
+  await expect(page.getByText('Membership Status')).not.toBeEmpty();
+}
+
+/**
+ * Use this function to verify transaction details
+ *
+ * - Navigate from `/community/[communityId]/property/[propertyId]/view`
+ */
+export async function navigateRegisterEvent(page: Page, currentEvent: string) {
+  await expect(
+    page.locator('main').getByText('Current Event', { exact: true })
+  ).not.toBeEmpty();
+  const button = page.getByRole('button', { name: "I'm here!" });
+  if (await button.isDisabled()) {
+    await select(page, 'Current Event Name', currentEvent);
+  }
+  await button.click();
+  await waitForDialog(page, 'Register Event');
 }
 
 /**
@@ -60,6 +96,29 @@ export async function waitForDialog(page: Page, title: string | RegExp) {
 }
 
 /**
+ * Enter text into input field
+ *
+ * @example
+ *
+ * ```ts
+ * await fillInput(page, 'Ticket #', '1');
+ * ```
+ */
+export async function fillInput(
+  page: Page,
+  label: string | RegExp,
+  value: string
+) {
+  const input = page.getByLabel(label);
+  input.fill(value);
+  /**
+   * If there is validation error on the input field, this will trigger react
+   * hook form to revalidate the field
+   */
+  input.press('Tab');
+}
+
+/**
  * Click a button with the given name
  *
  * @example
@@ -87,7 +146,47 @@ export async function select(
   selectItem: string | RegExp
 ) {
   await clickButton(page, selectLabel);
-  const item = page.getByRole('option', { name: selectItem });
+  /**
+   * Within event register modal, the following code didn't work for whatever
+   * reason, so we use another workaround
+   *
+   * ```ts
+   * const item = page.getByRole('option', { name: selectItem });
+   * ```
+   */
+  const item = page
+    .locator('ul[role="listbox"] > li')
+    .filter({ hasText: selectItem });
   await waitUntilStable(item);
   await item.click();
+}
+
+/**
+ * Select an item within the <Dropdown/> component
+ *
+ * @example
+ *
+ * ```ts
+ * await selectDropdown(page, 'Add Ticket', 'meal');
+ * ```
+ */
+export async function selectDropdown(
+  page: Page,
+  label: string | RegExp,
+  itemName: string | RegExp
+) {
+  await clickButton(page, label);
+  /**
+   * Within event register modal, the following code didn't work for whatever
+   * reason, so we use another workaround
+   *
+   * ```ts
+   * const menuItem = page.getByRole('menuitem', { name: selectItem });
+   * ```
+   */
+  const menuItem = page
+    .locator('ul[role="menu"] > li')
+    .filter({ hasText: itemName });
+  await waitUntilStable(menuItem);
+  await menuItem.click();
 }
