@@ -39,7 +39,7 @@ export const OccupantView: React.FC<Props> = ({ className, occupantList }) => {
             'grid col-span-full grid-cols-subgrid items-center',
             'text-foreground-500 bg-default-100 text-tiny font-semibold',
             'rounded-lg',
-            'h-12 sm:h-8 px-3'
+            'h-14 sm:h-8 px-3 py-1 sm:py-0'
           )}
         >
           <div className={classNames.name}>Name</div>
@@ -69,7 +69,16 @@ const Occupant: React.FC<OccupantProps> = ({ entry }) => {
         'px-4'
       )}
     >
-      <div className={classNames.name}>
+      <div
+        className={cn(
+          /**
+           * Bold the name in small media size, so it's easier to differentiate
+           * between rows
+           */
+          'font-semibold sm:font-normal',
+          classNames.name
+        )}
+      >
         {firstName} {lastName}
       </div>
       <div className={classNames.optOut}>

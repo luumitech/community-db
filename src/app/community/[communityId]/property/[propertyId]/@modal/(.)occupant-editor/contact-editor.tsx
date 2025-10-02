@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
+import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
 import { ContactInfoEditor } from './contact-info-editor';
@@ -32,6 +33,7 @@ export const ContactEditor: React.FC<Props> = ({
     control,
     name: `${controlNamePrefix}.infoList`,
   });
+  const { fields, append, remove, move } = infoMethods;
 
   return (
     <Card>
@@ -62,19 +64,27 @@ export const ContactEditor: React.FC<Props> = ({
           </Checkbox>
         </div>
         <Divider />
-        {infoMethods.fields.map((field, idx) => (
-          <ContactInfoEditor
-            key={`${controlNamePrefix}-${field.id}`}
-            controlNamePrefix={`${controlNamePrefix}.infoList.${idx}`}
-            onRemove={() => infoMethods.remove(idx)}
-          />
-        ))}
+        <ReorderGroup axis="vertical" items={fields} onMove={move}>
+          {fields.map((field, idx) => {
+            return (
+              <ReorderItem
+                key={`${controlNamePrefix}-${field.id}`}
+                id={field.id}
+              >
+                <ContactInfoEditor
+                  controlNamePrefix={`${controlNamePrefix}.infoList.${idx}`}
+                  onRemove={() => remove(idx)}
+                />
+              </ReorderItem>
+            );
+          })}
+        </ReorderGroup>
         <Button
           className="self-start"
           startContent={<Icon icon="add" />}
           variant="flat"
           onPress={() => {
-            infoMethods.append({
+            append({
               type: GQL.ContactInfoType.Email,
               label: '',
               value: '',
