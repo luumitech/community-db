@@ -7,13 +7,22 @@ import {
 import {
   SortableContext,
   horizontalListSortingStrategy,
+  rectSortingStrategy,
   verticalListSortingStrategy,
   type SortableContextProps,
 } from '@dnd-kit/sortable';
 import React from 'react';
+import { insertIf } from '~/lib/insert-if';
 
 interface Props extends SortableContextProps {
-  axis: 'horizontal' | 'vertical';
+  /**
+   * Lock drag axis
+   *
+   * - None: allow free movement
+   * - Horizontal: lock movement on horizontal axis
+   * - Vertical: lock movement on vertical axis
+   */
+  axis: 'none' | 'horizontal' | 'vertical';
   onMove?: (fromIdx: number, toIdx: number) => void;
 }
 
@@ -49,19 +58,22 @@ export const ReorderGroup: React.FC<React.PropsWithChildren<Props>> = ({
       }}
       // Lock to vertical axis
       modifiers={[
-        axis === 'horizontal'
-          ? restrictToHorizontalAxis
-          : restrictToVerticalAxis,
+        ...insertIf(axis === 'horizontal', restrictToHorizontalAxis),
+        ...insertIf(axis === 'vertical', restrictToVerticalAxis),
         restrictToWindowEdges,
       ]}
       onDragEnd={reorderList}
     >
       <SortableContext
-        strategy={
-          axis === 'horizontal'
-            ? horizontalListSortingStrategy
-            : verticalListSortingStrategy
-        }
+        {...(axis === 'none' && {
+          strategy: rectSortingStrategy,
+        })}
+        {...(axis === 'horizontal' && {
+          strategy: horizontalListSortingStrategy,
+        })}
+        {...(axis === 'vertical' && {
+          strategy: verticalListSortingStrategy,
+        })}
         {...props}
       />
     </DndContext>

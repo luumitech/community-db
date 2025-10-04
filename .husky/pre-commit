@@ -1,0 +1,6 @@
+# Update package version in README.md
+source "$(dirname "$0")/readme-update.sh"
+
+# Uncomment to exit with error (for testing pre-commit script)
+# This will abort the Git commit operation
+# exit 1
