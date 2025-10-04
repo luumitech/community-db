@@ -34,19 +34,19 @@
 
 ## 🛠️ Tech Stack
 
-| **Category** | **Technology** | **Version** |
-|--------------|----------------|-------------|
-| **Framework** | [Next.js](https://nextjs.org/) | 15.x |
-| **Frontend** | [React](https://react.dev/) | 19.x |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) | 5.x |
-| **Database** | [MongoDB](https://www.mongodb.com/) | Latest |
-| **Authentication** | [Better-Auth](https://www.better-auth.com/) | 1.3.x |
-| **Upload storage** | [uploadthing](https://uploadthing.com/) | 7.x |
-| **Email handling** | [nodemailer](https://nodemailer.com/) | 6.x |
-| **UI Component** | [HeroUI](https://www.heroui.com/) | 2.8.x |
-| **CSS Processor** | [Tailwind CSS](https://tailwindcss.com/) | 3.x |
-| **Animation** | [Motion](https://motion.dev/) | 12.x |
-| **Icons** | [Iconify](https://iconify.design/) | 5.x |
+| **Category** | **Technology** |
+|--------------|----------------|
+| **Framework** | [Next.js](https://nextjs.org/) |
+| **Frontend** | [React](https://react.dev/) |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) |
+| **Database** | [MongoDB](https://www.mongodb.com/) |
+| **Authentication** | [Better-Auth](https://www.better-auth.com/) |
+| **Upload storage** | [uploadthing](https://uploadthing.com/) |
+| **Email handling** | [nodemailer](https://nodemailer.com/) |
+| **UI Component** | [HeroUI](https://www.heroui.com/) |
+| **CSS Processor** | [Tailwind CSS](https://tailwindcss.com/) |
+| **Animation** | [Motion](https://motion.dev/) |
+| **Icons** | [Iconify](https://iconify.design/) |
 
 ## 💻 **For Developers**
 
@@ -101,7 +101,7 @@ The mongo DB must be configured with replication set:
 
 ### Updating mongo schema
 
-When indexes in the mongo schema are modified, you will need to run:
+Whenever mongo schema `prisma/schema.prisma` is modified, you will need to run:
 
 ```sh
 yarn update-prisma-db
