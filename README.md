@@ -34,19 +34,19 @@
 
 ## 🛠️ Tech Stack
 
-| **Category** | **Technology** | **Version** |
-|--------------|----------------|-------------|
-| **Framework** | [Next.js](https://nextjs.org/) | 15.x |
-| **Frontend** | [React](https://react.dev/) | 19.x |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) | 5.x |
-| **Database** | [MongoDB](https://www.mongodb.com/) | Latest |
-| **Authentication** | [Better-Auth](https://www.better-auth.com/) | 1.3.x |
-| **Upload storage** | [uploadthing](https://uploadthing.com/) | 7.x |
-| **Email handling** | [nodemailer](https://nodemailer.com/) | 6.x |
-| **UI Component** | [HeroUI](https://www.heroui.com/) | 2.8.x |
-| **CSS Processor** | [Tailwind CSS](https://tailwindcss.com/) | 3.x |
-| **Animation** | [Motion](https://motion.dev/) | 12.x |
-| **Icons** | [Iconify](https://iconify.design/) | 5.x |
+| **Category** | **Technology** | **Package** | **Version** |
+|--------------|----------------|-------------|-------------|
+| **Framework** | [Next.js](https://nextjs.org/) | next | 15.4.5 |
+| **Frontend** | [React](https://react.dev/) | react | 19.1.1 |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) | typescript | 5.2.2 |
+| **Database** | [MongoDB](https://www.mongodb.com/) |  | Latest |
+| **Authentication** | [Better-Auth](https://www.better-auth.com/) | better-auth | 1.3.4 |
+| **Upload storage** | [uploadthing](https://uploadthing.com/) | uploadthing | 7.6.0 |
+| **Email handling** | [nodemailer](https://nodemailer.com/) | nodemailer | 6.10.1 |
+| **UI Component** | [HeroUI](https://www.heroui.com/) | @heroui/react | 2.8.3 |
+| **CSS Processor** | [Tailwind CSS](https://tailwindcss.com/) | tailwindcss | 3.4.16 |
+| **Animation** | [Motion](https://motion.dev/) | motion | 12.23.12 |
+| **Icons** | [Iconify](https://iconify.design/) | @iconify/react | 5.2.1 |
 
 ## 💻 **For Developers**
 

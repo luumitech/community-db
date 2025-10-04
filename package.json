@@ -8,6 +8,7 @@
     "email-dev": "shx --verbose cp .env.local ./node_modules/react-email/dist/preview && email dev --dir ./src/emails --port 3100",
     "build": "yarn generate && next build && yarn postbuild",
     "postbuild": "shx --verbose cp -r public .next/standalone/public && shx --verbose cp -r .next/static .next/standalone/.next/static",
+    "postinstall": "husky",
     "start": "node .next/standalone/server.js",
     "start:local": "dotenv -e .env.local -- node .next/standalone/server.js",
     "lint": "next lint --max-warnings=0",
