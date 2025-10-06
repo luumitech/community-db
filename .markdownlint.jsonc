@@ -1,0 +1,17 @@
+{
+  // Allow lines longer than the conventional 80 character limit
+  "MD013": false,
+  // Some HTML elements have necessary, when there is no markdown equivalent
+  "no-inline-html": {
+    "allowed_elements": [
+      "img",
+      "picture",
+      "source",
+      "table",
+      "theader",
+      "tbody",
+      "tr",
+      "td",
+    ],
+  },
+}

@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "prisma.prisma",
+    "bradlc.vscode-tailwindcss",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "graphql.vscode-graphql",
+    "graphql.vscode-graphql-syntax",
+    "davidanson.vscode-markdownlint",
+    "esbenp.prettier-vscode"
+  ]
+}

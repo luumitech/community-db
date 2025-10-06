@@ -38,11 +38,11 @@ async function generate() {
 }
 
 async function main() {
-  await genFavicon('./public/image/community-db-logo.png', './src/app', [
+  await genFavicon('./public/image/logo-icon-transparent.png', './src/app', [
     'apple-icon.png',
     'icon.png',
   ]);
-  await genFavicon('./public/image/logo-favicon-colored.png', './src/app', [
+  await genFavicon('./public/image/logo-icon-colored.png', './src/app', [
     'favicon.ico',
   ]);
 }
