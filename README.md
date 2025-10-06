@@ -50,9 +50,12 @@
 
 ## 💻 **For Developers**
 
-Create a `.env.local` using `.env` as a template, then run the development server:
-
 ```bash
+# Create a .env.local file
+# Replace the '...' value with appropriate values
+cp .env .env.local
+
+# Run the development server
 yarn dev
 ```
 
