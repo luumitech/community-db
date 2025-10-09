@@ -8,11 +8,11 @@ import { waitUntilStable } from './common';
  */
 export async function navigatePropertyList(page: Page) {
   await page.goto('/community');
-  await expect(page.getByText('Welcome!')).not.toBeEmpty();
+  await expect(page.getByText('Welcome')).not.toBeEmpty();
 
   await expect(page.getByTestId('signed-in-user-avatar')).toBeVisible();
 
-  await page.getByRole('option', { name: 'Select Community' }).click();
+  await page.getByRole('link', { name: 'Select Community' }).click();
   await page.getByRole('option', { name: 'Sample Community' }).click();
 
   await expect(

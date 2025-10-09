@@ -60,11 +60,7 @@ export const Header: React.FC<Props> = ({}) => {
           />
         )} */}
         <NavbarBrand className="flex-grow-0 items-center">
-          <Link
-            className="gap-1"
-            href={appPath('communityWelcome')}
-            color="foreground"
-          >
+          <Link className="gap-1" href={appPath('home')} color="foreground">
             <div className="w-[36px]">
               <AppLogo priority size={36} />
             </div>

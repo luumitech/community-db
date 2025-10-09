@@ -15,7 +15,7 @@ export const Footer: React.FC<Props> = ({ className }) => {
   const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
 
   return (
-    <div className={cn(className, 'bg-green-300 p-4')}>
+    <div className={cn(className, 'p-4', 'bg-green-300 dark:bg-neutral-800')}>
       <div className={cn('grid grid-cols-1 sm:grid-cols-2 gap-3')}>
         <div className="flex items-center divide-x divide-gray-600">
           {subscriptionPlanEnable ? (

@@ -1,22 +1,27 @@
 'use client';
-import { cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
+import { useSession } from '~/custom-hooks/auth';
+import { appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env-var';
 import { AppLogo } from '~/view/app-logo';
-import { GoToWelcome } from '../go-to-welcome';
+import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
+import { QuickStart } from './quick-start';
 
 interface Props {
   className?: string;
 }
 
 export const Hero: React.FC<Props> = ({ className }) => {
+  const session = useSession();
+
   return (
     <div
       className={cn(
-        className,
         // Make sure background covers entire screen
         'w-full min-h-main-height',
-        'bg-[url(/image/community-with-people.png)] bg-cover bg-center'
+        'bg-[url(/image/community-with-people.png)] bg-cover bg-center',
+        className
       )}
     >
       {/* Render text box that prefers to be aligned slightly to the top */}
@@ -27,16 +32,18 @@ export const Hero: React.FC<Props> = ({ className }) => {
             'bg-opacity-80 bg-background rounded-xl p-5 sm:p-10'
           )}
         >
-          <AppLogo size={96} />
+          <Link href={appPath('home')}>
+            <AppLogo size={96} />
+          </Link>
           <h1 className="text-5xl font-extrabold">{appTitle}</h1>
           <p className="text-2xl">
-            A simple and secure way to track, update, and organize member
-            information, so you can focus on what matters most:
+            A platform to build, engage and grow communities.
           </p>
-          <p className="text-2xl font-bold">
-            Growing and connecting your community!
-          </p>
-          <GoToWelcome />
+          {!!session.data ? (
+            <QuickStart className="max-w-xs sm:max-w-[30em]" />
+          ) : (
+            <SignInButton isLoading={session.isPending} />
+          )}
         </div>
       </div>
     </div>

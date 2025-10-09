@@ -22,7 +22,13 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({
       layoutId={props.id}
       onClick={() => onPress?.()}
     >
-      <DisplayImage className="h-full shadow-lg shadow-slate-400" {...props}>
+      <DisplayImage
+        className={cn(
+          'h-full',
+          'shadow-md shadow-slate-400 dark:shadow-background'
+        )}
+        {...props}
+      >
         <DisplayCaption caption={caption} />
       </DisplayImage>
     </motion.div>
