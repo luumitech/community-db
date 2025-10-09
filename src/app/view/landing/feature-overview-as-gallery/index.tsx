@@ -19,7 +19,7 @@ export const FeatureOverviewAsGallery: React.FC<Props> = ({ className }) => {
   const [image, setImage] = React.useState<ScreenshotEntry | null>(null);
 
   return (
-    <div className={cn(className, 'p-3 bg-green-200')}>
+    <div className={cn(className, 'p-3', 'bg-green-200 dark:bg-gray-900')}>
       <DisplayTitle title="Feature Highlights" />
       <div className={cn('flex flex-wrap justify-center gap-4')}>
         {imageList.map((entry) => (

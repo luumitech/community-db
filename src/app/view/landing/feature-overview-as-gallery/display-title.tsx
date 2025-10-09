@@ -16,7 +16,7 @@ export const DisplayTitle: React.FC<Props> = ({ className, title }) => {
     <div
       ref={ref}
       className={cn(
-        'text-slate-700',
+        'text-slate-700 dark:text-foreground',
         'text-3xl sm:text-5xl font-bold text-center',
         'my-10'
       )}
