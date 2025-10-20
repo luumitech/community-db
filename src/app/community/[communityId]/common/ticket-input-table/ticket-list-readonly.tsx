@@ -102,6 +102,7 @@ const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
       className={cn('grid col-span-full grid-cols-subgrid mx-3', 'text-sm')}
       role="row"
     >
+      <div className="pl-1" role="cell" />
       <div className="pl-1" role="cell">
         {ticket.ticketName ?? ''}
       </div>
@@ -163,6 +164,7 @@ export const TicketListTotal: React.FC<PreviousTransaction> = ({
       )}
       role="row"
     >
+      <div role="cell" />
       <div
         role="cell"
         className="col-span-2 text-sm text-right text-default-500"

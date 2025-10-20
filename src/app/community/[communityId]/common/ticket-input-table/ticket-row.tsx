@@ -3,6 +3,7 @@ import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
+import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { type TicketList } from './_type';
@@ -28,6 +29,7 @@ export const TicketRowHeader: React.FC<EmptyProps> = () => {
       )}
       role="row"
     >
+      <div role="columnheader" />
       <div role="columnheader">Ticket Type</div>
       <div role="columnheader">Ticket #</div>
       <div role="columnheader">Price</div>
@@ -60,6 +62,9 @@ export const TicketRow: React.FC<TicketRowProps> = ({
   return (
     <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
       <div role="cell">
+        <DragHandle className="pt-3" />
+      </div>
+      <div role="cell">
         <TicketTypeSelect
           controlNamePrefix={controlNamePrefix}
           includeHiddenFields={includeHiddenFields}
@@ -91,7 +96,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
       <div className="flex pt-3 gap-2" role="cell">
         <FlatButton
           className="text-danger"
-          icon="trash"
+          icon="cross"
           tooltip="Remove Ticket"
           onClick={() => {
             fieldMethods.remove(ticketIdx);
@@ -165,7 +170,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
     >
       <div
         role="cell"
-        className="col-span-2 text-sm text-right text-default-500"
+        className="col-span-3 text-sm text-right text-default-500"
       >
         Current Transaction Total
       </div>
@@ -177,19 +182,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
         <TransactionTotalPaymentSelect
           controlName={`${transactionConfig?.controlNamePrefix}.paymentMethod`}
           placeholder="Select Payment"
-          onSelectionChange={() => {
-            /**
-             * Before the form is submitted, this value is expected to propagate
-             * to all the empty payment fields, so we want to prevent any errors
-             * in them, so the propagation logic can be exercised
-             */
-            clearErrors(`${membershipConfig?.controlNamePrefix}.paymentMethod`);
-            ticketList.forEach((entry, idx) => {
-              clearErrors(
-                `${ticketListConfig.controlNamePrefix}.${idx}.paymentMethod`
-              );
-            });
-          }}
+          {...transactionConfig?.selectPaymentProps}
         />
       </div>
       <div className="flex gap-2" role="cell">
@@ -215,6 +208,7 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
 
   return (
     <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
+      <div role="cell" />
       <div role="cell" className="text-sm pt-2 pl-1">
         Membership Fee
       </div>

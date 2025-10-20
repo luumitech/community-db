@@ -84,8 +84,9 @@ export const ContactInfoEditor: React.FC<Props> = ({
         variant="underlined"
       />
       <FlatButton
-        className="col-start-3 sm:col-start-auto text-warning"
-        icon="minus"
+        className="col-start-3 sm:col-start-auto text-danger"
+        icon="cross"
+        tooltip="Remove"
         onClick={onRemove}
       />
     </div>

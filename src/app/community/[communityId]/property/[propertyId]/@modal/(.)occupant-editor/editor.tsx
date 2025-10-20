@@ -3,8 +3,8 @@ import { usePrevious } from '@uidotdev/usehooks';
 import React from 'react';
 import * as R from 'remeda';
 import { useMediaQuery } from 'usehooks-ts';
-import { ContactEditor } from './contact-editor';
 import { ContactName } from './contact-name';
+import { OccupantEditor } from './occupant-editor';
 import {
   useHookFormContext,
   type OccupantFieldArrayReturn,
@@ -77,7 +77,7 @@ export const Editor: React.FC<Props> = ({ className, occupantListMethods }) => {
             key={field.id}
             title={<ContactName controlNamePrefix={controlNamePrefix} />}
           >
-            <ContactEditor
+            <OccupantEditor
               controlNamePrefix={controlNamePrefix}
               onRemove={() => onRemove(idx)}
             />
