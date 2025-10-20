@@ -11,7 +11,7 @@ import { Select, type SelectProps } from '~/view/base/select';
 
 type CustomSelectProps = Omit<SelectProps, 'items' | 'children'>;
 
-interface Props extends CustomSelectProps {
+export interface Props extends CustomSelectProps {
   className?: string;
   includeHiddenFields?: boolean;
 }

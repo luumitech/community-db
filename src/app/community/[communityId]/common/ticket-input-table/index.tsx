@@ -2,6 +2,7 @@ import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { useFormContext } from '~/custom-hooks/hook-form';
+import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import {
   TicketProvider,
   type MembershipConfig,
@@ -100,18 +101,29 @@ export const TicketInputTable: React.FC<Props> = ({
     >
       <div className={cn(className)}>
         <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
-          <div className="grid grid-cols-[repeat(4,1fr)_75px] gap-2">
+          <div className="grid grid-cols-[25px_repeat(4,1fr)_75px] gap-2">
             <TicketRowHeader />
             <TicketListReadonly />
             {transactionConfig != null && <TransactionHeader />}
             <MembershipRow />
-            {ticketListMethods.fields.map((row, ticketIdx) => (
-              <TicketRow
-                key={row.id}
-                ticketIdx={ticketIdx}
-                onRemove={() => onRemove?.(ticketIdx)}
-              />
-            ))}
+            <ReorderGroup
+              axis="vertical"
+              items={ticketListMethods.fields}
+              onMove={ticketListMethods.move}
+            >
+              {ticketListMethods.fields.map((row, ticketIdx) => (
+                <ReorderItem
+                  className="grid col-span-full grid-cols-subgrid"
+                  key={row.id}
+                  id={row.id}
+                >
+                  <TicketRow
+                    ticketIdx={ticketIdx}
+                    onRemove={() => onRemove?.(ticketIdx)}
+                  />
+                </ReorderItem>
+              ))}
+            </ReorderGroup>
             {transactionConfig != null && <TransactionFooter />}
             {transactionConfig != null && <TransactionTotal />}
           </div>

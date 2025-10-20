@@ -23,7 +23,7 @@ interface Props {
   onRemove?: () => void;
 }
 
-export const ContactEditor: React.FC<Props> = ({
+export const OccupantEditor: React.FC<Props> = ({
   className,
   controlNamePrefix,
   onRemove,

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
+import { type SelectProps } from '~/view/base/select';
 import { type TicketListFieldArray } from './_type';
 
 export interface TicketListConfig {
@@ -37,6 +38,8 @@ export interface TransactionConfig {
    * Note: this does not include membership
    */
   ticketList: GQL.Ticket[];
+  /** Additional props to be passed into payment method selection */
+  selectPaymentProps?: Partial<SelectProps>;
 }
 
 type ContextT = Readonly<{

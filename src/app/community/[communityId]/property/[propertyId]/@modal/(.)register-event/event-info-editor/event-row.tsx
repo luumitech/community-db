@@ -33,7 +33,7 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
 };
 
 export const EventRow: React.FC<EventRowProps> = ({ className }) => {
-  const { control, getValues } = useHookFormContext();
+  const { control, getValues, clearErrors } = useHookFormContext();
   const { ticketList } = useXtraArgContext();
   const ticketListMethods = useFieldArray({
     control,
@@ -42,6 +42,23 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
   const isMember = getValues('hidden.isMember');
   const isFirstEvent = getValues('hidden.isFirstEvent');
   const eventName = getValues('event.eventName');
+  const applyToMembership = getValues('hidden.transaction.applyToMembership');
+
+  /**
+   * Can select payment method for current transaction if:
+   *
+   * - Membership fee has been added
+   * - At least one ticket has been added
+   */
+  const canSelectPayment =
+    applyToMembership || ticketListMethods.fields.length > 0;
+
+  const onTicketRemove = React.useCallback(
+    (ticketIdx: number) => {
+      clearErrors('hidden.transaction.paymentMethod');
+    },
+    [clearErrors]
+  );
 
   return (
     <>
@@ -69,6 +86,9 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
           transactionConfig={{
             controlNamePrefix: 'hidden.transaction',
             ticketList: ticketList ?? [],
+            selectPaymentProps: {
+              isDisabled: !canSelectPayment,
+            },
           }}
           ticketListConfig={{
             controlNamePrefix: 'event.ticketList',
@@ -80,6 +100,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
               canEdit: !isMember,
             },
           })}
+          onRemove={onTicketRemove}
         />
       </div>
     </>

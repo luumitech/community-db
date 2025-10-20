@@ -17,45 +17,67 @@ import { MembershipEditorFragment } from '../(.)membership-editor/use-hook-form'
 import { useLayoutContext } from '../../layout-context';
 
 function schema() {
-  return z.object({
-    self: z.object({
-      id: zz.string.nonEmpty(),
-      updatedAt: zz.string.nonEmpty(),
-    }),
-    notes: z.string().nullable(),
-    membership: z.object({
-      year: zz.coerce.toNumber({ message: 'Must select a year' }),
-      price: zz.coerce.toCurrency(),
-      paymentMethod: zz.string.nonEmpty('Must select a payment method'),
-    }),
-    event: z.object({
-      eventName: zz.string.nonEmpty('Must specify a value'),
-      eventDate: zz.coerce.toIsoDate(),
-      ticketList: ticketListSchema,
-    }),
-    hidden: z.object({
-      /** Whether member is already a member when registering */
-      isMember: z.boolean(),
-      /**
-       * Determine if the register button should be enabled. For example, if
-       * user is already registered in the event previously, then the register
-       * button should not be enabled, unless they have modified the form.
-       */
-      canRegister: z.boolean(),
-      /**
-       * The first event is when membership fee is collected. This information
-       * is useful for determining if ticketList should show membership fee
-       */
-      isFirstEvent: z.boolean(),
-      /** Transaction related fields */
-      transaction: z.object({
-        /** Selected payment on `Current Transaction Total` */
-        paymentMethod: zz.string.nonEmpty('Must select a payment method'),
-        /** Selected payment should apply to membership also */
-        applyToMembership: z.boolean(),
+  return z
+    .object({
+      self: z.object({
+        id: zz.string.nonEmpty(),
+        updatedAt: zz.string.nonEmpty(),
       }),
-    }),
-  });
+      notes: z.string().nullable(),
+      membership: z.object({
+        year: zz.coerce.toNumber({ message: 'Must select a year' }),
+        price: zz.coerce.toCurrency(),
+        paymentMethod: zz.string.nonEmpty('Must select a payment method'),
+      }),
+      event: z.object({
+        eventName: zz.string.nonEmpty('Must specify a value'),
+        eventDate: zz.coerce.toIsoDate(),
+        ticketList: ticketListSchema,
+      }),
+      hidden: z.object({
+        /** Whether member is already a member when registering */
+        isMember: z.boolean(),
+        /**
+         * Determine if the register button should be enabled. For example, if
+         * user is already registered in the event previously, then the register
+         * button should not be enabled, unless they have modified the form.
+         */
+        canRegister: z.boolean(),
+        /**
+         * The first event is when membership fee is collected. This information
+         * is useful for determining if ticketList should show membership fee
+         */
+        isFirstEvent: z.boolean(),
+        /** Transaction related fields */
+        transaction: z.object({
+          /** Selected payment on `Current Transaction Total` */
+          paymentMethod: z.string().nullable(),
+          /** Selected payment should apply to membership also */
+          applyToMembership: z.boolean(),
+        }),
+      }),
+    })
+    .refine(
+      (form) => {
+        /**
+         * Payment Method is only required if:
+         *
+         * - Membership fee has not been paid
+         * - Ticket items have been added
+         */
+        if (
+          form.hidden.transaction.applyToMembership ||
+          form.event.ticketList.length > 0
+        ) {
+          return !!form.hidden.transaction.paymentMethod;
+        }
+        return true;
+      },
+      {
+        message: 'Must specify payment method for current transaction',
+        path: ['hidden.transaction.paymentMethod'],
+      }
+    );
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
