@@ -59,10 +59,18 @@ const baseSchema = z.object({
   CIPHER_KEY: zz.string.envVar(),
   CIPHER_IV: zz.string.envVar(),
 
-  /** Google related env vars */
-  /** For google login */
+  /** Social login env vars */
+  /** For Google login */
   GOOGLE_CLIENT_ID: zz.string.envVar(),
   GOOGLE_CLIENT_SECRET: zz.string.envVar(),
+
+  /** For Facebook login */
+  FACEBOOK_CLIENT_ID: zz.string.envVar(),
+  FACEBOOK_CLIENT_SECRET: zz.string.envVar(),
+
+  /** For X login */
+  TWITTER_CLIENT_ID: zz.string.envVar(),
+  TWITTER_CLIENT_SECRET: zz.string.envVar(),
 
   /** Mongo configurations */
   MONGODB_URI: zz.string.envVar(),

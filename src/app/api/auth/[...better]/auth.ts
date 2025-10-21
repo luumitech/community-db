@@ -27,9 +27,25 @@ export const auth = betterAuth({
       maxAge: 10 * 60,
     },
   },
-  // Development only, allow user to login with arbitrary
-  // username and password.
+  account: {
+    accountLinking: {
+      /**
+       * Forced Linking
+       *
+       * Allow login via other providers with same email address
+       *
+       * See:
+       * https://www.better-auth.com/docs/concepts/users-accounts#forced-linking
+       */
+      enabled: true,
+    },
+  },
   emailAndPassword: {
+    /**
+     * Allow email/password login in development mode only.
+     *
+     * - Allow arbitrary username and password.
+     */
     enabled: !isProduction() || isRunningTest(),
     password: {
       // Skip password verification during testing
@@ -38,9 +54,28 @@ export const auth = betterAuth({
   },
   socialProviders: {
     google: {
-      enabled: true,
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+    facebook: {
+      clientId: env.FACEBOOK_CLIENT_ID,
+      clientSecret: env.FACEBOOK_CLIENT_SECRET,
+      mapProfileToUser: (profile) => {
+        /**
+         * Facebook is not returning the `emailVerified` flag in user profile,
+         * so we add it manually
+         */
+        return {
+          email: profile.email,
+          emailVerified: true,
+          name: profile.name,
+          image: profile.picture.data.url,
+        };
+      },
+    },
+    twitter: {
+      clientId: env.TWITTER_CLIENT_ID,
+      clientSecret: env.TWITTER_CLIENT_SECRET,
     },
   },
   plugins: [

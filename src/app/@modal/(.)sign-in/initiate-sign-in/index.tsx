@@ -3,7 +3,7 @@ import React from 'react';
 import { isProduction } from '~/lib/env-var';
 import { SignInDev } from './sign-in-dev';
 import { SignInEmailOtp } from './sign-in-email-otp';
-import { SignInGoogle } from './sign-in-google';
+import { SignInSocial } from './sign-in-social';
 
 interface Props {
   className?: string;
@@ -17,7 +17,17 @@ export const InitiateSignIn: React.FC<Props> = ({ className }) => {
       </ModalHeader>
       <ModalBody className="flex flex-col gap-2">
         <SignInEmailOtp />
-        <SignInGoogle />
+        <SignInSocial
+          provider="google"
+          label="Continue with Google"
+          icon="google"
+        />
+        <SignInSocial
+          provider="facebook"
+          label="Continue with Facebook"
+          icon="facebook"
+        />
+        <SignInSocial provider="twitter" label="Continue with X" icon="x" />
         {!isProduction() && <SignInDev />}
       </ModalBody>
       <ModalFooter className="flex flex-col gap-4" />
