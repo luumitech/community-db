@@ -1,7 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { cn } from '@heroui/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
+import { appPath } from '~/lib/app-path';
 import { FlatButton } from '~/view/base/flat-button';
 import { toast } from '~/view/base/toastify';
 import { type AccessEntry } from '../_type';
@@ -29,10 +31,18 @@ interface Props {
 }
 
 export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
+  const router = useRouter();
   const access = getFragment(DeleteFragment, fragment);
   const [deleteAccess] = useMutation(AccessDeleteMutation);
 
   const onDelete = React.useCallback(async () => {
+    if (fragment.isSelf) {
+      /**
+       * If removing own access, navigate away from curent community first,
+       * otherwise the mutation is cause error rendering current screen
+       */
+      router.push(appPath('communitySelect'));
+    }
     await toast.promise(
       deleteAccess({
         variables: { id: access.id },
@@ -50,7 +60,7 @@ export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
         success: 'Deleted',
       }
     );
-  }, [deleteAccess, access]);
+  }, [fragment.isSelf, deleteAccess, access, router]);
 
   return (
     <FlatButton

@@ -4,7 +4,7 @@ import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { verifyAccess } from '~/graphql/schema/access/util';
 import { jobPayloadRef } from '~/graphql/schema/job/object';
-import { ContextUser } from '~/lib/context-user';
+import { type ContextUser } from '~/lib/context-user';
 import { JobHandler } from '~/lib/job-handler';
 import { CommunityImport } from './community-import';
 

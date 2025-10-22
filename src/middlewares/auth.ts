@@ -5,10 +5,20 @@ import { appPath } from '~/lib/app-path';
 import { urlJoin } from '~/lib/url-util';
 import type { MiddlewareFactory } from './chain';
 
+/**
+ * List of path prefixes that requires user to be logged in to access
+ *
+ * - Don't need to include graphql paths here because graphql APIs has its own
+ *   logic to handle route protection. See: `src/app/graphql/context.ts`
+ */
 const protectedPaths = [
   '/community',
-  // API route handlers (for routes requiring auth)
-  // Don't protect uploadthing, as it has its own authentication layer
+  appPath('userProfile'),
+  /**
+   * API route handlers (for routes requiring auth)
+   *
+   * - Don't protect uploadthing, as it has its own authentication layer
+   */
   // '/api/uploadthing',
 ];
 

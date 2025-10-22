@@ -20,7 +20,7 @@ export default function Privacy() {
       // isKeyboardDismissDisabled
     >
       <ModalContent>
-        <ModalHeader className="text-2xl">Privacy Policy</ModalHeader>
+        <ModalHeader className="text-2xl">{appLabel('privacy')}</ModalHeader>
         <ModalBody className="gap-6">
           <Item title="1. Introduction">
             Welcome to {appTitle}. We are committed to protecting your personal
@@ -75,7 +75,7 @@ export default function Privacy() {
             <Link
               className="text-sm"
               href={appPath('contactUs', {
-                query: { subject: 'Privay Policy' },
+                query: { subject: appLabel('privacy') },
               })}
             >
               {appLabel('contactUs')}

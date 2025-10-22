@@ -18,6 +18,7 @@ const supportedIcon = {
   'thumb-up': 'mdi:thumbs-up-outline',
   'thumb-down': 'mdi:thumbs-down-outline',
   checkmark: 'ion:checkmark-outline',
+  person: 'ion:person-outline',
   'person-add': 'ion:person-add-outline',
   more: 'mdi:more-vert',
   search: 'akar-icons:search',

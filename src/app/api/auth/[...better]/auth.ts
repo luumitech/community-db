@@ -1,9 +1,11 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth, type User } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { APIError } from 'better-auth/api';
 import { emailOTP } from 'better-auth/plugins';
 import { env } from '~/lib/env-cfg';
 import { appTitle, isProduction, isRunningTest } from '~/lib/env-var';
 import prisma from '~/lib/prisma';
+import * as deleteUserUtil from './delete-user-util';
 import { sendVerificationOTP } from './email-otp';
 
 export const auth = betterAuth({
@@ -19,6 +21,16 @@ export const auth = betterAuth({
     // By default, better-auth uses 'User' as the model name, but we are
     // already using that database to keep track of active user profile.
     modelName: 'AuthUser',
+    /**
+     * Allow user to be deleted. expose `authClient.deleteUser` API
+     *
+     * See: https://www.better-auth.com/docs/concepts/users-accounts#delete-user
+     */
+    deleteUser: {
+      enabled: true,
+      beforeDelete: beforeUserDelete,
+      afterDelete: afterUserDelete,
+    },
   },
   session: {
     cookieCache: {
@@ -98,4 +110,59 @@ export const auth = betterAuth({
 export async function getServerSession(headers: Headers) {
   const session = await auth.api.getSession({ headers });
   return session;
+}
+
+/**
+ * Get User Document using information from better-auth user
+ *
+ * @param authUser Better-auth user context
+ * @returns User document
+ */
+async function getUser(authUser: User) {
+  const { email } = authUser;
+  if (!email) {
+    throw new APIError('BAD_REQUEST', {
+      message: 'User account does not have a valid email',
+    });
+  }
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+  if (!user) {
+    throw new APIError('BAD_REQUEST', {
+      message: 'User account does not exist',
+    });
+  }
+  return user;
+}
+
+/**
+ * Pre-requisite check before allowing user account to be deleted
+ *
+ * - To interrupt with error you can throw `APIError`
+ */
+async function beforeUserDelete(authUser: User, req?: Request) {
+  const user = await getUser(authUser);
+  const communities = await deleteUserUtil.communityNonOwnerSoleAdministrator(
+    user.id
+  );
+  if (communities.length > 0) {
+    throw new APIError('BAD_REQUEST', {
+      message: [
+        'You must assign the administrator role to someone else to the following communities:',
+        ...communities.map(({ name }) => `- ${name}`),
+        'before your account can be deleted',
+      ].join('\n'),
+    });
+  }
+}
+
+/**
+ * Perform clean up of user account
+ *
+ * - To interrupt with error you can throw `APIError`
+ */
+async function afterUserDelete(authUser: User, req?: Request) {
+  const user = await getUser(authUser);
+  await deleteUserUtil.performUserDelete(user.id);
 }

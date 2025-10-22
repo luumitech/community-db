@@ -9,7 +9,7 @@ const propertyDeletePayloadRef = builder
   .objectRef<{ id: string }>('PropertyDeletePayload')
   .implement({
     fields: (t) => ({
-      id: t.exposeID('id', {}),
+      id: t.exposeID('id'),
     }),
   });
 
