@@ -6,6 +6,7 @@ import {
   Spinner,
   cn,
 } from '@heroui/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { authClient, useSignIn } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
+  const router = useRouter();
   const [sendingOtp, onSendOtp] = React.useTransition();
   const [signingIn, onSignIn] = React.useTransition();
   const { callbackURL, signIn } = useSignIn();
@@ -53,11 +55,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           otp,
           fetchOptions: {
             onSuccess: () => {
-              /**
-               * Router.push failed to dismiss the modal dialog, as a workaround
-               * use `window.location.href` instead.
-               */
-              window.location.href = callbackURL;
+              router.push(callbackURL);
             },
           },
         });
@@ -65,7 +63,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
           setError('otp', { message: error.message });
         }
       }),
-    [signIn, email, callbackURL, setError]
+    [router, signIn, email, callbackURL, setError]
   );
 
   return (

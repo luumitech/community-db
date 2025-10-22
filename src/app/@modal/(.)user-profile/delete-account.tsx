@@ -41,12 +41,8 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
 
     return (
       <div className="py-3">
-        <p>
-          You are not the owner of these communities, but you are their sole
-          administrator. You must assign the administrator role to someone else
-          before deleting your account.
-        </p>
-        <ul className="list-disc pl-6">
+        <p>You are the sole administrator for the following communities:</p>
+        <ul className="list-disc pl-6 pb-3">
           {communityList.map(({ id, name }) => {
             return (
               <li key={id}>
@@ -62,6 +58,11 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
             );
           })}
         </ul>
+        <p>
+          Since you are not the owner of these communities, their data will not
+          be removed when you delete your account. But you must assign the
+          administrator role to someone else before deleting your account.
+        </p>
       </div>
     );
   }, [canDelete, communityList]);
@@ -87,12 +88,13 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
         confirmation
         confirmationArg={{
           body: (
-            <p>
-              Deleting account will remove all data associated with your
-              account.
-              <br />
-              Proceed?
-            </p>
+            <>
+              <p className="text-danger font-semibold">
+                This will permanently delete your account and all of its data.
+                You will not be able to reactivate this account.
+              </p>
+              <p>Proceed?</p>
+            </>
           ),
         }}
         onPress={deleteAccount}

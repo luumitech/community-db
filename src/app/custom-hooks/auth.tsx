@@ -1,7 +1,7 @@
 import { emailOTPClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 import { env } from 'next-runtime-env';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
@@ -48,16 +48,12 @@ export function useSignIn() {
  * - Goes back to home page after successful sign out
  */
 export function useSignOut() {
+  const router = useRouter();
+
   const signOut = React.useCallback(async () => {
     const resp = await authClient.signOut();
-    /**
-     * Not using next router to change route, to force window refresh, this will
-     * wipe any modal if any from the view
-     */
-    if (window) {
-      window.location.href = appPath('home');
-    }
-  }, []);
+    router.push(appPath('home'));
+  }, [router]);
 
   return signOut;
 }
@@ -68,6 +64,8 @@ export function useSignOut() {
  * - Goes back to home page after deletion
  */
 export function useDeleteAccount() {
+  const router = useRouter();
+
   const deleteAccount = React.useCallback(async () => {
     /**
      * Deletion pre-check and cleanup logic are defined in
@@ -85,14 +83,9 @@ export function useDeleteAccount() {
       );
       return;
     }
-    /**
-     * Not using next router to change route, to force window refresh, this will
-     * wipe any modal if any from the view
-     */
-    if (window) {
-      window.location.href = appPath('home');
-    }
-  }, []);
+
+    router.push(appPath('home'));
+  }, [router]);
 
   return deleteAccount;
 }
