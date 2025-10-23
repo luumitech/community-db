@@ -66,7 +66,6 @@ export const ModalDialog: React.FC<Props> = ({ onSave, autoFocus }) => {
     <Modal
       size="5xl"
       placement="top-center"
-      modalPath="membershipEditor"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

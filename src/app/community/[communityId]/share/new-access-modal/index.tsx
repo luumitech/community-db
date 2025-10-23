@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { produce } from 'immer';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
+import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { CreateModal, type ModalArg } from './create-modal';
 import { InputData } from './use-hook-form';
@@ -38,17 +38,13 @@ export const NewAccessModal: React.FC<Props> = ({ modalControl }) => {
       await toast.promise(
         createAccess({
           variables: { input },
-          updateQueries: {
-            communityAccessList: (prev, { mutationResult, queryVariables }) => {
-              const result = produce(prev, (draft) => {
-                const newEntry = mutationResult.data?.accessCreate;
-                if (newEntry) {
-                  draft.communityFromId.otherAccessList.push(newEntry);
-                }
-              });
-              return result;
+          refetchQueries: [
+            // adding access creates new entry in access list
+            {
+              query: GQL.CommunityAccessListDocument,
+              variables: { id: input.communityId },
             },
-          },
+          ],
         }),
         {
           pending: 'Saving...',

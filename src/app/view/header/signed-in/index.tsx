@@ -53,7 +53,6 @@ export const SignedIn: React.FC<Props> = ({}) => {
           showDivider
         >
           <p className="font-semibold">{email}</p>
-          <p>{appLabel('userProfile')}</p>
         </DropdownItem>
         <DropdownItem
           key="about"

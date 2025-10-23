@@ -17,39 +17,36 @@ import prisma from '~/lib/prisma';
 export async function communityNonOwnerSoleAdministrator(
   userId: string
 ): Promise<Community[]> {
-  /**
-   * Find list of communities where you have admin access but are not the owner
-   * of the community
-   *
-   * For these communities, you need to give administrator role to others before
-   * you can remove your user account
-   */
   const accessList = await prisma.access.findMany({
     where: {
       userId,
       role: 'ADMIN',
       community: {
         NOT: [{ ownerId: userId }],
-      },
-    },
-    include: {
-      community: {
-        include: {
-          accessList: true,
+        accessList: {
+          // No other users have admin priviledge to this community
+          none: {
+            role: 'ADMIN',
+            userId: { not: userId },
+          },
         },
       },
     },
+    include: {
+      community: true,
+    },
   });
-  const communityList = accessList
-    .map(({ community }) => community)
-    .filter((community) => {
-      // Only return communities where you are the sole administrator
-      return community.accessList.some((access) => {
-        return access.role !== 'ADMIN' && access.userId !== userId;
-      });
-    });
 
+  const communityList = accessList.map(({ community }) => community);
   return communityList;
 }
 
-export async function performUserDelete(userId: string) {}
+export async function performUserDelete(userId: string) {
+  /**
+   * Delete the user
+   *
+   * Prisma will cascade deletion to all referencing entities, like any
+   * Community, Property and Access documents that this user owns
+   */
+  await prisma.user.delete({ where: { id: userId } });
+}

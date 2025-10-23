@@ -51,7 +51,6 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
     <Modal
       size="5xl"
       placement="top-center"
-      modalPath="occupantEditor"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

@@ -47,7 +47,6 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
     <Modal
       size="5xl"
       placement="top-center"
-      modalPath="propertyModify"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

@@ -18,8 +18,10 @@ export interface ButtonProps extends NextUIButtonProps {
   /**
    * This option is only available when `confirmation` is true.
    *
-   * When provided, this function is called to decide whether confirmation
-   * dialog should open:
+   * When provided, this async function is called to decide whether confirmation
+   * dialog should open. This is useful if you want to run a validation first
+   * before showing the confirmation dialog. (By default, validation is run when
+   * you submit)
    *
    * - If the callback returns true, the confirmation dialog will open
    * - If the callback returns false, the confirmation dialog will not open
@@ -49,6 +51,36 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
     const { confirmationModal } = useAppContext();
     const { open } = confirmationModal;
 
+    /**
+     * When confirmation dialog is enabled, the original button type is
+     * modified.
+     *
+     * So this logic is used to simulates the original button press action
+     */
+    const simulateOnPress = React.useCallback<OnPressFn>(
+      (evt) => {
+        switch (type) {
+          case 'submit':
+            {
+              const form = buttonRef.current.closest('form');
+              form?.requestSubmit();
+            }
+            break;
+          case 'reset':
+            {
+              const form = buttonRef.current.closest('form');
+              form?.reset();
+            }
+            break;
+          case 'button':
+          default:
+            break;
+        }
+        onPress?.(evt);
+      },
+      [buttonRef, onPress, type]
+    );
+
     const customOnPress = React.useCallback<OnPressFn>(
       async (evt) => {
         if (!confirmation) {
@@ -61,36 +93,18 @@ export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
             ...confirmationArg,
             onConfirm: () => {
               confirmationArg?.onConfirm?.();
-              switch (type) {
-                case 'submit':
-                  {
-                    const form = buttonRef.current.closest('form');
-                    form?.requestSubmit();
-                  }
-                  break;
-                case 'reset':
-                  {
-                    const form = buttonRef.current.closest('form');
-                    form?.reset();
-                  }
-                  break;
-                case 'button':
-                default:
-                  break;
-              }
-              onPress?.(evt);
+              simulateOnPress(evt);
             },
           });
         }
       },
       [
         confirmation,
-        confirmationArg,
-        type,
-        open,
         beforeConfirm,
         onPress,
-        buttonRef,
+        open,
+        confirmationArg,
+        simulateOnPress,
       ]
     );
 

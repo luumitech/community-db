@@ -10,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
+import { type AccessEntry } from '../_type';
 import { RoleEditor } from './role-editor';
 import {
   InputData,
@@ -18,7 +19,7 @@ import {
 } from './use-hook-form';
 
 export interface ModalArg {
-  community: ModifyFragmentType;
+  access: ModifyFragmentType & AccessEntry;
 }
 
 interface Props extends ModalArg {
@@ -27,7 +28,7 @@ interface Props extends ModalArg {
 }
 
 export const ModifyModal: React.FC<Props> = ({
-  community: fragment,
+  access: fragment,
   disclosure,
   onSave,
 }) => {
@@ -83,6 +84,21 @@ export const ModifyModal: React.FC<Props> = ({
                     color="primary"
                     isDisabled={!formState.isDirty}
                     isLoading={pending}
+                    // Trigger confirmation if removing own admin role
+                    confirmation={fragment.isSelf}
+                    confirmationArg={{
+                      body: (
+                        <>
+                          <p className="text-danger">
+                            Removing the{' '}
+                            <span className="font-semibold">Admin</span> role
+                            will prevent you from managing user access in the
+                            future.
+                          </p>
+                          <p>Proceed?</p>
+                        </>
+                      ),
+                    }}
                   >
                     Save
                   </Button>

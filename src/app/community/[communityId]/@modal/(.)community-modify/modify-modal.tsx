@@ -57,7 +57,6 @@ export const ModifyModal: React.FC<Props> = ({
     <Modal
       size="5xl"
       placement="top-center"
-      modalPath="communityModify"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}
