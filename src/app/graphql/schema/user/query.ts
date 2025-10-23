@@ -1,4 +1,5 @@
 import { GraphQLError } from 'graphql';
+import * as deleteUserUtil from '~/api/auth/[...better]/delete-user-util';
 import { builder } from '~/graphql/builder';
 import { isProduction } from '~/lib/env-var';
 import prisma from '~/lib/prisma';
@@ -53,6 +54,24 @@ builder.queryField('userCurrent', (t) =>
       }
 
       return userEntry;
+    },
+  })
+);
+
+builder.queryField('userDeletePrerequisiteList', (t) =>
+  t.prismaField({
+    type: ['Community'],
+    description:
+      'Provides a list of communities where the user must transfer administrative ownership before their account can be deleted.',
+    resolve: async (query, parent, args, ctx, info) => {
+      const { user } = ctx;
+
+      const userEntry = await prisma.user.findUniqueOrThrow({
+        where: { email: user.email },
+      });
+      const communityList =
+        await deleteUserUtil.communityNonOwnerSoleAdministrator(userEntry.id);
+      return communityList;
     },
   })
 );

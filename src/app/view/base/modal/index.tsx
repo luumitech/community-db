@@ -3,10 +3,8 @@ import {
   ModalProps as NextUIModalProps,
 } from '@heroui/react';
 import { usePathname } from 'next/navigation';
-import { match } from 'path-to-regexp';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { supportedPathTemplates } from '~/lib/app-path';
 import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 
 export {
@@ -27,22 +25,15 @@ export interface ModalProps extends NextUIModalProps {
    * This option is only available when `confirmation` is true.
    *
    * When provided, this function is called to decide whether confirmation
-   * dialog should open:
+   * dialog should open. This is useful if you want to run a validation first
+   * before showing the confirmation dialog. (By default, validation is run when
+   * you submit)
    *
    * - If the callback returns true, the confirmation dialog will open
    * - If the callback returns false, the confirmation dialog will not open
    * - If the callback is not provided, the confirmation dialog will open
    */
   beforeConfirm?: () => Promise<boolean>;
-  /**
-   * If the modal is mounted on a parallel route, specifying the path template
-   * name here will enable the modal to show only if the route is actually
-   * matching the specified path template name.
-   *
-   * THis is very useful when you want to forcefully close the modal, simply by
-   * navigating to another route
-   */
-  modalPath?: keyof typeof supportedPathTemplates;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -51,7 +42,6 @@ export const Modal: React.FC<ModalProps> = ({
   confirmationArg,
   beforeConfirm,
   onOpenChange,
-  modalPath,
   ...props
 }) => {
   const pathname = usePathname();
@@ -77,19 +67,6 @@ export const Modal: React.FC<ModalProps> = ({
     },
     [beforeConfirm, confirmation, confirmationArg, onOpenChange, open]
   );
-
-  /**
-   * If `modalPath` is specified, then only show the modal if the current
-   * pathname actually matches the specified route template
-   */
-  if (modalPath != null) {
-    const matchTemplate = match(supportedPathTemplates[modalPath], {
-      decode: decodeURIComponent,
-    });
-    if (!matchTemplate(pathname)) {
-      return null;
-    }
-  }
 
   return (
     <NextUIModal

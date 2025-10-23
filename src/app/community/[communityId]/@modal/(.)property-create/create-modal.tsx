@@ -48,7 +48,6 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
     <Modal
       size="5xl"
       placement="top-center"
-      modalPath="propertyCreate"
       isOpen
       onOpenChange={goBack}
       scrollBehavior="inside"

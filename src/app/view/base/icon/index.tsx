@@ -18,6 +18,7 @@ const supportedIcon = {
   'thumb-up': 'mdi:thumbs-up-outline',
   'thumb-down': 'mdi:thumbs-down-outline',
   checkmark: 'ion:checkmark-outline',
+  person: 'ion:person-outline',
   'person-add': 'ion:person-add-outline',
   more: 'mdi:more-vert',
   search: 'akar-icons:search',
@@ -47,7 +48,9 @@ const supportedIcon = {
   sunMoon: 'lucide:sun-moon',
   sun: 'lucide:sun',
   moon: 'lucide:moon',
-  google: 'flat-color-icons:google',
+  google: 'logos:google-icon',
+  facebook: 'logos:facebook',
+  x: 'ri:twitter-x-fill',
   'modify-community': 'gravity-ui:gear',
   integration: 'eos-icons:api-outlined',
   warning: 'cuida:warning-outline',
@@ -61,11 +64,12 @@ const supportedIcon = {
   leftArrow: 'entypo:arrow-left',
 } as const;
 
+export type IconType = keyof typeof supportedIcon;
 type CustomIconifyIconProps = Omit<IconifyProps, 'icon'>;
 
 export interface IconProps extends Partial<CustomIconifyIconProps> {
   className?: string;
-  icon: keyof typeof supportedIcon;
+  icon: IconType;
   size?: number;
 }
 

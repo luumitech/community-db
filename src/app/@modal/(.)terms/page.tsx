@@ -20,7 +20,7 @@ export default function Terms() {
       // isKeyboardDismissDisabled
     >
       <ModalContent>
-        <ModalHeader className="text-2xl">Terms of Service</ModalHeader>
+        <ModalHeader className="text-2xl">{appLabel('terms')}</ModalHeader>
         <ModalBody className="gap-6">
           <Item title="1. Acceptance of Terms">
             By accessing and using {appTitle}, you agree to comply with and be

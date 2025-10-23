@@ -21,7 +21,7 @@ export const ModifyAccessButton: React.FC<Props> = ({
         className="text-primary"
         icon="edit"
         tooltip="Modify Role"
-        onClick={() => modalControl.open({ community: fragment })}
+        onClick={() => modalControl.open({ access: fragment })}
       />
       <ModifyAccessModal modalControl={modalControl} />
     </div>

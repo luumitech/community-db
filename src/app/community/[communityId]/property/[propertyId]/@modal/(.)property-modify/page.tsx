@@ -2,7 +2,7 @@
 import { useMutation } from '@apollo/client';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-import { CommunityFromIdDocument } from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { ModifyModal } from './modify-modal';
 import { InputData } from './use-hook-form';
@@ -45,7 +45,10 @@ export default function PropertyModify(props: RouteArgs) {
           refetchQueries: [
             // Updating property address may cause property to change order within
             // the property list
-            { query: CommunityFromIdDocument, variables: { id: communityId } },
+            {
+              query: GQL.CommunityFromIdDocument,
+              variables: { id: communityId },
+            },
           ],
         }),
         {

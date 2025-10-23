@@ -4,6 +4,7 @@ import { env } from 'next-runtime-env';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
+import { toast } from '~/view/base/toastify';
 
 export const authClient = createAuthClient({
   baseURL: env('NEXT_PUBLIC_HOSTNAME'),
@@ -50,10 +51,41 @@ export function useSignOut() {
   const router = useRouter();
 
   const signOut = React.useCallback(async () => {
-    return authClient.signOut().then(() => {
-      router.push(appPath('home'));
-    });
+    const resp = await authClient.signOut();
+    router.push(appPath('home'));
   }, [router]);
 
   return signOut;
+}
+
+/**
+ * Remove user account
+ *
+ * - Goes back to home page after deletion
+ */
+export function useDeleteAccount() {
+  const router = useRouter();
+
+  const deleteAccount = React.useCallback(async () => {
+    /**
+     * Deletion pre-check and cleanup logic are defined in
+     * `src/app/api/auth/[...better]/auth.ts`
+     *
+     * See: better-auth configuration object `user.deleteUser`
+     */
+    const resp = await authClient.deleteUser();
+    const { error } = resp;
+    if (error) {
+      toast.error(
+        <p className="whitespace-pre-line">
+          {error.message ?? error.statusText}
+        </p>
+      );
+      return;
+    }
+
+    router.push(appPath('home'));
+  }, [router]);
+
+  return deleteAccount;
 }

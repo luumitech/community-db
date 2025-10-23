@@ -55,17 +55,16 @@ export const ExportForm: React.FC<Props> = ({ className, communityId }) => {
         exportMethod={exportMethod}
         onChange={setExportMethod}
       />
-      <div>
-        <Button
-          onPress={onDownload}
-          endContent={<Icon icon="download" />}
-          color="primary"
-          isLoading={pending}
-          isDisabled={!workbook}
-        >
-          Download {exportResult?.fn}
-        </Button>
-      </div>
+      <Button
+        className="self-start"
+        onPress={onDownload}
+        endContent={<Icon icon="download" />}
+        color="primary"
+        isLoading={pending}
+        isDisabled={!workbook}
+      >
+        Download {exportResult?.fn}
+      </Button>
       {pending ? (
         <div className="flex flex-col grow mb-4 gap-3">
           <Skeleton className="h-12 rounded-lg" />

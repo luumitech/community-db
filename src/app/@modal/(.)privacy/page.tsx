@@ -20,7 +20,7 @@ export default function Privacy() {
       // isKeyboardDismissDisabled
     >
       <ModalContent>
-        <ModalHeader className="text-2xl">Privacy Policy</ModalHeader>
+        <ModalHeader className="text-2xl">{appLabel('privacy')}</ModalHeader>
         <ModalBody className="gap-6">
           <Item title="1. Introduction">
             Welcome to {appTitle}. We are committed to protecting your personal
@@ -29,10 +29,9 @@ export default function Privacy() {
             regarding that information.
           </Item>
           <Item title="2. Information We Collect">
-            {appTitle} uses Google authentication to collect the following
+            {appTitle} uses social authentication to collect the following
             information:
             <ul className="list-disc pl-6">
-              <li>OpenID information</li>
               <li>Email address</li>
               <li>Profile information</li>
             </ul>
@@ -57,25 +56,33 @@ export default function Privacy() {
             information from unauthorized access, loss, or misuse. However,
             please be aware that no system can be completely secure.
           </Item>
-          <Item title="7. Your Rights">
+          <Item title="7. Data Deletion" anchorId="data-deletion">
+            If you wish to delete your user data, you must first log in, and
+            then delete account via{' '}
+            <Link className="text-sm" href={appPath('userProfile')}>
+              {appLabel('userProfile')}
+            </Link>
+            .
+          </Item>
+          <Item title="8. Your Rights">
             Depending on your location, you may have rights regarding your
             personal data, including the right to access and request deletion of
             your personal data. Please contact us if you wish to exercise these
             rights.
           </Item>
-          <Item title="8. Third-Party Links">
+          <Item title="9. Third-Party Links">
             {appTitle} may contain links to third-party websites. We are not
             responsible for the privacy practices or content of these websites.
           </Item>
-          <Item title="9. Changes to This Privacy Policy">
+          <Item title="10. Changes to This Privacy Policy">
             We may update this Privacy Policy from time to time.
           </Item>
-          <Item title="10. Contact Us">
+          <Item title="11. Contact Us">
             If you have any questions about this Privacy Policy, please{' '}
             <Link
               className="text-sm"
               href={appPath('contactUs', {
-                query: { subject: 'Privay Policy' },
+                query: { subject: appLabel('privacy') },
               })}
             >
               {appLabel('contactUs')}

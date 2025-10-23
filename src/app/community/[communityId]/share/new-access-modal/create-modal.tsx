@@ -52,7 +52,7 @@ export const CreateModal: React.FC<Props> = ({
 
   return (
     <Modal
-      size="5xl"
+      size="md"
       placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}

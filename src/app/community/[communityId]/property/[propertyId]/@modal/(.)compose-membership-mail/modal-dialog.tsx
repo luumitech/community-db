@@ -80,7 +80,6 @@ export const ModalDialog: React.FC<Props> = ({
     <Modal
       size="2xl"
       placement="top-center"
-      modalPath="composeMembershipMail"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

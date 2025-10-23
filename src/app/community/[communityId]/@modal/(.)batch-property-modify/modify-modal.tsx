@@ -42,7 +42,6 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
     <Modal
       size="5xl"
       placement="top-center"
-      modalPath="batchPropertyModify"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

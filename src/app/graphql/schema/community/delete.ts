@@ -26,28 +26,18 @@ builder.mutationField('communityDelete', (t) =>
       await verifyAccess(user, { shortId: args.id }, [Role.ADMIN]);
 
       // Verify access to community
-      const entry = await getCommunityEntry(user, args.id);
+      const community = await getCommunityEntry(user, args.id);
 
-      const [access, property, community] = await prisma.$transaction([
-        prisma.access.deleteMany({
-          where: {
-            communityId: entry.id,
-          },
-        }),
-        prisma.property.deleteMany({
-          where: {
-            communityId: entry.id,
-          },
-        }),
-        prisma.community.delete({
-          where: {
-            id: entry.id,
-          },
-        }),
-      ]);
+      /**
+       * Delete the community
+       *
+       * Prisma will cascade deletion to all referencing entities, like any
+       * Property and Access documents that reference this community
+       */
+      await prisma.community.delete({ where: { id: community.id } });
 
       // broadcast deletion to community
-      pubSub.publish(`community/${entry.shortId}/`, {
+      pubSub.publish(`community/${community.shortId}/`, {
         broadcasterId: user.email,
         messageType: MessageType.DELETED,
         community,
