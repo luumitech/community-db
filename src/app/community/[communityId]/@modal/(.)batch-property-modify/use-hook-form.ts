@@ -7,6 +7,7 @@ import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
+import { type PropertyFilter } from '~/lib/prisma-raw-query/property';
 import { isInteger, isNonEmpty, z, zz } from '~/lib/zod';
 
 const ModifyFragment = graphql(/* GraphQL */ `
@@ -83,7 +84,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
   item: GQL.CommunityId_BatchPropertyModifyModalFragment,
-  filter: GQL.PropertyFilterInput,
+  filter: PropertyFilter,
   defaultSetting: GQL.DefaultSetting
 ): InputData {
   return {

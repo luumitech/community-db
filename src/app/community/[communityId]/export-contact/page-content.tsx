@@ -3,6 +3,7 @@ import { cn, Divider } from '@heroui/react';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
+import { propertyListPrismaQuery } from '~/lib/prisma-raw-query/property';
 import { toContactList } from './contact-util';
 import { ContactView } from './contact-view';
 import { ExportOptions } from './export-options';
@@ -13,10 +14,10 @@ import {
 } from './filter-select/use-hook-form';
 
 const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
-  query exportContactPropertyList($id: String!, $filter: PropertyFilterInput!) {
+  query exportContactPropertyList($id: String!, $query: JSONObject!) {
     communityFromId(id: $id) {
       id
-      rawPropertyList(filter: $filter) {
+      rawPropertyList(query: $query) {
         id
         address
         occupantList {
@@ -48,7 +49,10 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     })
   );
   const result = useQuery(ExportContact_PropertyListQuery, {
-    variables: { id: communityId, filter },
+    variables: {
+      id: communityId,
+      query: propertyListPrismaQuery(filter),
+    },
     onError,
   });
 
@@ -62,7 +66,10 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      result.refetch({ id: communityId, filter: input });
+      result.refetch({
+        id: communityId,
+        query: propertyListPrismaQuery(input),
+      });
       setFilter(input);
     },
     [result, communityId]

@@ -3,6 +3,10 @@ import path from 'path';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
+import {
+  propertyListPrismaQuery,
+  type PropertyFilter,
+} from '~/lib/prisma-raw-query/property';
 import { BatchModify } from '../batch-modify/batch-modify';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
@@ -21,13 +25,13 @@ const communityInfoDocument = graphql(/* GraphQL */ `
 const filteredPropertyListDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddEventSpec_FilteredPropertyList(
     $id: String!
-    $filter: PropertyFilterInput!
+    $query: JSONObject!
   ) {
     communityFromId(id: $id) {
       id
       minYear
       maxYear
-      rawPropertyList(filter: $filter) {
+      rawPropertyList(query: $query) {
         id
         membershipList {
           year
@@ -57,7 +61,7 @@ interface Expected {
 
 type TestCaseEntry = [
   string, // test case description
-  GQL.PropertyFilterInput, // filter to apply
+  PropertyFilter, // filter to apply
   NewEvent, // New event add to properties matching the filter above
   Expected, // expected results
 ];
@@ -197,11 +201,12 @@ describe('BatchPropertyModify - Add Event', () => {
   ];
 
   test.each(cases)('%s', async (description, filter, newEvent, expected) => {
+    let query = propertyListPrismaQuery(filter);
     const oldPropertyListResult = await testUtil.graphql.executeSingle({
       document: filteredPropertyListDocument,
       variables: {
         id: targetCommunity!.id,
-        filter,
+        query,
       },
     });
     const oldPropertyList =
@@ -212,8 +217,8 @@ describe('BatchPropertyModify - Add Event', () => {
         id: targetCommunity!.id,
         updatedAt: targetCommunity!.updatedAt,
       },
+      query,
       method: GQL.BatchModifyMethod.AddEvent,
-      filter,
       membership: {
         year: newEvent.year,
         paymentMethod: newEvent.paymentMethod,
@@ -226,11 +231,12 @@ describe('BatchPropertyModify - Add Event', () => {
     });
     const result = await batchModify.start();
 
+    query = propertyListPrismaQuery(filter);
     const newPropertyListResult = await testUtil.graphql.executeSingle({
       document: filteredPropertyListDocument,
       variables: {
         id: targetCommunity!.id,
-        filter,
+        query,
       },
     });
 

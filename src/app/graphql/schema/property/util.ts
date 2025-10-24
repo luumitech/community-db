@@ -4,7 +4,6 @@ import * as R from 'remeda';
 import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
-import { PropertyFilterInput } from './batch-modify';
 import { EventInput } from './modify';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
@@ -140,173 +139,47 @@ function propertyListBaseFindManyArgs(communityId: string) {
 }
 
 /**
- * Construct mongo query `WHERE` inputs to get results that matches the filter
- * arguments
- *
- * @param args Property filter arguments
- * @returns Mongo filter `where` input
- */
-function propertyListFilterArgs(
-  args?: typeof PropertyFilterInput.$inferInput | null
-): Prisma.PropertyWhereInput {
-  const AND: Prisma.PropertyWhereInput[] = [];
-
-  const { searchText, memberEvent, memberYear, nonMemberYear, withGps } =
-    args ?? {};
-
-  const trimSearchText = searchText?.trim();
-  if (trimSearchText) {
-    const OR: Prisma.PropertyWhereInput[] = [
-      { address: { mode: 'insensitive', contains: trimSearchText } },
-    ];
-
-    /**
-     * Matching searchText again name is slightly more complicated, we want to
-     * search against `${firstName} ${lastName}`, but we don't have ability to
-     * concat the fields in Prisma prior to do searching
-     *
-     * If searhText only has one word, we'll also try to match against
-     * occupant's email
-     */
-    const nameList = trimSearchText.split(' ');
-    if (nameList) {
-      // If only a single name is provided, search against either firstName or lastName
-      if (nameList.length === 1) {
-        OR.push({
-          occupantList: {
-            some: {
-              OR: [
-                { firstName: { mode: 'insensitive', startsWith: nameList[0] } },
-                { lastName: { mode: 'insensitive', startsWith: nameList[0] } },
-              ],
-            },
-          },
-        });
-      } else if (nameList.length > 1) {
-        // If both names are provided, search against firstName and lastName
-        const searchLast = nameList.pop()!;
-        OR.push({
-          occupantList: {
-            some: {
-              AND: [
-                {
-                  firstName: {
-                    mode: 'insensitive',
-                    startsWith: nameList.join(' '),
-                  },
-                },
-                { lastName: { mode: 'insensitive', startsWith: searchLast } },
-              ],
-            },
-          },
-        });
-      }
-    }
-
-    // Construct the query for filtering searchText
-    AND.push({ OR });
-  }
-
-  // Construct filters within `membershipList`
-  if (nonMemberYear != null) {
-    AND.push({
-      OR: [
-        { membershipList: { isSet: false } },
-        {
-          membershipList: {
-            some: {
-              // empty `eventAttendedList` implies user is not a member
-              eventAttendedList: { isEmpty: true },
-              year: nonMemberYear,
-            },
-          },
-        },
-        {
-          membershipList: {
-            none: {
-              year: nonMemberYear,
-            },
-          },
-        },
-      ],
-    });
-  }
-
-  if (memberYear != null || memberEvent != null) {
-    AND.push({
-      membershipList: {
-        some: {
-          // non-empty `eventAttendedList` implies user is a member
-          eventAttendedList: { isEmpty: false },
-          ...(memberYear && { year: memberYear }),
-          ...(memberEvent && {
-            eventAttendedList: { some: { eventName: memberEvent } },
-          }),
-        },
-      },
-    });
-  }
-
-  // Filter only ones with/without GPS coordinates
-  if (withGps != null) {
-    if (withGps) {
-      AND.push({
-        lat: { gte: ' ' },
-        lon: { gte: ' ' },
-      });
-    } else {
-      AND.push({
-        AND: [
-          { OR: [{ lat: { isSet: false } }, { lat: null }] },
-          { OR: [{ lon: { isSet: false } }, { lon: null }] },
-        ],
-      });
-    }
-  }
-
-  // Only include AND if it contains instruction
-  return {
-    ...(AND.length > 0 && { AND }),
-  };
-}
-
-/**
- * Construct `prisma.property.findMany` query arguments using the specified
- * filter
+ * Construct `prisma.property.findMany` query arguments by augmenting the
+ * propertyQuery argument with the `communityId` input
  *
  * @param communityId Community Id
- * @param filterArgs Property filter arguments
+ * @param propertyQuery Property query argument
  * @returns
  */
-export async function propertyListFindManyArgs(
+export async function propertyListFindMany(
   communityId: string,
-  filterArgs?: typeof PropertyFilterInput.$inferInput | null
+  propertyQuery?: Prisma.PropertyFindManyArgs | null
 ): Promise<Prisma.PropertyFindManyArgs> {
-  const findManyArgs = propertyListBaseFindManyArgs(communityId);
+  const communityQuery = propertyListBaseFindManyArgs(communityId);
 
   /** Get application configuration base on community owner's subscription level */
   const subEntry = await getCommunityOwnerSubscriptionEntry(communityId);
 
-  // Construct `where` clause using the arguments in filter
-  const where = propertyListFilterArgs(filterArgs);
-
   // Add additional limiter if subscription level prevents
   // querying more entries
   const { propertyLimit } = subEntry;
+  let propertyLimitQuery: Prisma.PropertyWhereInput = {};
   if (propertyLimit != null) {
     const list = await prisma.property.findMany({
-      ...findManyArgs,
+      ...propertyQuery,
       take: propertyLimit,
-      select: { id: true },
+      select: {
+        ...propertyQuery?.select,
+        id: true,
+      },
     });
-    where.id = { in: list.map(({ id }) => id) };
+    propertyLimitQuery = {
+      id: { in: list.map(({ id }) => id) },
+    };
   }
 
   return {
-    ...findManyArgs,
+    ...communityQuery,
+    ...propertyQuery,
     where: {
-      ...findManyArgs.where,
-      ...where,
+      ...communityQuery.where,
+      ...propertyQuery?.where,
+      ...propertyLimitQuery,
     },
   };
 }

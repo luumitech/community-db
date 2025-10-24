@@ -8,7 +8,7 @@ import {
 export const typePolicies: TypedTypePolicies = {
   Community: {
     fields: {
-      propertyList: relayStylePagination(['filter']),
+      propertyList: relayStylePagination(['query']),
     },
   },
   Property: {
