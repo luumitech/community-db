@@ -3,6 +3,10 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { TestUtil } from '~/graphql/test-util';
 import { MockBatchGeocode, mockGeocodeResult } from '~/lib/geoapify-api/mock';
+import {
+  propertyListPrismaQuery,
+  type PropertyFilter,
+} from '~/lib/prisma-raw-query/property';
 import { BatchModify } from '../batch-modify/batch-modify';
 
 const communityInfoDocument = graphql(/* GraphQL */ `
@@ -31,11 +35,11 @@ const addGeoapifyApikeyDocument = graphql(/* GraphQL */ `
 const filteredPropertyListDocument = graphql(/* GraphQL */ `
   query BatchPropertyModifyAddGpsSpec_FilteredPropertyList(
     $id: String!
-    $filter: PropertyFilterInput!
+    $query: JSONObject!
   ) {
     communityFromId(id: $id) {
       id
-      rawPropertyList(filter: $filter) {
+      rawPropertyList(query: $query) {
         id
         address
         lat
@@ -52,7 +56,7 @@ interface Expected {
 
 type TestCaseEntry = [
   string, // test case description
-  GQL.PropertyFilterInput, // filter to apply
+  PropertyFilter, // filter to apply
   Expected, // expected results
 ];
 
@@ -127,11 +131,12 @@ describe('BatchPropertyModify - Add GPS', () => {
   ];
 
   test.each(cases)('%s', async (description, filter, expected) => {
+    const query = propertyListPrismaQuery(filter);
     const oldPropertyListResult = await testUtil.graphql.executeSingle({
       document: filteredPropertyListDocument,
       variables: {
         id: targetCommunity!.id,
-        filter,
+        query,
       },
     });
     const oldPropertyList =
@@ -149,8 +154,8 @@ describe('BatchPropertyModify - Add GPS', () => {
         id: targetCommunity!.id,
         updatedAt: targetCommunity!.updatedAt,
       },
+      query,
       method: GQL.BatchModifyMethod.AddGps,
-      filter,
       gps: {
         city: 'city',
         province: 'province',

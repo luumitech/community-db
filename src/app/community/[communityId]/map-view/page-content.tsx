@@ -5,6 +5,7 @@ import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
+import { propertyListPrismaQuery } from '~/lib/prisma-raw-query/property';
 import Loading from '~/loading';
 import { MapContextProvider } from '~/view/base/map';
 import { MapView } from './map-view';
@@ -12,8 +13,11 @@ import { MemberStat } from './member-stat';
 import { PageProvider } from './page-context';
 import { YearSelect } from './year-select';
 
+// Only list properties with GPS info
+const query = propertyListPrismaQuery({ withGps: true });
+
 const MapView_CommunityQuery = graphql(/* GraphQL */ `
-  query mapViewCommunity($id: String!) {
+  query mapViewCommunity($id: String!, $query: JSONObject!) {
     communityFromId(id: $id) {
       id
       maxYear
@@ -24,7 +28,7 @@ const MapView_CommunityQuery = graphql(/* GraphQL */ `
           total
         }
       }
-      rawPropertyList(filter: { withGps: true }) {
+      rawPropertyList(query: $query) {
         id
         address
         lat
@@ -48,7 +52,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   const uiYearSelected = useSelector((state) => state.ui.yearSelected);
   const [year, setYear] = React.useState<number>();
   const result = useQuery(MapView_CommunityQuery, {
-    variables: { id: communityId },
+    variables: { id: communityId, query },
     onError,
   });
 

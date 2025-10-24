@@ -4,6 +4,7 @@ import React from 'react';
 import { useJobStatus } from '~/custom-hooks/job-status';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
+import { propertyListPrismaQuery } from '~/lib/prisma-raw-query/property';
 import { ModifyModal } from './modify-modal';
 import { ToastHelper } from './toast-helper';
 import { InputData } from './use-hook-form';
@@ -22,11 +23,17 @@ export default function BatchPropertyModify() {
   const { waitUntilDone } = useJobStatus();
 
   const onSave = React.useCallback(
-    async (input: InputData) => {
+    async (_input: InputData) => {
+      const { filter, ...input } = _input;
       const toastHelper = new ToastHelper();
       try {
         const result = await updateProperty({
-          variables: { input },
+          variables: {
+            input: {
+              ...input,
+              query: propertyListPrismaQuery(filter),
+            },
+          },
         });
         if (result.errors) {
           throw new Error(result.errors[0].message);

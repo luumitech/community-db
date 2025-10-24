@@ -3,7 +3,6 @@ import {
   EmailSetting,
   GeoapifySetting,
   MailchimpSetting,
-  Property,
   Role,
   SupportedEventItem,
   SupportedPaymentMethod,
@@ -18,11 +17,10 @@ import { Logger } from '~/lib/logger';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
-import { PropertyFilterInput } from '../property/batch-modify';
 import { propertyRef } from '../property/object';
 import {
   getPropertyEntryWithinCommunity,
-  propertyListFindManyArgs,
+  propertyListFindMany,
 } from '../property/util';
 import {
   StatUtil,
@@ -403,18 +401,22 @@ builder.prismaObject('Community', {
      */
     propertyList: t.connection({
       type: propertyRef,
+      description:
+        'Match properties that satisfies the given prisma query, and return results in relay pagination style',
       args: {
-        filter: t.arg({ type: PropertyFilterInput }),
+        query: t.arg({
+          type: 'JSONObject',
+          description: 'prisma query on Property document',
+        }),
       },
       resolve: async (parent, args, ctx) => {
         const { user } = ctx;
         return await resolveCustomOffsetConnection(
           { args },
           async ({ limit, offset }) => {
-            const { filter } = args;
-            const findManyArgs = await propertyListFindManyArgs(
+            const findManyArgs = await propertyListFindMany(
               parent.id,
-              filter
+              args.query
             );
             const [items, totalCount] = await prisma.$transaction([
               prisma.property.findMany({
@@ -433,13 +435,16 @@ builder.prismaObject('Community', {
     /** Generate property list in normal array currently used to get email list */
     rawPropertyList: t.prismaField({
       type: ['Property'],
-      description: 'Properties that satisfies the specifed filter',
+      description:
+        'Match properties that satisfies the given prisma query and return results in an array',
       args: {
-        filter: t.arg({ type: PropertyFilterInput }),
+        query: t.arg({
+          type: 'JSONObject',
+          description: 'prisma query on Property document',
+        }),
       },
       resolve: async (query, parent, args, ctx) => {
-        const { filter } = args;
-        const findManyArgs = await propertyListFindManyArgs(parent.id, filter);
+        const findManyArgs = await propertyListFindMany(parent.id, args.query);
         const propertyList = await prisma.property.findMany({
           ...query,
           ...findManyArgs,

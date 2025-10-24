@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
 import { getCommunityEntry } from '../community/util';
-import { propertyListFindManyArgs } from '../property/util';
+import { propertyListFindMany } from '../property/util';
 import { mailchimpAudienceRef, mailchimpMemberRef } from './object';
 import { getMailchimpApi } from './util';
 
@@ -78,7 +78,7 @@ builder.queryField('mailchimpMemberList', (t) =>
       }));
 
       const community = await getCommunityEntry(user, shortId);
-      const findManyArgs = await propertyListFindManyArgs(community.id, null);
+      const findManyArgs = await propertyListFindMany(community.id, null);
       const propertyList = await prisma.property.findMany({
         ...findManyArgs,
       });

@@ -10,27 +10,6 @@ import { JobHandler } from '~/lib/job-handler';
 import { EventInput } from '../modify';
 import { BatchModify } from './batch-modify';
 
-export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
-  fields: (t) => ({
-    searchText: t.string({
-      description: 'Match against property address/first name/last name',
-    }),
-    memberYear: t.int({
-      description: 'Only property who is a member of the given year',
-    }),
-    nonMemberYear: t.int({
-      description: 'Only property who is NOT a member of the given year',
-    }),
-    memberEvent: t.string({
-      description: 'Only property who attended this event',
-    }),
-    withGps: t.boolean({
-      description:
-        'If true, properties with GPS.  If false, properties without GPS',
-    }),
-  }),
-});
-
 const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
   fields: (t) => ({
     year: t.int({ required: true }),
@@ -55,8 +34,11 @@ const BatchGpsInput = builder.inputType('BatchGpsInput', {
 const BatchPropertyModifyInput = builder.inputType('BatchPropertyModifyInput', {
   fields: (t) => ({
     self: t.field({ type: UpdateInput, required: true }),
+    query: t.field({
+      type: 'JSONObject',
+      description: 'prisma query on Property document',
+    }),
     method: t.field({ type: batchModifyMethodRef, required: true }),
-    filter: t.field({ type: PropertyFilterInput }),
     membership: t.field({ type: BatchMembershipInput }),
     gps: t.field({ type: BatchGpsInput }),
   }),

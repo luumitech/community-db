@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import * as GQL from '~/graphql/generated/graphql';
+import { type PropertyFilter } from '~/lib/prisma-raw-query/property';
 import { startListening } from './listener';
 
 type State = Readonly<{
@@ -30,7 +30,7 @@ type State = Readonly<{
   isFilterSpecified: boolean;
 
   /** Property filter arguments */
-  filterArg: GQL.PropertyFilterInput;
+  filterArg: PropertyFilter;
 }>;
 
 const initialState: State = {
@@ -64,7 +64,7 @@ function isFilterSpecified(state: State) {
  * @param state
  */
 function filterArg(state: State) {
-  const arg: GQL.PropertyFilterInput = {};
+  const arg: PropertyFilter = {};
   if (state.debouncedSearchText) {
     arg.searchText = state.debouncedSearchText;
   }

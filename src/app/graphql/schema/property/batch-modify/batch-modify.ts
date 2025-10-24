@@ -9,11 +9,7 @@ import { getGeoapifyApi } from '~/graphql/schema/geocode/util';
 import { jobProgress, type JobProgressOutput } from '~/graphql/schema/job/util';
 import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
-import {
-  findOrAddEvent,
-  mapEventEntry,
-  propertyListFindManyArgs,
-} from '../util';
+import { findOrAddEvent, mapEventEntry, propertyListFindMany } from '../util';
 import {
   type BatchPropertyModifyInput,
   type BatchPropertyModifyJobArg,
@@ -38,7 +34,7 @@ export class BatchModify {
   }
 
   async start() {
-    const { self, filter, method } = this.input;
+    const { self, query, method } = this.input;
     const shortId = self.id;
 
     this.progress?.findPropertyList.set(0);
@@ -46,7 +42,7 @@ export class BatchModify {
       select: { id: true, shortId: true, minYear: true, maxYear: true },
     });
 
-    const findManyArgs = await propertyListFindManyArgs(community.id, filter);
+    const findManyArgs = await propertyListFindMany(community.id, query);
     const propertyList = await prisma.property.findMany(findManyArgs);
     this.progress?.findPropertyList.set(100);
 

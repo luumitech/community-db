@@ -9,17 +9,18 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
 import { appPath } from '~/lib/app-path';
+import { propertyListPrismaQuery } from '~/lib/prisma-raw-query/property';
 import { Icon } from '~/view/base/icon';
 
 const PropertyAutocompleteSearchQuery = graphql(/* GraphQL */ `
   query propertyAutocompleteSearch(
     $id: String!
     $first: Int! = 5
-    $searchText: String
+    $query: JSONObject
   ) {
     communityFromId(id: $id) {
       id
-      propertyList(first: $first, filter: { searchText: $searchText }) {
+      propertyList(first: $first, query: $query) {
         totalCount
         edges {
           node {
@@ -56,7 +57,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     variables: {
       id: communityId,
       first: 5,
-      searchText,
+      query: propertyListPrismaQuery({ searchText }),
     },
     context: {
       debounceKey: 'PropertyAutocompleteSearchQuery',

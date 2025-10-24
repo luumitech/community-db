@@ -13,10 +13,11 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import * as R from 'remeda';
-import { useSelector } from '~/custom-hooks/redux';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
+import { propertyListPrismaQuery } from '~/lib/prisma-raw-query/property';
 import { Loading } from '~/view/base/loading';
 import { MoreMenu } from './more-menu';
 import { PropertySearchHeader } from './property-search-header';
@@ -27,12 +28,12 @@ const CommunityFromIdQuery = graphql(/* GraphQL */ `
     $id: String!
     $first: Int! = 10
     $after: String
-    $filter: PropertyFilterInput
+    $query: JSONObject
   ) {
     communityFromId(id: $id) {
       id
       ...CommunityId_CommunityDeleteModal
-      propertyList(first: $first, after: $after, filter: $filter) {
+      propertyList(first: $first, after: $after, query: $query) {
         pageInfo {
           hasNextPage
           endCursor
@@ -56,13 +57,14 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ communityId }) => {
+  const dispatch = useDispatch();
   const { filterArg } = useSelector((state) => state.searchBar);
   const router = useRouter();
   const result = useQuery(CommunityFromIdQuery, {
     variables: {
       id: communityId,
       first: 10, // load 10 entries initally
-      filter: filterArg,
+      query: propertyListPrismaQuery(filterArg),
     },
     context: {
       // Requests get debounced together if they share the same debounceKey.
@@ -113,9 +115,17 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
             {appLabel('communityImport')}
           </Button>
         )}
+        {!R.isEmpty(filterArg) && (
+          <Button
+            color="primary"
+            onPress={() => dispatch(actions.searchBar.reset())}
+          >
+            Clear Filter
+          </Button>
+        )}
       </div>
     );
-  }, [filterArg, communityId, result.error]);
+  }, [dispatch, filterArg, communityId, result.error]);
 
   return (
     <>
