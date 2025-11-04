@@ -86,7 +86,7 @@ function customTooltip(helper: ChartDataHelper) {
         const itemColor = helper.getDataColor(label);
         const firstCol = (
           <span
-            className={cn('block w-3 mt-[3px]', symbol === 'bar' && 'h-3')}
+            className={cn('mt-[3px] block w-3', symbol === 'bar' && 'h-3')}
             style={{ backgroundColor: itemColor }}
           />
         );
@@ -173,7 +173,7 @@ export const EventParticipation: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="font-bold text-md">{`${year} Event Participation`}</p>
+          <p className="text-md font-bold">{`${year} Event Participation`}</p>
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">

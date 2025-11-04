@@ -64,7 +64,7 @@ export const Settings: React.FC<Props> = () => {
           </CardHeader>
           <CardBody>
             <div className="flex flex-col gap-4">
-              <p className="text-foreground-500 text-sm">
+              <p className="text-sm text-foreground-500">
                 Adding a Geoapify API key enables address lookup and GPS
                 coordinate lookup.
               </p>

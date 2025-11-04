@@ -1,9 +1,9 @@
 'use client';
-import { cn } from '@heroui/react';
 import Autoplay from 'embla-carousel-autoplay';
 import ClassNames from 'embla-carousel-class-names';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { type ScreenshotEntry } from '../../feature-overview-image-list';
 import { useEmblaApi } from '../use-embla-api';
 import { Slide } from './slide';
@@ -30,7 +30,10 @@ export const Carousel: React.FC<Props> = ({
 
   return (
     <div
-      className={cn(className, 'overflow-hidden bg-green-200 py-6 space-y-3')}
+      className={twMerge(
+        'space-y-3 overflow-hidden bg-green-200 py-6',
+        className
+      )}
       ref={emblaRef}
     >
       <div className="flex">
@@ -42,7 +45,7 @@ export const Carousel: React.FC<Props> = ({
           />
         ))}
       </div>
-      <div className="flex justify-center items-center gap-1">
+      <div className="flex items-center justify-center gap-1">
         {scrollSnaps.map((_, index) => (
           <DotButton
             key={index}

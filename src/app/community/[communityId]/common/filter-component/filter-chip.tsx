@@ -42,7 +42,7 @@ export const FilterChip: React.FC<Props> = ({
 
   return (
     <div
-      className={cn(className, 'hidden sm:flex gap-2 cursor-pointer')}
+      className={cn(className, 'hidden cursor-pointer gap-2 sm:flex')}
       onClick={openDrawer}
     >
       {memberYear != null && (

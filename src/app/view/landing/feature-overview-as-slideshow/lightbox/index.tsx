@@ -55,7 +55,7 @@ export const Lightbox: React.FC<Props> = ({
                * modal close button
                */}
               <ModalHeader />
-              <ModalBody className="p-0 justify-center">
+              <ModalBody className="justify-center p-0">
                 <div
                   className={cn(className, 'overflow-x-hidden')}
                   ref={emblaRef}
@@ -67,7 +67,7 @@ export const Lightbox: React.FC<Props> = ({
                   </div>
                 </div>
               </ModalBody>
-              <ModalFooter className="flex justify-center items-center gap-3">
+              <ModalFooter className="flex items-center justify-center gap-3">
                 <Button
                   isIconOnly
                   startContent={<Icon icon="back" />}

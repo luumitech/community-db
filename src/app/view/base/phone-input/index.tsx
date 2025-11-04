@@ -52,7 +52,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
                 { 'opacity-100': isReadOnly }
               ),
               inputWrapper: cn(classNames?.inputWrapper, {
-                'border-none shadow-none bg-transparent': isReadOnly,
+                'border-none bg-transparent shadow-none': isReadOnly,
               }),
             }}
             // @ts-expect-error conflicting arg 'size' between Input and NumericFormat

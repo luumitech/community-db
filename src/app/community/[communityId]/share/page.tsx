@@ -96,7 +96,7 @@ export default function Share(props: RouteArgs) {
       <TableRow key={entry.id}>
         {columns.map((col) => (
           <TableCell key={col.key}>
-            <div className="h-6 flex items-center">
+            <div className="flex h-6 items-center">
               {renderCell(entry, col.key)}
             </div>
           </TableCell>

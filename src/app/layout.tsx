@@ -1,9 +1,9 @@
-import { cn } from '@heroui/react';
 import type { Metadata } from 'next';
 import { PublicEnvScript } from 'next-runtime-env';
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { appDescription, appTitle } from '~/lib/env-var';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
@@ -53,7 +53,9 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
       <head>
         <PublicEnvScript />
       </head>
-      <body className={cn(inter.className, 'text-foreground bg-background')}>
+      <body
+        className={twMerge(inter.className, 'bg-background text-foreground')}
+      >
         {/**
          * Light/dark theme can be customized
          *
@@ -61,7 +63,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
          */}
         <ThemeProvider defaultTheme="system" attribute="class">
           <Providers>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex min-h-screen flex-col">
               <Header />
               <main>{children}</main>
             </div>

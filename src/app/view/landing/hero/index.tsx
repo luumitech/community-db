@@ -19,17 +19,17 @@ export const Hero: React.FC<Props> = ({ className }) => {
     <div
       className={cn(
         // Make sure background covers entire screen
-        'w-full min-h-main-height',
+        'min-h-main-height w-full',
         'bg-[url(/image/community-with-people.png)] bg-cover bg-center',
         className
       )}
     >
       {/* Render text box that prefers to be aligned slightly to the top */}
-      <div className="px-6 py-6 sm:pt-[10vh] sm:px-12">
+      <div className="px-6 py-6 sm:px-12 sm:pt-[10vh]">
         <div
           className={cn(
-            'flex flex-col items-center text-center text-wrap gap-6',
-            'bg-opacity-80 bg-background rounded-xl p-5 sm:p-10'
+            'flex flex-col items-center gap-6 text-wrap text-center',
+            'rounded-xl bg-background bg-opacity-80 p-5 sm:p-10'
           )}
         >
           <Link href={appPath('home')}>

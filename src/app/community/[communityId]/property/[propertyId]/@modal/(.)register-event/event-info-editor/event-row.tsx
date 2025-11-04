@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useHookFormContext, useXtraArgContext } from '../use-hook-form';
@@ -16,12 +17,12 @@ interface EventRowProps {
 export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
   return (
     <div
-      className={cn(
-        className,
-        'grid col-span-full grid-cols-subgrid',
+      className={twMerge(
+        'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'text-tiny font-semibold items-center',
-        'rounded-lg px-3'
+        'items-center font-semibold text-tiny',
+        'rounded-lg px-3',
+        className
       )}
       role="row"
     >
@@ -63,16 +64,19 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
   return (
     <>
       <div
-        className={cn(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+        className={twMerge(
+          'col-span-full mx-3 grid grid-cols-subgrid',
+          className
+        )}
         role="row"
       >
-        <div role="cell" className="text-sm pt-1.5">
+        <div role="cell" className="pt-1.5 text-sm">
           {eventName}
         </div>
         <div role="cell">
           <EventDatePicker className="max-w-xs" />
         </div>
-        <div className="flex pt-3 gap-2" role="cell">
+        <div className="flex gap-2 pt-3" role="cell">
           {/* Ticket Add function will be on the total line */}
           {/* <TicketAddButton onClick={ticketListMethods.append} /> */}
         </div>
@@ -80,7 +84,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
       <div className="col-span-full">
         <TicketInputTable
           className={cn(
-            'border-medium border-divider rounded-lg',
+            'rounded-lg border-medium border-divider',
             'ml-[40px] p-1'
           )}
           transactionConfig={{

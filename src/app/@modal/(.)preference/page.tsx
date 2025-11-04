@@ -26,7 +26,7 @@ export default function Preference(props: RouteArgs) {
       <ModalContent>
         <ModalHeader>{appLabel('preference')}</ModalHeader>
         <ModalBody>
-          <div className="grid grid-cols-2 gap-4 items-center">
+          <div className="grid grid-cols-2 items-center gap-4">
             <div>Theme</div>
             <SelectTheme />
           </div>

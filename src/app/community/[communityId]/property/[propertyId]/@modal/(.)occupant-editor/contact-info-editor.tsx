@@ -1,5 +1,6 @@
-import { cn, type InputProps } from '@heroui/react';
+import { type InputProps } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
@@ -49,7 +50,7 @@ export const ContactInfoEditor: React.FC<Props> = ({
 
   return (
     <div
-      className={cn(
+      className={twMerge(
         'grid grid-cols-[15px_1fr_15px]',
         'sm:grid-cols-[15px_1fr_1fr_3fr_15px]',
         'items-center gap-2',
@@ -57,7 +58,7 @@ export const ContactInfoEditor: React.FC<Props> = ({
       )}
       role="rowgroup"
     >
-      <DragHandle className="col-start-1 " />
+      <DragHandle className="col-start-1" />
       <ContactTypeSelect
         className="col-start-2 sm:col-start-auto"
         controlName={`${controlNamePrefix}.type`}
@@ -84,7 +85,7 @@ export const ContactInfoEditor: React.FC<Props> = ({
         variant="underlined"
       />
       <FlatButton
-        className="col-start-3 sm:col-start-auto text-danger"
+        className="col-start-3 text-danger sm:col-start-auto"
         icon="cross"
         tooltip="Remove"
         onClick={onRemove}

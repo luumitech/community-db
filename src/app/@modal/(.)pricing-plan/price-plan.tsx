@@ -16,10 +16,10 @@ export const PricePlan: React.FC<React.PropsWithChildren<Props>> = ({
     <div>
       <div className="text-xl font-bold">{planName}</div>
       <div className="flex items-end">
-        <span className="text-xl text-foreground-500 self-start">$</span>
+        <span className="self-start text-xl text-foreground-500">$</span>
         <span className="text-5xl">{planCost}</span>
         <Spacer y={1} />
-        <span className="text-xs leading-[0.9rem] text-foreground-500 mb-1">
+        <span className="mb-1 text-xs leading-[0.9rem] text-foreground-500">
           <p>CAD/</p>
           <p>month</p>
         </span>

@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { DefaultSetting } from './default-setting';
 import { NameEditor } from './name-editor';
 
@@ -9,7 +9,7 @@ interface Props {
 
 export const GeneralTab: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className, 'flex flex-col gap-4')}>
+    <div className={twMerge('flex flex-col gap-4', className)}>
       <NameEditor />
       <DefaultSetting />
     </div>

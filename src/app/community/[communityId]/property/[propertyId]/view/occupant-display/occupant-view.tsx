@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
 import type { ContactInfoEntry, OccupantEntry } from './_type';
@@ -33,13 +34,13 @@ interface Props {
 export const OccupantView: React.FC<Props> = ({ className, occupantList }) => {
   return (
     <div className={className}>
-      <div className="grid grid-cols-2 sm:grid-cols-7 gap-2" role="rowgroup">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-7" role="rowgroup">
         <header
           className={cn(
-            'grid col-span-full grid-cols-subgrid items-center',
-            'text-foreground-500 bg-default-100 text-tiny font-semibold',
+            'col-span-full grid grid-cols-subgrid items-center',
+            'bg-default-100 font-semibold text-foreground-500 text-tiny',
             'rounded-lg',
-            'h-14 sm:h-8 px-3 py-1 sm:py-0'
+            'h-14 px-3 py-1 sm:h-8 sm:py-0'
           )}
         >
           <div className={classNames.name}>Name</div>
@@ -64,13 +65,13 @@ const Occupant: React.FC<OccupantProps> = ({ entry }) => {
   return (
     <div
       className={cn(
-        'grid col-span-full grid-cols-subgrid items-center gap-2',
-        'text-foreground text-small font-normal',
+        'col-span-full grid grid-cols-subgrid items-center gap-2',
+        'font-normal text-foreground text-small',
         'px-4'
       )}
     >
       <div
-        className={cn(
+        className={twMerge(
           /**
            * Bold the name in small media size, so it's easier to differentiate
            * between rows

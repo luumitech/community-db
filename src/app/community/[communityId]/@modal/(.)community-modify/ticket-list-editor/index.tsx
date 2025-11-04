@@ -63,12 +63,12 @@ export const TicketListEditor: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn(className, 'flex flex-col gap-4')}>
-      <div className="grid grid-cols-[40px_repeat(3,1fr)_75px] gap-y-2 gap-x-4">
+      <div className="grid grid-cols-[40px_repeat(3,1fr)_75px] gap-x-4 gap-y-2">
         <RowHeader />
         <VisibleList fieldArray={ticketList} onRemove={addHiddenItem} />
         <HiddenList fieldArray={hiddenTicketList} onRemove={addVisibleItem} />
       </div>
-      <div className="flex gap-2 items-start">
+      <div className="flex items-start gap-2">
         <Input
           className="max-w-xs"
           label="New ticket type"

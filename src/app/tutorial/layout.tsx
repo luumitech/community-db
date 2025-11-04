@@ -9,13 +9,13 @@ interface LayoutProps {
 
 export default function TutorialLayout({ children }: LayoutProps) {
   return (
-    <div className="flex mt-page-top ml-page-x h-main-height">
+    <div className="ml-page-x mt-page-top flex h-main-height">
       <GuideMenu />
       <div
         className={cn(
           'flex-grow overflow-auto',
           // Add padding on top and left, so card shadow is visible
-          'pt-3 px-2'
+          'px-2 pt-3'
         )}
       >
         {children}

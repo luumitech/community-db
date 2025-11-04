@@ -23,7 +23,7 @@ export default function MapView(props: RouteArgs) {
     <>
       <MoreMenu omitKeys={['communityMapView']} />
       <PageContent
-        className="flex flex-col h-main-height"
+        className="flex h-main-height flex-col"
         communityId={communityId}
       />
     </>

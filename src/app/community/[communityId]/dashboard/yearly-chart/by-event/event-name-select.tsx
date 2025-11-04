@@ -16,7 +16,7 @@ export const EventNameSelect: React.FC<Props> = ({ className, eventList }) => {
 
   return (
     <Select
-      className={cn(className, 'min-w-32 w-full')}
+      className={cn(className, 'w-full min-w-32')}
       aria-label="Event Name"
       items={eventItems}
       placeholder="Select event from list or click on bar chart"

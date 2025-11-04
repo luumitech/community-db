@@ -28,7 +28,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
   const topContent = React.useMemo(() => {
     return (
       <div className="flex items-center justify-between">
-        <span className="text-foreground-500 font-semibold text-sm">
+        <span className="text-sm font-semibold text-foreground-500">
           Attended Events
         </span>
         <Button
@@ -66,7 +66,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
             <div
               className={cn(
                 'col-span-full h-8',
-                'justify-self-center content-center'
+                'content-center justify-self-center'
               )}
             >
               <div className="text-sm text-foreground-500">

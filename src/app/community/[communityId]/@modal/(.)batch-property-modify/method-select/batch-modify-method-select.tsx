@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem } from '~/view/base/select';
 
@@ -21,7 +21,7 @@ interface Props {
 export const BatchModifyMethodSelect: React.FC<Props> = ({ className }) => {
   return (
     <Select
-      className={cn(className, 'min-w-32 max-w-xs')}
+      className={twMerge('min-w-32 max-w-xs', className)}
       controlName="method"
       label="Type of modification"
       items={methodItems}

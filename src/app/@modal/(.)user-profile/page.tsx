@@ -33,9 +33,9 @@ export default function UserProfile() {
       <ModalContent>
         {(closeModal) => (
           <>
-            <ModalHeader className="text-2xl gap-2 items-center">
+            <ModalHeader className="items-center gap-2 text-2xl">
               <User
-                className="transition-transform cursor-pointer"
+                className="cursor-pointer transition-transform"
                 data-testid="signed-in-user-avatar"
                 name=""
                 isFocusable

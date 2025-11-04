@@ -46,7 +46,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
                 'opacity-100': isReadOnly,
               }),
               inputWrapper: cn(classNames?.inputWrapper, {
-                'border-none shadow-none bg-transparent': isReadOnly,
+                'border-none bg-transparent shadow-none': isReadOnly,
               }),
             }}
             defaultValue={field.value ?? NaN}

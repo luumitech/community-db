@@ -33,7 +33,7 @@ export const ListBox: React.FC<Props> = ({
   ...listBoxProps
 }) => {
   return (
-    <div className={cn(className, 'flex flex-row justify-center items-center')}>
+    <div className={cn(className, 'flex flex-row items-center justify-center')}>
       <Card className="w-80 md:w-96">
         {!!header && (
           <>

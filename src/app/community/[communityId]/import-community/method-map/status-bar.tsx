@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useHookFormContext } from '../use-hook-form';
 
 interface Props {
@@ -32,10 +32,10 @@ export const StatusBar: React.FC<Props> = ({ className, editMode }) => {
 
   return (
     <div
-      className={cn(
-        className,
-        'bg-default-100 text-default-500 text-sm',
-        'py-1 px-2 rounded-b-medium'
+      className={twMerge(
+        'bg-default-100 text-sm text-default-500',
+        'rounded-b-medium px-2 py-1',
+        className
       )}
     >
       <StatusMsg />

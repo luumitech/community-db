@@ -38,7 +38,7 @@ export const PanelWrapper: React.FC<React.PropsWithChildren<Props>> = ({
     <>
       {panel !== 'sign-in' && (
         <Button
-          className="absolute top-4 left-4"
+          className="absolute left-4 top-4"
           variant="bordered"
           isIconOnly
           size="sm"

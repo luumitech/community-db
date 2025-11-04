@@ -103,7 +103,7 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
                         {memberYear}
                       </MemberStatusChip>
                       <div className="flex items-center gap-8 text-sm">
-                        <span className="text-foreground-500 font-semibold">
+                        <span className="font-semibold text-foreground-500">
                           Current Event
                         </span>
                         <EventChip eventName={eventName} />

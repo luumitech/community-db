@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 export const BmcLogo: React.FC<Props> = ({ className, size = 16 }) => {
   return (
     <svg
-      className={cn(className)}
+      className={className}
       width={size}
       height={size}
       viewBox="0 0 884 1279"

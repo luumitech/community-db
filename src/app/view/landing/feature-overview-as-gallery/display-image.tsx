@@ -1,6 +1,6 @@
-import { cn } from '@heroui/react';
 import Image from 'next/image';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { type ScreenshotEntry } from '../feature-overview-image-list';
 
 interface Props extends ScreenshotEntry {
@@ -19,16 +19,16 @@ export const DisplayImage: React.FC<React.PropsWithChildren<Props>> = ({
 }) => {
   return (
     <div
-      className={cn(
+      className={twMerge(
         // flex container, so smaller image can grow inside container
         'relative flex',
         // hide overflow, so rounded corner are preserved
-        'rounded-xl overflow-hidden',
+        'overflow-hidden rounded-xl',
         className
       )}
     >
       <Image
-        className={cn('flex-grow object-cover', imageClassName)}
+        className={twMerge('flex-grow object-cover', imageClassName)}
         alt={alt}
         {...props}
       />

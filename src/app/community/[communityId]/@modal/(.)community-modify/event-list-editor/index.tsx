@@ -72,7 +72,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
         <VisibleList fieldArray={eventList} onRemove={addHiddenItem} />
         <HiddenList fieldArray={hiddenEventList} onRemove={addVisibleItem} />
       </div>
-      <div className="flex gap-2 items-start">
+      <div className="flex items-start gap-2">
         <Input
           className="max-w-xs"
           label="New event name"

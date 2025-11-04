@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { CurrencyInput, CurrencyInputProps } from '~/view/base/currency-input';
 
@@ -16,7 +15,7 @@ export const MembershipPriceInput: React.FC<Props> = ({
 }) => {
   return (
     <CurrencyInput
-      className={cn(className)}
+      className={className}
       controlName={`${controlNamePrefix}.price`}
       aria-label="Price"
       allowNegative={false}

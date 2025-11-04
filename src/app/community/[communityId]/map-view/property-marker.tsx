@@ -66,7 +66,7 @@ export const PropertyMarker: React.FC<Props> = ({
     >
       <Popup>
         <div>
-          <div className="text-medium mb-1">{locEntry.address}</div>
+          <div className="mb-1 text-medium">{locEntry.address}</div>
           <div className="flex">
             <Link
               href={appPath('property', {

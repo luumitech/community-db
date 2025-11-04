@@ -41,7 +41,7 @@ export default function BatchPropertyModify() {
       } catch (err) {
         const errMsg =
           err instanceof Error ? (
-            <div className="whitespace-pre-wrap overflow-auto max-h-[200px]">
+            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
               {err.message}
             </div>
           ) : (

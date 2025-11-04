@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
@@ -49,9 +48,9 @@ export const PriceInput: React.FC<Props> = ({
   return (
     <CurrencyInput
       classNames={{
-        base: cn(className),
+        base: className,
         // This will align input and select items text on the same line
-        innerWrapper: cn('pb-0'),
+        innerWrapper: 'pb-0',
       }}
       controlName={`${controlNamePrefix}.price`}
       isControlled

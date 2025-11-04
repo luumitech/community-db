@@ -20,7 +20,7 @@ export const StepTemplate: React.FC<Props> = ({
   return (
     <Card className="w-[inherit]" shadow="none">
       <Button
-        className="absolute top-1 right-1 z-20"
+        className="absolute right-1 top-1 z-20"
         isIconOnly
         size="sm"
         radius="full"

@@ -1,5 +1,4 @@
 'use client';
-import { cn } from '@heroui/react';
 import React from 'react';
 import {
   FitBound,
@@ -31,7 +30,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
 
   return (
     <MapContainer
-      className={cn(className)}
+      className={className}
       zoom={zoom}
       zoomSnap={0}
       zoomDelta={0.25}

@@ -67,7 +67,7 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
   }
 
   return (
-    <Chip className="text-tiny capitalize" size="sm">
+    <Chip className="capitalize text-tiny" size="sm">
       {status}
     </Chip>
   );
@@ -124,7 +124,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
         <SelectItem key={item.key} textValue={item.label}>
           <div className="flex flex-col">
             <span className="text-small">{item.label}</span>
-            <span className="text-tiny text-default-400">{item.desc}</span>
+            <span className="text-default-400 text-tiny">{item.desc}</span>
           </div>
         </SelectItem>
       )}

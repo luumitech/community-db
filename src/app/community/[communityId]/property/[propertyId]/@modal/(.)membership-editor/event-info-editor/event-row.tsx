@@ -25,9 +25,9 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
     <div
       className={cn(
         className,
-        'grid col-span-full grid-cols-subgrid',
+        'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'text-tiny font-semibold items-center',
+        'items-center font-semibold text-tiny',
         'rounded-lg px-3'
       )}
       role="row"
@@ -71,7 +71,7 @@ export const EventRow: React.FC<EventRowProps> = ({
   return (
     <>
       <div
-        className={cn(className, 'grid col-span-full grid-cols-subgrid mx-3')}
+        className={cn(className, 'col-span-full mx-3 grid grid-cols-subgrid')}
         role="row"
       >
         <FlatButton
@@ -106,7 +106,7 @@ export const EventRow: React.FC<EventRowProps> = ({
             eventIdx={eventIdx}
           />
         </div>
-        <div className="flex pt-3 gap-2" role="cell">
+        <div className="flex gap-2 pt-3" role="cell">
           <FlatButton
             className="text-danger"
             icon="trash"
@@ -150,7 +150,7 @@ export const EventRow: React.FC<EventRowProps> = ({
             >
               <TicketInputTable
                 className={cn(
-                  'border-medium border-divider rounded-lg',
+                  'rounded-lg border-medium border-divider',
                   'ml-[40px] p-1'
                 )}
                 ticketListConfig={{

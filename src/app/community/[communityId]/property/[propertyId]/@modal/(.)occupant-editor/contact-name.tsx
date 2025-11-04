@@ -1,6 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
+import { twMerge } from 'tailwind-merge';
 import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from './use-hook-form';
 
@@ -31,10 +32,12 @@ export const ContactName: React.FC<Props> = ({
 
   return (
     <div
-      className={cn(
+      className={twMerge(
         'flex items-center gap-2',
         'justify-between',
-        { 'text-danger-300 group-data-[selected=true]:text-danger': hasError },
+        cn({
+          'text-danger-300 group-data-[selected=true]:text-danger': hasError,
+        }),
         className
       )}
     >

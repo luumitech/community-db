@@ -5,5 +5,5 @@ interface LayoutProps {
 }
 
 export default async function CommunityLayout({ children }: LayoutProps) {
-  return <div className="mt-page-top mx-page-x">{children}</div>;
+  return <div className="mx-page-x mt-page-top">{children}</div>;
 }

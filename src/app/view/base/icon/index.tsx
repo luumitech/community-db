@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import { Icon as Iconify, IconProps as IconifyProps } from '@iconify/react';
 import React from 'react';
 
@@ -83,7 +82,7 @@ export const Icon: React.FC<IconProps> = ({
 
   return (
     <Iconify
-      className={cn(className)}
+      className={className}
       icon={iconName ?? 'pixel:question-solid'}
       {...(size != null && { width: size, height: size })}
       {...props}

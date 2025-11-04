@@ -35,7 +35,7 @@ export const TicketListReadonly: React.FC<EmptyProps> = () => {
         {prevXact.isExpanded && (
           <motion.div
             aria-label="Previous Transaction List"
-            className="overflow-hidden grid col-span-full grid-cols-subgrid gap-1"
+            className="col-span-full grid grid-cols-subgrid gap-1 overflow-hidden"
             initial="collapsed"
             animate="open"
             exit="collapsed"
@@ -99,7 +99,7 @@ interface TicketRowProps {
 const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
   return (
     <div
-      className={cn('grid col-span-full grid-cols-subgrid mx-3', 'text-sm')}
+      className={cn('col-span-full mx-3 grid grid-cols-subgrid', 'text-sm')}
       role="row"
     >
       <div className="pl-1" role="cell" />
@@ -110,7 +110,7 @@ const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
         {ticket.count ?? ''}
       </div>
       <div className="pl-1" role="cell">
-        <span className="text-default-400 pr-1.5"> $</span>
+        <span className="pr-1.5 text-default-400"> $</span>
         <span>{formatCurrency(ticket.price)}</span>
       </div>
       <div className="pl-1" role="cell">
@@ -125,10 +125,10 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
   const { ticketCount, isExpanded, toggle } = prevXact;
 
   return (
-    <div className={cn('grid col-span-full')}>
+    <div className={cn('col-span-full grid')}>
       <div
         className={cn(
-          'h-10 border-divider border-medium rounded-md flex items-center px-2 gap-2',
+          'flex h-10 items-center gap-2 rounded-md border-medium border-divider px-2',
           'cursor-pointer hover:opacity-hover'
         )}
         aria-label="Previous Transaction Toggle"
@@ -158,21 +158,21 @@ export const TicketListTotal: React.FC<PreviousTransaction> = ({
   return (
     <div
       className={cn(
-        'grid col-span-full grid-cols-subgrid',
-        'bg-default-100 items-center',
-        'rounded-lg h-10'
+        'col-span-full grid grid-cols-subgrid',
+        'items-center bg-default-100',
+        'h-10 rounded-lg'
       )}
       role="row"
     >
       <div role="cell" />
       <div
         role="cell"
-        className="col-span-2 text-sm text-right text-default-500"
+        className="col-span-2 text-right text-sm text-default-500"
       >
         Previous Total
       </div>
       <div className="pl-1 text-sm" role="cell">
-        <span className="text-default-400 pr-1.5">$</span>
+        <span className="pr-1.5 text-default-400">$</span>
         <span>{formatCurrency(totalPrice)}</span>
       </div>
       <div role="cell" />

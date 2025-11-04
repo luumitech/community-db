@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { type AccessEntry } from '../_type';
 import { ModifyAccessButton } from './modify-access-button';
 import { RemoveAccess } from './remove-access';
@@ -11,7 +11,7 @@ interface Props {
 
 export const Action: React.FC<Props> = ({ className, fragment }) => {
   return (
-    <div className={cn(className, 'flex gap-2')}>
+    <div className={twMerge('flex gap-2', className)}>
       <ModifyAccessButton fragment={fragment} />
       <RemoveAccess fragment={fragment} />
     </div>

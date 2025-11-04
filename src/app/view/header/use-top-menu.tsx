@@ -181,7 +181,7 @@ const BreadcrumbLabel: React.FC<{ label: string; loading?: boolean }> = ({
   loading,
 }) => {
   return (
-    <Skeleton className="rounded-lg max-w-full" isLoaded={!loading}>
+    <Skeleton className="max-w-full rounded-lg" isLoaded={!loading}>
       <div className="overflow-hidden text-ellipsis">{label ?? ''}</div>
     </Skeleton>
   );

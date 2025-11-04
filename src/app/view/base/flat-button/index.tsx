@@ -61,7 +61,7 @@ export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
           role="button"
           className={cn(
             className,
-            disabled ? 'opacity-disabled cursor-default' : 'hover:opacity-hover'
+            disabled ? 'cursor-default opacity-disabled' : 'hover:opacity-hover'
           )}
           {...(!disabled && { onClick: customOnClick })}
           {...other}

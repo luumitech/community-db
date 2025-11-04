@@ -10,7 +10,7 @@ export const GroupBy: React.FC<Props> = ({ className, ...props }) => {
     <div className={cn(className)}>
       <RadioGroup
         classNames={{
-          base: cn('text-sm border-medium border-divider p-3 rounded-md'),
+          base: cn('rounded-md border-medium border-divider p-3 text-sm'),
         }}
         label="Group by"
         orientation="horizontal"

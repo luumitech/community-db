@@ -1,6 +1,6 @@
-import { cn } from '@heroui/react';
 import { motion, useInView } from 'motion/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   className?: string;
@@ -15,10 +15,11 @@ export const DisplayTitle: React.FC<Props> = ({ className, title }) => {
   return (
     <div
       ref={ref}
-      className={cn(
+      className={twMerge(
         'text-slate-700 dark:text-foreground',
-        'text-3xl sm:text-5xl font-bold text-center',
-        'my-10'
+        'text-center text-3xl font-bold sm:text-5xl',
+        'my-10',
+        className
       )}
     >
       {title.split('').map((letter, index) => (

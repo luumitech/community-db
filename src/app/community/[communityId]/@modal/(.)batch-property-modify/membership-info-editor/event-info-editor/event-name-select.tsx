@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   PleaseConfigureEvents,
@@ -19,7 +19,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={cn(className, 'min-w-32 max-w-sm')}
+      className={twMerge('min-w-32 max-w-sm', className)}
       controlName="membership.eventAttended.eventName"
       aria-label="Event Name"
       variant="underlined"

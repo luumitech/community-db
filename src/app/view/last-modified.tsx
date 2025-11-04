@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { toLocalDateTime } from '~/lib/date-util';
 import { type UserFragmentType } from './_type';
 import { UserName } from './user-name';
@@ -18,7 +18,7 @@ export const LastModified: React.FC<Props> = ({
   const updatedAtStr = toLocalDateTime(updatedAt);
 
   return (
-    <div className={cn(className, 'text-xs text-foreground-500')}>
+    <div className={twMerge('text-xs text-foreground-500', className)}>
       Last modified on {updatedAtStr} by <UserName userFragment={updatedBy} />
     </div>
   );

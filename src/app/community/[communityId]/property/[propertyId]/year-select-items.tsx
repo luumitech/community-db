@@ -63,7 +63,7 @@ export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
   }
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex items-center gap-2">
       {item.label}
       <div className="grow" />
       {item.isMember != null && (

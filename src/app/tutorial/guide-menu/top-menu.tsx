@@ -22,7 +22,7 @@ export const TopMenu: React.FC<Props> = ({ className }) => {
 
   return (
     <>
-      <div className={cn(className, 'flex items-center h-8')}>
+      <div className={cn(className, 'flex h-8 items-center')}>
         <FlatButton
           className="px-2"
           icon="hamburgerMenu"

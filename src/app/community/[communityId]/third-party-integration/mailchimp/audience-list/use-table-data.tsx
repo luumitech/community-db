@@ -41,7 +41,7 @@ export function useTableData() {
           return entry.warning ? (
             <Tooltip
               content={
-                <div className="max-w-48 text-tiny text-wrap">
+                <div className="max-w-48 text-wrap text-tiny">
                   {entry.warning}
                 </div>
               }

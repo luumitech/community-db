@@ -199,7 +199,7 @@ function customTooltip(helper: ChartDataHelper) {
         const firstCol = (
           <span
             className={cn(
-              'block w-3 mt-[3px]',
+              'mt-[3px] block w-3',
               symbol === 'bar' && 'h-3',
               symbol === 'line' && 'h-[1px]'
             )}

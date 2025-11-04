@@ -2,6 +2,7 @@
 import { cn } from '@heroui/react';
 import { motion } from 'motion/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import {
   useFeatureOverviewImageList,
   type ScreenshotEntry,
@@ -19,7 +20,7 @@ export const FeatureOverviewAsGallery: React.FC<Props> = ({ className }) => {
   const [image, setImage] = React.useState<ScreenshotEntry | null>(null);
 
   return (
-    <div className={cn(className, 'p-3', 'bg-green-200 dark:bg-gray-900')}>
+    <div className={twMerge('p-3', 'bg-green-200 dark:bg-gray-900', className)}>
       <DisplayTitle title="Feature Highlights" />
       <div className={cn('flex flex-wrap justify-center gap-4')}>
         {imageList.map((entry) => (

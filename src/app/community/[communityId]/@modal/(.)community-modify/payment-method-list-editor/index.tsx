@@ -74,7 +74,7 @@ export const PaymentMethodListEditor: React.FC<Props> = ({ className }) => {
           onRemove={addVisibleItem}
         />
       </div>
-      <div className="flex gap-2 items-start">
+      <div className="flex items-start gap-2">
         <Input
           className="max-w-xs"
           label="New payment method"

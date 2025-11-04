@@ -1,5 +1,6 @@
-import { cn, Spacer } from '@heroui/react';
+import { Spacer } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { MapContextProvider } from '~/view/base/map';
 import { StartImport } from '../start-import';
 import { Map } from './map';
@@ -16,7 +17,7 @@ export const MethodMap: React.FC<Props> = ({ className }) => {
   return (
     <>
       <MapContextProvider>
-        <Map className={cn(className, 'grow')} setEditMode={setEditMode} />
+        <Map className={twMerge('grow', className)} setEditMode={setEditMode} />
       </MapContextProvider>
       {/* Negate the gap-2 specification on parent element */}
       <StatusBar className="mt-[-8px]" editMode={editMode} />

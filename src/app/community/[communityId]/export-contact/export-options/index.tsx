@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { type ContactInfo } from '../contact-util';
 import { EmailString } from './email-string';
 import { MailchimpCSV } from './mailchimp-csv';
@@ -11,7 +11,7 @@ interface Props {
 
 export const ExportOptions: React.FC<Props> = ({ className, contactInfo }) => {
   return (
-    <div className={cn(className, 'max-w-xs flex flex-col gap-2')}>
+    <div className={twMerge('flex max-w-xs flex-col gap-2', className)}>
       <MailchimpCSV contactInfo={contactInfo} />
       <EmailString contactInfo={contactInfo} />
     </div>

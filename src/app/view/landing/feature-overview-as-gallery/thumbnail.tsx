@@ -1,6 +1,7 @@
 import { cn } from '@heroui/react';
 import { motion } from 'motion/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { type ScreenshotEntry } from '../feature-overview-image-list';
 import { DisplayCaption } from './display-caption';
 import { DisplayImage } from './display-image';
@@ -17,7 +18,7 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({
 }) => {
   return (
     <motion.div
-      className={cn(className, 'cursor-zoom-in')}
+      className={twMerge('cursor-zoom-in', className)}
       role="button"
       layoutId={props.id}
       onClick={() => onPress?.()}

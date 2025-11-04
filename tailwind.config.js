@@ -1,7 +1,6 @@
-import { heroui } from '@heroui/react';
-import type { Config } from 'tailwindcss';
+const { heroui } = require('@heroui/react');
 
-const config: Config = {
+module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -16,12 +15,13 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       spacing: {
+        'header-height': 'var(--header-height)',
         /**
          * The available height in <main/>
          *
-         * 64px is the height of header - page-top (assuming it is used)
+         * 0.5rem is the default page-top (assuming it is used)
          */
-        'main-height': 'calc(100vh - 64px - 0.5rem)',
+        'main-height': 'calc(100vh - var(--header-height) - 0.5rem)',
         /** Default spacing used below header */
         'page-top': '0.5rem',
         'page-x': '0.5rem',
@@ -47,4 +47,3 @@ const config: Config = {
     }),
   ],
 };
-export default config;

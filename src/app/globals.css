@@ -11,6 +11,9 @@
   /* Override default toastify progress color */
   --toastify-color-progress-light: #45D483;
   --toastify-color-progress-dark: #45D483;
+
+  /* Height of header bar */
+  --header-height: 64px;
 }
 
 :root.dark {

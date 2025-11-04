@@ -1,4 +1,4 @@
-import { cn, Tab, Tabs } from '@heroui/react';
+import { Tab, Tabs } from '@heroui/react';
 import { usePrevious } from '@uidotdev/usehooks';
 import React from 'react';
 import * as R from 'remeda';

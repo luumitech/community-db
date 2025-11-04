@@ -46,7 +46,7 @@ export function barHighlightSelected<T extends BarDatum>(
             y="50%"
             dominantBaseline="middle"
             textAnchor="middle"
-            className="font-sans text-[11px] fill-[rgb(79,109,140)]"
+            className="fill-[rgb(79,109,140)] font-sans text-[11px]"
           >
             {bar.data.formattedValue}
           </text>

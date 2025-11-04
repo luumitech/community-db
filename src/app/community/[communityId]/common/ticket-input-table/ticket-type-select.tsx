@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -33,7 +32,7 @@ export const TicketTypeSelect: React.FC<Props> = ({
    */
 
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <Select
         className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.ticketName`}

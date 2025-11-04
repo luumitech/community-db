@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { Decimal, decMul } from '~/lib/decimal-util';
@@ -40,9 +40,9 @@ export const TicketInput: React.FC<Props> = ({
   return (
     <NumberInput
       classNames={{
-        base: cn(className, 'min-w-16'),
+        base: twMerge('min-w-16', className),
         // This will align input and select items text on the same line
-        innerWrapper: cn('pb-0'),
+        innerWrapper: 'pb-0',
       }}
       controlName={`${controlNamePrefix}.count`}
       isControlled

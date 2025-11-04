@@ -1,6 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import { twMerge } from 'tailwind-merge';
 import { Button } from '~/view/base/button';
 import { useCheckMethodRequirement } from './method-map/check-method-requirement';
 import { useHookFormContext } from './use-hook-form';
@@ -19,7 +18,7 @@ export const StartImport: React.FC<Props> = ({ className, isDisabled }) => {
   const mapErrMsg = errors.map?.message;
 
   return (
-    <div className={cn(className, 'flex items-center gap-3')}>
+    <div className={twMerge('flex items-center gap-3', className)}>
       <Button
         color="primary"
         type="submit"

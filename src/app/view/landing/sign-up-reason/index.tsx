@@ -34,19 +34,19 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
     >
       <div
         className={cn(
-          'flex flex-col items-center text-center text-wrap gap-6',
-          'p-9 sm:p-18 md:p-24'
+          'flex flex-col items-center gap-6 text-wrap text-center',
+          'sm:p-18 p-9 md:p-24'
         )}
       >
-        <h1 className="text-3xl sm:text-4xl font-extrabold">{appTitle}</h1>
-        <p className="text-2xl sm:text-3xl font-bold">
+        <h1 className="text-3xl font-extrabold sm:text-4xl">{appTitle}</h1>
+        <p className="text-2xl font-bold sm:text-3xl">
           is a simple and secure way to track, update, and organize member
           information, so you can focus on what matters most:
         </p>
-        <p className="text-2xl sm:text-3xl font-bold">
+        <p className="text-2xl font-bold sm:text-3xl">
           Growing and connecting your community!
         </p>
-        <ol className="text-base text-left sm:text-lg md:text-xl">
+        <ol className="text-left text-base sm:text-lg md:text-xl">
           <ListItem>Absolutely free to start</ListItem>
           <ListItem>Sign up with email or Google account</ListItem>
           <ListItem>Add addresses easily using map view</ListItem>

@@ -10,7 +10,7 @@ interface Props {
 
 export const BuiltBy: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className, 'flex gap-3 items-center')}>
+    <div className={cn(className, 'flex items-center gap-3')}>
       <Image
         className="object-fit rounded-md"
         src={logoImg}

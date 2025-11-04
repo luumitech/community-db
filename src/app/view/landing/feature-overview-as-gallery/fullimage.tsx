@@ -34,14 +34,14 @@ export const FullImage: React.FC<FullImageProps> = ({ onPress, ...props }) => {
         }}
       >
         <motion.div
-          className={cn('max-w-full max-h-full', 'cursor-zoom-out')}
+          className={cn('max-h-full max-w-full', 'cursor-zoom-out')}
           role="button"
           layoutId={props.id}
         >
           <DisplayImage
             className={cn(
-              'max-w-[100vw] max-h-[100vh]',
-              'sm:max-w-[calc(100vw-3em)] sm:max-h-[calc(100vh-3em)]'
+              'max-h-[100vh] max-w-[100vw]',
+              'sm:max-h-[calc(100vh-3em)] sm:max-w-[calc(100vw-3em)]'
             )}
             {...props}
           />

@@ -113,7 +113,7 @@ export const TicketInputTable: React.FC<Props> = ({
             >
               {ticketListMethods.fields.map((row, ticketIdx) => (
                 <ReorderItem
-                  className="grid col-span-full grid-cols-subgrid"
+                  className="col-span-full grid grid-cols-subgrid"
                   key={row.id}
                   id={row.id}
                 >

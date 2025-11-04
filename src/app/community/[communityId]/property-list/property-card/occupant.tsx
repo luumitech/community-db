@@ -1,7 +1,7 @@
 import { Chip, type ChipProps } from '@heroui/chip';
-import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
+import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 
 const OccupantFragment = graphql(/* GraphQL */ `
@@ -33,7 +33,7 @@ export const Occupant: React.FC<Props> = ({
     .filter((name) => !R.isEmpty(name));
 
   return (
-    <div className={cn(className, 'flex items-center gap-2')}>
+    <div className={twMerge('flex flex-wrap items-center gap-2', className)}>
       {nameList.map((name, idx) => (
         <Chip key={idx} size="sm" {...props}>
           {name}

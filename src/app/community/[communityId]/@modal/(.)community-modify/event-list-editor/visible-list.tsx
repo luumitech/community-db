@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { type EventListFieldArray } from '../use-hook-form';
 import { VisibleListItem } from './visible-list-item';
@@ -31,7 +31,7 @@ export const VisibleList: React.FC<Props> = ({
         <ReorderItem
           key={field.id}
           id={field.id}
-          className={cn('grid col-span-full grid-cols-subgrid', className)}
+          className={twMerge('col-span-full grid grid-cols-subgrid', className)}
         >
           <VisibleListItem
             label={field.name}

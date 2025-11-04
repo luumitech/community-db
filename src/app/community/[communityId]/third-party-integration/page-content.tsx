@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { cn } from '@heroui/react';
 import { Tab, Tabs } from '@heroui/tabs';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
@@ -43,7 +42,7 @@ export const PageContent: React.FC<Props> = ({
 
   return (
     <PageProvider community={community}>
-      <div className={cn(className)}>
+      <div className={className}>
         <Tabs
           aria-label={appLabel('thirdPartyIntegration')}
           classNames={{

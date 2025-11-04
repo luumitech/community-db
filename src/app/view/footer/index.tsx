@@ -16,7 +16,7 @@ export const Footer: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn(className, 'p-4', 'bg-green-300 dark:bg-neutral-800')}>
-      <div className={cn('grid grid-cols-1 sm:grid-cols-2 gap-3')}>
+      <div className={cn('grid grid-cols-1 gap-3 sm:grid-cols-2')}>
         <div className="flex items-center divide-x divide-gray-600">
           {subscriptionPlanEnable ? (
             <Link isBlock href={appPath('pricingPlan')}>

@@ -29,7 +29,7 @@ export const FilterSelect: React.FC<Props> = ({
 
   return (
     <div className={cn(className)}>
-      <div className="flex flex-wrap gap-2 items-center">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           size="sm"
           variant="faded"

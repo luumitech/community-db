@@ -1,6 +1,6 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
+import { twMerge } from 'tailwind-merge';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { type TicketStatEntry } from '../_type';
 
@@ -11,12 +11,12 @@ interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
   return (
     <div
-      className={cn(
-        className,
-        'grid col-span-full grid-cols-subgrid',
+      className={twMerge(
+        'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'text-tiny font-semibold items-center',
-        'rounded-lg px-3'
+        'items-center font-semibold text-tiny',
+        'rounded-lg px-3',
+        className
       )}
       role="row"
     >
@@ -38,10 +38,10 @@ export const TableRow: React.FC<TableRowProps> = ({ className, ticket }) => {
   return (
     <>
       <div
-        className={cn(
-          className,
-          'grid col-span-full grid-cols-subgrid mx-3',
-          'text-sm items-center'
+        className={twMerge(
+          'col-span-full mx-3 grid grid-cols-subgrid',
+          'items-center text-sm',
+          className
         )}
         role="row"
       >

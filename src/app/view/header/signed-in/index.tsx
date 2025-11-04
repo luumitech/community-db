@@ -27,7 +27,7 @@ export const SignedIn: React.FC<Props> = ({}) => {
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <User
-          className="transition-transform cursor-pointer"
+          className="cursor-pointer transition-transform"
           data-testid="signed-in-user-avatar"
           name=""
           isFocusable

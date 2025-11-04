@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { Input } from '~/view/base/input';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 
 export const GpsInputEditor: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className, 'flex flex-col gap-4')}>
+    <div className={twMerge('flex flex-col gap-4', className)}>
       <p>
         Provide additional details to help find GPS location for properties:
       </p>

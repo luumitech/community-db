@@ -86,7 +86,7 @@ export function Select<T extends object>(props: SelectProps<T>) {
                   'opacity-100': isReadOnly,
                 }),
                 trigger: cn(classNames?.trigger, {
-                  'border-none shadow-none bg-transparent': isReadOnly,
+                  'border-none bg-transparent shadow-none': isReadOnly,
                 }),
                 selectorIcon: cn({
                   hidden: isReadOnly,

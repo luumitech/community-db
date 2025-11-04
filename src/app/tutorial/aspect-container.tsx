@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   className?: string;
@@ -10,7 +11,7 @@ export const AspectContainer: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   return (
-    <div className={cn(className, 'w-full min-w-[480px]')}>
+    <div className={twMerge('w-full min-w-[480px]', className)}>
       <div
         className={cn(
           // Create 4:5 aspect ratio container
@@ -18,8 +19,8 @@ export const AspectContainer: React.FC<React.PropsWithChildren<Props>> = ({
           'rounded-xl bg-slate-700'
         )}
       >
-        <div className="absolute w-full h-full">
-          <div className="p-2 h-full">{children}</div>
+        <div className="absolute h-full w-full">
+          <div className="h-full p-2">{children}</div>
         </div>
       </div>
     </div>

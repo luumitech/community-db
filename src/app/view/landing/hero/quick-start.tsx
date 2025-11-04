@@ -34,7 +34,7 @@ interface Props {
 
 export const QuickStart: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn('grid grid-cols-1 sm:grid-cols-2 gap-4', className)}>
+    <div className={cn('grid grid-cols-1 gap-4 sm:grid-cols-2', className)}>
       <CustomButton
         label={appLabel('communitySelect')}
         href={appPath('communitySelect')}
