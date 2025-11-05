@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Button, Link } from '@heroui/react';
+import { Button, Link, cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
@@ -10,7 +10,7 @@ import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
 import { MoreMenu } from './more-menu';
-import { PropertyCard, PropertyCardHeader } from './property-card';
+import { PropertyCard } from './property-card';
 import { PropertySearchHeader } from './property-search-header';
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
@@ -120,12 +120,14 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
       {community && <MoreMenu community={community} />}
       <div className="sticky top-header-height z-50 mb-2 bg-background">
         <PropertySearchHeader className="mb-2" community={community} />
-        <PropertyCardHeader />
+        <PropertyCard.Container className="mx-0.5">
+          <PropertyCard.Header />
+        </PropertyCard.Container>
       </div>
-      <div className="mx-0.5 flex flex-col gap-2" aria-label="Property Table">
+      <PropertyCard.Container className="mx-0.5" aria-label="Property Table">
         {rows.length > 0 &&
           rows.map((property) => (
-            <PropertyCard
+            <PropertyCard.Entry
               key={property.id}
               className="hover:bg-primary-50"
               property={property}
@@ -138,14 +140,11 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
               }}
             />
           ))}
-        {rows.length === 0 && <EmptyContent />}
-        {!!pageInfo?.hasNextPage && (
-          <Loading
-            className="mb-4 flex w-full justify-center"
-            ref={loadingRef}
-          />
-        )}
-      </div>
+      </PropertyCard.Container>
+      {rows.length === 0 && <EmptyContent />}
+      {!!pageInfo?.hasNextPage && (
+        <Loading className="mb-4 flex w-full justify-center" ref={loadingRef} />
+      )}
     </>
   );
 };

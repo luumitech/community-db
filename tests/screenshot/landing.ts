@@ -96,6 +96,7 @@ test.describe.serial('Take @screenshot for landing screen', () => {
         has: page.locator('svg'),
       })
       .first();
+    await waitUntilStable(membersInCurYear);
     await membersInCurYear.click();
 
     await expect(page.getByText('Membership Status')).not.toBeEmpty();

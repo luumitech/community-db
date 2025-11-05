@@ -6,7 +6,9 @@ import { getCurrentYear } from '~/lib/date-util';
 /**
  * Determine the years to display on each property card
  *
- * - This will return at least one year (i.e. the current year)
+ * - This will return 2 values
+ * - Default current year and previous year
+ * - Will use filter memberYear/nonMemberYear values, if specified
  * - It will also sort the years in descending order
  */
 export function useMemberYear() {
@@ -15,14 +17,25 @@ export function useMemberYear() {
   const years = React.useMemo(() => {
     const { memberYear, nonMemberYear } = filterArg;
 
-    const yearsToShow = R.pipe(
-      [nonMemberYear ?? getCurrentYear(), memberYear ?? getCurrentYear()],
-      R.filter((val): val is number => val != null),
-      R.unique(),
+    const yearsToShow = new Set<number>();
+    if (memberYear != null) {
+      yearsToShow.add(memberYear);
+    }
+    if (nonMemberYear != null) {
+      yearsToShow.add(nonMemberYear);
+    }
+    if (yearsToShow.size < 2) {
+      yearsToShow.add(getCurrentYear());
+    }
+    if (yearsToShow.size < 2) {
+      yearsToShow.add(getCurrentYear() - 1);
+    }
+    const sortedYearsToShow = R.pipe(
+      [...yearsToShow],
       R.sort((a, b) => b - a)
     );
 
-    return yearsToShow;
+    return sortedYearsToShow;
   }, [filterArg]);
 
   return years;

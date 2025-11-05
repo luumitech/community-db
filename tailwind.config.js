@@ -27,7 +27,7 @@ module.exports = {
          * Add border around text to make text show more clearly in front of
          * busy background
          */
-        text: '0 1px 1px rgba(var(--background-end-rgb))',
+        text: '0 1.5px 1.5px rgba(var(--background-end-rgb))',
       },
     },
   },

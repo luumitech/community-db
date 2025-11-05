@@ -35,10 +35,10 @@ export const Hero: React.FC<Props> = ({ className }) => {
           <Link href={appPath('home')}>
             <AppLogo size={96} />
           </Link>
-          <h1 className="drop-shadow-text text-5xl font-extrabold">
+          <h1 className="text-5xl font-extrabold drop-shadow-text">
             {appTitle}
           </h1>
-          <p className="drop-shadow-text text-2xl">
+          <p className="text-2xl font-semibold drop-shadow-text">
             A platform to build, engage and grow communities.
           </p>
           {!!session.data ? (

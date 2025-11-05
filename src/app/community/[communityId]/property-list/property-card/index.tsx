@@ -7,15 +7,40 @@ import { Occupant } from './occupant';
 import { PropertyAddress } from './property-address';
 import { useMemberYear } from './use-member-year';
 
-interface Props extends Omit<CardProps, 'property'> {
+// variable name must be `className` for tailwindcss intellisense to work
+const className = {
+  container: cn(
+    'grid gap-2',
+    'grid-cols-[repeat(3,1fr),_max-content]',
+    'sm:grid-cols-[repeat(6,1fr),_max-content]'
+  ),
+  inheritContainer: 'col-span-full grid grid-cols-subgrid gap-1',
+  address: 'col-span-3 sm:col-span-2',
+  member: 'col-span-3 sm:col-span-4',
+  // Always last column
+  memberYear: 'row-start-1 -col-start-1',
+};
+
+interface ContainerProps {
+  className?: string;
+}
+
+const Container: React.FC<React.PropsWithChildren<ContainerProps>> = ({
+  ...props
+}) => {
+  return (
+    <div {...props} className={twMerge(className.container, props.className)} />
+  );
+};
+
+interface EntryProps extends Omit<CardProps, 'property'> {
   className?: string;
   property: PropertyEntry;
   /** Show header row showing membership year status */
   showHeader?: boolean;
 }
 
-export const PropertyCard: React.FC<Props> = ({
-  className,
+const Entry: React.FC<EntryProps> = ({
   property,
   showHeader,
   children,
@@ -25,32 +50,31 @@ export const PropertyCard: React.FC<Props> = ({
 
   return (
     <Card
-      classNames={{ base: twMerge(className) }}
+      {...props}
+      classNames={{
+        base: twMerge(className.inheritContainer, props.className),
+      }}
       role="row"
       shadow="sm"
-      {...props}
     >
-      <CardBody className="flex flex-row gap-2">
-        <div className="flex flex-col gap-2">
-          <PropertyAddress fragment={property} />
-          <Occupant fragment={property} />
-        </div>
-        <div className="grow" />
+      <CardBody className={twMerge('items-start', className.inheritContainer)}>
+        <PropertyAddress className={className.address} fragment={property} />
+        <Occupant className={className.member} fragment={property} />
         <div
-          className={cn(
+          className={twMerge(
+            className.memberYear,
             'grid grid-flow-col grid-rows-[auto_1fr]',
+            showHeader ? 'row-span-2 grid-rows-[auto_1fr]' : 'grid-rows-1',
             'items-center gap-2'
           )}
         >
           {yearsToShow.map((year) => (
             <React.Fragment key={`${property.id}-${year}`}>
-              <span
-                className={cn('text-xs text-default-400', {
-                  'invisible h-0': !showHeader,
-                })}
-              >
-                {year}
-              </span>
+              {showHeader && (
+                <span className="whitespace-nowrap text-xs text-default-400">
+                  {year}
+                </span>
+              )}
               <Membership fragment={property} year={year} />
             </React.Fragment>
           ))}
@@ -61,18 +85,50 @@ export const PropertyCard: React.FC<Props> = ({
   );
 };
 
-export const PropertyCardHeader: React.FC<unknown> = () => {
+interface HeaderProps {
+  className?: string;
+}
+
+export const Header: React.FC<HeaderProps> = ({ ...props }) => {
   const yearsToShow = useMemberYear();
 
   return (
-    <Card className="mx-0.5 bg-default-200/50" shadow="none" radius="sm">
-      <CardBody className="flex flex-row gap-2 py-2">
-        <div className="grow text-sm font-semibold text-default-500">
+    <Card
+      className={twMerge(
+        'bg-default-200/50',
+        className.inheritContainer,
+        props.className
+      )}
+      role="rowheader"
+      shadow="none"
+      radius="sm"
+    >
+      <CardBody
+        className={twMerge('items-center py-2', className.inheritContainer)}
+      >
+        <div
+          className={twMerge(
+            'text-sm font-semibold text-default-500',
+            className.address
+          )}
+        >
           Address
         </div>
-        <div className={cn('grid grid-flow-col', 'items-center gap-2')}>
+        <div
+          className={twMerge(
+            'text-sm font-semibold text-default-500',
+            className.member
+          )}
+        />
+        <div
+          className={twMerge(
+            className.memberYear,
+            'grid grid-cols-2',
+            'items-center gap-2'
+          )}
+        >
           {yearsToShow.map((year) => (
-            <span key={year} className="text-xs text-default-400">
+            <span key={year} className="m-auto text-xs text-default-400">
               {year}
             </span>
           ))}
@@ -80,4 +136,10 @@ export const PropertyCardHeader: React.FC<unknown> = () => {
       </CardBody>
     </Card>
   );
+};
+
+export const PropertyCard = {
+  Container,
+  Header,
+  Entry,
 };

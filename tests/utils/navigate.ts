@@ -36,6 +36,7 @@ export async function navigateProperty(page: Page, address: string) {
       hasText: address,
     })
     .first();
+  await waitUntilStable(matchingRow);
   await matchingRow.click();
   await expect(page.getByText('Membership Status')).not.toBeEmpty();
 }
