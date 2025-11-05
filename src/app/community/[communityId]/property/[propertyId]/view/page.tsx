@@ -22,17 +22,22 @@ export default function Property(props: RouteArgs) {
   const { property, community } = useLayoutContext();
 
   return (
-    <div className="flex flex-col gap-3">
+    <>
       <MoreMenu />
-      <PropertyAutocomplete currentPropertyId={property.id} />
-      <PropertyDisplay />
-      <Divider />
-      <MembershipDisplay />
-      <OccupantDisplay />
-      <LastModified
-        updatedAt={property.updatedAt}
-        updatedBy={property.updatedBy}
-      />
-    </div>
+      <div className="flex flex-col gap-3">
+        <PropertyAutocomplete
+          className="sticky top-header-height z-50 bg-background"
+          currentPropertyId={property.id}
+        />
+        <PropertyDisplay />
+        <Divider />
+        <MembershipDisplay />
+        <OccupantDisplay />
+        <LastModified
+          updatedAt={property.updatedAt}
+          updatedBy={property.updatedBy}
+        />
+      </div>
+    </>
   );
 }

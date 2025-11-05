@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import { type LegendProps } from '@nivo/legends';
 import {
   ResponsivePie,
@@ -8,6 +7,7 @@ import {
 } from '@nivo/pie';
 import React from 'react';
 import * as R from 'remeda';
+import { twMerge } from 'tailwind-merge';
 import { COLOR_SCHEME, getItemColor } from '../item-color';
 import { useNivoTheme } from '../theme';
 
@@ -82,7 +82,7 @@ export function PieChart<T extends DataT>({
   );
 
   return (
-    <div className={cn(className, 'h-full')}>
+    <div className={twMerge('h-full', className)}>
       <ResponsivePie
         margin={margin}
         theme={theme}

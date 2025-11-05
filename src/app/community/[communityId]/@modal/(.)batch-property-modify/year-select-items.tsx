@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
@@ -54,5 +53,5 @@ export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
     return null;
   }
 
-  return <div className="flex gap-2 items-center">{item.label}</div>;
+  return <div className="flex items-center gap-2">{item.label}</div>;
 };

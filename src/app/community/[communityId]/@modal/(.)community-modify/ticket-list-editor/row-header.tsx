@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   className?: string;
@@ -7,12 +7,12 @@ interface Props {
 export const RowHeader: React.FC<Props> = ({ className }) => {
   return (
     <div
-      className={cn(
-        className,
-        'grid col-span-full grid-cols-subgrid',
+      className={twMerge(
+        'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'text-tiny font-semibold items-center',
-        'rounded-lg px-3'
+        'items-center font-semibold text-tiny',
+        'rounded-lg px-3',
+        className
       )}
       role="row"
     >

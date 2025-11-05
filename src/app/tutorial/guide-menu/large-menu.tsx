@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { MenuOptions } from './menu-options';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 
 export const LargeMenu: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className, 'max-w-xs')}>
+    <div className={twMerge('max-w-xs', className)}>
       <MenuOptions />
     </div>
   );

@@ -46,15 +46,15 @@ export const InputEmail: React.FC<InputEmailProps> = ({
             className={cn(
               'border-medium border-default-200 hover:border-default-400',
               'focus-within:border-default-foreground',
-              'px-3 py-2 rounded-medium',
+              'rounded-medium px-3 py-2',
               { 'border-danger': fieldState.invalid }
             )}
           >
             {label && (
               <label
                 className={cn(
-                  'z-10 pointer-events-none text-default-600 cursor-text',
-                  'text-xs pb-0.5 pe-2 max-w-full text-ellipsis overflow-hidden',
+                  'pointer-events-none z-10 cursor-text text-default-600',
+                  'max-w-full overflow-hidden text-ellipsis pb-0.5 pe-2 text-xs',
                   { 'text-danger': fieldState.invalid }
                 )}
               >
@@ -63,9 +63,9 @@ export const InputEmail: React.FC<InputEmailProps> = ({
             )}
             <ReactMultiEmail
               emails={field.value}
-              className="flex flex-wrap gap-2 items-center"
+              className="flex flex-wrap items-center gap-2"
               inputClassName={cn(
-                'font-normal placeholder:text-foreground-500 bg-clip-text text-small',
+                'bg-clip-text font-normal text-small placeholder:text-foreground-500',
                 'focus-visible:outline-none',
                 'flex-grow'
               )}
@@ -82,9 +82,9 @@ export const InputEmail: React.FC<InputEmailProps> = ({
             />
           </div>
           {(!!description || !!fieldState.error?.message) && (
-            <div className="p-1 flex-col gap-1.5">
+            <div className="flex-col gap-1.5 p-1">
               <div
-                className={cn('text-tiny text-foreground-400', {
+                className={cn('text-foreground-400 text-tiny', {
                   'text-danger': fieldState.invalid,
                 })}
               >

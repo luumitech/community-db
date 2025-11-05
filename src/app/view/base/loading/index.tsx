@@ -1,6 +1,6 @@
 'use client';
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import styles from './styles.module.css';
 
 interface Props {
@@ -13,10 +13,10 @@ export const Loading = React.forwardRef<HTMLDivElement, Props>(
       <div
         ref={ref}
         aria-label="Loading"
-        className={cn(className, 'text-primary-300 px-4 py-2')}
+        className={twMerge('px-4 py-2 text-primary-300', className)}
         {...props}
       >
-        <div className={cn(styles.loader)} />
+        <div className={styles.loader} />
       </div>
     );
   }

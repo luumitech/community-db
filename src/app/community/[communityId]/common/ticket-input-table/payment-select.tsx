@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -36,7 +35,7 @@ export const PaymentSelect: React.FC<Props> = ({
   }, [includeHiddenFields, selectPaymentMethodSections, visiblePaymentMethods]);
 
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <Select
         className="min-w-32 max-w-xs"
         controlName={`${controlNamePrefix}.paymentMethod`}

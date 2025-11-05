@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { CurrencyInput } from '~/view/base/currency-input';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
@@ -20,8 +20,8 @@ export const VisibleListItem: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={cn(
-        'grid col-span-full grid-cols-subgrid',
+      className={twMerge(
+        'col-span-full grid grid-cols-subgrid',
         'mx-3 items-center',
         className
       )}

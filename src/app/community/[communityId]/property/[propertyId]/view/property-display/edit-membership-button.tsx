@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { appLabel, appPath } from '~/lib/app-path';
@@ -13,7 +12,7 @@ export const EditMembershipButton: React.FC<Props> = ({ className }) => {
 
   return (
     <Link
-      className={cn(className)}
+      className={className}
       href={appPath('membershipEditor', {
         path: { communityId: community.id, propertyId: property.id },
       })}

@@ -56,8 +56,8 @@ export const AudienceList: React.FC<Props> = () => {
             Refresh
           </Button>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-default-400 text-xs">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-default-400">
             Total {audienceList.length} emails ({warningItem.length} with
             warnings)
           </span>

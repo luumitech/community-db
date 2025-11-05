@@ -1,5 +1,4 @@
 'use client';
-import { cn } from '@heroui/react';
 import React from 'react';
 import { FeatureOverviewAsGallery } from './feature-overview-as-gallery';
 import { FeatureOverviewAsSlideshow } from './feature-overview-as-slideshow';
@@ -12,7 +11,7 @@ interface Props {
 
 export const Landing: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <Hero />
       <FeatureOverviewAsGallery />
       {/* <FeatureOverviewAsSlideshow /> */}

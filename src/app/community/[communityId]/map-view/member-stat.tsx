@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { usePageContext } from './page-context';
 
 interface Props {
@@ -32,7 +32,7 @@ export const MemberStat: React.FC<Props> = ({ className, selectedYear }) => {
   }, [memberCountStat, propertyCount, selectedYear]);
 
   return (
-    <div className={cn(className, 'flex flex-col')}>
+    <div className={twMerge('flex flex-col', className)}>
       <span>{description}</span>
       {propertyWithGps.length > 0 && missingGps > 0 && (
         <span className="text-warning">

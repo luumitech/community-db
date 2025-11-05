@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useUserInfo } from '~/custom-hooks/user-info';
 
 interface Props {
@@ -11,9 +11,9 @@ export const UserInfo: React.FC<Props> = ({ className }) => {
 
   return (
     <div
-      className={cn(
+      className={twMerge(
         'grid grid-cols-[auto_1fr]',
-        'gap-2 items-center',
+        'items-center gap-2',
         className
       )}
     >

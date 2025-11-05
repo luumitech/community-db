@@ -15,15 +15,8 @@ export async function navigatePropertyList(page: Page) {
   await page.getByRole('link', { name: 'Select Community' }).click();
   await page.getByRole('option', { name: 'Sample Community' }).click();
 
-  await expect(
-    page
-      .getByLabel('Property Table')
-      /**
-       * To detect if all rows have been propagated in the table, check if a row
-       * with attribute `data-list="true"` exists
-       */
-      .locator('tbody > tr[data-last="true"]')
-  ).toBeVisible();
+  const rows = page.getByLabel('Property Table').getByRole('row');
+  await expect(rows.first()).toBeVisible();
 }
 
 /**
@@ -35,13 +28,16 @@ export async function navigateProperty(page: Page, address: string) {
   await navigatePropertyList(page);
 
   // Go to address matching input
-  const rows = page
+  const matchingRow = page
     .getByLabel('Property Table')
-    .locator('tbody > tr')
+    .getByRole('row')
     .filter({
-      has: page.locator('td:nth-child(1)').filter({ hasText: address }),
-    });
-  await rows.nth(0).click();
+      // Get the row matching the input address
+      hasText: address,
+    })
+    .first();
+  await waitUntilStable(matchingRow);
+  await matchingRow.click();
   await expect(page.getByText('Membership Status')).not.toBeEmpty();
 }
 

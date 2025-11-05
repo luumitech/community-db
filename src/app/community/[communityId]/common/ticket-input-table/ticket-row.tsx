@@ -22,9 +22,9 @@ export const TicketRowHeader: React.FC<EmptyProps> = () => {
   return (
     <div
       className={cn(
-        'grid col-span-full grid-cols-subgrid',
+        'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'text-tiny font-semibold items-center',
+        'items-center font-semibold text-tiny',
         'rounded-lg px-3'
       )}
       role="row"
@@ -60,7 +60,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
   const unitPrice = ticketDef?.unitPrice ?? '0.00';
 
   return (
-    <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
+    <div className={cn('col-span-full mx-3 grid grid-cols-subgrid')} role="row">
       <div role="cell">
         <DragHandle className="pt-3" />
       </div>
@@ -75,7 +75,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           controlNamePrefix={controlNamePrefix}
           startContent={
             <div className="pointer-events-none flex items-center">
-              <span className="text-default-400 text-xs whitespace-nowrap">
+              <span className="whitespace-nowrap text-xs text-default-400">
                 ${unitPrice} ⨉
               </span>
             </div>
@@ -93,7 +93,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           />
         )}
       </div>
-      <div className="flex pt-3 gap-2" role="cell">
+      <div className="flex gap-2 pt-3" role="cell">
         <FlatButton
           className="text-danger"
           icon="cross"
@@ -113,9 +113,9 @@ export const TransactionHeader: React.FC<EmptyProps> = () => {
   const { ticketListConfig } = useTicketContext();
 
   return (
-    <div className={cn('grid col-span-full')}>
+    <div className={cn('col-span-full grid')}>
       <fieldset className="border-t-2 border-divider">
-        <legend className="text-sm text-default-400 m-auto px-4">
+        <legend className="m-auto px-4 text-sm text-default-400">
           Current Transaction
         </legend>
       </fieldset>
@@ -127,7 +127,7 @@ export const TransactionFooter: React.FC<EmptyProps> = () => {
   const { ticketListConfig } = useTicketContext();
 
   return (
-    <div className={cn('grid col-span-full')}>
+    <div className={cn('col-span-full grid')}>
       <div className="ml-3">
         <TicketAddButton
           onClick={(ticket) => {
@@ -162,20 +162,20 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
   return (
     <div
       className={cn(
-        'grid col-span-full grid-cols-subgrid',
-        'bg-default-100 items-center',
+        'col-span-full grid grid-cols-subgrid',
+        'items-center bg-default-100',
         'rounded-lg'
       )}
       role="row"
     >
       <div
         role="cell"
-        className="col-span-3 text-sm text-right text-default-500"
+        className="col-span-3 text-right text-sm text-default-500"
       >
         Current Transaction Total
       </div>
       <div className="pl-1 text-sm" role="cell">
-        <span className="text-default-400 pr-1.5">$</span>
+        <span className="pr-1.5 text-default-400">$</span>
         <span>{formatCurrency(totalPrice)}</span>
       </div>
       <div role="cell">
@@ -207,9 +207,9 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
   const { controlNamePrefix } = membershipConfig;
 
   return (
-    <div className={cn('grid col-span-full grid-cols-subgrid mx-3')} role="row">
+    <div className={cn('col-span-full mx-3 grid grid-cols-subgrid')} role="row">
       <div role="cell" />
-      <div role="cell" className="text-sm pt-2 pl-1">
+      <div role="cell" className="pl-1 pt-2 text-sm">
         Membership Fee
       </div>
       <div role="cell" />
@@ -224,7 +224,7 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
           />
         )}
       </div>
-      <div className="flex pt-3 gap-2" role="cell" />
+      <div className="flex gap-2 pt-3" role="cell" />
     </div>
   );
 };

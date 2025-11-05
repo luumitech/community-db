@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
 import { type CommunityEntry } from '../_type';
 
@@ -14,9 +14,9 @@ export const PropertySearchHeader: React.FC<Props> = ({
 }) => {
   const totalCount = community?.propertyList.totalCount ?? 0;
   return (
-    <div className={cn(className, 'flex flex-col gap-2')}>
+    <div className={twMerge('flex flex-col gap-2', className)}>
       <PropertySearchBar autoFocus />
-      <span className="text-tiny text-foreground-400">
+      <span className="text-foreground-400 text-tiny">
         {totalCount} entries found
       </span>
     </div>

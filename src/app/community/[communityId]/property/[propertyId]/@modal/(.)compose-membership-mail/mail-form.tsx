@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { InputEmail } from '~/view/base/input-email';
 import { mentionClass } from './editor-util';
 import { TextEditor } from './text-editor';
@@ -11,7 +11,7 @@ interface Props {
 
 export const MailForm: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className, 'flex flex-col gap-2')}>
+    <div className={twMerge('flex flex-col gap-2', className)}>
       <ToSelect />
       <InputEmail controlName="defaultSetting.membershipEmail.cc" label="Cc" />
       <TextEditor

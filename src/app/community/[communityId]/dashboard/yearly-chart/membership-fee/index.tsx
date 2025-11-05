@@ -40,12 +40,12 @@ export const MembershipFee: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="font-bold text-md">{`${year} Membership Fee`}</p>
+          <p className="text-md font-bold">{`${year} Membership Fee`}</p>
         </div>
       </CardHeader>
       <CardBody>
         <Skeleton
-          className="rounded-lg min-h-[400px]"
+          className="min-h-[400px] rounded-lg"
           aria-label="skeleton"
           isLoaded={!isLoading}
         >

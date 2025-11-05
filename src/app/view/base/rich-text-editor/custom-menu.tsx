@@ -52,8 +52,8 @@ export const CustomMenuItem = React.forwardRef<
     return (
       <li
         ref={ref}
-        className={cn('px-2 py-1 text-sm', 'rounded-small cursor-pointer', {
-          'text-default-foreground bg-default': selected,
+        className={cn('px-2 py-1 text-sm', 'cursor-pointer rounded-small', {
+          'bg-default text-default-foreground': selected,
         })}
         {...props}
       >

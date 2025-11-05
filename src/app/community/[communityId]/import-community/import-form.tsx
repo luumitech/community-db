@@ -24,7 +24,7 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
   const msg = useCheckMethodRequirement();
 
   return (
-    <div className={cn(className, 'flex flex-col h-full gap-2')}>
+    <div className={cn(className, 'flex h-full flex-col gap-2')}>
       <Tooltip
         classNames={{
           base: cn({

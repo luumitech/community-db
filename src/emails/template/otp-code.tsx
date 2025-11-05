@@ -30,9 +30,9 @@ export const OtpCode: React.FC<Props> = ({ email, otp }) => {
           <Container
             className={cn(
               'bg-foreground',
-              'border-1 border-x-gray-200 rounded-md shadow-[0_5px_10px_rgba(20,50,70,.2)]',
-              'mt-5 max-w-[360px] mx-auto',
-              'py-12 px-4'
+              'rounded-md border-1 border-x-gray-200 shadow-[0_5px_10px_rgba(20,50,70,.2)]',
+              'mx-auto mt-5 max-w-[360px]',
+              'px-4 py-12'
             )}
           >
             <Img
@@ -42,26 +42,26 @@ export const OtpCode: React.FC<Props> = ({ email, otp }) => {
               height="64"
               alt="Community DB Logo"
             />
-            <Text className="text-3xl text-center font-extrabold">
+            <Text className="text-center text-3xl font-extrabold">
               {appTitle}
             </Text>
-            <Heading className="text-lg font-bold text-center">
+            <Heading className="text-center text-lg font-bold">
               Let&apos;s get you signed in
             </Heading>
-            <Text className="text-center mt-8 mb-0">
+            <Text className="mb-0 mt-8 text-center">
               Please use this code to login:
             </Text>
             <Section
               className={cn(
                 'bg-[rgba(0,0,0,.05)]',
-                'rounded-lg my-0',
+                'my-0 rounded-lg',
                 'align-middle',
                 'w-[280px]'
               )}
             >
               <Text
                 className={cn(
-                  'text-black font-bold text-3xl',
+                  'text-3xl font-bold text-black',
                   'tracking-wide',
                   'py-2',
                   'my-auto',
@@ -71,11 +71,11 @@ export const OtpCode: React.FC<Props> = ({ email, otp }) => {
                 {otp}
               </Text>
             </Section>
-            <Text className="text-[10px] text-center mt-0">
+            <Text className="mt-0 text-center text-[10px]">
               Please note this code is only valid for 5 minutes.
             </Text>
 
-            <Text className="text-sm text-center">
+            <Text className="text-center text-sm">
               Not expecting this email? You can safely ignore this email.
             </Text>
 

@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   className?: string;
@@ -21,7 +22,7 @@ export const DisplayCaption: React.FC<Props> = ({ className, caption }) => {
       )}
     >
       <span
-        className={cn(
+        className={twMerge(
           'text-center text-xl font-bold text-background',
           'p-3',
           className

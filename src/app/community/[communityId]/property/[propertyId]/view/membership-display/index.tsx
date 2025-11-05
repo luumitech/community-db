@@ -28,7 +28,7 @@ export const MembershipDisplay: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={className}>
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
+      <div className="mb-4 grid gap-4 md:grid-cols-2">
         <MembershipStatus property={entry} />
         <CurrentEvent />
         {/* Notes section always taks full row */}

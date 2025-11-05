@@ -43,12 +43,12 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
       onSubmit={handleSubmit(onSendOtp)}
     >
       <ModalHeader className="flex flex-col items-center gap-2">
-        <span className="text-3xl font-semibold ">Enter your email</span>
+        <span className="text-3xl font-semibold">Enter your email</span>
         <p className="text-center text-sm font-normal text-default-400">
           We will send an OTP code to your email
         </p>
       </ModalHeader>
-      <ModalBody className="flex flex-col gap-2 items-center">
+      <ModalBody className="flex flex-col items-center gap-2">
         <Input
           isRequired
           controlName="email"

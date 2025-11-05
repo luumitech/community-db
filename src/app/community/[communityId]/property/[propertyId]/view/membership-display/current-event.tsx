@@ -18,7 +18,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
     <Card className={className}>
       <CardHeader>Current Event</CardHeader>
       <CardBody>
-        <div className="flex gap-2 items-start">
+        <div className="flex items-start gap-2">
           <EventNameSelect />
           <Button
             as={Link}

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { cn, Divider } from '@heroui/react';
+import { Divider } from '@heroui/react';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -71,7 +71,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   const isLoading = result.loading || contactInfo == null;
 
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <FilterSelect
         isDisabled={isLoading}
         filters={filter}

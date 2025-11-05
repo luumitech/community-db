@@ -24,7 +24,7 @@ export default function ThirdPartyIntegration(props: RouteArgs) {
     <>
       <MoreMenu omitKeys={['thirdPartyIntegration']} />
       <PageContent
-        className="flex flex-col h-main-height overflow-hidden"
+        className="flex h-main-height flex-col overflow-hidden"
         communityId={communityId}
         defaultTab={tab}
       />

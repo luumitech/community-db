@@ -2,8 +2,8 @@ import { useQuery } from '@apollo/client';
 import { Autocomplete, AutocompleteItem, Spinner } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { Occupant } from '~/community/[communityId]/property-list/occupant';
-import { PropertyAddress } from '~/community/[communityId]/property-list/property-address';
+import { Occupant } from '~/community/[communityId]/property-list/property-card/occupant';
+import { PropertyAddress } from '~/community/[communityId]/property-list/property-card/property-address';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -41,10 +41,12 @@ const ITEM_KEY_EMPTY = 'empty';
 const ITEM_KEY_SHOWALL = 'showall';
 
 interface Props {
+  className?: string;
   currentPropertyId: string;
 }
 
 export const PropertyAutocomplete: React.FC<Props> = ({
+  className,
   currentPropertyId,
 }) => {
   const dispatch = useDispatch();
@@ -136,7 +138,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     }
     return (
       <AutocompleteItem
-        className="text-primary italic"
+        className="italic text-primary"
         key={ITEM_KEY_SHOWALL}
         textValue={ITEM_KEY_SHOWALL}
         href={appPath('propertyList', { path: { communityId } })}
@@ -149,6 +151,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
 
   return (
     <Autocomplete
+      className={className}
       aria-label="Search Address or Member Name"
       placeholder="Search Address or Member Name"
       startContent={<Icon icon="search" />}

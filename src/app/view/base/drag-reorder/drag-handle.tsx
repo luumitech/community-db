@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { FlatButton } from '~/view/base/flat-button';
 import { useReorderItemContext } from './reorder-item';
 
@@ -13,7 +13,7 @@ export const DragHandle: React.FC<Props> = ({ className }) => {
 
   return (
     <FlatButton
-      className={cn(
+      className={twMerge(
         'text-foreground-500',
         'cursor-grab active:cursor-grabbing',
         className

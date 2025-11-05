@@ -79,7 +79,7 @@ export const MembershipSource: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="font-bold text-md">{`${year} Membership Source`}</p>
+          <p className="text-md font-bold">{`${year} Membership Source`}</p>
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">

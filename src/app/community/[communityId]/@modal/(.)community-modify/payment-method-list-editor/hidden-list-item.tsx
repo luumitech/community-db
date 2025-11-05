@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { FlatButton } from '~/view/base/flat-button';
 
 interface Props {
@@ -17,15 +17,15 @@ export const HiddenListItem: React.FC<React.PropsWithChildren<Props>> = ({
 }) => {
   return (
     <div
-      className={cn(
-        className,
-        'grid col-span-full grid-cols-subgrid',
-        'mx-3 items-center h-6'
+      className={twMerge(
+        'col-span-full grid grid-cols-subgrid',
+        'mx-3 h-6 items-center',
+        className
       )}
       role="row"
     >
       <div />
-      <span className="line-through text-sm">{label}</span>
+      <span className="text-sm line-through">{label}</span>
       <FlatButton icon="undo" onClick={() => onRemove?.(label)} />
     </div>
   );

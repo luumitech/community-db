@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import { BarCustomLayerProps, type BarDatum } from '@nivo/bar';
 import React from 'react';
 import { useTooltip } from '~/view/base/chart/tooltip';
@@ -38,7 +37,7 @@ export function barSelectable<T extends BarDatum>(
           <rect
             width="100%"
             height="100%"
-            className={cn('fill-transparent')}
+            className={'fill-transparent'}
             {...(renderToolTip != null && {
               onMouseEnter: (evt) =>
                 tip.showTooltipFromEvent(renderToolTip(bar.data.data), evt),

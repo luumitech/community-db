@@ -31,7 +31,7 @@ export const MembershipFeeTable: React.FC<Props> = ({
             <div
               className={cn(
                 'col-span-full h-8',
-                'justify-self-center content-center'
+                'content-center justify-self-center'
               )}
             >
               <div className="text-sm text-foreground-500">

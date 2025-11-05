@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
-import { cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { FlatButton } from '~/view/base/flat-button';
@@ -64,7 +64,7 @@ export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
 
   return (
     <FlatButton
-      className={cn(className, 'text-danger')}
+      className={twMerge('text-danger', className)}
       icon="trash"
       tooltip="Remove Access"
       onClick={onDelete}

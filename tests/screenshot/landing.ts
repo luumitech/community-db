@@ -85,17 +85,19 @@ test.describe.serial('Take @screenshot for landing screen', () => {
   });
 
   test('Property Details', async ({ theme }) => {
-    const rows = page.getByLabel('Property Table').locator('tbody > tr');
+    const rows = page.getByLabel('Property Table').getByRole('row');
     const membersInCurYear = rows
       // Members name is non empty
       .filter({
-        has: page.locator('td:nth-child(2)').filter({ hasText: /./ }),
+        has: page.getByRole('listitem'),
       })
-      // Current year has checkmark
+      // Current membership year has checkmark
       .filter({
-        has: page.locator('td:nth-child(3) svg'),
-      });
-    await membersInCurYear.nth(0).click();
+        has: page.locator('svg'),
+      })
+      .first();
+    await waitUntilStable(membersInCurYear);
+    await membersInCurYear.click();
 
     await expect(page.getByText('Membership Status')).not.toBeEmpty();
     await takeScreenshot(page, theme, 'property-detail');

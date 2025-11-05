@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
-import { cn, Link } from '@heroui/react';
+import { Link } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useDeleteAccount } from '~/custom-hooks/auth';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -42,7 +43,7 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
     return (
       <div className="py-3">
         <p>You are the sole administrator for the following communities:</p>
-        <ul className="list-disc pl-6 pb-3">
+        <ul className="list-disc pb-3 pl-6">
           {communityList.map(({ id, name }) => {
             return (
               <li key={id}>
@@ -69,18 +70,18 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
 
   return (
     <fieldset
-      className={cn(
+      className={twMerge(
         'flex flex-col gap-2',
         'border-t-2 border-danger',
         className
       )}
     >
-      <legend className="text-sm text-danger m-auto px-4">
+      <legend className="m-auto px-4 text-sm text-danger">
         Danger Section
       </legend>
       <PreRequsite />
       <Button
-        className="self-start"
+        className="flex-shrink-0 self-start"
         color="danger"
         endContent={<Icon icon="trash" />}
         isLoading={result.loading}
@@ -89,7 +90,7 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
         confirmationArg={{
           body: (
             <>
-              <p className="text-danger font-semibold">
+              <p className="font-semibold text-danger">
                 This will permanently delete your account and all of its data.
                 You will not be able to reactivate this account.
               </p>

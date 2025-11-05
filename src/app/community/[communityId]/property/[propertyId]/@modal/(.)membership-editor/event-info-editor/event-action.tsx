@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { FlatButton } from '~/view/base/flat-button';
 import { type EventAttendedListFieldArray } from '../use-hook-form';
 
@@ -18,7 +18,7 @@ export const EventAction: React.FC<Props> = ({
 
   return (
     <FlatButton
-      className={cn(className, 'text-danger')}
+      className={twMerge('text-danger', className)}
       icon="trash"
       tooltip="Remove Event"
       onClick={() => remove(eventIdx)}

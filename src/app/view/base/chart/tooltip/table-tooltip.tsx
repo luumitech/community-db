@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   className?: string;
@@ -15,9 +15,10 @@ export const TableTooltip: React.FC<Props> = ({ className, title, rows }) => {
 
   return (
     <div
-      className={cn(
-        className,
-        'bg-white dark:bg-gray-800 text-xs rounded-sm p-2 shadow-md'
+      className={twMerge(
+        'rounded-sm p-2 text-xs shadow-md',
+        'bg-white dark:bg-gray-800',
+        className
       )}
     >
       {!!title && title}
@@ -28,7 +29,7 @@ export const TableTooltip: React.FC<Props> = ({ className, title, rows }) => {
               {row.map((column, j) => (
                 <td
                   key={j}
-                  className="align-middle py-[3px] px-[5px] text-nowrap"
+                  className="text-nowrap px-[5px] py-[3px] align-middle"
                   colSpan={j === row.length - 1 ? numCol - j : 1}
                 >
                   {column}

@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { DatePicker } from '~/view/base/date-picker';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 export const EventDatePicker: React.FC<Props> = ({ className }) => {
   return (
     <DatePicker
-      className={cn(className, 'max-w-xs')}
+      className={twMerge('max-w-xs', className)}
       controlName="event.eventDate"
       aria-label="Event Date"
       variant="underlined"

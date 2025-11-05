@@ -72,14 +72,14 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
       // onSubmit={handleSubmit(doSignIn)}
     >
       <ModalHeader className="flex flex-col items-center gap-2">
-        <span className="text-3xl font-semibold ">Verify your email</span>
+        <span className="text-3xl font-semibold">Verify your email</span>
         <p className="text-center text-sm font-normal text-default-400">
           We&apos;ve sent an OTP code to <span className="italic">{email}</span>
           <br />
           Enter your OTP code here
         </p>
       </ModalHeader>
-      <ModalBody className="flex flex-col gap-2 items-center">
+      <ModalBody className="flex flex-col items-center gap-2">
         <InputOtp
           classNames={{
             // width of 6 digit OTP input

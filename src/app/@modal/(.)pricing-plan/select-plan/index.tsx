@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
@@ -13,11 +12,11 @@ interface Props {
 export const SelectPlan: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
-      <div className="grid grid-rows-[repeat(4,_auto)] grid-cols-2 divide-x">
+      <div className="grid grid-cols-2 grid-rows-[repeat(4,_auto)] divide-x">
         <FreePlan />
         <PremiumPlan />
       </div>
-      <div className="flex items-center justify-center mt-4">
+      <div className="mt-4 flex items-center justify-center">
         <p>
           Need more capabilities?{' '}
           <Link

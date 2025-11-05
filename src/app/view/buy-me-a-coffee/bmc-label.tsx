@@ -1,6 +1,6 @@
-import { cn } from '@heroui/react';
 import { Cookie } from 'next/font/google';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 const cookie = Cookie({
   subsets: ['latin'],
@@ -13,7 +13,7 @@ interface Props {
 
 export const BmcLabel: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn(className, cookie.className, 'text-xl')}>
+    <div className={twMerge('text-xl', cookie.className, className)}>
       Buy me a coffee
     </div>
   );

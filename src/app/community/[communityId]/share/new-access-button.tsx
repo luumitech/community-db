@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
@@ -19,7 +18,7 @@ export const NewAccessButton: React.FC<Props> = ({
   const modalControl = useModalControl();
 
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <Button
         color="primary"
         endContent={<Icon icon="person-add" />}

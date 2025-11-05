@@ -1,7 +1,7 @@
-import { cn } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { type MapContainerProps } from 'react-leaflet';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * Default to Toronto because that's where I live!
@@ -38,7 +38,7 @@ export const MapContainer: React.FC<Props> = ({
   return (
     <RLMapContainer
       // z-index is used so other modals don't show behind the map
-      className={cn(className, 'z-0')}
+      className={twMerge('z-0', className)}
       center={DEFAULT_POS}
       {...props}
     >

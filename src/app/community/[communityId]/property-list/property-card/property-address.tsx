@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 
 const AddressFragment = graphql(/* GraphQL */ `
@@ -17,5 +17,7 @@ interface Props {
 export const PropertyAddress: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(AddressFragment, fragment);
 
-  return <div className={cn(className, 'truncate')}>{entry.address ?? ''}</div>;
+  return (
+    <div className={twMerge('truncate', className)}>{entry.address ?? ''}</div>
+  );
 };

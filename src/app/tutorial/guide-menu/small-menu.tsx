@@ -33,7 +33,7 @@ export const SmallMenu: React.FC<Props> = ({ className }) => {
         </Button>
         <div
           className={cn(
-            'text-ellipsis overflow-hidden whitespace-nowrap',
+            'overflow-hidden text-ellipsis whitespace-nowrap',
             '[writing-mode:vertical-rl]'
           )}
         >

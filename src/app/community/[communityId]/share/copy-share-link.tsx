@@ -1,4 +1,4 @@
-import { cn, Input } from '@heroui/react';
+import { Input } from '@heroui/react';
 import { env } from 'next-runtime-env';
 import React from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
@@ -22,7 +22,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
   }, [communityId]);
 
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <div className="flex items-start gap-2">
         <Input
           variant="bordered"

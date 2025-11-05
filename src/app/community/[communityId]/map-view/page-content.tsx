@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -72,7 +72,7 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   }
 
   return (
-    <div className={cn(className, 'flex flex-col gap-3')}>
+    <div className={twMerge('flex flex-col gap-3', className)}>
       <PageProvider community={community}>
         <YearSelect
           selectedKeys={yearSelected != null ? [yearSelected.toString()] : []}

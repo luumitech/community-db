@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { PricePlan } from './price-plan';
 
 interface Props {
@@ -24,12 +24,12 @@ export const PricePlanWithDescription: React.FC<
 }) => {
   return (
     <article
-      className={cn(
-        className,
-        'grid grid-rows-subgrid row-span-4 gap-4',
+      className={twMerge(
+        'row-span-4 grid grid-rows-subgrid gap-4',
         // This is necessary to allow parent divider to render correctly
         '[&:not(:last-child)]:pr-6',
-        '[&:not(:first-child)]:pl-6'
+        '[&:not(:first-child)]:pl-6',
+        className
       )}
     >
       <PricePlan planName={planName} planCost={planCost} />

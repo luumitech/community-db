@@ -38,7 +38,7 @@ export const OccupantEditor: React.FC<Props> = ({
   return (
     <Card>
       <CardBody className="gap-2">
-        <div className="grid grid-cols-1 sm:grid-cols-6 gap-2" role="rowgroup">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-6" role="rowgroup">
           <Input
             className="sm:col-span-3"
             controlName={`${controlNamePrefix}.firstName`}
@@ -80,7 +80,7 @@ export const OccupantEditor: React.FC<Props> = ({
           })}
         </ReorderGroup>
         <Button
-          className="self-start"
+          className="flex-shrink-0 self-start"
           startContent={<Icon icon="add" />}
           variant="flat"
           onPress={() => {

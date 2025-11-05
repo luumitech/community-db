@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { useResizeObserver, useWindowSize } from 'usehooks-ts';
 
@@ -46,7 +45,7 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
       <div
         ref={divRef}
         // Postion the menu to the left of avatar menu in header
-        className="fixed z-50 flex gap-2 items-center top-3"
+        className="fixed top-3 z-50 flex items-center gap-2"
         style={{ left: leftPos }}
       >
         {children}

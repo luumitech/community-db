@@ -56,7 +56,7 @@ export const ExportForm: React.FC<Props> = ({ className, communityId }) => {
         onChange={setExportMethod}
       />
       <Button
-        className="self-start"
+        className="flex-shrink-0 self-start"
         onPress={onDownload}
         endContent={<Icon icon="download" />}
         color="primary"
@@ -66,7 +66,7 @@ export const ExportForm: React.FC<Props> = ({ className, communityId }) => {
         Download {exportResult?.fn}
       </Button>
       {pending ? (
-        <div className="flex flex-col grow mb-4 gap-3">
+        <div className="mb-4 flex grow flex-col gap-3">
           <Skeleton className="h-12 rounded-lg" />
           <Skeleton className="grow rounded-lg" />
         </div>

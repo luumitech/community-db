@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import {
   ColumnDef,
   flexRender,
@@ -12,6 +11,7 @@ import {
   useVirtualizer,
 } from '@tanstack/react-virtual';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * Classes to be applied to sticky column Since we want to make first column
@@ -97,10 +97,10 @@ export function XlsxSheetView<T>({
   return (
     <div
       ref={tableContainerRef}
-      className={cn(className, 'flex-grow overflow-auto relative')}
+      className={twMerge('relative flex-grow overflow-auto', className)}
     >
       <table data-testid="export-xlsx">
-        <thead className="grid sticky top-0 bg-background z-10">
+        <thead className="sticky top-0 z-10 grid bg-background">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="flex w-full">
               {virtualPaddingLeft ? (
@@ -112,7 +112,7 @@ export function XlsxSheetView<T>({
                 return (
                   <th
                     key={header.id}
-                    className={cn('flex', vc.index === 0 && pinningClass)}
+                    className={twMerge('flex', vc.index === 0 && pinningClass)}
                     style={{ width: header.getSize() }}
                   >
                     <div>
@@ -132,7 +132,7 @@ export function XlsxSheetView<T>({
           ))}
         </thead>
         <tbody
-          className="flex relative"
+          className="relative flex"
           style={{
             // Tells scrollbar how big the table is
             height: `${rowVirtualizer.getTotalSize()}px`,
@@ -147,7 +147,7 @@ export function XlsxSheetView<T>({
                 data-index={virtualRow.index}
                 ref={(node) => rowVirtualizer.measureElement(node)}
                 key={row.id}
-                className="flex absolute w-full"
+                className="absolute flex w-full"
                 style={{
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
@@ -161,7 +161,7 @@ export function XlsxSheetView<T>({
                   return (
                     <td
                       key={cell.id}
-                      className={cn(
+                      className={twMerge(
                         'truncate whitespace-break-spaces',
                         vc.index === 0 && pinningClass
                       )}

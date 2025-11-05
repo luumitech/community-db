@@ -1,6 +1,6 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { useMap } from 'react-leaflet';
+import { twMerge } from 'tailwind-merge';
 import { useMapContext } from '~/view/base/map';
 
 const POSITION_CLASSES: Record<L.ControlPosition, string> = {
@@ -72,7 +72,7 @@ export const ToolbarControl: React.FC<React.PropsWithChildren<Props>> = ({
     <div
       ref={controlContainerRef}
       // Add leaflet-control classname
-      className={cn(className, 'leaflet-control')}
+      className={twMerge('leaflet-control', className)}
     >
       {children}
     </div>

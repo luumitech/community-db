@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { Select, SelectItem } from '~/view/base/select';
 import { useHookFormContext } from '../use-hook-form';
 import { YearItemLabel, yearSelectItems } from '../year-select-items';
@@ -27,7 +27,7 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
   return (
     <Select
       classNames={{
-        base: cn(className, 'max-w-xs'),
+        base: twMerge('max-w-xs', className),
         label: 'whitespace-nowrap self-center',
       }}
       controlName="membership.year"

@@ -19,7 +19,7 @@ export const ContactView: React.FC<Props> = ({
   return (
     <>
       <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
-      <div className="flex-grow overflow-auto relative">
+      <div className="relative flex-grow overflow-auto">
         <TableView contactList={contactList} isLoading={isLoading} />
       </div>
     </>

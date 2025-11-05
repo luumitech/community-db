@@ -71,7 +71,7 @@ export function barTotal<T extends BarDatum>(
         <text
           key={firstBar.data.indexValue}
           className={cn(
-            'font-sans font-bold text-[11px]',
+            'font-sans text-[11px] font-bold',
             'fill-[rgb(17,24,28)] dark:fill-[rgb(161,161,170)]'
           )}
           x={x}

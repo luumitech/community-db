@@ -20,9 +20,9 @@ export default function Dashboard(props: RouteArgs) {
   const { yearSelected } = useSelector((state) => state.ui);
 
   return (
-    <>
+    <div className="mt-page-top">
       <MoreMenu omitKeys={['communityDashboard']} />
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
+      <div className="mb-4 grid gap-4 md:grid-cols-2">
         <MemberCountChart
           // Top chart always occupy first row
           className="col-span-full"
@@ -34,6 +34,6 @@ export default function Dashboard(props: RouteArgs) {
           <YearlyChart communityId={communityId} year={yearSelected} />
         )}
       </div>
-    </>
+    </div>
   );
 }

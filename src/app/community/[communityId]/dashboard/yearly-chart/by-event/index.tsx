@@ -89,12 +89,12 @@ export const ByEvent: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="font-bold text-md">{`${year} Event Details`}</p>
+          <p className="text-md font-bold">{`${year} Event Details`}</p>
         </div>
       </CardHeader>
       <CardBody>
         <Skeleton
-          className="flex flex-col rounded-lg min-h-[400px]"
+          className="flex min-h-[400px] flex-col rounded-lg"
           aria-label="skeleton"
           isLoaded={!isLoading}
         >

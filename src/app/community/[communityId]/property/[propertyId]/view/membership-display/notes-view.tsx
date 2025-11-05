@@ -19,7 +19,7 @@ export const NotesView: React.FC<Props> = ({ className, notes }) => {
         Notes
         <Button
           as={Link}
-          className="absolute top-2 right-2"
+          className="absolute right-2 top-2"
           color="primary"
           variant="bordered"
           size="sm"

@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 
 interface Props {
@@ -12,9 +11,9 @@ export const Item: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <h2 className="text-xl font-semibold">{title}</h2>
-      <div className="text-sm mt-2">{children}</div>
+      <div className="mt-2 text-sm">{children}</div>
     </div>
   );
 };

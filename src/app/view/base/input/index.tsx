@@ -47,7 +47,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 'opacity-100': isReadOnly,
               }),
               inputWrapper: cn(classNames?.inputWrapper, {
-                'border-none shadow-none bg-transparent': isReadOnly,
+                'border-none bg-transparent shadow-none': isReadOnly,
               }),
             }}
             defaultValue={field.value ?? ''}

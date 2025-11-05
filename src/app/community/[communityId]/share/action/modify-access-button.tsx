@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
 import { AccessEntry } from '../_type';
@@ -16,7 +15,7 @@ export const ModifyAccessButton: React.FC<Props> = ({
   const modalControl = useModalControl();
 
   return (
-    <div className={cn(className)}>
+    <div className={className}>
       <FlatButton
         className="text-primary"
         icon="edit"

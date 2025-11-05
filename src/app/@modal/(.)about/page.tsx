@@ -33,9 +33,9 @@ export default function About() {
           {appTitle}
         </ModalHeader>
         <ModalBody>
-          <div className="grid grid-cols-[repeat(2,max-content)] gap-y-2 gap-x-4">
+          <div className="grid grid-cols-[repeat(2,max-content)] gap-x-4 gap-y-2">
             <div className="italic">Version</div>
-            <div className="font-mono text-ellipsis overflow-hidden">
+            <div className="overflow-hidden text-ellipsis font-mono">
               {/*
                * Not using next-runtime-env because these variables
                * are only available during build time during docker
@@ -44,7 +44,7 @@ export default function About() {
               {process.env.NEXT_PUBLIC_APP_VERSION}
             </div>
             <div className="italic">Branch</div>
-            <div className="font-mono text-ellipsis overflow-hidden">
+            <div className="overflow-hidden text-ellipsis font-mono">
               {/*
                * Not using next-runtime-env because these variables
                * are only available during build time during docker
@@ -53,7 +53,7 @@ export default function About() {
               {process.env.NEXT_PUBLIC_GIT_BRANCH}
             </div>
             <div className="italic">Commit</div>
-            <div className="font-mono text-ellipsis overflow-hidden">
+            <div className="overflow-hidden text-ellipsis font-mono">
               {/*
                * Not using next-runtime-env because these variables
                * are only available during build time during docker

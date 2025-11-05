@@ -93,7 +93,7 @@ export default function ImportCommunity(props: RouteArgs) {
       } catch (err) {
         const errMsg =
           err instanceof Error ? (
-            <div className="whitespace-pre-wrap overflow-auto max-h-[200px]">
+            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
               {err.message}
             </div>
           ) : (
@@ -110,7 +110,7 @@ export default function ImportCommunity(props: RouteArgs) {
       <MoreMenu omitKeys={['communityImport']} />
       <PageProvider>
         <Form
-          className="flex flex-col h-main-height"
+          className="flex h-main-height flex-col"
           onSubmit={handleSubmit(onImport)}
         >
           <ImportForm />

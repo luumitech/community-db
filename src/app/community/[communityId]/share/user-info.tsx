@@ -19,7 +19,7 @@ interface Props {
 export const UserInfo: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(UserInfoFragment, fragment);
   return (
-    <div className={cn(className, 'flex items-center truncate gap-1')}>
+    <div className={cn(className, 'flex items-center gap-1 truncate')}>
       <span>{entry.user.email ?? ''}</span>
       {!!fragment.isSelf && (
         <Chip radius="sm" size="sm" variant="bordered" color="primary">

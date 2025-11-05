@@ -31,7 +31,7 @@ export const Header: React.FC<Props> = ({}) => {
   const menuItems = useNavMenu();
 
   return (
-    <header className="sticky z-50 top-0">
+    <header className="sticky top-0 z-50 h-header-height">
       <Navbar
         maxWidth="full"
         isMenuOpen={isMenuOpen}
@@ -65,7 +65,7 @@ export const Header: React.FC<Props> = ({}) => {
               <AppLogo priority size={36} />
             </div>
             {/* Hide appTitle in small layout */}
-            <span className="max-sm:hidden max-w-min leading-5 whitespace-normal text-center text-balance font-bold">
+            <span className="max-w-min whitespace-normal text-balance text-center font-bold leading-5 max-sm:hidden">
               {appTitle}
             </span>
           </Link>

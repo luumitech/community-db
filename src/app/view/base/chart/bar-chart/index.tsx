@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import {
   BarTotals,
   ResponsiveBar,
@@ -7,6 +6,7 @@ import {
   type ResponsiveBarSvgProps,
 } from '@nivo/bar';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { COLOR_SCHEME } from '../item-color';
 import { useNivoTheme } from '../theme';
 
@@ -63,7 +63,7 @@ export function BarChart<T extends BarDatum>({
   );
 
   return (
-    <div className={cn(className, 'h-full')}>
+    <div className={twMerge('h-full', className)}>
       <ResponsiveBar
         onClick={customOnClick}
         theme={theme}

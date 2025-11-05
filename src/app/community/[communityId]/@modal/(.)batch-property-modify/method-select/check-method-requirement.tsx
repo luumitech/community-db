@@ -23,7 +23,7 @@ export function useCheckMethodRequirement() {
       case GQL.BatchModifyMethod.AddGps:
         if (!hasGeoapifyApiKey) {
           return (
-            <p className="text-danger text-sm">
+            <p className="text-sm text-danger">
               This modification type requires a valid Geoapify API key. To
               enable this feature, please enter your API key in the{' '}
               <Link

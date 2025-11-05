@@ -1,4 +1,3 @@
-import { cn } from '@heroui/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
@@ -26,9 +25,9 @@ export const Item: React.FC<React.PropsWithChildren<Props>> = ({
   }, [anchorId, pathname]);
 
   return (
-    <div ref={ref} className={cn(className)} id={anchorId}>
+    <div ref={ref} className={className} id={anchorId}>
       <h2 className="text-xl font-semibold">{title}</h2>
-      <div className="text-sm mt-2">{children}</div>
+      <div className="mt-2 text-sm">{children}</div>
     </div>
   );
 };

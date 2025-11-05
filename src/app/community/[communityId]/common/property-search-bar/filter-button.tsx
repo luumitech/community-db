@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 
@@ -14,9 +15,12 @@ export const FilterButton: React.FC<Props> = ({ className, openDrawer }) => {
   return (
     <FlatButton
       icon="filter"
-      className={cn({
-        'text-success': isFilterSpecified,
-      })}
+      className={twMerge(
+        cn({
+          'text-success': isFilterSpecified,
+        }),
+        className
+      )}
       onClick={openDrawer}
     />
   );

@@ -1,4 +1,4 @@
-import { cn, Listbox, ListboxItem } from '@heroui/react';
+import { Listbox, ListboxItem } from '@heroui/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { GUIDE_ITEMS, type GuideItem } from './guide-items';

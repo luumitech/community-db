@@ -1,6 +1,6 @@
 'use client';
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Input } from '~/view/base/input';
@@ -19,11 +19,14 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
 
   return (
     <div
-      className={cn(className, 'grid grid-cols-1 sm:grid-cols-2 gap-4 mx-4')}
+      className={twMerge(
+        'mx-4 grid grid-cols-1 gap-4 sm:grid-cols-2',
+        className
+      )}
     >
       <div className="flex flex-col gap-2">
         {!hasGeoapifyApiKey && (
-          <p className="text-warning text-sm">
+          <p className="text-sm text-warning">
             A valid Geoapify API key is required for address lookup. To enable
             this feature, please enter your API key in the{' '}
             <Link
@@ -42,7 +45,7 @@ export const AddressEditor: React.FC<Props> = ({ className }) => {
           <Map className="h-full min-h-[300px]" onStartLookup={onStartLookup} />
         </MapContextProvider>
       </div>
-      <div className="flex flex-col grow gap-2">
+      <div className="flex grow flex-col gap-2">
         <Input
           className={className}
           controlName="address"

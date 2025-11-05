@@ -1,5 +1,5 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import {
   EventSelect,
   GpsSelect,
@@ -18,7 +18,7 @@ export const FilterSelect: React.FC<Props> = ({
   withGps,
 }) => {
   return (
-    <div className={cn(className, 'flex flex-col gap-4')}>
+    <div className={twMerge('flex flex-col gap-4', className)}>
       <p>
         Use filters to select a property group for changes. If no filter is
         selected, changes apply to all properties:

@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
 import type { ContactInfoEntry, OccupantEntry } from './_type';
@@ -19,10 +20,14 @@ function formatPhoneNumber(phoneNumber: string) {
   return !match ? phoneNumber : `(${match[1]}) ${match[2]}-${match[3]}`;
 }
 
-const classNames = {
-  name: 'col-span-1 sm:col-span-2',
-  optOut: 'col-span-1',
+// variable name must be `className` for tailwindcss intellisense to work
+const className = {
+  container: 'grid grid-cols-2 gap-2 sm:grid-cols-7',
+  inheritContainer: 'col-span-full grid grid-cols-subgrid',
+  name: 'sm:col-span-2',
   detail: 'col-span-2 sm:col-span-4',
+  // Always last column
+  optOut: '-col-start-1 row-start-1',
 };
 
 interface Props {
@@ -30,27 +35,42 @@ interface Props {
   occupantList: OccupantEntry[];
 }
 
-export const OccupantView: React.FC<Props> = ({ className, occupantList }) => {
+export const OccupantView: React.FC<Props> = ({ occupantList, ...props }) => {
   return (
-    <div className={className}>
-      <div className="grid grid-cols-2 sm:grid-cols-7 gap-2" role="rowgroup">
-        <header
-          className={cn(
-            'grid col-span-full grid-cols-subgrid items-center',
-            'text-foreground-500 bg-default-100 text-tiny font-semibold',
-            'rounded-lg',
-            'h-14 sm:h-8 px-3 py-1 sm:py-0'
-          )}
-        >
-          <div className={classNames.name}>Name</div>
-          <div className={classNames.optOut}>Opt out</div>
-          <div className={classNames.detail}>Details</div>
-        </header>
+    <div className={props.className}>
+      <div className={className.container} role="rowgroup">
+        <OccupantHeader />
         {occupantList.map((occupant, idx) => {
           return <Occupant key={idx} entry={occupant} />;
         })}
       </div>
     </div>
+  );
+};
+
+interface OccupantHeaderProps {
+  className?: string;
+}
+
+const OccupantHeader: React.FC<OccupantHeaderProps> = ({ ...props }) => {
+  return (
+    <header
+      className={twMerge(
+        className.inheritContainer,
+        'items-center',
+        'bg-default-100 font-semibold text-foreground-500 text-tiny',
+        'rounded-lg',
+        'h-8 px-3 py-0',
+        // Hide header in small media query
+        'hidden sm:grid',
+        props.className
+      )}
+      role="rowheader"
+    >
+      <div className={className.name}>Name</div>
+      <div className={className.detail}>Contact Info</div>
+      <div className={className.optOut}>Opt out</div>
+    </header>
   );
 };
 
@@ -64,30 +84,31 @@ const Occupant: React.FC<OccupantProps> = ({ entry }) => {
   return (
     <div
       className={cn(
-        'grid col-span-full grid-cols-subgrid items-center gap-2',
-        'text-foreground text-small font-normal',
+        className.inheritContainer,
+        'items-center gap-2',
+        'font-normal text-foreground text-small',
         'px-4'
       )}
     >
       <div
-        className={cn(
+        className={twMerge(
           /**
            * Bold the name in small media size, so it's easier to differentiate
            * between rows
            */
           'font-semibold sm:font-normal',
-          classNames.name
+          className.name
         )}
       >
         {firstName} {lastName}
       </div>
-      <div className={classNames.optOut}>
-        <OptOut entry={entry} />
-      </div>
-      <div className={cn(classNames.detail, 'flex flex-wrap gap-x-3')}>
+      <div className={twMerge('flex flex-wrap gap-x-3', className.detail)}>
         {(infoList ?? []).map((info, idx) => {
           return <ContactInfo key={idx} entry={info} />;
         })}
+      </div>
+      <div className={className.optOut}>
+        <OptOut entry={entry} />
       </div>
     </div>
   );
