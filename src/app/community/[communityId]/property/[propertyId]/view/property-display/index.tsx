@@ -39,7 +39,7 @@ export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
   }, [canEdit]);
 
   return (
-    <PropertyCard className={className} property={entry}>
+    <PropertyCard className={className} property={entry} showHeader>
       <EditMembership />
     </PropertyCard>
   );

@@ -20,7 +20,7 @@ export default function Dashboard(props: RouteArgs) {
   const { yearSelected } = useSelector((state) => state.ui);
 
   return (
-    <>
+    <div className="mt-page-top">
       <MoreMenu omitKeys={['communityDashboard']} />
       <div className="mb-4 grid gap-4 md:grid-cols-2">
         <MemberCountChart
@@ -34,6 +34,6 @@ export default function Dashboard(props: RouteArgs) {
           <YearlyChart communityId={communityId} year={yearSelected} />
         )}
       </div>
-    </>
+    </div>
   );
 }

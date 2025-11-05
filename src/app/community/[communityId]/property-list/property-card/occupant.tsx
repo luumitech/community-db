@@ -32,10 +32,17 @@ export const Occupant: React.FC<Props> = ({
     })
     .filter((name) => !R.isEmpty(name));
 
+  if (nameList.length === 0) {
+    return null;
+  }
+
   return (
-    <div className={twMerge('flex flex-wrap items-center gap-2', className)}>
+    <div
+      className={twMerge('flex flex-wrap items-center gap-2', className)}
+      role="list"
+    >
       {nameList.map((name, idx) => (
-        <Chip key={idx} size="sm" {...props}>
+        <Chip key={idx} size="sm" role="listitem" {...props}>
           {name}
         </Chip>
       ))}

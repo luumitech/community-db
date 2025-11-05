@@ -10,7 +10,7 @@ import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
 import { MoreMenu } from './more-menu';
-import { PropertyCard } from './property-card';
+import { PropertyCard, PropertyCardHeader } from './property-card';
 import { PropertySearchHeader } from './property-search-header';
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
@@ -118,11 +118,11 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
   return (
     <>
       {community && <MoreMenu community={community} />}
-      <PropertySearchHeader
-        className="sticky top-header-height z-50 mb-2 bg-background"
-        community={community}
-      />
-      <div className="mx-0.5 flex flex-col gap-2">
+      <div className="sticky top-header-height z-50 mb-2 bg-background">
+        <PropertySearchHeader className="mb-2" community={community} />
+        <PropertyCardHeader />
+      </div>
+      <div className="mx-0.5 flex flex-col gap-2" aria-label="Property Table">
         {rows.length > 0 &&
           rows.map((property) => (
             <PropertyCard

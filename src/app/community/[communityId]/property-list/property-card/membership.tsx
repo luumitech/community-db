@@ -1,5 +1,4 @@
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import { Icon } from '~/view/base/icon';
 
@@ -24,16 +23,13 @@ export const Membership: React.FC<Props> = ({ fragment, year }) => {
     (entry) => entry.year === year
   );
 
+  if (!membership?.isMember) {
+    return <div />;
+  }
+
   return (
-    <>
-      <span className="text-xs text-default-400">{`'${year % 100}`}</span>
-      {!!membership?.isMember ? (
-        <span className="text-xl text-success">
-          <Icon icon="checkmark" />
-        </span>
-      ) : (
-        <div />
-      )}
-    </>
+    <span className="m-auto text-xl text-success">
+      <Icon icon="checkmark" />
+    </span>
   );
 };

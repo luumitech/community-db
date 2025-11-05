@@ -40,7 +40,7 @@ export default function CommunitySelect() {
   }));
 
   return (
-    <div>
+    <div className="mt-page-top">
       <MoreMenu omitKeys={['communitySelect']} />
       <ListBox
         header="Select Community"

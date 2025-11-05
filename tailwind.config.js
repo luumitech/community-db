@@ -16,15 +16,18 @@ module.exports = {
       },
       spacing: {
         'header-height': 'var(--header-height)',
-        /**
-         * The available height in <main/>
-         *
-         * 0.5rem is the default page-top (assuming it is used)
-         */
-        'main-height': 'calc(100vh - var(--header-height) - 0.5rem)',
+        /** The available height in <main/> */
+        'main-height': 'calc(100vh - var(--header-height))',
         /** Default spacing used below header */
         'page-top': '0.5rem',
         'page-x': '0.5rem',
+      },
+      dropShadow: {
+        /**
+         * Add border around text to make text show more clearly in front of
+         * busy background
+         */
+        text: '0 1px 1px rgba(var(--background-end-rgb))',
       },
     },
   },

@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export default function TutorialLayout({ children }: LayoutProps) {
   return (
-    <div className="ml-page-x mt-page-top flex h-main-height">
+    <div className="ml-page-x flex h-main-height">
       <GuideMenu />
       <div
         className={cn(

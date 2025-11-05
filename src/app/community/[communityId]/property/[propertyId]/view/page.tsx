@@ -26,7 +26,7 @@ export default function Property(props: RouteArgs) {
       <MoreMenu />
       <div className="flex flex-col gap-3">
         <PropertyAutocomplete
-          className="sticky top-header-height z-50 bg-background pb-2"
+          className="sticky top-header-height z-50 bg-background"
           currentPropertyId={property.id}
         />
         <PropertyDisplay />
