@@ -86,7 +86,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
 
   const EmptyContent = React.useCallback(() => {
     if (result.loading) {
-      return <Loading className="mb-4 flex w-full justify-center" />;
+      return <Loading className="mb-4 flex justify-center" />;
     }
     if (!!result.error) {
       return <div className="mb-2">An error has occured.</div>;
@@ -118,18 +118,24 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
   return (
     <>
       {community && <MoreMenu community={community} />}
-      <div className="sticky top-header-height z-50 mb-2 bg-background">
-        <PropertySearchHeader className="mb-2" community={community} />
-        <PropertyCard.Container className="mx-0.5">
-          <PropertyCard.Header />
-        </PropertyCard.Container>
-      </div>
-      <PropertyCard.Container className="mx-0.5" aria-label="Property Table">
+      <PropertyCard.Container aria-label="Property Table">
+        <div
+          className={cn(
+            'sticky top-header-height z-50 bg-background',
+            'col-span-full grid grid-cols-subgrid'
+          )}
+        >
+          <PropertySearchHeader
+            className={cn('col-span-full mb-2')}
+            community={community}
+          />
+          <PropertyCard.Header className="mx-0.5" />
+        </div>
         {rows.length > 0 &&
           rows.map((property) => (
             <PropertyCard.Entry
               key={property.id}
-              className="hover:bg-primary-50"
+              className="mx-0.5 hover:bg-primary-50"
               property={property}
               isPressable
               onPress={() => {
@@ -140,11 +146,18 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
               }}
             />
           ))}
+        {rows.length === 0 && (
+          <div className="col-span-full">
+            <EmptyContent />
+          </div>
+        )}
+        {!!pageInfo?.hasNextPage && (
+          <Loading
+            className="col-span-full mb-4 flex justify-center"
+            ref={loadingRef}
+          />
+        )}
       </PropertyCard.Container>
-      {rows.length === 0 && <EmptyContent />}
-      {!!pageInfo?.hasNextPage && (
-        <Loading className="mb-4 flex w-full justify-center" ref={loadingRef} />
-      )}
     </>
   );
 };
