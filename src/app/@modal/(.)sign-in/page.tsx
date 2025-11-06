@@ -2,6 +2,7 @@
 import { Modal, ModalContent } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { appPath } from '~/lib/app-path';
 import { AppLogo } from '~/view/app-logo';
 import { PanelContextProvider } from './panel-context';
 import { PanelWrapper } from './panel-wrapper';
@@ -20,7 +21,7 @@ export default function SignIn() {
     >
       <ModalContent className="overflow-x-hidden">
         <div className="m-auto mt-6">
-          <AppLogo size={64} />
+          <AppLogo size={64} onClick={() => router.push(appPath('home'))} />
         </div>
         <PanelContextProvider>
           <PanelWrapper />
