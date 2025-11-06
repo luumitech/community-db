@@ -12,11 +12,6 @@ const MembershipFragment = graphql(/* GraphQL */ `
 `);
 type MembershipFragmentType = FragmentType<typeof MembershipFragment>;
 
-const className = {
-  // Must match width of membership year header labe: (i.e. '2025')
-  cell: 'w-[30px]',
-};
-
 interface Props {
   fragment: MembershipFragmentType;
   year: number;
@@ -29,12 +24,12 @@ export const Membership: React.FC<Props> = ({ fragment, year }) => {
   );
 
   if (!membership?.isMember) {
-    return <div className={className.cell} />;
+    return <div />;
   }
 
   return (
     <span className="m-auto text-xl text-success">
-      <Icon className={className.cell} icon="checkmark" />
+      <Icon icon="checkmark" />
     </span>
   );
 };

@@ -34,6 +34,7 @@ async function takeScreenshot(
   name: ScreenshotId
 ) {
   await page.screenshot({
+    animations: 'disabled',
     path: path.join(
       process.cwd(),
       'src',

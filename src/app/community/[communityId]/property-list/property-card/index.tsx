@@ -15,6 +15,7 @@ const className = {
     'sm:grid-cols-[repeat(6,1fr),_max-content]'
   ),
   inheritContainer: 'col-span-full grid grid-cols-subgrid gap-1',
+  headerLabel: 'text-xs font-semibold text-default-400',
   address: 'col-span-3 sm:col-span-2',
   member: 'col-span-3 sm:col-span-4',
   // Always last column
@@ -30,6 +31,59 @@ const Container: React.FC<React.PropsWithChildren<ContainerProps>> = ({
 }) => {
   return (
     <div {...props} className={twMerge(className.container, props.className)} />
+  );
+};
+
+interface HeaderProps {
+  className?: string;
+}
+
+export const Header: React.FC<HeaderProps> = ({ ...props }) => {
+  const yearsToShow = useMemberYear();
+
+  return (
+    <Card
+      className={twMerge(
+        'bg-default-200/50',
+        className.inheritContainer,
+        props.className
+      )}
+      role="rowheader"
+      shadow="none"
+      radius="sm"
+    >
+      <CardBody
+        className={twMerge(
+          'items-center py-2',
+          className.inheritContainer,
+          className.headerLabel
+        )}
+      >
+        <div className={className.address}>Address</div>
+        <div
+          className={twMerge(
+            className.member,
+            // Hide in small screen
+            'hidden sm:grid'
+          )}
+        >
+          Member Names
+        </div>
+        <div
+          className={twMerge(
+            className.memberYear,
+            'grid auto-cols-fr grid-flow-col grid-rows-1',
+            'items-center gap-2'
+          )}
+        >
+          {yearsToShow.map((year) => (
+            <span key={year} className="m-auto">
+              {year}
+            </span>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
   );
 };
 
@@ -63,75 +117,24 @@ const Entry: React.FC<EntryProps> = ({
         <div
           className={twMerge(
             className.memberYear,
-            'grid grid-flow-col grid-rows-[auto_1fr]',
+            /**
+             * Force 2 rows, and auto add columns, this allows adding new
+             * columns via `children`
+             */
+            'grid auto-cols-fr grid-flow-col grid-rows-[auto_1fr]',
             showHeader ? 'row-span-2 grid-rows-[auto_1fr]' : 'grid-rows-1',
-            'items-center gap-2'
+            'items-center gap-1'
           )}
         >
           {yearsToShow.map((year) => (
             <React.Fragment key={`${property.id}-${year}`}>
               {showHeader && (
-                <span className="whitespace-nowrap text-xs text-default-400">
-                  {year}
-                </span>
+                <span className={className.headerLabel}>{year}</span>
               )}
               <Membership fragment={property} year={year} />
             </React.Fragment>
           ))}
           {children}
-        </div>
-      </CardBody>
-    </Card>
-  );
-};
-
-interface HeaderProps {
-  className?: string;
-}
-
-export const Header: React.FC<HeaderProps> = ({ ...props }) => {
-  const yearsToShow = useMemberYear();
-
-  return (
-    <Card
-      className={twMerge(
-        'bg-default-200/50',
-        className.inheritContainer,
-        props.className
-      )}
-      role="rowheader"
-      shadow="none"
-      radius="sm"
-    >
-      <CardBody
-        className={twMerge('items-center py-2', className.inheritContainer)}
-      >
-        <div
-          className={twMerge(
-            'text-sm font-semibold text-default-500',
-            className.address
-          )}
-        >
-          Address
-        </div>
-        <div
-          className={twMerge(
-            'text-sm font-semibold text-default-500',
-            className.member
-          )}
-        />
-        <div
-          className={twMerge(
-            className.memberYear,
-            'grid grid-cols-2',
-            'items-center gap-2'
-          )}
-        >
-          {yearsToShow.map((year) => (
-            <span key={year} className="m-auto text-xs text-default-400">
-              {year}
-            </span>
-          ))}
         </div>
       </CardBody>
     </Card>

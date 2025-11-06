@@ -1,4 +1,6 @@
-import { ApolloError } from '@apollo/client';
+import { ApolloError, type ServerError } from '@apollo/client';
+import { StatusCodes } from 'http-status-codes';
+import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 
 interface OnErrorOpt {
@@ -10,6 +12,16 @@ interface OnErrorOpt {
 }
 
 export function onError(error: ApolloError, opt?: OnErrorOpt) {
+  // Handle unauthorized error
+  if (error.networkError) {
+    const serverError = error.networkError as ServerError;
+    const statusCode = serverError?.statusCode;
+    if (statusCode === StatusCodes.UNAUTHORIZED) {
+      window.location.href = appPath('signIn');
+      return;
+    }
+  }
+
   if (opt?.customOnError == null) {
     toast.error(error.message);
     return;

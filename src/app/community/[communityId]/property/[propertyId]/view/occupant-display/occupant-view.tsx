@@ -24,6 +24,7 @@ function formatPhoneNumber(phoneNumber: string) {
 const className = {
   container: 'grid grid-cols-2 gap-2 sm:grid-cols-7',
   inheritContainer: 'col-span-full grid grid-cols-subgrid',
+  headerLabel: 'text-xs font-semibold text-default-400',
   name: 'sm:col-span-2',
   detail: 'col-span-2 sm:col-span-4',
   // Always last column
@@ -57,8 +58,9 @@ const OccupantHeader: React.FC<OccupantHeaderProps> = ({ ...props }) => {
     <header
       className={twMerge(
         className.inheritContainer,
+        className.headerLabel,
+        'bg-default-100',
         'items-center',
-        'bg-default-100 font-semibold text-foreground-500 text-tiny',
         'rounded-lg',
         'h-8 px-3 py-0',
         // Hide header in small media query
