@@ -11,6 +11,10 @@ setup('authenticate', async ({ browser }) => {
 
   await page.goto('/');
 
+  /**
+   * When running the tests repeatedly, the sign up process is expected to fail.
+   * So we don't need to check status code
+   */
   await page.request.post('/api/auth/sign-up/email', {
     data: {
       name: 'Test User',
@@ -22,6 +26,8 @@ setup('authenticate', async ({ browser }) => {
   const resp = await page.request.post('/api/auth/sign-in/email', {
     data: {
       email: process.env.AUTH_TEST_EMAIL!,
+      // Password actually doesn't matter, because email/password check is
+      // disabled while testing
       password: process.env.AUTH_TEST_PASSWORD!,
     },
   });

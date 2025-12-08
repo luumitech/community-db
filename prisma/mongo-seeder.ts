@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { ObjectId } from 'mongodb';
 import path from 'path';
 import * as XLSX from 'xlsx';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
@@ -8,25 +7,18 @@ import { seedCommunityData } from '~/lib/xlsx-io/random-seed';
 
 export class MongoSeeder {
   private authUser: Prisma.AuthUserCreateInput;
-  private password: string;
 
   constructor(private workbook: XLSX.WorkBook) {
-    const { AUTH_TEST_EMAIL, AUTH_TEST_PASSWORD } = process.env;
+    const { AUTH_TEST_EMAIL } = process.env;
     if (!AUTH_TEST_EMAIL) {
       throw new Error(
         'AUTH_TEST_EMAIL must be set in the environment variables'
-      );
-    }
-    if (!AUTH_TEST_PASSWORD) {
-      throw new Error(
-        'AUTH_TEST_PASSWORD must be set in the environment variables'
       );
     }
     this.authUser = {
       email: AUTH_TEST_EMAIL,
       emailVerified: true,
     };
-    this.password = AUTH_TEST_PASSWORD;
   }
 
   /**
@@ -97,33 +89,6 @@ export class MongoSeeder {
         email: this.authUser.email,
         accessList: {
           create: accessSeed,
-        },
-      },
-    });
-
-    /**
-     * Create better-auth documents so we can logged in the test user using
-     * email/password credential
-     *
-     * - Playwright has issue handling EJS node_modules, so we are importing this
-     *   dynamically
-     *
-     * See: https://github.com/microsoft/playwright/issues/23662
-     */
-    const cryptoModule = await import('better-auth/crypto');
-    const accountSeed: Prisma.AccountCreateWithoutUserInput[] = [
-      {
-        accountId: new ObjectId().toHexString(),
-        providerId: 'credential',
-        password: await cryptoModule.hashPassword(this.password),
-      },
-    ];
-
-    await prisma.authUser.create({
-      data: {
-        ...this.authUser,
-        accountList: {
-          create: accountSeed,
         },
       },
     });
