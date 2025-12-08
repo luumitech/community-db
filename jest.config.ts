@@ -37,6 +37,15 @@ async function config() {
     'decode-uri-component',
     'split-on-first',
     'filter-obj',
+    /**
+     * Better-auth has dependency on ESModules after 1.3.9
+     *
+     * See: https://github.com/better-auth/better-auth/issues/4531
+     */
+    'better-auth',
+    '@better-auth',
+    '@noble',
+    'jose',
   ];
 
   const createConfig = createJestConfig(customJestConfig);

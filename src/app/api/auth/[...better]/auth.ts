@@ -1,12 +1,16 @@
 import { betterAuth, type User } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { APIError } from 'better-auth/api';
-import { emailOTP } from 'better-auth/plugins';
+import { emailOTP, openAPI } from 'better-auth/plugins';
 import { env } from '~/lib/env-cfg';
 import { appTitle, isProduction, isRunningTest } from '~/lib/env-var';
+import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import * as deleteUserUtil from './delete-user-util';
 import { sendVerificationOTP } from './email-otp';
+
+// Development mode (or running tests)
+const isDev = !isProduction() || isRunningTest();
 
 export const auth = betterAuth({
   appName: appTitle,
@@ -16,6 +20,13 @@ export const auth = betterAuth({
       // Let mongo generate ID automatically
       generateId: false,
     },
+    /**
+     * By default, better-auth enforces origin header, but we don't want to do
+     * this during development mode (i.e. running tests)
+     *
+     * See: https://github.com/better-auth/better-auth/issues/5536
+     */
+    disableOriginCheck: isDev,
   },
   user: {
     // By default, better-auth uses 'User' as the model name, but we are
@@ -58,7 +69,7 @@ export const auth = betterAuth({
      *
      * - Allow arbitrary username and password.
      */
-    enabled: !isProduction() || isRunningTest(),
+    enabled: isDev,
     password: {
       // Skip password verification during testing
       verify: async () => true,
@@ -103,6 +114,12 @@ export const auth = betterAuth({
       expiresIn: 300, // 5 minutes
       sendVerificationOTP,
     }),
+    /**
+     * To view the OPEN API reference, go to URL:
+     *
+     *     http://localhost:3000/api/auth/reference
+     */
+    ...insertIf(isDev, openAPI()),
   ],
 });
 

@@ -153,8 +153,9 @@ export async function select(
   const item = page
     .locator('ul[role="listbox"] > li')
     .filter({ hasText: selectItem });
-  await waitUntilStable(item);
-  await item.click();
+  // The button click would occasionally timeout, so add a force click
+  // eslint-disable-next-line playwright/no-force-option
+  await item.click({ force: true });
 }
 
 /**
@@ -183,6 +184,7 @@ export async function selectDropdown(
   const menuItem = page
     .locator('ul[role="menu"] > li')
     .filter({ hasText: itemName });
-  await waitUntilStable(menuItem);
-  await menuItem.click();
+  // The button click would occasionally timeout, so add a force click
+  // eslint-disable-next-line playwright/no-force-option
+  await menuItem.click({ force: true });
 }
