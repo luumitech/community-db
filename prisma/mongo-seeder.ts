@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { hashPassword } from 'better-auth/crypto';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import * as XLSX from 'xlsx';
@@ -102,13 +101,21 @@ export class MongoSeeder {
       },
     });
 
-    // Create better-auth documents so we can logged in the test user using
-    // email/password credential
+    /**
+     * Create better-auth documents so we can logged in the test user using
+     * email/password credential
+     *
+     * - Playwright has issue handling EJS node_modules, so we are importing this
+     *   dynamically
+     *
+     * See: https://github.com/microsoft/playwright/issues/23662
+     */
+    const cryptoModule = await import('better-auth/crypto');
     const accountSeed: Prisma.AccountCreateWithoutUserInput[] = [
       {
         accountId: new ObjectId().toHexString(),
         providerId: 'credential',
-        password: await hashPassword(this.password),
+        password: await cryptoModule.hashPassword(this.password),
       },
     ];
 
