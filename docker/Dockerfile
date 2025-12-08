@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 
 # Install Yarn 4.x
 ENV YARN_VERSION=4.9.2
