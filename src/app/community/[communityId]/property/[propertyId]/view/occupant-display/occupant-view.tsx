@@ -16,7 +16,7 @@ function formatPhoneNumber(phoneNumber: string) {
     return null;
   }
   const cleaned = phoneNumber.toString().replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  const match = /^(\d{3})(\d{3})(\d{4})$/.exec(cleaned);
   return !match ? phoneNumber : `(${match[1]}) ${match[2]}-${match[3]}`;
 }
 

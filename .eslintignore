@@ -1,9 +1,0 @@
-# don't ever lint node_modules
-node_modules
-# don't lint generated graphql types
-src/app/graphql/generated
-# don't link generated build assets
-.next
-# playwright generated report or assets
-playwright-report
-test-results

@@ -19,6 +19,7 @@ export function useForwardRef<T>(
     if (typeof ref === 'function') {
       ref(targetRef.current);
     } else {
+      // eslint-disable-next-line react-hooks/immutability
       ref.current = targetRef.current;
     }
   }, [ref]);
