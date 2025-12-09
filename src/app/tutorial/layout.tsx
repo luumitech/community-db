@@ -13,7 +13,7 @@ export default function TutorialLayout({ children }: LayoutProps) {
       <GuideMenu />
       <div
         className={cn(
-          'flex-grow overflow-auto',
+          'grow overflow-auto',
           // Add padding on top and left, so card shadow is visible
           'px-2 pt-3'
         )}

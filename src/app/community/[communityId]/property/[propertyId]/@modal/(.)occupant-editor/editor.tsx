@@ -61,7 +61,7 @@ export const Editor: React.FC<Props> = ({ className, occupantListMethods }) => {
       // Note tabs styling currently broken
       // See: https://github.com/heroui-inc/heroui/issues/5657
       classNames={{
-        panel: 'flex-grow',
+        panel: 'grow',
         tab: 'justify-start',
         tabContent: 'w-full',
       }}

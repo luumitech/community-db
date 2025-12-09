@@ -22,7 +22,7 @@ export const CustomMenu: React.FC<BeautifulMentionsMenuProps> = ({
     <ul
       ref={ul}
       className={cn(
-        'w-[max-content] border-small',
+        'w-max border-small',
         'rounded-small border-default-200 dark:border-default-100',
         'bg-background',
         'flex flex-col px-1 py-2'

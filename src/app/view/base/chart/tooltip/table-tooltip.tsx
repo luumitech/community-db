@@ -16,7 +16,7 @@ export const TableTooltip: React.FC<Props> = ({ className, title, rows }) => {
   return (
     <div
       className={twMerge(
-        'rounded-sm p-2 text-xs shadow-md',
+        'rounded-xs p-2 text-xs shadow-md',
         'bg-white dark:bg-gray-800',
         className
       )}

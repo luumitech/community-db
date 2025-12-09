@@ -1,13 +1,31 @@
 @import 'react-toastify/dist/ReactToastify.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin './hero.mjs';
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@source './**/*.{js,ts,jsx,tsx,mdx}';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-
   /* Override default toastify progress color */
   --toastify-color-progress-light: #45D483;
   --toastify-color-progress-dark: #45D483;
@@ -16,20 +34,25 @@
   --header-height: 64px;
 }
 
-:root.dark {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+@theme {
+  --spacing-header-height: var(--header-height);
+  /** The available height in <main/> */
+  --spacing-main-height: calc(100vh - var(--header-height));
+  /** Default spacing used below header */
+  --spacing-page-top: 0.5rem;
+  --spacing-page-x: 0.5rem;
+
+
+  /**
+  * Add border around text to make text show more clearly in front of
+  * busy background
+  */
+  --drop-shadow-text: 0 1.5px 1.5px hsl(var(--heroui-background));
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: hsl(var(--heroui-foreground));
+  background: hsl(var(--heroui-background));
 }
 
 /* Hide default google RECAPTCHA badge */

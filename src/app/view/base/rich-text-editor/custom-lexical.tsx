@@ -90,7 +90,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
               <ContentEditable
                 className={cn(
                   'bg-clip-text font-normal text-small placeholder:text-foreground-500',
-                  'focus-visible:outline-none'
+                  'focus-visible:outline-hidden'
                 )}
                 aria-placeholder={'Message Content'}
                 placeholder={<div />}

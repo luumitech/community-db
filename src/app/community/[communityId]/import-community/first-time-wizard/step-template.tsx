@@ -43,7 +43,7 @@ export const StepTemplate: React.FC<Props> = ({
         </Button>
         {isLastStep ? (
           <>
-            <div className="flex-grow" />
+            <div className="grow" />
             <Button size="sm" variant="ghost" onPress={() => goToStep(0)}>
               End
             </Button>

@@ -28,7 +28,7 @@ export const DisplayImage: React.FC<React.PropsWithChildren<Props>> = ({
       )}
     >
       <Image
-        className={twMerge('flex-grow object-cover', imageClassName)}
+        className={twMerge('grow object-cover', imageClassName)}
         alt={alt}
         {...props}
       />

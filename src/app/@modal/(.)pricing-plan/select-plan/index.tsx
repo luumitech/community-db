@@ -12,7 +12,7 @@ interface Props {
 export const SelectPlan: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
-      <div className="grid grid-cols-2 grid-rows-[repeat(4,_auto)] divide-x">
+      <div className="grid grid-cols-2 grid-rows-[repeat(4,auto)] divide-x">
         <FreePlan />
         <PremiumPlan />
       </div>

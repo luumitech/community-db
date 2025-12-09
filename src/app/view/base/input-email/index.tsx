@@ -66,8 +66,8 @@ export const InputEmail: React.FC<InputEmailProps> = ({
               className="flex flex-wrap items-center gap-2"
               inputClassName={cn(
                 'bg-clip-text font-normal text-small placeholder:text-foreground-500',
-                'focus-visible:outline-none',
-                'flex-grow'
+                'focus-visible:outline-hidden',
+                'grow'
               )}
               onBlur={() => {
                 field.onBlur();
