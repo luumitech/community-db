@@ -37,6 +37,7 @@ export function useDisclosureWithArg<T>() {
     /** Modal state controls */
     disclosure,
     /** Arguments passed into the Modal when it opens */
+    // eslint-disable-next-line react-hooks/refs
     arg: arg.current,
   };
 }

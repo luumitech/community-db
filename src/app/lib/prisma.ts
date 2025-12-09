@@ -15,10 +15,8 @@ if (isProduction()) {
    * https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices
    */
   // @ts-expect-error: don't want to introduce prisma to global type
-  if (!global.prisma) {
-    // @ts-expect-error: don't want to introduce prisma to global type
-    global.prisma = new PrismaClient();
-  }
+  global.prisma ??= new PrismaClient();
+
   // @ts-expect-error: don't want to introduce prisma to global type
   prisma = global.prisma;
 }

@@ -119,12 +119,11 @@ export class BatchModify {
         // that do not have an existing membership
         membership.price = input.price ?? null;
         membership.paymentMethod = input.paymentMethod;
-      } else if (membership.price == null) {
-        // If a property has a Membership Fee entry, but does not have
-        // Price information specified, the record will be updated with
-        // the new Price information.
-        membership.price = input.price ?? null;
       }
+      // If a property has a Membership Fee entry, but does not have
+      // Price information specified, the record will be updated with
+      // the new Price information.
+      membership.price ??= input.price ?? null;
     });
 
     const communityUpdateDataArgs = communityMinMaxYearUpdateArgs(

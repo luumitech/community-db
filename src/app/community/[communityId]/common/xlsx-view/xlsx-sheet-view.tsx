@@ -32,6 +32,7 @@ export function XlsxSheetView<T>({
 }: XlsxSheetViewProps<T>) {
   // The virtualizers need to know the scrollable container element
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

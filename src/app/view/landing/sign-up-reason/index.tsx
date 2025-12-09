@@ -2,9 +2,9 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
 import { appTitle } from '~/lib/env-var';
-import { Icon } from '~/view/base/icon';
 import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
 import { GetStarted } from './get-started';
+import { ListItem } from './list-item';
 
 interface Props {
   className?: string;
@@ -12,18 +12,6 @@ interface Props {
 
 export const SignUpReason: React.FC<Props> = ({ className }) => {
   const session = useSession();
-
-  const ListItem = React.useCallback(
-    (props: React.PropsWithChildren<object>) => {
-      return (
-        <li className="flex items-center gap-2">
-          <Icon className="text-green-600" icon="checkmark" />
-          {props.children}
-        </li>
-      );
-    },
-    []
-  );
 
   return (
     <div

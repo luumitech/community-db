@@ -14,6 +14,7 @@ export default async function globalSetup() {
     },
   });
   const uri = instance.getUri(DB_NAME);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (global as any).__MONGOINSTANCE = instance;
   process.env.MONGODB_URI = uri;
 }

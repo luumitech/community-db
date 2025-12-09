@@ -9,10 +9,9 @@ export const ReduxProviders: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   const storeRef = React.useRef<AppStore>(null);
-  if (!storeRef.current) {
-    // Create the store instance the first time this renders
-    storeRef.current = makeStore();
-  }
+
+  // Create the store instance the first time this renders
+  storeRef.current ??= makeStore();
 
   return <Provider store={storeRef.current}>{children}</Provider>;
 };
