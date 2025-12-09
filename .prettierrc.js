@@ -30,6 +30,6 @@ module.exports = {
    *
    * See: https://github.com/tailwindlabs/prettier-plugin-tailwindcss
    */
-  tailwindConfig: './tailwind.config.js',
+  tailwindStylesheet: './src/app/globals.css',
   tailwindFunctions: ['cn'],
 };

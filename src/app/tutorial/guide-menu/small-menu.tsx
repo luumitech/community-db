@@ -24,7 +24,7 @@ export const SmallMenu: React.FC<Props> = ({ className }) => {
     <>
       <div className={cn(className, 'flex flex-col items-center')}>
         <Button
-          className="flex-shrink-0"
+          className="shrink-0"
           variant="light"
           isIconOnly
           onPress={() => onOpenChange()}

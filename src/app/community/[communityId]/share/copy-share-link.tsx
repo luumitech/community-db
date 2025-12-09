@@ -31,7 +31,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
           description="Only user in the access list can view this database"
         />
         <Button
-          className="flex-shrink-0"
+          className="shrink-0"
           variant="bordered"
           color="primary"
           endContent={<Icon icon="link" size={20} />}

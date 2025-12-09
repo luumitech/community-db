@@ -60,7 +60,7 @@ function customOnError(err: ApolloError) {
         <div className="flex items-center gap-2">
           <div>Community Not Found</div>
           <Button
-            className="flex-shrink-0"
+            className="shrink-0"
             size="sm"
             as={Link}
             color="primary"

@@ -108,7 +108,7 @@ export const ModalDialog: React.FC<Props> = ({
                       Save Email Template
                     </Button>
                   )}
-                  <div className="flex-grow" />
+                  <div className="grow" />
                   <Button
                     isDisabled={saveTemplatePending || sendMailPending}
                     onPress={closeModal}

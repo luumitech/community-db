@@ -201,7 +201,7 @@ function customTooltip(helper: ChartDataHelper) {
             className={cn(
               'mt-[3px] block w-3',
               symbol === 'bar' && 'h-3',
-              symbol === 'line' && 'h-[1px]'
+              symbol === 'line' && 'h-px'
             )}
             style={{ backgroundColor: itemColor }}
           />

@@ -98,7 +98,7 @@ export function XlsxSheetView<T>({
   return (
     <div
       ref={tableContainerRef}
-      className={twMerge('relative flex-grow overflow-auto', className)}
+      className={twMerge('relative grow overflow-auto', className)}
     >
       <table data-testid="export-xlsx">
         <thead className="sticky top-0 z-10 grid bg-background">

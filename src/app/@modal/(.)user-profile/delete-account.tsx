@@ -81,7 +81,7 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
       </legend>
       <PreRequsite />
       <Button
-        className="flex-shrink-0 self-start"
+        className="shrink-0 self-start"
         color="danger"
         endContent={<Icon icon="trash" />}
         isLoading={result.loading}

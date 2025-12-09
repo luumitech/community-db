@@ -76,7 +76,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
                   >
                     Add Contact
                   </Button>
-                  <div className="flex-grow" />
+                  <div className="grow" />
                   <Button
                     variant="bordered"
                     isDisabled={pending}
