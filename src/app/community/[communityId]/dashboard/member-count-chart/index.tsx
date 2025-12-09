@@ -46,7 +46,7 @@ export const MemberCountChart: React.FC<Props> = ({
   return (
     <Card className={cn(className)}>
       <CardHeader className="items-start gap-2">
-        <div className="flex-grow">
+        <div className="grow">
           <p className="text-md font-bold">Total Membership Counts</p>
         </div>
         {community != null && (

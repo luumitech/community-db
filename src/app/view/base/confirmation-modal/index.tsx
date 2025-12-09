@@ -58,7 +58,7 @@ export const ConfirmationModal: React.FC<Props> = () => {
   return (
     <Modal
       classNames={{
-        base: 'border-warning border-[2px]',
+        base: 'border-warning border-2',
       }}
       size="xs"
       placement="top-center"

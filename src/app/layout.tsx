@@ -53,9 +53,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
       <head>
         <PublicEnvScript />
       </head>
-      <body
-        className={twMerge(inter.className, 'bg-background text-foreground')}
-      >
+      <body className={twMerge(inter.className)}>
         {/**
          * Light/dark theme can be customized
          *

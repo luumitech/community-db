@@ -59,7 +59,7 @@ export const Header: React.FC<Props> = ({}) => {
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           />
         )} */}
-        <NavbarBrand className="flex-grow-0 items-center">
+        <NavbarBrand className="grow-0 items-center">
           <Link className="gap-1" href={appPath('home')} color="foreground">
             <div className="w-[36px]">
               <AppLogo priority size={36} />

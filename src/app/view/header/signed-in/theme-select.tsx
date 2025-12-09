@@ -23,7 +23,7 @@ export const ThemeSelect: React.FC<Props> = ({ className }) => {
   return (
     <select
       className={cn(
-        'z-10 w-16 rounded-md p-0.5 outline-none text-tiny',
+        'z-10 w-16 rounded-md p-0.5 outline-hidden text-tiny',
         'group-data-[hover=true]:border-default-500',
         'border-small border-default-300 dark:border-default-200',
         'bg-transparent text-default-500'

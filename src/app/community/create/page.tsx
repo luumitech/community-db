@@ -9,9 +9,11 @@ export default function CommunityCreate() {
   const formMethods = useHookForm();
 
   return (
-    <FormProvider {...formMethods}>
+    <div className="mt-page-top">
       <MoreMenu omitKeys={['communityCreate']} />
-      <PageContent />
-    </FormProvider>
+      <FormProvider {...formMethods}>
+        <PageContent />
+      </FormProvider>
+    </div>
   );
 }

@@ -11,8 +11,8 @@ import { useMemberYear } from './use-member-year';
 const className = {
   container: cn(
     'grid gap-2',
-    'grid-cols-[repeat(3,1fr),_max-content]',
-    'sm:grid-cols-[repeat(6,1fr),_max-content]'
+    'grid-cols-[repeat(3,1fr)_max-content]',
+    'sm:grid-cols-[repeat(6,1fr)_max-content]'
   ),
   inheritContainer: 'col-span-full grid grid-cols-subgrid gap-1',
   headerLabel: 'text-xs font-semibold text-default-400',

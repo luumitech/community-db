@@ -23,7 +23,7 @@ export const IconOnlyButton: React.FC<IconOnlyButtonProps> = ({
       <FlatButton className="text-primary" icon={icon} />
       {!!openInNewWindow && (
         <Icon
-          className="absolute right-[2px] top-[1px] rotate-[135deg]"
+          className="absolute right-[2px] top-px rotate-135"
           icon="leftArrow"
           size={openInNewWindowIconSize ?? 9}
         />

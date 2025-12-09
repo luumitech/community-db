@@ -13,7 +13,7 @@ export const GetStarted: React.FC<Props> = ({ className }) => {
       as={Link}
       className={cn(
         className,
-        'bg-gradient-to-tr from-pink-500 to-orange-500 text-white'
+        'bg-linear-to-tr from-pink-500 to-orange-500 text-white'
       )}
       href={appPath('communityWelcome')}
     >

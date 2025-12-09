@@ -40,7 +40,7 @@ export const FullImage: React.FC<FullImageProps> = ({ onPress, ...props }) => {
         >
           <DisplayImage
             className={cn(
-              'max-h-[100vh] max-w-[100vw]',
+              'max-h-screen max-w-[100vw]',
               'sm:max-h-[calc(100vh-3em)] sm:max-w-[calc(100vw-3em)]'
             )}
             {...props}

@@ -27,8 +27,8 @@ export const PricePlanWithDescription: React.FC<
       className={twMerge(
         'row-span-4 grid grid-rows-subgrid gap-4',
         // This is necessary to allow parent divider to render correctly
-        '[&:not(:last-child)]:pr-6',
-        '[&:not(:first-child)]:pl-6',
+        'not-last:pr-6',
+        'not-first:pl-6',
         className
       )}
     >

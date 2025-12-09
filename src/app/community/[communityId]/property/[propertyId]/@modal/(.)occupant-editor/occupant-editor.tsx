@@ -80,7 +80,7 @@ export const OccupantEditor: React.FC<Props> = ({
           })}
         </ReorderGroup>
         <Button
-          className="flex-shrink-0 self-start"
+          className="shrink-0 self-start"
           startContent={<Icon icon="add" />}
           variant="flat"
           onPress={() => {
