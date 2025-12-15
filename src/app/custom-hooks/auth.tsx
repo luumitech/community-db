@@ -1,13 +1,13 @@
 import { emailOTPClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
-import { env } from 'next-runtime-env';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 
 export const authClient = createAuthClient({
-  baseURL: env('NEXT_PUBLIC_HOSTNAME'),
+  // By default, reads process.env.BETTER_AUTH_URL
+  // baseURL: env('BETTER_AUTH_URL'),
   plugins: [
     /**
      * The Email OTP plugin allows user to sign in, verify their email, or reset

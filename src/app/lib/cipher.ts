@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { env } from '~/lib/env-cfg';
+import { env } from '~/lib/env/server-env';
 
 export class Cipher {
   private key: Buffer;
@@ -17,7 +17,7 @@ export class Cipher {
   }
 
   static fromConfig() {
-    return new Cipher(env.CIPHER_KEY, env.CIPHER_IV);
+    return new Cipher(env('CIPHER_KEY'), env('CIPHER_IV'));
   }
 
   /** Encrypt message */

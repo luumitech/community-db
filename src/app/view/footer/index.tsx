@@ -1,7 +1,7 @@
 'use client';
 import { Link, cn } from '@heroui/react';
-import { env } from 'next-runtime-env';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { BmcButton } from '~/view/buy-me-a-coffee';
@@ -12,7 +12,8 @@ interface Props {
 }
 
 export const Footer: React.FC<Props> = ({ className }) => {
-  const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
+  const { env } = useAppContext();
+  const subscriptionPlanEnable = env.NEXT_PUBLIC_PLAN_ENABLE;
 
   return (
     <div className={cn(className, 'p-4', 'bg-green-300 dark:bg-neutral-800')}>

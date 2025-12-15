@@ -3,7 +3,7 @@ import {
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
 
-import { env } from '~/lib/env-cfg';
+import { getEnv } from '~/lib/env/server-env';
 import { BlobContainer, TransferProgressEvent } from './blob-container';
 import { BlobInfo } from './blob-info';
 import { ListBlobOpt } from './blob-iterator';
@@ -89,32 +89,49 @@ export class BlobService {
   serviceClient: BlobServiceClient;
 
   constructor(opt?: ServiceOpt) {
-    if (env.AZURE_STORAGE_MODE === 'local') {
-      // Development Azurite connection
-      const host = env.AZURE_LOCAL_STORAGE_HOST;
-      const port = env.AZURE_LOCAL_STORAGE_PORT;
-      const account = env.AZURE_LOCAL_STORAGE_ACCOUNT;
-      const accountKey = env.AZURE_LOCAL_STORAGE_ACCOUNT_KEY;
-      const credential = new StorageSharedKeyCredential(account, accountKey);
-      this.serviceClient = new BlobServiceClient(
-        `http://${host}:${port}/${account}`,
-        credential
-      );
-    } else if (env.AZURE_STORAGE_MODE === 'remote') {
-      // Connect to remote Azure blob
-      const account = env.AZURE_STORAGE_ACCOUNT;
-      const accountKey = env.AZURE_STORAGE_ACCOUNT_KEY;
-      // connection string
-      if (!accountKey) {
-        throw new Error('Azure storage accountKey not provided');
-      }
-      const credential = new StorageSharedKeyCredential(account, accountKey);
-      this.serviceClient = new BlobServiceClient(
-        `https://${account}.blob.core.windows.net`,
-        credential
-      );
-    } else {
-      throw new Error('AZURE_STORAGE_MODE has been set to none');
+    // Get all environment variables allow us to make use of discrimnated unions
+    const env = getEnv();
+    switch (env.AZURE_STORAGE_MODE) {
+      case 'local':
+        {
+          // Development Azurite connection
+          const host = env.AZURE_LOCAL_STORAGE_HOST;
+          const port = env.AZURE_LOCAL_STORAGE_PORT;
+          const account = env.AZURE_LOCAL_STORAGE_ACCOUNT;
+          const accountKey = env.AZURE_LOCAL_STORAGE_ACCOUNT_KEY;
+          const credential = new StorageSharedKeyCredential(
+            account,
+            accountKey
+          );
+          this.serviceClient = new BlobServiceClient(
+            `http://${host}:${port}/${account}`,
+            credential
+          );
+        }
+        break;
+
+      case 'remote':
+        {
+          // Connect to remote Azure blob
+          const account = env.AZURE_STORAGE_ACCOUNT;
+          const accountKey = env.AZURE_STORAGE_ACCOUNT_KEY;
+          // connection string
+          if (!accountKey) {
+            throw new Error('Azure storage accountKey not provided');
+          }
+          const credential = new StorageSharedKeyCredential(
+            account,
+            accountKey
+          );
+          this.serviceClient = new BlobServiceClient(
+            `https://${account}.blob.core.windows.net`,
+            credential
+          );
+        }
+        break;
+
+      default:
+        throw new Error('AZURE_STORAGE_MODE has been set to none');
     }
   }
 

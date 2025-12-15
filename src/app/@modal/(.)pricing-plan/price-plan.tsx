@@ -4,7 +4,7 @@ import React from 'react';
 interface Props {
   className?: string;
   planName: React.ReactNode;
-  planCost: string;
+  planCost: number;
 }
 
 export const PricePlan: React.FC<React.PropsWithChildren<Props>> = ({

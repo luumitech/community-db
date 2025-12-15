@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { appDescription, appTitle } from '~/lib/env-var';
+import { appDescription, appTitle } from '~/lib/env';
 
 /**
  * See NextJS PWA for further guidance

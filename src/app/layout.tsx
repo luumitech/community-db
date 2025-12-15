@@ -1,15 +1,20 @@
+import { initClient } from '@ts-rest/core';
+import { StatusCodes } from 'http-status-codes';
 import type { Metadata } from 'next';
-import { PublicEnvScript } from 'next-runtime-env';
 import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { appDescription, appTitle } from '~/lib/env-var';
+import { appDescription, appTitle } from '~/lib/env';
+import { env } from '~/lib/env/server-env';
 import { Header } from '~/view/header';
+import { contract } from './api/contract';
 import { Providers } from './providers';
 
 import './globals.css';
 
+/* Initialize TSR client */
+const tsr = initClient(contract, { baseUrl: env('NEXT_PUBLIC_HOSTNAME') });
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -48,11 +53,14 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({ children, modal }: RootLayoutProps) {
+  const envResp = await tsr.env();
+  if (envResp.status !== StatusCodes.OK) {
+    throw new Error('Unable to load environment variables');
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <PublicEnvScript />
-      </head>
+      <head />
       <body className={twMerge(inter.className)}>
         {/**
          * Light/dark theme can be customized
@@ -60,7 +68,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
          * See: https://nextui.org/docs/customization/customize-theme
          */}
         <ThemeProvider defaultTheme="system" attribute="class">
-          <Providers>
+          <Providers env={envResp.body}>
             <div className="flex min-h-screen flex-col">
               <Header />
               <main>{children}</main>

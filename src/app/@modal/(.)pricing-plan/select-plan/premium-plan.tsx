@@ -1,6 +1,6 @@
 import { Button } from '@heroui/react';
-import { env } from 'next-runtime-env';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
@@ -11,12 +11,13 @@ interface Props {
 }
 
 export const PremiumPlan: React.FC<Props> = ({ className }) => {
+  const { env } = useAppContext();
   const { plan, goToPanel } = usePlanContext();
 
-  const planName = env('NEXT_PUBLIC_PLAN_PREMIUM_NAME')!;
-  const planCost = env('NEXT_PUBLIC_PLAN_PREMIUM_COST')!;
-  const maxCommunity = env('NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY');
-  const maxProperty = env('NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY');
+  const planName = env.NEXT_PUBLIC_PLAN_PREMIUM_NAME;
+  const planCost = env.NEXT_PUBLIC_PLAN_PREMIUM_COST;
+  const maxCommunity = env.NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY;
+  const maxProperty = env.NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY;
 
   const SwitchPlan = React.useCallback(() => {
     if (plan == null) {
@@ -47,7 +48,7 @@ export const PremiumPlan: React.FC<Props> = ({ className }) => {
           {planName}
         </div>
       }
-      planCost={planCost ?? 'n/a'}
+      planCost={planCost}
       maxCommunity={maxCommunity}
       maxProperty={maxProperty}
       button={<SwitchPlan />}

@@ -4,7 +4,7 @@ import React from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
-import { lsFlags } from '~/lib/env-var';
+import { lsFlags } from '~/lib/env';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
 import { YearSelect } from './year-select';

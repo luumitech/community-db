@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import * as deleteUserUtil from '~/api/auth/[...better]/delete-user-util';
 import { builder } from '~/graphql/builder';
-import { isProduction } from '~/lib/env-var';
+import { isProduction } from '~/lib/env';
 import prisma from '~/lib/prisma';
 import { createAccess } from '../access/util';
 

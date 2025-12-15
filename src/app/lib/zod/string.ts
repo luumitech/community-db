@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { isBuilding, isRunningTest } from '~/lib/env-var';
+import { isBuilding, isRunningTest } from '~/lib/env';
 
 export class String {
   private zStr(msg?: string) {

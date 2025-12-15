@@ -1,6 +1,6 @@
 import { Button, cn } from '@heroui/react';
-import { env } from 'next-runtime-env';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { usePlanContext } from '../plan-context';
 import { PricePlanWithDescription } from '../price-plan-with-description';
 
@@ -9,12 +9,13 @@ interface Props {
 }
 
 export const FreePlan: React.FC<Props> = ({ className }) => {
+  const { env } = useAppContext();
   const { plan, goToPanel } = usePlanContext();
 
-  const planName = env('NEXT_PUBLIC_PLAN_FREE_NAME')!;
-  const planCost = env('NEXT_PUBLIC_PLAN_FREE_COST')!;
-  const maxCommunity = env('NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY');
-  const maxProperty = env('NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY');
+  const planName = env.NEXT_PUBLIC_PLAN_FREE_NAME;
+  const planCost = env.NEXT_PUBLIC_PLAN_FREE_COST;
+  const maxCommunity = env.NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY;
+  const maxProperty = env.NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY;
 
   const SwitchPlan = React.useCallback(() => {
     if (plan == null) {

@@ -1,7 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
 import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
 import { GetStarted } from './get-started';
 import { ListItem } from './list-item';
@@ -22,8 +22,8 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
     >
       <div
         className={cn(
-          'flex flex-col items-center gap-6 text-wrap text-center',
-          'sm:p-18 p-9 md:p-24'
+          'flex flex-col items-center gap-6 text-center text-wrap',
+          'p-9 sm:p-18 md:p-24'
         )}
       >
         <h1 className="text-3xl font-extrabold sm:text-4xl">{appTitle}</h1>

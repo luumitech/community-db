@@ -5,9 +5,9 @@ import { PricePlan } from './price-plan';
 interface Props {
   className?: string;
   planName: React.ReactNode;
-  planCost: string;
-  maxCommunity?: string;
-  maxProperty?: string;
+  planCost: number;
+  maxCommunity: number | null;
+  maxProperty: number | null;
   button?: React.ReactNode;
 }
 
@@ -38,14 +38,16 @@ export const PricePlanWithDescription: React.FC<
         <li>
           {maxCommunity == null
             ? 'Unlimited communities'
-            : maxCommunity === '1'
+            : maxCommunity === 1
               ? '1 community'
               : `Up to ${maxCommunity} communities`}
         </li>
         <li>
           {maxProperty == null
             ? 'Unlimited addresses per community'
-            : `Up to ${maxProperty} addresses per community`}
+            : maxProperty === 1
+              ? '1 address'
+              : `Up to ${maxProperty} addresses per community`}
         </li>
       </ul>
       {children}

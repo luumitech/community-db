@@ -5,8 +5,8 @@ import {
   DropdownTrigger,
   User,
 } from '@heroui/react';
-import { env } from 'next-runtime-env';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useSignOut } from '~/custom-hooks/auth';
 import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
@@ -17,11 +17,12 @@ import { ThemeSelect } from './theme-select';
 
 interface Props {}
 
-export const SignedIn: React.FC<Props> = ({}) => {
+export const SignedIn: React.FC<Props> = () => {
+  const { env } = useAppContext();
   const { initial, email, image } = useUserInfo();
   const signOut = useSignOut();
 
-  const subscriptionPlanEnable = env('NEXT_PUBLIC_PLAN_ENABLE') === 'true';
+  const subscriptionPlanEnable = env.NEXT_PUBLIC_PLAN_ENABLE;
 
   return (
     <Dropdown placement="bottom-end">

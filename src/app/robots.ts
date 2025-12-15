@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
-import { env } from 'next-runtime-env';
+import { env } from '~/lib/env/server-env';
 
 export default function robots(): MetadataRoute.Robots {
   const hostname = env('NEXT_PUBLIC_HOSTNAME');
+
   return {
     rules: [
       {
@@ -11,6 +12,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['_next/', '/terms', '/privacy', '/community/', '/api/'],
       },
     ],
-    sitemap: [new URL('/sitemap.xml', hostname!).toString()],
+    sitemap: [new URL('/sitemap.xml', hostname).toString()],
   };
 }

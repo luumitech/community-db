@@ -2,8 +2,8 @@ import { betterAuth, type User } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { APIError } from 'better-auth/api';
 import { emailOTP, openAPI } from 'better-auth/plugins';
-import { env } from '~/lib/env-cfg';
-import { appTitle, isProduction, isRunningTest } from '~/lib/env-var';
+import { appTitle, isProduction, isRunningTest } from '~/lib/env';
+import { env } from '~/lib/env/server-env';
 import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
 import * as deleteUserUtil from './delete-user-util';
@@ -77,12 +77,12 @@ export const auth = betterAuth({
   },
   socialProviders: {
     google: {
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      clientId: env('GOOGLE_CLIENT_ID'),
+      clientSecret: env('GOOGLE_CLIENT_SECRET'),
     },
     facebook: {
-      clientId: env.FACEBOOK_CLIENT_ID,
-      clientSecret: env.FACEBOOK_CLIENT_SECRET,
+      clientId: env('FACEBOOK_CLIENT_ID'),
+      clientSecret: env('FACEBOOK_CLIENT_SECRET'),
       mapProfileToUser: (profile) => {
         /**
          * Facebook is not returning the `emailVerified` flag in user profile,
@@ -97,8 +97,8 @@ export const auth = betterAuth({
       },
     },
     twitter: {
-      clientId: env.TWITTER_CLIENT_ID,
-      clientSecret: env.TWITTER_CLIENT_SECRET,
+      clientId: env('TWITTER_CLIENT_ID'),
+      clientSecret: env('TWITTER_CLIENT_SECRET'),
     },
   },
   plugins: [

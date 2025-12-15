@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,9 +24,13 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/app/*"]
+      "~/*": [
+        "./src/app/*"
+      ]
     },
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ]
   },
   "include": [
     "./*.ts",
@@ -36,7 +44,10 @@
     "typings/*.d.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules",
+    ".next/**/*.ts"
+  ],
   "ts-node": {
     "files": true,
     "compilerOptions": {

@@ -1,6 +1,6 @@
 import { ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import React from 'react';
-import { isProduction } from '~/lib/env-var';
+import { isProduction } from '~/lib/env';
 import { SignInDev } from './sign-in-dev';
 import { SignInEmailOtp } from './sign-in-email-otp';
 import { SignInSocial } from './sign-in-social';

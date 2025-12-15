@@ -1,9 +1,8 @@
-/** This is for server use only */
-import { env } from 'next-runtime-env';
+'server-only';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import stream from 'stream';
-import { isProduction } from '~/lib/env-var';
+import { isProduction } from '~/lib/env';
 import { FixedSizeBuffer } from '~/lib/fixed-size-buffer';
 import { insertIf } from '~/lib/insert-if';
 
@@ -44,8 +43,8 @@ function errorSerializer(err: Error) {
  * @param flag Debug flag to check
  */
 function debugEnabled(flag: string) {
-  // Not using ~/lib/env-cfg because it also reference this file
-  const flagEnv = env('LOG_DEBUG');
+  // Not using ~/lib/env/server-env because it also reference this file
+  const flagEnv = process.env.LOG_DEBUG;
 
   if (!flagEnv) {
     return false;

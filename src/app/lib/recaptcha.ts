@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import { env } from '~/lib/env-cfg';
+import { env } from '~/lib/env/server-env';
 import { Logger } from '~/lib/logger';
 
 const logger = Logger('/lib/recaptcha');
@@ -13,7 +13,7 @@ export async function verifyRecaptchaV3(recaptchaToken: string) {
   const url = queryString.stringifyUrl({
     url: 'https://www.google.com/recaptcha/api/siteverify',
     query: {
-      secret: env.GOOGLE_RECAPTCHA_SECRET_KEY,
+      secret: env('GOOGLE_RECAPTCHA_SECRET_KEY'),
       response: recaptchaToken,
     },
   });

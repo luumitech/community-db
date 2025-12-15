@@ -2,7 +2,7 @@ import { render } from '@react-email/components';
 import { type EmailOTPOptions } from 'better-auth/plugins';
 import React from 'react';
 import { OtpCode } from '~/../emails/template/otp-code';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
 import { Nodemailer } from '~/lib/nodemailer';
 
 /**

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useWizard } from 'react-use-wizard';
 import * as GQL from '~/graphql/generated/graphql';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
 import { importMethodSelectionList } from '../_type';
 import { usePageContext } from '../page-context';
 import { useHookFormContext } from '../use-hook-form';
