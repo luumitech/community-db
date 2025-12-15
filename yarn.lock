@@ -3749,7 +3749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/executor-http@npm:^3.0.6":
+"@graphql-tools/executor-http@npm:^3.0.6, @graphql-tools/executor-http@npm:^3.0.7":
   version: 3.0.7
   resolution: "@graphql-tools/executor-http@npm:3.0.7"
   dependencies:
@@ -4254,14 +4254,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-yoga/plugin-persisted-operations@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@graphql-yoga/plugin-persisted-operations@npm:3.4.0"
+"@graphql-yoga/plugin-persisted-operations@npm:^3.17.1":
+  version: 3.17.1
+  resolution: "@graphql-yoga/plugin-persisted-operations@npm:3.17.1"
+  dependencies:
+    "@whatwg-node/promise-helpers": "npm:^1.3.2"
   peerDependencies:
-    "@graphql-tools/utils": ^10.0.0
     graphql: ^15.2.0 || ^16.0.0
-    graphql-yoga: ^5.4.0
-  checksum: 10c0/8c969aae88ffb15da446d2737b2a00f2c41073cf23fb4d31ae4191d819b915eeb46607694551f087b44c04700fca25ced3907b29ec4c1855eee1ffdb8cc3692f
+    graphql-yoga: ^5.17.1
+  checksum: 10c0/8121d755bccdd4efb9edf27c1dfd4bc0748c1584cba7b08a57d5a856cd250924a0bc314e92996d03fea17b8128c943319a756ca4f1fe730f079f5b679b83eaed
   languageName: node
   linkType: hard
 
@@ -15566,8 +15567,8 @@ __metadata:
     "@graphql-codegen/client-preset-swc-plugin": "npm:^0.2.0"
     "@graphql-codegen/schema-ast": "npm:^5.0.0"
     "@graphql-codegen/typescript-apollo-client-helpers": "npm:^3.0.1"
-    "@graphql-tools/executor-http": "npm:^1.0.9"
-    "@graphql-yoga/plugin-persisted-operations": "npm:^3.4.0"
+    "@graphql-tools/executor-http": "npm:^3.0.7"
+    "@graphql-yoga/plugin-persisted-operations": "npm:^3.17.1"
     "@heroui/react": "npm:^2.8.5"
     "@hokify/agenda": "npm:^6.3.0"
     "@hookform/resolvers": "npm:^3.3.4"
