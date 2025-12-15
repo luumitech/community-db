@@ -1,3 +1,4 @@
+'server only';
 import { cn } from '@heroui/react';
 import {
   Body,
@@ -11,8 +12,16 @@ import {
   Text,
 } from '@react-email/components';
 import * as React from 'react';
-import { env } from '~/lib/env-cfg';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
+import { env } from '~/lib/env/server-env';
+
+/**
+ * NOTE: This code is intended for react-email to render email content on server
+ * side.
+ *
+ * As such, it should only be rendered on server only, and it is ok to reference
+ * server-env directly
+ */
 
 interface Props {
   email: string;
@@ -37,7 +46,7 @@ export const OtpCode: React.FC<Props> = ({ email, otp }) => {
           >
             <Img
               className="mx-auto"
-              src={`${env.NEXT_PUBLIC_HOSTNAME}/image/community-db-logo.png`}
+              src={`${env('NEXT_PUBLIC_HOSTNAME')}/image/community-db-logo.png`}
               width="64"
               height="64"
               alt="Community DB Logo"
@@ -48,7 +57,7 @@ export const OtpCode: React.FC<Props> = ({ email, otp }) => {
             <Heading className="text-center text-lg font-bold">
               Let&apos;s get you signed in
             </Heading>
-            <Text className="mb-0 mt-8 text-center">
+            <Text className="mt-8 mb-0 text-center">
               Please use this code to login:
             </Text>
             <Section

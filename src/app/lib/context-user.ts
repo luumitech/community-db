@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { getServerSession } from '~/api/auth/[...better]/auth';
-import { isProduction } from '~/lib/env-var';
+import { isProduction } from '~/lib/env';
 import { Logger } from '~/lib/logger';
 
 const logger = Logger('lib/context-user');

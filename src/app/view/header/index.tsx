@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
@@ -65,7 +65,7 @@ export const Header: React.FC<Props> = ({}) => {
               <AppLogo priority size={36} />
             </div>
             {/* Hide appTitle in small layout */}
-            <span className="max-w-min whitespace-normal text-balance text-center font-bold leading-5 max-sm:hidden">
+            <span className="max-w-min text-center leading-5 font-bold text-balance whitespace-normal max-sm:hidden">
               {appTitle}
             </span>
           </Link>

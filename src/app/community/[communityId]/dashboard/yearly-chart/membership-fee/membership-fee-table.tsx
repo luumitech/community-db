@@ -2,7 +2,7 @@ import { Divider, ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { useLocalStorage } from 'usehooks-ts';
-import { lsFlags } from '~/lib/env-var';
+import { lsFlags } from '~/lib/env';
 import { type MembershipFeeStat } from './_type';
 import { GroupBy } from './group-by';
 import { TableHeader, TableRow, TableSumRow } from './table-row';

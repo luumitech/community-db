@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import SMTPConnection from 'nodemailer/lib/smtp-connection';
-import { env } from '~/lib/env-cfg';
+import { env } from '~/lib/env/server-env';
 import { Logger } from '~/lib/logger';
 
 const logger = Logger('nodemailer');
@@ -29,16 +29,16 @@ export class Nodemailer {
   static async fromConfig() {
     const api = new Nodemailer(
       {
-        host: env.EMAIL_SERVER_HOST,
-        port: env.EMAIL_SERVER_PORT,
-        secure: env.EMAIL_SERVER_SECURE,
+        host: env('EMAIL_SERVER_HOST'),
+        port: env('EMAIL_SERVER_PORT'),
+        secure: env('EMAIL_SERVER_SECURE'),
         auth: {
-          user: env.EMAIL_SERVER_USER,
-          pass: env.EMAIL_SERVER_PASSWORD,
+          user: env('EMAIL_SERVER_USER'),
+          pass: env('EMAIL_SERVER_PASSWORD'),
         },
       },
       {
-        from: env.EMAIL_FROM,
+        from: env('EMAIL_FROM'),
       }
     );
     return api;

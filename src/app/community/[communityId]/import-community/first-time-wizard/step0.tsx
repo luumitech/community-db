@@ -2,7 +2,7 @@ import { Button, Tooltip } from '@heroui/react';
 import React from 'react';
 import { useWizard } from 'react-use-wizard';
 import { useLocalStorage } from 'usehooks-ts';
-import { lsFlags } from '~/lib/env-var';
+import { lsFlags } from '~/lib/env';
 import { Icon } from '~/view/base/icon';
 import { usePageContext } from '../page-context';
 
@@ -35,7 +35,7 @@ export const Step0: React.FC<Props> = ({ className }) => {
       content="This wizard will guide you through the process of importing data into your community database."
     >
       <Button
-        className="absolute bottom-4 right-4"
+        className="absolute right-4 bottom-4"
         isIconOnly
         size="sm"
         radius="full"

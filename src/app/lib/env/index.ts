@@ -1,5 +1,11 @@
 import { PHASE_PRODUCTION_BUILD } from 'next/constants';
 
+/**
+ * Utility functions defined here can be used by both server and client code
+ *
+ * Make sure you don't expose sensitive information through here
+ */
+
 export const appTitle = 'Community Database';
 export const appDescription =
   'Community Membership Database designed specifically for nonprofits. Easy to use, keep tracks of events and membership information.';

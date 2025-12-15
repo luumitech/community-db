@@ -17,7 +17,7 @@ import {
 } from './blob-hierarchy-iterator';
 import { BlobIterator, ListBlobOpt } from './blob-iterator';
 
-import { env } from '~/lib/env-cfg';
+import { env } from '~/lib/env/server-env';
 import { streamToBuffer, streamToString } from '~/lib/file-util';
 
 export { type TransferProgressEvent } from '@azure/core-http';
@@ -278,7 +278,7 @@ export class BlobContainer {
       permissions: BlobSASPermissions.parse('r'),
       // If using local azurite emulator, then it's likely http
       protocol:
-        env.AZURE_STORAGE_MODE === 'local'
+        env('AZURE_STORAGE_MODE') === 'local'
           ? SASProtocol.HttpsAndHttp
           : SASProtocol.Https,
       expiresOn: addMinutes(Date.now(), 10),

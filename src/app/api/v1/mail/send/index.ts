@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import * as R from 'remeda';
-import { env } from '~/lib/env-cfg';
+import { env } from '~/lib/env/server-env';
 import { Logger, recentServerLog } from '~/lib/logger';
 import { Nodemailer } from '~/lib/nodemailer';
 import { verifyRecaptchaV3 } from '~/lib/recaptcha';
@@ -23,7 +23,7 @@ export async function send(req: SInput): Promise<SOutput> {
 
   // Construct email recipient list
   const To = R.isEmpty(to ?? [])
-    ? env.EMAIL_FROM
+    ? env('EMAIL_FROM')
     : to!.map(({ email, name }) => `${name} <${email}>`).join(', ');
 
   if (log) {

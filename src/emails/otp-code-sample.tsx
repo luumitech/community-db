@@ -1,5 +1,11 @@
 /**
- * This is necessary because react-email does not handle .env files correctly
+ * This is intended to test the `otp.code.tsx` email template, you can start the
+ * react-email preview server:
+ *
+ *     yarn email-dev
+ *
+ * The dotenv is necessary because react-email does not handle .env files
+ * correctly:
  *
  * See: https://github.com/resend/react-email/issues/668
  */

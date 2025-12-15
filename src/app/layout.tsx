@@ -4,7 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { appDescription, appTitle } from '~/lib/env-var';
+import { appDescription, appTitle } from '~/lib/env';
 import { Header } from '~/view/header';
 import { Providers } from './providers';
 

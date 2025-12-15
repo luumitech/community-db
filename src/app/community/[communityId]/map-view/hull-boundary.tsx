@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 import { useMap } from 'react-leaflet';
 import { useLocalStorage } from 'usehooks-ts';
-import { lsFlags } from '~/lib/env-var';
+import { lsFlags } from '~/lib/env';
 import { ToolbarControl } from '~/view/base/map';
 
 const Polygon = dynamic(

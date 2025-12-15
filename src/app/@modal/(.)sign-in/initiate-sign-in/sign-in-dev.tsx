@@ -1,7 +1,7 @@
 import { Button } from '@heroui/react';
 import React from 'react';
 import { useSignIn } from '~/custom-hooks/auth';
-import { isProduction } from '~/lib/env-var';
+import { isProduction } from '~/lib/env';
 import { Icon } from '~/view/base/icon';
 
 interface Props {

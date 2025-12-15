@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { userRef } from '~/graphql/schema/user/object';
-import { env } from '~/lib/env-cfg';
+import { env } from '~/lib/env/server-env';
 import prisma from '~/lib/prisma';
 import { getHelcimSubscriptionEntry } from './helcim/util';
 import type { SubscriptionEntry } from './object';
@@ -29,8 +29,8 @@ const GRANTED_PLAN: SubscriptionPlan = {
 
 /** Default configuration when client has not paid for subscription */
 const DEFAULT_APP_CONFIG: ApplicationConfig = {
-  communityLimit: env.NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY,
-  propertyLimit: env.NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY,
+  communityLimit: env('NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY'),
+  propertyLimit: env('NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY'),
 };
 
 /**
@@ -49,7 +49,7 @@ export async function getSubscriptionEntry(
    * When Subscription Plan is disabled in the app, allow client use of full
    * capability
    */
-  if (!env.NEXT_PUBLIC_PLAN_ENABLE) {
+  if (!env('NEXT_PUBLIC_PLAN_ENABLE')) {
     return GRANTED_PLAN;
   }
 
@@ -65,8 +65,8 @@ export async function getSubscriptionEntry(
           ...(subEntry.status === 'INACTIVE'
             ? DEFAULT_APP_CONFIG
             : {
-                communityLimit: env.NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY,
-                propertyLimit: env.NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY,
+                communityLimit: env('NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY'),
+                propertyLimit: env('NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY'),
               }),
         };
       }

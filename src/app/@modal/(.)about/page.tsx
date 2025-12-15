@@ -10,7 +10,7 @@ import {
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
 import { Icon } from '~/view/base/icon';
 import { BuiltBy } from '~/view/footer/build-by';
@@ -35,7 +35,7 @@ export default function About() {
         <ModalBody>
           <div className="grid grid-cols-[repeat(2,max-content)] gap-x-4 gap-y-2">
             <div className="italic">Version</div>
-            <div className="overflow-hidden text-ellipsis font-mono">
+            <div className="overflow-hidden font-mono text-ellipsis">
               {/*
                * Not using next-runtime-env because these variables
                * are only available during build time during docker
@@ -44,7 +44,7 @@ export default function About() {
               {process.env.NEXT_PUBLIC_APP_VERSION}
             </div>
             <div className="italic">Branch</div>
-            <div className="overflow-hidden text-ellipsis font-mono">
+            <div className="overflow-hidden font-mono text-ellipsis">
               {/*
                * Not using next-runtime-env because these variables
                * are only available during build time during docker
@@ -53,7 +53,7 @@ export default function About() {
               {process.env.NEXT_PUBLIC_GIT_BRANCH}
             </div>
             <div className="italic">Commit</div>
-            <div className="overflow-hidden text-ellipsis font-mono">
+            <div className="overflow-hidden font-mono text-ellipsis">
               {/*
                * Not using next-runtime-env because these variables
                * are only available during build time during docker

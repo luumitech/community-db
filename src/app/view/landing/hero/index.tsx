@@ -3,7 +3,7 @@ import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
-import { appTitle } from '~/lib/env-var';
+import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
 import { SignInButton } from '~/view/header/not-signed-in/sign-in-button';
 import { QuickStart } from './quick-start';
@@ -28,8 +28,8 @@ export const Hero: React.FC<Props> = ({ className }) => {
       <div className="px-6 py-6 sm:px-12 sm:pt-[10vh]">
         <div
           className={cn(
-            'flex flex-col items-center gap-6 text-wrap text-center',
-            'rounded-xl bg-background bg-opacity-80 p-5 sm:p-10'
+            'flex flex-col items-center gap-6 text-center text-wrap',
+            'bg-opacity-80 rounded-xl bg-background p-5 sm:p-10'
           )}
         >
           <Link href={appPath('home')}>
