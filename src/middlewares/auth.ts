@@ -1,5 +1,4 @@
 import { getSessionCookie } from 'better-auth/cookies';
-import { env } from 'next-runtime-env';
 import { NextResponse } from 'next/server';
 import { appPath } from '~/lib/app-path';
 import { urlJoin } from '~/lib/url-util';
@@ -35,8 +34,8 @@ export const authMiddleware: MiddlewareFactory =
 
       // Auth fails if session token is not available
       if (!sessionCookie) {
-        const baseURL = env('NEXT_PUBLIC_HOSTNAME')!;
-        const homeURL = urlJoin(baseURL, {
+        const origin = request.nextUrl.origin;
+        const homeURL = urlJoin(origin, {
           paths: appPath('home'),
           // Add callback, to redirect to this page after login
           query: { callbackUrl: pathname },

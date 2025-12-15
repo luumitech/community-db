@@ -1,26 +1,28 @@
 import { StatusCodes } from 'http-status-codes';
-import { env as envVar } from '~/lib/env/server-env';
+import * as R from 'remeda';
+import { nextPublicSchema } from '~/lib/env/env-schema';
+import { getEnv } from '~/lib/env/server-env';
 import { Logger } from '~/lib/logger';
 import type { SInput, SOutput } from './contract';
 
 const logger = Logger('/sample');
 
 /**
- * By default, reading NEXT_PUBLIC env var directly on client side will retrieve
- * its value during build time.
+ * NextJS allows you to access `process.env.NEXT_PUBLIC_*` env var on client
+ * side, however, the values will be replaced with actual value at build time.
  *
- * If you want to read NEXT_PUBLIC env var in runtime, then use this API
+ * If you want the access the run time value on the client, use this API to read
+ * the env var.. This works because the env vars are processed at runtime on the
+ * server side.
  */
 export async function env(req: SInput): Promise<SOutput> {
-  const { name } = req.query;
+  const envObj = getEnv();
 
-  if (!name.startsWith('NEXT_PUBLIC')) {
-    throw new Error('Can only retrieve NEXT_PUBLIC env vars');
-  }
-  const envValue = envVar(name)?.toString();
+  const nextPublicEnvKeys = nextPublicSchema.keyof().options;
+  const nextPublicEnv = R.pick(envObj, nextPublicEnvKeys);
 
   return {
     status: StatusCodes.OK,
-    body: envValue ?? '',
+    body: nextPublicEnv,
   };
 }

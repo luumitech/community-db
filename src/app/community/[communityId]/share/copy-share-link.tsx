@@ -1,7 +1,7 @@
 import { Input } from '@heroui/react';
-import { env } from 'next-runtime-env';
 import React from 'react';
 import { useCopyToClipboard } from 'usehooks-ts';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
@@ -13,13 +13,14 @@ interface Props {
 }
 
 export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
+  const { env } = useAppContext();
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
   const url = React.useMemo(() => {
     const path = appPath('propertyList', { path: { communityId } });
-    const hostname = env('NEXT_PUBLIC_HOSTNAME');
+    const hostname = env.NEXT_PUBLIC_HOSTNAME;
     return `${hostname}${path}`;
-  }, [communityId]);
+  }, [env, communityId]);
 
   return (
     <div className={className}>

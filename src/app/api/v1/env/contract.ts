@@ -3,8 +3,7 @@ import {
   ServerInferRequest,
   ServerInferResponses,
 } from '@ts-rest/core';
-import { clientSchema } from '~/lib/env/env-schema';
-import { z, zz } from '~/lib/zod';
+import { nextPublicSchema } from '~/lib/env/env-schema';
 
 export type SInput = ServerInferRequest<typeof envContract.env>;
 export type SOutput = ServerInferResponses<typeof envContract.env>;
@@ -15,18 +14,9 @@ export const envContract = c.router({
   env: {
     method: 'GET',
     path: '/env',
-    summary: 'Read NEXT_PUBLIC env var runtime value',
-    query: z.object({
-      /**
-       * NEXT_PUBLIC env var name
-       *
-       * For example, to get NEXT_PUBLIC_PLAN_FREE_NAME, specify
-       * name="NEXT_PUBLIC_PLAN_FREE_NAME"
-       */
-      name: clientSchema.keyof(),
-    }),
+    summary: 'Return all NEXT_PUBLIC env var variables',
     responses: {
-      200: z.string(),
+      200: nextPublicSchema,
     },
   },
 });

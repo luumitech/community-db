@@ -1,15 +1,14 @@
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
-import { env } from 'next-runtime-env';
 
-interface Props {}
+interface Props {
+  reCaptchaKey: string;
+}
 
 export const GoogleRecaptchaProviders: React.FC<
   React.PropsWithChildren<Props>
-> = ({ children }) => {
+> = ({ reCaptchaKey, children }) => {
   return (
-    <ReCaptchaProvider
-      reCaptchaKey={env('NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY')}
-    >
+    <ReCaptchaProvider reCaptchaKey={reCaptchaKey}>
       {children}
     </ReCaptchaProvider>
   );

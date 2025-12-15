@@ -1,24 +1,29 @@
 import React from 'react';
+import { type NextPublicEnvSchema } from '~/lib/env/env-schema';
 import {
   useConfirmationModalContext,
   type ConfirmationState,
 } from './confirmation-modal';
 
-interface ContextT extends Readonly<ConfirmationState> {}
+interface ContextT extends Readonly<ConfirmationState> {
+  env: NextPublicEnvSchema;
+}
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
 
 interface Props {
+  env: NextPublicEnvSchema;
   children: React.ReactNode;
 }
 
-export function AppProvider(props: Props) {
+export function AppProvider({ env, ...props }: Props) {
   const confirmValues = useConfirmationModalContext();
 
   return (
     <Context.Provider
       value={{
+        env,
         ...confirmValues,
       }}
       {...props}

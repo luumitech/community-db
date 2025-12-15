@@ -7,9 +7,9 @@ import type { SubscriptionEntry } from './object';
 
 interface ApplicationConfig {
   /** Maximum number of community to display */
-  communityLimit?: number;
+  communityLimit?: number | null;
   /** Maximum number of property to display */
-  propertyLimit?: number;
+  propertyLimit?: number | null;
 }
 
 type SubscriptionPlan = SubscriptionEntry & ApplicationConfig;

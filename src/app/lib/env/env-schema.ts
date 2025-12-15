@@ -64,7 +64,7 @@ const baseSchema = z.object({
  *
  * NOTE: Do not expose anything sensitive information here
  */
-export const clientSchema = z.object({
+export const nextPublicSchema = z.object({
   /**
    * Basepath used by client to construct URL (do not add slash at end)
    *
@@ -81,16 +81,26 @@ export const clientSchema = z.object({
   /** Name and cost of Free plan */
   NEXT_PUBLIC_PLAN_FREE_NAME: zz.string.envVar(),
   NEXT_PUBLIC_PLAN_FREE_COST: z.coerce.number(),
-  NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY: z.coerce.number(),
-  NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY: z.coerce.number(),
+  NEXT_PUBLIC_PLAN_FREE_MAX_COMMUNITY: zz.coerce.toNumber({
+    nullable: true,
+  }),
+  NEXT_PUBLIC_PLAN_FREE_MAX_PROPERTY: zz.coerce.toNumber({
+    nullable: true,
+  }),
   /** Name and cost of Premium plan */
   NEXT_PUBLIC_PLAN_PREMIUM_NAME: zz.string.envVar(),
   NEXT_PUBLIC_PLAN_PREMIUM_COST: z.coerce.number(),
-  NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY: z.coerce.number(),
-  NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY: z.coerce.number(),
+  // null means no limit
+  NEXT_PUBLIC_PLAN_PREMIUM_MAX_COMMUNITY: zz.coerce.toNumber({
+    nullable: true,
+  }),
+  // null means no limit
+  NEXT_PUBLIC_PLAN_PREMIUM_MAX_PROPERTY: zz.coerce.toNumber({
+    nullable: true,
+  }),
 
   /** Google Recaptcha configuration */
-  NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY: z.string(),
+  NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY: zz.string.envVar(),
 });
 
 const azureLocalStorageSchema = z.object({
@@ -120,5 +130,8 @@ const azureStorageSchema = z.discriminatedUnion('AZURE_STORAGE_MODE', [
   azureNoneStorageSchema,
 ]);
 
-export const envSchema = baseSchema.and(clientSchema).and(azureStorageSchema);
+export const envSchema = baseSchema
+  .and(nextPublicSchema)
+  .and(azureStorageSchema);
 export type EnvSchema = z.infer<typeof envSchema>;
+export type NextPublicEnvSchema = z.infer<typeof nextPublicSchema>;
