@@ -36,7 +36,7 @@ describe('Raw property query', () => {
       variables: {
         filter: {
           nonMemberYear: 2024,
-          memberYear: 2023,
+          memberYearList: [2023],
         },
       },
     });
@@ -48,7 +48,7 @@ describe('Raw property query', () => {
       document,
       variables: {
         filter: {
-          memberYear: 2022,
+          memberYearList: [2022],
         },
       },
     });

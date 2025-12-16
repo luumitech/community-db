@@ -15,8 +15,9 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
     searchText: t.string({
       description: 'Match against property address/first name/last name',
     }),
-    memberYear: t.int({
-      description: 'Only property who is a member of the given year',
+    memberYearList: t.field({
+      description: 'Only property who is a member of the given year(s)',
+      type: ['Int'],
     }),
     nonMemberYear: t.int({
       description: 'Only property who is NOT a member of the given year',

@@ -151,7 +151,7 @@ function propertyListFilterArgs(
 ): Prisma.PropertyWhereInput {
   const AND: Prisma.PropertyWhereInput[] = [];
 
-  const { searchText, memberEvent, memberYear, nonMemberYear, withGps } =
+  const { searchText, memberEvent, memberYearList, nonMemberYear, withGps } =
     args ?? {};
 
   const trimSearchText = searchText?.trim();
@@ -232,16 +232,25 @@ function propertyListFilterArgs(
     });
   }
 
-  if (memberYear != null || memberEvent != null) {
+  if (memberYearList != null && memberYearList.length > 0) {
+    AND.push(
+      ...memberYearList.map((memberYear) => ({
+        membershipList: {
+          some: {
+            // non-empty `eventAttendedList` implies user is a member
+            eventAttendedList: { isEmpty: false },
+            year: memberYear,
+          },
+        },
+      }))
+    );
+  }
+
+  if (memberEvent != null) {
     AND.push({
       membershipList: {
         some: {
-          // non-empty `eventAttendedList` implies user is a member
-          eventAttendedList: { isEmpty: false },
-          ...(memberYear && { year: memberYear }),
-          ...(memberEvent && {
-            eventAttendedList: { some: { eventName: memberEvent } },
-          }),
+          eventAttendedList: { some: { eventName: memberEvent } },
         },
       },
     });

@@ -28,7 +28,7 @@ export const YearSelect: React.FC<Props> = ({ className, ...props }) => {
       }}
       items={yearItems}
       isDisabled={!yearItems.length}
-      selectionMode="single"
+      selectionMode="multiple"
       placeholder="Unspecified"
       // disallowEmptySelection
       {...props}

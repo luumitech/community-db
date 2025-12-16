@@ -21,7 +21,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const dispatch = useDispatch();
-  const { searchText, memberYear, nonMemberYear, memberEvent, withGps } =
+  const { searchText, memberYearList, nonMemberYear, memberEvent, withGps } =
     useSelector((state) => state.searchBar);
 
   const setSearchText = (input?: string) => {
@@ -31,7 +31,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      dispatch(actions.searchBar.setMemberYear(input.memberYear));
+      dispatch(actions.searchBar.setMemberYearList(input.memberYearList));
       dispatch(actions.searchBar.setNonMemberYear(input.nonMemberYear));
       dispatch(actions.searchBar.setMemberEvent(input.memberEvent));
       dispatch(actions.searchBar.setWithGps(input.withGps));
@@ -41,8 +41,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   );
 
   const openDrawer = React.useCallback(() => {
-    open({ memberYear, nonMemberYear, memberEvent, withGps });
-  }, [open, memberYear, nonMemberYear, memberEvent, withGps]);
+    open({ memberYearList, nonMemberYear, memberEvent, withGps });
+  }, [open, memberYearList, nonMemberYear, memberEvent, withGps]);
 
   return (
     <>
@@ -52,7 +52,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         // isClearable
         // onClear={() => setSearchText(undefined)}
         endContent={
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex cursor-pointer items-center justify-center gap-2">
             {/**
              * `isClearable`/`onClear` cannot be used together with endContent See:
              * https://github.com/nextui-org/nextui/issues/2254
@@ -65,7 +65,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             <FilterButton openDrawer={openDrawer} />
             <FilterChip
               openDrawer={openDrawer}
-              filters={{ memberYear, nonMemberYear, memberEvent, withGps }}
+              filters={{ memberYearList, nonMemberYear, memberEvent, withGps }}
               onFilterChange={onFilterChange}
             />
           </div>

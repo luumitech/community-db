@@ -41,13 +41,13 @@ export const FilterDrawer: React.FC<Props> = ({
     [onClose, onFilterChange]
   );
 
-  const memberYear = watch('memberYear');
+  const memberYearList = watch('memberYearList');
   const nonMemberYear = watch('nonMemberYear');
   const event = watch('memberEvent');
 
   const canClear = React.useMemo(() => {
-    return !!memberYear || !!nonMemberYear || !!event;
-  }, [memberYear, nonMemberYear, event]);
+    return memberYearList.length > 0 || !!nonMemberYear || !!event;
+  }, [memberYearList, nonMemberYear, event]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -57,9 +57,9 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
-                controlName="memberYear"
+                controlName="memberYearList"
                 size="sm"
-                label="Member In Year"
+                label="Member In Year(s)"
                 description="Include only members who have memberships in the specified year"
                 autoFocus
               />
@@ -85,7 +85,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 color="danger"
                 isDisabled={!canClear}
                 onPress={() => {
-                  setValue('memberYear', null, { shouldDirty: true });
+                  setValue('memberYearList', [], { shouldDirty: true });
                   setValue('nonMemberYear', null, { shouldDirty: true });
                   setValue('memberEvent', null, { shouldDirty: true });
                 }}

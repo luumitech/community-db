@@ -7,7 +7,7 @@ import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
-import { isInteger, isNonEmpty, z, zz } from '~/lib/zod';
+import { isNonEmpty, z, zz } from '~/lib/zod';
 
 const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
@@ -29,10 +29,7 @@ function schema() {
       }),
       method: z.nativeEnum(GQL.BatchModifyMethod),
       filter: z.object({
-        memberYear: zz.coerce.toNumber({
-          message: 'Must select a year',
-          nullable: true,
-        }),
+        memberYearList: zz.coerce.toNumberList(),
         memberEvent: z.string().nullable(),
         withGps: zz.coerce.toBoolean({ nullable: true }),
       }),
@@ -54,11 +51,11 @@ function schema() {
     })
     .superRefine((form, ctx) => {
       if (form.method === GQL.BatchModifyMethod.AddEvent) {
-        if (isInteger()(form.filter.memberYear) != null) {
+        if (form.filter.memberYearList.length === 0) {
           return ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Must select a year',
-            path: ['filter', 'memberYear'],
+            path: ['filter', 'memberYearList'],
           });
         }
         if (isNonEmpty()(form.membership.eventAttended.eventName) != null) {
@@ -93,7 +90,7 @@ function defaultInputData(
     },
     method: GQL.BatchModifyMethod.AddEvent,
     filter: {
-      memberYear: filter.memberYear ?? null,
+      memberYearList: filter.memberYearList ?? [],
       memberEvent: filter.memberEvent ?? null,
       withGps: filter.withGps ?? null,
     },

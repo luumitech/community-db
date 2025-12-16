@@ -5,7 +5,7 @@ import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
 import { Icon } from '~/view/base/icon';
 
 interface FilterItems {
-  memberYear?: number | null;
+  memberYearList?: number[];
   nonMemberYear?: number | null;
   memberEvent?: string | null;
   withGps?: boolean | null;
@@ -26,12 +26,12 @@ export const FilterChip: React.FC<Props> = ({
   isDisabled,
   onFilterChange,
 }) => {
-  const { memberYear, nonMemberYear, memberEvent, withGps } = filters;
+  const { memberYearList, nonMemberYear, memberEvent, withGps } = filters;
 
   const onChange = React.useCallback(
     (_filters: FilterItems) => {
       onFilterChange?.({
-        memberYear: _filters.memberYear ?? null,
+        memberYearList: _filters.memberYearList ?? [],
         nonMemberYear: _filters.nonMemberYear ?? null,
         memberEvent: _filters.memberEvent ?? null,
         withGps: _filters.withGps ?? null,
@@ -45,15 +45,15 @@ export const FilterChip: React.FC<Props> = ({
       className={cn(className, 'hidden cursor-pointer gap-2 sm:flex')}
       onClick={openDrawer}
     >
-      {memberYear != null && (
+      {memberYearList != null && memberYearList.length > 0 && (
         <Chip
           variant="bordered"
           color="success"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, memberYear: null })}
+          onClose={() => onChange({ ...filters, memberYearList: [] })}
         >
           <div className="flex items-center gap-2">
-            {memberYear}
+            {memberYearList.join(',')}
             <Icon icon="thumb-up" size={16} />
           </div>
         </Chip>

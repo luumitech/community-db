@@ -15,11 +15,11 @@ export function useMemberYear() {
   const { filterArg } = useSelector((state) => state.searchBar);
 
   const years = React.useMemo(() => {
-    const { memberYear, nonMemberYear } = filterArg;
+    const { memberYearList, nonMemberYear } = filterArg;
 
     const yearsToShow = new Set<number>();
-    if (memberYear != null) {
-      yearsToShow.add(memberYear);
+    if (memberYearList != null) {
+      memberYearList.forEach(yearsToShow.add);
     }
     if (nonMemberYear != null) {
       yearsToShow.add(nonMemberYear);

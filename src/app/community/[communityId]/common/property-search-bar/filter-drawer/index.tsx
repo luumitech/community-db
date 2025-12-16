@@ -18,7 +18,7 @@ import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from '../use-hook-form';
 
 export interface DrawerArg {
-  memberYear: number | null;
+  memberYearList: number[];
   nonMemberYear: number | null;
   memberEvent: string | null;
   withGps: boolean | null;
@@ -35,7 +35,7 @@ export const FilterDrawer: React.FC<Props> = ({
   ...arg
 }) => {
   const { formMethods } = useHookForm(
-    arg.memberYear,
+    arg.memberYearList,
     arg.nonMemberYear,
     arg.memberEvent,
     arg.withGps
@@ -52,13 +52,13 @@ export const FilterDrawer: React.FC<Props> = ({
     [onClose, onFilterChange]
   );
 
-  const memberYear = watch('memberYear');
+  const memberYearList = watch('memberYearList');
   const nonMemberYear = watch('nonMemberYear');
   const memberEvent = watch('memberEvent');
 
   const canClear = React.useMemo(() => {
-    return !!memberYear || !!nonMemberYear || !!memberEvent;
-  }, [memberYear, nonMemberYear, memberEvent]);
+    return memberYearList.length > 0 || !!nonMemberYear || !!memberEvent;
+  }, [memberYearList, nonMemberYear, memberEvent]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -68,26 +68,30 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
-                label="Member In Year"
+                label="Member In Year(s)"
                 description="Show properties who are members in the specified year"
-                controlName="memberYear"
+                controlName="memberYearList"
                 size="sm"
+                isClearable
               />
               <YearSelect
                 label="Non-Member In Year"
                 description="Show properties who are not members in the specified year"
                 controlName="nonMemberYear"
                 size="sm"
+                isClearable
               />
               <EventSelect
                 description="Show properties who registered at the specified event"
                 controlName="memberEvent"
                 size="sm"
+                isClearable
               />
               <GpsSelect
                 description="Show properties with or without GPS coordinate"
                 controlName="withGps"
                 size="sm"
+                isClearable
               />
             </DrawerBody>
             <DrawerFooter>
@@ -99,7 +103,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 color="danger"
                 isDisabled={!canClear}
                 onPress={() => {
-                  setValue('memberYear', null, { shouldDirty: true });
+                  setValue('memberYearList', [], { shouldDirty: true });
                   setValue('nonMemberYear', null, { shouldDirty: true });
                   setValue('memberEvent', null, { shouldDirty: true });
                   setValue('withGps', null, { shouldDirty: true });

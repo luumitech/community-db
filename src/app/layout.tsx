@@ -1,21 +1,33 @@
-import { initClient } from '@ts-rest/core';
-import { StatusCodes } from 'http-status-codes';
 import type { Metadata } from 'next';
-import { ThemeProvider } from 'next-themes';
 import { Inter } from 'next/font/google';
 import React from 'react';
+import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import { appDescription, appTitle } from '~/lib/env';
-import { env } from '~/lib/env/server-env';
+import { nextPublicSchema } from '~/lib/env/env-schema';
+import { getEnv } from '~/lib/env/server-env';
 import { Header } from '~/view/header';
-import { contract } from './api/contract';
 import { Providers } from './providers';
 
 import './globals.css';
 
-/* Initialize TSR client */
-const tsr = initClient(contract, { baseUrl: env('NEXT_PUBLIC_HOSTNAME') });
 const inter = Inter({ subsets: ['latin'] });
+
+/**
+ * Get NEXT_PUBLIC environment varibles and pass them along to all client
+ * routes,
+ *
+ * We don't want to access them directly in the client route because NextJS
+ * would replace them with hard coded values in build time. We retrieve the
+ * values from the server so the values will reflect the runtime values
+ */
+function getNextPublicEnv() {
+  const envObj = getEnv();
+
+  const nextPublicEnvKeys = nextPublicSchema.keyof().options;
+  const nextPublicEnv = R.pick(envObj, nextPublicEnvKeys);
+  return nextPublicEnv;
+}
 
 export const metadata: Metadata = {
   title: appTitle,
@@ -53,29 +65,17 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({ children, modal }: RootLayoutProps) {
-  const envResp = await tsr.env();
-  if (envResp.status !== StatusCodes.OK) {
-    throw new Error('Unable to load environment variables');
-  }
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className={twMerge(inter.className)}>
-        {/**
-         * Light/dark theme can be customized
-         *
-         * See: https://nextui.org/docs/customization/customize-theme
-         */}
-        <ThemeProvider defaultTheme="system" attribute="class">
-          <Providers env={envResp.body}>
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              <main>{children}</main>
-            </div>
-            {modal}
-          </Providers>
-        </ThemeProvider>
+        <Providers env={getNextPublicEnv()}>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main>{children}</main>
+          </div>
+          {modal}
+        </Providers>
       </body>
     </html>
   );

@@ -42,7 +42,7 @@ interface Props {
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   const [filter, setFilter] = React.useState(
     defaultInputData({
-      memberYear: null,
+      memberYearList: [],
       nonMemberYear: null,
       memberEvent: null,
     })

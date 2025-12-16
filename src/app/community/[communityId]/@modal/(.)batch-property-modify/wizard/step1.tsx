@@ -12,12 +12,12 @@ interface Props {}
 export const Step1: React.FC<Props> = (props) => {
   const { watch } = useHookFormContext();
   const method = watch('method');
-  const memberYear = watch('filter.memberYear');
+  const memberYearList = watch('filter.memberYearList');
 
   const nextDisabled = React.useMemo(() => {
     switch (method) {
       case GQL.BatchModifyMethod.AddEvent:
-        return R.isEmpty(memberYear?.toString());
+        return R.isEmpty(memberYearList?.toString());
 
       case GQL.BatchModifyMethod.AddGps:
         return false;
@@ -25,7 +25,7 @@ export const Step1: React.FC<Props> = (props) => {
       default:
         throw new Error('Unsupported method');
     }
-  }, [memberYear, method]);
+  }, [memberYearList, method]);
 
   const body = React.useMemo(() => {
     switch (method) {

@@ -40,7 +40,12 @@ export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
     return null;
   }
 
-  return <div className="flex items-center gap-2">{item.label}</div>;
+  // Add comma separator beween items
+  return (
+    <span className="after:content-[','] last:after:content-['']">
+      {item.label}
+    </span>
+  );
 };
 
 interface SelectedYearItemProps {
@@ -51,7 +56,7 @@ export const SelectedYearItem: React.FC<SelectedYearItemProps> = ({
   items,
 }) => {
   return (
-    <div>
+    <div className="flex items-center gap-2">
       {items.map((item) => (
         <YearItemLabel key={item.key} item={item.data} />
       ))}

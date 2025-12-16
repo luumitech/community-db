@@ -5,7 +5,7 @@ import { z, zz } from '~/lib/zod';
 
 function schema() {
   return z.object({
-    memberYear: zz.coerce.toNumber({ nullable: true }),
+    memberYearList: zz.coerce.toNumberList(),
     nonMemberYear: zz.coerce.toNumber({ nullable: true }),
     memberEvent: z.string().nullable(),
   });
@@ -15,7 +15,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 export function defaultInputData(arg: InputData): InputData {
   return {
-    memberYear: arg.memberYear ?? null,
+    memberYearList: arg.memberYearList,
     nonMemberYear: arg.nonMemberYear ?? null,
     memberEvent: arg.memberEvent ?? null,
   };

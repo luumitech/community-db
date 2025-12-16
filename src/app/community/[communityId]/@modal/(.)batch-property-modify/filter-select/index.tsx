@@ -24,20 +24,20 @@ export const FilterSelect: React.FC<Props> = ({
         selected, changes apply to all properties:
       </p>
       <YearSelect
-        className="ml-4 min-w-32 max-w-xs"
-        controlName="filter.memberYear"
-        label="Membership Year"
+        className="ml-4 max-w-xs min-w-32"
+        controlName="filter.memberYearList"
+        label="Membership Year(s)"
         isRequired={yearRequired}
         size="sm"
       />
       <EventSelect
-        className="ml-4 min-w-32 max-w-xs"
+        className="ml-4 max-w-xs min-w-32"
         controlName="filter.memberEvent"
         size="sm"
       />
       {withGps && (
         <GpsSelect
-          className="ml-4 min-w-32 max-w-xs"
+          className="ml-4 max-w-xs min-w-32"
           controlName="filter.withGps"
           size="sm"
         />

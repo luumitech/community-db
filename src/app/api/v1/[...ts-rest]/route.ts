@@ -1,6 +1,5 @@
 import { createNextHandler } from '@ts-rest/serverless/next';
 import { errorHandler } from '~/lib/ts-rest/error-handler';
-import { env } from '../env';
 import { mail } from '../mail';
 import { sample } from '../sample';
 import { v1Contract } from './contract';
@@ -8,7 +7,6 @@ import { v1Contract } from './contract';
 const handler = createNextHandler(
   v1Contract,
   {
-    env,
     sample,
     mail,
   },

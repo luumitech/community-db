@@ -5,7 +5,7 @@ import { z, zz } from '~/lib/zod';
 
 function schema() {
   return z.object({
-    memberYear: zz.coerce.toNumber({ nullable: true }),
+    memberYearList: zz.coerce.toNumberList(),
     nonMemberYear: zz.coerce.toNumber({ nullable: true }),
     memberEvent: z.string().nullable(),
     withGps: zz.coerce.toBoolean({ nullable: true }),
@@ -15,13 +15,13 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultFilterInputData(
-  memberYear: number | null,
+  memberYearList: number[],
   nonMemberYear: number | null,
   memberEvent: string | null,
   withGps: boolean | null
 ): InputData {
   return {
-    memberYear: memberYear ?? null,
+    memberYearList: memberYearList,
     nonMemberYear: nonMemberYear ?? null,
     memberEvent: memberEvent ?? null,
     withGps: withGps ?? null,
@@ -29,19 +29,19 @@ function defaultFilterInputData(
 }
 
 export function useHookForm(
-  memberYear: number | null,
+  memberYearList: number[],
   nonMemberYear: number | null,
   memberEvent: string | null,
   withGps: boolean | null
 ) {
   const defaultValues = React.useMemo(() => {
     return defaultFilterInputData(
-      memberYear,
+      memberYearList,
       nonMemberYear,
       memberEvent,
       withGps
     );
-  }, [memberYear, nonMemberYear, memberEvent, withGps]);
+  }, [memberYearList, nonMemberYear, memberEvent, withGps]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
