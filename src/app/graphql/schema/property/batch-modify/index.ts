@@ -19,8 +19,9 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
       description: 'Only property who is a member of the given year(s)',
       type: ['Int'],
     }),
-    nonMemberYear: t.int({
-      description: 'Only property who is NOT a member of the given year',
+    nonMemberYearList: t.field({
+      description: 'Only property who is NOT a member of the given year(s)',
+      type: ['Int'],
     }),
     memberEvent: t.string({
       description: 'Only property who attended this event',

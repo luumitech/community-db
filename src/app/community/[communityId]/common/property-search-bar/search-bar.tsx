@@ -7,7 +7,7 @@ import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
 import { FilterDrawer, type DrawerArg } from './filter-drawer';
-import { type InputData } from './use-hook-form';
+import { InputData } from './use-hook-form';
 
 const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
@@ -21,8 +21,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const dispatch = useDispatch();
-  const { searchText, memberYearList, nonMemberYear, memberEvent, withGps } =
-    useSelector((state) => state.searchBar);
+  const searchBar = useSelector((state) => state.searchBar);
 
   const setSearchText = (input?: string) => {
     dispatch(actions.searchBar.setSearchText(input));
@@ -31,18 +30,20 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      dispatch(actions.searchBar.setMemberYearList(input.memberYearList));
-      dispatch(actions.searchBar.setNonMemberYear(input.nonMemberYear));
-      dispatch(actions.searchBar.setMemberEvent(input.memberEvent));
-      dispatch(actions.searchBar.setWithGps(input.withGps));
+      dispatch(actions.searchBar.setMemberYearList(input.memberYearList ?? []));
+      dispatch(
+        actions.searchBar.setNonMemberYearList(input.nonMemberYearList ?? [])
+      );
+      dispatch(actions.searchBar.setMemberEvent(input.memberEvent ?? null));
+      dispatch(actions.searchBar.setWithGps(input.withGps ?? null));
       onChange?.();
     },
     [dispatch, onChange]
   );
 
   const openDrawer = React.useCallback(() => {
-    open({ memberYearList, nonMemberYear, memberEvent, withGps });
-  }, [open, memberYearList, nonMemberYear, memberEvent, withGps]);
+    open(searchBar);
+  }, [open, searchBar]);
 
   return (
     <>
@@ -59,13 +60,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
              */}
             <FlatButton
               icon="cross"
-              disabled={!searchText}
+              disabled={!searchBar.searchText}
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
             <FilterChip
               openDrawer={openDrawer}
-              filters={{ memberYearList, nonMemberYear, memberEvent, withGps }}
+              filters={searchBar}
               onFilterChange={onFilterChange}
             />
           </div>
@@ -75,7 +76,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         //     <span className="text-default-400 text-small">.org/</span>
         //   </div>
         // }
-        value={searchText ?? ''}
+        value={searchBar.searchText ?? ''}
         onValueChange={setSearchText}
         {...inputProps}
       />

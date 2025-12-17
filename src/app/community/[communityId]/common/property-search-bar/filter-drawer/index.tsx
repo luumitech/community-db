@@ -14,15 +14,11 @@ import {
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { type RootState } from '~/lib/reducers';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from '../use-hook-form';
 
-export interface DrawerArg {
-  memberYearList: number[];
-  nonMemberYear: number | null;
-  memberEvent: string | null;
-  withGps: boolean | null;
-}
+export type DrawerArg = RootState['searchBar'];
 
 interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
@@ -34,12 +30,7 @@ export const FilterDrawer: React.FC<Props> = ({
   onFilterChange,
   ...arg
 }) => {
-  const { formMethods } = useHookForm(
-    arg.memberYearList,
-    arg.nonMemberYear,
-    arg.memberEvent,
-    arg.withGps
-  );
+  const { formMethods } = useHookForm(arg);
   const { formState, handleSubmit, setValue, watch } = formMethods;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const { isDirty } = formState;
@@ -53,12 +44,14 @@ export const FilterDrawer: React.FC<Props> = ({
   );
 
   const memberYearList = watch('memberYearList');
-  const nonMemberYear = watch('nonMemberYear');
+  const nonMemberYearList = watch('nonMemberYearList');
   const memberEvent = watch('memberEvent');
 
   const canClear = React.useMemo(() => {
-    return memberYearList.length > 0 || !!nonMemberYear || !!memberEvent;
-  }, [memberYearList, nonMemberYear, memberEvent]);
+    return (
+      memberYearList.length > 0 || nonMemberYearList.length > 0 || !!memberEvent
+    );
+  }, [memberYearList, nonMemberYearList, memberEvent]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -75,9 +68,9 @@ export const FilterDrawer: React.FC<Props> = ({
                 isClearable
               />
               <YearSelect
-                label="Non-Member In Year"
+                label="Non-Member In Year(s)"
                 description="Show properties who are not members in the specified year"
-                controlName="nonMemberYear"
+                controlName="nonMemberYearList"
                 size="sm"
                 isClearable
               />
@@ -104,7 +97,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 isDisabled={!canClear}
                 onPress={() => {
                   setValue('memberYearList', [], { shouldDirty: true });
-                  setValue('nonMemberYear', null, { shouldDirty: true });
+                  setValue('nonMemberYearList', [], { shouldDirty: true });
                   setValue('memberEvent', null, { shouldDirty: true });
                   setValue('withGps', null, { shouldDirty: true });
                 }}

@@ -127,7 +127,7 @@ export class Coerce {
    */
   toNumberList<T extends ToNumberListOpt>(opt?: T) {
     const { validateFn } = opt ?? {};
-    return z.any().transform((_val, ctx) => {
+    return z.any().transform((val, ctx) => {
       const onError = (message: string) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -136,9 +136,12 @@ export class Coerce {
         return z.NEVER;
       };
 
-      const val = typeof _val === 'string' ? _val : '';
-      const numList = val
-        .split(',')
+      const valArr = Array.isArray(val)
+        ? val
+        : typeof val === 'string'
+          ? val.split(',')
+          : [];
+      const numList = valArr
         .map((v) => parseAsNumber(v))
         .filter((num): num is number => num != null);
       // validate results

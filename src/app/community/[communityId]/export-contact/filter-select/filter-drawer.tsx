@@ -13,10 +13,14 @@ import {
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { type RootState } from '~/lib/reducers';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from './use-hook-form';
 
-export type DrawerArg = InputData;
+export type DrawerArg = Pick<
+  RootState['searchBar'],
+  'memberYearList' | 'nonMemberYearList' | 'memberEvent'
+>;
 
 interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
@@ -42,12 +46,12 @@ export const FilterDrawer: React.FC<Props> = ({
   );
 
   const memberYearList = watch('memberYearList');
-  const nonMemberYear = watch('nonMemberYear');
+  const nonMemberYearList = watch('nonMemberYearList');
   const event = watch('memberEvent');
 
   const canClear = React.useMemo(() => {
-    return memberYearList.length > 0 || !!nonMemberYear || !!event;
-  }, [memberYearList, nonMemberYear, event]);
+    return memberYearList.length > 0 || nonMemberYearList.length > 0 || !!event;
+  }, [memberYearList, nonMemberYearList, event]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -64,7 +68,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 autoFocus
               />
               <YearSelect
-                controlName="nonMemberYear"
+                controlName="nonMemberYearList"
                 size="sm"
                 label="Non-Member In Year"
                 description="Include only members who do have memberships in the specified year"
@@ -86,7 +90,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 isDisabled={!canClear}
                 onPress={() => {
                   setValue('memberYearList', [], { shouldDirty: true });
-                  setValue('nonMemberYear', null, { shouldDirty: true });
+                  setValue('nonMemberYearList', [], { shouldDirty: true });
                   setValue('memberEvent', null, { shouldDirty: true });
                 }}
               >

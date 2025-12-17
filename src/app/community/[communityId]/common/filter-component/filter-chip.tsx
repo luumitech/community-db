@@ -2,21 +2,21 @@ import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
+import { type RootState } from '~/lib/reducers';
 import { Icon } from '~/view/base/icon';
 
-interface FilterItems {
-  memberYearList?: number[];
-  nonMemberYear?: number | null;
-  memberEvent?: string | null;
-  withGps?: boolean | null;
-}
+type FilterItems = Pick<
+  RootState['searchBar'],
+  'memberYearList' | 'nonMemberYearList' | 'memberEvent' | 'withGps'
+>;
+type FilterChangeFn = (input: FilterItems) => Promise<void>;
 
 interface Props {
   className?: string;
   openDrawer: () => void;
   filters: FilterItems;
   isDisabled?: boolean;
-  onFilterChange?: (input: Required<FilterItems>) => Promise<void>;
+  onFilterChange?: FilterChangeFn;
 }
 
 export const FilterChip: React.FC<Props> = ({
@@ -26,16 +26,11 @@ export const FilterChip: React.FC<Props> = ({
   isDisabled,
   onFilterChange,
 }) => {
-  const { memberYearList, nonMemberYear, memberEvent, withGps } = filters;
+  const { memberYearList, nonMemberYearList, memberEvent, withGps } = filters;
 
   const onChange = React.useCallback(
     (_filters: FilterItems) => {
-      onFilterChange?.({
-        memberYearList: _filters.memberYearList ?? [],
-        nonMemberYear: _filters.nonMemberYear ?? null,
-        memberEvent: _filters.memberEvent ?? null,
-        withGps: _filters.withGps ?? null,
-      });
+      onFilterChange?.(_filters);
     },
     [onFilterChange]
   );
@@ -58,14 +53,14 @@ export const FilterChip: React.FC<Props> = ({
           </div>
         </Chip>
       )}
-      {nonMemberYear != null && (
+      {nonMemberYearList != null && nonMemberYearList.length > 0 && (
         <Chip
           variant="bordered"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, nonMemberYear: null })}
+          onClose={() => onChange({ ...filters, nonMemberYearList: [] })}
         >
           <div className="flex items-center gap-2">
-            {nonMemberYear}
+            {nonMemberYearList.join(',')}
             <Icon icon="thumb-down" size={16} />
           </div>
         </Chip>

@@ -3,7 +3,7 @@ import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { useSelector } from '~/custom-hooks/redux';
+import { useSelector, type RootState } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
@@ -80,7 +80,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
   item: GQL.CommunityId_BatchPropertyModifyModalFragment,
-  filter: GQL.PropertyFilterInput,
+  searchBar: RootState['searchBar'],
   defaultSetting: GQL.DefaultSetting
 ): InputData {
   return {
@@ -90,9 +90,9 @@ function defaultInputData(
     },
     method: GQL.BatchModifyMethod.AddEvent,
     filter: {
-      memberYearList: filter.memberYearList ?? [],
-      memberEvent: filter.memberEvent ?? null,
-      withGps: filter.withGps ?? null,
+      memberYearList: searchBar.memberYearList,
+      memberEvent: searchBar.memberEvent,
+      withGps: searchBar.withGps,
     },
     membership: {
       year: getCurrentYear(),
@@ -115,10 +115,10 @@ function defaultInputData(
 export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
   const community = getFragment(ModifyFragment, fragment);
   const { defaultSetting } = useLayoutContext();
-  const { filterArg } = useSelector((state) => state.searchBar);
+  const searchBar = useSelector((state) => state.searchBar);
   const defaultValues = React.useMemo(
-    () => defaultInputData(community, filterArg, defaultSetting),
-    [community, filterArg, defaultSetting]
+    () => defaultInputData(community, searchBar, defaultSetting),
+    [community, searchBar, defaultSetting]
   );
   const formMethods = useForm({
     defaultValues,
