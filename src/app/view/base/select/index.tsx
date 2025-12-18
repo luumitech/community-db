@@ -10,8 +10,9 @@ import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
-export interface SelectProps<T extends object = object>
-  extends NextUISelectProps<T> {
+export interface SelectProps<
+  T extends object = object,
+> extends NextUISelectProps<T> {
   controlName: string;
   /**
    * Force component into a controlled component, useful if you need setValue to

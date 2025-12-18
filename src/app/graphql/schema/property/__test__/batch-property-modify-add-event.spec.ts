@@ -94,7 +94,7 @@ describe('BatchPropertyModify - Add Event', () => {
   const cases: TestCaseEntry[] = [
     [
       'add 2024 membership for those with 2021 membership',
-      { memberYear: 2021 },
+      { memberYearList: [2021] },
       {
         year: 2024,
         paymentMethod: 'custom-test-payment',
@@ -111,7 +111,7 @@ describe('BatchPropertyModify - Add Event', () => {
     ],
     [
       'modify 2022 membership for those with 2022 membership',
-      { memberYear: 2022 },
+      { memberYearList: [2022] },
       {
         year: 2022,
         paymentMethod: 'custom-test-payment',
@@ -128,7 +128,7 @@ describe('BatchPropertyModify - Add Event', () => {
     ],
     [
       'modify 2023 membership for those with 2023 membership',
-      { memberYear: 2023 },
+      { memberYearList: [2023] },
       {
         year: 2023,
         paymentMethod: 'custom-test-payment',
@@ -145,7 +145,7 @@ describe('BatchPropertyModify - Add Event', () => {
     ],
     [
       'modify 2024 membership for those with 2024 membership',
-      { memberYear: 2024 },
+      { memberYearList: [2024] },
       {
         year: 2024,
         paymentMethod: 'custom-test-payment',
@@ -162,7 +162,7 @@ describe('BatchPropertyModify - Add Event', () => {
     ],
     [
       'add 2025 membership for those with 2023 membership',
-      { memberYear: 2023 },
+      { memberYearList: [2023] },
       {
         year: 2025,
         paymentMethod: 'custom-test-payment',
@@ -179,7 +179,7 @@ describe('BatchPropertyModify - Add Event', () => {
     ],
     [
       'add 2020 membership for those with 2023 membership',
-      { memberYear: 2023 },
+      { memberYearList: [2023] },
       {
         year: 2020,
         paymentMethod: 'custom-test-payment',
@@ -191,6 +191,57 @@ describe('BatchPropertyModify - Add Event', () => {
         // There are 2 properties matching 2023 membership
         matchCount: 2,
         minYear: 2020,
+        maxYear: 2024,
+      },
+    ],
+    [
+      'add 2024 membership for those who attended Corn Roast',
+      { memberYearList: [2023], memberEventList: ['Corn Roast'] },
+      {
+        year: 2024,
+        paymentMethod: 'custom-test-payment',
+        price: '10.00',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2024, 11, 31)),
+      },
+      {
+        // There are 2 properties attended Corn Roast
+        matchCount: 2,
+        minYear: 2021,
+        maxYear: 2024,
+      },
+    ],
+    [
+      'add 2024 membership for those who attended Corn Roast in 2022',
+      { memberYearList: [2022], memberEventList: ['Corn Roast'] },
+      {
+        year: 2024,
+        paymentMethod: 'custom-test-payment',
+        price: '10.00',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2024, 11, 31)),
+      },
+      {
+        // There should be no matching entries
+        matchCount: 0,
+        minYear: 2021,
+        maxYear: 2024,
+      },
+    ],
+    [
+      'add 2024 membership for those who attended Summer Festival and Corn Roast',
+      { memberEventList: ['Summer Festival', 'Corn Roast'] },
+      {
+        year: 2024,
+        paymentMethod: 'custom-test-payment',
+        price: '10.00',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2024, 11, 31)),
+      },
+      {
+        // There is only 1 property attended Summer Festival
+        matchCount: 1,
+        minYear: 2021,
         maxYear: 2024,
       },
     ],

@@ -12,18 +12,14 @@ import { getCurrentYear } from '~/lib/date-util';
  * - It will also sort the years in descending order
  */
 export function useMemberYear() {
-  const { filterArg } = useSelector((state) => state.searchBar);
+  const { memberYearList, nonMemberYearList } = useSelector(
+    (state) => state.searchBar
+  );
 
   const years = React.useMemo(() => {
-    const { memberYear, nonMemberYear } = filterArg;
-
     const yearsToShow = new Set<number>();
-    if (memberYear != null) {
-      yearsToShow.add(memberYear);
-    }
-    if (nonMemberYear != null) {
-      yearsToShow.add(nonMemberYear);
-    }
+    memberYearList.forEach((yr) => yearsToShow.add(yr));
+    nonMemberYearList.forEach((yr) => yearsToShow.add(yr));
     if (yearsToShow.size < 2) {
       yearsToShow.add(getCurrentYear());
     }
@@ -36,7 +32,7 @@ export function useMemberYear() {
     );
 
     return sortedYearsToShow;
-  }, [filterArg]);
+  }, [memberYearList, nonMemberYearList]);
 
   return years;
 }

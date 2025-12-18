@@ -14,4 +14,4 @@ export const useStore = useReduxStore.withTypes<AppStore>();
 export const addListener = rtkAddListener.withTypes<RootState, AppDispatch>();
 
 // Export commonly used methods from toolkits
-export { actions } from '~/lib/reducers';
+export { actions, type RootState } from '~/lib/reducers';

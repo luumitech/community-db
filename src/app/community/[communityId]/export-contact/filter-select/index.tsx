@@ -10,7 +10,7 @@ const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
 interface Props {
   className?: string;
-  filters: InputData;
+  filters: DrawerArg;
   onFilterChange?: (input: InputData) => Promise<void>;
   isDisabled?: boolean;
 }
@@ -41,7 +41,10 @@ export const FilterSelect: React.FC<Props> = ({
         </Button>
         <FilterChip
           isDisabled={isDisabled}
-          filters={filters}
+          filters={{
+            ...filters,
+            withGps: null,
+          }}
           onFilterChange={onFilterChange}
           openDrawer={openDrawer}
         />

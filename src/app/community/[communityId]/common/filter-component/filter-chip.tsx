@@ -2,21 +2,21 @@ import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
+import { type RootState } from '~/lib/reducers';
 import { Icon } from '~/view/base/icon';
 
-interface FilterItems {
-  memberYear?: number | null;
-  nonMemberYear?: number | null;
-  memberEvent?: string | null;
-  withGps?: boolean | null;
-}
+type FilterItems = Pick<
+  RootState['searchBar'],
+  'memberYearList' | 'nonMemberYearList' | 'memberEventList' | 'withGps'
+>;
+type FilterChangeFn = (input: FilterItems) => Promise<void>;
 
 interface Props {
   className?: string;
   openDrawer: () => void;
   filters: FilterItems;
   isDisabled?: boolean;
-  onFilterChange?: (input: Required<FilterItems>) => Promise<void>;
+  onFilterChange?: FilterChangeFn;
 }
 
 export const FilterChip: React.FC<Props> = ({
@@ -26,16 +26,12 @@ export const FilterChip: React.FC<Props> = ({
   isDisabled,
   onFilterChange,
 }) => {
-  const { memberYear, nonMemberYear, memberEvent, withGps } = filters;
+  const { memberYearList, nonMemberYearList, memberEventList, withGps } =
+    filters;
 
   const onChange = React.useCallback(
     (_filters: FilterItems) => {
-      onFilterChange?.({
-        memberYear: _filters.memberYear ?? null,
-        nonMemberYear: _filters.nonMemberYear ?? null,
-        memberEvent: _filters.memberEvent ?? null,
-        withGps: _filters.withGps ?? null,
-      });
+      onFilterChange?.(_filters);
     },
     [onFilterChange]
   );
@@ -45,37 +41,37 @@ export const FilterChip: React.FC<Props> = ({
       className={cn(className, 'hidden cursor-pointer gap-2 sm:flex')}
       onClick={openDrawer}
     >
-      {memberYear != null && (
+      {memberYearList != null && memberYearList.length > 0 && (
         <Chip
           variant="bordered"
           color="success"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, memberYear: null })}
+          onClose={() => onChange({ ...filters, memberYearList: [] })}
         >
           <div className="flex items-center gap-2">
-            {memberYear}
+            {memberYearList.join(',')}
             <Icon icon="thumb-up" size={16} />
           </div>
         </Chip>
       )}
-      {nonMemberYear != null && (
+      {nonMemberYearList != null && nonMemberYearList.length > 0 && (
         <Chip
           variant="bordered"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, nonMemberYear: null })}
+          onClose={() => onChange({ ...filters, nonMemberYearList: [] })}
         >
           <div className="flex items-center gap-2">
-            {nonMemberYear}
+            {nonMemberYearList.join(',')}
             <Icon icon="thumb-down" size={16} />
           </div>
         </Chip>
       )}
-      {memberEvent != null && (
+      {memberEventList != null && memberEventList.length > 0 && (
         <EventChip
-          eventName={memberEvent}
+          eventName={memberEventList.join(',')}
           variant="faded"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, memberEvent: null })}
+          onClose={() => onChange({ ...filters, memberEventList: [] })}
         />
       )}
       {withGps != null && (

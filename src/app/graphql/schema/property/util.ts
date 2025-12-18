@@ -151,8 +151,13 @@ function propertyListFilterArgs(
 ): Prisma.PropertyWhereInput {
   const AND: Prisma.PropertyWhereInput[] = [];
 
-  const { searchText, memberEvent, memberYear, nonMemberYear, withGps } =
-    args ?? {};
+  const {
+    searchText,
+    memberYearList,
+    nonMemberYearList,
+    memberEventList,
+    withGps,
+  } = args ?? {};
 
   const trimSearchText = searchText?.trim();
   if (trimSearchText) {
@@ -208,7 +213,7 @@ function propertyListFilterArgs(
   }
 
   // Construct filters within `membershipList`
-  if (nonMemberYear != null) {
+  if (nonMemberYearList != null && nonMemberYearList.length > 0) {
     AND.push({
       OR: [
         { membershipList: { isSet: false } },
@@ -217,14 +222,14 @@ function propertyListFilterArgs(
             some: {
               // empty `eventAttendedList` implies user is not a member
               eventAttendedList: { isEmpty: true },
-              year: nonMemberYear,
+              year: { in: nonMemberYearList },
             },
           },
         },
         {
           membershipList: {
             none: {
-              year: nonMemberYear,
+              year: { in: nonMemberYearList },
             },
           },
         },
@@ -232,16 +237,38 @@ function propertyListFilterArgs(
     });
   }
 
-  if (memberYear != null || memberEvent != null) {
+  const memberYearSpecified =
+    memberYearList != null && memberYearList.length > 0;
+  const memberEventSpecified =
+    memberEventList != null && memberEventList.length > 0;
+  if (memberYearSpecified) {
+    AND.push(
+      ...memberYearList.map((memberYear) => ({
+        membershipList: {
+          some: {
+            // non-empty `eventAttendedList` implies user is a member
+            eventAttendedList: { isEmpty: false },
+            year: memberYear,
+            ...(memberEventSpecified && {
+              AND: memberEventList.map((memberEvent) => ({
+                eventAttendedList: {
+                  some: { eventName: memberEvent },
+                },
+              })),
+            }),
+          },
+        },
+      }))
+    );
+  } else if (memberEventSpecified) {
     AND.push({
       membershipList: {
         some: {
-          // non-empty `eventAttendedList` implies user is a member
-          eventAttendedList: { isEmpty: false },
-          ...(memberYear && { year: memberYear }),
-          ...(memberEvent && {
-            eventAttendedList: { some: { eventName: memberEvent } },
-          }),
+          AND: memberEventList.map((memberEvent) => ({
+            eventAttendedList: {
+              some: { eventName: memberEvent },
+            },
+          })),
         },
       },
     });

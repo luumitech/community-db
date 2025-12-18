@@ -7,7 +7,7 @@ export function useTableData() {
     { key: 'firstName', label: 'First Name', className: 'w-10' },
     { key: 'lastName', label: 'Last Name', className: 'w-10' },
     { key: 'email', label: 'Email' },
-    { key: 'address', label: 'Address', className: 'w-15' },
+    { key: 'address', label: 'Address' },
   ];
 
   const renderCell = React.useCallback(

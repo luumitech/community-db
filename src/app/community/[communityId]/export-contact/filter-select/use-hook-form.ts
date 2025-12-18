@@ -2,27 +2,31 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { z, zz } from '~/lib/zod';
+import { type DrawerArg } from './filter-drawer';
 
 function schema() {
   return z.object({
-    memberYear: zz.coerce.toNumber({ nullable: true }),
-    nonMemberYear: zz.coerce.toNumber({ nullable: true }),
-    memberEvent: z.string().nullable(),
+    memberYearList: zz.coerce.toNumberList(),
+    nonMemberYearList: zz.coerce.toNumberList(),
+    memberEventList: zz.coerce.toStringList(),
   });
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-export function defaultInputData(arg: InputData): InputData {
+export function defaultInputData(drawerArg: DrawerArg): InputData {
   return {
-    memberYear: arg.memberYear ?? null,
-    nonMemberYear: arg.nonMemberYear ?? null,
-    memberEvent: arg.memberEvent ?? null,
+    memberYearList: drawerArg.memberYearList,
+    nonMemberYearList: drawerArg.nonMemberYearList,
+    memberEventList: drawerArg.memberEventList,
   };
 }
 
-export function useHookForm(arg: InputData) {
-  const defaultValues = React.useMemo(() => defaultInputData(arg), [arg]);
+export function useHookForm(drawerArg: DrawerArg) {
+  const defaultValues = React.useMemo(
+    () => defaultInputData(drawerArg),
+    [drawerArg]
+  );
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

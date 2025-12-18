@@ -7,6 +7,7 @@ import { ApolloProviders } from './apollo';
 import { GoogleRecaptchaProviders } from './google-recaptcha';
 import { HeroUIProviders } from './hero-ui';
 import { ReduxProviders } from './redux';
+import { ThemeProviders } from './theme';
 import { ToastifyProviders } from './toastify';
 import { TsrProviders } from './tsr';
 
@@ -21,19 +22,21 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <TsrProviders>
       <ApolloProviders>
-        <HeroUIProviders>
-          <GoogleRecaptchaProviders
-            reCaptchaKey={env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
-          >
-            <ReduxProviders>
-              <AppProvider env={env}>
-                {children}
-                <ConfirmationModal />
-                <ToastifyProviders />
-              </AppProvider>
-            </ReduxProviders>
-          </GoogleRecaptchaProviders>
-        </HeroUIProviders>
+        <ThemeProviders>
+          <HeroUIProviders>
+            <GoogleRecaptchaProviders
+              reCaptchaKey={env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
+            >
+              <ReduxProviders>
+                <AppProvider env={env}>
+                  {children}
+                  <ConfirmationModal />
+                  <ToastifyProviders />
+                </AppProvider>
+              </ReduxProviders>
+            </GoogleRecaptchaProviders>
+          </HeroUIProviders>
+        </ThemeProviders>
       </ApolloProviders>
     </TsrProviders>
   );

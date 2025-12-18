@@ -3,11 +3,11 @@ import React from 'react';
 import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { useSelector } from '~/custom-hooks/redux';
+import { useSelector, type RootState } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
-import { isInteger, isNonEmpty, z, zz } from '~/lib/zod';
+import { isNonEmpty, z, zz } from '~/lib/zod';
 
 const ModifyFragment = graphql(/* GraphQL */ `
   fragment CommunityId_BatchPropertyModifyModal on Community {
@@ -29,11 +29,8 @@ function schema() {
       }),
       method: z.nativeEnum(GQL.BatchModifyMethod),
       filter: z.object({
-        memberYear: zz.coerce.toNumber({
-          message: 'Must select a year',
-          nullable: true,
-        }),
-        memberEvent: z.string().nullable(),
+        memberYearList: zz.coerce.toNumberList(),
+        memberEventList: zz.coerce.toStringList(),
         withGps: zz.coerce.toBoolean({ nullable: true }),
       }),
       membership: z.object({
@@ -54,11 +51,11 @@ function schema() {
     })
     .superRefine((form, ctx) => {
       if (form.method === GQL.BatchModifyMethod.AddEvent) {
-        if (isInteger()(form.filter.memberYear) != null) {
+        if (form.filter.memberYearList.length === 0) {
           return ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Must select a year',
-            path: ['filter', 'memberYear'],
+            path: ['filter', 'memberYearList'],
           });
         }
         if (isNonEmpty()(form.membership.eventAttended.eventName) != null) {
@@ -83,7 +80,7 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
   item: GQL.CommunityId_BatchPropertyModifyModalFragment,
-  filter: GQL.PropertyFilterInput,
+  searchBar: RootState['searchBar'],
   defaultSetting: GQL.DefaultSetting
 ): InputData {
   return {
@@ -93,9 +90,9 @@ function defaultInputData(
     },
     method: GQL.BatchModifyMethod.AddEvent,
     filter: {
-      memberYear: filter.memberYear ?? null,
-      memberEvent: filter.memberEvent ?? null,
-      withGps: filter.withGps ?? null,
+      memberYearList: searchBar.memberYearList,
+      memberEventList: searchBar.memberEventList,
+      withGps: searchBar.withGps,
     },
     membership: {
       year: getCurrentYear(),
@@ -118,10 +115,10 @@ function defaultInputData(
 export function useHookForm(fragment: BatchPropertyModifyFragmentType) {
   const community = getFragment(ModifyFragment, fragment);
   const { defaultSetting } = useLayoutContext();
-  const { filterArg } = useSelector((state) => state.searchBar);
+  const searchBar = useSelector((state) => state.searchBar);
   const defaultValues = React.useMemo(
-    () => defaultInputData(community, filterArg, defaultSetting),
-    [community, filterArg, defaultSetting]
+    () => defaultInputData(community, searchBar, defaultSetting),
+    [community, searchBar, defaultSetting]
   );
   const formMethods = useForm({
     defaultValues,

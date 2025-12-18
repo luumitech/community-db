@@ -37,6 +37,7 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
       disallowEmptySelection
       items={yearItems}
       selectionMode="single"
+      autoFocus
     >
       {(item) => (
         <SelectItem key={item.value} textValue={item.label}>

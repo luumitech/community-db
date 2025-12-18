@@ -14,15 +14,11 @@ import {
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { type RootState } from '~/lib/reducers';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from '../use-hook-form';
 
-export interface DrawerArg {
-  memberYear: number | null;
-  nonMemberYear: number | null;
-  memberEvent: string | null;
-  withGps: boolean | null;
-}
+export type DrawerArg = RootState['searchBar'];
 
 interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
@@ -34,12 +30,7 @@ export const FilterDrawer: React.FC<Props> = ({
   onFilterChange,
   ...arg
 }) => {
-  const { formMethods } = useHookForm(
-    arg.memberYear,
-    arg.nonMemberYear,
-    arg.memberEvent,
-    arg.withGps
-  );
+  const { formMethods } = useHookForm(arg);
   const { formState, handleSubmit, setValue, watch } = formMethods;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const { isDirty } = formState;
@@ -52,13 +43,17 @@ export const FilterDrawer: React.FC<Props> = ({
     [onClose, onFilterChange]
   );
 
-  const memberYear = watch('memberYear');
-  const nonMemberYear = watch('nonMemberYear');
-  const memberEvent = watch('memberEvent');
+  const memberYearList = watch('memberYearList');
+  const nonMemberYearList = watch('nonMemberYearList');
+  const memberEventList = watch('memberEventList');
 
   const canClear = React.useMemo(() => {
-    return !!memberYear || !!nonMemberYear || !!memberEvent;
-  }, [memberYear, nonMemberYear, memberEvent]);
+    return (
+      memberYearList.length > 0 ||
+      nonMemberYearList.length > 0 ||
+      memberEventList.length > 0
+    );
+  }, [memberYearList, nonMemberYearList, memberEventList]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -68,26 +63,30 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
-                label="Member In Year"
-                description="Show properties who are members in the specified year"
-                controlName="memberYear"
+                label="Member In Year(s)"
+                description="Show properties that are members in the specified year(s)"
+                controlName="memberYearList"
                 size="sm"
+                isClearable
               />
               <YearSelect
-                label="Non-Member In Year"
-                description="Show properties who are not members in the specified year"
-                controlName="nonMemberYear"
+                label="Non-Member In Year(s)"
+                description="Show properties that are NOT members in the specified year(s)"
+                controlName="nonMemberYearList"
                 size="sm"
+                isClearable
               />
               <EventSelect
-                description="Show properties who registered at the specified event"
-                controlName="memberEvent"
+                description="Show properties that registered at the specified event(s)"
+                controlName="memberEventList"
                 size="sm"
+                isClearable
               />
               <GpsSelect
                 description="Show properties with or without GPS coordinate"
                 controlName="withGps"
                 size="sm"
+                isClearable
               />
             </DrawerBody>
             <DrawerFooter>
@@ -99,9 +98,9 @@ export const FilterDrawer: React.FC<Props> = ({
                 color="danger"
                 isDisabled={!canClear}
                 onPress={() => {
-                  setValue('memberYear', null, { shouldDirty: true });
-                  setValue('nonMemberYear', null, { shouldDirty: true });
-                  setValue('memberEvent', null, { shouldDirty: true });
+                  setValue('memberYearList', [], { shouldDirty: true });
+                  setValue('nonMemberYearList', [], { shouldDirty: true });
+                  setValue('memberEventList', [], { shouldDirty: true });
                   setValue('withGps', null, { shouldDirty: true });
                 }}
               >

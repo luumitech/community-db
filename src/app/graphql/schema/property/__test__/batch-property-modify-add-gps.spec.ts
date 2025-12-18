@@ -104,7 +104,7 @@ describe('BatchPropertyModify - Add GPS', () => {
   const cases: TestCaseEntry[] = [
     [
       'add GPS information for those with 2021 membership',
-      { memberYear: 2021 },
+      { memberYearList: [2021] },
       {
         // There is only 1 property matching 2021 membership
         matchCount: 1,

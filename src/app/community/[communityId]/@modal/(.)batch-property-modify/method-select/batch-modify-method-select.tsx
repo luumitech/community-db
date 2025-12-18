@@ -21,13 +21,14 @@ interface Props {
 export const BatchModifyMethodSelect: React.FC<Props> = ({ className }) => {
   return (
     <Select
-      className={twMerge('min-w-32 max-w-xs', className)}
+      className={twMerge('max-w-xs min-w-32', className)}
       controlName="method"
       label="Type of modification"
       items={methodItems}
       isDisabled={!methodItems.length}
       selectionMode="single"
       disallowEmptySelection
+      autoFocus
     >
       {(item) => {
         return (

@@ -42,6 +42,6 @@ export function getEnv(): EnvSchema {
  * @returns Typed environment variable that is evaluated at runtime
  */
 export function env<K extends keyof EnvSchema>(key: K): EnvSchema[K] {
-  const envList = getEnv();
-  return envList[key];
+  const envObj = getEnv();
+  return envObj[key];
 }
