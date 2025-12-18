@@ -30,7 +30,7 @@ function schema() {
       method: z.nativeEnum(GQL.BatchModifyMethod),
       filter: z.object({
         memberYearList: zz.coerce.toNumberList(),
-        memberEvent: z.string().nullable(),
+        memberEventList: zz.coerce.toStringList(),
         withGps: zz.coerce.toBoolean({ nullable: true }),
       }),
       membership: z.object({
@@ -91,7 +91,7 @@ function defaultInputData(
     method: GQL.BatchModifyMethod.AddEvent,
     filter: {
       memberYearList: searchBar.memberYearList,
-      memberEvent: searchBar.memberEvent,
+      memberEventList: searchBar.memberEventList,
       withGps: searchBar.withGps,
     },
     membership: {

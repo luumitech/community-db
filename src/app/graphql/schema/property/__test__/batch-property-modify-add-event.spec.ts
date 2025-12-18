@@ -194,6 +194,57 @@ describe('BatchPropertyModify - Add Event', () => {
         maxYear: 2024,
       },
     ],
+    [
+      'add 2024 membership for those who attended Corn Roast',
+      { memberYearList: [2023], memberEventList: ['Corn Roast'] },
+      {
+        year: 2024,
+        paymentMethod: 'custom-test-payment',
+        price: '10.00',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2024, 11, 31)),
+      },
+      {
+        // There are 2 properties attended Corn Roast
+        matchCount: 2,
+        minYear: 2021,
+        maxYear: 2024,
+      },
+    ],
+    [
+      'add 2024 membership for those who attended Corn Roast in 2022',
+      { memberYearList: [2022], memberEventList: ['Corn Roast'] },
+      {
+        year: 2024,
+        paymentMethod: 'custom-test-payment',
+        price: '10.00',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2024, 11, 31)),
+      },
+      {
+        // There should be no matching entries
+        matchCount: 0,
+        minYear: 2021,
+        maxYear: 2024,
+      },
+    ],
+    [
+      'add 2024 membership for those who attended Summer Festival and Corn Roast',
+      { memberEventList: ['Summer Festival', 'Corn Roast'] },
+      {
+        year: 2024,
+        paymentMethod: 'custom-test-payment',
+        price: '10.00',
+        eventName: 'New Years Eve',
+        eventDate: new Date(Date.UTC(2024, 11, 31)),
+      },
+      {
+        // There is only 1 property attended Summer Festival
+        matchCount: 1,
+        minYear: 2021,
+        maxYear: 2024,
+      },
+    ],
   ];
 
   test.each(cases)('%s', async (description, filter, newEvent, expected) => {

@@ -23,7 +23,7 @@ type State = Readonly<{
   /** Filter controls */
   memberYearList: number[];
   nonMemberYearList: number[];
-  memberEvent: string | null;
+  memberEventList: string[];
   withGps: boolean | null;
 
   /** Has Filter control been specified */
@@ -38,7 +38,7 @@ const initialState: State = {
   debouncedSearchText: undefined,
   memberYearList: [],
   nonMemberYearList: [],
-  memberEvent: null,
+  memberEventList: [],
   withGps: null,
   isFilterSpecified: false,
   filterArg: {},
@@ -53,7 +53,7 @@ function isFilterSpecified(state: State) {
   return (
     state.memberYearList.length > 0 ||
     state.nonMemberYearList.length > 0 ||
-    state.memberEvent != null ||
+    state.memberEventList.length > 0 ||
     state.withGps != null
   );
 }
@@ -70,9 +70,8 @@ function filterArg(state: State) {
   }
   arg.memberYearList = state.memberYearList;
   arg.nonMemberYearList = state.nonMemberYearList;
-  if (state.memberEvent != null) {
-    arg.memberEvent = state.memberEvent;
-  }
+  arg.memberEventList = state.memberEventList;
+
   if (state.withGps != null) {
     arg.withGps = state.withGps;
   }
@@ -104,8 +103,8 @@ export const searchBarSlice = createSlice({
       state.isFilterSpecified = isFilterSpecified(state);
       state.filterArg = filterArg(state);
     },
-    setMemberEvent: (state, { payload }: PayloadAction<string | null>) => {
-      state.memberEvent = payload;
+    setMemberEventList: (state, { payload }: PayloadAction<string[]>) => {
+      state.memberEventList = payload;
       state.isFilterSpecified = isFilterSpecified(state);
       state.filterArg = filterArg(state);
     },

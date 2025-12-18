@@ -30,11 +30,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      dispatch(actions.searchBar.setMemberYearList(input.memberYearList ?? []));
-      dispatch(
-        actions.searchBar.setNonMemberYearList(input.nonMemberYearList ?? [])
-      );
-      dispatch(actions.searchBar.setMemberEvent(input.memberEvent ?? null));
+      dispatch(actions.searchBar.setMemberYearList(input.memberYearList));
+      dispatch(actions.searchBar.setNonMemberYearList(input.nonMemberYearList));
+      dispatch(actions.searchBar.setMemberEventList(input.memberEventList));
       dispatch(actions.searchBar.setWithGps(input.withGps ?? null));
       onChange?.();
     },

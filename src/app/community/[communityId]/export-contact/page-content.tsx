@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Divider } from '@heroui/react';
 import React from 'react';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { toContactList } from './contact-util';
@@ -40,12 +41,11 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
+  const { memberYearList, nonMemberYearList, memberEventList } = useSelector(
+    (state) => state.searchBar
+  );
   const [filter, setFilter] = React.useState(
-    defaultInputData({
-      memberYearList: [],
-      nonMemberYearList: [],
-      memberEvent: null,
-    })
+    defaultInputData({ memberYearList, nonMemberYearList, memberEventList })
   );
   const result = useQuery(ExportContact_PropertyListQuery, {
     variables: { id: communityId, filter },

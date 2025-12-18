@@ -16,15 +16,16 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
       description: 'Match against property address/first name/last name',
     }),
     memberYearList: t.field({
-      description: 'Only property who is a member of the given year(s)',
+      description: 'Only properties that are member of the given year(s)',
       type: ['Int'],
     }),
     nonMemberYearList: t.field({
-      description: 'Only property who is NOT a member of the given year(s)',
+      description: 'Only properties that are NOT member of the given year(s)',
       type: ['Int'],
     }),
-    memberEvent: t.string({
-      description: 'Only property who attended this event',
+    memberEventList: t.field({
+      description: 'Only properties that attended the given event(s)',
+      type: ['String'],
     }),
     withGps: t.boolean({
       description:

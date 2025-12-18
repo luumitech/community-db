@@ -19,21 +19,21 @@ export const FilterSelect: React.FC<Props> = ({
 }) => {
   return (
     <div className={twMerge('flex flex-col gap-4', className)}>
-      <p>
-        Use filters to select a property group for changes. If no filter is
-        selected, changes apply to all properties:
-      </p>
+      <p>Find tune filters to select a group of properties to modify:</p>
       <YearSelect
         className="ml-4 max-w-xs min-w-32"
         controlName="filter.memberYearList"
         label="Membership Year(s)"
         isRequired={yearRequired}
         size="sm"
+        autoFocus
+        isClearable
       />
       <EventSelect
         className="ml-4 max-w-xs min-w-32"
-        controlName="filter.memberEvent"
+        controlName="filter.memberEventList"
         size="sm"
+        isClearable
       />
       {withGps && (
         <GpsSelect

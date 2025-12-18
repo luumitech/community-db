@@ -32,6 +32,15 @@ interface ToNumberListOpt extends CoerceOpt {
    */
   validateFn?: ValidateFn<number> | ValidateFn<number>[];
 }
+interface ToStringListOpt extends CoerceOpt {
+  /**
+   * Validation function
+   *
+   * - If validation fails, return an error message
+   * - Otherwise return null
+   */
+  validateFn?: ValidateFn<string> | ValidateFn<string>[];
+}
 interface ToFileArrayOpt extends CoerceOpt {}
 interface ToCurrencyOpt extends CoerceOpt {}
 
@@ -122,8 +131,8 @@ export class Coerce {
   }
 
   /**
-   * Coerce string input as a list of number. This is useful for used in a
-   * selection component, when you want to select multiple numeric items
+   * Coerce input as a list of number. This is intended for used in a selection
+   * component, when you want to select multiple numeric items
    */
   toNumberList<T extends ToNumberListOpt>(opt?: T) {
     const { validateFn } = opt ?? {};
@@ -154,6 +163,42 @@ export class Coerce {
         });
       }
       return numList;
+    });
+  }
+
+  /**
+   * Coerce input as a list of string. This is intended for used in a selection
+   * component, when you want to select multiple string items
+   */
+  toStringList<T extends ToStringListOpt>(opt?: T) {
+    const { validateFn } = opt ?? {};
+    return z.any().transform((val, ctx) => {
+      const onError = (message: string) => {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message,
+        });
+        return z.NEVER;
+      };
+
+      const valArr = Array.isArray(val)
+        ? val
+        : typeof val === 'string'
+          ? val.split(',')
+          : [];
+      const strList = valArr
+        .map((v) => v.toString())
+        .filter((str): str is string => !!str);
+      // validate results
+      if (validateFn) {
+        strList.forEach((str) => {
+          const message = validate(validateFn, str);
+          if (message) {
+            return onError(message);
+          }
+        });
+      }
+      return strList;
     });
   }
 

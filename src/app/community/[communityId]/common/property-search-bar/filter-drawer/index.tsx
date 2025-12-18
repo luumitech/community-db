@@ -45,13 +45,15 @@ export const FilterDrawer: React.FC<Props> = ({
 
   const memberYearList = watch('memberYearList');
   const nonMemberYearList = watch('nonMemberYearList');
-  const memberEvent = watch('memberEvent');
+  const memberEventList = watch('memberEventList');
 
   const canClear = React.useMemo(() => {
     return (
-      memberYearList.length > 0 || nonMemberYearList.length > 0 || !!memberEvent
+      memberYearList.length > 0 ||
+      nonMemberYearList.length > 0 ||
+      memberEventList.length > 0
     );
-  }, [memberYearList, nonMemberYearList, memberEvent]);
+  }, [memberYearList, nonMemberYearList, memberEventList]);
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -62,21 +64,21 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
                 label="Member In Year(s)"
-                description="Show properties who are members in the specified year"
+                description="Show properties that are members in the specified year(s)"
                 controlName="memberYearList"
                 size="sm"
                 isClearable
               />
               <YearSelect
                 label="Non-Member In Year(s)"
-                description="Show properties who are not members in the specified year"
+                description="Show properties that are NOT members in the specified year(s)"
                 controlName="nonMemberYearList"
                 size="sm"
                 isClearable
               />
               <EventSelect
-                description="Show properties who registered at the specified event"
-                controlName="memberEvent"
+                description="Show properties that registered at the specified event(s)"
+                controlName="memberEventList"
                 size="sm"
                 isClearable
               />
@@ -98,7 +100,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 onPress={() => {
                   setValue('memberYearList', [], { shouldDirty: true });
                   setValue('nonMemberYearList', [], { shouldDirty: true });
-                  setValue('memberEvent', null, { shouldDirty: true });
+                  setValue('memberEventList', [], { shouldDirty: true });
                   setValue('withGps', null, { shouldDirty: true });
                 }}
               >

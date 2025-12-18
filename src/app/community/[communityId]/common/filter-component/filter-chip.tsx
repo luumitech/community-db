@@ -7,7 +7,7 @@ import { Icon } from '~/view/base/icon';
 
 type FilterItems = Pick<
   RootState['searchBar'],
-  'memberYearList' | 'nonMemberYearList' | 'memberEvent' | 'withGps'
+  'memberYearList' | 'nonMemberYearList' | 'memberEventList' | 'withGps'
 >;
 type FilterChangeFn = (input: FilterItems) => Promise<void>;
 
@@ -26,7 +26,8 @@ export const FilterChip: React.FC<Props> = ({
   isDisabled,
   onFilterChange,
 }) => {
-  const { memberYearList, nonMemberYearList, memberEvent, withGps } = filters;
+  const { memberYearList, nonMemberYearList, memberEventList, withGps } =
+    filters;
 
   const onChange = React.useCallback(
     (_filters: FilterItems) => {
@@ -65,12 +66,12 @@ export const FilterChip: React.FC<Props> = ({
           </div>
         </Chip>
       )}
-      {memberEvent != null && (
+      {memberEventList != null && memberEventList.length > 0 && (
         <EventChip
-          eventName={memberEvent}
+          eventName={memberEventList.join(',')}
           variant="faded"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, memberEvent: null })}
+          onClose={() => onChange({ ...filters, memberEventList: [] })}
         />
       )}
       {withGps != null && (

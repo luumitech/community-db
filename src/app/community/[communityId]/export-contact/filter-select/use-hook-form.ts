@@ -8,7 +8,7 @@ function schema() {
   return z.object({
     memberYearList: zz.coerce.toNumberList(),
     nonMemberYearList: zz.coerce.toNumberList(),
-    memberEvent: z.string().nullable(),
+    memberEventList: zz.coerce.toStringList(),
   });
 }
 
@@ -18,7 +18,7 @@ export function defaultInputData(drawerArg: DrawerArg): InputData {
   return {
     memberYearList: drawerArg.memberYearList,
     nonMemberYearList: drawerArg.nonMemberYearList,
-    memberEvent: drawerArg.memberEvent,
+    memberEventList: drawerArg.memberEventList,
   };
 }
 

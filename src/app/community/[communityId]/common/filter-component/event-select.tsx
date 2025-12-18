@@ -23,8 +23,8 @@ export const EventSelect: React.FC<Props> = ({ className, ...props }) => {
       classNames={{
         base: className,
       }}
-      label="Membership Event"
-      selectionMode="single"
+      label="Membership Event(s)"
+      selectionMode="multiple"
       isDisabled={hasNoItems}
       placeholder="Unspecified"
       {...props}

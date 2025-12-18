@@ -8,7 +8,7 @@ function schema() {
   return z.object({
     memberYearList: zz.coerce.toNumberList(),
     nonMemberYearList: zz.coerce.toNumberList(),
-    memberEvent: z.string().nullable(),
+    memberEventList: zz.coerce.toStringList(),
     withGps: zz.coerce.toBoolean({ nullable: true }),
   });
 }
@@ -19,7 +19,7 @@ function defaultFilterInputData(searchBar: RootState['searchBar']): InputData {
   return {
     memberYearList: searchBar.memberYearList,
     nonMemberYearList: searchBar.nonMemberYearList,
-    memberEvent: searchBar.memberEvent,
+    memberEventList: searchBar.memberEventList,
     withGps: searchBar.withGps,
   };
 }
