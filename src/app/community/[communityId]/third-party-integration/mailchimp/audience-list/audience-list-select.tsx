@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Select, SelectItem, cn } from '@heroui/react';
+import { Select, SelectItem, cn, type SelectProps } from '@heroui/react';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -13,16 +13,23 @@ const ThirdPartyIntegration_MailchimpAudienceListQuery = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
+interface SelectItem {
+  key: string;
+  label: string;
+}
+
+type CustomProps = Omit<SelectProps<SelectItem>, 'children'>;
+
+interface Props extends CustomProps {
   className?: string;
   communityId: string;
-  onSelect?: (listId: string) => void;
 }
 
 export const AudienceListSelect: React.FC<Props> = ({
   className,
   communityId,
   onSelect,
+  ...props
 }) => {
   const result = useQuery(ThirdPartyIntegration_MailchimpAudienceListQuery, {
     variables: {
@@ -32,7 +39,7 @@ export const AudienceListSelect: React.FC<Props> = ({
     onError,
   });
 
-  const audienceItems = React.useMemo(() => {
+  const audienceItems: SelectItem[] = React.useMemo(() => {
     const list = result.data?.mailchimpAudienceList ?? [];
     return list.map((audience) => ({
       key: audience.listId,
@@ -47,10 +54,7 @@ export const AudienceListSelect: React.FC<Props> = ({
       label="Audience List"
       placeholder="Select an audience list"
       isDisabled={audienceItems.length === 0}
-      onSelectionChange={(keys) => {
-        const [listId] = keys;
-        onSelect?.(listId as string);
-      }}
+      {...props}
     >
       {(item) => <SelectItem>{item.label}</SelectItem>}
     </Select>

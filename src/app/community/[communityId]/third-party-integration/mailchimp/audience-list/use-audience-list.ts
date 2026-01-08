@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { type SortDescriptor } from '@heroui/react';
 import React from 'react';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
@@ -36,6 +37,8 @@ interface UseAudienceListOpt {
 }
 
 export function useAudienceList(arg: UseAudienceListOpt) {
+  const dispatch = useDispatch();
+  const { sortDescriptor } = useSelector((state) => state.mailchimp);
   const result = useQuery(ThirdPartyIntegration_MailchimpMemberListQuery, {
     variables: {
       input: { communityId: arg.communityId, listId: arg.listId! },
@@ -43,7 +46,13 @@ export function useAudienceList(arg: UseAudienceListOpt) {
     skip: arg.listId == null,
     onError,
   });
-  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>();
+
+  const doSort = React.useCallback(
+    (desc: SortDescriptor) => {
+      dispatch(actions.mailchimp.setSortDescriptor(desc));
+    },
+    [dispatch]
+  );
 
   const rawAudienceList = React.useMemo(() => {
     return (result.data?.mailchimpMemberList ?? []).map((entry) => {
@@ -106,7 +115,7 @@ export function useAudienceList(arg: UseAudienceListOpt) {
     /** Refetch the audience list from mailchimp */
     refetch: result.refetch,
     audienceList,
-    doSort: setSortDescriptor,
+    doSort,
     sortDescriptor,
   };
 }
@@ -124,12 +133,35 @@ function sortAndFilterAudienceList(
 
   if (sortDescriptor != null) {
     const { column, direction } = sortDescriptor;
-    if (column === 'warning') {
-      list.sort((a, b) => {
-        const aVal = a.warning ? 1 : 0;
-        const bVal = b.warning ? 1 : 0;
-        return direction === 'ascending' ? bVal - aVal : aVal - bVal;
-      });
+    switch (column) {
+      case 'warning':
+        list.sort((a, b) => {
+          const aVal = a[column] ? 1 : 0;
+          const bVal = b[column] ? 1 : 0;
+          return direction === 'ascending' ? bVal - aVal : aVal - bVal;
+        });
+        break;
+
+      case 'opt-out':
+        list.sort((a, b) => {
+          const aVal = a.occupant?.optOut ? 1 : 0;
+          const bVal = b.occupant?.optOut ? 1 : 0;
+          return direction === 'ascending' ? bVal - aVal : aVal - bVal;
+        });
+        break;
+
+      case 'status':
+      case 'fullName':
+      case 'email':
+        list.sort((a, b) => {
+          const aVal = a[column] ?? '';
+          const bVal = b[column] ?? '';
+          const comp = aVal.localeCompare(bVal, undefined, {
+            sensitivity: 'accent',
+          });
+          return direction === 'ascending' ? comp : -comp;
+        });
+        break;
     }
   }
 

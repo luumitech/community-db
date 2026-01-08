@@ -9,6 +9,7 @@ import {
   cn,
 } from '@heroui/react';
 import React from 'react';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { Icon } from '~/view/base/icon';
 import { Loading } from '~/view/base/loading';
 import { usePageContext } from '../../page-context';
@@ -21,12 +22,13 @@ interface Props {}
 
 export const AudienceList: React.FC<Props> = () => {
   const { community } = usePageContext();
-  const [listId, setListId] = React.useState<string>();
+  const dispatch = useDispatch();
+  const { audienceListId } = useSelector((state) => state.mailchimp);
   const [statusFilter, setStatusFilter] = useStatusFilter();
   const { loading, audienceList, refetch, doSort, sortDescriptor } =
     useAudienceList({
       communityId: community.id,
-      listId,
+      listId: audienceListId,
       statusFilter,
     });
   const { columns, renderCell } = useTableData();
@@ -35,10 +37,10 @@ export const AudienceList: React.FC<Props> = () => {
     return (
       <div>
         <p className="mb-2">No data to display.</p>
-        {listId == null && <p>Please select an audience list.</p>}
+        {audienceListId == null && <p>Please select an audience list.</p>}
       </div>
     );
-  }, [listId]);
+  }, [audienceListId]);
 
   const topContent = React.useMemo(() => {
     const warningItem = audienceList.filter((item) => !!item.warning);
@@ -46,7 +48,14 @@ export const AudienceList: React.FC<Props> = () => {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-3">
-          <AudienceListSelect communityId={community.id} onSelect={setListId} />
+          <AudienceListSelect
+            communityId={community.id}
+            selectedKeys={audienceListId ? [audienceListId] : []}
+            onSelectionChange={(keys) => {
+              const [listId] = keys;
+              dispatch(actions.mailchimp.setAudienceListId(listId?.toString()));
+            }}
+          />
           <StatusFilter selected={statusFilter} onSelect={setStatusFilter} />
           <Button
             className="h-14"
@@ -64,7 +73,15 @@ export const AudienceList: React.FC<Props> = () => {
         </div>
       </div>
     );
-  }, [community.id, statusFilter, setStatusFilter, audienceList, refetch]);
+  }, [
+    community.id,
+    audienceListId,
+    dispatch,
+    statusFilter,
+    setStatusFilter,
+    audienceList,
+    refetch,
+  ]);
 
   return (
     <Table

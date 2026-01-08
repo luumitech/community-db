@@ -27,7 +27,7 @@ const supportedIcon = {
   dashboard: 'ion:bar-chart-outline',
   copy: 'fa-regular:copy',
   'property-list': 'tabler:home',
-  'property-editor': 'tabler:home-edit',
+  'contact-editor': 'fluent:contact-card-link-16-regular',
   logout: 'material-symbols:logout',
   settings: 'gravity-ui:gear',
   about: 'ion:information-outline',

@@ -3,6 +3,7 @@ import { usePrevious } from '@uidotdev/usehooks';
 import React from 'react';
 import * as R from 'remeda';
 import { useMediaQuery } from 'usehooks-ts';
+import * as GQL from '~/graphql/generated/graphql';
 import { ContactName } from './contact-name';
 import { OccupantEditor } from './occupant-editor';
 import {
@@ -13,15 +14,37 @@ import {
 interface Props {
   className?: string;
   occupantListMethods: OccupantFieldArrayReturn;
+  /** Open tab that contains this email on first render */
+  defaultEmail?: string;
 }
 
-export const Editor: React.FC<Props> = ({ className, occupantListMethods }) => {
+export const Editor: React.FC<Props> = ({
+  className,
+  occupantListMethods,
+  defaultEmail,
+}) => {
   const isSmallDevice = useMediaQuery('(max-width: 800px)');
   const { formState } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove } = occupantListMethods;
-  const [selectedKey, setSelectedKey] = React.useState(fields?.[0]?.id);
   const prevFieldsLength = usePrevious(fields.length);
+
+  /** Find the tab that has the email specified in `defaultTab` */
+  const defaultTabId = React.useMemo(() => {
+    const firstTabId = fields?.[0]?.id;
+    if (!defaultEmail) {
+      return firstTabId;
+    }
+    const foundTab = fields.find(({ infoList }) =>
+      infoList.find(
+        ({ type, value }) =>
+          type === GQL.ContactInfoType.Email && value === defaultEmail
+      )
+    );
+    return foundTab?.id ?? firstTabId;
+  }, [fields, defaultEmail]);
+
+  const [selectedKey, setSelectedKey] = React.useState(defaultTabId);
 
   const errObj = R.pathOr(errors, R.stringToPath('occupantList'), {});
   React.useEffect(() => {

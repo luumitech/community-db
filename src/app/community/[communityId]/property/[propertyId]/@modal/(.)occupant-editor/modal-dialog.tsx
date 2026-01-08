@@ -17,9 +17,10 @@ import { InputData, occupantDefault, useHookForm } from './use-hook-form';
 
 interface Props {
   onSave: (input: InputData) => Promise<void>;
+  defaultEmail?: string;
 }
 
-export const ModalDialog: React.FC<Props> = ({ onSave }) => {
+export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods } = useHookForm();
@@ -65,7 +66,10 @@ export const ModalDialog: React.FC<Props> = ({ onSave }) => {
               <>
                 <ModalHeader>{appLabel('occupantEditor')}</ModalHeader>
                 <ModalBody>
-                  <Editor occupantListMethods={occupantListMethods} />
+                  <Editor
+                    occupantListMethods={occupantListMethods}
+                    defaultEmail={defaultEmail}
+                  />
                 </ModalBody>
                 <ModalFooter>
                   <Button

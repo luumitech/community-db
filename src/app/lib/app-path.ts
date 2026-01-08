@@ -134,11 +134,23 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template: 'property' | 'propertyModify' | 'propertyDelete' | 'occupantEditor',
+  template: 'property' | 'propertyModify' | 'propertyDelete',
   sub: {
     path: {
       communityId: string;
       propertyId: string;
+    };
+  }
+): string;
+export function appPath(
+  template: 'occupantEditor',
+  sub: {
+    path: {
+      communityId: string;
+      propertyId: string;
+    };
+    query?: {
+      email?: string;
     };
   }
 ): string;

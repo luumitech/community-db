@@ -21,11 +21,18 @@ interface Params {
   propertyId: string;
 }
 
+interface SearchParams {
+  /** Open tab that matches the email */
+  email?: string;
+}
+
 interface RouteArgs {
   params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
 }
 
 export default function OccupantEditor(props: RouteArgs) {
+  const { email } = React.use(props.searchParams);
   const [updateProperty] = useMutation(OccupantMutation);
 
   const onSave = async (input: InputData) => {
@@ -40,5 +47,5 @@ export default function OccupantEditor(props: RouteArgs) {
     );
   };
 
-  return <ModalDialog onSave={onSave} />;
+  return <ModalDialog onSave={onSave} defaultEmail={email} />;
 }

@@ -1,5 +1,4 @@
 import { Tooltip, getKeyValue } from '@heroui/react';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
@@ -9,19 +8,19 @@ import { type AudienceMember } from './_type';
 import { StatusChip } from './status-filter';
 
 export function useTableData() {
-  const router = useRouter();
   const { community } = usePageContext();
 
   const columns = [
-    { key: 'email', label: 'Email', className: 'w-15' },
-    { key: 'name', label: 'Name', className: 'w-15' },
+    { key: 'email', label: 'Email', allowsSorting: true, className: '' },
+    { key: 'fullName', label: 'Name', allowsSorting: true },
     {
       key: 'status',
-      label: <span className="text-wrap">Mailchimp Subscriber Status</span>,
+      label: <span className="text-wrap">Subscriber Status</span>,
+      allowsSorting: true,
     },
-    { key: 'opt-out', label: 'Opt-Out' },
+    { key: 'opt-out', label: 'Opt-Out', allowsSorting: true },
     { key: 'warning', label: 'Warning', allowsSorting: true },
-    { key: 'property-link', label: 'Property', className: 'w-15' },
+    { key: 'actions', label: 'Actions' },
   ];
 
   const renderCell = React.useCallback(
@@ -31,7 +30,7 @@ export function useTableData() {
       switch (columnKey) {
         case 'email':
           return <span>{entry.email}</span>;
-        case 'name':
+        case 'fullName':
           return <span>{entry.fullName}</span>;
         case 'status':
           return <StatusChip status={entry.status} />;
@@ -41,7 +40,7 @@ export function useTableData() {
           return entry.warning ? (
             <Tooltip
               content={
-                <div className="max-w-48 text-wrap text-tiny">
+                <div className="max-w-48 text-tiny text-wrap">
                   {entry.warning}
                 </div>
               }
@@ -51,24 +50,41 @@ export function useTableData() {
               </div>
             </Tooltip>
           ) : null;
-        case 'property-link':
+        case 'actions':
           if (property == null) {
             return null;
           }
           return (
-            <Link
-              href={appPath('property', {
-                path: {
-                  communityId: community.id,
-                  propertyId: property.id,
-                },
-              })}
-              tooltip={appLabel('property')}
-              iconOnly={{
-                icon: 'property-editor',
-                openInNewWindow: true,
-              }}
-            />
+            <div>
+              <Link
+                href={appPath('property', {
+                  path: {
+                    communityId: community.id,
+                    propertyId: property.id,
+                  },
+                })}
+                tooltip={appLabel('property')}
+                iconOnly={{
+                  icon: 'property-list',
+                  openInNewWindow: true,
+                }}
+              />
+              <Link
+                href={appPath('occupantEditor', {
+                  path: {
+                    communityId: community.id,
+                    propertyId: property.id,
+                  },
+                  query: {
+                    email: entry.email,
+                  },
+                })}
+                tooltip={appLabel('occupantEditor')}
+                iconOnly={{
+                  icon: 'contact-editor',
+                }}
+              />
+            </div>
           );
 
         default:
