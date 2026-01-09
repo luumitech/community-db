@@ -56,7 +56,7 @@ export const SelectedYearItem: React.FC<SelectedYearItemProps> = ({
   items,
 }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-x-2">
       {items.map((item) => (
         <YearItemLabel key={item.key} item={item.data} />
       ))}

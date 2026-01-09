@@ -62,6 +62,8 @@ export function Select<T extends object>(props: SelectProps<T>) {
         (values: string | number | string[] | number[]) => {
           if (values == null) {
             return [];
+          } else if (values === 'all') {
+            return 'all';
           }
 
           const result = Array.isArray(values)

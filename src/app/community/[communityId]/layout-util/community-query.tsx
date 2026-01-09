@@ -90,6 +90,8 @@ export function useCommunityQuery(communityId: string) {
     variables: { communityId },
     onCompleted: (data) => {
       // Reset ui state whenever community switches to a different one
+      dispatch(actions.mailchimp.reset());
+      dispatch(actions.searchBar.reset());
       dispatch(actions.ui.reset());
     },
     onError: (error) => onError(error, { customOnError }),

@@ -1,8 +1,85 @@
+import { Input, InputProps } from '@heroui/react';
 import React from 'react';
-import { SearchBar, type SearchBarProps } from './search-bar';
+import { FilterChip } from '~/community/[communityId]/common/filter-component';
+import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
+import { FlatButton } from '~/view/base/flat-button';
+import { Icon } from '~/view/base/icon';
+import { FilterButton } from './filter-button';
+import { FilterDrawer, type DrawerArg } from './filter-drawer';
+import { InputData } from './use-hook-form';
 
-interface Props extends SearchBarProps {}
+const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
-export const PropertySearchBar: React.FC<Props> = ({ ...searchBarProps }) => {
-  return <SearchBar {...searchBarProps} />;
+interface Props extends InputProps {
+  onChange?: () => void;
+}
+
+export const PropertySearchBar: React.FC<Props> = ({
+  onChange,
+  ...inputProps
+}) => {
+  const { arg, disclosure, open } = useDrawerControl();
+  const dispatch = useDispatch();
+  const searchBar = useSelector((state) => state.searchBar);
+
+  const setSearchText = (input?: string) => {
+    dispatch(actions.searchBar.setSearchText(input));
+    onChange?.();
+  };
+
+  const onFilterChange = React.useCallback(
+    async (input: InputData) => {
+      dispatch(actions.searchBar.setFilter(input));
+      onChange?.();
+    },
+    [dispatch, onChange]
+  );
+
+  const openDrawer = React.useCallback(() => open({}), [open]);
+
+  return (
+    <>
+      <Input
+        placeholder="Search Address or Member Name"
+        startContent={<Icon icon="search" />}
+        // isClearable
+        // onClear={() => setSearchText(undefined)}
+        endContent={
+          <div className="flex cursor-pointer items-center justify-center gap-2">
+            {/**
+             * `isClearable`/`onClear` cannot be used together with endContent See:
+             * https://github.com/nextui-org/nextui/issues/2254
+             */}
+            <FlatButton
+              icon="cross"
+              disabled={!searchBar.searchText}
+              onClick={() => setSearchText(undefined)}
+            />
+            <FilterButton openDrawer={openDrawer} />
+            <FilterChip
+              openDrawer={openDrawer}
+              filters={searchBar}
+              onFilterChange={onFilterChange}
+            />
+          </div>
+        }
+        // endContent={
+        //   <div className="pointer-events-none flex items-center">
+        //     <span className="text-default-400 text-small">.org/</span>
+        //   </div>
+        // }
+        value={searchBar.searchText ?? ''}
+        onValueChange={setSearchText}
+        {...inputProps}
+      />
+      {arg != null && (
+        <FilterDrawer
+          {...arg}
+          disclosure={disclosure}
+          onFilterChange={onFilterChange}
+        />
+      )}
+    </>
+  );
 };

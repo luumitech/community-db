@@ -2,19 +2,15 @@ import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/event-chip';
 import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
-import { type RootState } from '~/lib/reducers';
+import { initialState, type FilterT } from '~/lib/reducers/search-bar';
 import { Icon } from '~/view/base/icon';
 
-type FilterItems = Pick<
-  RootState['searchBar'],
-  'memberYearList' | 'nonMemberYearList' | 'memberEventList' | 'withGps'
->;
-type FilterChangeFn = (input: FilterItems) => Promise<void>;
+type FilterChangeFn = (input: FilterT) => Promise<void>;
 
 interface Props {
   className?: string;
   openDrawer: () => void;
-  filters: FilterItems;
+  filters: FilterT;
   isDisabled?: boolean;
   onFilterChange?: FilterChangeFn;
 }
@@ -29,8 +25,8 @@ export const FilterChip: React.FC<Props> = ({
   const { memberYearList, nonMemberYearList, memberEventList, withGps } =
     filters;
 
-  const onChange = React.useCallback(
-    (_filters: FilterItems) => {
+  const onChange = React.useCallback<FilterChangeFn>(
+    async (_filters) => {
       onFilterChange?.(_filters);
     },
     [onFilterChange]
@@ -46,7 +42,12 @@ export const FilterChip: React.FC<Props> = ({
           variant="bordered"
           color="success"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, memberYearList: [] })}
+          onClose={() =>
+            onChange({
+              ...filters,
+              memberYearList: initialState.nonMemberYearList,
+            })
+          }
         >
           <div className="flex items-center gap-2">
             {memberYearList.join(',')}
@@ -58,7 +59,12 @@ export const FilterChip: React.FC<Props> = ({
         <Chip
           variant="bordered"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, nonMemberYearList: [] })}
+          onClose={() =>
+            onChange({
+              ...filters,
+              nonMemberYearList: initialState.nonMemberYearList,
+            })
+          }
         >
           <div className="flex items-center gap-2">
             {nonMemberYearList.join(',')}
@@ -71,7 +77,12 @@ export const FilterChip: React.FC<Props> = ({
           eventName={memberEventList.join(',')}
           variant="faded"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, memberEventList: [] })}
+          onClose={() =>
+            onChange({
+              ...filters,
+              memberEventList: initialState.memberEventList,
+            })
+          }
         />
       )}
       {withGps != null && (
@@ -79,7 +90,9 @@ export const FilterChip: React.FC<Props> = ({
           withGps={withGps}
           variant="faded"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, withGps: null })}
+          onClose={() =>
+            onChange({ ...filters, withGps: initialState.withGps })
+          }
         />
       )}
     </div>

@@ -24,6 +24,7 @@ const customJestConfig: Config = {
   },
   testMatch: ['<rootDir>/src/**/?(*.)(spec).(ts|js)?(x)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  modulePathIgnorePatterns: ['<rootDir>/.next/'],
 
   // Reset all mocks usage data
   clearMocks: true,

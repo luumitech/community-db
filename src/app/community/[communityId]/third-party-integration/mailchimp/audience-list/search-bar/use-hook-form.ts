@@ -2,35 +2,35 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
+import * as GQL from '~/graphql/generated/graphql';
 import { type RootState } from '~/lib/reducers';
-import { initialState, isFilterSpecified } from '~/lib/reducers/search-bar';
+import { initialState, isFilterSpecified } from '~/lib/reducers/mailchimp';
 import { z, zz } from '~/lib/zod';
-
 function schema() {
   return z.object({
-    memberYearList: zz.coerce.toNumberList(),
-    nonMemberYearList: zz.coerce.toNumberList(),
-    memberEventList: zz.coerce.toStringList(),
-    withGps: zz.coerce.toBoolean({ nullable: true }),
+    subscriberStatusList: zz.coerce.toStringList({
+      disallowEmpty: true,
+    }) as z.ZodType<GQL.MailchimpSubscriberStatus[]>,
+    optOut: zz.coerce.toBoolean({ nullable: true }),
+    warning: zz.coerce.toBoolean({ nullable: true }),
   });
 }
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultFilterInputData(searchBar: RootState['searchBar']): InputData {
+function defaultFilterInputData(mailchimp: RootState['mailchimp']): InputData {
   return {
-    memberYearList: searchBar.memberYearList,
-    nonMemberYearList: searchBar.nonMemberYearList,
-    memberEventList: searchBar.memberEventList,
-    withGps: searchBar.withGps,
+    subscriberStatusList: mailchimp.subscriberStatusList,
+    optOut: mailchimp.optOut,
+    warning: mailchimp.warning,
   };
 }
 
 export function useHookForm() {
-  const searchBar = useSelector((state) => state.searchBar);
+  const mailchimp = useSelector((state) => state.mailchimp);
   const defaultValues = React.useMemo(() => {
-    return defaultFilterInputData(searchBar);
-  }, [searchBar]);
+    return defaultFilterInputData(mailchimp);
+  }, [mailchimp]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
@@ -48,12 +48,12 @@ export function useHookForm() {
   }, [formValues]);
 
   const reset = React.useCallback(() => {
-    const { memberYearList, nonMemberYearList, memberEventList, withGps } =
-      initialState;
-    setValue('memberYearList', memberYearList, { shouldDirty: true });
-    setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
-    setValue('memberEventList', memberEventList, { shouldDirty: true });
-    setValue('withGps', withGps, { shouldDirty: true });
+    const { subscriberStatusList, optOut, warning } = initialState;
+    setValue('subscriberStatusList', subscriberStatusList, {
+      shouldDirty: true,
+    });
+    setValue('optOut', optOut, { shouldDirty: true });
+    setValue('warning', warning, { shouldDirty: true });
   }, [setValue]);
 
   return { formMethods, canReset, reset };
