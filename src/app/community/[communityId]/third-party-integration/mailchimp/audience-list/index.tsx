@@ -14,7 +14,7 @@ import { Icon } from '~/view/base/icon';
 import { Loading } from '~/view/base/loading';
 import { usePageContext } from '../../page-context';
 import { AudienceListSelect } from './audience-list-select';
-import { StatusFilter, useStatusFilter } from './status-filter';
+import { SearchBar } from './search-bar';
 import { useAudienceList } from './use-audience-list';
 import { useTableData } from './use-table-data';
 
@@ -24,13 +24,8 @@ export const AudienceList: React.FC<Props> = () => {
   const { community } = usePageContext();
   const dispatch = useDispatch();
   const { audienceListId } = useSelector((state) => state.mailchimp);
-  const [statusFilter, setStatusFilter] = useStatusFilter();
   const { loading, audienceList, refetch, doSort, sortDescriptor } =
-    useAudienceList({
-      communityId: community.id,
-      listId: audienceListId,
-      statusFilter,
-    });
+    useAudienceList({ communityId: community.id, listId: audienceListId });
   const { columns, renderCell } = useTableData();
 
   const emptyContent = React.useMemo(() => {
@@ -56,32 +51,32 @@ export const AudienceList: React.FC<Props> = () => {
               dispatch(actions.mailchimp.setAudienceListId(listId?.toString()));
             }}
           />
-          <StatusFilter selected={statusFilter} onSelect={setStatusFilter} />
           <Button
             className="h-14"
+            variant="bordered"
             endContent={<Icon icon="refresh" />}
+            isDisabled={!audienceListId}
+            isLoading={loading}
             onPress={() => refetch()}
           >
-            Refresh
+            Refresh List
           </Button>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-default-400">
-            Total {audienceList.length} emails ({warningItem.length} with
-            warnings)
-          </span>
-        </div>
+        <SearchBar
+          {...(!audienceListId && {
+            placeholder: 'Select an audience list above',
+          })}
+          isDisabled={!audienceListId || loading}
+          description={
+            <span className="text-xs text-default-400">
+              Total {audienceList.length} entries ({warningItem.length} with
+              warnings)
+            </span>
+          }
+        />
       </div>
     );
-  }, [
-    community.id,
-    audienceListId,
-    dispatch,
-    statusFilter,
-    setStatusFilter,
-    audienceList,
-    refetch,
-  ]);
+  }, [audienceList, community.id, audienceListId, loading, dispatch, refetch]);
 
   return (
     <Table

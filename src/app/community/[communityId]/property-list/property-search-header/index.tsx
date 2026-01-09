@@ -15,10 +15,14 @@ export const PropertySearchHeader: React.FC<Props> = ({
   const totalCount = community?.propertyList.totalCount ?? 0;
   return (
     <div className={twMerge('flex flex-col gap-2', className)}>
-      <PropertySearchBar autoFocus />
-      <span className="text-foreground-400 text-tiny">
-        {totalCount} entries found
-      </span>
+      <PropertySearchBar
+        autoFocus
+        description={
+          <span className="text-tiny text-foreground-400">
+            {totalCount} entries found
+          </span>
+        }
+      />
     </div>
   );
 };

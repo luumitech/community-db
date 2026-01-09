@@ -31,6 +31,8 @@ interface ToNumberListOpt extends CoerceOpt {
    * - Otherwise return null
    */
   validateFn?: ValidateFn<number> | ValidateFn<number>[];
+  /** Disallow empty values, optional error message to show */
+  disallowEmpty?: string | boolean;
 }
 interface ToStringListOpt extends CoerceOpt {
   /**
@@ -40,6 +42,8 @@ interface ToStringListOpt extends CoerceOpt {
    * - Otherwise return null
    */
   validateFn?: ValidateFn<string> | ValidateFn<string>[];
+  /** Disallow empty values, optional error message to show */
+  disallowEmpty?: string | boolean;
 }
 interface ToFileArrayOpt extends CoerceOpt {}
 interface ToCurrencyOpt extends CoerceOpt {}
@@ -135,7 +139,7 @@ export class Coerce {
    * component, when you want to select multiple numeric items
    */
   toNumberList<T extends ToNumberListOpt>(opt?: T) {
-    const { validateFn } = opt ?? {};
+    const { validateFn, disallowEmpty } = opt ?? {};
     return z.any().transform((val, ctx) => {
       const onError = (message: string) => {
         ctx.addIssue({
@@ -153,6 +157,15 @@ export class Coerce {
       const numList = valArr
         .map((v) => parseAsNumber(v))
         .filter((num): num is number => num != null);
+
+      // Check if list is empty
+      if (disallowEmpty && !numList.length) {
+        const message =
+          typeof disallowEmpty === 'string'
+            ? disallowEmpty
+            : 'Must select a value';
+        return onError(message);
+      }
       // validate results
       if (validateFn) {
         numList.forEach((num) => {
@@ -171,7 +184,7 @@ export class Coerce {
    * component, when you want to select multiple string items
    */
   toStringList<T extends ToStringListOpt>(opt?: T) {
-    const { validateFn } = opt ?? {};
+    const { validateFn, disallowEmpty } = opt ?? {};
     return z.any().transform((val, ctx) => {
       const onError = (message: string) => {
         ctx.addIssue({
@@ -189,6 +202,15 @@ export class Coerce {
       const strList = valArr
         .map((v) => v.toString())
         .filter((str): str is string => !!str);
+
+      // Check if list is empty
+      if (disallowEmpty && !strList.length) {
+        const message =
+          typeof disallowEmpty === 'string'
+            ? disallowEmpty
+            : 'Must select a value';
+        return onError(message);
+      }
       // validate results
       if (validateFn) {
         strList.forEach((str) => {

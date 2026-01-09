@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
 import { startListening } from './listener';
 
@@ -33,7 +34,7 @@ type State = Readonly<{
   filterArg: GQL.PropertyFilterInput;
 }>;
 
-const initialState: State = {
+export const initialState: State = {
   searchText: undefined,
   debouncedSearchText: undefined,
   memberYearList: [],
@@ -44,17 +45,28 @@ const initialState: State = {
   filterArg: {},
 };
 
+export type FilterT = Pick<
+  State,
+  'memberYearList' | 'nonMemberYearList' | 'memberEventList' | 'withGps'
+>;
 /**
  * Check if any of the filter controls have been specified
  *
+ * - I.e. differ from inital state
+ *
  * @param state
  */
-function isFilterSpecified(state: State) {
-  return (
-    state.memberYearList.length > 0 ||
-    state.nonMemberYearList.length > 0 ||
-    state.memberEventList.length > 0 ||
-    state.withGps != null
+export function isFilterSpecified(state: FilterT) {
+  const filterProp = [
+    'memberYearList',
+    'nonMemberYearList',
+    'memberEventList',
+    'withGps',
+  ] as const;
+
+  return !R.isDeepEqual(
+    R.pick(state, filterProp),
+    R.pick(initialState, filterProp)
   );
 }
 
@@ -93,23 +105,11 @@ export const searchBarSlice = createSlice({
       state.debouncedSearchText = payload;
       state.filterArg = filterArg(state);
     },
-    setMemberYearList: (state, { payload }: PayloadAction<number[]>) => {
-      state.memberYearList = payload;
-      state.isFilterSpecified = isFilterSpecified(state);
-      state.filterArg = filterArg(state);
-    },
-    setNonMemberYearList: (state, { payload }: PayloadAction<number[]>) => {
-      state.nonMemberYearList = payload;
-      state.isFilterSpecified = isFilterSpecified(state);
-      state.filterArg = filterArg(state);
-    },
-    setMemberEventList: (state, { payload }: PayloadAction<string[]>) => {
-      state.memberEventList = payload;
-      state.isFilterSpecified = isFilterSpecified(state);
-      state.filterArg = filterArg(state);
-    },
-    setWithGps: (state, { payload }: PayloadAction<boolean | null>) => {
-      state.withGps = payload;
+    setFilter: (state, { payload }: PayloadAction<FilterT>) => {
+      state.memberYearList = payload.memberYearList;
+      state.nonMemberYearList = payload.nonMemberYearList;
+      state.memberEventList = payload.memberEventList;
+      state.withGps = payload.withGps;
       state.isFilterSpecified = isFilterSpecified(state);
       state.filterArg = filterArg(state);
     },

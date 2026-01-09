@@ -1,52 +1,44 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
-import { FilterChip } from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { FilterButton } from './filter-button';
+import { FilterChip } from './filter-chip';
 import { FilterDrawer, type DrawerArg } from './filter-drawer';
 import { InputData } from './use-hook-form';
 
 const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
-export interface SearchBarProps extends InputProps {
+interface Props extends InputProps {
   onChange?: () => void;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({
-  onChange,
-  ...inputProps
-}) => {
+export const SearchBar: React.FC<Props> = ({ onChange, ...inputProps }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const dispatch = useDispatch();
-  const searchBar = useSelector((state) => state.searchBar);
+  const mailchimp = useSelector((state) => state.mailchimp);
 
   const setSearchText = (input?: string) => {
-    dispatch(actions.searchBar.setSearchText(input));
+    dispatch(actions.mailchimp.setSearchText(input));
     onChange?.();
   };
 
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
-      dispatch(actions.searchBar.setMemberYearList(input.memberYearList));
-      dispatch(actions.searchBar.setNonMemberYearList(input.nonMemberYearList));
-      dispatch(actions.searchBar.setMemberEventList(input.memberEventList));
-      dispatch(actions.searchBar.setWithGps(input.withGps ?? null));
+      dispatch(actions.mailchimp.setFilter(input));
       onChange?.();
     },
     [dispatch, onChange]
   );
 
-  const openDrawer = React.useCallback(() => {
-    open(searchBar);
-  }, [open, searchBar]);
+  const openDrawer = React.useCallback(() => open({}), [open]);
 
   return (
     <>
       <Input
-        placeholder="Search Address or Member Name"
+        placeholder="Search Email or Member Name"
         startContent={<Icon icon="search" />}
         // isClearable
         // onClear={() => setSearchText(undefined)}
@@ -58,23 +50,18 @@ export const SearchBar: React.FC<SearchBarProps> = ({
              */}
             <FlatButton
               icon="cross"
-              disabled={!searchBar.searchText}
+              disabled={!mailchimp.searchText}
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
             <FilterChip
               openDrawer={openDrawer}
-              filters={searchBar}
+              filters={mailchimp}
               onFilterChange={onFilterChange}
             />
           </div>
         }
-        // endContent={
-        //   <div className="pointer-events-none flex items-center">
-        //     <span className="text-default-400 text-small">.org/</span>
-        //   </div>
-        // }
-        value={searchBar.searchText ?? ''}
+        value={mailchimp.searchText ?? ''}
         onValueChange={setSearchText}
         {...inputProps}
       />

@@ -5,6 +5,7 @@ import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
+import { type RootState } from '~/lib/reducers';
 import { type AudienceMember } from './_type';
 
 const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
@@ -33,17 +34,18 @@ const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
 interface UseAudienceListOpt {
   communityId: string;
   listId?: string;
-  statusFilter: GQL.MailchimpSubscriberStatus[] | 'all';
 }
 
 export function useAudienceList(arg: UseAudienceListOpt) {
   const dispatch = useDispatch();
-  const { sortDescriptor } = useSelector((state) => state.mailchimp);
+  const mailchimp = useSelector((state) => state.mailchimp);
   const result = useQuery(ThirdPartyIntegration_MailchimpMemberListQuery, {
     variables: {
       input: { communityId: arg.communityId, listId: arg.listId! },
     },
     skip: arg.listId == null,
+    // Required for refetch to update loading status
+    notifyOnNetworkStatusChange: true,
     onError,
   });
 
@@ -103,12 +105,8 @@ export function useAudienceList(arg: UseAudienceListOpt) {
 
   /** Filter rawAudienceList based on filters and sort schemes */
   const audienceList = React.useMemo(() => {
-    return sortAndFilterAudienceList(
-      rawAudienceList,
-      arg.statusFilter,
-      sortDescriptor
-    );
-  }, [rawAudienceList, arg, sortDescriptor]);
+    return sortAndFilterAudienceList(rawAudienceList, mailchimp);
+  }, [rawAudienceList, mailchimp]);
 
   return {
     loading: result.loading,
@@ -116,19 +114,38 @@ export function useAudienceList(arg: UseAudienceListOpt) {
     refetch: result.refetch,
     audienceList,
     doSort,
-    sortDescriptor,
+    sortDescriptor: mailchimp.sortDescriptor,
   };
 }
 
 function sortAndFilterAudienceList(
   audienceList: AudienceMember[],
-  statusFilter: GQL.MailchimpSubscriberStatus[] | 'all',
-  sortDescriptor?: SortDescriptor
+  mailchimp: RootState['mailchimp']
 ): AudienceMember[] {
+  const { searchText, sortDescriptor, subscriberStatusList, optOut, warning } =
+    mailchimp;
   const list = audienceList.filter((entry) => {
-    const showStatus =
-      statusFilter === 'all' || statusFilter.includes(entry.status);
-    return showStatus;
+    const matchStatus = subscriberStatusList.includes(entry.status);
+
+    let matchSearchText = true;
+    if (searchText) {
+      const toMatch = searchText.toLowerCase();
+      matchSearchText =
+        entry.email.toLowerCase().startsWith(toMatch) ||
+        !!entry.fullName?.toLowerCase().includes(toMatch);
+    }
+
+    let matchOptOut = true;
+    if (optOut != null) {
+      matchOptOut = entry.occupant?.optOut === optOut;
+    }
+
+    let matchWarning = true;
+    if (warning != null) {
+      matchWarning = warning ? !!entry.warning : !entry.warning;
+    }
+
+    return matchSearchText && matchStatus && matchOptOut && matchWarning;
   });
 
   if (sortDescriptor != null) {
