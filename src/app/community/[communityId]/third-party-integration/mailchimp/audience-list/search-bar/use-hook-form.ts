@@ -3,14 +3,12 @@ import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
-import { type RootState } from '~/lib/reducers';
 import { initialState, isFilterSpecified } from '~/lib/reducers/mailchimp';
 import { z, zz } from '~/lib/zod';
 function schema() {
   return z.object({
-    subscriberStatusList: zz.coerce.toStringList({
-      disallowEmpty: true,
-    }) as z.ZodType<GQL.MailchimpSubscriberStatus[]>,
+    subscriberStatusList:
+      zz.coerce.toStringList<GQL.MailchimpSubscriberStatus>(),
     optOut: zz.coerce.toBoolean({ nullable: true }),
     warning: zz.coerce.toBoolean({ nullable: true }),
   });
@@ -18,19 +16,12 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultFilterInputData(mailchimp: RootState['mailchimp']): InputData {
-  return {
-    subscriberStatusList: mailchimp.subscriberStatusList,
-    optOut: mailchimp.optOut,
-    warning: mailchimp.warning,
-  };
-}
-
 export function useHookForm() {
   const mailchimp = useSelector((state) => state.mailchimp);
-  const defaultValues = React.useMemo(() => {
-    return defaultFilterInputData(mailchimp);
-  }, [mailchimp]);
+  const defaultValues = React.useMemo(
+    () => mailchimp.filter,
+    [mailchimp.filter]
+  );
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
@@ -48,7 +39,7 @@ export function useHookForm() {
   }, [formValues]);
 
   const reset = React.useCallback(() => {
-    const { subscriberStatusList, optOut, warning } = initialState;
+    const { subscriberStatusList, optOut, warning } = initialState.filter;
     setValue('subscriberStatusList', subscriberStatusList, {
       shouldDirty: true,
     });

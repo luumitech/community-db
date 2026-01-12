@@ -5,7 +5,7 @@ import { Icon } from '~/view/base/icon';
 import { Link } from '~/view/base/link';
 import { usePageContext } from '../../page-context';
 import { type AudienceMember } from './_type';
-import { StatusChip } from './search-bar/filter-drawer/status-filter';
+import { StatusChip } from './search-bar/filter-chip/status-chip';
 
 export function useTableData() {
   const { community } = usePageContext();

@@ -59,7 +59,7 @@ export const PropertySearchBar: React.FC<Props> = ({
             <FilterButton openDrawer={openDrawer} />
             <FilterChip
               openDrawer={openDrawer}
-              filters={searchBar}
+              filters={searchBar.filter}
               onFilterChange={onFilterChange}
             />
           </div>

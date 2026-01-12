@@ -1,13 +1,9 @@
-import { Chip, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import {
-  initialState,
-  subscriberStatusItems,
-  type FilterT,
-} from '~/lib/reducers/mailchimp';
-import { Icon } from '~/view/base/icon';
+import { initialState, type FilterT } from '~/lib/reducers/mailchimp';
 import { OptOutChip } from './opt-out-chip';
+import { StatusChip } from './status-chip';
 import { WarningChip } from './warning-chip';
 
 type FilterChangeFn = (input: FilterT) => Promise<void>;
@@ -43,37 +39,35 @@ export const FilterChip: React.FC<Props> = ({
     >
       {!R.isDeepEqual(
         subscriberStatusList,
-        initialState.subscriberStatusList
+        initialState.filter.subscriberStatusList
       ) && (
-        <Chip
-          variant="bordered"
-          color="success"
-          isDisabled={isDisabled}
-          onClose={() =>
-            onChange({
-              ...filters,
-              subscriberStatusList: initialState.subscriberStatusList,
-            })
-          }
-        >
-          <div className="flex items-center gap-2">
-            {subscriberStatusList
-              .map((key) => {
-                const entry = subscriberStatusItems.find(
-                  (item) => item.key === key
-                );
-                return entry!.label;
-              })
-              .join(', ')}
-          </div>
-        </Chip>
+        <div className="flex items-center gap-2">
+          {subscriberStatusList.map((status) => (
+            <StatusChip
+              key={status}
+              status={status}
+              variant="bordered"
+              color="success"
+              isDisabled={isDisabled}
+              onClose={() =>
+                onChange({
+                  ...filters,
+                  subscriberStatusList:
+                    initialState.filter.subscriberStatusList,
+                })
+              }
+            />
+          ))}
+        </div>
       )}
       {optOut != null && (
         <OptOutChip
           optOut={optOut}
           variant="faded"
           isDisabled={isDisabled}
-          onClose={() => onChange({ ...filters, optOut: initialState.optOut })}
+          onClose={() =>
+            onChange({ ...filters, optOut: initialState.filter.optOut })
+          }
         />
       )}
       {warning != null && (
@@ -82,7 +76,7 @@ export const FilterChip: React.FC<Props> = ({
           variant="faded"
           isDisabled={isDisabled}
           onClose={() =>
-            onChange({ ...filters, warning: initialState.warning })
+            onChange({ ...filters, warning: initialState.filter.warning })
           }
         />
       )}

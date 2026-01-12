@@ -44,7 +44,7 @@ export const FilterSelect: React.FC<Props> = ({
           isDisabled={isDisabled}
           filters={{
             ...filters,
-            withGps: initialState.withGps,
+            withGps: initialState.filter.withGps,
           }}
           onFilterChange={onFilterChange}
           openDrawer={openDrawer}

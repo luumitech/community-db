@@ -20,7 +20,7 @@ export const OptOutChip: React.FC<Props> = ({
       color="primary"
       {...props}
     >
-      <Icon icon={optOut ? 'email' : 'noEmail'} />
+      <Icon icon={optOut ? 'noEmail' : 'email'} />
     </Chip>
   );
 };

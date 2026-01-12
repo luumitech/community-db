@@ -45,7 +45,7 @@ export const FilterChip: React.FC<Props> = ({
           onClose={() =>
             onChange({
               ...filters,
-              memberYearList: initialState.nonMemberYearList,
+              memberYearList: initialState.filter.nonMemberYearList,
             })
           }
         >
@@ -62,7 +62,7 @@ export const FilterChip: React.FC<Props> = ({
           onClose={() =>
             onChange({
               ...filters,
-              nonMemberYearList: initialState.nonMemberYearList,
+              nonMemberYearList: initialState.filter.nonMemberYearList,
             })
           }
         >
@@ -80,7 +80,7 @@ export const FilterChip: React.FC<Props> = ({
           onClose={() =>
             onChange({
               ...filters,
-              memberEventList: initialState.memberEventList,
+              memberEventList: initialState.filter.memberEventList,
             })
           }
         />
@@ -91,7 +91,7 @@ export const FilterChip: React.FC<Props> = ({
           variant="faded"
           isDisabled={isDisabled}
           onClose={() =>
-            onChange({ ...filters, withGps: initialState.withGps })
+            onChange({ ...filters, withGps: initialState.filter.withGps })
           }
         />
       )}

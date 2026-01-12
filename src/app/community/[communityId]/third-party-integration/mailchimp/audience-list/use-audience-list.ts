@@ -122,10 +122,14 @@ function sortAndFilterAudienceList(
   audienceList: AudienceMember[],
   mailchimp: RootState['mailchimp']
 ): AudienceMember[] {
-  const { searchText, sortDescriptor, subscriberStatusList, optOut, warning } =
-    mailchimp;
+  const { searchText, sortDescriptor, filter } = mailchimp;
+  const { subscriberStatusList, optOut, warning } = filter;
+
   const list = audienceList.filter((entry) => {
-    const matchStatus = subscriberStatusList.includes(entry.status);
+    let matchStatus = true;
+    if (subscriberStatusList.length > 0) {
+      matchStatus = subscriberStatusList.includes(entry.status);
+    }
 
     let matchSearchText = true;
     if (searchText) {

@@ -56,7 +56,7 @@ export const SearchBar: React.FC<Props> = ({ onChange, ...inputProps }) => {
             <FilterButton openDrawer={openDrawer} />
             <FilterChip
               openDrawer={openDrawer}
-              filters={mailchimp}
+              filters={mailchimp.filter}
               onFilterChange={onFilterChange}
             />
           </div>
