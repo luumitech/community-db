@@ -18,9 +18,8 @@ export const WarningChip: React.FC<Props> = ({
       radius="sm"
       variant="flat"
       color="warning"
+      startContent={<Icon icon={warning ? 'warning' : 'noWarning'} />}
       {...props}
-    >
-      <Icon icon={warning ? 'warning' : 'noWarning'} />
-    </Chip>
+    />
   );
 };

@@ -4,12 +4,12 @@ import { Icon } from '~/view/base/icon';
 
 interface Props extends ChipProps {
   className?: string;
-  withGps: boolean;
+  optOut: boolean;
 }
 
-export const WithGpsChip: React.FC<Props> = ({
+export const OptOutChip: React.FC<Props> = ({
   className,
-  withGps,
+  optOut,
   ...props
 }) => {
   return (
@@ -18,9 +18,8 @@ export const WithGpsChip: React.FC<Props> = ({
       radius="sm"
       variant="flat"
       color="primary"
+      startContent={<Icon icon={optOut ? 'noEmail' : 'email'} />}
       {...props}
-    >
-      <Icon icon={withGps ? 'map' : 'noMap'} />
-    </Chip>
+    />
   );
 };

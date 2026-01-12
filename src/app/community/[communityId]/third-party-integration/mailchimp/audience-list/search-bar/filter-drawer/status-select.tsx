@@ -1,8 +1,8 @@
 import { cn, type SelectedItems } from '@heroui/react';
 import React from 'react';
+import { MailchimpStatusChip } from '~/community/[communityId]/common/chip';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem, type SelectProps } from '~/view/base/select';
-import { StatusChip } from '../filter-chip/status-chip';
 
 /**
  * Status items and corresponding labels for GQL.MailchimpSubscriberStatus
@@ -60,14 +60,12 @@ interface Props extends CustomProps {
 export const StatusSelect: React.FC<Props> = ({ className, ...props }) => {
   const renderValue = React.useCallback(
     (items: SelectedItems<SubscriberStatusItem>) => {
-      const itemKeys = items.map((item) => item.key);
-
       return (
         <div className="flex flex-wrap items-center gap-1">
-          {itemKeys.map((key) => (
-            <StatusChip
-              key={key}
-              status={key as GQL.MailchimpSubscriberStatus}
+          {items.map((item) => (
+            <MailchimpStatusChip
+              key={item.key}
+              status={item.key as GQL.MailchimpSubscriberStatus}
             />
           ))}
         </div>

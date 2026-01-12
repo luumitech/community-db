@@ -41,11 +41,9 @@ export const FilterSelect: React.FC<Props> = ({
           Optional Filter...
         </Button>
         <FilterChip
+          className="flex-wrap"
           isDisabled={isDisabled}
-          filters={{
-            ...filters,
-            withGps: initialState.filter.withGps,
-          }}
+          filters={filters}
           onFilterChange={onFilterChange}
           openDrawer={openDrawer}
         />

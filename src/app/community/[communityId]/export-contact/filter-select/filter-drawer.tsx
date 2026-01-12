@@ -51,6 +51,7 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
                 controlName="memberYearList"
+                isMember
                 size="sm"
                 label="Member In Year(s)"
                 description="Include only members who have memberships in the specified year(s)"
@@ -59,6 +60,7 @@ export const FilterDrawer: React.FC<Props> = ({
               />
               <YearSelect
                 controlName="nonMemberYearList"
+                isMember={false}
                 size="sm"
                 label="Non-Member In Year(s)"
                 description="Include only members who do NOT have memberships in the specified year(s)"

@@ -1,11 +1,11 @@
 import { Tooltip, getKeyValue } from '@heroui/react';
 import React from 'react';
+import { MailchimpStatusChip } from '~/community/[communityId]/common/chip';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { Link } from '~/view/base/link';
 import { usePageContext } from '../../page-context';
 import { type AudienceMember } from './_type';
-import { StatusChip } from './search-bar/filter-chip/status-chip';
 
 export function useTableData() {
   const { community } = usePageContext();
@@ -33,7 +33,7 @@ export function useTableData() {
         case 'fullName':
           return <span>{entry.fullName}</span>;
         case 'status':
-          return <StatusChip status={entry.status} />;
+          return <MailchimpStatusChip status={entry.status} />;
         case 'opt-out':
           return occupant?.optOut ? <Icon icon="checkmark" size={16} /> : null;
         case 'warning':
