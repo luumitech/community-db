@@ -138,7 +138,7 @@ export class Coerce {
    * Coerce input as a list of number. This is intended for used in a selection
    * component, when you want to select multiple numeric items
    */
-  toNumberList<T extends ToNumberListOpt>(opt?: T) {
+  toNumberList(opt?: ToNumberListOpt) {
     const { validateFn, disallowEmpty } = opt ?? {};
     return z.any().transform((val, ctx) => {
       const onError = (message: string) => {
@@ -182,8 +182,11 @@ export class Coerce {
   /**
    * Coerce input as a list of string. This is intended for used in a selection
    * component, when you want to select multiple string items
+   *
+   * - You can optionally add a return type for R, to cast return type to a enum
+   *   type
    */
-  toStringList<T extends ToStringListOpt>(opt?: T) {
+  toStringList<R extends string>(opt?: ToStringListOpt) {
     const { validateFn, disallowEmpty } = opt ?? {};
     return z.any().transform((val, ctx) => {
       const onError = (message: string) => {
@@ -201,7 +204,7 @@ export class Coerce {
           : [];
       const strList = valArr
         .map((v) => v.toString())
-        .filter((str): str is string => !!str);
+        .filter((str): str is R => !!str);
 
       // Check if list is empty
       if (disallowEmpty && !strList.length) {

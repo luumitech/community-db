@@ -2,7 +2,7 @@ import { Tab, Tabs } from '@heroui/react';
 import { usePrevious } from '@uidotdev/usehooks';
 import React from 'react';
 import * as R from 'remeda';
-import { useMediaQuery } from 'usehooks-ts';
+import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
 import { ContactName } from './contact-name';
 import { OccupantEditor } from './occupant-editor';
@@ -23,7 +23,7 @@ export const Editor: React.FC<Props> = ({
   occupantListMethods,
   defaultEmail,
 }) => {
-  const isSmallDevice = useMediaQuery('(max-width: 800px)');
+  const { isMdDevice } = useAppContext();
   const { formState } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove } = occupantListMethods;
@@ -89,7 +89,7 @@ export const Editor: React.FC<Props> = ({
         tabContent: 'w-full',
       }}
       aria-label="Options"
-      isVertical={!isSmallDevice}
+      isVertical={!isMdDevice}
       selectedKey={selectedKey}
       onSelectionChange={(key) => setSelectedKey(key as string)}
     >

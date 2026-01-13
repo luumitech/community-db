@@ -1,9 +1,12 @@
-import { Chip, cn } from '@heroui/react';
 import React from 'react';
-import { EventChip } from '~/community/[communityId]/common/event-chip';
-import { WithGpsChip } from '~/community/[communityId]/common/with-gps-chip';
+import * as R from 'remeda';
+import { twMerge } from 'tailwind-merge';
+import {
+  EventChip,
+  WithGpsChip,
+  YearChip,
+} from '~/community/[communityId]/common/chip';
 import { initialState, type FilterT } from '~/lib/reducers/search-bar';
-import { Icon } from '~/view/base/icon';
 
 type FilterChangeFn = (input: FilterT) => Promise<void>;
 
@@ -25,73 +28,98 @@ export const FilterChip: React.FC<Props> = ({
   const { memberYearList, nonMemberYearList, memberEventList, withGps } =
     filters;
 
-  const onChange = React.useCallback<FilterChangeFn>(
-    async (_filters) => {
-      onFilterChange?.(_filters);
+  const removeMemberYear = React.useCallback(
+    (year: number) => {
+      const memberYearSet = new Set(filters.memberYearList);
+      memberYearSet.delete(year);
+      onFilterChange?.({
+        ...filters,
+        memberYearList: [...memberYearSet],
+      });
     },
-    [onFilterChange]
+    [filters, onFilterChange]
+  );
+
+  const removeNonMemberYear = React.useCallback(
+    (year: number) => {
+      const nonMemberYearSet = new Set(filters.nonMemberYearList);
+      nonMemberYearSet.delete(year);
+      onFilterChange?.({
+        ...filters,
+        nonMemberYearList: [...nonMemberYearSet],
+      });
+    },
+    [filters, onFilterChange]
+  );
+
+  const removeEvent = React.useCallback(
+    (eventName: string) => {
+      const eventSet = new Set(filters.memberEventList);
+      eventSet.delete(eventName);
+      onFilterChange?.({
+        ...filters,
+        memberEventList: [...eventSet],
+      });
+    },
+    [filters, onFilterChange]
   );
 
   return (
     <div
-      className={cn(className, 'hidden cursor-pointer gap-2 sm:flex')}
+      className={twMerge(
+        'hidden items-center gap-2 sm:flex',
+        'cursor-pointer',
+        className
+      )}
       onClick={openDrawer}
     >
-      {memberYearList != null && memberYearList.length > 0 && (
-        <Chip
-          variant="bordered"
-          color="success"
-          isDisabled={isDisabled}
-          onClose={() =>
-            onChange({
-              ...filters,
-              memberYearList: initialState.nonMemberYearList,
-            })
-          }
-        >
-          <div className="flex items-center gap-2">
-            {memberYearList.join(',')}
-            <Icon icon="thumb-up" size={16} />
-          </div>
-        </Chip>
-      )}
-      {nonMemberYearList != null && nonMemberYearList.length > 0 && (
-        <Chip
-          variant="bordered"
-          isDisabled={isDisabled}
-          onClose={() =>
-            onChange({
-              ...filters,
-              nonMemberYearList: initialState.nonMemberYearList,
-            })
-          }
-        >
-          <div className="flex items-center gap-2">
-            {nonMemberYearList.join(',')}
-            <Icon icon="thumb-down" size={16} />
-          </div>
-        </Chip>
-      )}
-      {memberEventList != null && memberEventList.length > 0 && (
-        <EventChip
-          eventName={memberEventList.join(',')}
-          variant="faded"
-          isDisabled={isDisabled}
-          onClose={() =>
-            onChange({
-              ...filters,
-              memberEventList: initialState.memberEventList,
-            })
-          }
-        />
-      )}
+      {!R.isDeepEqual(memberYearList, initialState.filter.memberYearList) &&
+        memberYearList.map((year) => (
+          <YearChip
+            key={year}
+            isMember
+            showIcon
+            year={year.toString()}
+            isDisabled={isDisabled}
+            onClose={() => removeMemberYear(year)}
+          />
+        ))}
+
+      {!R.isDeepEqual(
+        nonMemberYearList,
+        initialState.filter.nonMemberYearList
+      ) &&
+        nonMemberYearList.map((year) => (
+          <YearChip
+            key={year}
+            isMember={false}
+            showIcon
+            year={year.toString()}
+            isDisabled={isDisabled}
+            onClose={() => removeNonMemberYear(year)}
+          />
+        ))}
+
+      {!R.isDeepEqual(memberEventList, initialState.filter.memberEventList) &&
+        memberEventList.map((eventName) => (
+          <EventChip
+            key={eventName}
+            eventName={eventName}
+            isDisabled={isDisabled}
+            onClose={() => removeEvent(eventName)}
+          />
+        ))}
+
       {withGps != null && (
         <WithGpsChip
           withGps={withGps}
           variant="faded"
           isDisabled={isDisabled}
           onClose={() =>
-            onChange({ ...filters, withGps: initialState.withGps })
+            onFilterChange?.({
+              ...filters,
+              withGps: initialState.filter.withGps,
+            })
           }
         />
       )}

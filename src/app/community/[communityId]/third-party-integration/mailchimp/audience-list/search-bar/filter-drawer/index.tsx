@@ -12,7 +12,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from '../use-hook-form';
 import { OptOutSelect } from './opt-out-select';
-import { StatusFilter } from './status-filter';
+import { StatusSelect } from './status-select';
 import { WarningSelect } from './warning-select';
 
 export interface DrawerArg {}
@@ -47,7 +47,7 @@ export const FilterDrawer: React.FC<Props> = ({
           <DrawerContent>
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
-              <StatusFilter />
+              <StatusSelect />
               <OptOutSelect />
               <WarningSelect />
             </DrawerBody>

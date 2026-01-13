@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMediaQuery } from 'usehooks-ts';
 import { type NextPublicEnvSchema } from '~/lib/env/env-schema';
 import {
   useConfirmationModalContext,
@@ -7,6 +8,8 @@ import {
 
 interface ContextT extends Readonly<ConfirmationState> {
   env: NextPublicEnvSchema;
+  isSmDevice: boolean;
+  isMdDevice: boolean;
 }
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -19,12 +22,16 @@ interface Props {
 
 export function AppProvider({ env, ...props }: Props) {
   const confirmValues = useConfirmationModalContext();
+  const isSmDevice = useMediaQuery('(max-width: 640px)');
+  const isMdDevice = useMediaQuery('(max-width: 768px)');
 
   return (
     <Context.Provider
       value={{
         env,
         ...confirmValues,
+        isSmDevice,
+        isMdDevice,
       }}
       {...props}
     />

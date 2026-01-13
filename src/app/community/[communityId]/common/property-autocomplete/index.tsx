@@ -138,7 +138,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     }
     return (
       <AutocompleteItem
-        className="italic text-primary"
+        className="text-primary italic"
         key={ITEM_KEY_SHOWALL}
         textValue={ITEM_KEY_SHOWALL}
         href={appPath('propertyList', { path: { communityId } })}
@@ -154,7 +154,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       className={className}
       aria-label="Search Address or Member Name"
       placeholder="Search Address or Member Name"
-      startContent={<Icon icon="search" />}
+      startContent={<Icon className="shrink-0" icon="search" />}
       items={properties}
       isLoading={loading}
       allowsCustomValue

@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
-import { type RootState } from '~/lib/reducers';
 import { initialState, isFilterSpecified } from '~/lib/reducers/search-bar';
 import { z, zz } from '~/lib/zod';
 
@@ -17,20 +16,12 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultFilterInputData(searchBar: RootState['searchBar']): InputData {
-  return {
-    memberYearList: searchBar.memberYearList,
-    nonMemberYearList: searchBar.nonMemberYearList,
-    memberEventList: searchBar.memberEventList,
-    withGps: searchBar.withGps,
-  };
-}
-
 export function useHookForm() {
   const searchBar = useSelector((state) => state.searchBar);
-  const defaultValues = React.useMemo(() => {
-    return defaultFilterInputData(searchBar);
-  }, [searchBar]);
+  const defaultValues = React.useMemo(
+    () => searchBar.filter,
+    [searchBar.filter]
+  );
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
@@ -49,7 +40,7 @@ export function useHookForm() {
 
   const reset = React.useCallback(() => {
     const { memberYearList, nonMemberYearList, memberEventList, withGps } =
-      initialState;
+      initialState.filter;
     setValue('memberYearList', memberYearList, { shouldDirty: true });
     setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
     setValue('memberEventList', memberEventList, { shouldDirty: true });

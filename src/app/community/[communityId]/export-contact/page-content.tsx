@@ -8,10 +8,7 @@ import { toContactList } from './contact-util';
 import { ContactView } from './contact-view';
 import { ExportOptions } from './export-options';
 import { FilterSelect } from './filter-select';
-import {
-  defaultInputData,
-  type InputData,
-} from './filter-select/use-hook-form';
+import { type InputData } from './filter-select/use-hook-form';
 
 const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
   query exportContactPropertyList($id: String!, $filter: PropertyFilterInput!) {
@@ -41,12 +38,8 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
-  const { memberYearList, nonMemberYearList, memberEventList } = useSelector(
-    (state) => state.searchBar
-  );
-  const [filter, setFilter] = React.useState(
-    defaultInputData({ memberYearList, nonMemberYearList, memberEventList })
-  );
+  const searchBar = useSelector((state) => state.searchBar);
+  const [filter, setFilter] = React.useState(searchBar.filter);
   const result = useQuery(ExportContact_PropertyListQuery, {
     variables: { id: communityId, filter },
     onError,

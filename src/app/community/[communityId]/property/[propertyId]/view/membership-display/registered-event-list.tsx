@@ -1,6 +1,6 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { EventChip } from '~/community/[communityId]/common/event-chip';
+import { EventChip } from '~/community/[communityId]/common/chip/event-chip';
 import * as GQL from '~/graphql/generated/graphql';
 
 interface Props {

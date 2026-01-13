@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { LargeMenu } from './large-menu';
 import { SmallMenu } from './small-menu';
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const GuideMenu: React.FC<Props> = ({ className }) => {
-  const isSmallDevice = useMediaQuery('(max-width: 768px)');
+  const { isSmDevice } = useAppContext();
 
-  return isSmallDevice ? <SmallMenu /> : <LargeMenu />;
+  return isSmDevice ? <SmallMenu /> : <LargeMenu />;
 };

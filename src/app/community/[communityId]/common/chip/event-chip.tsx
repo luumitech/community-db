@@ -18,7 +18,7 @@ export const EventChip: React.FC<Props> = ({
     <Chip
       className={className}
       radius="sm"
-      variant="flat"
+      variant="faded"
       color="secondary"
       {...(lastEventSelected === eventName && { color: 'primary' })}
       {...props}

@@ -1,6 +1,6 @@
 import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
+import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem } from '~/view/base/select';
 import { importMethodSelectionList } from './_type';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const ImportForm: React.FC<Props> = ({ className }) => {
-  const isSmallDevice = useMediaQuery('(max-width: 800px)');
+  const { isSmDevice } = useAppContext();
   const formMethods = useHookFormContext();
   const { watch } = formMethods;
   const importMethod = watch('method');
@@ -28,13 +28,13 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
       <Tooltip
         classNames={{
           base: cn({
-            'max-w-[calc(100vw-2rem)]': isSmallDevice,
-            'max-w-[calc(100vw-26rem)]': !isSmallDevice,
+            'max-w-[calc(100vw-2rem)]': isSmDevice,
+            'max-w-[calc(100vw-26rem)]': !isSmDevice,
           }),
           content: 'p-0',
         }}
         showArrow
-        placement={isSmallDevice ? 'bottom' : 'right-start'}
+        placement={isSmDevice ? 'bottom' : 'right-start'}
         isOpen={!!selectTooltip}
         onOpenChange={(open) => {}}
         content={selectTooltip}

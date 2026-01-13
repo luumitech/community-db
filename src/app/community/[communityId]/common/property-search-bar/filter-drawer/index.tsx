@@ -52,6 +52,7 @@ export const FilterDrawer: React.FC<Props> = ({
               <YearSelect
                 label="Member In Year(s)"
                 description="Show properties that are members in the specified year(s)"
+                isMember
                 controlName="memberYearList"
                 size="sm"
                 isClearable
@@ -59,6 +60,7 @@ export const FilterDrawer: React.FC<Props> = ({
               <YearSelect
                 label="Non-Member In Year(s)"
                 description="Show properties that are NOT members in the specified year(s)"
+                isMember={false}
                 controlName="nonMemberYearList"
                 size="sm"
                 isClearable

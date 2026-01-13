@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { EventChip } from '~/community/[communityId]/common/event-chip';
+import { EventChip } from '~/community/[communityId]/common/chip/event-chip';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';

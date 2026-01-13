@@ -24,6 +24,7 @@ export const FilterSelect: React.FC<Props> = ({
         className="ml-4 max-w-xs min-w-32"
         controlName="filter.memberYearList"
         label="Membership Year(s)"
+        isMember
         isRequired={yearRequired}
         size="sm"
         autoFocus

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { Button } from '~/view/base/button';
 import type { MenuItemEntry } from './_type';
 
@@ -25,9 +25,9 @@ export const HeaderMenuShortcut: React.FC<Props> = ({
   shortcutKeys,
 }) => {
   const router = useRouter();
-  const isSmallDevice = useMediaQuery('(max-width: 640px)');
+  const { isSmDevice } = useAppContext();
 
-  if (isSmallDevice) {
+  if (isSmDevice) {
     return null;
   }
 
