@@ -14,6 +14,8 @@ interface Props extends CommonProps {}
  */
 export const Container: React.FC<React.PropsWithChildren<Props>> = ({
   config,
+  columnKeys,
+  columnConfig,
   ...props
 }) => {
   return (

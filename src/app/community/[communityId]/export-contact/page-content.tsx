@@ -113,6 +113,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
   return (
     <GridTable
       aria-label="Contact Table"
+      isHeaderSticky
       config={{
         gridContainer: cn(
           // Collapsed grid layout

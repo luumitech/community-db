@@ -19,7 +19,7 @@ export function Header(_props: Props) {
         config?.commonContainer,
         config?.headerContainer
       )}
-      role="rowheader"
+      role="columnheader"
       shadow="none"
       radius="sm"
       {...props}

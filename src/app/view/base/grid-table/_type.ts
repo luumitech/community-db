@@ -15,6 +15,8 @@ export interface ClassNameConfig {
    * - Good for specifying cell gap
    */
   commonContainer?: string;
+  /** Classes applied to sticky header element */
+  headerSticky?: string;
   /**
    * Classes applied to header container
    *

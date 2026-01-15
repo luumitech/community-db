@@ -125,6 +125,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
   return (
     <GridTable
       aria-label="Property Table"
+      isHeaderSticky
       config={{
         gridContainer: cn(
           'grid-cols-[repeat(3,1fr)_max-content]',

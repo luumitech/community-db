@@ -20,6 +20,12 @@ export interface GridTableProps<
   K extends readonly string[],
   ItemT extends ItemWithId,
 > extends CommonProps<K> {
+  /**
+   * Should header be sticky?,
+   *
+   * - When sticky, you can customize the sticky CSS using config.headerSticky
+   */
+  isHeaderSticky?: boolean;
   renderHeader?: HeaderRenderer<K[number]>;
   items: ItemT[];
   renderItem: ItemRenderer<K[number], ItemT>;
@@ -45,6 +51,7 @@ export function GridTable<
   ItemT extends ItemWithId,
 >(props: GridTableProps<K, ItemT>) {
   const {
+    isHeaderSticky,
     renderHeader,
     items,
     renderItem,
@@ -62,7 +69,9 @@ export function GridTable<
         <div
           className={twMerge(
             CLASS_DEFAULT.inheritContainer,
-            'sticky top-header-height z-50 bg-background'
+            isHeaderSticky
+              ? (commonProps.config?.headerSticky ?? CLASS_DEFAULT.headerSticky)
+              : ''
           )}
         >
           {!!topContent && (

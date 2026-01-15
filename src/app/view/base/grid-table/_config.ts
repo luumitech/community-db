@@ -27,6 +27,10 @@ export const CLASS_DEFAULT: ClassDefault = {
     /** Default gap between each column cells */
     'gap-1'
   ),
+  headerSticky: cn(
+    /** Default sticky to just below the app header */
+    'sticky top-header-height z-50 bg-background'
+  ),
   headerContainer: cn(
     /** Background color */
     'bg-default-200/50',

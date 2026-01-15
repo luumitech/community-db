@@ -13,6 +13,8 @@ import { MoreMenu } from './more-menu';
 import { PropertySearchHeader } from './property-search-header';
 import { PropertyTable, type PropertyTableProps } from './property-table';
 
+type GTProps = Required<PropertyTableProps>;
+
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
   query communityFromId(
     $id: String!
@@ -127,21 +129,20 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     return (community?.propertyList.edges ?? []).map((edge) => edge.node);
   }, [community]);
 
-  const itemCardProps: NonNullable<PropertyTableProps['itemCardProps']> =
-    React.useCallback(
-      (item) => {
-        return {
-          isPressable: true,
-          onPress: () => {
-            const path = appPath('property', {
-              path: { communityId, propertyId: item.id },
-            });
-            router.push(path);
-          },
-        };
-      },
-      [communityId, router]
-    );
+  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
+    (item) => {
+      return {
+        isPressable: true,
+        onPress: () => {
+          const path = appPath('property', {
+            path: { communityId, propertyId: item.id },
+          });
+          router.push(path);
+        },
+      };
+    },
+    [communityId, router]
+  );
 
   return (
     <>
