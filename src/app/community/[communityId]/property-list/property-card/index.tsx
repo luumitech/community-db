@@ -16,6 +16,8 @@ const className = {
   ),
   inheritContainer: 'col-span-full grid grid-cols-subgrid gap-1',
   headerLabel: 'text-xs font-semibold text-default-400',
+
+  // Styles applicable on specific column
   address: 'col-span-3 sm:col-span-2',
   member: 'col-span-3 sm:col-span-4',
   // Always last column

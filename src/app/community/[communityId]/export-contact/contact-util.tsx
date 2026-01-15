@@ -1,23 +1,5 @@
 import * as GQL from '~/graphql/generated/graphql';
-
-type PropertyEntry =
-  GQL.ExportContactPropertyListQuery['communityFromId']['rawPropertyList'][number];
-
-type OccupantEntry = PropertyEntry['occupantList'][number];
-
-export interface ContactListEntry
-  extends Omit<OccupantEntry, 'infoList' | 'optOut'> {
-  /** Unique ID for each contact entry, required for Table rendering */
-  id: string;
-  address: string;
-  // Email is extracted from infoList
-  email: string;
-}
-
-export interface ContactInfo {
-  contactList: ContactListEntry[];
-  propertyCount: number;
-}
+import type { ContactInfo, ContactListEntry, PropertyEntry } from './_type';
 
 /**
  * Convert propertyList into list of contacts that have not opted out of

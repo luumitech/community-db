@@ -1,6 +1,6 @@
 import { Skeleton } from '@heroui/react';
 import React from 'react';
-import { type ContactInfo } from '../contact-util';
+import { type ContactInfo } from './_type';
 
 interface Props {
   className?: string;
@@ -18,7 +18,7 @@ export const ContactSummary: React.FC<Props> = ({
 
   return (
     <Skeleton className="rounded-md" isLoaded={!isLoading}>
-      <span className="text-foreground-400 text-tiny">
+      <span className="text-tiny text-foreground-400">
         Result contains {contactCount} emails from {propertyCount} households
       </span>
     </Skeleton>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { type ContactInfo } from '../contact-util';
+import { type ContactInfo } from '../_type';
 import { EmailString } from './email-string';
 import { MailchimpCSV } from './mailchimp-csv';
 

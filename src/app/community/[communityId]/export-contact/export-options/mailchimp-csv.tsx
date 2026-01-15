@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { startDownloadBlob } from '~/lib/dom';
 import { Icon } from '~/view/base/icon';
-import { type ContactInfo } from '../contact-util';
+import { type ContactInfo } from '../_type';
 
 /**
  * Convert contact list into Mailchimp compatible CSV

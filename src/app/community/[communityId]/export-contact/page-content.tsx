@@ -1,11 +1,16 @@
 import { useQuery } from '@apollo/client';
-import { Divider } from '@heroui/react';
+import { cn, Divider } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
+import {
+  GridTable,
+  type GridTableProps as GTProps,
+} from '~/view/base/grid-table';
+import type { ContactListEntry } from './_type';
+import { ContactSummary } from './contact-summary';
 import { toContactList } from './contact-util';
-import { ContactView } from './contact-view';
 import { ExportOptions } from './export-options';
 import { FilterSelect } from './filter-select';
 import { type InputData } from './filter-select/use-hook-form';
@@ -32,12 +37,18 @@ const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
   }
 `);
 
+/**
+ * Defines column keys used for rendering table, and put in generic type
+ * definitions for GridTableProps, so it's easier to define callback functions
+ */
+const COLUMN_KEYS = ['firstName', 'lastName', 'email', 'address'] as const;
+type GridTableProps = GTProps<typeof COLUMN_KEYS, ContactListEntry>;
+
 interface Props {
-  className?: string;
   communityId: string;
 }
 
-export const PageContent: React.FC<Props> = ({ className, communityId }) => {
+export const PageContent: React.FC<Props> = ({ communityId }) => {
   const searchBar = useSelector((state) => state.searchBar);
   const [filter, setFilter] = React.useState(searchBar.filter);
   const result = useQuery(ExportContact_PropertyListQuery, {
@@ -53,6 +64,9 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     return toContactList(propertyList);
   }, [result]);
 
+  const isLoading = result.loading || contactInfo == null;
+  const contactList = contactInfo?.contactList ?? [];
+
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
       result.refetch({ id: communityId, filter: input });
@@ -61,18 +75,66 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     [result, communityId]
   );
 
-  const isLoading = result.loading || contactInfo == null;
+  const TopContent = React.useCallback(() => {
+    return (
+      <div className="flex flex-col gap-2">
+        <ExportOptions contactInfo={contactInfo} />
+        <Divider />
+        <FilterSelect
+          isDisabled={isLoading}
+          filters={filter}
+          onFilterChange={onFilterChange}
+        />
+        <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
+      </div>
+    );
+  }, [contactInfo, filter, isLoading, onFilterChange]);
+
+  const renderHeader: GridTableProps['renderHeader'] = React.useCallback(
+    (key) => {
+      switch (key) {
+        case 'firstName':
+          return 'First Name';
+        case 'lastName':
+          return 'Last Name';
+        case 'email':
+          return 'Email';
+        case 'address':
+          return 'Address';
+      }
+    },
+    []
+  );
+
+  const renderItem: GridTableProps['renderItem'] = React.useCallback(
+    (key, item) => {
+      return <span>{item[key]}</span>;
+    },
+    []
+  );
 
   return (
-    <div className={className}>
-      <FilterSelect
-        isDisabled={isLoading}
-        filters={filter}
-        onFilterChange={onFilterChange}
-      />
-      <ExportOptions contactInfo={contactInfo} />
-      <Divider />
-      <ContactView contactInfo={contactInfo} isLoading={isLoading} />
-    </div>
+    <GridTable
+      config={{
+        gridContainer: cn(
+          // Collapsed grid layout
+          'grid-cols-2',
+          // Normal grid layout
+          'sm:grid-cols-[repeat(4,auto)]'
+        ),
+        headerContainer: cn('p-2'),
+        bodyContainer: cn('p-2 text-sm'),
+      }}
+      columnKeys={COLUMN_KEYS}
+      columnConfig={{
+        email: cn('col-span-2 sm:col-span-1'),
+        address: cn('col-span-2 sm:col-span-1'),
+      }}
+      renderHeader={renderHeader}
+      items={contactList}
+      renderItem={renderItem}
+      isLoading={isLoading}
+      topContent={<TopContent />}
+    />
   );
 };
