@@ -2,8 +2,10 @@ import { useQuery } from '@apollo/client';
 import { Autocomplete, AutocompleteItem, Spinner } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { Occupant } from '~/community/[communityId]/property-list/property-card/occupant';
-import { PropertyAddress } from '~/community/[communityId]/property-list/property-card/property-address';
+import {
+  Occupant,
+  PropertyAddress,
+} from '~/community/[communityId]/property-list/property-table';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';

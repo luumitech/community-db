@@ -12,7 +12,13 @@ export function Header(_props: Props) {
   const { config, columnKeys, columnConfig, renderHeader, ...props } = _props;
   return (
     <Card
-      className={twMerge('bg-default-200/50', CLASS_DEFAULT.inheritContainer)}
+      className={twMerge(
+        CLASS_DEFAULT.inheritContainer,
+        CLASS_DEFAULT.commonContainer,
+        CLASS_DEFAULT.headerContainer,
+        config?.commonContainer,
+        config?.headerContainer
+      )}
       role="rowheader"
       shadow="none"
       radius="sm"
@@ -20,12 +26,11 @@ export function Header(_props: Props) {
     >
       <CardBody
         className={twMerge(
-          'items-center',
+          // Override default padding in CardBody
+          'p-0',
           CLASS_DEFAULT.inheritContainer,
-          CLASS_DEFAULT.commonContainer,
-          CLASS_DEFAULT.headerContainer,
-          config?.commonContainer,
-          config?.headerContainer
+          CLASS_DEFAULT.headerGrid,
+          config?.headerGrid
         )}
       >
         {columnKeys.map((key) => {

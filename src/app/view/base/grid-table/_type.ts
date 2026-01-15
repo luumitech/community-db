@@ -24,6 +24,14 @@ export interface ClassNameConfig {
    */
   headerContainer?: string;
   /**
+   * Classes applied to the header <CardBody>
+   *
+   * For example:
+   *
+   * - Good for defining grid spacing
+   */
+  headerGrid?: string;
+  /**
    * Classes applied to body container
    *
    * For example:
@@ -31,6 +39,14 @@ export interface ClassNameConfig {
    * - Good for specifying text styles within data rows
    */
   bodyContainer?: string;
+  /**
+   * Classes applied to the header <CardBody>
+   *
+   * For example:
+   *
+   * - Good for defining grid spacing
+   */
+  bodyGrid?: string;
 }
 
 /**

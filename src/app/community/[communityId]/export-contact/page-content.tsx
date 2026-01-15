@@ -6,7 +6,7 @@ import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import {
   GridTable,
-  type GridTableProps as GTProps,
+  type GridTableProps as GenericGTProps,
 } from '~/view/base/grid-table';
 import type { ContactListEntry } from './_type';
 import { ContactSummary } from './contact-summary';
@@ -38,11 +38,14 @@ const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
 `);
 
 /**
- * Defines column keys used for rendering table, and put in generic type
- * definitions for GridTableProps, so it's easier to define callback functions
+ * Defines column keys used for rendering table,
+ *
+ * - Put in generic type for GridTableProps
+ * - Make all field required, so it's easier to define callback functions
  */
 const COLUMN_KEYS = ['firstName', 'lastName', 'email', 'address'] as const;
-type GridTableProps = GTProps<typeof COLUMN_KEYS, ContactListEntry>;
+type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, ContactListEntry>;
+type GTProps = Required<GridTableProps>;
 
 interface Props {
   communityId: string;
@@ -90,31 +93,26 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     );
   }, [contactInfo, filter, isLoading, onFilterChange]);
 
-  const renderHeader: GridTableProps['renderHeader'] = React.useCallback(
-    (key) => {
-      switch (key) {
-        case 'firstName':
-          return 'First Name';
-        case 'lastName':
-          return 'Last Name';
-        case 'email':
-          return 'Email';
-        case 'address':
-          return 'Address';
-      }
-    },
-    []
-  );
+  const renderHeader: GTProps['renderHeader'] = React.useCallback((key) => {
+    switch (key) {
+      case 'firstName':
+        return 'First Name';
+      case 'lastName':
+        return 'Last Name';
+      case 'email':
+        return 'Email';
+      case 'address':
+        return 'Address';
+    }
+  }, []);
 
-  const renderItem: GridTableProps['renderItem'] = React.useCallback(
-    (key, item) => {
-      return <span>{item[key]}</span>;
-    },
-    []
-  );
+  const renderItem: GTProps['renderItem'] = React.useCallback((key, item) => {
+    return <span>{item[key]}</span>;
+  }, []);
 
   return (
     <GridTable
+      aria-label="Contact Table"
       config={{
         gridContainer: cn(
           // Collapsed grid layout

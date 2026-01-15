@@ -22,21 +22,26 @@ export function Body<ItemT extends ItemWithId>(_props: Props<ItemT>) {
 
   return (
     <Card
-      {...props}
       classNames={{
-        base: twMerge(CLASS_DEFAULT.inheritContainer),
-      }}
-      role="row"
-      shadow="sm"
-    >
-      <CardBody
-        className={twMerge(
-          'items-start',
+        base: twMerge(
           CLASS_DEFAULT.inheritContainer,
           CLASS_DEFAULT.commonContainer,
           CLASS_DEFAULT.bodyContainer,
           config?.commonContainer,
           config?.bodyContainer
+        ),
+      }}
+      role="row"
+      shadow="sm"
+      {...props}
+    >
+      <CardBody
+        className={twMerge(
+          // Override default padding in CardBody
+          'p-0',
+          CLASS_DEFAULT.inheritContainer,
+          CLASS_DEFAULT.bodyGrid,
+          config?.bodyGrid
         )}
       >
         {columnKeys.map((key) => (
