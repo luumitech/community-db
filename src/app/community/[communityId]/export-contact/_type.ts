@@ -9,7 +9,7 @@ export interface ContactListEntry extends Omit<
   OccupantEntry,
   'infoList' | 'optOut'
 > {
-  /** Unique ID for each contact entry, required for Table rendering */
+  /** Unique ID for each contact entry, required for GridTable rendering */
   id: string;
   address: string;
   // Email is extracted from infoList

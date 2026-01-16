@@ -78,7 +78,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     [result, communityId]
   );
 
-  const TopContent = React.useCallback(() => {
+  const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-2">
         <ExportOptions contactInfo={contactInfo} />
@@ -133,7 +133,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
       items={contactList}
       renderItem={renderItem}
       isLoading={isLoading}
-      topContent={<TopContent />}
+      topContent={topContent}
     />
   );
 };

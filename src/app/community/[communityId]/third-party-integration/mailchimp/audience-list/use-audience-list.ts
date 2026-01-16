@@ -56,8 +56,8 @@ export function useAudienceList(arg: UseAudienceListOpt) {
     [dispatch]
   );
 
-  const rawAudienceList = React.useMemo(() => {
-    return (result.data?.mailchimpMemberList ?? []).map((entry) => {
+  const rawAudienceList = React.useMemo<AudienceMember[]>(() => {
+    return (result.data?.mailchimpMemberList ?? []).map((entry, idx) => {
       const occupant = entry.property?.occupantList?.find(({ infoList }) =>
         infoList?.find((info) => {
           if (info.type === GQL.ContactInfoType.Email) {
@@ -96,6 +96,7 @@ export function useAudienceList(arg: UseAudienceListOpt) {
         }
       }
       return {
+        id: `${idx}`,
         ...entry,
         occupant,
         warning,

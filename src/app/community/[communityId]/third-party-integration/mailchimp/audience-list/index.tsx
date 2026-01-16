@@ -1,5 +1,4 @@
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -10,10 +9,12 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { Loading } from '~/view/base/loading';
 import { usePageContext } from '../../page-context';
 import { AudienceListSelect } from './audience-list-select';
+import { AudienceTable } from './audience-table';
 import { SearchBar } from './search-bar';
 import { useAudienceList } from './use-audience-list';
 import { useTableData } from './use-table-data';
@@ -30,7 +31,12 @@ export const AudienceList: React.FC<Props> = () => {
 
   const emptyContent = React.useMemo(() => {
     return (
-      <div>
+      <div
+        className={cn(
+          'flex flex-col items-center',
+          'mt-6 mb-2 font-semibold text-default-400'
+        )}
+      >
         <p className="mb-2">No data to display.</p>
         {audienceListId == null && <p>Please select an audience list.</p>}
       </div>
@@ -42,7 +48,7 @@ export const AudienceList: React.FC<Props> = () => {
 
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-[repeat(2,max-content)] gap-3">
           <AudienceListSelect
             communityId={community.id}
             selectedKeys={audienceListId ? [audienceListId] : []}
@@ -52,14 +58,15 @@ export const AudienceList: React.FC<Props> = () => {
             }}
           />
           <Button
-            className="h-14"
+            className="aspect-square h-auto w-auto"
             variant="bordered"
-            endContent={<Icon icon="refresh" />}
             isDisabled={!audienceListId}
             isLoading={loading}
+            isIconOnly
+            tooltip="Refresh List"
             onPress={() => refetch()}
           >
-            Refresh List
+            <Icon icon="refresh" size={20} />
           </Button>
         </div>
         <SearchBar
@@ -77,6 +84,14 @@ export const AudienceList: React.FC<Props> = () => {
       </div>
     );
   }, [audienceList, community.id, audienceListId, loading, dispatch, refetch]);
+
+  // return (
+  //   <AudienceTable
+  //     items={audienceList}
+  //     emptyContent={emptyContent}
+  //     topContent={topContent}
+  //   />
+  // );
 
   return (
     <Table

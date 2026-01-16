@@ -24,11 +24,17 @@ export const Geoapify: React.FC<Props> = ({ className }) => {
         tab: 'justify-start',
         tabContent: 'group-data-[selected=true]:text-primary',
         ...(!isSmDevice && {
-          // Vertical bar on left of tab item
-          cursor: cn('rounded-none shadow-none', 'border-l-4 border-primary'),
-          // This allows the tab content to scroll
-          panel: 'w-full flex flex-col gap-4 overflow-y-auto px-0 pl-3',
+          cursor: cn(
+            'rounded-none shadow-none',
+            // Vertical bar on left of tab item
+            'border-l-4 border-primary'
+          ),
         }),
+        panel: cn(
+          // This allows the tab content to scroll
+          'flex h-full flex-col overflow-y-auto',
+          'mt-3 w-full py-0'
+        ),
       }}
       aria-label="Geoapify Menu"
       isVertical={!isSmDevice}

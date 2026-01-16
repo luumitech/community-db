@@ -76,7 +76,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     [dispatch]
   );
 
-  const EmptyContent = React.useCallback(() => {
+  const emptyContent = React.useMemo(() => {
     if (loading) {
       return <Spinner size="sm" />;
     }
@@ -101,14 +101,14 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       if (itemList.length === 0) {
         return (
           <AutocompleteItem key={ITEM_KEY_EMPTY} textValue="empty">
-            <EmptyContent />
+            {emptyContent}
           </AutocompleteItem>
         );
       }
 
       return null;
     },
-    [searchTextIsEmpty, EmptyContent]
+    [searchTextIsEmpty, emptyContent]
   );
 
   const renderSearchItems = React.useCallback(
@@ -163,7 +163,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       allowsEmptyCollection={!searchTextIsEmpty}
       listboxProps={{
         variant: 'flat',
-        emptyContent: <EmptyContent />,
+        emptyContent,
       }}
       /** Current property should not be selectable */
       disabledKeys={[ITEM_KEY_EMPTY, currentPropertyId]}

@@ -39,6 +39,17 @@ export default function CommunitySelect() {
     children: entry.community.name,
   }));
 
+  const emptyContent = React.useMemo(() => {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        No Items.
+        <Button as={Link} color="primary" href={appPath('communityCreate')}>
+          {appLabel('communityCreate')}
+        </Button>
+      </div>
+    );
+  }, []);
+
   return (
     <div className="mt-page-top">
       <MoreMenu omitKeys={['communitySelect']} />
@@ -46,14 +57,7 @@ export default function CommunitySelect() {
         header="Select Community"
         loading={result.loading}
         items={items}
-        emptyContent={
-          <div className="flex flex-col items-center gap-4">
-            No Items.
-            <Button as={Link} color="primary" href={appPath('communityCreate')}>
-              {appLabel('communityCreate')}
-            </Button>
-          </div>
-        }
+        emptyContent={emptyContent}
       />
     </div>
   );

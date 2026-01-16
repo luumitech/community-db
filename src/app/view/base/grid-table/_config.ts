@@ -28,7 +28,14 @@ export const CLASS_DEFAULT: ClassDefault = {
     'gap-1'
   ),
   headerSticky: cn(
-    /** Default sticky to just below the app header */
+    /**
+     * Default sticky to just below the app header
+     *
+     * It's done this way, because this app let the entire page scroll, and
+     * there is already a sticky header (The app header). In order for the inner
+     * GridTable to be sticky as well, it needs to know the height of the app
+     * header.
+     */
     'sticky top-header-height z-50 bg-background'
   ),
   headerContainer: cn(

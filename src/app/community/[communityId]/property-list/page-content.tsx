@@ -83,7 +83,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
 
   const community = React.useMemo(() => data?.communityFromId, [data]);
 
-  const EmptyContent = React.useCallback(() => {
+  const emptyContent = React.useMemo(() => {
     if (result.loading) {
       return <Loading className="mb-4 flex justify-center" />;
     }
@@ -118,16 +118,20 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     );
   }, [result, filterArg, communityId, dispatch]);
 
-  const BottomContent = React.useCallback(() => {
+  const items = React.useMemo(() => {
+    return (community?.propertyList.edges ?? []).map((edge) => edge.node);
+  }, [community]);
+
+  const topContent = React.useMemo(() => {
+    return <PropertySearchHeader community={community} />;
+  }, [community]);
+
+  const bottomContent = React.useMemo(() => {
     if (!pageInfo?.hasNextPage) {
       return null;
     }
     return <Loading className="mb-4 flex justify-center" ref={loadingRef} />;
   }, [pageInfo, loadingRef]);
-
-  const items = React.useMemo(() => {
-    return (community?.propertyList.edges ?? []).map((edge) => edge.node);
-  }, [community]);
 
   const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
     (item) => {
@@ -151,9 +155,9 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
         items={items}
         itemCardProps={itemCardProps}
         showHeader
-        topContent={<PropertySearchHeader community={community} />}
-        emptyContent={<EmptyContent />}
-        bottomContent={<BottomContent />}
+        topContent={topContent}
+        emptyContent={emptyContent}
+        bottomContent={bottomContent}
       />
     </>
   );
