@@ -2,8 +2,8 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { MailchimpStatusChip } from '~/community/[communityId]/common/chip';
+import { useAppContext } from '~/custom-hooks/app-context';
 import {
-  CLASS_DEFAULT,
   GridTable,
   type GridTableProps as GenericGTProps,
 } from '~/view/base/grid-table';
@@ -47,6 +47,8 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
   className,
   ...props
 }) => {
+  const { isSmDevice } = useAppContext();
+
   const renderHeader: GTProps['renderHeader'] = React.useCallback((key) => {
     switch (key) {
       case 'email':
@@ -91,6 +93,10 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
     <GridTable
       aria-label="Mailchimp Audience List"
       isHeaderSticky
+      isVirtualized
+      rowHeight={() => {
+        return isSmDevice ? 132 : 33;
+      }}
       config={{
         gridContainer: twMerge(
           // Collapsed grid layout

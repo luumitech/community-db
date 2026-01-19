@@ -33,7 +33,8 @@ export const Geoapify: React.FC<Props> = ({ className }) => {
         panel: cn(
           // This allows the tab content to scroll
           'flex h-full flex-col overflow-y-auto',
-          'mt-3 w-full py-0'
+          'w-full p-0',
+          'mt-2 sm:mt-0'
         ),
       }}
       aria-label="Geoapify Menu"

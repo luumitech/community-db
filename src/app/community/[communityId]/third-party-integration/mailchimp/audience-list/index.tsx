@@ -85,13 +85,18 @@ export const AudienceList: React.FC<Props> = () => {
     );
   }, [audienceList, community.id, audienceListId, loading, dispatch, refetch]);
 
-  // return (
-  //   <AudienceTable
-  //     items={audienceList}
-  //     emptyContent={emptyContent}
-  //     topContent={topContent}
-  //   />
-  // );
+  return (
+    <>
+      {topContent}
+      <div className="mt-2 h-full overflow-auto">
+        <AudienceTable
+          items={audienceList}
+          isLoading={loading}
+          emptyContent={emptyContent}
+        />
+      </div>
+    </>
+  );
 
   return (
     <Table

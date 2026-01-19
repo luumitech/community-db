@@ -6,12 +6,24 @@ interface ClassDefault extends ClassNameConfig {
 
   /** Inherit column configuration from parent container */
   inheritContainer: string;
+
+  /** Classes dfined on virtualized container */
+  virtualizedContainer: string;
 }
 
 export const CLASS_DEFAULT: ClassDefault = {
   inheritContainer: cn(
     /** Repeat parent's grid layout, to this element */
     'col-span-full grid grid-cols-subgrid'
+  ),
+  virtualizedContainer: cn(
+    /** Tanstack virtualizer requires container to have defined height */
+    'h-full overflow-auto',
+    /**
+     * If there are not enough rows to fill the height, we need to make sure
+     * each row don't grow vertically
+     */
+    'grid-rows-[min-content]'
   ),
   gridContainer: cn(
     /**
