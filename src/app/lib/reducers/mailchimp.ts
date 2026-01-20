@@ -1,6 +1,6 @@
-import { type SortDescriptor } from '@heroui/react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as R from 'remeda';
+import { type SortDescriptor } from '~/community/[communityId]/third-party-integration/mailchimp/audience-list/audience-table';
 import * as GQL from '~/graphql/generated/graphql';
 
 /** Filters available on the mailchimp integration search bar */
@@ -27,7 +27,7 @@ type State = Readonly<{
    */
   searchText?: string;
   /** Table sorting descriptor */
-  sortDescriptor?: SortDescriptor;
+  sortDescriptor: SortDescriptor | null;
 
   /** Filter options */
   filter: FilterT;
@@ -39,7 +39,7 @@ type State = Readonly<{
 export const initialState: State = {
   audienceListId: undefined,
   searchText: undefined,
-  sortDescriptor: undefined,
+  sortDescriptor: null,
   filter: {
     subscriberStatusList: [],
     optOut: null,
@@ -75,7 +75,7 @@ export const mailchimpSlice = createSlice({
     },
     setSortDescriptor: (
       state,
-      { payload }: PayloadAction<SortDescriptor | undefined>
+      { payload }: PayloadAction<SortDescriptor | null>
     ) => {
       state.sortDescriptor = payload;
     },

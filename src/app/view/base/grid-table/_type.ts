@@ -60,6 +60,18 @@ export type HeaderRenderer<C extends string> = (
   columnKey: C
 ) => React.ReactNode;
 
+export type SortDirection = 'ascending' | 'descending';
+
+/**
+ * Currently active sort descriptor
+ *
+ * @param columnKey Column key to render
+ */
+export interface SortDescriptor<C extends string> {
+  columnKey: C;
+  direction: SortDirection;
+}
+
 /** All items must confirm to this shape */
 export interface ItemWithId {
   // Unique ID for each item
@@ -88,4 +100,6 @@ export interface CommonProps<K extends readonly string[] = readonly string[]> {
    * - By default, it behaves as col-span-1
    */
   columnConfig?: Partial<Record<K[number], string>>;
+  /** List of column keys with sortable enabled */
+  sortableColumnKeys?: K[number][];
 }

@@ -123,7 +123,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
   }, [community]);
 
   const topContent = React.useMemo(() => {
-    return <PropertySearchHeader community={community} />;
+    return <PropertySearchHeader className="mb-2" community={community} />;
   }, [community]);
 
   const bottomContent = React.useMemo(() => {

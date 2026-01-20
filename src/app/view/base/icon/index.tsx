@@ -63,6 +63,9 @@ const supportedIcon = {
   mapCenter: 'lsicon:map-location-filled',
   eye: 'carbon:view',
   leftArrow: 'entypo:arrow-left',
+  sortNone: 'prime:sort',
+  sortAsc: 'prime:sort-up-fill',
+  sortDesc: 'prime:sort-down-fill',
 } as const;
 
 export type IconType = keyof typeof supportedIcon;

@@ -2,17 +2,12 @@ import React from 'react';
 import type { ItemWithId } from '../_type';
 import { VirtualWrap } from './virtual-wrap';
 
-interface Props<ItemT extends ItemWithId> {
+export interface BodyWrapperProps<ItemT extends ItemWithId> {
   /**
    * Enable tanstack virtualization to only render items that are visible in the
    * viewport
    */
   isVirtualized?: boolean;
-  /**
-   * Scroll element (i.e. parent element). Used for when `isVirtualized` is
-   * enabled
-   */
-  scrollRef?: React.RefObject<HTMLDivElement | null>;
   /**
    * Only used if `isVirtualized` is enabled. Provide height of each row
    * element, important for calculating how to set up the virtual scroll
@@ -20,6 +15,14 @@ interface Props<ItemT extends ItemWithId> {
    */
   rowHeight?: (elem: HTMLDivElement) => number;
   items: ItemT[];
+}
+
+interface Props<ItemT extends ItemWithId> extends BodyWrapperProps<ItemT> {
+  /**
+   * Scroll element (i.e. parent element). Used for when `isVirtualized` is
+   * enabled
+   */
+  scrollRef: React.RefObject<HTMLDivElement | null>;
   /** Renderer for each item */
   children: (item: ItemT) => React.ReactNode;
 }

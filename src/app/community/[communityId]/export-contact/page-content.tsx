@@ -80,7 +80,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
 
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-col gap-2">
+      <div className="mb-2 flex flex-col gap-2">
         <ExportOptions contactInfo={contactInfo} />
         <Divider />
         <FilterSelect

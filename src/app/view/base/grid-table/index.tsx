@@ -1,45 +1,26 @@
 import { cn, type CardProps } from '@heroui/react';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 import { Loading } from '~/view/base/loading';
 import { CLASS_DEFAULT } from './_config';
-import type {
-  CommonProps,
-  HeaderRenderer,
-  ItemRenderer,
-  ItemWithId,
-} from './_type';
+import type { CommonProps, ItemRenderer, ItemWithId } from './_type';
 import { Body } from './body';
-import { BodyWrapper } from './body-wrapper';
+import { BodyWrapper, type BodyWrapperProps } from './body-wrapper';
 import { Container } from './container';
 import { EmptyContent } from './empty-content';
-import { Header } from './header';
+import { HeaderWrapper, type HeaderWrapperProps } from './header-wrapper';
 
 export { CLASS_DEFAULT } from './_config';
+export type { SortDescriptor } from './_type';
 
 export interface GridTableProps<
   K extends readonly string[],
   ItemT extends ItemWithId,
-> extends CommonProps<K> {
-  /**
-   * Should header be sticky?,
-   *
-   * - When sticky, you can customize the sticky CSS using config.headerSticky
-   */
-  isHeaderSticky?: boolean;
-  /**
-   * Enable tanstack virtualization to only render items that are visible in the
-   * viewport
-   */
-  isVirtualized?: boolean;
-  /**
-   * Only used if `isVirtualized` is enabled. Provide height of each row
-   * element, important for calculating how to set up the virtual scroll
-   * container
-   */
-  rowHeight?: (elem: HTMLDivElement) => number;
-  renderHeader?: HeaderRenderer<K[number]>;
-  items: ItemT[];
+>
+  extends
+    CommonProps<K>,
+    HeaderWrapperProps<K[number]>,
+    BodyWrapperProps<ItemT> {
+  /** Render an item given a column and a row item */
   renderItem: ItemRenderer<K[number], ItemT>;
   /** Pass additional props to Card component for each item */
   itemCardProps?: (item: ItemT) => CardProps;
@@ -47,8 +28,6 @@ export interface GridTableProps<
   isLoading?: boolean;
   /** Render a custom component when the table is empty */
   emptyContent?: React.ReactNode;
-  /** Render a custom component above the header */
-  topContent?: React.ReactNode;
   /** Render a custom component after last row of table */
   bottomContent?: React.ReactNode;
 }
@@ -65,13 +44,13 @@ export function GridTable<
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const {
-    isHeaderSticky,
     isVirtualized,
-    rowHeight,
+    isHeaderSticky,
     renderHeader,
+    rowHeight,
     items,
-    renderItem,
     itemCardProps,
+    renderItem,
     isLoading,
     emptyContent,
     topContent,
@@ -85,20 +64,12 @@ export function GridTable<
       className={cn(isVirtualized && CLASS_DEFAULT.virtualizedContainer)}
       {...commonProps}
     >
-      {!!renderHeader && (
-        <div
-          className={twMerge(
-            CLASS_DEFAULT.inheritContainer,
-            isHeaderSticky &&
-              (commonProps.config?.headerSticky ?? CLASS_DEFAULT.headerSticky)
-          )}
-        >
-          {!!topContent && (
-            <div className={cn('col-span-full mb-2')}>{topContent}</div>
-          )}
-          <Header {...commonProps} renderHeader={renderHeader} />
-        </div>
-      )}
+      <HeaderWrapper
+        isHeaderSticky={isHeaderSticky}
+        renderHeader={renderHeader}
+        topContent={topContent}
+        {...commonProps}
+      />
       {isLoading ? (
         <div className="col-span-full">
           <Loading className="my-2 flex justify-center" />
@@ -107,17 +78,18 @@ export function GridTable<
         <EmptyContent emptyContent={emptyContent} />
       ) : (
         <BodyWrapper
+          scrollRef={scrollRef}
           isVirtualized={isVirtualized}
           rowHeight={rowHeight}
-          scrollRef={scrollRef}
           items={items}
+          {...commonProps}
         >
           {(item) => (
             <Body
-              {...commonProps}
               item={item}
-              renderItem={renderItem}
               {...itemCardProps?.(item)}
+              renderItem={renderItem}
+              {...commonProps}
             />
           )}
         </BodyWrapper>

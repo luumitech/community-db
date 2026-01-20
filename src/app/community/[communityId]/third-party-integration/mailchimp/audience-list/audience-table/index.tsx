@@ -28,6 +28,7 @@ const COLUMN_KEYS = [
 ] as const;
 type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, AudienceMember>;
 type GTProps = Required<GridTableProps>;
+export type SortDescriptor = GTProps['sortDescriptor'];
 
 type CustomGridTableProps = Omit<
   GridTableProps,
@@ -120,6 +121,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
         warning: cn('flex justify-center', 'col-span-full sm:col-span-1'),
         actions: cn('flex justify-center', 'col-span-full sm:col-span-1'),
       }}
+      sortableColumnKeys={['email', 'fullName', 'status', 'optOut', 'warning']}
       renderHeader={renderHeader}
       renderItem={renderItem}
       itemCardProps={itemCardProps}

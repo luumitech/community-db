@@ -17,7 +17,7 @@ export const Actions: React.FC<Props> = ({ className, item }) => {
     return null;
   }
   return (
-    <div>
+    <div className="flex flex-nowrap">
       <Link
         href={appPath('property', {
           path: {
