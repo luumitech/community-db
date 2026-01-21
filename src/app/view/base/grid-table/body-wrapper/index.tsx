@@ -27,9 +27,9 @@ interface Props<ItemT extends ItemWithId> extends BodyWrapperProps<ItemT> {
   children: (item: ItemT) => React.ReactNode;
 }
 
-export function BodyWrapper<ItemT extends ItemWithId>(_props: Props<ItemT>) {
-  const { virtualConfig, ...props } = _props;
-  const { items, children } = props;
+export function BodyWrapper<ItemT extends ItemWithId>(props: Props<ItemT>) {
+  const { virtualConfig, ...otherProps } = props;
+  const { items, children } = otherProps;
 
   if (items.length === 0) {
     return null;
@@ -41,6 +41,6 @@ export function BodyWrapper<ItemT extends ItemWithId>(_props: Props<ItemT>) {
     ));
   }
 
-  const { isVirtualized, ...virtualProps } = virtualConfig;
-  return <VirtualWrap {...virtualProps} {...props} />;
+  const { isVirtualized, ...configProps } = virtualConfig;
+  return <VirtualWrap {...configProps} {...otherProps} />;
 }

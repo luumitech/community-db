@@ -4,7 +4,12 @@ import { twMerge } from 'tailwind-merge';
 import { CLASS_DEFAULT, COMMON_PROPS } from './_config';
 import type { CommonProps } from './_type';
 
-interface Props extends CommonProps {
+type DivProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
+interface Props extends CommonProps, DivProps {
   className?: string;
 }
 
@@ -19,10 +24,10 @@ export const Container = React.forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<Props>
 >((props, ref) => {
+  const { className, ...otherProps } = props;
   const commonProps = R.pick(props, COMMON_PROPS);
-  const _otherProps = R.omit(props, COMMON_PROPS);
+  const divProps = R.omit(otherProps, COMMON_PROPS);
   const { config } = commonProps;
-  const { className, ...otherProps } = _otherProps;
 
   return (
     <div
@@ -33,7 +38,7 @@ export const Container = React.forwardRef<
         config?.gridContainer,
         className
       )}
-      {...otherProps}
+      {...divProps}
     />
   );
 });

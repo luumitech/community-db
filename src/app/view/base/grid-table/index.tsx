@@ -18,6 +18,11 @@ import { HeaderWrapper, type HeaderWrapperProps } from './header-wrapper';
 export { CLASS_DEFAULT } from './_config';
 export type { SortDescriptor } from './_type';
 
+type DivProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
 export interface GridTableProps<
   K extends readonly string[],
   ItemT extends ItemWithId,
@@ -25,7 +30,8 @@ export interface GridTableProps<
   extends
     CommonProps<K>,
     HeaderWrapperProps<K[number]>,
-    BodyWrapperProps<ItemT> {
+    BodyWrapperProps<ItemT>,
+    DivProps {
   /** Render an item given a column and a row item */
   renderItem: ItemRenderer<K[number], ItemT>;
   /** Pass additional props to Card component for each item */
@@ -50,17 +56,22 @@ export function GridTable<
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const {
-    virtualConfig,
-    itemCardProps,
-    items,
     renderItem,
+    itemCardProps,
     isLoading,
     emptyContent,
     bottomContent,
+    ...otherProps
   } = props;
   const headerProps = R.pick(props, HEADER_PROPS);
   const bodyProps = R.pick(props, BODY_PROPS);
   const commonProps = R.pick(props, COMMON_PROPS);
+  const divProps = R.omit(otherProps, [
+    ...HEADER_PROPS,
+    ...BODY_PROPS,
+    ...COMMON_PROPS,
+  ]);
+  const { items, virtualConfig } = bodyProps;
 
   return (
     <Container
@@ -69,6 +80,7 @@ export function GridTable<
         virtualConfig?.isVirtualized && CLASS_DEFAULT.virtualizedContainer
       )}
       {...commonProps}
+      {...divProps}
     >
       <HeaderWrapper {...headerProps} {...commonProps} />
       {isLoading ? (
