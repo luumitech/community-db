@@ -2,9 +2,14 @@ import React from 'react';
 import type { ItemWithId, VirtualConfig } from '../_type';
 import { VirtualWrap } from './virtual-wrap';
 
+/**
+ * List of props for body
+ *
+ * - NOTE: Update BODY_PROPS in '_type.ts' if adding or removing properties here
+ */
 export interface BodyWrapperProps<ItemT extends ItemWithId> {
   /**
-   * Tanstack virtualization configurationto
+   * Tanstack virtualization configuration
    *
    * - NOTE: this requires the parent to have a defined height
    */

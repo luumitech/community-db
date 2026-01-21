@@ -1,7 +1,8 @@
 import { Card, CardBody, cn, type CardProps } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT } from '../_config';
+import { CLASS_DEFAULT, COMMON_PROPS } from '../_config';
 import type { CommonProps, HeaderRenderer, SortDescriptor } from '../_type';
 import { SortIndicator } from './sort-indicator';
 
@@ -13,17 +14,11 @@ interface Props extends CardProps, CommonProps {
   renderHeader: HeaderRenderer<string>;
 }
 
-export function Header(_props: Props) {
-  const {
-    config,
-    sortableColumnKeys,
-    columnKeys,
-    columnConfig,
-    sortDescriptor,
-    onSortChange,
-    renderHeader,
-    ...props
-  } = _props;
+export function Header(props: Props) {
+  const { sortDescriptor, onSortChange, renderHeader, ...otherProps } = props;
+  const commonProps = R.pick(props, COMMON_PROPS);
+  const cardProps = R.omit(otherProps, COMMON_PROPS);
+  const { config, sortableColumnKeys, columnKeys, columnConfig } = commonProps;
 
   const sortDirection = React.useCallback(
     (columnKey: string) => {
@@ -61,7 +56,7 @@ export function Header(_props: Props) {
       role="columnheader"
       shadow="none"
       radius="sm"
-      {...props}
+      {...cardProps}
     >
       <CardBody
         className={twMerge(

@@ -1,7 +1,13 @@
 import { cn, type CardProps } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import { Loading } from '~/view/base/loading';
-import { CLASS_DEFAULT } from './_config';
+import {
+  BODY_PROPS,
+  CLASS_DEFAULT,
+  COMMON_PROPS,
+  HEADER_PROPS,
+} from './_config';
 import type { CommonProps, ItemRenderer, ItemWithId } from './_type';
 import { Body } from './body';
 import { BodyWrapper, type BodyWrapperProps } from './body-wrapper';
@@ -45,17 +51,16 @@ export function GridTable<
 
   const {
     virtualConfig,
-    isHeaderSticky,
-    renderHeader,
-    items,
     itemCardProps,
+    items,
     renderItem,
     isLoading,
     emptyContent,
-    topContent,
     bottomContent,
-    ...commonProps
   } = props;
+  const headerProps = R.pick(props, HEADER_PROPS);
+  const bodyProps = R.pick(props, BODY_PROPS);
+  const commonProps = R.pick(props, COMMON_PROPS);
 
   return (
     <Container
@@ -65,12 +70,7 @@ export function GridTable<
       )}
       {...commonProps}
     >
-      <HeaderWrapper
-        isHeaderSticky={isHeaderSticky}
-        renderHeader={renderHeader}
-        topContent={topContent}
-        {...commonProps}
-      />
+      <HeaderWrapper {...headerProps} {...commonProps} />
       {isLoading ? (
         <div className="col-span-full">
           <Loading className="my-2 flex justify-center" />
@@ -78,12 +78,7 @@ export function GridTable<
       ) : items.length === 0 ? (
         <EmptyContent emptyContent={emptyContent} />
       ) : (
-        <BodyWrapper
-          scrollRef={scrollRef}
-          virtualConfig={virtualConfig}
-          items={items}
-          {...commonProps}
-        >
+        <BodyWrapper scrollRef={scrollRef} {...bodyProps} {...commonProps}>
           {(item) => (
             <Body
               item={item}

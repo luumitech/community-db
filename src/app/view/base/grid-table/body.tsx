@@ -1,7 +1,8 @@
 import { Card, CardBody, cn, type CardProps } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT } from './_config';
+import { CLASS_DEFAULT, COMMON_PROPS } from './_config';
 import type { CommonProps, ItemRenderer, ItemWithId } from './_type';
 
 interface Props<ItemT extends ItemWithId> extends CardProps, CommonProps {
@@ -9,16 +10,11 @@ interface Props<ItemT extends ItemWithId> extends CardProps, CommonProps {
   renderItem: ItemRenderer<string, ItemT>;
 }
 
-export function Body<ItemT extends ItemWithId>(_props: Props<ItemT>) {
-  const {
-    config,
-    columnKeys,
-    columnConfig,
-    item,
-    renderItem,
-    children,
-    ...props
-  } = _props;
+export function Body<ItemT extends ItemWithId>(props: Props<ItemT>) {
+  const { item, renderItem, ...otherProps } = props;
+  const commonProps = R.pick(props, COMMON_PROPS);
+  const cardProps = R.omit(otherProps, COMMON_PROPS);
+  const { config, columnKeys, columnConfig } = commonProps;
 
   return (
     <Card
@@ -33,7 +29,7 @@ export function Body<ItemT extends ItemWithId>(_props: Props<ItemT>) {
       }}
       role="row"
       shadow="sm"
-      {...props}
+      {...cardProps}
     >
       <CardBody
         className={twMerge(

@@ -1,6 +1,7 @@
 import React from 'react';
+import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT } from './_config';
+import { CLASS_DEFAULT, COMMON_PROPS } from './_config';
 import type { CommonProps } from './_type';
 
 interface Props extends CommonProps {
@@ -17,8 +18,11 @@ interface Props extends CommonProps {
 export const Container = React.forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<Props>
->((_props, ref) => {
-  const { className, config, columnKeys, columnConfig, ...props } = _props;
+>((props, ref) => {
+  const commonProps = R.pick(props, COMMON_PROPS);
+  const _otherProps = R.omit(props, COMMON_PROPS);
+  const { config } = commonProps;
+  const { className, ...otherProps } = _otherProps;
 
   return (
     <div
@@ -29,7 +33,7 @@ export const Container = React.forwardRef<
         config?.gridContainer,
         className
       )}
-      {...props}
+      {...otherProps}
     />
   );
 });

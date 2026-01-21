@@ -58,3 +58,23 @@ export const CLASS_DEFAULT: ClassDefault = {
   ),
   bodyContainer: cn(''),
 };
+
+/** Properties in HeaderWrapperProps */
+export const HEADER_PROPS = [
+  'isHeaderSticky',
+  'sortDescriptor',
+  'onSortChange',
+  'topContent',
+  'renderHeader',
+] as const;
+
+/** Properties in BodyWrapperProps */
+export const BODY_PROPS = ['virtualConfig', 'items'] as const;
+
+/** Properties in CommonProps */
+export const COMMON_PROPS = [
+  'config',
+  'columnKeys',
+  'columnConfig',
+  'sortableColumnKeys',
+] as const;

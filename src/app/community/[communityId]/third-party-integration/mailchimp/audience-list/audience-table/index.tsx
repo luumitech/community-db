@@ -119,6 +119,10 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       columnKeys={COLUMN_KEYS}
       columnConfig={{
         email: cn(
+          /**
+           * Bold email, so it serves as a visual divider when the grid display
+           * a single row into multiple rows
+           */
           'font-semibold md:font-normal',
           'col-span-full sm:col-span-3 md:col-span-1'
         ),

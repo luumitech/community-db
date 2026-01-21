@@ -1,10 +1,16 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT } from '../_config';
+import { CLASS_DEFAULT, COMMON_PROPS, HEADER_PROPS } from '../_config';
 import type { CommonProps, HeaderRenderer, SortDescriptor } from '../_type';
 import { Header } from './header';
 
+/**
+ * List of props for header
+ *
+ * - NOTE: Update HEADER_PROPS in '_type.ts' if adding or removing properties here
+ */
 export interface HeaderWrapperProps<C extends string> {
   /**
    * Should header be sticky?,
@@ -23,15 +29,11 @@ export interface HeaderWrapperProps<C extends string> {
 
 interface Props extends CommonProps, HeaderWrapperProps<string> {}
 
-export function HeaderWrapper(_props: Props) {
-  const {
-    isHeaderSticky,
-    sortDescriptor,
-    onSortChange,
-    topContent,
-    renderHeader,
-    ...commonProps
-  } = _props;
+export function HeaderWrapper(props: Props) {
+  const _headerProps = R.pick(props, HEADER_PROPS);
+  const commonProps = R.pick(props, COMMON_PROPS);
+  const { isHeaderSticky, topContent, renderHeader, ...headerProps } =
+    _headerProps;
 
   if (!topContent && !renderHeader) {
     return null;
@@ -47,12 +49,7 @@ export function HeaderWrapper(_props: Props) {
     >
       {!!topContent && <div className={cn('col-span-full')}>{topContent}</div>}
       {!!renderHeader && (
-        <Header
-          sortDescriptor={sortDescriptor}
-          onSortChange={onSortChange}
-          renderHeader={renderHeader}
-          {...commonProps}
-        />
+        <Header renderHeader={renderHeader} {...headerProps} {...commonProps} />
       )}
     </div>
   );

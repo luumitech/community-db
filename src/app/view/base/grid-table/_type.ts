@@ -89,6 +89,11 @@ export type ItemRenderer<C extends string, ItemT> = (
   item: ItemT
 ) => React.ReactNode;
 
+/**
+ * List of common props that are passed to all children components
+ *
+ * - NOTE: Update COMMON_PROPS in '_type.ts' if adding or removing properties here
+ */
 export interface CommonProps<K extends readonly string[] = readonly string[]> {
   /** Global classes configuration object */
   config?: ClassNameConfig;
