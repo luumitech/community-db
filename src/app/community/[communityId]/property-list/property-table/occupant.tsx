@@ -1,4 +1,4 @@
-import { Chip, type ChipProps } from '@heroui/chip';
+import { Chip, ScrollShadow, type ChipProps } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
@@ -37,15 +37,17 @@ export const Occupant: React.FC<Props> = ({
   }
 
   return (
-    <div
-      className={twMerge('flex flex-wrap items-center gap-2', className)}
-      role="list"
-    >
-      {nameList.map((name, idx) => (
-        <Chip key={idx} size="sm" role="listitem" {...props}>
-          {name}
-        </Chip>
-      ))}
-    </div>
+    <ScrollShadow orientation="horizontal" hideScrollBar>
+      <div
+        className={twMerge('flex flex-nowrap items-center gap-2', className)}
+        role="list"
+      >
+        {nameList.map((name, idx) => (
+          <Chip key={idx} size="sm" role="listitem" {...props}>
+            {name}
+          </Chip>
+        ))}
+      </div>
+    </ScrollShadow>
   );
 };

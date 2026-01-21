@@ -31,12 +31,7 @@ export const SmallMenu: React.FC<Props> = ({ className }) => {
         >
           <Icon icon="hamburgerMenu" />
         </Button>
-        <div
-          className={cn(
-            'overflow-hidden text-ellipsis whitespace-nowrap',
-            '[writing-mode:vertical-rl]'
-          )}
-        >
+        <div className={cn('truncate', '[writing-mode:vertical-rl]')}>
           {selectedItem.label}
         </div>
       </div>

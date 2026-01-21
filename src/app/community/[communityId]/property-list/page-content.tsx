@@ -9,11 +9,10 @@ import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
+import type { PropertyEntry } from './_type';
 import { MoreMenu } from './more-menu';
 import { PropertySearchHeader } from './property-search-header';
-import { PropertyTable, type PropertyTableProps } from './property-table';
-
-type GTProps = Required<PropertyTableProps>;
+import { PropertyTable } from './property-table';
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
   query communityFromId(
@@ -133,17 +132,12 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     return <Loading className="mb-4 flex justify-center" ref={loadingRef} />;
   }, [pageInfo, loadingRef]);
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
-    (item) => {
-      return {
-        isPressable: true,
-        onPress: () => {
-          const path = appPath('property', {
-            path: { communityId, propertyId: item.id },
-          });
-          router.push(path);
-        },
-      };
+  const onItemPress = React.useCallback(
+    (item: PropertyEntry) => {
+      const path = appPath('property', {
+        path: { communityId, propertyId: item.id },
+      });
+      router.push(path);
     },
     [communityId, router]
   );
@@ -153,7 +147,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
       {community && <MoreMenu community={community} />}
       <PropertyTable
         items={items}
-        itemCardProps={itemCardProps}
+        onItemPress={onItemPress}
         showHeader
         topContent={topContent}
         emptyContent={emptyContent}
