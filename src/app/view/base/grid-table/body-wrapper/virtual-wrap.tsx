@@ -3,36 +3,45 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { CLASS_DEFAULT } from '../_config';
-import type { ItemWithId } from '../_type';
+import type { ItemWithId, VirtualConfig } from '../_type';
 
-interface Props<ItemT extends ItemWithId> {
+type CustomVirtualConfig = Omit<VirtualConfig, 'isVirtualized'>;
+
+interface Props<ItemT extends ItemWithId> extends CustomVirtualConfig {
   /**
    * Scroll element (i.e. parent element). Used for when `isVirtualized` is
    * enabled
    */
   scrollRef?: React.RefObject<HTMLDivElement | null>;
-  /**
-   * Only used if `isVirtualized` is enabled. Provide height of each row
-   * element, important for calculating how to set up the virtual scroll
-   * container
-   */
-  rowHeight?: (elem: HTMLDivElement) => number;
   items: ItemT[];
   children: (item: ItemT) => React.ReactNode;
 }
 
 export function VirtualWrap<ItemT extends ItemWithId>(_props: Props<ItemT>) {
-  const { scrollRef, rowHeight, items, children } = _props;
+  const { scrollRef, items, children, ...virtualizerConfig } = _props;
+  const { gap = 8, estimateSize, measureElement } = virtualizerConfig;
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const rowVirtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => scrollRef?.current ?? null,
     getItemKey: (index) => items[index].id,
-    estimateSize: () => 35,
-    measureElement: rowHeight,
+    gap,
+    estimateSize,
+    measureElement,
     overscan: 5,
+    // Enable debugging
+    // debug: true,
   });
+
+  React.useEffect(() => {
+    /**
+     * This will make sure the list gets re-rendered properly when components
+     * remounts
+     */
+    rowVirtualizer.measure();
+  }, [rowVirtualizer]);
+
   const virtualItems = rowVirtualizer.getVirtualItems();
 
   return (

@@ -37,7 +37,7 @@ export const AudienceList: React.FC<Props> = () => {
 
     return (
       <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-[repeat(2,max-content)] gap-3">
+        <div className="grid grid-cols-[1fr_auto] gap-3">
           <AudienceListSelect
             communityId={community.id}
             selectedKeys={audienceListId ? [audienceListId] : []}
@@ -47,7 +47,7 @@ export const AudienceList: React.FC<Props> = () => {
             }}
           />
           <Button
-            className="aspect-square h-auto w-auto"
+            className="aspect-square h-full w-auto"
             variant="bordered"
             isDisabled={!audienceListId}
             isLoading={loading}

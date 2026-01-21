@@ -103,3 +103,50 @@ export interface CommonProps<K extends readonly string[] = readonly string[]> {
   /** List of column keys with sortable enabled */
   sortableColumnKeys?: K[number][];
 }
+
+/**
+ * Configuration object to enable virtualization of the component
+ *
+ * I.e. Only render visible rows
+ *
+ * - NOTE: this requires the parent to have a defined height
+ */
+export interface VirtualConfig {
+  /**
+   * Enable tanstack virtualization to only render items that are visible in the
+   * viewport
+   *
+   * - NOTE: this requires the parent to have a defined height
+   */
+  isVirtualized?: boolean;
+  /**
+   * This function is passed the index of each item and should return the actual
+   * size (or estimated size if you will be dynamically measuring items with
+   * virtualItem.measureElement) for each item. This measurement should return
+   * either the height of each row.
+   *
+   * See: https://tanstack.com/virtual/latest/docs/api/virtualizer#estimatesize
+   */
+  estimateSize: (index: number) => number;
+  /**
+   * This optional function is called when the virtualizer needs to dynamically
+   * measure the size (width or height) of an item.
+   *
+   * See:
+   * https://tanstack.com/virtual/latest/docs/api/virtualizer#measureelement
+   */
+  measureElement?: (elem: HTMLDivElement) => number;
+  /**
+   * This option allows you to set the spacing between items in the virtualized
+   * list. It's particularly useful for maintaining a consistent visual
+   * separation between items without having to manually adjust each item's
+   * margin or padding. The value is specified in pixels.
+   *
+   * This should match the gap specified in `gridContainer` class
+   *
+   * Default: 8 (i.e. gap-2)
+   *
+   * See: https://tanstack.com/virtual/latest/docs/api/virtualizer#gap
+   */
+  gap?: number;
+}

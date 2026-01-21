@@ -1,19 +1,14 @@
 import React from 'react';
-import type { ItemWithId } from '../_type';
+import type { ItemWithId, VirtualConfig } from '../_type';
 import { VirtualWrap } from './virtual-wrap';
 
 export interface BodyWrapperProps<ItemT extends ItemWithId> {
   /**
-   * Enable tanstack virtualization to only render items that are visible in the
-   * viewport
+   * Tanstack virtualization configurationto
+   *
+   * - NOTE: this requires the parent to have a defined height
    */
-  isVirtualized?: boolean;
-  /**
-   * Only used if `isVirtualized` is enabled. Provide height of each row
-   * element, important for calculating how to set up the virtual scroll
-   * container
-   */
-  rowHeight?: (elem: HTMLDivElement) => number;
+  virtualConfig?: VirtualConfig;
   items: ItemT[];
 }
 
@@ -28,18 +23,19 @@ interface Props<ItemT extends ItemWithId> extends BodyWrapperProps<ItemT> {
 }
 
 export function BodyWrapper<ItemT extends ItemWithId>(_props: Props<ItemT>) {
-  const { isVirtualized, ...props } = _props;
+  const { virtualConfig, ...props } = _props;
   const { items, children } = props;
 
   if (items.length === 0) {
     return null;
   }
 
-  if (!isVirtualized) {
+  if (!virtualConfig?.isVirtualized) {
     return items.map((item) => (
       <React.Fragment key={item.id}>{children(item)}</React.Fragment>
     ));
   }
 
-  return <VirtualWrap {...props} />;
+  const { isVirtualized, ...virtualProps } = virtualConfig;
+  return <VirtualWrap {...virtualProps} {...props} />;
 }

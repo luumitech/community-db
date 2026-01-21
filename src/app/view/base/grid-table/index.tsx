@@ -44,10 +44,9 @@ export function GridTable<
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const {
-    isVirtualized,
+    virtualConfig,
     isHeaderSticky,
     renderHeader,
-    rowHeight,
     items,
     itemCardProps,
     renderItem,
@@ -61,7 +60,9 @@ export function GridTable<
   return (
     <Container
       ref={scrollRef}
-      className={cn(isVirtualized && CLASS_DEFAULT.virtualizedContainer)}
+      className={cn(
+        virtualConfig?.isVirtualized && CLASS_DEFAULT.virtualizedContainer
+      )}
       {...commonProps}
     >
       <HeaderWrapper
@@ -79,8 +80,7 @@ export function GridTable<
       ) : (
         <BodyWrapper
           scrollRef={scrollRef}
-          isVirtualized={isVirtualized}
-          rowHeight={rowHeight}
+          virtualConfig={virtualConfig}
           items={items}
           {...commonProps}
         >
