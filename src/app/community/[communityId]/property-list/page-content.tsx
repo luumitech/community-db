@@ -10,8 +10,10 @@ import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Loading } from '~/view/base/loading';
 import { MoreMenu } from './more-menu';
-import { PropertyCard } from './property-card';
 import { PropertySearchHeader } from './property-search-header';
+import { PropertyTable, type PropertyTableProps } from './property-table';
+
+type GTProps = Required<PropertyTableProps>;
 
 const CommunityFromIdQuery = graphql(/* GraphQL */ `
   query communityFromId(
@@ -80,25 +82,26 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
   });
 
   const community = React.useMemo(() => data?.communityFromId, [data]);
-  const rows = React.useMemo(() => {
-    return (community?.propertyList.edges ?? []).map((edge) => edge.node);
-  }, [community]);
 
-  const EmptyContent = React.useCallback(() => {
+  const emptyContent = React.useMemo(() => {
     if (result.loading) {
       return <Loading className="mb-4 flex justify-center" />;
     }
-    if (!!result.error) {
+    if (result.error) {
       return <div className="mb-2">An error has occured.</div>;
     }
     return (
       <div className="flex flex-col items-center">
-        <p className="mb-2">No data to display.</p>
+        <p className="mt-6 mb-2 font-semibold text-default-400">
+          No data to display.
+        </p>
         {R.isEmpty(filterArg) && (
           <Button
             as={Link}
             color="primary"
-            href={appPath('communityImport', { path: { communityId } })}
+            href={appPath('communityImport', {
+              path: { communityId },
+            })}
           >
             {appLabel('communityImport')}
           </Button>
@@ -113,51 +116,49 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
         )}
       </div>
     );
-  }, [dispatch, filterArg, communityId, result]);
+  }, [result, filterArg, communityId, dispatch]);
+
+  const items = React.useMemo(() => {
+    return (community?.propertyList.edges ?? []).map((edge) => edge.node);
+  }, [community]);
+
+  const topContent = React.useMemo(() => {
+    return <PropertySearchHeader className="mb-2" community={community} />;
+  }, [community]);
+
+  const bottomContent = React.useMemo(() => {
+    if (!pageInfo?.hasNextPage) {
+      return null;
+    }
+    return <Loading className="mb-4 flex justify-center" ref={loadingRef} />;
+  }, [pageInfo, loadingRef]);
+
+  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
+    (item) => {
+      return {
+        isPressable: true,
+        onPress: () => {
+          const path = appPath('property', {
+            path: { communityId, propertyId: item.id },
+          });
+          router.push(path);
+        },
+      };
+    },
+    [communityId, router]
+  );
 
   return (
     <>
       {community && <MoreMenu community={community} />}
-      <PropertyCard.Container aria-label="Property Table">
-        <div
-          className={cn(
-            'sticky top-header-height z-50 bg-background',
-            'col-span-full grid grid-cols-subgrid'
-          )}
-        >
-          <PropertySearchHeader
-            className={cn('col-span-full mb-2')}
-            community={community}
-          />
-          <PropertyCard.Header className="mx-0.5" />
-        </div>
-        {rows.length > 0 &&
-          rows.map((property) => (
-            <PropertyCard.Entry
-              key={property.id}
-              className="mx-0.5 hover:bg-primary-50"
-              property={property}
-              isPressable
-              onPress={() => {
-                const path = appPath('property', {
-                  path: { communityId, propertyId: property.id },
-                });
-                router.push(path);
-              }}
-            />
-          ))}
-        {rows.length === 0 && (
-          <div className="col-span-full">
-            <EmptyContent />
-          </div>
-        )}
-        {!!pageInfo?.hasNextPage && (
-          <Loading
-            className="col-span-full mb-4 flex justify-center"
-            ref={loadingRef}
-          />
-        )}
-      </PropertyCard.Container>
+      <PropertyTable
+        items={items}
+        itemCardProps={itemCardProps}
+        showHeader
+        topContent={topContent}
+        emptyContent={emptyContent}
+        bottomContent={bottomContent}
+      />
     </>
   );
 };

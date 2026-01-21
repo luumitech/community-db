@@ -89,11 +89,7 @@ function defaultInputData(
       updatedAt: item.updatedAt,
     },
     method: GQL.BatchModifyMethod.AddEvent,
-    filter: {
-      memberYearList: searchBar.memberYearList,
-      memberEventList: searchBar.memberEventList,
-      withGps: searchBar.withGps,
-    },
+    filter: searchBar.filter,
     membership: {
       year: getCurrentYear(),
       eventAttended: {

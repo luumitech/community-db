@@ -6,7 +6,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
-import { OccupantView } from './occupant-view';
+import { OccupantTable } from './occupant-table';
 
 export const OccupantDisplayFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupantDisplay on Property {
@@ -37,7 +37,14 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   const { yearSelected } = useSelector((state) => state.ui);
   const { property: fragment, community } = useLayoutContext();
   const property = getFragment(OccupantDisplayFragment, fragment);
-  const { occupantList } = property;
+
+  const occupantList = React.useMemo(() => {
+    return property.occupantList.map((entry, idx) => ({
+      // GridTable requires each table row to have unique ID
+      id: `${property.id}-${idx}`,
+      ...entry,
+    }));
+  }, [property]);
 
   const canSendEmail = React.useMemo(() => {
     const hasEmail = occupantList.some(({ infoList }) =>
@@ -85,7 +92,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
             </Button>
           )}
         </div>
-        <OccupantView occupantList={occupantList} />
+        <OccupantTable items={occupantList} />
       </CardBody>
     </Card>
   );

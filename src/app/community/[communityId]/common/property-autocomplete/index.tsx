@@ -2,8 +2,10 @@ import { useQuery } from '@apollo/client';
 import { Autocomplete, AutocompleteItem, Spinner } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { Occupant } from '~/community/[communityId]/property-list/property-card/occupant';
-import { PropertyAddress } from '~/community/[communityId]/property-list/property-card/property-address';
+import {
+  Occupant,
+  PropertyAddress,
+} from '~/community/[communityId]/property-list/property-table';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
@@ -74,7 +76,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     [dispatch]
   );
 
-  const EmptyContent = React.useCallback(() => {
+  const emptyContent = React.useMemo(() => {
     if (loading) {
       return <Spinner size="sm" />;
     }
@@ -99,14 +101,14 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       if (itemList.length === 0) {
         return (
           <AutocompleteItem key={ITEM_KEY_EMPTY} textValue="empty">
-            <EmptyContent />
+            {emptyContent}
           </AutocompleteItem>
         );
       }
 
       return null;
     },
-    [searchTextIsEmpty, EmptyContent]
+    [searchTextIsEmpty, emptyContent]
   );
 
   const renderSearchItems = React.useCallback(
@@ -138,7 +140,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
     }
     return (
       <AutocompleteItem
-        className="italic text-primary"
+        className="text-primary italic"
         key={ITEM_KEY_SHOWALL}
         textValue={ITEM_KEY_SHOWALL}
         href={appPath('propertyList', { path: { communityId } })}
@@ -154,14 +156,14 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       className={className}
       aria-label="Search Address or Member Name"
       placeholder="Search Address or Member Name"
-      startContent={<Icon icon="search" />}
+      startContent={<Icon className="shrink-0" icon="search" />}
       items={properties}
       isLoading={loading}
       allowsCustomValue
       allowsEmptyCollection={!searchTextIsEmpty}
       listboxProps={{
         variant: 'flat',
-        emptyContent: <EmptyContent />,
+        emptyContent,
       }}
       /** Current property should not be selectable */
       disabledKeys={[ITEM_KEY_EMPTY, currentPropertyId]}

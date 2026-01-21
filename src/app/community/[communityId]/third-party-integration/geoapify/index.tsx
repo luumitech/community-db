@@ -1,5 +1,6 @@
 import { Tab, Tabs, cn } from '@heroui/react';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { getFragment } from '~/graphql/generated';
 import { usePageContext } from '../page-context';
 import { Settings } from './settings';
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export const Geoapify: React.FC<Props> = ({ className }) => {
+  const { isSmDevice } = useAppContext();
   const { community: fragment } = usePageContext();
   const community = getFragment(ModifyFragment, fragment);
   const hasApiKey = community.geoapifySetting?.apiKey != null;
@@ -20,13 +22,23 @@ export const Geoapify: React.FC<Props> = ({ className }) => {
         tabWrapper: 'h-full',
         tabList: 'bg-background',
         tab: 'justify-start',
-        cursor: cn('rounded-none shadow-none', 'border-l-4 border-primary'),
         tabContent: 'group-data-[selected=true]:text-primary',
-        // This allows the tab content to scroll
-        panel: 'w-full flex flex-col gap-4 overflow-y-auto px-0 pl-3',
+        ...(!isSmDevice && {
+          cursor: cn(
+            'rounded-none shadow-none',
+            // Vertical bar on left of tab item
+            'border-l-4 border-primary'
+          ),
+        }),
+        panel: cn(
+          // This allows the tab content to scroll
+          'flex h-full flex-col overflow-y-auto',
+          'w-full p-0',
+          'mt-2 sm:mt-0'
+        ),
       }}
       aria-label="Geoapify Menu"
-      isVertical
+      isVertical={!isSmDevice}
     >
       <Tab key="settings" title="Settings">
         <Settings />

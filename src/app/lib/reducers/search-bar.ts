@@ -3,6 +3,14 @@ import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
 import { startListening } from './listener';
 
+/** Filters available on the property list search bar */
+export interface FilterT {
+  memberYearList: number[];
+  nonMemberYearList: number[];
+  memberEventList: string[];
+  withGps: boolean | null;
+}
+
 type State = Readonly<{
   /**
    * Search bar text in:
@@ -22,52 +30,37 @@ type State = Readonly<{
   debouncedSearchText?: string;
 
   /** Filter controls */
-  memberYearList: number[];
-  nonMemberYearList: number[];
-  memberEventList: string[];
-  withGps: boolean | null;
+  filter: FilterT;
 
   /** Has Filter control been specified */
   isFilterSpecified: boolean;
 
-  /** Property filter arguments */
+  /** Constructed Property filter arguments for graphQL query */
   filterArg: GQL.PropertyFilterInput;
 }>;
 
 export const initialState: State = {
   searchText: undefined,
   debouncedSearchText: undefined,
-  memberYearList: [],
-  nonMemberYearList: [],
-  memberEventList: [],
-  withGps: null,
+  filter: {
+    memberYearList: [],
+    nonMemberYearList: [],
+    memberEventList: [],
+    withGps: null,
+  },
   isFilterSpecified: false,
   filterArg: {},
 };
 
-export type FilterT = Pick<
-  State,
-  'memberYearList' | 'nonMemberYearList' | 'memberEventList' | 'withGps'
->;
 /**
  * Check if any of the filter controls have been specified
  *
  * - I.e. differ from inital state
  *
- * @param state
+ * @param filter Current filter state
  */
-export function isFilterSpecified(state: FilterT) {
-  const filterProp = [
-    'memberYearList',
-    'nonMemberYearList',
-    'memberEventList',
-    'withGps',
-  ] as const;
-
-  return !R.isDeepEqual(
-    R.pick(state, filterProp),
-    R.pick(initialState, filterProp)
-  );
+export function isFilterSpecified(FilterT: FilterT) {
+  return !R.isDeepEqual(FilterT, initialState.filter);
 }
 
 /**
@@ -80,12 +73,12 @@ function filterArg(state: State) {
   if (state.debouncedSearchText) {
     arg.searchText = state.debouncedSearchText;
   }
-  arg.memberYearList = state.memberYearList;
-  arg.nonMemberYearList = state.nonMemberYearList;
-  arg.memberEventList = state.memberEventList;
+  arg.memberYearList = state.filter.memberYearList;
+  arg.nonMemberYearList = state.filter.nonMemberYearList;
+  arg.memberEventList = state.filter.memberEventList;
 
-  if (state.withGps != null) {
-    arg.withGps = state.withGps;
+  if (state.filter.withGps != null) {
+    arg.withGps = state.filter.withGps;
   }
   return arg;
 }
@@ -106,11 +99,11 @@ export const searchBarSlice = createSlice({
       state.filterArg = filterArg(state);
     },
     setFilter: (state, { payload }: PayloadAction<FilterT>) => {
-      state.memberYearList = payload.memberYearList;
-      state.nonMemberYearList = payload.nonMemberYearList;
-      state.memberEventList = payload.memberEventList;
-      state.withGps = payload.withGps;
-      state.isFilterSpecified = isFilterSpecified(state);
+      state.filter.memberYearList = payload.memberYearList;
+      state.filter.nonMemberYearList = payload.nonMemberYearList;
+      state.filter.memberEventList = payload.memberEventList;
+      state.filter.withGps = payload.withGps;
+      state.isFilterSpecified = isFilterSpecified(state.filter);
       state.filterArg = filterArg(state);
     },
   },

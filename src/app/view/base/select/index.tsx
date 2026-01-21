@@ -8,7 +8,7 @@ import * as R from 'remeda';
 import { Controller, useFormContext } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
-export { SelectItem, SelectSection } from '@heroui/react';
+export { SelectItem, SelectSection, type SelectedItems } from '@heroui/react';
 
 export interface SelectProps<
   T extends object = object,

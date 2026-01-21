@@ -11,6 +11,8 @@ type Occupant = NonNullable<
  * contact list in the database
  */
 export interface AudienceMember extends AudienceEntry {
+  /** Unique ID for each entry, required for GridTable rendering */
+  id: string;
   occupant?: Occupant;
   /**
    * Indicates that the settings in mailchimp audience list is not the same as

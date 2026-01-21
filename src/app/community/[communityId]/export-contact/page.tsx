@@ -18,10 +18,7 @@ export default function ExportContact(props: RouteArgs) {
   return (
     <>
       <MoreMenu omitKeys={['contactExport']} />
-      <PageContent
-        className="flex h-main-height flex-col gap-2"
-        communityId={communityId}
-      />
+      <PageContent communityId={communityId} />
     </>
   );
 }

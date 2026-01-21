@@ -13,7 +13,7 @@ import { getCurrentYear } from '~/lib/date-util';
  */
 export function useMemberYear() {
   const { memberYearList, nonMemberYearList } = useSelector(
-    (state) => state.searchBar
+    (state) => state.searchBar.filter
   );
 
   const years = React.useMemo(() => {

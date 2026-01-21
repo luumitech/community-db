@@ -13,14 +13,11 @@ import {
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
-import { type RootState } from '~/lib/reducers';
+import { type FilterT } from '~/lib/reducers/search-bar';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from './use-hook-form';
 
-export type DrawerArg = Pick<
-  RootState['searchBar'],
-  'memberYearList' | 'nonMemberYearList' | 'memberEventList'
->;
+export type DrawerArg = FilterT;
 
 interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
@@ -32,8 +29,8 @@ export const FilterDrawer: React.FC<Props> = ({
   onFilterChange,
   ...arg
 }) => {
-  const { formMethods } = useHookForm(arg);
-  const { handleSubmit, formState, setValue, watch } = formMethods;
+  const { formMethods, reset, canReset } = useHookForm(arg);
+  const { handleSubmit, formState } = formMethods;
   const { isOpen, onOpenChange, onClose } = disclosure;
   const { isDirty } = formState;
 
@@ -45,18 +42,6 @@ export const FilterDrawer: React.FC<Props> = ({
     [onClose, onFilterChange]
   );
 
-  const memberYearList = watch('memberYearList');
-  const nonMemberYearList = watch('nonMemberYearList');
-  const eventList = watch('memberEventList');
-
-  const canClear = React.useMemo(() => {
-    return (
-      memberYearList.length > 0 ||
-      nonMemberYearList.length > 0 ||
-      eventList.length > 0
-    );
-  }, [memberYearList, nonMemberYearList, eventList]);
-
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
       <FormProvider {...formMethods}>
@@ -66,6 +51,7 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
                 controlName="memberYearList"
+                isMember
                 size="sm"
                 label="Member In Year(s)"
                 description="Include only members who have memberships in the specified year(s)"
@@ -74,6 +60,7 @@ export const FilterDrawer: React.FC<Props> = ({
               />
               <YearSelect
                 controlName="nonMemberYearList"
+                isMember={false}
                 size="sm"
                 label="Non-Member In Year(s)"
                 description="Include only members who do NOT have memberships in the specified year(s)"
@@ -94,14 +81,10 @@ export const FilterDrawer: React.FC<Props> = ({
               <Button
                 variant="light"
                 color="danger"
-                isDisabled={!canClear}
-                onPress={() => {
-                  setValue('memberYearList', [], { shouldDirty: true });
-                  setValue('nonMemberYearList', [], { shouldDirty: true });
-                  setValue('memberEventList', [], { shouldDirty: true });
-                }}
+                isDisabled={!canReset}
+                onPress={reset}
               >
-                Clear
+                Reset
               </Button>
               <Button color="primary" isDisabled={!isDirty} type="submit">
                 Apply

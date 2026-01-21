@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyCard } from '~/community/[communityId]/property-list/property-card';
+import { PropertyTable } from '~/community/[communityId]/property-list/property-table';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
@@ -24,25 +24,12 @@ export const PropertyDisplay: React.FC<Props> = ({ className, isLoading }) => {
   const { canEdit } = useSelector((state) => state.community);
   const entry = getFragment(PropertyDisplayFragment, property);
 
-  const EditMembership = React.useCallback(() => {
-    if (!canEdit) {
-      return null;
-    }
-
-    return (
-      <>
-        {/* header placeholder */}
-        <div />
-        <EditMembershipButton />
-      </>
-    );
-  }, [canEdit]);
-
   return (
-    <PropertyCard.Container className={className}>
-      <PropertyCard.Entry property={entry} showHeader>
-        <EditMembership />
-      </PropertyCard.Entry>
-    </PropertyCard.Container>
+    <div className="grid grid-cols-[1fr_auto] gap-2">
+      <PropertyTable items={[entry]} showHeader={false} />
+      {canEdit && (
+        <EditMembershipButton className="aspect-square h-full w-auto" />
+      )}
+    </div>
   );
 };

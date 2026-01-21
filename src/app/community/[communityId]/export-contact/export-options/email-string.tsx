@@ -3,7 +3,7 @@ import React from 'react';
 import { ITEM_DELIMITER } from '~/lib/xlsx-io/delimiter-util';
 import { Icon } from '~/view/base/icon';
 import { toast } from '~/view/base/toastify';
-import { type ContactInfo } from '../contact-util';
+import { type ContactInfo } from '../_type';
 
 /**
  * Convert contact list into Mailchimp compatible CSV

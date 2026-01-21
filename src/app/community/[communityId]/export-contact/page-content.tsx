@@ -1,17 +1,15 @@
 import { useQuery } from '@apollo/client';
-import { Divider } from '@heroui/react';
+import { cn, Divider } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
+import { ContactSummary } from './contact-summary';
+import { ContactTable } from './contact-table';
 import { toContactList } from './contact-util';
-import { ContactView } from './contact-view';
 import { ExportOptions } from './export-options';
 import { FilterSelect } from './filter-select';
-import {
-  defaultInputData,
-  type InputData,
-} from './filter-select/use-hook-form';
+import { type InputData } from './filter-select/use-hook-form';
 
 const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
   query exportContactPropertyList($id: String!, $filter: PropertyFilterInput!) {
@@ -36,17 +34,12 @@ const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
 `);
 
 interface Props {
-  className?: string;
   communityId: string;
 }
 
-export const PageContent: React.FC<Props> = ({ className, communityId }) => {
-  const { memberYearList, nonMemberYearList, memberEventList } = useSelector(
-    (state) => state.searchBar
-  );
-  const [filter, setFilter] = React.useState(
-    defaultInputData({ memberYearList, nonMemberYearList, memberEventList })
-  );
+export const PageContent: React.FC<Props> = ({ communityId }) => {
+  const searchBar = useSelector((state) => state.searchBar);
+  const [filter, setFilter] = React.useState(searchBar.filter);
   const result = useQuery(ExportContact_PropertyListQuery, {
     variables: { id: communityId, filter },
     onError,
@@ -60,6 +53,9 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     return toContactList(propertyList);
   }, [result]);
 
+  const isLoading = result.loading || contactInfo == null;
+  const contactList = contactInfo?.contactList ?? [];
+
   const onFilterChange = React.useCallback(
     async (input: InputData) => {
       result.refetch({ id: communityId, filter: input });
@@ -68,18 +64,26 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
     [result, communityId]
   );
 
-  const isLoading = result.loading || contactInfo == null;
+  const topContent = React.useMemo(() => {
+    return (
+      <div className="mb-2 flex flex-col gap-2">
+        <ExportOptions contactInfo={contactInfo} />
+        <Divider />
+        <FilterSelect
+          isDisabled={isLoading}
+          filters={filter}
+          onFilterChange={onFilterChange}
+        />
+        <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
+      </div>
+    );
+  }, [contactInfo, filter, isLoading, onFilterChange]);
 
   return (
-    <div className={className}>
-      <FilterSelect
-        isDisabled={isLoading}
-        filters={filter}
-        onFilterChange={onFilterChange}
-      />
-      <ExportOptions contactInfo={contactInfo} />
-      <Divider />
-      <ContactView contactInfo={contactInfo} isLoading={isLoading} />
-    </div>
+    <ContactTable
+      items={contactList}
+      isLoading={isLoading}
+      topContent={topContent}
+    />
   );
 };

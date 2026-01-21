@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { type SortDescriptor } from '@heroui/react';
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
@@ -7,6 +6,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
 import { type RootState } from '~/lib/reducers';
 import { type AudienceMember } from './_type';
+import { type SortDescriptor } from './audience-table';
 
 const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
   query thirdPartyIntegrationMailchimpMemberList(
@@ -50,14 +50,14 @@ export function useAudienceList(arg: UseAudienceListOpt) {
   });
 
   const doSort = React.useCallback(
-    (desc: SortDescriptor) => {
+    (desc: SortDescriptor | null) => {
       dispatch(actions.mailchimp.setSortDescriptor(desc));
     },
     [dispatch]
   );
 
-  const rawAudienceList = React.useMemo(() => {
-    return (result.data?.mailchimpMemberList ?? []).map((entry) => {
+  const rawAudienceList = React.useMemo<AudienceMember[]>(() => {
+    return (result.data?.mailchimpMemberList ?? []).map((entry, idx) => {
       const occupant = entry.property?.occupantList?.find(({ infoList }) =>
         infoList?.find((info) => {
           if (info.type === GQL.ContactInfoType.Email) {
@@ -96,6 +96,7 @@ export function useAudienceList(arg: UseAudienceListOpt) {
         }
       }
       return {
+        id: `${idx}`,
         ...entry,
         occupant,
         warning,
@@ -122,10 +123,14 @@ function sortAndFilterAudienceList(
   audienceList: AudienceMember[],
   mailchimp: RootState['mailchimp']
 ): AudienceMember[] {
-  const { searchText, sortDescriptor, subscriberStatusList, optOut, warning } =
-    mailchimp;
+  const { searchText, sortDescriptor, filter } = mailchimp;
+  const { subscriberStatusList, optOut, warning } = filter;
+
   const list = audienceList.filter((entry) => {
-    const matchStatus = subscriberStatusList.includes(entry.status);
+    let matchStatus = true;
+    if (subscriberStatusList.length > 0) {
+      matchStatus = subscriberStatusList.includes(entry.status);
+    }
 
     let matchSearchText = true;
     if (searchText) {
@@ -149,17 +154,17 @@ function sortAndFilterAudienceList(
   });
 
   if (sortDescriptor != null) {
-    const { column, direction } = sortDescriptor;
-    switch (column) {
+    const { columnKey, direction } = sortDescriptor;
+    switch (columnKey) {
       case 'warning':
         list.sort((a, b) => {
-          const aVal = a[column] ? 1 : 0;
-          const bVal = b[column] ? 1 : 0;
+          const aVal = a[columnKey] ? 1 : 0;
+          const bVal = b[columnKey] ? 1 : 0;
           return direction === 'ascending' ? bVal - aVal : aVal - bVal;
         });
         break;
 
-      case 'opt-out':
+      case 'optOut':
         list.sort((a, b) => {
           const aVal = a.occupant?.optOut ? 1 : 0;
           const bVal = b.occupant?.optOut ? 1 : 0;
@@ -171,8 +176,8 @@ function sortAndFilterAudienceList(
       case 'fullName':
       case 'email':
         list.sort((a, b) => {
-          const aVal = a[column] ?? '';
-          const bVal = b[column] ?? '';
+          const aVal = a[columnKey] ?? '';
+          const bVal = b[columnKey] ?? '';
           const comp = aVal.localeCompare(bVal, undefined, {
             sensitivity: 'accent',
           });

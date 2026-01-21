@@ -49,7 +49,7 @@ export const AudienceListSelect: React.FC<Props> = ({
 
   return (
     <Select
-      className={cn(className, 'max-w-xs')}
+      className={cn(className)}
       items={audienceItems}
       label="Audience List"
       placeholder="Select an audience list"

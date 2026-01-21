@@ -2,7 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '~/view/base/icon';
-import { OccupantEntry } from './_type';
+import { OccupantEntry } from '../_type';
 
 interface Props {
   className?: string;
@@ -24,7 +24,7 @@ export const OptOut: React.FC<Props> = ({ className, entry }) => {
     >
       <span
         className={cn(
-          'font-semibold text-foreground-500 text-tiny',
+          'text-tiny font-semibold text-foreground-500',
           'sm:hidden'
         )}
       >
