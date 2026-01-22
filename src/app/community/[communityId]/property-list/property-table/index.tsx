@@ -124,7 +124,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
           // Hover styling if item is pressable
           onItemPress && 'hover:bg-primary-50'
         ),
-        bodyGrid: cn('gap-1'),
+        bodyGrid: cn('gap-1 overflow-hidden'),
       }}
       columnKeys={COLUMN_KEYS}
       columnConfig={{
