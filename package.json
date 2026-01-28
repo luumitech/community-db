@@ -63,6 +63,7 @@
     "@ts-rest/serverless": "^3.52.1",
     "@turf/turf": "^7.2.0",
     "@uidotdev/usehooks": "^2.4.1",
+    "ahooks": "^3.9.6",
     "apollo-link-debounce": "^3.0.0",
     "better-auth": "^1.4.5",
     "date-fns": "^3.6.0",

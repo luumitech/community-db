@@ -2,7 +2,6 @@ import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { FilterChip } from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
-import { initialState } from '~/lib/reducers/search-bar';
 import { Icon } from '~/view/base/icon';
 import { FilterDrawer, type DrawerArg } from './filter-drawer';
 import { type InputData } from './use-hook-form';
@@ -41,7 +40,7 @@ export const FilterSelect: React.FC<Props> = ({
           Optional Filter...
         </Button>
         <FilterChip
-          className="flex-wrap"
+          className="flex-wrap overflow-auto"
           isDisabled={isDisabled}
           filters={filters}
           onFilterChange={onFilterChange}

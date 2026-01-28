@@ -1,9 +1,9 @@
+import { useSize } from 'ahooks';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import { Ellipsis } from './ellipsis';
 
-// Default ellipsis component
 export { Ellipsis } from './ellipsis';
 
 type DivProps = React.DetailedHTMLProps<
@@ -12,126 +12,131 @@ type DivProps = React.DetailedHTMLProps<
 >;
 
 export interface TruncateProps extends DivProps {
+  className?: string;
   /**
-   * Optional ellipsis element to render
+   * Customize ellipsis element to render
    *
-   * @param invisible List of items not shown in Truncate children
-   * @param visible List of visible items under Truncate children
+   * @param hidden List of items not shown on screen
+   * @param visible List of visible items shown on screen
    */
-  ellipsis?: (
-    invisible: React.ReactNode[],
+  renderEllipsis?: (
+    hidden: React.ReactNode[],
     visible: React.ReactNode[]
   ) => React.ReactNode;
 }
 
-export const Truncate: React.FC<React.PropsWithChildren<TruncateProps>> = ({
+export const Truncate: React.FC<TruncateProps> = ({
   className,
-  ellipsis,
+  renderEllipsis,
   children,
   ...props
 }) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const measureRef = React.useRef<HTMLDivElement>(null);
-  const childCount = React.Children.toArray(children).length;
-  const [visibleCount, setVisibleCount] = React.useState(childCount);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const childRefs = React.useRef<HTMLDivElement[]>([]);
+  const ellipsisRef = React.useRef<HTMLDivElement | null>(null);
+  const ellipsisMeasureRef = React.useRef<HTMLDivElement | null>(null);
+  const ellipsisSz = useSize(ellipsisMeasureRef);
+  const [visibleCount, setVisibleCount] = React.useState<number>();
 
   React.useLayoutEffect(() => {
-    if (!containerRef.current || !measureRef.current) {
+    const container = containerRef.current;
+    const ellipsis = ellipsisRef.current;
+    if (!container || !ellipsis || ellipsisSz == null) {
       return;
     }
 
-    const container = containerRef.current;
-    const measure = measureRef.current;
+    const childElemList = childRefs.current;
 
-    const calculate = () => {
-      const containerWidth = container.clientWidth;
-      const measureWidth = measure.clientWidth;
-      const measureChildren = Array.from(measure.children) as HTMLElement[];
-      const measureCount = measureChildren.length;
+    /**
+     * Look at the layout of the children element, and only show those that have
+     * not been clipped by the container. And show the ellipsis component if
+     * some children have been hidden by this logic.
+     */
+    const update = () => {
+      ellipsis.style.display = 'none';
+      childElemList.forEach((el) => {
+        el.style.display = '';
+      });
+
+      const containerRect = container.getBoundingClientRect();
 
       /**
-       * Measure gap width
-       *
-       * - Measurement container has an ellipsis prepended to the children
-       *
-       * @example
-       *
-       *       ...(pad)item1(pad)item2(pad)item3
-       *       |                               |
-       *       +-------  measureWidth  --------+
+       * If this is a flex container, find the gap, so we can use it when
+       * measuring ellipsis width
        */
-      const totalElemWidth = R.sumBy(
-        measureChildren,
-        (elem) => elem.offsetWidth
-      );
-      const gap = (measureWidth - totalElemWidth) / measureCount;
+      const containerStyle = getComputedStyle(container);
+      const gap = parseFloat(containerStyle.columnGap);
 
-      // The first element in the measure div is the ellipsis element
-      const ellipsisWidth = measureChildren[0].offsetWidth;
+      let firstHiddenIndex: number | null = null;
 
-      let count = 0;
-      for (let usedWidth = 0; count < measureCount; count++) {
-        const elem = measureChildren[count];
-        const elemWidth = elem.offsetWidth;
+      for (let i = 0; i < childElemList.length; i++) {
+        const childRect = childElemList[i].getBoundingClientRect();
 
-        if (count === measureCount - 1) {
-          // No need to render ellipsis when all children are rendered
-          usedWidth -= ellipsisWidth + gap;
-        }
-        if (usedWidth + gap + elemWidth > containerWidth) {
+        // ellipsis is not shown for last children element
+        const ellipsisWidth =
+          i === childElemList.length - 1 ? 0 : gap + ellipsisSz.width;
+
+        if (childRect.right + ellipsisWidth > containerRect.right) {
+          firstHiddenIndex = i;
           break;
         }
-        usedWidth += gap + elemWidth;
       }
-      setVisibleCount(count - 1);
+
+      if (firstHiddenIndex !== null) {
+        setVisibleCount(firstHiddenIndex);
+        for (let i = firstHiddenIndex; i < childElemList.length; i++) {
+          childElemList[i].style.display = 'none';
+        }
+        ellipsis.style.display = '';
+      } else {
+        setVisibleCount(childElemList.length);
+      }
     };
 
-    calculate();
-
-    const observer = new ResizeObserver(calculate);
+    const observer = new ResizeObserver(update);
     observer.observe(container);
+    update();
 
     return () => observer.disconnect();
-  }, [childCount, children]);
+  }, [children, ellipsisSz]);
 
-  const [visibleList, invisibleList] = React.useMemo(() => {
+  const [visibleList, hiddenList] = React.useMemo(() => {
+    const childCount = React.Children.toArray(children).length;
     return R.partition(
       React.Children.toArray(children),
-      (elem, idx) => idx < visibleCount
+      (elem, idx) => idx < (visibleCount ?? childCount)
     );
   }, [children, visibleCount]);
 
   return (
-    <>
-      {/* Visible container */}
-      <div ref={containerRef} className={className} {...props}>
-        {visibleList.map((item, i) => (
-          <span key={i}>{item}</span>
-        ))}
-        {invisibleList.length > 0 && (
-          <span>{ellipsis?.(invisibleList, visibleList) ?? <Ellipsis />}</span>
-        )}
-      </div>
-
-      {/* Measurement container */}
-      <div
-        ref={measureRef}
-        className={twMerge(
-          className,
-          // Place these CSS after className is important because we
-          // need to make sure this is absoluted positioned and invisible
-          'pointer-events-none invisible absolute'
-        )}
+    <div
+      ref={containerRef}
+      className={twMerge('overflow-hidden', className)}
+      {...props}
+    >
+      {React.Children.toArray(children).map((child, i) => (
+        <div
+          key={i}
+          ref={(el) => {
+            if (el) {
+              childRefs.current[i] = el;
+            }
+          }}
+          className="flex-none"
+        >
+          {child}
+        </div>
+      ))}
+      <span ref={ellipsisRef}>
+        {renderEllipsis?.(hiddenList, visibleList) ?? <Ellipsis />}
+      </span>
+      {/** For measuring the size of the ellipsis component */}
+      <span
+        ref={ellipsisMeasureRef}
+        className="pointer-events-none invisible absolute"
       >
-        {/**
-         * The span is important because ellipsis component may not necessarily have
-         * offsetWidth. (i.e. svg doesn't have offsetWidth)
-         */}
-        <span>
-          {ellipsis?.([], [])} ?? <Ellipsis />
-        </span>
-        {children}
-      </div>
-    </>
+        {renderEllipsis?.([], []) ?? <Ellipsis />}
+      </span>
+    </div>
   );
 };

@@ -9,6 +9,7 @@ import {
 } from '~/community/[communityId]/common/chip';
 import * as GQL from '~/graphql/generated/graphql';
 import { initialState, type FilterT } from '~/lib/reducers/mailchimp';
+import { Truncate } from '~/view/base/truncate';
 
 type FilterChangeFn = (input: FilterT) => Promise<void>;
 
@@ -42,7 +43,7 @@ export const FilterChip: React.FC<Props> = ({
   );
 
   return (
-    <div
+    <Truncate
       className={twMerge(
         'hidden items-center gap-2 sm:flex',
         'cursor-pointer',
@@ -86,6 +87,6 @@ export const FilterChip: React.FC<Props> = ({
           }
         />
       )}
-    </div>
+    </Truncate>
   );
 };

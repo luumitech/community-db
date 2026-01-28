@@ -3,9 +3,9 @@ import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import { Ellipsis, Truncate, TruncateProps } from '~/view/base/truncate';
+import { Ellipsis, Truncate, type TruncateProps } from '~/view/base/truncate';
 
-type EllipsisCB = Required<TruncateProps>['ellipsis'];
+type RenderEllipsis = Required<TruncateProps>['renderEllipsis'];
 
 const OccupantFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Occupant on Property {
@@ -35,7 +35,7 @@ export const Occupant: React.FC<Props> = ({
     })
     .filter((name) => !R.isEmpty(name));
 
-  const ellipsis = React.useCallback<EllipsisCB>((invisible) => {
+  const renderEllipsis = React.useCallback<RenderEllipsis>((invisible) => {
     return (
       <Tooltip
         content={
@@ -57,7 +57,7 @@ export const Occupant: React.FC<Props> = ({
   return (
     <Truncate
       className={twMerge('flex items-center gap-2', className)}
-      ellipsis={ellipsis}
+      renderEllipsis={renderEllipsis}
       role="list"
     >
       {nameList.map((name, idx) => (
