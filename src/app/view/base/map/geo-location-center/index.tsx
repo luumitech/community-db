@@ -1,6 +1,11 @@
 import { useGeolocation } from '@uidotdev/usehooks';
 import React from 'react';
 import { useMap } from 'react-leaflet';
+/**
+ * Can't use react-use until this issue is resolved See:
+ * https://github.com/streamich/react-use/issues/2412
+ */
+// import { useGeolocation } from 'react-use';
 
 /** Access browser's geolocation and center the map on it. */
 

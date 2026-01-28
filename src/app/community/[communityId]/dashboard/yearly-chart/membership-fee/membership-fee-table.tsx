@@ -1,7 +1,7 @@
 import { Divider, ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
+import { useLocalStorage } from 'react-use';
 import * as R from 'remeda';
-import { useLocalStorage } from 'usehooks-ts';
 import { lsFlags } from '~/lib/env';
 import { type MembershipFeeStat } from './_type';
 import { GroupBy } from './group-by';
@@ -16,7 +16,7 @@ export const MembershipFeeTable: React.FC<Props> = ({
   className,
   membershipFeeStat,
 }) => {
-  const [groupBy, setGroupBy] = useLocalStorage(
+  const [groupBy = 'none', setGroupBy] = useLocalStorage(
     lsFlags.dashboardMembershipFeeGroupBy,
     'none'
   );

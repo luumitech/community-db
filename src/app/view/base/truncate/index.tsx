@@ -1,7 +1,8 @@
-import { useSize } from 'ahooks';
 import React from 'react';
+import { useMeasure } from 'react-use';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
+import { parseAsNumber } from '~/lib/number-util';
 import { Ellipsis } from './ellipsis';
 
 export { Ellipsis } from './ellipsis';
@@ -34,8 +35,7 @@ export const Truncate: React.FC<TruncateProps> = ({
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const childRefs = React.useRef<HTMLDivElement[]>([]);
   const ellipsisRef = React.useRef<HTMLDivElement | null>(null);
-  const ellipsisMeasureRef = React.useRef<HTMLDivElement | null>(null);
-  const ellipsisSz = useSize(ellipsisMeasureRef);
+  const [ellipsisMeasureRef, ellipsisSz] = useMeasure<HTMLDivElement>();
   const [visibleCount, setVisibleCount] = React.useState<number>();
 
   React.useLayoutEffect(() => {
@@ -65,7 +65,8 @@ export const Truncate: React.FC<TruncateProps> = ({
        * measuring ellipsis width
        */
       const containerStyle = getComputedStyle(container);
-      const gap = parseFloat(containerStyle.columnGap);
+      const gap =
+        parseAsNumber(containerStyle.columnGap, { lenient: true }) ?? 0;
 
       let firstHiddenIndex: number | null = null;
 

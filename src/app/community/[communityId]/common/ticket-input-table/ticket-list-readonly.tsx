@@ -1,7 +1,7 @@
 import { cn } from '@heroui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
-import { useToggle } from 'usehooks-ts';
+import { useToggle } from 'react-use';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { decSum, formatCurrency } from '~/lib/decimal-util';

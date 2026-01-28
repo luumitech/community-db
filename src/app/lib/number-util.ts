@@ -1,5 +1,10 @@
 import * as R from 'remeda';
 
+interface ParseAsNumberOpt {
+  /** Allow partial string (i.e. '3px') to return a number as well */
+  lenient?: boolean;
+}
+
 /**
  * Parse any type as a number (support integer or floating point).
  *
@@ -8,11 +13,13 @@ import * as R from 'remeda';
  * - Null or undefined
  * - Empty string
  * - Non numeric string
+ * - Boolean (true or false)
+ * - If lenient mode, allow string with partial number (i.e. 10px)
  *
  * @param val Any string
  * @returns Number or null
  */
-export function parseAsNumber(input: unknown) {
+export function parseAsNumber(input: unknown, opt?: ParseAsNumberOpt) {
   if (input == null) {
     return null;
   }
@@ -21,8 +28,15 @@ export function parseAsNumber(input: unknown) {
     // need to check this because Number('') returns 0
     return null;
   }
+  if (typeof input === 'boolean') {
+    return null;
+  }
 
-  const num = Number(input);
+  const num =
+    typeof input === 'string' && opt?.lenient
+      ? parseFloat(input)
+      : Number(input);
+
   if (isNaN(num)) {
     return null;
   }
@@ -32,10 +46,10 @@ export function parseAsNumber(input: unknown) {
 /**
  * Format byte number in short forms
  *
- * @example Expect(formatBytes(1000)).toBe('1 KB')
+ * @example Expect(formatBytes(1024)).toBe('1 KB')
  */
 export function formatBytes(bytes: number, decimals = 2) {
-  if (!+bytes) {
+  if (Number.isNaN(bytes) || bytes <= 0) {
     return '0 Bytes';
   }
 

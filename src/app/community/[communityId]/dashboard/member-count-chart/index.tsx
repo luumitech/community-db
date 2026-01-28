@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage } from 'react-use';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { lsFlags } from '~/lib/env';
@@ -33,7 +33,7 @@ export const MemberCountChart: React.FC<Props> = ({
   selectedYear,
   onYearSelect,
 }) => {
-  const [yearRange, setYearRange] = useLocalStorage(
+  const [yearRange = 10, setYearRange] = useLocalStorage(
     lsFlags.dashboardYearRange,
     10
   );

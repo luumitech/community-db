@@ -1,7 +1,7 @@
 import { Button, Tooltip } from '@heroui/react';
 import React from 'react';
+import { useLocalStorage } from 'react-use';
 import { useWizard } from 'react-use-wizard';
-import { useLocalStorage } from 'usehooks-ts';
 import { lsFlags } from '~/lib/env';
 import { Icon } from '~/view/base/icon';
 import { usePageContext } from '../page-context';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const Step0: React.FC<Props> = ({ className }) => {
-  const [isFirstTime, setIsFirstTime] = useLocalStorage(
+  const [isFirstTime = true, setIsFirstTime] = useLocalStorage(
     lsFlags.importFirstTime,
     true
   );
