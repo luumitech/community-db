@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
+import { useMedia } from 'react-use';
 import { type NextPublicEnvSchema } from '~/lib/env/env-schema';
 import {
   useConfirmationModalContext,
@@ -22,8 +22,8 @@ interface Props {
 
 export function AppProvider({ env, ...props }: Props) {
   const confirmValues = useConfirmationModalContext();
-  const isSmDevice = useMediaQuery('(max-width: 640px)');
-  const isMdDevice = useMediaQuery('(max-width: 768px)');
+  const isSmDevice = useMedia('(max-width: 640px)', true);
+  const isMdDevice = useMedia('(max-width: 768px)', true);
 
   return (
     <Context.Provider

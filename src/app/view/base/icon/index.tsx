@@ -66,6 +66,7 @@ const supportedIcon = {
   sortNone: 'prime:sort',
   sortAsc: 'prime:sort-up-fill',
   sortDesc: 'prime:sort-down-fill',
+  ellipsis: 'lucide:ellipsis',
 } as const;
 
 export type IconType = keyof typeof supportedIcon;

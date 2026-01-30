@@ -171,9 +171,10 @@ function customLegend(helper: ChartDataHelper) {
       { id: 'renewed', label: 'renewed' },
       { id: 'no renewal', label: 'no renewal' },
     ],
-    anchor: 'bottom-right',
-    direction: 'column',
-    translateX: 120,
+    anchor: 'bottom',
+    direction: 'row',
+    // translateX: 120,
+    translateY: 70,
     itemWidth: 100,
     itemHeight: 20,
     symbolShape: CustomSymbolShape,
@@ -295,6 +296,11 @@ export const MemberCountBarChart: React.FC<Props> = ({
       // onDataClick={(data) => onYearSelect?.(data.year as number)}
       keys={chartHelper.chartKeys}
       indexBy="year"
+      margin={{
+        top: 10,
+        bottom: 80,
+        right: 0,
+      }}
       valueFormat={(v) => v.toString()}
       axisBottom={{
         legend: 'Year',

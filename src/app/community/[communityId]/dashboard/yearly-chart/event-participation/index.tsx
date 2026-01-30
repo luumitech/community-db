@@ -208,6 +208,7 @@ export const EventParticipation: React.FC<Props> = ({
             legendPos="bottom"
             legendProp={{
               translateY: 90,
+              itemWidth: 80,
             }}
             // This is being hidden by the bars rendered by CustomBar
             // onDataClick={(data) => setEventSelected(data.eventName)}

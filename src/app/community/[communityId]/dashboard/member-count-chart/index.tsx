@@ -1,10 +1,18 @@
 import { useQuery } from '@apollo/client';
-import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Skeleton,
+  cn,
+} from '@heroui/react';
 import React from 'react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage } from 'react-use';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { lsFlags } from '~/lib/env';
+import { FootNote } from './foot-note';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
 import { YearSelect } from './year-select';
@@ -33,7 +41,7 @@ export const MemberCountChart: React.FC<Props> = ({
   selectedYear,
   onYearSelect,
 }) => {
-  const [yearRange, setYearRange] = useLocalStorage(
+  const [yearRange = 10, setYearRange] = useLocalStorage(
     lsFlags.dashboardYearRange,
     10
   );
@@ -45,28 +53,34 @@ export const MemberCountChart: React.FC<Props> = ({
 
   return (
     <Card className={cn(className)}>
-      <CardHeader className="items-start gap-2">
-        <div className="grow">
-          <p className="text-md font-bold">Total Membership Counts</p>
-        </div>
-        {community != null && (
-          <YearSelect
-            minYear={community.minYear}
-            maxYear={community.maxYear}
-            selectedKeys={selectedYear != null ? [selectedYear.toString()] : []}
+      <CardHeader
+        className={cn('flex flex-col gap-2', 'items-start', 'sm:flex-row')}
+      >
+        <p className={cn('sm:flex-1', 'text-md font-bold')}>
+          Total Membership Counts
+        </p>
+        <div className="flex gap-2 self-end">
+          {community != null && (
+            <YearSelect
+              minYear={community.minYear}
+              maxYear={community.maxYear}
+              selectedKeys={
+                selectedYear != null ? [selectedYear.toString()] : []
+              }
+              onSelectionChange={(keys) => {
+                const [firstKey] = keys;
+                onYearSelect?.(parseInt(firstKey as string, 10));
+              }}
+            />
+          )}
+          <YearRangeSelect
+            defaultSelectedKeys={[yearRange.toString()]}
             onSelectionChange={(keys) => {
               const [firstKey] = keys;
-              onYearSelect?.(parseInt(firstKey as string, 10));
+              setYearRange(parseInt(firstKey as string, 10));
             }}
           />
-        )}
-        <YearRangeSelect
-          defaultSelectedKeys={[yearRange.toString()]}
-          onSelectionChange={(keys) => {
-            const [firstKey] = keys;
-            setYearRange(parseInt(firstKey as string, 10));
-          }}
-        />
+        </div>
       </CardHeader>
       <CardBody className="overflow-hidden">
         <Skeleton
@@ -85,6 +99,9 @@ export const MemberCountChart: React.FC<Props> = ({
           />
         </Skeleton>
       </CardBody>
+      <CardFooter className="justify-center">
+        <FootNote />
+      </CardFooter>
     </Card>
   );
 };

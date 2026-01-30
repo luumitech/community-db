@@ -1,5 +1,5 @@
 import React from 'react';
-import { useResizeObserver, useWindowSize } from 'usehooks-ts';
+import { useMeasure, useWindowSize } from 'react-use';
 
 interface Props {
   className?: string;
@@ -10,10 +10,7 @@ export const HeaderMenuWrapper: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   const { width: windowWidth } = useWindowSize();
-  const divRef = React.useRef<HTMLDivElement>(null);
-  const { width: menuWidth } = useResizeObserver({
-    ref: divRef as React.RefObject<HTMLDivElement>,
-  });
+  const [divRef, { width: menuWidth }] = useMeasure<HTMLDivElement>();
   const [leftPos, setLeftPos] = React.useState<number>();
 
   React.useEffect(() => {

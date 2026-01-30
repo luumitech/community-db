@@ -1,6 +1,6 @@
 import { Input } from '@heroui/react';
 import React from 'react';
-import { useCopyToClipboard } from 'usehooks-ts';
+import { useCopyToClipboard } from 'react-use';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
@@ -14,13 +14,23 @@ interface Props {
 
 export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
   const { env } = useAppContext();
-  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const [copiedState, copyToClipboard] = useCopyToClipboard();
 
   const url = React.useMemo(() => {
     const path = appPath('propertyList', { path: { communityId } });
     const hostname = env.NEXT_PUBLIC_HOSTNAME;
     return `${hostname}${path}`;
   }, [env, communityId]);
+
+  React.useEffect(() => {
+    const { error, value } = copiedState;
+    if (error) {
+      toast.error(`Unable to copy: ${error.message}`);
+    }
+    if (value) {
+      toast.success('Copied');
+    }
+  }, [copiedState]);
 
   return (
     <div className={className}>
@@ -36,9 +46,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
           variant="bordered"
           color="primary"
           endContent={<Icon icon="link" size={20} />}
-          onPress={() => {
-            toast.promise(copyToClipboard(url), { success: 'Copied' });
-          }}
+          onPress={() => copyToClipboard(url)}
         >
           Copy Link
         </Button>

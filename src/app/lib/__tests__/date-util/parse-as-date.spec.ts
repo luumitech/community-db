@@ -4,7 +4,7 @@ import {
   CalendarDateTime,
   ZonedDateTime,
 } from '@internationalized/date';
-import { parseAsDate } from '../date-util';
+import { parseAsDate } from '~/lib/date-util';
 
 type TestCaseEntry = [
   string | DateValue, // input date

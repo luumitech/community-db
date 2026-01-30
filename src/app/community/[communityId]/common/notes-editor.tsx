@@ -23,6 +23,27 @@ export const NotesEditor: React.FC<Props> = ({
   const { setValue, watch } = useFormContext();
   const notes = watch(controlName);
 
+  const notePrefix = React.useMemo(() => {
+    // prefix each message with `date(name):`
+    return `${formatAsDate(new Date())}(${shortName}):`;
+  }, [shortName]);
+
+  const onAddNote = React.useCallback(() => {
+    const noteContent = line.trim();
+    if (noteContent) {
+      setValue(
+        controlName,
+        [
+          // prefix each message with `date(name):`
+          `${notePrefix} ${line.trim()}`,
+          notes,
+        ].join('\n'),
+        { shouldDirty: true }
+      );
+      setLine('');
+    }
+  }, [controlName, line, notePrefix, notes, setValue]);
+
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
       <div className="flex items-end gap-2">
@@ -33,26 +54,26 @@ export const NotesEditor: React.FC<Props> = ({
           isClearable
           autoFocus={autoFocus}
           value={line}
+          startContent={
+            <span className="pointer-events-none text-xs text-nowrap text-default-400">
+              {notePrefix}
+            </span>
+          }
           onValueChange={setLine}
+          onKeyDown={(evt) => {
+            if (evt.key === 'Enter') {
+              onAddNote();
+              evt.preventDefault();
+            }
+          }}
         />
         <Button
           variant="bordered"
           color="primary"
           isDisabled={!line.trim()}
-          onPress={() => {
-            setValue(
-              controlName,
-              [
-                // prefix each message with `date(name):`
-                `${formatAsDate(new Date())}(${shortName}): ${line.trim()}`,
-                notes,
-              ].join('\n'),
-              { shouldDirty: true }
-            );
-            setLine('');
-          }}
+          onPress={onAddNote}
         >
-          Add
+          Enter
         </Button>
       </div>
       <Textarea

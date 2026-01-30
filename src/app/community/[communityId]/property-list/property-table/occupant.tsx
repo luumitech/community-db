@@ -1,8 +1,11 @@
-import { Chip, type ChipProps } from '@heroui/chip';
+import { Chip, Tooltip, type ChipProps } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
+import { Ellipsis, Truncate, type TruncateProps } from '~/view/base/truncate';
+
+type RenderEllipsis = Required<TruncateProps>['renderEllipsis'];
 
 const OccupantFragment = graphql(/* GraphQL */ `
   fragment PropertyList_Occupant on Property {
@@ -32,13 +35,30 @@ export const Occupant: React.FC<Props> = ({
     })
     .filter((name) => !R.isEmpty(name));
 
+  const renderEllipsis = React.useCallback<RenderEllipsis>((invisible) => {
+    return (
+      <Tooltip
+        content={
+          <div className="flex flex-wrap items-center gap-2">{invisible}</div>
+        }
+        placement="bottom"
+      >
+        <span>
+          <Ellipsis />
+        </span>
+      </Tooltip>
+    );
+  }, []);
+
   if (nameList.length === 0) {
     return null;
   }
 
   return (
-    <div
-      className={twMerge('flex flex-wrap items-center gap-2', className)}
+    <Truncate
+      className={twMerge('flex items-center gap-2', className)}
+      renderEllipsis={renderEllipsis}
+      data-testid="member-names"
       role="list"
     >
       {nameList.map((name, idx) => (
@@ -46,6 +66,6 @@ export const Occupant: React.FC<Props> = ({
           {name}
         </Chip>
       ))}
-    </div>
+    </Truncate>
   );
 };

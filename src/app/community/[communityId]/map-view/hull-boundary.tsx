@@ -4,7 +4,7 @@ import type { MultiPolygon, Polygon } from 'geojson';
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { useMap } from 'react-leaflet';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage } from 'react-use';
 import { lsFlags } from '~/lib/env';
 import { ToolbarControl } from '~/view/base/map';
 
@@ -41,7 +41,7 @@ interface Props {
 export const HullBoundary: React.FC<Props> = ({ positions }) => {
   const map = useMap();
   const [hull, setHull] = React.useState<L.LatLngBoundsLiteral>();
-  const [showBoundary, setShowBoundary] = useLocalStorage(
+  const [showBoundary = true, setShowBoundary] = useLocalStorage(
     lsFlags.mapViewShowBoundary,
     true
   );

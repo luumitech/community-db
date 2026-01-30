@@ -101,12 +101,12 @@
     "react-number-format": "^5.4.3",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
+    "react-use": "^17.6.0",
     "react-use-wizard": "^2.3.0",
     "remeda": "^2.17.4",
     "sharp": "^0.33.5",
     "tailwind-merge": "^3.3.1",
     "uploadthing": "^7.6.0",
-    "usehooks-ts": "^3.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz",
     "zod": "^3.23.8"
   },

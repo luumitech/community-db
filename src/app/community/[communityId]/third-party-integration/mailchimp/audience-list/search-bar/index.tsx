@@ -1,4 +1,4 @@
-import { cn, Input, InputProps, ScrollShadow } from '@heroui/react';
+import { cn, Input, InputProps } from '@heroui/react';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
@@ -60,13 +60,11 @@ export const SearchBar: React.FC<Props> = ({ onChange, ...inputProps }) => {
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
-            <ScrollShadow orientation="horizontal" hideScrollBar>
-              <FilterChip
-                openDrawer={openDrawer}
-                filters={mailchimp.filter}
-                onFilterChange={onFilterChange}
-              />
-            </ScrollShadow>
+            <FilterChip
+              openDrawer={openDrawer}
+              filters={mailchimp.filter}
+              onFilterChange={onFilterChange}
+            />
           </div>
         }
         value={mailchimp.searchText ?? ''}

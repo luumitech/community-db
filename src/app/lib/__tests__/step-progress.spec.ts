@@ -1,4 +1,4 @@
-import { StepProgress } from '../step-progress';
+import { StepProgress } from '~/lib/step-progress';
 
 type TestCaseEntry = [
   string, // description

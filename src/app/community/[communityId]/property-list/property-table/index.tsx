@@ -2,12 +2,11 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import {
-  CLASS_DEFAULT,
   GridTable,
   type GridTableProps as GenericGTProps,
 } from '~/view/base/grid-table';
 import type { PropertyEntry } from '../_type';
-import { Membership } from './membership';
+import { MemberYear } from './member-year';
 import { Occupant } from './occupant';
 import { PropertyAddress } from './property-address';
 import { useMemberYear } from './use-member-year';
@@ -34,11 +33,13 @@ export interface PropertyTableProps extends CustomGridTableProps {
   className?: string;
   /** Display header row */
   showHeader?: boolean;
+  onItemPress?: (item: PropertyEntry) => void;
 }
 
 export const PropertyTable: React.FC<PropertyTableProps> = ({
   className,
   showHeader,
+  onItemPress,
   ...props
 }) => {
   const yearsToShow = useMemberYear();
@@ -62,7 +63,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
         case 'memberYear':
           return (
             <div
-              className={twMerge(
+              className={cn(
                 'grid auto-cols-fr grid-flow-col grid-rows-1',
                 'items-center gap-2'
               )}
@@ -86,40 +87,29 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
           return <PropertyAddress fragment={item} />;
         case 'member':
           return <Occupant fragment={item} />;
-        case 'memberYear': {
-          // Display year header when rendering item if header row is not shown
-          const yearHeader = !showHeader;
+        case 'memberYear':
           return (
-            <div
-              className={twMerge(
-                /**
-                 * Force rendering 2 rows (rendering vertically, which allows
-                 * for possiblities or adding more years in the future)
-                 *
-                 * - 1st row shows the years
-                 * - 2nd row shows membership checkmarks
-                 */
-                'grid auto-cols-fr grid-flow-col grid-rows-[auto_1fr]',
-                yearHeader ? 'row-span-2 grid-rows-[auto_1fr]' : 'grid-rows-1',
-                'items-center gap-1'
-              )}
-            >
-              {yearsToShow.map((year) => (
-                <React.Fragment key={`${item.id}-${year}`}>
-                  {yearHeader && (
-                    <span className={CLASS_DEFAULT.headerContainer}>
-                      {year}
-                    </span>
-                  )}
-                  <Membership fragment={item} year={year} />
-                </React.Fragment>
-              ))}
-            </div>
+            <MemberYear
+              item={item}
+              // Display year header when header row is not shown
+              showYearHeader={!showHeader}
+            />
           );
-        }
       }
     },
-    [showHeader, yearsToShow]
+    [showHeader]
+  );
+
+  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
+    (item) => {
+      if (onItemPress) {
+        return {
+          isPressable: true,
+          onPress: () => onItemPress(item),
+        };
+      }
+    },
+    [onItemPress]
   );
 
   return (
@@ -127,24 +117,29 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
       aria-label="Property Table"
       isHeaderSticky
       config={{
-        gridContainer: cn(
-          'grid-cols-[repeat(3,1fr)_max-content]',
-          'sm:grid-cols-[repeat(6,1fr)_max-content]',
-          className
-        ),
+        gridContainer: cn('grid-cols-[repeat(6,1fr)_max-content]', className),
         headerContainer: cn('mx-0.5 px-3 py-2'),
-        bodyContainer: cn('mx-0.5 p-3 hover:bg-primary-50'),
-        bodyGrid: cn('gap-1'),
+        bodyContainer: cn(
+          'mx-0.5 p-3',
+          // Hover styling if item is pressable
+          onItemPress && 'hover:bg-primary-50'
+        ),
+        bodyGrid: cn('gap-1 overflow-hidden'),
       }}
       columnKeys={COLUMN_KEYS}
       columnConfig={{
-        address: 'col-span-3 sm:col-span-2',
-        member: 'col-span-3 sm:col-span-4',
-        // Always last column
-        memberYear: 'row-start-1 -col-start-1',
+        address: cn('col-span-6 sm:col-span-2'),
+        member: cn('col-span-6 sm:col-span-4'),
+        memberYear: cn(
+          // Always last column
+          '-col-start-1 row-start-1',
+          // when collapsed, column spans both rows
+          'row-span-2 sm:row-span-1'
+        ),
       }}
       {...(!!showHeader && { renderHeader })}
       renderItem={renderItem}
+      itemCardProps={itemCardProps}
       {...props}
     />
   );

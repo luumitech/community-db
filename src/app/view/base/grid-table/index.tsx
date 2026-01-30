@@ -35,7 +35,7 @@ export interface GridTableProps<
   /** Render an item given a column and a row item */
   renderItem: ItemRenderer<K[number], ItemT>;
   /** Pass additional props to Card component for each item */
-  itemCardProps?: (item: ItemT) => CardProps;
+  itemCardProps?: (item: ItemT) => CardProps | null | undefined;
   /** Items are still loading */
   isLoading?: boolean;
   /** Render a custom component when the table is empty */

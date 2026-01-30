@@ -1,6 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
-import { usePrevious } from '@uidotdev/usehooks';
 import React from 'react';
+import { usePreviousDistinct } from 'react-use';
 import * as R from 'remeda';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
@@ -27,7 +27,7 @@ export const Editor: React.FC<Props> = ({
   const { formState } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove } = occupantListMethods;
-  const prevFieldsLength = usePrevious(fields.length);
+  const prevFieldsLength = usePreviousDistinct(fields.length);
 
   /** Find the tab that has the email specified in `defaultTab` */
   const defaultTabId = React.useMemo(() => {

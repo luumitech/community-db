@@ -1,4 +1,4 @@
-import { cn, Input, InputProps, ScrollShadow } from '@heroui/react';
+import { cn, Input, InputProps } from '@heroui/react';
 import React from 'react';
 import { FilterChip } from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
@@ -63,13 +63,11 @@ export const PropertySearchBar: React.FC<Props> = ({
               onClick={() => setSearchText(undefined)}
             />
             <FilterButton openDrawer={openDrawer} />
-            <ScrollShadow orientation="horizontal" hideScrollBar>
-              <FilterChip
-                openDrawer={openDrawer}
-                filters={searchBar.filter}
-                onFilterChange={onFilterChange}
-              />
-            </ScrollShadow>
+            <FilterChip
+              openDrawer={openDrawer}
+              filters={searchBar.filter}
+              onFilterChange={onFilterChange}
+            />
           </div>
         }
         // endContent={

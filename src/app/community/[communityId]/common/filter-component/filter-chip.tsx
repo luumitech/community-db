@@ -7,6 +7,7 @@ import {
   YearChip,
 } from '~/community/[communityId]/common/chip';
 import { initialState, type FilterT } from '~/lib/reducers/search-bar';
+import { Truncate } from '~/view/base/truncate';
 
 type FilterChangeFn = (input: FilterT) => Promise<void>;
 
@@ -65,7 +66,7 @@ export const FilterChip: React.FC<Props> = ({
   );
 
   return (
-    <div
+    <Truncate
       className={twMerge(
         'hidden items-center gap-2 sm:flex',
         'cursor-pointer',
@@ -123,6 +124,6 @@ export const FilterChip: React.FC<Props> = ({
           }
         />
       )}
-    </div>
+    </Truncate>
   );
 };

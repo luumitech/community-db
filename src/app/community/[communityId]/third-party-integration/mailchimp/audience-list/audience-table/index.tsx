@@ -71,18 +71,10 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
     switch (key) {
       case 'email':
         // Make sure text is contained in one line
-        return (
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-            {item.email}
-          </span>
-        );
+        return <span className="truncate">{item.email}</span>;
       case 'fullName':
         // Make sure text is contained in one line
-        return (
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-            {item.fullName}
-          </span>
-        );
+        return <span className="truncate">{item.fullName}</span>;
       case 'status':
         return <MailchimpStatusChip status={item.status} />;
       case 'optOut':
@@ -107,7 +99,6 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
           shadow: 'none',
         };
       }
-      return {};
     },
     [cardHasShadow]
   );
@@ -133,7 +124,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       config={{
         gridContainer: twMerge('grid-cols-[repeat(6,auto)]', className),
         headerSticky: cn('sticky top-0 z-50 bg-background'),
-        headerContainer: cn('mx-0.5 px-3 py-2 whitespace-nowrap'),
+        headerContainer: cn('mx-0.5 truncate px-3 py-2'),
         headerGrid: cn('gap-2'),
         bodyContainer: cn(
           'mx-0.5 px-3',

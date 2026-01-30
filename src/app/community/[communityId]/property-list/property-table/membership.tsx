@@ -28,7 +28,11 @@ export const Membership: React.FC<Props> = ({ fragment, year }) => {
   }
 
   return (
-    <span className="m-auto text-xl text-success">
+    <span
+      className="m-auto text-xl text-success"
+      // Used for playwright to identify if property row has membership in a given year
+      data-testid={`member-${year}`}
+    >
       <Icon icon="checkmark" />
     </span>
   );

@@ -43,7 +43,7 @@ export const YearSelect: React.FC<Props> = ({
 
   return (
     <Select
-      className={cn(className, 'max-w-[180px]')}
+      className={cn(className, 'min-w-[160px]')}
       label="View Detail For Year"
       items={yearItems}
       {...props}
