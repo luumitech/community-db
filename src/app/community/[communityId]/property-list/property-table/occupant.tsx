@@ -58,6 +58,7 @@ export const Occupant: React.FC<Props> = ({
     <Truncate
       className={twMerge('flex items-center gap-2', className)}
       renderEllipsis={renderEllipsis}
+      data-testid="member-names"
       role="list"
     >
       {nameList.map((name, idx) => (

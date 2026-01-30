@@ -22,8 +22,8 @@ interface Props {
 
 export function AppProvider({ env, ...props }: Props) {
   const confirmValues = useConfirmationModalContext();
-  const isSmDevice = useMedia('(max-width: 640px)');
-  const isMdDevice = useMedia('(max-width: 768px)');
+  const isSmDevice = useMedia('(max-width: 640px)', true);
+  const isMdDevice = useMedia('(max-width: 768px)', true);
 
   return (
     <Context.Provider

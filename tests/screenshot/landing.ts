@@ -24,6 +24,12 @@ const test = base.extend<ScreenshotOptions>({
 });
 
 /**
+ * Fake clock to a specific year to match the year that the seeded data is
+ * created
+ */
+const CURRENT_YEAR = 2025;
+
+/**
  * Save screenshots in a dedicated folder within the app directory
  *
  * - This is used for display screenshots in the landing page
@@ -33,6 +39,9 @@ async function takeScreenshot(
   theme: 'light' | 'dark',
   name: ScreenshotId
 ) {
+  // This is needed to take accurate screenshots
+  // eslint-disable-next-line playwright/no-wait-for-timeout
+  await page.waitForTimeout(2000);
   await page.screenshot({
     animations: 'disabled',
     path: path.join(
@@ -64,13 +73,25 @@ test.describe.serial('Take @screenshot for landing screen', () => {
     // await mongodbSeedRandom(10);
 
     page = await browser.newPage();
+    // Override Date, so test will run predictabilly
+    await page.clock.install({ time: new Date(`${CURRENT_YEAR}-05-07`) });
+
     // Set appropriate viewport size for taking screenshots
     await page.setViewportSize({ width: 1000, height: 700 });
+
+    // Disable the nextjs development error overlay
+    await page.addStyleTag({
+      content: `
+      nextjs-portal {
+        display: none !important;
+      }
+    `,
+    });
 
     await page.goto('/');
     await page.evaluate(
       ([_theme]) => {
-        // Set theme to light theme
+        // Set theme color
         localStorage.setItem('theme', _theme);
         localStorage.setItem('cd-import-first-time', 'false');
       },
@@ -90,23 +111,25 @@ test.describe.serial('Take @screenshot for landing screen', () => {
     const membersInCurYear = rows
       // Members name is non empty
       .filter({
-        has: page.getByRole('listitem'),
+        has: page.getByTestId('member-names').getByRole('listitem'),
       })
       // Current membership year has checkmark
       .filter({
-        has: page.locator('svg'),
+        has: page.getByTestId(`member-${CURRENT_YEAR}`),
       })
       .first();
     await waitUntilStable(membersInCurYear);
     await membersInCurYear.click();
 
-    await expect(page.getByText('Membership Status')).not.toBeEmpty();
+    await expect(page).toHaveURL(/view$/);
+    await expect(page.getByText('Membership Status')).toBeVisible();
     await takeScreenshot(page, theme, 'property-detail');
   });
 
   test('Membership Editor', async ({ theme }) => {
     await headerMoreMenu(page, /Edit Membership Detail/);
     await waitForDialog(page, /Edit Membership Detail/);
+    await expect(page).toHaveURL(/membership-editor$/);
     await takeScreenshot(page, theme, 'membership-editor');
     await clickButton(page, 'Cancel');
   });
@@ -114,6 +137,7 @@ test.describe.serial('Take @screenshot for landing screen', () => {
   test('Occupant Editor', async ({ theme }) => {
     await headerMoreMenu(page, /Edit Contact Information/);
     await waitForDialog(page, /Edit Contact Information/);
+    await expect(page).toHaveURL(/occupant-editor$/);
     await takeScreenshot(page, theme, 'occupant-editor');
     await clickButton(page, 'Cancel');
   });
@@ -151,6 +175,9 @@ test.describe.serial('Take @screenshot for landing screen', () => {
 
   test('Import with map', async ({ theme }) => {
     await headerMoreMenu(page, /Import Community/);
+
+    // Leaflet map cannot render with overriden clock functions
+    await page.clock.resume();
 
     // Change import method
     await select(page, 'Import Method', 'Draw map boundary');

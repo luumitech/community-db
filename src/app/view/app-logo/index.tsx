@@ -29,6 +29,7 @@ export const AppLogo: React.FC<Props> = ({
         }),
         className
       )}
+      priority
       src="/image/community-db-logo.png"
       alt="LummiTech Logo"
       width={size ?? 36}
