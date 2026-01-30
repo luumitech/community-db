@@ -155,7 +155,7 @@ test.describe.serial('Take @screenshot for landing screen', () => {
     }
 
     // Scroll down and take screenshot
-    await page.evaluate(() => window.scrollBy(0, 370));
+    await page.evaluate(() => window.scrollBy(0, 570));
     await takeScreenshot(page, theme, 'dashboard');
   });
 
