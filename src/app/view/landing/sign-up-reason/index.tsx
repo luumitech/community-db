@@ -36,7 +36,7 @@ export const SignUpReason: React.FC<Props> = ({ className }) => {
         </p>
         <ol className="text-left text-base sm:text-lg md:text-xl">
           <ListItem>Absolutely free to start</ListItem>
-          <ListItem>Sign up with email or Google account</ListItem>
+          <ListItem>Sign up with email or social account</ListItem>
           <ListItem>Add addresses easily using map view</ListItem>
           <ListItem>Visualize membership in dashboard</ListItem>
           <ListItem>Keep track of event ticket sales</ListItem>

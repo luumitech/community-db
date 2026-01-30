@@ -134,7 +134,7 @@ export const Truncate: React.FC<TruncateProps> = ({
       {/** For measuring the size of the ellipsis component */}
       <span
         ref={ellipsisMeasureRef}
-        className="pointer-events-none invisible absolute"
+        className="pointer-events-none invisible absolute start-0"
       >
         {renderEllipsis?.([], []) ?? <Ellipsis />}
       </span>

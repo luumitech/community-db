@@ -12,6 +12,8 @@ export const makeStore = () => {
       mw = mw.prepend(listenerMiddleware.middleware);
       return mw;
     },
+    // Redux DevTools browser extension
+    devTools: true,
   });
 };
 
