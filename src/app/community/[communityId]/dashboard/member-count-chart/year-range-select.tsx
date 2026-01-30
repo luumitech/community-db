@@ -19,7 +19,7 @@ interface Props extends Omit<SelectProps<YearRangeSelectItem>, 'children'> {
 export const YearRangeSelect: React.FC<Props> = ({ className, ...props }) => {
   return (
     <Select
-      className={cn(className, 'max-w-[150px]')}
+      className={cn(className, 'min-w-[130px]')}
       label="Years To Show"
       items={yearRangeSelectionList}
       disallowEmptySelection

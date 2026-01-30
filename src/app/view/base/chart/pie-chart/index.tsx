@@ -17,8 +17,10 @@ const LEGEND_ITEM_HEIGHT = 18;
 const LEGEND_ITEM_PER_ROW = 3;
 const LEGEND_ITEM_GAP_Y = 5;
 
-export interface PieChartProps<T extends DataT>
-  extends Omit<PieSvgProps<T>, 'width' | 'height'> {
+export interface PieChartProps<T extends DataT> extends Omit<
+  PieSvgProps<T>,
+  'width' | 'height'
+> {
   className?: string;
 }
 
@@ -65,6 +67,9 @@ export function PieChart<T extends DataT>({
         ],
       };
 
+      const truncate = (text: string, max = 10) =>
+        text.length > max ? text.slice(0, max) + '…' : text;
+
       const dataChunk = R.chunk(dataList, chunkSize);
       return dataChunk.map((chunk, chunkIdx) => {
         return {
@@ -72,7 +77,7 @@ export function PieChart<T extends DataT>({
           translateY: 50 + chunkIdx * (LEGEND_ITEM_HEIGHT + LEGEND_ITEM_GAP_Y),
           data: (chunk as T[]).map((dataEntry, dataIdx) => ({
             ...dataEntry,
-            label: dataEntry.label ?? '',
+            label: truncate(dataEntry.label?.toString() ?? ''),
             color: getItemColor(chunkIdx * chunkSize + dataIdx),
           })),
         };
