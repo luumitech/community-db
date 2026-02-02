@@ -144,7 +144,9 @@ Emails are sent through `nodemailer`, and the content is defined in `src/email/*
 To run the email viewer locally:
 
 ```sh
-yarn email-dev
+# Note: the email content may load assets from the development server, so you may
+# need to run the development server as well
+yarn dev:email
 ```
 
 ### Prerequiste for deploying to Microsoft Azure
