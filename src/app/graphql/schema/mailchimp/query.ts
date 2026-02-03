@@ -38,8 +38,6 @@ builder.queryField('mailchimpAudienceList', (t) =>
         name: entry.name,
       }));
       return result;
-
-      // return [{ name: 'LuumiTech Consulting Inc.', listId: '9e1f03ec3e' }];
     },
   })
 );
