@@ -31,6 +31,10 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
       description:
         'If true, properties with GPS.  If false, properties without GPS',
     }),
+    emailList: t.field({
+      description: 'Only properties with occupants with given email',
+      type: ['String'],
+    }),
   }),
 });
 

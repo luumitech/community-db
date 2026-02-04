@@ -19,8 +19,8 @@ import { Warning } from './warning';
  * - Make all field required, so it's easier to define callback functions
  */
 const COLUMN_KEYS = [
-  'email',
-  'fullName',
+  'email_address',
+  'full_name',
   'status',
   'optOut',
   'warning',
@@ -52,9 +52,9 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
 
   const renderHeader: GTProps['renderHeader'] = React.useCallback((key) => {
     switch (key) {
-      case 'email':
+      case 'email_address':
         return 'Email';
-      case 'fullName':
+      case 'full_name':
         return 'Name';
       case 'status':
         return 'Subscriber Status';
@@ -69,12 +69,12 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
 
   const renderItem: GTProps['renderItem'] = React.useCallback((key, item) => {
     switch (key) {
-      case 'email':
+      case 'email_address':
         // Make sure text is contained in one line
-        return <span className="truncate">{item.email}</span>;
-      case 'fullName':
+        return <span className="truncate">{item.email_address}</span>;
+      case 'full_name':
         // Make sure text is contained in one line
-        return <span className="truncate">{item.fullName}</span>;
+        return <span className="truncate">{item.full_name}</span>;
       case 'status':
         return <MailchimpStatusChip status={item.status} />;
       case 'optOut':
@@ -135,7 +135,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       }}
       columnKeys={COLUMN_KEYS}
       columnConfig={{
-        email: cn(
+        email_address: cn(
           /**
            * Bold email, so it serves as a visual divider when a grid row
            * collapses into multiple rows
@@ -143,7 +143,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
           cardHasShadow && 'font-semibold md:font-normal',
           'col-span-full sm:col-span-3 md:col-span-1'
         ),
-        fullName: cn('col-span-full sm:col-span-3 md:col-span-1'),
+        full_name: cn('col-span-full sm:col-span-3 md:col-span-1'),
         status: cn('col-span-2', 'md:col-span-1'),
         optOut: cn(
           'col-span-2 sm:col-span-1 md:col-span-1',
@@ -161,7 +161,13 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
           'md:flex md:justify-center'
         ),
       }}
-      sortableColumnKeys={['email', 'fullName', 'status', 'optOut', 'warning']}
+      sortableColumnKeys={[
+        'email_address',
+        'full_name',
+        'status',
+        'optOut',
+        'warning',
+      ]}
       renderHeader={renderHeader}
       renderItem={renderItem}
       itemCardProps={itemCardProps}

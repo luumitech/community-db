@@ -24,7 +24,7 @@ interface AudienceEntry {
   marketing_permissions: boolean;
 }
 
-interface MemberEntry {
+export interface MemberEntry {
   id: string;
   email_address: string;
   unique_email_id: string;
@@ -32,6 +32,11 @@ interface MemberEntry {
   full_name: string;
   web_id: number;
   status: MailchimpSubscriberStatus;
+}
+
+interface UpdateMember {
+  email_address?: string;
+  status?: MailchimpSubscriberStatus;
 }
 
 export class Audience {
@@ -46,11 +51,7 @@ export class Audience {
    * @returns
    */
   async lists(keys: (keyof AudienceEntry)[]) {
-    return this.res.getAll<AudienceEntry, (typeof keys)[number]>(
-      'lists',
-      'lists',
-      keys
-    );
+    return this.res.getAll<AudienceEntry>('lists', 'lists', keys);
   }
 
   /**
@@ -59,14 +60,37 @@ export class Audience {
    * See:
    * https://mailchimp.com/developer/marketing/api/list-members/list-members-info/
    *
+   * @param listId Audience List ID
    * @param keys List of properties from 'members' array to retrieve
    * @returns
    */
   async memberLists(listId: string, keys: (keyof MemberEntry)[]) {
-    return this.res.getAll<MemberEntry, (typeof keys)[number]>(
+    return this.res.getAll<MemberEntry>(
       `lists/${listId}/members`,
       'members',
       keys
     );
+  }
+
+  /**
+   * Update member in a specific Mailchimp list.
+   *
+   * See:
+   * https://mailchimp.com/developer/marketing/api/list-members/update-list-member/
+   *
+   * @param listId Audience List ID
+   * @param memberId Contact ID (subscriber_hash)
+   * @returns
+   */
+  async updateListMember(
+    listId: string,
+    memberId: string,
+    update: UpdateMember
+  ): Promise<MemberEntry> {
+    const resp = await this.res.call(`lists/${listId}/members/${memberId}`, {
+      method: 'PATCH',
+      bodyJson: update,
+    });
+    return resp;
   }
 }

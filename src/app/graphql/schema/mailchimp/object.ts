@@ -1,49 +1,23 @@
-import type { Property } from '@prisma/client';
 import { builder } from '~/graphql/builder';
-import { type MailchimpSubscriberStatus } from '~/lib/mailchimp/resource/_type';
-import { propertyRef } from '../property/object';
+import { MailchimpSubscriberStatusValues } from '~/lib/mailchimp/resource/_type';
+import type { MemberEntry } from '~/lib/mailchimp/resource/audience';
 
-const mailchimpSubscriberStatusRef = builder.enumType(
+export const mailchimpSubscriberStatusRef = builder.enumType(
   'MailchimpSubscriberStatus',
-  {
-    values: [
-      'subscribed',
-      'unsubscribed',
-      'cleaned',
-      'pending',
-      'transactional',
-      'archive',
-    ] as const,
-  }
+  { values: Object.values(MailchimpSubscriberStatusValues) }
 );
 
-interface MailchimpMember {
-  email: string;
-  fullName: string | null;
-  status: MailchimpSubscriberStatus;
-  /**
-   * Email exists in community database, and this is the property containing the
-   * email
-   */
-  property: Property | null;
-}
-
 export const mailchimpMemberRef = builder
-  .objectRef<MailchimpMember>('MailchimpMember')
+  .objectRef<MemberEntry>('MailchimpMember')
   .implement({
     fields: (t) => ({
-      email: t.exposeString('email'),
-      fullName: t.exposeString('fullName', { nullable: true }),
+      id: t.exposeString('id'),
+      email_address: t.exposeString('email_address'),
+      full_name: t.exposeString('full_name', { nullable: true }),
       status: t.field({
         description: 'Mailchimp subscriber status',
         type: mailchimpSubscriberStatusRef,
         resolve: (entry) => entry.status,
-      }),
-      property: t.field({
-        description: 'Property containing member with the same email',
-        type: propertyRef,
-        nullable: true,
-        resolve: (entry) => entry.property,
       }),
     }),
   });

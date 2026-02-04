@@ -157,6 +157,7 @@ function propertyListFilterArgs(
     nonMemberYearList,
     memberEventList,
     withGps,
+    emailList,
   } = args ?? {};
 
   const trimSearchText = searchText?.trim();
@@ -289,6 +290,22 @@ function propertyListFilterArgs(
         ],
       });
     }
+  }
+
+  // Filter only entries with email matching one of the specified emailList
+  if (emailList && emailList.length > 0) {
+    AND.push({
+      occupantList: {
+        some: {
+          infoList: {
+            some: {
+              type: 'EMAIL',
+              value: { in: emailList, mode: 'insensitive' },
+            },
+          },
+        },
+      },
+    });
   }
 
   // Only include AND if it contains instruction

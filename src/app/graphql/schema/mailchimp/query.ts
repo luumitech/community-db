@@ -1,9 +1,6 @@
-import { ContactInfoType, type Property } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import prisma from '~/lib/prisma';
-import { getCommunityEntry } from '../community/util';
-import { propertyListFindManyArgs } from '../property/util';
 import { mailchimpAudienceRef, mailchimpMemberRef } from './object';
 import { getMailchimpApi } from './util';
 
@@ -63,42 +60,14 @@ builder.queryField('mailchimpMemberList', (t) =>
       const { communityId: shortId, listId } = args.input;
 
       const api = await getMailchimpApi(user, shortId);
+
       const memberList = await api.audience.memberLists(listId, [
+        'id',
         'email_address',
         'full_name',
         'status',
       ]);
-
-      const result = memberList.map((entry) => ({
-        email: entry.email_address,
-        fullName: entry.full_name,
-        status: entry.status,
-      }));
-
-      const community = await getCommunityEntry(user, shortId);
-      const findManyArgs = await propertyListFindManyArgs(community.id, null);
-      const propertyList = await prisma.property.findMany({
-        ...findManyArgs,
-      });
-
-      const occupantMap = new Map<string, [Property, number]>();
-      propertyList.forEach((entry) => {
-        entry.occupantList.forEach((occupant, occupantIdx) => {
-          occupant.infoList?.forEach((info) => {
-            if (info.type === ContactInfoType.EMAIL) {
-              occupantMap.set(info.value, [entry, occupantIdx]);
-            }
-          });
-        });
-      });
-
-      return result.map((item) => {
-        const occupant = occupantMap.get(item.email);
-        return {
-          ...item,
-          property: occupant != null ? occupant[0] : null,
-        };
-      });
+      return memberList;
     },
   })
 );
