@@ -57,7 +57,7 @@ export default function PropertyFromIdLayout(props: LayoutProps) {
   return (
     <LayoutProvider community={community} property={property}>
       {children}
-      {modal}
+      <React.Fragment key="modal">{modal}</React.Fragment>
     </LayoutProvider>
   );
 }

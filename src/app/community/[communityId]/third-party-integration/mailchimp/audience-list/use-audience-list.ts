@@ -1,53 +1,16 @@
-import { useQuery } from '@apollo/client';
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
-import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { onError } from '~/graphql/on-error';
 import { type RootState } from '~/lib/reducers';
-import { type AudienceMember } from './_type';
+import { type AudienceListArg, type AudienceMember } from './_type';
 import { type SortDescriptor } from './audience-table';
+import { useRawAudienceList } from './use-raw-audience-list';
 
-const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
-  query thirdPartyIntegrationMailchimpMemberList(
-    $input: MailchimpMemberListInput!
-  ) {
-    mailchimpMemberList(input: $input) {
-      email
-      fullName
-      status
-      property {
-        id
-        address
-        occupantList {
-          optOut
-          infoList {
-            type
-            value
-          }
-        }
-      }
-    }
-  }
-`);
-
-interface UseAudienceListOpt {
-  communityId: string;
-  listId?: string;
-}
-
-export function useAudienceList(arg: UseAudienceListOpt) {
+export function useAudienceList(arg: AudienceListArg) {
   const dispatch = useDispatch();
   const mailchimp = useSelector((state) => state.mailchimp);
-  const result = useQuery(ThirdPartyIntegration_MailchimpMemberListQuery, {
-    variables: {
-      input: { communityId: arg.communityId, listId: arg.listId! },
-    },
-    skip: arg.listId == null,
-    // Required for refetch to update loading status
-    notifyOnNetworkStatusChange: true,
-    onError,
-  });
+  const { loading, refetch, mailchimpMemberList, emailMap } =
+    useRawAudienceList(arg);
 
   const doSort = React.useCallback(
     (desc: SortDescriptor | null) => {
@@ -57,17 +20,13 @@ export function useAudienceList(arg: UseAudienceListOpt) {
   );
 
   const rawAudienceList = React.useMemo<AudienceMember[]>(() => {
-    return (result.data?.mailchimpMemberList ?? []).map((entry, idx) => {
-      const occupant = entry.property?.occupantList?.find(({ infoList }) =>
-        infoList?.find((info) => {
-          if (info.type === GQL.ContactInfoType.Email) {
-            return !info.value.localeCompare(entry.email, undefined, {
-              sensitivity: 'accent',
-            });
-          }
-          return false;
-        })
-      );
+    if (mailchimpMemberList == null || emailMap == null) {
+      return [];
+    }
+    return mailchimpMemberList.map((entry, idx) => {
+      const [property, occupant] =
+        emailMap.get(entry.email_address.toLocaleLowerCase()) ?? [];
+
       let warning: string | undefined;
       if (occupant != null) {
         if (
@@ -96,13 +55,13 @@ export function useAudienceList(arg: UseAudienceListOpt) {
         }
       }
       return {
-        id: `${idx}`,
         ...entry,
+        property,
         occupant,
         warning,
       };
     });
-  }, [result]);
+  }, [mailchimpMemberList, emailMap]);
 
   /** Filter rawAudienceList based on filters and sort schemes */
   const audienceList = React.useMemo(() => {
@@ -110,9 +69,8 @@ export function useAudienceList(arg: UseAudienceListOpt) {
   }, [rawAudienceList, mailchimp]);
 
   return {
-    loading: result.loading,
-    /** Refetch the audience list from mailchimp */
-    refetch: result.refetch,
+    loading,
+    refetch,
     audienceList,
     doSort,
     sortDescriptor: mailchimp.sortDescriptor,
@@ -136,8 +94,8 @@ function sortAndFilterAudienceList(
     if (searchText) {
       const toMatch = searchText.toLowerCase();
       matchSearchText =
-        entry.email.toLowerCase().startsWith(toMatch) ||
-        !!entry.fullName?.toLowerCase().includes(toMatch);
+        !!entry.email_address.toLowerCase().startsWith(toMatch) ||
+        !!entry.full_name?.toLowerCase().includes(toMatch);
     }
 
     let matchOptOut = true;
@@ -173,8 +131,8 @@ function sortAndFilterAudienceList(
         break;
 
       case 'status':
-      case 'fullName':
-      case 'email':
+      case 'full_name':
+      case 'email_address':
         list.sort((a, b) => {
           const aVal = a[columnKey] ?? '';
           const bVal = b[columnKey] ?? '';

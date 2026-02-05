@@ -79,6 +79,7 @@ export const AudienceList: React.FC<Props> = () => {
       {topContent}
       <div className="mt-2 h-full overflow-x-hidden overflow-y-auto">
         <AudienceTable
+          audienceListId={audienceListId}
           items={audienceList}
           isLoading={loading}
           emptyContent={emptyContent}

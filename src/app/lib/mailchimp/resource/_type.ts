@@ -22,10 +22,13 @@ export interface MailchimpCredential {
  * - Archived: These are contacts that have been moved to a separate archived
  *   contacts table, effectively removing them from the main list.
  */
+export const MailchimpSubscriberStatusValues = {
+  Subscribed: 'subscribed',
+  Unsubscribed: 'unsubscribed',
+  Cleaned: 'cleaned',
+  Pending: 'pending',
+  Transactional: 'transactional',
+  Archive: 'archive',
+} as const;
 export type MailchimpSubscriberStatus =
-  | 'subscribed'
-  | 'unsubscribed'
-  | 'cleaned'
-  | 'pending'
-  | 'transactional'
-  | 'archive';
+  (typeof MailchimpSubscriberStatusValues)[keyof typeof MailchimpSubscriberStatusValues];

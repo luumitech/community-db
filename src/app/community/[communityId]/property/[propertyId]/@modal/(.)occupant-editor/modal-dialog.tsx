@@ -13,6 +13,7 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { Editor } from './editor';
+import { MailchimpNotice } from './mailchimp-notice';
 import { InputData, occupantDefault, useHookForm } from './use-hook-form';
 
 interface Props {
@@ -64,7 +65,10 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('occupantEditor')}</ModalHeader>
+                <ModalHeader className="flex flex-col">
+                  {appLabel('occupantEditor')}
+                  <MailchimpNotice />
+                </ModalHeader>
                 <ModalBody>
                   <Editor
                     occupantListMethods={occupantListMethods}

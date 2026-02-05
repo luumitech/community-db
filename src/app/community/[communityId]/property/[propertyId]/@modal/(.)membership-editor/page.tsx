@@ -1,7 +1,10 @@
 'use client';
 import { useMutation } from '@apollo/client';
 import React from 'react';
-import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
+import {
+  evictCache,
+  evictPropertyListCache,
+} from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { toast } from '~/view/base/toastify';
 import { ModalDialog } from './modal-dialog';
@@ -39,6 +42,7 @@ interface RouteArgs {
 
 export default function MembershipEditor(props: RouteArgs) {
   const searchParams = React.use(props.searchParams);
+  const { communityId } = React.use(props.params);
   const [updateProperty] = useMutation(PropertyMutation);
 
   const onSave = async (_input: InputData) => {
@@ -47,10 +51,8 @@ export default function MembershipEditor(props: RouteArgs) {
       updateProperty({
         variables: { input },
         update: (cache, result) => {
-          const communityId = result.data?.propertyModify.community.id;
-          if (communityId) {
-            evictCache(cache, 'CommunityStat', communityId);
-          }
+          evictCache(cache, 'CommunityStat', communityId);
+          evictPropertyListCache(cache, communityId);
         },
       }),
       {

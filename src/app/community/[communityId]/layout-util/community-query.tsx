@@ -41,6 +41,9 @@ const CommunityLayoutQuery = graphql(/* GraphQL */ `
       geoapifySetting {
         apiKey
       }
+      mailchimpSetting {
+        apiKey
+      }
       ...CommunityId_CommunityModifyModal
       ...CommunityId_BatchPropertyModifyModal
       ...CommunityId_PropertyCreateModal

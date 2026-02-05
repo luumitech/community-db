@@ -11,3 +11,25 @@ export function evictCache(
     cache.gc();
   }
 }
+
+/**
+ * Helper utility for evicting the propertyList cache whenever a change is made
+ * to any of the property details that could potentially affect the search
+ * results in propertyList
+ */
+export function evictPropertyListCache(
+  cache: ApolloCache<object>,
+  communityId: string
+) {
+  cache.modify({
+    id: cache.identify({
+      __typename: 'Community',
+      id: communityId,
+    }),
+    fields: {
+      propertyList(existing, { DELETE }) {
+        return DELETE;
+      },
+    },
+  });
+}

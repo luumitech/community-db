@@ -154,8 +154,8 @@ export const PropertyAutocomplete: React.FC<Props> = ({
   return (
     <Autocomplete
       className={className}
-      aria-label="Search Address or Member Name"
-      placeholder="Search Address or Member Name"
+      aria-label="Search Address, Member Name or Email"
+      placeholder="Search Address, Member Name or Email"
       startContent={<Icon className="shrink-0" icon="search" />}
       items={properties}
       isLoading={loading}

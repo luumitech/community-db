@@ -76,6 +76,16 @@ export default function RegisterEvent(props: RouteArgs) {
             variables: { input },
             update: (cache, { data }) => {
               evictCache(cache, 'CommunityStat', communityId);
+              /**
+               * TODO: This mutation only affects search results when filters
+               * (e.g. member / non-member years) are applied. When the search
+               * is unfiltered, invalidating propertyList is unnecessary since
+               * addresses and occupants do not change.
+               *
+               * Apollo currently does not support evicting cache entries
+               * conditionally based on field arguments.
+               */
+              // evictPropertyListCache(cache, communityId);
             },
           });
           return { result };
