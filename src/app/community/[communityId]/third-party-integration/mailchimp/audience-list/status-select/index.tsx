@@ -48,10 +48,7 @@ export const subscriberStatusItems: SubscriberStatusItem[] = [
   },
 ];
 
-type CustomProps = Omit<
-  SelectProps<SubscriberStatusItem>,
-  'controlName' | 'children'
->;
+type CustomProps = Omit<SelectProps<SubscriberStatusItem>, 'children'>;
 
 interface Props extends CustomProps {
   className?: string;
@@ -77,15 +74,8 @@ export const StatusSelect: React.FC<Props> = ({ className, ...props }) => {
   return (
     <Select
       className={cn(className)}
-      controlName="subscriberStatusList"
       items={subscriberStatusItems}
-      label="Mailchimp Subscriber Status"
-      placeholder="Unspecified"
-      selectionMode="multiple"
-      isClearable
       renderValue={renderValue}
-      isMultiline
-      description="Show only entries matching the selected status"
       {...props}
     >
       {(item) => (

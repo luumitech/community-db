@@ -1,7 +1,7 @@
 import { Chip, ChipProps, Tooltip } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { subscriberStatusItems } from '../../third-party-integration/mailchimp/audience-list/search-bar/filter-drawer/status-select';
+import { subscriberStatusItems } from '../../third-party-integration/mailchimp/audience-list/status-select';
 
 interface Props extends ChipProps {
   status: GQL.MailchimpSubscriberStatus;

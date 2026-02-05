@@ -42,10 +42,12 @@ type CustomGridTableProps = Omit<
 
 export interface AudienceTableProps extends CustomGridTableProps {
   className?: string;
+  audienceListId?: string;
 }
 
 export const AudienceTable: React.FC<AudienceTableProps> = ({
   className,
+  audienceListId,
   ...props
 }) => {
   const { isSmDevice, isMdDevice } = useAppContext();
@@ -67,24 +69,27 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
     }
   }, []);
 
-  const renderItem: GTProps['renderItem'] = React.useCallback((key, item) => {
-    switch (key) {
-      case 'email_address':
-        // Make sure text is contained in one line
-        return <span className="truncate">{item.email_address}</span>;
-      case 'full_name':
-        // Make sure text is contained in one line
-        return <span className="truncate">{item.full_name}</span>;
-      case 'status':
-        return <MailchimpStatusChip status={item.status} />;
-      case 'optOut':
-        return <OptOut item={item} />;
-      case 'warning':
-        return <Warning item={item} />;
-      case 'actions':
-        return <Actions item={item} />;
-    }
-  }, []);
+  const renderItem: GTProps['renderItem'] = React.useCallback(
+    (key, item) => {
+      switch (key) {
+        case 'email_address':
+          // Make sure text is contained in one line
+          return <span className="truncate">{item.email_address}</span>;
+        case 'full_name':
+          // Make sure text is contained in one line
+          return <span className="truncate">{item.full_name}</span>;
+        case 'status':
+          return <MailchimpStatusChip status={item.status} />;
+        case 'optOut':
+          return <OptOut item={item} />;
+        case 'warning':
+          return <Warning item={item} />;
+        case 'actions':
+          return <Actions audienceListId={audienceListId} item={item} />;
+      }
+    },
+    [audienceListId]
+  );
 
   /**
    * Render Card shadow only for smaller viewport (when a row is collapsed into
@@ -155,11 +160,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
           // center only on full width
           'md:flex md:justify-center'
         ),
-        actions: cn(
-          'col-span-full sm:col-span-1 md:col-span-1',
-          // center only on full width
-          'md:flex md:justify-center'
-        ),
+        actions: cn('col-span-full sm:col-span-1 md:col-span-1'),
       }}
       sortableColumnKeys={[
         'email_address',

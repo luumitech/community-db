@@ -32,6 +32,10 @@ export interface MemberEntry {
   full_name: string;
   web_id: number;
   status: MailchimpSubscriberStatus;
+  merge_fields: {
+    FNAME: string;
+    LNAME: string;
+  };
 }
 
 interface UpdateMember {

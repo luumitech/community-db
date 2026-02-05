@@ -81,7 +81,13 @@ async function toastPromise<
     promise,
     {
       pending,
-      error: error ?? customError,
+      ...(error === 'disabled'
+        ? /**
+           * User can pass 'disabled', to prevent error toast from showing when promise
+           * is rejected
+           */
+          {}
+        : { error: error ?? customError }),
       success,
     },
     options

@@ -63,13 +63,16 @@ export class Resource {
          *   "title": "API Key Invalid",
          *   "status": 401,
          *   "detail": "Your request did not include an API key.",
-         *   "instance": "e149eedd-4795-8309-cb71-e8f11789caf2"
+         *   "instance": "e149eedd-4795-8309-cb71-e8f11789caf2",
+         *   // Detail errors provided by mailchimp (optional)
+         *   "errors": [ ... ]
          * }
          * ```
          */
-        const { title, detail } = result;
+        const { title, detail, errors } = result;
         throw new GraphQLError(
-          `[Mailchimp ${resp.status}] ${title}: ${detail}`
+          `[Mailchimp] (${resp.status}) ${title}: ${detail}`,
+          { extensions: { errors } }
         );
     }
   }

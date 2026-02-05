@@ -13,6 +13,10 @@ const ThirdPartyIntegration_MailchimpMemberListQuery = graphql(/* GraphQL */ `
       id
       email_address
       full_name
+      merge_fields {
+        FNAME
+        LNAME
+      }
       status
     }
   }

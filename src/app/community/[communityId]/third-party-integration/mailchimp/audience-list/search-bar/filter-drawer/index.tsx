@@ -10,9 +10,9 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
+import { StatusSelect } from '../../status-select';
 import { useHookForm, type InputData } from '../use-hook-form';
 import { OptOutSelect } from './opt-out-select';
-import { StatusSelect } from './status-select';
 import { WarningSelect } from './warning-select';
 
 export interface DrawerArg {}
@@ -47,7 +47,15 @@ export const FilterDrawer: React.FC<Props> = ({
           <DrawerContent>
             <DrawerHeader>Filter Options</DrawerHeader>
             <DrawerBody className="flex flex-col gap-4">
-              <StatusSelect />
+              <StatusSelect
+                controlName="subscriberStatusList"
+                label="Mailchimp Subscriber Status"
+                placeholder="Unspecified"
+                selectionMode="multiple"
+                isClearable
+                isMultiline
+                description="Show only entries matching the selected status"
+              />
               <OptOutSelect />
               <WarningSelect />
             </DrawerBody>

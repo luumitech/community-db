@@ -7,6 +7,15 @@ export const mailchimpSubscriberStatusRef = builder.enumType(
   { values: Object.values(MailchimpSubscriberStatusValues) }
 );
 
+const mailchimpMergeFieldsRef = builder
+  .objectRef<MemberEntry['merge_fields']>('MailchimpMergeFields')
+  .implement({
+    fields: (t) => ({
+      FNAME: t.exposeString('FNAME'),
+      LNAME: t.exposeString('LNAME'),
+    }),
+  });
+
 export const mailchimpMemberRef = builder
   .objectRef<MemberEntry>('MailchimpMember')
   .implement({
@@ -14,6 +23,10 @@ export const mailchimpMemberRef = builder
       id: t.exposeString('id'),
       email_address: t.exposeString('email_address'),
       full_name: t.exposeString('full_name', { nullable: true }),
+      merge_fields: t.field({
+        type: mailchimpMergeFieldsRef,
+        resolve: (entry) => entry.merge_fields,
+      }),
       status: t.field({
         description: 'Mailchimp subscriber status',
         type: mailchimpSubscriberStatusRef,

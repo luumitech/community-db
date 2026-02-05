@@ -65,6 +65,7 @@ builder.queryField('mailchimpMemberList', (t) =>
         'id',
         'email_address',
         'full_name',
+        'merge_fields',
         'status',
       ]);
       return memberList;

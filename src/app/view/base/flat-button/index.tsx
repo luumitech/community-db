@@ -1,5 +1,6 @@
 import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 import { Icon, type IconProps } from '~/view/base/icon';
@@ -14,6 +15,11 @@ interface Props extends DivProps {
   /** Render a plain button with an icon. */
   icon?: IconProps['icon'];
   disabled?: boolean;
+  /**
+   * The link will be rendered as a block element with a hover effect, this is
+   * to mirror Link component
+   */
+  isBlock?: boolean;
   /** Tooltip description */
   tooltip?: string;
   /**
@@ -53,15 +59,28 @@ export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
     );
 
     const renderButton = React.useMemo(() => {
-      const { icon, disabled, children, ...other } = props;
+      const { icon, disabled, isBlock, children, ...other } = props;
 
       return (
         <div
           ref={ref}
           role="button"
-          className={cn(
-            className,
-            disabled ? 'cursor-default opacity-disabled' : 'hover:opacity-hover'
+          className={twMerge(
+            disabled
+              ? 'cursor-default opacity-disabled'
+              : 'cursor-pointer hover:opacity-hover',
+            isBlock &&
+              cn(
+                'px-2 py-1',
+                !disabled &&
+                  cn(
+                    'relative after:absolute',
+                    'after:inset-0 after:rounded-xl',
+                    'after:opacity-0 after:transition-background',
+                    'hover:after:bg-primary/20 hover:after:opacity-100'
+                  )
+              ),
+            className
           )}
           {...(!disabled && { onClick: customOnClick })}
           {...other}

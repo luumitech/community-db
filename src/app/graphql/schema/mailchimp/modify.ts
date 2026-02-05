@@ -21,12 +21,32 @@ export const MailchimpUpdateInput = builder.inputType('MailchimpUpdateInput', {
   }),
 });
 
+const MailchimpMergeFieldsInput = builder.inputType(
+  'MailchimpMergeFieldsInput',
+  {
+    fields: (t) => ({
+      FNAME: t.string({
+        description: 'first name',
+        required: true,
+      }),
+      LNAME: t.string({
+        description: 'last name',
+        required: true,
+      }),
+    }),
+  }
+);
+
 const MailchimpMemberModifyInput = builder.inputType(
   'MailchimpMemberModifyInput',
   {
     fields: (t) => ({
       self: t.field({ type: MailchimpUpdateInput, required: true }),
-      email: t.string({ required: true }),
+      email_address: t.string({ required: true }),
+      merge_fields: t.field({
+        type: MailchimpMergeFieldsInput,
+        required: true,
+      }),
       status: t.field({
         description: 'Mailchimp subscriber status',
         type: mailchimpSubscriberStatusRef,
