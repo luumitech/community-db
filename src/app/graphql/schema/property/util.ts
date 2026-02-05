@@ -164,6 +164,18 @@ function propertyListFilterArgs(
   if (trimSearchText) {
     const OR: Prisma.PropertyWhereInput[] = [
       { address: { mode: 'insensitive', contains: trimSearchText } },
+      {
+        occupantList: {
+          some: {
+            infoList: {
+              some: {
+                type: 'EMAIL',
+                value: { mode: 'insensitive', startsWith: trimSearchText },
+              },
+            },
+          },
+        },
+      },
     ];
 
     /**

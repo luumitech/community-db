@@ -1,11 +1,12 @@
-import { ApolloError, useMutation } from '@apollo/client';
+import { ApolloError, useMutation, type Reference } from '@apollo/client';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { ErrorDialog, toast } from '~/view/base/toastify';
 import { extractMailchimpError } from './mailchimp-error-handler';
 import { ModifyModal, type ModalArg } from './modify-modal';
-import { type InputData } from './use-hook-form';
+import { ModifyFragment, type InputData } from './use-hook-form';
 
 export { type ModalArg } from './modify-modal';
 export const useModalControl = useDisclosureWithArg<ModalArg>;
@@ -30,7 +31,37 @@ export const MemberModifyModal: React.FC<Props> = ({ modalControl }) => {
   const customModifyMember = React.useCallback(
     async (input: InputData) => {
       try {
-        const result = await modifyMember({ variables: { input } });
+        const result = await modifyMember({
+          variables: { input },
+          update: (cache, { data }) => {
+            const prevId = input.self.memberId;
+            const newId = data?.mailchimpMemberModify.id;
+
+            /**
+             * Modifying a mailchimp member can result in a new member being
+             * created, for example, if you try to change the email
+             */
+            if (data && prevId !== newId) {
+              cache.modify({
+                fields: {
+                  mailchimpMemberList(existing = [], { readField }) {
+                    const filtered = existing.filter(
+                      (ref: Reference) => readField('id', ref) !== prevId
+                    );
+                    const newRef = cache.writeFragment({
+                      fragment: ModifyFragment,
+                      data: data.mailchimpMemberModify,
+                    });
+
+                    return [...filtered, newRef];
+                  },
+                },
+              });
+
+              evictCache(cache, 'MailchimpMember', prevId);
+            }
+          },
+        });
         return result;
       } catch (err) {
         if (err instanceof ApolloError) {

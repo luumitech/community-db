@@ -1,6 +1,7 @@
 'use client';
 import { useMutation } from '@apollo/client';
 import React from 'react';
+import { evictPropertyListCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
@@ -42,14 +43,13 @@ export default function PropertyModify(props: RouteArgs) {
               ...input,
             },
           },
-          refetchQueries: [
-            // Updating property address may cause property to change order within
-            // the property list
-            {
-              query: GQL.CommunityFromIdDocument,
-              variables: { id: communityId },
-            },
-          ],
+          update: (cache) => {
+            /**
+             * Updating property address will likely change order within the
+             * property list
+             */
+            evictPropertyListCache(cache, communityId);
+          },
         }),
         {
           pending: 'Saving...',

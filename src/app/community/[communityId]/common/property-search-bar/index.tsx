@@ -41,7 +41,7 @@ export const PropertySearchBar: React.FC<Props> = ({
   return (
     <>
       <Input
-        placeholder="Search Address or Member Name"
+        placeholder="Search Address, Member Name or Email"
         startContent={<Icon className="shrink-0" icon="search" />}
         // isClearable
         // onClear={() => setSearchText(undefined)}

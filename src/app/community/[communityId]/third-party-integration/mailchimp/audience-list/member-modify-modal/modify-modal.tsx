@@ -2,6 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { appTitle } from '~/lib/env';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import {
@@ -82,7 +83,14 @@ export const ModifyModal: React.FC<Props> = ({
           <ModalContent>
             {(closeModal) => (
               <>
-                <ModalHeader>Modify Mailchimp Contact</ModalHeader>
+                <ModalHeader className="flex flex-col">
+                  Modify Mailchimp Contact
+                  <div className="text-xs font-normal text-default-400">
+                    This changes information in Mailchimp only. To update
+                    contact information in the {appTitle}, please locate the
+                    occupant’s property and update the contact details there.
+                  </div>
+                </ModalHeader>
                 <ModalBody>
                   <EmailEditor />
                   <FullNameEditor />
