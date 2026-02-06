@@ -1,5 +1,6 @@
 import { cn, type SelectedItems } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import { MailchimpStatusChip } from '~/community/[communityId]/common/chip';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem, type SelectProps } from '~/view/base/select';
@@ -52,9 +53,15 @@ type CustomProps = Omit<SelectProps<SubscriberStatusItem>, 'children'>;
 
 interface Props extends CustomProps {
   className?: string;
+  /** List of items to exclude from the selection list */
+  excludeItems?: GQL.MailchimpSubscriberStatus[];
 }
 
-export const StatusSelect: React.FC<Props> = ({ className, ...props }) => {
+export const StatusSelect: React.FC<Props> = ({
+  className,
+  excludeItems,
+  ...props
+}) => {
   const renderValue = React.useCallback(
     (items: SelectedItems<SubscriberStatusItem>) => {
       return (
@@ -71,10 +78,18 @@ export const StatusSelect: React.FC<Props> = ({ className, ...props }) => {
     []
   );
 
+  const items = React.useMemo(() => {
+    return R.differenceWith(
+      subscriberStatusItems,
+      excludeItems ?? [],
+      (a, b) => a.key === b
+    );
+  }, [excludeItems]);
+
   return (
     <Select
       className={cn(className)}
-      items={subscriberStatusItems}
+      items={items}
       renderValue={renderValue}
       {...props}
     >

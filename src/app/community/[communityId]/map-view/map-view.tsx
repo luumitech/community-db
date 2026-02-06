@@ -5,11 +5,12 @@ import {
   MapContainer,
   MapEventListener,
   PrintControl,
+  ToolbarControl,
 } from '~/view/base/map';
 import { HullBoundary } from './hull-boundary';
 import { MapReset } from './map-reset';
 import { usePageContext } from './page-context';
-import { PropertyMarker } from './property-marker';
+import { MarkerIcon, PropertyMarker } from './property-marker';
 
 interface Props {
   className?: string;
@@ -56,6 +57,17 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
           zoom={zoom}
         />
       ))}
+      <ToolbarControl
+        className="mr-2.5 bg-background p-1"
+        position="bottomleft"
+      >
+        <p className="text-xs text-default-600">
+          Click on any property within the boundary to see more information.
+          Properties with
+          <MarkerIcon className="mx-0.5 inline-flex" isMember size={12} />
+          indicate members.
+        </p>
+      </ToolbarControl>
     </MapContainer>
   );
 };

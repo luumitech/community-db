@@ -2,21 +2,22 @@ import {
   cn,
   Link as NextUILink,
   LinkProps as NextUILinkProps,
-  Tooltip,
 } from '@heroui/react';
 import React from 'react';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
+import { Tooltip, TooltipProps } from '~/view/base/tooltip';
 import { IconOnlyButton, IconOnlyButtonProps } from './icon-only-button';
 
 export interface LinkProps extends NextUILinkProps {
   /** Link contains icon only, should not provide a children in this case */
   iconOnly?: IconOnlyButtonProps;
   tooltip?: string;
+  tooltipProps?: TooltipProps;
 }
 
 export const Link = React.forwardRef<HTMLAnchorElement | null, LinkProps>(
   (props, ref) => {
-    const { className, iconOnly, tooltip, ...linkProps } = props;
+    const { className, iconOnly, tooltip, tooltipProps, ...linkProps } = props;
     const linkRef = useForwardRef<HTMLAnchorElement>(ref);
 
     const renderLink = React.useMemo(() => {
@@ -38,7 +39,9 @@ export const Link = React.forwardRef<HTMLAnchorElement | null, LinkProps>(
     }, [className, iconOnly, linkProps, linkRef]);
 
     return tooltip ? (
-      <Tooltip content={tooltip}>{renderLink}</Tooltip>
+      <Tooltip content={tooltip} {...tooltipProps}>
+        {renderLink}
+      </Tooltip>
     ) : (
       renderLink
     );

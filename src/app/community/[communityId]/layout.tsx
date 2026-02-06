@@ -26,10 +26,12 @@ export default function CommunityFromIdLayout(props: LayoutProps) {
     return <Loading />;
   }
 
+  const keyPrefix = `community-${community.id}`;
+
   return (
     <LayoutProvider community={community}>
-      {children}
-      <React.Fragment key="modal">{modal}</React.Fragment>
+      <React.Fragment key={`${keyPrefix}-children`}>{children}</React.Fragment>
+      <React.Fragment key={`${keyPrefix}-modal`}>{modal}</React.Fragment>
     </LayoutProvider>
   );
 }

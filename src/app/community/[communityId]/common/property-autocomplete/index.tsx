@@ -126,7 +126,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
             onPress={() => setSearchBarText('')}
           >
             <PropertyAddress fragment={item} />
-            <Occupant fragment={item} />
+            <Occupant className="grow" fragment={item} />
           </AutocompleteItem>
         );
       });
