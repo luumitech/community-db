@@ -1,10 +1,10 @@
 'use client';
 import React from 'react';
 import {
+  ExportPNG,
   FitBound,
   MapContainer,
   MapEventListener,
-  PrintControl,
   ToolbarControl,
 } from '~/view/base/map';
 import { HullBoundary } from './hull-boundary';
@@ -38,12 +38,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       scrollWheelZoom
     >
       <MapReset positions={positions} />
-      <PrintControl
-        position="topleft"
-        sizeModes={['A4Portrait', 'A4Landscape']}
-        title="Export as PNG"
-        exportOnly
-      />
+      <ExportPNG tooltip="Save as PNG..." fileName="map.png" />
       <MapEventListener onZoomChange={setZoom} />
       <FitBound bounds={positions} />
       <HullBoundary positions={positions} />

@@ -10,6 +10,7 @@ import 'leaflet/dist/leaflet.css';
 import './styles.css';
 
 export * from './address-search-control';
+export * from './export-png';
 export * from './fit-bound';
 export * from './geo-location-center';
 export * from './leaflet-draw';
@@ -17,7 +18,6 @@ export * from './leaflet-marker';
 export * from './map-center';
 export * from './map-container';
 export * from './map-event-listener';
-export * from './print-control';
 export * from './toolbar-control';
 
 interface ContextT {
@@ -49,8 +49,6 @@ export function MapContextProvider(props: Props) {
        * functionalities
        */
       await import('@geoman-io/leaflet-geoman-free');
-      // @ts-expect-error no typescript available for leaflet-easyprint
-      await import('leaflet-easyprint');
 
       setLeaflet(mod.default);
     })();
