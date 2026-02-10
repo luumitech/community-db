@@ -1,16 +1,16 @@
 'use client';
 import React from 'react';
 import {
-  ExportPNG,
+  ExportControl,
   FitBound,
   MapContainer,
   MapEventListener,
-  ToolbarControl,
 } from '~/view/base/map';
+import { Footer } from './footer';
 import { HullBoundary } from './hull-boundary';
 import { MapReset } from './map-reset';
 import { usePageContext } from './page-context';
-import { MarkerIcon, PropertyMarker } from './property-marker';
+import { PropertyMarker } from './property-marker';
 
 interface Props {
   className?: string;
@@ -38,7 +38,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       scrollWheelZoom
     >
       <MapReset positions={positions} />
-      <ExportPNG tooltip="Save as PNG..." fileName="map.png" />
+      <ExportControl fileName="map.png" />
       <MapEventListener onZoomChange={setZoom} />
       <FitBound bounds={positions} />
       <HullBoundary positions={positions} />
@@ -52,17 +52,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
           zoom={zoom}
         />
       ))}
-      <ToolbarControl
-        className="mr-2.5 bg-background p-1"
-        position="bottomleft"
-      >
-        <p className="text-xs text-default-600">
-          Click on any property within the boundary to see more information.
-          Properties with
-          <MarkerIcon className="mx-0.5 inline-flex" isMember size={12} />
-          indicate members.
-        </p>
-      </ToolbarControl>
+      <Footer />
     </MapContainer>
   );
 };

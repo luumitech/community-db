@@ -1,9 +1,0 @@
-/**
-  * Special className, when added will remove some layers in leaflet that we do
-  * not want to include in the screenshot
-  */
-.export-png-taking-screenshot {
-  .leaflet-control-container{
-    visibility: hidden;
-  }
-}

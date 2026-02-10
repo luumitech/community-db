@@ -10,7 +10,7 @@ import 'leaflet/dist/leaflet.css';
 import './styles.css';
 
 export * from './address-search-control';
-export * from './export-png';
+export * from './export-control';
 export * from './fit-bound';
 export * from './geo-location-center';
 export * from './leaflet-draw';
@@ -18,7 +18,7 @@ export * from './leaflet-marker';
 export * from './map-center';
 export * from './map-container';
 export * from './map-event-listener';
-export * from './toolbar-control';
+export * from './toolbar';
 
 interface ContextT {
   L: LMod;

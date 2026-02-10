@@ -1,7 +1,6 @@
 import React from 'react';
 import { useMap } from 'react-leaflet';
-import { Icon } from '~/view/base/icon';
-import { ToolbarControl } from '~/view/base/map';
+import { ToolbarButton, ToolbarControl } from '~/view/base/map';
 
 interface Props {
   positions: L.LatLngBoundsLiteral;
@@ -13,17 +12,13 @@ export const MapReset: React.FC<Props> = ({ positions }) => {
 
   return (
     <ToolbarControl className="leaflet-bar" position="topleft">
-      <a
-        role="button"
+      <ToolbarButton
+        icon="mapCenter"
         title="Center map"
         onClick={() => {
           map.fitBounds(positions);
         }}
-      >
-        <div className="flex h-full w-full items-center justify-center">
-          <Icon icon="mapCenter" size={24} />
-        </div>
-      </a>
+      />
     </ToolbarControl>
   );
 };
