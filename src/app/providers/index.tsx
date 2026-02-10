@@ -3,6 +3,7 @@ import React from 'react';
 import { AppProvider } from '~/custom-hooks/app-context';
 import { type NextPublicEnvSchema } from '~/lib/env/env-schema';
 import { ConfirmationModal } from '~/view/base/confirmation-modal';
+import { LoadingModal } from '~/view/base/loading-modal';
 import { ApolloProviders } from './apollo';
 import { GoogleRecaptchaProviders } from './google-recaptcha';
 import { HeroUIProviders } from './hero-ui';
@@ -30,6 +31,7 @@ export const Providers: React.FC<React.PropsWithChildren<Props>> = ({
               <ReduxProviders>
                 <AppProvider env={env}>
                   {children}
+                  <LoadingModal />
                   <ConfirmationModal />
                   <ToastifyProviders />
                 </AppProvider>

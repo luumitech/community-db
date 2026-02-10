@@ -1,9 +1,10 @@
-import { Tooltip, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 import { Icon, type IconProps } from '~/view/base/icon';
+import { Tooltip, TooltipProps } from '~/view/base/tooltip';
 
 type DivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -22,6 +23,7 @@ interface Props extends DivProps {
   isBlock?: boolean;
   /** Tooltip description */
   tooltip?: string;
+  tooltipProps?: TooltipProps;
   /**
    * Pop up a modal dialog to serve as additional confirmation before calling
    * the onPress action
@@ -35,7 +37,15 @@ type OnClickFn = NonNullable<Props['onClick']>;
 
 export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
   (
-    { className, tooltip, confirmation, confirmationArg, onClick, ...props },
+    {
+      className,
+      tooltip,
+      tooltipProps,
+      confirmation,
+      confirmationArg,
+      onClick,
+      ...props
+    },
     ref
   ) => {
     const { confirmationModal } = useAppContext();
@@ -92,7 +102,9 @@ export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
     }, [ref, className, props, customOnClick]);
 
     return tooltip ? (
-      <Tooltip content={tooltip}>{renderButton}</Tooltip>
+      <Tooltip content={tooltip} {...tooltipProps}>
+        {renderButton}
+      </Tooltip>
     ) : (
       renderButton
     );

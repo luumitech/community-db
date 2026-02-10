@@ -3,9 +3,11 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { Popup } from 'react-leaflet';
 import { appLabel, appPath } from '~/lib/app-path';
-import { Icon } from '~/view/base/icon';
 import { Link } from '~/view/base/link';
-import { usePageContext } from './page-context';
+import { usePageContext } from '../page-context';
+import { MarkerIcon } from './marker-icon';
+
+export { MarkerIcon } from './marker-icon';
 
 export interface LocEntry {
   id: string;
@@ -52,16 +54,7 @@ export const PropertyMarker: React.FC<Props> = ({
 
   return (
     <Marker
-      icon={
-        <Icon
-          className={cn(
-            'text-success-600',
-            isMember ? 'opacity-30' : 'opacity-0'
-          )}
-          size={size}
-          icon="circle"
-        />
-      }
+      icon={<MarkerIcon size={size} isMember={!!isMember} />}
       position={locEntry.loc}
     >
       <Popup>
@@ -73,6 +66,7 @@ export const PropertyMarker: React.FC<Props> = ({
                 path: { communityId, propertyId },
               })}
               tooltip={appLabel('property')}
+              tooltipProps={{ isFixed: true }}
               iconOnly={{
                 icon: 'eye',
                 openInNewWindow: true,
@@ -83,6 +77,7 @@ export const PropertyMarker: React.FC<Props> = ({
                 path: { communityId, propertyId },
               })}
               tooltip={appLabel('propertyModify')}
+              tooltipProps={{ isFixed: true }}
               iconOnly={{
                 icon: 'edit',
               }}

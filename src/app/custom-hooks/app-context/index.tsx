@@ -5,8 +5,9 @@ import {
   useConfirmationModalContext,
   type ConfirmationState,
 } from './confirmation-modal';
+import { useLoadingModalContext, type LoadingState } from './loading-modal';
 
-interface ContextT extends Readonly<ConfirmationState> {
+interface ContextT extends Readonly<ConfirmationState>, Readonly<LoadingState> {
   env: NextPublicEnvSchema;
   isSmDevice: boolean;
   isMdDevice: boolean;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function AppProvider({ env, ...props }: Props) {
+  const loadingValues = useLoadingModalContext();
   const confirmValues = useConfirmationModalContext();
   const isSmDevice = useMedia('(max-width: 640px)', true);
   const isMdDevice = useMedia('(max-width: 768px)', true);
@@ -30,6 +32,7 @@ export function AppProvider({ env, ...props }: Props) {
       value={{
         env,
         ...confirmValues,
+        ...loadingValues,
         isSmDevice,
         isMdDevice,
       }}

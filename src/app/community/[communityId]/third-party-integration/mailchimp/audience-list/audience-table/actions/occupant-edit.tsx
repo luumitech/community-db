@@ -30,6 +30,7 @@ export const OccupantEditButton: React.FC<Props> = ({
         query: { email },
       })}
       tooltip={appLabel('occupantEditor')}
+      tooltipProps={{ isFixed: true }}
       iconOnly={{
         icon: 'contact-editor',
       }}

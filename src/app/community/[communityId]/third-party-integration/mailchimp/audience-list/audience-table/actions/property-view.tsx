@@ -26,6 +26,7 @@ export const PropertyViewButton: React.FC<Props> = ({
         },
       })}
       tooltip={appLabel('property')}
+      tooltipProps={{ isFixed: true }}
       iconOnly={{
         icon: 'property-list',
         openInNewWindow: true,

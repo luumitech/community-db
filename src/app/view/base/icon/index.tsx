@@ -67,6 +67,8 @@ const supportedIcon = {
   sortAsc: 'prime:sort-up-fill',
   sortDesc: 'prime:sort-down-fill',
   ellipsis: 'lucide:ellipsis',
+  mapSetting: 'tabler:map-cog',
+  printer: 'mdi:printer-outline',
 } as const;
 
 export type IconType = keyof typeof supportedIcon;

@@ -27,6 +27,7 @@ export const ModifyMemberButton: React.FC<Props> = ({
         icon="mailchimp"
         isBlock
         tooltip="Modify Mailchimp Contact"
+        tooltipProps={{ isFixed: true }}
         onClick={() => modalControl.open({ audienceListId, member })}
       />
       <MemberModifyModal modalControl={modalControl} />

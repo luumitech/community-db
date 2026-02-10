@@ -13300,6 +13300,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/dom-to-image@npm:^2":
+  version: 2.6.7
+  resolution: "@types/dom-to-image@npm:2.6.7"
+  checksum: 10c0/2f5045f116fba81fade6df5f4c6435280a6bf693a10df4ef6b0b586339833e1fe70649ffa8dc2cd221e65c1a87bc81d4765a4b6ee30da457f2bc5be92de9aa90
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:^1.0.6":
   version: 1.0.8
   resolution: "@types/estree@npm:1.0.8"
@@ -15695,6 +15702,7 @@ __metadata:
     "@ts-rest/react-query": "npm:^3.52.1"
     "@ts-rest/serverless": "npm:^3.52.1"
     "@turf/turf": "npm:^7.2.0"
+    "@types/dom-to-image": "npm:^2"
     "@types/jest": "npm:^30.0.0"
     "@types/leaflet": "npm:^1.9.19"
     "@types/node": "npm:^20"
@@ -15711,6 +15719,7 @@ __metadata:
     commander: "npm:^13.1.0"
     date-fns: "npm:^3.6.0"
     decimal.js: "npm:^10.4.3"
+    dom-to-image: "npm:^2.6.0"
     dotenv-cli: "npm:^7.4.2"
     embla-carousel-autoplay: "npm:^8.1.6"
     embla-carousel-class-names: "npm:^8.6.0"
@@ -15733,7 +15742,6 @@ __metadata:
     jest-extended: "npm:^7.0.0"
     jsonc: "npm:^2.0.0"
     leaflet: "npm:^1.9.4"
-    leaflet-easyprint: "npm:^2.1.9"
     leaflet-geosearch: "npm:^4.2.0"
     lexical: "npm:^0.27.1"
     lexical-beautiful-mentions: "npm:^0.1.47"
@@ -16707,7 +16715,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-to-image@npm:^2.5.2":
+"dom-to-image@npm:^2.6.0":
   version: 2.6.0
   resolution: "dom-to-image@npm:2.6.0"
   checksum: 10c0/6c77851d2f301d2a4bbc3fa3f9d6f152bcc4f2a20b57185b9fa1fd81244c0c9a0c7f6deffb30461bba57d83f8b37d905fb5440d9bcda5b7221b968001a2c94fe
@@ -18392,13 +18400,6 @@ __metadata:
   dependencies:
     flat-cache: "npm:^4.0.0"
   checksum: 10c0/9e2b5938b1cd9b6d7e3612bdc533afd4ac17b2fc646569e9a8abbf2eb48e5eb8e316bc38815a3ef6a1b456f4107f0d0f055a614ca613e75db6bf9ff4d72c1638
-  languageName: node
-  linkType: hard
-
-"file-saver@npm:^1.3.3":
-  version: 1.3.8
-  resolution: "file-saver@npm:1.3.8"
-  checksum: 10c0/8d5cedd6f2de036f8042d82cfe3ab875725dc43cc815d6ca3694e697ed32fc8cae7e6edc596151baf6025fd9e3b777aaf310f4cd52a9ecbae70bb1f0ee638ecf
   languageName: node
   linkType: hard
 
@@ -21353,16 +21354,6 @@ __metadata:
   version: 0.6.0
   resolution: "leac@npm:0.6.0"
   checksum: 10c0/5257781e10791ef8462eb1cbe5e48e3cda7692486f2a775265d6f5216cc088960c62f138163b8df0dcf2119d18673bfe7b050d6b41543d92a7b7ac90e4eb1e8b
-  languageName: node
-  linkType: hard
-
-"leaflet-easyprint@npm:^2.1.9":
-  version: 2.1.9
-  resolution: "leaflet-easyprint@npm:2.1.9"
-  dependencies:
-    dom-to-image: "npm:^2.5.2"
-    file-saver: "npm:^1.3.3"
-  checksum: 10c0/1306e5a15e3da89cc5db615a6f05454f0668f3a474ac8f5818b24d38728234bdb6d65d7f212752f6bbb7087882fc49df7eadb34f8d39887d43fb44bd7aa7aeea
   languageName: node
   linkType: hard
 

@@ -53,11 +53,16 @@ export const Truncate: React.FC<TruncateProps> = ({
      * some children have been hidden by this logic.
      */
     const update = () => {
+      // Before measuring, show all children and hide the ellipsis
       ellipsis.style.display = 'none';
       childElemList.forEach((el) => {
         el.style.display = '';
       });
 
+      /**
+       * Measure the container width after forcing all child elements to be
+       * visible.
+       */
       const containerRect = container.getBoundingClientRect();
 
       /**
@@ -70,15 +75,30 @@ export const Truncate: React.FC<TruncateProps> = ({
 
       let firstHiddenIndex: number | null = null;
 
-      for (let i = 0; i < childElemList.length; i++) {
-        const childRect = childElemList[i].getBoundingClientRect();
+      /**
+       * It's possible that some elements within childElemList may have zero
+       * width, so we must iterate through the entire list and find ones with
+       * positive width.
+       *
+       * Then we can deterimine if we need to add ellipsis by calculating if the
+       * child element(s) fit inside the container width
+       */
+      const childRectList = childElemList
+        .map((elem, idx) => ({
+          elemIdx: idx,
+          rect: elem.getBoundingClientRect(),
+        }))
+        .filter(({ rect }) => rect.width > 0);
 
-        // ellipsis is not shown for last children element
+      for (let i = 0; i < childRectList.length; i++) {
+        const childRect = childRectList[i].rect;
+
+        // ellipsis is not shown for last element
         const ellipsisWidth =
-          i === childElemList.length - 1 ? 0 : gap + ellipsisSz.width;
+          i === childRectList.length - 1 ? 0 : gap + ellipsisSz.width;
 
         if (childRect.right + ellipsisWidth > containerRect.right) {
-          firstHiddenIndex = i;
+          firstHiddenIndex = childRectList[i].elemIdx;
           break;
         }
       }
@@ -88,6 +108,7 @@ export const Truncate: React.FC<TruncateProps> = ({
         for (let i = firstHiddenIndex; i < childElemList.length; i++) {
           childElemList[i].style.display = 'none';
         }
+        // Show the ellipsis
         ellipsis.style.display = '';
       } else {
         setVisibleCount(childElemList.length);

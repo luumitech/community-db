@@ -1,11 +1,12 @@
 'use client';
 import React from 'react';
 import {
+  ExportControl,
   FitBound,
   MapContainer,
   MapEventListener,
-  PrintControl,
 } from '~/view/base/map';
+import { Footer } from './footer';
 import { HullBoundary } from './hull-boundary';
 import { MapReset } from './map-reset';
 import { usePageContext } from './page-context';
@@ -37,12 +38,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       scrollWheelZoom
     >
       <MapReset positions={positions} />
-      <PrintControl
-        position="topleft"
-        sizeModes={['A4Portrait', 'A4Landscape']}
-        title="Export as PNG"
-        exportOnly
-      />
+      <ExportControl fileName="map.png" />
       <MapEventListener onZoomChange={setZoom} />
       <FitBound bounds={positions} />
       <HullBoundary positions={positions} />
@@ -56,6 +52,7 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
           zoom={zoom}
         />
       ))}
+      <Footer />
     </MapContainer>
   );
 };
