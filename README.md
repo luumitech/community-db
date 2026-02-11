@@ -149,6 +149,10 @@ To run the email viewer locally:
 yarn dev:email
 ```
 
+### Updating Tutorial Guides
+
+The tutorials are created using [GuideJar](https://www.guidejar.com/). Screenshots are taken directly from the browser (resize browser window to 800x640), and taken using Google chrome extension [Screenshot Capture](https://chromewebstore.google.com/detail/giabbpobpebjfegnpcclkocepcgockkc?utm_source=item-share-cb).
+
 ### Prerequiste for deploying to Microsoft Azure
 
 In [Azure Portal](https://portal.azure.com):

@@ -29,7 +29,7 @@ export const Hero: React.FC<Props> = ({ className }) => {
         <div
           className={cn(
             'flex flex-col items-center gap-6 text-center text-wrap',
-            'bg-opacity-80 rounded-xl bg-background p-5 sm:p-10'
+            'rounded-xl bg-background/80 p-5 sm:p-10'
           )}
         >
           <Link href={appPath('home')}>

@@ -24,7 +24,7 @@ export const TicketRowHeader: React.FC<EmptyProps> = () => {
       className={cn(
         'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'items-center font-semibold text-tiny',
+        'items-center text-tiny font-semibold',
         'rounded-lg px-3'
       )}
       role="row"
@@ -75,7 +75,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           controlNamePrefix={controlNamePrefix}
           startContent={
             <div className="pointer-events-none flex items-center">
-              <span className="whitespace-nowrap text-xs text-default-400">
+              <span className="text-xs whitespace-nowrap text-default-400">
                 ${unitPrice} ⨉
               </span>
             </div>
@@ -178,7 +178,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
         <span className="pr-1.5 text-default-400">$</span>
         <span>{formatCurrency(totalPrice)}</span>
       </div>
-      <div role="cell">
+      <div className="col-span-2" role="cell">
         <TransactionTotalPaymentSelect
           controlName={`${transactionConfig?.controlNamePrefix}.paymentMethod`}
           placeholder="Select Payment"
@@ -209,7 +209,7 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
   return (
     <div className={cn('col-span-full mx-3 grid grid-cols-subgrid')} role="row">
       <div role="cell" />
-      <div role="cell" className="pl-1 pt-2 text-sm">
+      <div role="cell" className="pt-2 pl-1 text-sm">
         Membership Fee
       </div>
       <div role="cell" />

@@ -90,6 +90,8 @@ export class CommunityImport {
 
     const {
       propertyList: { create: propertyList },
+      // Don't override the community name
+      name,
       ...others
     } = importXlsx(workbook);
 
@@ -151,7 +153,11 @@ export class CommunityImport {
 
   private async importRandom() {
     const seedJson = seedCommunityData(10);
-    const wsHelper = WorksheetHelper.fromJson(seedJson, 'Membership');
+    const wsHelper = WorksheetHelper.fromJson(
+      seedJson,
+      // This name doesn't matter, we will always keep the existing community name
+      'Membership'
+    );
     const workbook = wsHelper.wb;
     return workbook;
   }
