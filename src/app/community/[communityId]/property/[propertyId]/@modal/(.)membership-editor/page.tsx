@@ -1,6 +1,7 @@
 'use client';
 import { useMutation } from '@apollo/client';
 import React from 'react';
+import { useSelector } from '~/custom-hooks/redux';
 import {
   evictCache,
   evictPropertyListCache,
@@ -44,6 +45,7 @@ export default function MembershipEditor(props: RouteArgs) {
   const searchParams = React.use(props.searchParams);
   const { communityId } = React.use(props.params);
   const [updateProperty] = useMutation(PropertyMutation);
+  const { isFilterSpecified } = useSelector((state) => state.searchBar);
 
   const onSave = async (_input: InputData) => {
     const { hidden, ...input } = _input;
@@ -52,7 +54,15 @@ export default function MembershipEditor(props: RouteArgs) {
         variables: { input },
         update: (cache, result) => {
           evictCache(cache, 'CommunityStat', communityId);
-          evictPropertyListCache(cache, communityId);
+          /**
+           * If any of the filter (i.e. memberYear) has been specified, then it
+           * is possible that the existing property list query would no longer
+           * yield the same results after membership editor changes are
+           * applied.
+           */
+          if (isFilterSpecified) {
+            evictPropertyListCache(cache, communityId);
+          }
         },
       }),
       {

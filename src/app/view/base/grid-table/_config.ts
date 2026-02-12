@@ -7,7 +7,7 @@ interface ClassDefault extends ClassNameConfig {
   /** Inherit column configuration from parent container */
   inheritContainer: string;
 
-  /** Classes dfined on virtualized container */
+  /** Classes defined on virtualized container */
   virtualizedContainer: string;
 }
 
@@ -27,9 +27,13 @@ export const CLASS_DEFAULT: ClassDefault = {
   ),
   gridContainer: cn(
     /**
-     * Default gap between each row
+     * - Default gap between header row and 1st body row
      *
-     * - As well as between header row and 1st body row
+     * If `isVirtualized`:
+     *
+     * - Is false, this gap is applicable between each row
+     * - Is true, the gap needs to be controlled by the `gap` property in
+     *   `virtualConfig` for each row
      */
     'gap-2',
     /** Default grid layout, 6 equal columns */

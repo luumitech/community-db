@@ -92,31 +92,29 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
   );
 
   /**
-   * Render Card shadow only for smaller viewport (when a row is collapsed into
+   * Render Card border only for smaller viewport (when a row is collapsed into
    * multiple rows)
    */
-  const cardHasShadow = React.useMemo(() => isMdDevice, [isMdDevice]);
+  const cardHasBorder = React.useMemo(() => isMdDevice, [isMdDevice]);
+  // Padding on each row (in the card)
+  const CARD_PADDING_PX = cardHasBorder ? 8 : 4;
 
   const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
     (item) => {
-      if (!cardHasShadow) {
+      if (!cardHasBorder) {
         return {
           shadow: 'none',
         };
       }
     },
-    [cardHasShadow]
+    [cardHasBorder]
   );
 
   const estimateSize = React.useCallback(() => {
     let height = rowHeight(isSmDevice ? 4 : isMdDevice ? 2 : 1);
-    if (cardHasShadow) {
-      // card padding (py-2)
-      const CARD_PADDING = 8 * 2;
-      height += CARD_PADDING;
-    }
+    height += CARD_PADDING_PX * 2;
     return height;
-  }, [isSmDevice, isMdDevice, cardHasShadow]);
+  }, [isSmDevice, isMdDevice, CARD_PADDING_PX]);
 
   return (
     <GridTable
@@ -125,6 +123,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       virtualConfig={{
         isVirtualized: true,
         estimateSize,
+        gap: cardHasBorder ? 8 : 0,
       }}
       config={{
         gridContainer: twMerge('grid-cols-[repeat(6,auto)]', className),
@@ -133,8 +132,8 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
         headerGrid: cn('gap-2'),
         bodyContainer: cn(
           'mx-0.5 px-3',
-          /** Add padding if Card has shadow */
-          cardHasShadow ? 'py-2' : 'py-0'
+          `py-[${CARD_PADDING_PX}]`,
+          'hover:bg-primary-50'
         ),
         bodyGrid: cn('items-center gap-0.5 text-sm'),
       }}
@@ -145,7 +144,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
            * Bold email, so it serves as a visual divider when a grid row
            * collapses into multiple rows
            */
-          cardHasShadow && 'font-semibold md:font-normal',
+          cardHasBorder && 'font-semibold md:font-normal',
           'col-span-full sm:col-span-3 md:col-span-1'
         ),
         full_name: cn('col-span-full sm:col-span-3 md:col-span-1'),

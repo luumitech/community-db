@@ -20,11 +20,14 @@ type OccupantFragmentType = FragmentType<typeof OccupantFragment>;
 interface Props extends ChipProps {
   className?: string;
   fragment: OccupantFragmentType;
+  /** Render a custom component when occupantList is empty */
+  emptyContent?: React.ReactNode;
 }
 
 export const Occupant: React.FC<Props> = ({
   className,
   fragment,
+  emptyContent,
   ...props
 }) => {
   const entry = getFragment(OccupantFragment, fragment);
@@ -51,7 +54,7 @@ export const Occupant: React.FC<Props> = ({
   }, []);
 
   if (nameList.length === 0) {
-    return null;
+    return emptyContent ?? null;
   }
 
   return (

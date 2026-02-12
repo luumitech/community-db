@@ -16,6 +16,7 @@ export const SignInDev: React.FC<Props> = ({ className }) => {
     await signUp.email({
       name: 'Dev User',
       email: 'dev@email.com',
+      image: '/image/dev-avatar.png',
       password: 'password1234',
     });
     return signIn.email({

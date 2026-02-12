@@ -86,8 +86,10 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
  * Attempt to find event given year and eventName
  *
  * - Returns year (converted yearStr to number)
- * - Returns membership (if membership year is found)
- * - Returns event (if matching event is found)
+ * - Returns membership (if membership year is found, which indicates that they
+ *   have existing membership)
+ * - Returns event (if matching event is found, which indicates that they have
+ *   already registerd at the event before)
  */
 function findEvent(
   property: GQL.PropertyId_MembershipEditorFragment,
@@ -169,6 +171,7 @@ export function useHookForm(eventName: string) {
   return {
     formMethods,
     property,
+    membership: findEventResult.membership,
     ticketList: findEventResult.event?.ticketList ?? [],
   };
 }

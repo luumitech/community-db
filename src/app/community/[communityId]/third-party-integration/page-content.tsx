@@ -49,7 +49,7 @@ export const PageContent: React.FC<Props> = ({
             tabList:
               'gap-6 w-full relative rounded-none p-0 border-b border-divider',
             tab: 'max-w-fit px-0 h-12',
-            panel: 'px-0 grow overflow-hidden',
+            panel: 'p-0 pt-3 grow overflow-hidden',
           }}
           color="primary"
           variant="underlined"
