@@ -2,7 +2,11 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
+import { useSelector } from '~/custom-hooks/redux';
+import {
+  evictCache,
+  evictPropertyListCache,
+} from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
@@ -54,6 +58,7 @@ export default function RegisterEvent(props: RouteArgs) {
   const { communityId, propertyId } = React.use(props.params);
   const { eventName } = React.use(props.searchParams);
   const [updateProperty] = useMutation(RegisterEventMutation);
+  const { isFilterSpecified } = useSelector((state) => state.searchBar);
 
   const onSendConfirmation = React.useCallback(
     (membershipYear: string) => {
@@ -77,15 +82,14 @@ export default function RegisterEvent(props: RouteArgs) {
             update: (cache, { data }) => {
               evictCache(cache, 'CommunityStat', communityId);
               /**
-               * TODO: This mutation only affects search results when filters
-               * (e.g. member / non-member years) are applied. When the search
-               * is unfiltered, invalidating propertyList is unnecessary since
-               * addresses and occupants do not change.
-               *
-               * Apollo currently does not support evicting cache entries
-               * conditionally based on field arguments.
+               * If any of the filter (i.e. memberYear) has been specified, then
+               * it is possible that the existing property list query would no
+               * longer yield the same results after event registration changes
+               * are applied.
                */
-              // evictPropertyListCache(cache, communityId);
+              if (isFilterSpecified) {
+                evictPropertyListCache(cache, communityId);
+              }
             },
           });
           return { result };
@@ -110,7 +114,7 @@ export default function RegisterEvent(props: RouteArgs) {
         }
       );
     },
-    [communityId, onSendConfirmation, updateProperty]
+    [communityId, isFilterSpecified, onSendConfirmation, updateProperty]
   );
 
   if (!eventName?.trim()) {

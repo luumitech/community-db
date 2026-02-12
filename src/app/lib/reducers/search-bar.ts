@@ -59,8 +59,8 @@ export const initialState: State = {
  *
  * @param filter Current filter state
  */
-export function isFilterSpecified(FilterT: FilterT) {
-  return !R.isDeepEqual(FilterT, initialState.filter);
+export function isFilterSpecified(filter: FilterT) {
+  return !R.isDeepEqual(filter, initialState.filter);
 }
 
 /**

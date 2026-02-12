@@ -39,6 +39,7 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
       paymentDeposited
       price
     }
+    ...PropertyList_Occupant
   }
 `);
 type MembershipEditorFragmentType = FragmentType<

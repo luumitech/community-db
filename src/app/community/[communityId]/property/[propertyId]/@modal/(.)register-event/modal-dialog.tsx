@@ -1,7 +1,6 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/chip/event-chip';
-import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { NotesEditor } from '~/community/[communityId]/common/notes-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
@@ -17,6 +16,7 @@ import {
 } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { EventInfoEditor } from './event-info-editor';
+import { MemberStatus } from './member-status';
 import { usePreSubmit } from './pre-submit';
 import { InputData, XtraArgProvider, useHookForm } from './use-hook-form';
 
@@ -32,8 +32,6 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
   const { propagatePaymentMethod } = usePreSubmit(formMethods);
   const { getValues, formState, handleSubmit } = formMethods;
   const canRegister = getValues('hidden.canRegister');
-  const isMember = getValues('hidden.isMember');
-  const memberYear = getValues('membership.year');
   const { isDirty } = formState;
 
   const goBack = React.useCallback(() => {
@@ -96,20 +94,20 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
             <ModalContent>
               {(closeModal) => (
                 <>
-                  <ModalHeader>{appLabel('registerEvent')}</ModalHeader>
-                  <ModalBody className="gap-6">
-                    <div className="flex flex-col gap-2">
-                      <MemberStatusChip isMember={isMember} hideText>
-                        {memberYear}
-                      </MemberStatusChip>
-                      <div className="flex items-center gap-8 text-sm">
-                        <span className="font-semibold text-foreground-500">
-                          Current Event
-                        </span>
-                        <EventChip eventName={eventName} />
-                        <span>{getCurrentDate()}</span>
-                      </div>
+                  <ModalHeader className="flex-wrap gap-x-6 gap-y-0.5">
+                    {appLabel('registerEvent')}
+                    <div className="flex items-center gap-2">
+                      <EventChip eventName={eventName} />
+                      <span className="text-sm text-default-500">
+                        @ {getCurrentDate()}
+                      </span>
                     </div>
+                  </ModalHeader>
+                  <ModalBody className="gap-6">
+                    <MemberStatus
+                      property={xtraProps.property}
+                      membership={xtraProps.membership}
+                    />
                     <EventInfoEditor />
                     <NotesEditor controlName="notes" />
                   </ModalBody>
