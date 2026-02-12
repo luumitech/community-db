@@ -109,10 +109,11 @@ export function getCurrentDateAsISOString() {
  * ```
  *
  * @param input Input Date
- * @returns Date string in "yyyy-MM-dd" format
+ * @param dateFmt Optional date format, default to 'yyyy-MM-dd'
+ * @returns Date in string format
  */
-export function formatAsDate(input: Date) {
-  return format(input, 'yyyy-MM-dd');
+export function formatAsDate(input: string | number | Date, dateFmt?: string) {
+  return format(input, dateFmt ?? 'yyyy-MM-dd');
 }
 
 /**

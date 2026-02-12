@@ -1,9 +1,9 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { EventChip } from '~/community/[communityId]/common/chip/event-chip';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { Occupant } from '~/community/[communityId]/property-list/property-table/occupant';
 import * as GQL from '~/graphql/generated/graphql';
+import { formatAsDate } from '~/lib/date-util';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -32,8 +32,25 @@ export const MemberStatus: React.FC<Props> = ({
         {isMember && memberEvent ? (
           <div>
             These members registered at{' '}
-            <span className="font-semibold">{memberEvent.eventName}</span> on{' '}
-            <span className="font-semibold">{memberEvent.eventDate}</span>:
+            <span className="font-semibold">{memberEvent.eventName}</span>
+            {memberEvent.eventDate != null && (
+              <span>
+                {' '}
+                on{' '}
+                <span className="font-semibold">
+                  {/**
+                   * Format date similar to getCurrentDate(), to be consistent with rest of the
+                   * dialog
+                   */}
+                  {formatAsDate(
+                    // eventDate is UTC date, add T00:00:00 to interpret as local
+                    `${memberEvent.eventDate}T00:00:00`,
+                    'MMM d, yyyy'
+                  )}
+                </span>
+              </span>
+            )}
+            :
           </div>
         ) : (
           <span>

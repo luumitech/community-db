@@ -55,7 +55,7 @@ export async function navigateRegisterEvent(page: Page, currentEvent: string) {
     await select(page, 'Current Event Name', currentEvent);
   }
   await button.click();
-  await waitForDialog(page, 'Register Event');
+  await waitForDialog(page, /^Register Event/);
 }
 
 /**
