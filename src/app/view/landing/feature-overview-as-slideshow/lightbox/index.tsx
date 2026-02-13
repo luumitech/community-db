@@ -1,17 +1,16 @@
 'use client';
+import { Button, cn } from '@heroui/react';
+import { type UseDisclosureReturn } from '@heroui/use-disclosure';
+import useEmblaCarousel from 'embla-carousel-react';
+import React from 'react';
+import { Icon } from '~/view/base/icon';
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  cn,
-} from '@heroui/react';
-import { type UseDisclosureReturn } from '@heroui/use-disclosure';
-import useEmblaCarousel from 'embla-carousel-react';
-import React from 'react';
-import { Icon } from '~/view/base/icon';
+} from '~/view/base/modal';
 import { type ScreenshotEntry } from '../../feature-overview-image-list';
 import { useEmblaApi } from '../use-embla-api';
 import { Slide } from './slide';

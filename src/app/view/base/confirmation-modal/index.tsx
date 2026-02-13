@@ -1,13 +1,13 @@
+import { Button } from '@heroui/react';
+import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   type ModalProps,
-} from '@heroui/react';
-import React from 'react';
-import { useAppContext } from '~/custom-hooks/app-context';
+} from '~/view/base/modal';
 
 interface ContentArg {
   closeModal: () => void;
@@ -61,7 +61,6 @@ export const ConfirmationModal: React.FC<Props> = () => {
         base: 'border-warning border-2',
       }}
       size="xs"
-      placement="top-center"
       isOpen={disclosure.isOpen}
       onOpenChange={disclosure.onOpenChange}
       isDismissable={false}

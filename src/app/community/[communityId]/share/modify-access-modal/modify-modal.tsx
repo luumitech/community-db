@@ -54,7 +54,6 @@ export const ModifyModal: React.FC<Props> = ({
   return (
     <Modal
       size="md"
-      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}

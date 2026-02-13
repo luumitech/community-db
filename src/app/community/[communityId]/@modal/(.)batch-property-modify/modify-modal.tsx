@@ -41,7 +41,6 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
   return (
     <Modal
       size="5xl"
-      placement="top-center"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

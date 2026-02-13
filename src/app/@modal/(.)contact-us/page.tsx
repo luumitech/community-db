@@ -1,12 +1,5 @@
 'use client';
-import {
-  Link,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '@heroui/react';
+import { Link } from '@heroui/react';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -17,6 +10,13 @@ import { tsr } from '~/providers/tsr';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from '~/view/base/modal';
 import { toast } from '~/view/base/toastify';
 import { EmailEditor } from './email-editor';
 import { InputData, useHookForm } from './use-hook-form';
@@ -88,7 +88,6 @@ export default function ContactUs(props: RouteArgs) {
   return (
     <Modal
       size="lg"
-      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}

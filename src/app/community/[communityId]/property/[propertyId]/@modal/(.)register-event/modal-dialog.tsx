@@ -69,7 +69,6 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
   return (
     <Modal
       size="5xl"
-      placement="top-center"
       isOpen
       onOpenChange={goBack}
       confirmation={canSave}
