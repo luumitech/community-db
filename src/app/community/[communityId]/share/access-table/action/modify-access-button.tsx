@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatButton } from '~/view/base/flat-button';
-import { AccessEntry } from '../_type';
-import { ModifyAccessModal, useModalControl } from '../modify-access-modal';
+import { AccessEntry } from '../../_type';
+import { ModifyAccessModal, useModalControl } from '../../modify-access-modal';
 
 interface Props {
   className?: string;
@@ -20,6 +20,7 @@ export const ModifyAccessButton: React.FC<Props> = ({
         className="text-primary"
         icon="edit"
         tooltip="Modify Role"
+        tooltipProps={{ isFixed: true }}
         onClick={() => modalControl.open({ access: fragment })}
       />
       <ModifyAccessModal modalControl={modalControl} />

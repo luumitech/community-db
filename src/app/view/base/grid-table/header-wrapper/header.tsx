@@ -6,22 +6,25 @@ import { CLASS_DEFAULT, COMMON_PROPS } from '../_config';
 import type { CommonProps, HeaderRenderer, SortDescriptor } from '../_type';
 import { SortIndicator } from './sort-indicator';
 
-interface Props extends CardProps, CommonProps {
+interface Props<ColumnKey extends Readonly<string>>
+  extends CardProps, CommonProps<ColumnKey> {
   /** The current sorted column and direction. */
-  sortDescriptor?: SortDescriptor<string> | null;
+  sortDescriptor?: SortDescriptor<ColumnKey> | null;
   /** Handler that is called when the sorted column or direction changes. */
-  onSortChange?: (descriptor: SortDescriptor<string> | null) => void;
-  renderHeader: HeaderRenderer<string>;
+  onSortChange?: (descriptor: SortDescriptor<ColumnKey> | null) => void;
+  renderHeader: HeaderRenderer<ColumnKey>;
 }
 
-export function Header(props: Props) {
+export function Header<ColumnKey extends Readonly<string>>(
+  props: Props<ColumnKey>
+) {
   const { sortDescriptor, onSortChange, renderHeader, ...otherProps } = props;
   const commonProps = R.pick(props, COMMON_PROPS);
   const cardProps = R.omit(otherProps, COMMON_PROPS);
   const { config, sortableColumnKeys, columnKeys, columnConfig } = commonProps;
 
   const sortDirection = React.useCallback(
-    (columnKey: string) => {
+    (columnKey: ColumnKey) => {
       return sortDescriptor?.columnKey === columnKey
         ? sortDescriptor.direction
         : null;
@@ -30,7 +33,7 @@ export function Header(props: Props) {
   );
 
   const onSortPressed = React.useCallback(
-    (columnKey: string) => () => {
+    (columnKey: ColumnKey) => () => {
       const direction = sortDirection(columnKey);
       switch (direction) {
         case 'ascending':

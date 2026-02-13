@@ -10,7 +10,7 @@ interface Props {
   accessList: AccessEntry[];
 }
 
-export const NewAccessButton: React.FC<Props> = ({
+export const AddUserButton: React.FC<Props> = ({
   className,
   communityId,
   accessList,

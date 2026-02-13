@@ -24,16 +24,16 @@ type DivProps = React.DetailedHTMLProps<
 >;
 
 export interface GridTableProps<
-  K extends readonly string[],
+  ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
 >
   extends
-    CommonProps<K>,
-    HeaderWrapperProps<K[number]>,
+    CommonProps<ColumnKey>,
+    HeaderWrapperProps<ColumnKey>,
     BodyWrapperProps<ItemT>,
     DivProps {
   /** Render an item given a column and a row item */
-  renderItem: ItemRenderer<K[number], ItemT>;
+  renderItem: ItemRenderer<ColumnKey, ItemT>;
   /** Pass additional props to Card component for each item */
   itemCardProps?: (item: ItemT) => CardProps | null | undefined;
   /** Items are still loading */
@@ -50,9 +50,9 @@ export interface GridTableProps<
  * - The header always sticks to top of screen (just below app header)
  */
 export function GridTable<
-  K extends readonly string[],
+  ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
->(props: GridTableProps<K, ItemT>) {
+>(props: GridTableProps<ColumnKey, ItemT>) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const {

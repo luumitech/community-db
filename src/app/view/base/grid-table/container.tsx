@@ -9,7 +9,8 @@ type DivProps = React.DetailedHTMLProps<
   HTMLDivElement
 >;
 
-interface Props extends CommonProps, DivProps {
+interface Props<ColumnKey extends Readonly<string>>
+  extends CommonProps<ColumnKey>, DivProps {
   className?: string;
 }
 
@@ -20,27 +21,32 @@ interface Props extends CommonProps, DivProps {
  *
  * - By default, there are 8 equal columns
  */
-export const Container = React.forwardRef<
-  HTMLDivElement,
-  React.PropsWithChildren<Props>
->((props, ref) => {
-  const { className, ...otherProps } = props;
-  const commonProps = R.pick(props, COMMON_PROPS);
-  const divProps = R.omit(otherProps, COMMON_PROPS);
-  const { config } = commonProps;
+export function Container<ColumnKey extends Readonly<string>>(
+  props: Props<ColumnKey>
+) {
+  const ContainerImpl = React.forwardRef<
+    HTMLDivElement,
+    React.PropsWithChildren<Props<ColumnKey>>
+  >((_, ref) => {
+    const { className, ...otherProps } = props;
+    const commonProps = R.pick(props, COMMON_PROPS);
+    const divProps = R.omit(otherProps, COMMON_PROPS);
+    const { config } = commonProps;
 
-  return (
-    <div
-      ref={ref}
-      className={twMerge(
-        'grid',
-        CLASS_DEFAULT.gridContainer,
-        config?.gridContainer,
-        className
-      )}
-      {...divProps}
-    />
-  );
-});
+    return (
+      <div
+        ref={ref}
+        className={twMerge(
+          'grid',
+          CLASS_DEFAULT.gridContainer,
+          config?.gridContainer,
+          className
+        )}
+        {...divProps}
+      />
+    );
+  });
 
-Container.displayName = 'Container';
+  ContainerImpl.displayName = 'Container';
+  return <ContainerImpl {...props} />;
+}

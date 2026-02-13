@@ -56,8 +56,8 @@ export interface ClassNameConfig {
  *
  * @param columnKey Column key to render
  */
-export type HeaderRenderer<C extends string> = (
-  columnKey: C
+export type HeaderRenderer<ColumnKey extends Readonly<string>> = (
+  columnKey: ColumnKey
 ) => React.ReactNode;
 
 export type SortDirection = 'ascending' | 'descending';
@@ -67,8 +67,8 @@ export type SortDirection = 'ascending' | 'descending';
  *
  * @param columnKey Column key to render
  */
-export interface SortDescriptor<C extends string> {
-  columnKey: C;
+export interface SortDescriptor<ColumnKey extends Readonly<string>> {
+  columnKey: ColumnKey;
   direction: SortDirection;
 }
 
@@ -84,8 +84,8 @@ export interface ItemWithId {
  * @param columnKey Column key to render
  * @param item Item of a row
  */
-export type ItemRenderer<C extends string, ItemT> = (
-  columnKey: C,
+export type ItemRenderer<ColumnKey extends Readonly<string>, ItemT> = (
+  columnKey: ColumnKey,
   item: ItemT
 ) => React.ReactNode;
 
@@ -94,19 +94,19 @@ export type ItemRenderer<C extends string, ItemT> = (
  *
  * - NOTE: Update COMMON_PROPS in '_type.ts' if adding or removing properties here
  */
-export interface CommonProps<K extends readonly string[] = readonly string[]> {
+export interface CommonProps<ColumnKey extends Readonly<string>> {
   /** Global classes configuration object */
   config?: ClassNameConfig;
-  /** List of valid column keys for the grid table */
-  columnKeys: K;
+  /** List of column keys to render for the grid table */
+  columnKeys: ColumnKey[];
   /**
    * ClassName for defining cell configuration,
    *
    * - By default, it behaves as col-span-1
    */
-  columnConfig?: Partial<Record<K[number], string>>;
+  columnConfig?: Partial<Record<ColumnKey, string>>;
   /** List of column keys with sortable enabled */
-  sortableColumnKeys?: K[number][];
+  sortableColumnKeys?: ColumnKey[];
 }
 
 /**

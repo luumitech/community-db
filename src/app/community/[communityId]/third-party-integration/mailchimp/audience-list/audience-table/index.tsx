@@ -18,15 +18,14 @@ import { Warning } from './warning';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-const COLUMN_KEYS = [
-  'email_address',
-  'full_name',
-  'status',
-  'optOut',
-  'warning',
-  'actions',
-] as const;
-type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, AudienceMember>;
+type ColumnKey =
+  | 'email_address'
+  | 'full_name'
+  | 'status'
+  | 'optOut'
+  | 'warning'
+  | 'actions';
+type GridTableProps = GenericGTProps<ColumnKey, AudienceMember>;
 type GTProps = Required<GridTableProps>;
 export type SortDescriptor = GTProps['sortDescriptor'];
 
@@ -104,6 +103,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       if (!cardHasBorder) {
         return {
           shadow: 'none',
+          radius: 'none',
         };
       }
     },
@@ -127,7 +127,6 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       }}
       config={{
         gridContainer: twMerge('grid-cols-[repeat(6,auto)]', className),
-        headerSticky: cn('sticky top-0 z-50 bg-background'),
         headerContainer: cn('mx-0.5 truncate px-3 py-2'),
         headerGrid: cn('gap-2'),
         bodyContainer: cn(
@@ -137,7 +136,14 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
         ),
         bodyGrid: cn('items-center gap-0.5 text-sm'),
       }}
-      columnKeys={COLUMN_KEYS}
+      columnKeys={[
+        'email_address',
+        'full_name',
+        'status',
+        'optOut',
+        'warning',
+        'actions',
+      ]}
       columnConfig={{
         email_address: cn(
           /**

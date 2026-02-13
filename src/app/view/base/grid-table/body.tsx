@@ -5,12 +5,16 @@ import { twMerge } from 'tailwind-merge';
 import { CLASS_DEFAULT, COMMON_PROPS } from './_config';
 import type { CommonProps, ItemRenderer, ItemWithId } from './_type';
 
-interface Props<ItemT extends ItemWithId> extends CardProps, CommonProps {
+interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
+  extends CardProps, CommonProps<ColumnKey> {
   item: ItemT;
-  renderItem: ItemRenderer<string, ItemT>;
+  renderItem: ItemRenderer<ColumnKey, ItemT>;
 }
 
-export function Body<ItemT extends ItemWithId>(props: Props<ItemT>) {
+export function Body<
+  ColumnKey extends Readonly<string>,
+  ItemT extends ItemWithId,
+>(props: Props<ColumnKey, ItemT>) {
   const { item, renderItem, ...otherProps } = props;
   const commonProps = R.pick(props, COMMON_PROPS);
   const cardProps = R.omit(otherProps, COMMON_PROPS);

@@ -11,7 +11,7 @@ import { Header } from './header';
  *
  * - NOTE: Update HEADER_PROPS in '_type.ts' if adding or removing properties here
  */
-export interface HeaderWrapperProps<C extends string> {
+export interface HeaderWrapperProps<ColumnKey extends Readonly<string>> {
   /**
    * Should header be sticky?,
    *
@@ -19,17 +19,20 @@ export interface HeaderWrapperProps<C extends string> {
    */
   isHeaderSticky?: boolean;
   /** The current sorted column and direction. */
-  sortDescriptor?: SortDescriptor<C> | null;
+  sortDescriptor?: SortDescriptor<ColumnKey> | null;
   /** Handler that is called when the sorted column or direction changes. */
-  onSortChange?: (descriptor: SortDescriptor<C> | null) => void;
+  onSortChange?: (descriptor: SortDescriptor<ColumnKey> | null) => void;
   /** Render a custom component above the header */
   topContent?: React.ReactNode;
-  renderHeader?: HeaderRenderer<C>;
+  renderHeader?: HeaderRenderer<ColumnKey>;
 }
 
-interface Props extends CommonProps, HeaderWrapperProps<string> {}
+interface Props<ColumnKey extends Readonly<string>>
+  extends CommonProps<ColumnKey>, HeaderWrapperProps<ColumnKey> {}
 
-export function HeaderWrapper(props: Props) {
+export function HeaderWrapper<ColumnKey extends Readonly<string>>(
+  props: Props<ColumnKey>
+) {
   const _headerProps = R.pick(props, HEADER_PROPS);
   const commonProps = R.pick(props, COMMON_PROPS);
   const { isHeaderSticky, topContent, renderHeader, ...headerProps } =
@@ -43,8 +46,8 @@ export function HeaderWrapper(props: Props) {
     <div
       className={twMerge(
         CLASS_DEFAULT.inheritContainer,
-        isHeaderSticky &&
-          (commonProps.config?.headerSticky ?? CLASS_DEFAULT.headerSticky)
+        isHeaderSticky && CLASS_DEFAULT.headerSticky,
+        isHeaderSticky && commonProps.config?.headerSticky
       )}
     >
       {!!topContent && <div className={cn('col-span-full')}>{topContent}</div>}

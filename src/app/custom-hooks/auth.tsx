@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client';
 import { emailOTPClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -49,11 +50,14 @@ export function useSignIn() {
  */
 export function useSignOut() {
   const router = useRouter();
+  const client = useApolloClient();
 
   const signOut = React.useCallback(async () => {
     const resp = await authClient.signOut();
+    // Clear graphQL cache upon logout
+    await client.clearStore();
     router.push(appPath('home'));
-  }, [router]);
+  }, [router, client]);
 
   return signOut;
 }

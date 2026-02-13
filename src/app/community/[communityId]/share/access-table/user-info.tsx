@@ -1,7 +1,7 @@
 import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { type AccessEntry } from './_type';
+import { type AccessEntry } from '../_type';
 
 export const UserInfoFragment = graphql(/* GraphQL */ `
   fragment AccessList_User on Access {
@@ -19,8 +19,8 @@ interface Props {
 export const UserInfo: React.FC<Props> = ({ className, fragment }) => {
   const entry = getFragment(UserInfoFragment, fragment);
   return (
-    <div className={cn(className, 'flex items-center gap-1 truncate')}>
-      <span>{entry.user.email ?? ''}</span>
+    <div className={cn(className, 'flex flex-wrap items-center gap-1')}>
+      <span className="truncate">{entry.user.email ?? ''}</span>
       {!!fragment.isSelf && (
         <Chip radius="sm" size="sm" variant="bordered" color="primary">
           you

@@ -23,8 +23,6 @@ export type CommunityState = Readonly<{
   communityId: string;
   /** Community name */
   communityName: string;
-  /** Access role items */
-  roleItems: SelectItemT[];
   /** Minimum membership year recorded within membership */
   minYear: number;
   /** Maximum membership year recorded within membership */
@@ -101,11 +99,6 @@ export function useCommunityContext(community: CommunityEntry) {
     const ticketList = community.ticketList ?? [];
     const paymentMethodList = community.paymentMethodList ?? [];
 
-    const roleItems: SelectItemT[] = [
-      { label: 'Admin', value: GQL.Role.Admin },
-      { label: 'Editor', value: GQL.Role.Editor },
-      { label: 'Viewer', value: GQL.Role.Viewer },
-    ];
     const eventSelect = createSelectionItems(eventList);
     const ticketSelect = createSelectionItems(ticketList);
     const paymentMethodSelect = createSelectionItems(paymentMethodList);
@@ -116,7 +109,6 @@ export function useCommunityContext(community: CommunityEntry) {
       community,
       communityId: community.id,
       communityName: community.name,
-      roleItems,
       minYear: community.minYear ?? getCurrentYear(),
       maxYear: community.maxYear ?? getCurrentYear(),
       visibleEventItems: eventSelect.visibleItems,

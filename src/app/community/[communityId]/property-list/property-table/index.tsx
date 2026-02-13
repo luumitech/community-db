@@ -20,8 +20,8 @@ export { PropertyAddress } from './property-address';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-const COLUMN_KEYS = ['address', 'member', 'memberYear'] as const;
-type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, PropertyEntry>;
+type ColumnKey = 'address' | 'member' | 'memberYear';
+type GridTableProps = GenericGTProps<ColumnKey, PropertyEntry>;
 type GTProps = Required<GridTableProps>;
 
 type CustomGridTableProps = Omit<
@@ -118,6 +118,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
       isHeaderSticky
       config={{
         gridContainer: cn('grid-cols-[repeat(6,1fr)_max-content]', className),
+        headerSticky: cn('top-header-height'),
         headerContainer: cn('mx-0.5 px-3 py-2'),
         bodyContainer: cn(
           'mx-0.5 p-3',
@@ -126,7 +127,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
         ),
         bodyGrid: cn('gap-1 overflow-hidden'),
       }}
-      columnKeys={COLUMN_KEYS}
+      columnKeys={['address', 'member', 'memberYear']}
       columnConfig={{
         address: cn('col-span-6 sm:col-span-2'),
         member: cn('col-span-6 sm:col-span-4'),

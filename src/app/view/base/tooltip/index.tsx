@@ -24,7 +24,7 @@ export const Tooltip = React.forwardRef<HTMLElement | null, TooltipProps>(
         classNames={{
           base: twMerge(
             // Should be fixed at bottom-right corner of screen
-            !!isFixed && 'fixed bottom-0 right-0',
+            !!isFixed && 'fixed bottom-0 right-0 max-w-1/2',
             base
           ),
           content: twMerge(
