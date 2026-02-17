@@ -15,7 +15,7 @@ interface Props<ColumnKey extends Readonly<string>>
   renderHeader: HeaderRenderer<ColumnKey>;
 }
 
-export function Header<ColumnKey extends Readonly<string>>(
+export function HeaderContainer<ColumnKey extends Readonly<string>>(
   props: Props<ColumnKey>
 ) {
   const { sortDescriptor, onSortChange, renderHeader, ...otherProps } = props;

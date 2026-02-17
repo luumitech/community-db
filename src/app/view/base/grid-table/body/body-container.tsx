@@ -2,8 +2,8 @@ import { Card, CardBody, cn, type CardProps } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT, COMMON_PROPS } from './_config';
-import type { CommonProps, ItemRenderer, ItemWithId } from './_type';
+import { CLASS_DEFAULT, COMMON_PROPS } from '../_config';
+import type { CommonProps, ItemRenderer, ItemWithId } from '../_type';
 
 interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
   extends CardProps, CommonProps<ColumnKey> {
@@ -11,7 +11,7 @@ interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
   renderItem: ItemRenderer<ColumnKey, ItemT>;
 }
 
-export function Body<
+export function BodyContainer<
   ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
 >(props: Props<ColumnKey, ItemT>) {

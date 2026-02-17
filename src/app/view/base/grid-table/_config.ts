@@ -56,7 +56,7 @@ export const CLASS_DEFAULT: ClassDefault = {
   bodyContainer: cn(''),
 };
 
-/** Properties in HeaderWrapperProps */
+/** Properties in HeaderProps */
 export const HEADER_PROPS = [
   'isHeaderSticky',
   'sortDescriptor',
@@ -65,8 +65,13 @@ export const HEADER_PROPS = [
   'renderHeader',
 ] as const;
 
-/** Properties in BodyWrapperProps */
-export const BODY_PROPS = ['virtualConfig', 'items'] as const;
+/** Properties in BodyProps */
+export const BODY_PROPS = [
+  'virtualConfig',
+  'items',
+  'itemCardProps',
+  'renderItem',
+] as const;
 
 /** Properties in CommonProps */
 export const COMMON_PROPS = [

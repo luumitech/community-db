@@ -1,24 +1,40 @@
-import { cn } from '@heroui/react';
+import { cn, type CardProps } from '@heroui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
+import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT } from '../_config';
-import type { ItemWithId, VirtualConfig } from '../_type';
+import { CLASS_DEFAULT, COMMON_PROPS } from '../_config';
+import type {
+  CommonProps,
+  ItemRenderer,
+  ItemWithId,
+  VirtualConfig,
+} from '../_type';
+import { BodyContainer } from './body-container';
 
 type CustomVirtualConfig = Omit<VirtualConfig, 'isVirtualized'>;
 
-interface Props<ItemT extends ItemWithId> extends CustomVirtualConfig {
+interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
+  extends CommonProps<ColumnKey>, CustomVirtualConfig {
   /**
    * Scroll element (i.e. parent element). Used for when `isVirtualized` is
    * enabled
    */
   scrollRef?: React.RefObject<HTMLDivElement | null>;
   items: ItemT[];
-  children: (item: ItemT) => React.ReactNode;
+  /** Pass additional props to Card component for each item */
+  itemCardProps?: (item: ItemT) => CardProps | null | undefined;
+  /** Render an item given a column and a row item */
+  renderItem: ItemRenderer<ColumnKey, ItemT>;
 }
 
-export function VirtualWrap<ItemT extends ItemWithId>(_props: Props<ItemT>) {
-  const { scrollRef, items, children, ...virtualizerConfig } = _props;
+export function VirtualWrap<
+  ColumnKey extends Readonly<string>,
+  ItemT extends ItemWithId,
+>(props: Props<ColumnKey, ItemT>) {
+  const commonProps = R.pick(props, COMMON_PROPS);
+  const { scrollRef, items, itemCardProps, renderItem, ...virtualizerConfig } =
+    props;
   const { gap = 8, estimateSize, measureElement } = virtualizerConfig;
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -69,7 +85,12 @@ export function VirtualWrap<ItemT extends ItemWithId>(_props: Props<ItemT>) {
               transform: `translateY(${row.start}px)`,
             }}
           >
-            {children(item)}
+            <BodyContainer
+              item={item}
+              {...itemCardProps?.(item)}
+              renderItem={renderItem}
+              {...commonProps}
+            />
           </div>
         );
       })}

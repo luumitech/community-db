@@ -4,14 +4,14 @@ import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import { CLASS_DEFAULT, COMMON_PROPS, HEADER_PROPS } from '../_config';
 import type { CommonProps, HeaderRenderer, SortDescriptor } from '../_type';
-import { Header } from './header';
+import { HeaderContainer } from './header-container';
 
 /**
  * List of props for header
  *
  * - NOTE: Update HEADER_PROPS in '_type.ts' if adding or removing properties here
  */
-export interface HeaderWrapperProps<ColumnKey extends Readonly<string>> {
+export interface HeaderProps<ColumnKey extends Readonly<string>> {
   /**
    * Should header be sticky?,
    *
@@ -28,9 +28,9 @@ export interface HeaderWrapperProps<ColumnKey extends Readonly<string>> {
 }
 
 interface Props<ColumnKey extends Readonly<string>>
-  extends CommonProps<ColumnKey>, HeaderWrapperProps<ColumnKey> {}
+  extends CommonProps<ColumnKey>, HeaderProps<ColumnKey> {}
 
-export function HeaderWrapper<ColumnKey extends Readonly<string>>(
+export function Header<ColumnKey extends Readonly<string>>(
   props: Props<ColumnKey>
 ) {
   const _headerProps = R.pick(props, HEADER_PROPS);
@@ -52,7 +52,11 @@ export function HeaderWrapper<ColumnKey extends Readonly<string>>(
     >
       {!!topContent && <div className={cn('col-span-full')}>{topContent}</div>}
       {!!renderHeader && (
-        <Header renderHeader={renderHeader} {...headerProps} {...commonProps} />
+        <HeaderContainer
+          renderHeader={renderHeader}
+          {...headerProps}
+          {...commonProps}
+        />
       )}
     </div>
   );
