@@ -4,10 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import { CLASS_DEFAULT, COMMON_PROPS } from './_config';
 import type { CommonProps } from './_type';
 
-type DivProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+type DivProps = React.ComponentProps<'div'>;
 
 interface Props<ColumnKey extends Readonly<string>>
   extends CommonProps<ColumnKey>, DivProps {

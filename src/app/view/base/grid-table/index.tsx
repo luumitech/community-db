@@ -17,10 +17,7 @@ import { Header, type HeaderProps } from './header';
 export { CLASS_DEFAULT } from './_config';
 export type { SortDescriptor } from './_type';
 
-type DivProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+type DivProps = React.ComponentProps<'div'>;
 
 export interface GridTableProps<
   ColumnKey extends Readonly<string>,

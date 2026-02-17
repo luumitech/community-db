@@ -6,10 +6,7 @@ import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 import { Icon, type IconProps } from '~/view/base/icon';
 import { Tooltip, TooltipProps } from '~/view/base/tooltip';
 
-type DivProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+type DivProps = React.ComponentProps<'div'>;
 
 interface Props extends DivProps {
   className?: string;
