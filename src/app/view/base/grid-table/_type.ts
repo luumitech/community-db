@@ -26,14 +26,6 @@ export interface ClassNameConfig {
    */
   headerContainer?: string;
   /**
-   * Classes applied to the header <CardBody>
-   *
-   * For example:
-   *
-   * - Good for defining grid spacing
-   */
-  headerGrid?: string;
-  /**
    * Classes applied to body container
    *
    * For example:

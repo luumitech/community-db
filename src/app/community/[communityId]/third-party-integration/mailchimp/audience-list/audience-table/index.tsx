@@ -114,9 +114,12 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
         gap: cardHasBorder ? 8 : 0,
       }}
       config={{
-        gridContainer: twMerge('grid-cols-[repeat(6,auto)]', className),
+        gridContainer: twMerge(
+          'grid-cols-[repeat(2,minmax(0,1fr))_repeat(4,auto)]',
+          'gap-2',
+          className
+        ),
         headerContainer: cn('mx-0.5 truncate px-3 py-2'),
-        headerGrid: cn('gap-2'),
         bodyContainer: cn(
           'mx-0.5 px-3',
           `py-[${CARD_PADDING_PX}]`,
@@ -139,21 +142,14 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
            * collapses into multiple rows
            */
           cardHasBorder && 'font-semibold md:font-normal',
-          'col-span-full sm:col-span-3 md:col-span-1'
+          'col-span-full sm:col-span-3 md:col-span-1',
+          'truncate'
         ),
-        full_name: cn('col-span-full sm:col-span-3 md:col-span-1'),
-        status: cn('col-span-2', 'md:col-span-1'),
-        optOut: cn(
-          'col-span-2 sm:col-span-1 md:col-span-1',
-          // center only on full width
-          'md:flex md:justify-center'
-        ),
-        warning: cn(
-          'col-span-2 sm:col-span-1 md:col-span-1',
-          // center only on full width
-          'md:flex md:justify-center'
-        ),
-        actions: cn('col-span-full sm:col-span-1 md:col-span-1'),
+        full_name: cn('col-span-full sm:col-span-3 md:col-span-1', 'truncate'),
+        status: cn('col-span-2 sm:col-span-2 md:col-span-1'),
+        optOut: cn('col-span-2 sm:col-span-1 md:col-span-1'),
+        warning: cn('col-span-2 sm:col-span-1 md:col-span-1'),
+        actions: cn('col-span-full sm:col-span-2 md:col-span-1'),
       }}
       sortableColumnKeys={[
         'email_address',
