@@ -2,13 +2,12 @@ import { type CardProps } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { BODY_PROPS, COMMON_PROPS } from '../_config';
-import type {
-  CommonProps,
-  ItemRenderer,
-  ItemWithId,
-  VirtualConfig,
-} from '../_type';
-import { BodyContainer } from './body-container';
+import type { CommonProps, ItemWithId, VirtualConfig } from '../_type';
+import {
+  BODY_CONTAINER_PROPS,
+  BodyContainer,
+  type BodyContainerProps,
+} from './body-container';
 import { VirtualWrap } from './virtual-wrap';
 
 /**
@@ -19,7 +18,7 @@ import { VirtualWrap } from './virtual-wrap';
 export interface BodyProps<
   ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
-> {
+> extends BodyContainerProps<ColumnKey, ItemT> {
   /**
    * Tanstack virtualization configuration
    *
@@ -29,8 +28,6 @@ export interface BodyProps<
   items: ItemT[];
   /** Pass additional props to Card component for each item */
   itemCardProps?: (item: ItemT) => CardProps | null | undefined;
-  /** Render an item given a column and a row item */
-  renderItem: ItemRenderer<ColumnKey, ItemT>;
 }
 
 interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
@@ -46,9 +43,10 @@ export function Body<
   ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
 >(props: Props<ColumnKey, ItemT>) {
-  const _bodyProps = R.pick(props, BODY_PROPS);
+  const bodyProps = R.pick(props, BODY_PROPS);
+  const bodyContainerProps = R.pick(props, BODY_CONTAINER_PROPS);
   const commonProps = R.pick(props, COMMON_PROPS);
-  const { virtualConfig, items, itemCardProps, renderItem } = _bodyProps;
+  const { virtualConfig, items, itemCardProps, renderItem } = bodyProps;
 
   if (items.length === 0) {
     return null;
@@ -56,17 +54,32 @@ export function Body<
 
   if (!virtualConfig?.isVirtualized) {
     return items.map((item) => (
-      <React.Fragment key={item.id}>
-        <BodyContainer
-          item={item}
-          renderItem={renderItem}
-          {...itemCardProps?.(item)}
-          {...commonProps}
-        />
-      </React.Fragment>
+      <BodyContainer
+        key={item.id}
+        item={item}
+        {...bodyContainerProps}
+        {...itemCardProps?.(item)}
+        {...commonProps}
+      />
     ));
   }
 
   const { isVirtualized, ...configProps } = virtualConfig;
-  return <VirtualWrap {...configProps} {...commonProps} {..._bodyProps} />;
+  return (
+    <VirtualWrap
+      scrollRef={props.scrollRef}
+      {...configProps}
+      {...commonProps}
+      items={items}
+    >
+      {(item) => (
+        <BodyContainer
+          item={item}
+          {...bodyContainerProps}
+          {...itemCardProps?.(item)}
+          {...commonProps}
+        />
+      )}
+    </VirtualWrap>
+  );
 }

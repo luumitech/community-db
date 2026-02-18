@@ -6,21 +6,36 @@ import { CLASS_DEFAULT, COMMON_PROPS } from '../_config';
 import type { CommonProps, HeaderRenderer, SortDescriptor } from '../_type';
 import { SortIndicator } from './sort-indicator';
 
-interface Props<ColumnKey extends Readonly<string>>
-  extends CardProps, CommonProps<ColumnKey> {
+/** Properties in HeaderContainerProps */
+export const HEADER_CONTAINER_PROPS = [
+  'sortDescriptor',
+  'onSortChange',
+] as const;
+
+export interface HeaderContainerProps<ColumnKey extends Readonly<string>> {
   /** The current sorted column and direction. */
   sortDescriptor?: SortDescriptor<ColumnKey> | null;
   /** Handler that is called when the sorted column or direction changes. */
   onSortChange?: (descriptor: SortDescriptor<ColumnKey> | null) => void;
+}
+
+interface Props<ColumnKey extends Readonly<string>>
+  extends HeaderContainerProps<ColumnKey>, CardProps, CommonProps<ColumnKey> {
   renderHeader: HeaderRenderer<ColumnKey>;
 }
 
 export function HeaderContainer<ColumnKey extends Readonly<string>>(
   props: Props<ColumnKey>
 ) {
-  const { sortDescriptor, onSortChange, renderHeader, ...otherProps } = props;
+  const { renderHeader, ...otherProps } = props;
   const commonProps = R.pick(props, COMMON_PROPS);
-  const cardProps = R.omit(otherProps, COMMON_PROPS);
+  const headerContainerProps = R.pick(props, HEADER_CONTAINER_PROPS);
+  const cardProps = R.omit(otherProps, [
+    ...HEADER_CONTAINER_PROPS,
+    ...COMMON_PROPS,
+  ]);
+  const { sortDescriptor, onSortChange } = headerContainerProps;
+
   const { config, sortableColumnKeys, columnKeys, columnConfig } = commonProps;
 
   const sortDirection = React.useCallback(

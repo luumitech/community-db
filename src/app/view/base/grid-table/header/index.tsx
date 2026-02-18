@@ -2,26 +2,28 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
-import { CLASS_DEFAULT, COMMON_PROPS, HEADER_PROPS } from '../_config';
-import type { CommonProps, HeaderRenderer, SortDescriptor } from '../_type';
-import { HeaderContainer } from './header-container';
+import { CLASS_DEFAULT, COMMON_PROPS } from '../_config';
+import type { CommonProps, HeaderRenderer } from '../_type';
+import {
+  HEADER_CONTAINER_PROPS,
+  HeaderContainer,
+  type HeaderContainerProps,
+} from './header-container';
 
 /**
  * List of props for header
  *
  * - NOTE: Update HEADER_PROPS in '_type.ts' if adding or removing properties here
  */
-export interface HeaderProps<ColumnKey extends Readonly<string>> {
+export interface HeaderProps<
+  ColumnKey extends Readonly<string>,
+> extends HeaderContainerProps<ColumnKey> {
   /**
    * Should header be sticky?,
    *
    * - When sticky, you can customize the sticky CSS using config.headerSticky
    */
   isHeaderSticky?: boolean;
-  /** The current sorted column and direction. */
-  sortDescriptor?: SortDescriptor<ColumnKey> | null;
-  /** Handler that is called when the sorted column or direction changes. */
-  onSortChange?: (descriptor: SortDescriptor<ColumnKey> | null) => void;
   /** Render a custom component above the header */
   topContent?: React.ReactNode;
   renderHeader?: HeaderRenderer<ColumnKey>;
@@ -33,10 +35,9 @@ interface Props<ColumnKey extends Readonly<string>>
 export function Header<ColumnKey extends Readonly<string>>(
   props: Props<ColumnKey>
 ) {
-  const _headerProps = R.pick(props, HEADER_PROPS);
+  const { isHeaderSticky, topContent, renderHeader } = props;
+  const headerContainerProps = R.pick(props, HEADER_CONTAINER_PROPS);
   const commonProps = R.pick(props, COMMON_PROPS);
-  const { isHeaderSticky, topContent, renderHeader, ...headerProps } =
-    _headerProps;
 
   if (!topContent && !renderHeader) {
     return null;
@@ -54,7 +55,7 @@ export function Header<ColumnKey extends Readonly<string>>(
       {!!renderHeader && (
         <HeaderContainer
           renderHeader={renderHeader}
-          {...headerProps}
+          {...headerContainerProps}
           {...commonProps}
         />
       )}
