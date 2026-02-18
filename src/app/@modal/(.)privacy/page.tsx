@@ -1,10 +1,10 @@
 'use client';
-import { Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
 import { Link } from '~/view/base/link';
+import { Modal, ModalBody, ModalContent, ModalHeader } from '~/view/base/modal';
 import { Item } from './item';
 
 export default function Privacy() {
@@ -12,7 +12,6 @@ export default function Privacy() {
   return (
     <Modal
       size="3xl"
-      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}

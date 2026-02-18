@@ -21,7 +21,6 @@ export const ErrorDialog: React.FC<Props> = (props) => {
 
   return (
     <Modal
-      placement="top-center"
       isOpen
       onOpenChange={goBack}
       scrollBehavior="outside"

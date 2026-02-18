@@ -6,7 +6,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { FlatButton } from '~/view/base/flat-button';
 import { toast } from '~/view/base/toastify';
-import { type AccessEntry } from '../_type';
+import type { AccessEntry } from '../../_type';
 
 export const DeleteFragment = graphql(/* GraphQL */ `
   fragment AccessList_Delete on Access {
@@ -67,6 +67,7 @@ export const RemoveAccess: React.FC<Props> = ({ className, fragment }) => {
       className={twMerge('text-danger', className)}
       icon="trash"
       tooltip="Remove Access"
+      tooltipProps={{ isFixed: true }}
       onClick={onDelete}
       disabled={fragment.isOwner}
       confirmation

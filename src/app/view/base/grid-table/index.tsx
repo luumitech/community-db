@@ -1,4 +1,4 @@
-import { cn, type CardProps } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { Loading } from '~/view/base/loading';
@@ -8,34 +8,26 @@ import {
   COMMON_PROPS,
   HEADER_PROPS,
 } from './_config';
-import type { CommonProps, ItemRenderer, ItemWithId } from './_type';
-import { Body } from './body';
-import { BodyWrapper, type BodyWrapperProps } from './body-wrapper';
+import type { CommonProps, ItemWithId } from './_type';
+import { Body, type BodyProps } from './body';
 import { Container } from './container';
 import { EmptyContent } from './empty-content';
-import { HeaderWrapper, type HeaderWrapperProps } from './header-wrapper';
+import { Header, type HeaderProps } from './header';
 
 export { CLASS_DEFAULT } from './_config';
 export type { SortDescriptor } from './_type';
 
-type DivProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+type DivProps = React.ComponentProps<'div'>;
 
 export interface GridTableProps<
-  K extends readonly string[],
+  ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
 >
   extends
-    CommonProps<K>,
-    HeaderWrapperProps<K[number]>,
-    BodyWrapperProps<ItemT>,
+    CommonProps<ColumnKey>,
+    HeaderProps<ColumnKey>,
+    BodyProps<ColumnKey, ItemT>,
     DivProps {
-  /** Render an item given a column and a row item */
-  renderItem: ItemRenderer<K[number], ItemT>;
-  /** Pass additional props to Card component for each item */
-  itemCardProps?: (item: ItemT) => CardProps | null | undefined;
   /** Items are still loading */
   isLoading?: boolean;
   /** Render a custom component when the table is empty */
@@ -50,19 +42,12 @@ export interface GridTableProps<
  * - The header always sticks to top of screen (just below app header)
  */
 export function GridTable<
-  K extends readonly string[],
+  ColumnKey extends Readonly<string>,
   ItemT extends ItemWithId,
->(props: GridTableProps<K, ItemT>) {
+>(props: GridTableProps<ColumnKey, ItemT>) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  const {
-    renderItem,
-    itemCardProps,
-    isLoading,
-    emptyContent,
-    bottomContent,
-    ...otherProps
-  } = props;
+  const { isLoading, emptyContent, bottomContent, ...otherProps } = props;
   const headerProps = R.pick(props, HEADER_PROPS);
   const bodyProps = R.pick(props, BODY_PROPS);
   const commonProps = R.pick(props, COMMON_PROPS);
@@ -82,7 +67,7 @@ export function GridTable<
       {...commonProps}
       {...divProps}
     >
-      <HeaderWrapper {...headerProps} {...commonProps} />
+      <Header {...headerProps} {...commonProps} />
       {isLoading ? (
         <div className="col-span-full">
           <Loading className="my-2 flex justify-center" />
@@ -90,16 +75,7 @@ export function GridTable<
       ) : items.length === 0 ? (
         <EmptyContent emptyContent={emptyContent} />
       ) : (
-        <BodyWrapper scrollRef={scrollRef} {...bodyProps} {...commonProps}>
-          {(item) => (
-            <Body
-              item={item}
-              {...itemCardProps?.(item)}
-              renderItem={renderItem}
-              {...commonProps}
-            />
-          )}
-        </BodyWrapper>
+        <Body scrollRef={scrollRef} {...bodyProps} {...commonProps} />
       )}
       {!!bottomContent && <div className="col-span-full">{bottomContent}</div>}
     </Container>

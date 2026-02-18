@@ -15,8 +15,8 @@ import { OptOut } from './opt-out';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-const COLUMN_KEYS = ['name', 'detail', 'optOut'] as const;
-type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, OccupantEntry>;
+type ColumnKey = 'name' | 'detail' | 'optOut';
+type GridTableProps = GenericGTProps<ColumnKey, OccupantEntry>;
 type GTProps = Required<GridTableProps>;
 
 type CustomGridTableProps = Omit<
@@ -55,12 +55,6 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
     }
   }, []);
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback((item) => {
-    return {
-      shadow: 'none',
-    };
-  }, []);
-
   return (
     <GridTable
       aria-label="Occupant Details Table"
@@ -79,10 +73,8 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
           'hidden sm:grid'
         ),
         bodyContainer: cn('px-3', 'text-sm font-normal text-foreground'),
-        bodyGrid: cn('gap-1'),
       }}
-      itemCardProps={itemCardProps}
-      columnKeys={COLUMN_KEYS}
+      columnKeys={['name', 'detail', 'optOut']}
       columnConfig={{
         name: 'sm:col-span-2',
         detail: 'col-span-2 sm:col-span-4',

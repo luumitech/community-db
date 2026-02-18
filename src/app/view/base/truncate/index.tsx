@@ -7,10 +7,7 @@ import { Ellipsis } from './ellipsis';
 
 export { Ellipsis } from './ellipsis';
 
-type DivProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+type DivProps = React.ComponentProps<'div'>;
 
 export interface TruncateProps extends DivProps {
   className?: string;

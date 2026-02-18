@@ -1,14 +1,14 @@
 'use client';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { appLabel } from '~/lib/app-path';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@heroui/react';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { appLabel } from '~/lib/app-path';
+} from '~/view/base/modal';
 import { PanelWrapper } from './panel-wrapper';
 import { PlanContextProvider } from './plan-context';
 
@@ -18,7 +18,6 @@ export default function PricingPlan() {
   return (
     <Modal
       size="xl"
-      placement="top-center"
       scrollBehavior="outside"
       isOpen
       onOpenChange={() => router.back()}

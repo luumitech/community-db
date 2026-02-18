@@ -79,7 +79,6 @@ export const ModalDialog: React.FC<Props> = ({
   return (
     <Modal
       size="2xl"
-      placement="top-center"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}

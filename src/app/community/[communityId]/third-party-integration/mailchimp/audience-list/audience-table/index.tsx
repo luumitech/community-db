@@ -18,15 +18,14 @@ import { Warning } from './warning';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-const COLUMN_KEYS = [
-  'email_address',
-  'full_name',
-  'status',
-  'optOut',
-  'warning',
-  'actions',
-] as const;
-type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, AudienceMember>;
+type ColumnKey =
+  | 'email_address'
+  | 'full_name'
+  | 'status'
+  | 'optOut'
+  | 'warning'
+  | 'actions';
+type GridTableProps = GenericGTProps<ColumnKey, AudienceMember>;
 type GTProps = Required<GridTableProps>;
 export type SortDescriptor = GTProps['sortDescriptor'];
 
@@ -99,17 +98,6 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
   // Padding on each row (in the card)
   const CARD_PADDING_PX = cardHasBorder ? 8 : 4;
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
-    (item) => {
-      if (!cardHasBorder) {
-        return {
-          shadow: 'none',
-        };
-      }
-    },
-    [cardHasBorder]
-  );
-
   const estimateSize = React.useCallback(() => {
     let height = rowHeight(isSmDevice ? 4 : isMdDevice ? 2 : 1);
     height += CARD_PADDING_PX * 2;
@@ -126,18 +114,27 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
         gap: cardHasBorder ? 8 : 0,
       }}
       config={{
-        gridContainer: twMerge('grid-cols-[repeat(6,auto)]', className),
-        headerSticky: cn('sticky top-0 z-50 bg-background'),
+        gridContainer: twMerge(
+          'grid-cols-[repeat(2,minmax(0,1fr))_repeat(4,auto)]',
+          'gap-2',
+          className
+        ),
         headerContainer: cn('mx-0.5 truncate px-3 py-2'),
-        headerGrid: cn('gap-2'),
         bodyContainer: cn(
           'mx-0.5 px-3',
           `py-[${CARD_PADDING_PX}]`,
-          'hover:bg-primary-50'
+          'hover:bg-primary-50',
+          'items-center gap-0.5 text-sm'
         ),
-        bodyGrid: cn('items-center gap-0.5 text-sm'),
       }}
-      columnKeys={COLUMN_KEYS}
+      columnKeys={[
+        'email_address',
+        'full_name',
+        'status',
+        'optOut',
+        'warning',
+        'actions',
+      ]}
       columnConfig={{
         email_address: cn(
           /**
@@ -145,21 +142,14 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
            * collapses into multiple rows
            */
           cardHasBorder && 'font-semibold md:font-normal',
-          'col-span-full sm:col-span-3 md:col-span-1'
+          'col-span-full sm:col-span-3 md:col-span-1',
+          'truncate'
         ),
-        full_name: cn('col-span-full sm:col-span-3 md:col-span-1'),
-        status: cn('col-span-2', 'md:col-span-1'),
-        optOut: cn(
-          'col-span-2 sm:col-span-1 md:col-span-1',
-          // center only on full width
-          'md:flex md:justify-center'
-        ),
-        warning: cn(
-          'col-span-2 sm:col-span-1 md:col-span-1',
-          // center only on full width
-          'md:flex md:justify-center'
-        ),
-        actions: cn('col-span-full sm:col-span-1 md:col-span-1'),
+        full_name: cn('col-span-full sm:col-span-3 md:col-span-1', 'truncate'),
+        status: cn('col-span-2 sm:col-span-2 md:col-span-1'),
+        optOut: cn('col-span-2 sm:col-span-1 md:col-span-1'),
+        warning: cn('col-span-2 sm:col-span-1 md:col-span-1'),
+        actions: cn('col-span-full sm:col-span-2 md:col-span-1'),
       }}
       sortableColumnKeys={[
         'email_address',
@@ -170,7 +160,6 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       ]}
       renderHeader={renderHeader}
       renderItem={renderItem}
-      itemCardProps={itemCardProps}
       {...props}
     />
   );
@@ -180,7 +169,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
 function rowHeight(numLine: number) {
   /** Default height for each row */
   const lineHeight = 24;
-  /** BodyGrid gap-0.5 is equivalent to 2px gap */
+  /** Gap-0.5 (in bodyContainer) is equivalent to 2px gap */
   const gap = 2;
 
   return lineHeight * numLine + gap * (numLine - 1);

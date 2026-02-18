@@ -11,8 +11,8 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import type { AccessEntry } from '../_type';
+import { RoleSelect } from '../role-select';
 import { EmailEditor } from './email-editor';
-import { RoleEditor } from './role-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
 export interface ModalArg {
@@ -53,7 +53,6 @@ export const CreateModal: React.FC<Props> = ({
   return (
     <Modal
       size="md"
-      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
@@ -69,7 +68,7 @@ export const CreateModal: React.FC<Props> = ({
                 <ModalHeader>Add User To Access List</ModalHeader>
                 <ModalBody>
                   <EmailEditor />
-                  <RoleEditor />
+                  <RoleSelect controlName="role" />
                 </ModalBody>
                 <ModalFooter>
                   <Button

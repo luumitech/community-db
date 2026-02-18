@@ -41,7 +41,6 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
   return (
     <Modal
       size="5xl"
-      placement="top-center"
       isOpen
       onOpenChange={goBack}
       scrollBehavior="inside"

@@ -1,24 +1,14 @@
 'use client';
 import { useQuery } from '@apollo/client';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from '@heroui/react';
+import { useDisclosure } from '@heroui/react';
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
-import { Loading } from '~/view/base/loading';
 import { MoreMenu } from '../common/more-menu';
+import { AccessTable } from './access-table';
+import { AddUserButton } from './add-user-button';
 import { CopyShareLink } from './copy-share-link';
-import { NewAccessButton } from './new-access-button';
-import { RoleDescription } from './role-description';
-import { useTableData } from './use-table-data';
 
 interface Params {
   communityId: string;
@@ -65,14 +55,13 @@ export default function Share(props: RouteArgs) {
   const params = React.use(props.params);
   const { communityId } = params;
   const { isAdmin } = useSelector((state) => state.community);
+  const disclosure = useDisclosure();
   const result = useQuery(CommunityAccessListQuery, {
     variables: { id: communityId },
     onError,
   });
   const { data, loading } = result;
   const community = React.useMemo(() => data?.communityFromId, [data]);
-
-  const { columns, renderCell } = useTableData(isAdmin);
 
   /** Generate access list for all users (including self) */
   const accessList = React.useMemo(() => {
@@ -91,72 +80,29 @@ export default function Share(props: RouteArgs) {
     }));
   }, [community]);
 
-  const renderRows = React.useCallback(() => {
-    return accessList.map((entry) => (
-      <TableRow key={entry.id}>
-        {columns.map((col) => (
-          <TableCell key={col.key}>
-            <div className="flex h-6 items-center">
-              {renderCell(entry, col.key)}
-            </div>
-          </TableCell>
-        ))}
-      </TableRow>
-    ));
-  }, [accessList, renderCell, columns]);
-
   const topContent = React.useMemo(() => {
     if (!community) {
       return null;
     }
-    return <CopyShareLink communityId={community.id} />;
+    return <CopyShareLink className="mb-2" communityId={community.id} />;
   }, [community]);
 
-  const bottomContent = React.useMemo(() => {
-    if (!community || !isAdmin) {
-      return null;
-    }
-    return (
-      <NewAccessButton communityId={community.id} accessList={accessList} />
-    );
-  }, [community, isAdmin, accessList]);
-
   return (
-    <>
+    <div className="flex max-h-main-height flex-col">
       <MoreMenu omitKeys={['communityShare']} />
-      <Table
-        aria-label="Community Access List"
-        classNames={{
-          base: ['max-h-main-height'],
-          // Don't use array here
-          // See: https://github.com/nextui-org/nextui/issues/2304
-          // replaces the removeWrapper attribute
-          // use this to keep scroll bar within table
-          wrapper: 'p-0',
-        }}
-        // removeWrapper
-        isHeaderSticky
+      <AccessTable
+        className="grow overflow-auto"
+        items={accessList}
+        isLoading={loading}
         topContent={topContent}
-        topContentPlacement="outside"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.key} className={column.className}>
-              {column.label}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          isLoading={loading}
-          loadingContent={<Loading />}
-          items={accessList}
-        >
-          {renderRows()}
-        </TableBody>
-      </Table>
-      <RoleDescription className="mt-3" />
-    </>
+      />
+      {community != null && isAdmin && (
+        <AddUserButton
+          className="mt-3"
+          communityId={community.id}
+          accessList={accessList}
+        />
+      )}
+    </div>
   );
 }

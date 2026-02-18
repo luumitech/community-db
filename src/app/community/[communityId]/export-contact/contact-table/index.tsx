@@ -13,8 +13,8 @@ import type { ContactListEntry } from '../_type';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-const COLUMN_KEYS = ['firstName', 'lastName', 'email', 'address'] as const;
-type GridTableProps = GenericGTProps<typeof COLUMN_KEYS, ContactListEntry>;
+type ColumnKey = 'firstName' | 'lastName' | 'email' | 'address';
+type GridTableProps = GenericGTProps<ColumnKey, ContactListEntry>;
 type GTProps = Required<GridTableProps>;
 
 type CustomGridTableProps = Omit<
@@ -64,11 +64,18 @@ export const ContactTable: React.FC<ContactTableProps> = ({
           'sm:grid-cols-[repeat(4,auto)]',
           className
         ),
+        headerSticky: cn('top-header-height'),
         headerContainer: cn('p-2'),
-        bodyContainer: cn('p-2 text-sm'),
+        bodyContainer: cn('px-2 py-1 text-sm', 'hover:bg-primary-50'),
       }}
-      columnKeys={COLUMN_KEYS}
+      columnKeys={['firstName', 'lastName', 'email', 'address']}
       columnConfig={{
+        /**
+         * Bold the name in small media size, so it's easier to differentiate
+         * between rows
+         */
+        firstName: cn('font-semibold sm:font-normal'),
+        lastName: cn('font-semibold sm:font-normal'),
         email: cn('col-span-2 sm:col-span-1'),
         address: cn('col-span-2 sm:col-span-1'),
       }}

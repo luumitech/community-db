@@ -1,18 +1,18 @@
 'use client';
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '@heroui/react';
+import { Button } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
 import { Icon } from '~/view/base/icon';
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from '~/view/base/modal';
 import { BuiltBy } from '~/view/footer/build-by';
 
 export default function About() {
@@ -20,7 +20,6 @@ export default function About() {
   return (
     <Modal
       size="lg"
-      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}

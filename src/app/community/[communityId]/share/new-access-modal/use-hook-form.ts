@@ -5,7 +5,7 @@ import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 import type { AccessEntry } from '../_type';
-import { UserInfoFragment } from '../user-info';
+import { UserInfoFragment } from '../access-table/user-info';
 
 function schema() {
   return z

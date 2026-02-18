@@ -11,7 +11,7 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { type AccessEntry } from '../_type';
-import { RoleEditor } from './role-editor';
+import { RoleSelect } from '../role-select';
 import {
   InputData,
   useHookForm,
@@ -54,7 +54,6 @@ export const ModifyModal: React.FC<Props> = ({
   return (
     <Modal
       size="md"
-      placement="top-center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
@@ -69,7 +68,7 @@ export const ModifyModal: React.FC<Props> = ({
               <>
                 <ModalHeader>Modify Access for {access.user.email}</ModalHeader>
                 <ModalBody>
-                  <RoleEditor />
+                  <RoleSelect controlName="role" />
                 </ModalBody>
                 <ModalFooter>
                   <Button

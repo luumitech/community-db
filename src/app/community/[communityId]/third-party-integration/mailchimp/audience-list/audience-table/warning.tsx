@@ -1,6 +1,7 @@
-import { Tooltip, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
+import { Tooltip } from '~/view/base/tooltip';
 import type { AudienceMember } from '../_type';
 
 interface Props {
@@ -17,6 +18,7 @@ export const Warning: React.FC<Props> = ({ className, item }) => {
 
   return (
     <Tooltip
+      isFixed
       content={<div className="max-w-48 text-tiny text-wrap">{warning}</div>}
     >
       <Icon className="text-warning" icon="warning" size={16} />

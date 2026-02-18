@@ -23,10 +23,7 @@ type ContextT = Readonly<{
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
 
-type DivProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+type DivProps = React.ComponentProps<'div'>;
 
 interface Props extends DivProps {
   className?: string;

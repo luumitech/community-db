@@ -9,7 +9,7 @@ interface Props {
 
 export const RoleItem: React.FC<Props> = ({ className, role, children }) => {
   return (
-    <div className={twMerge('text-sm text-default-500', className)}>
+    <div className={twMerge('text-sm text-default-300', className)}>
       <span className="font-bold">{role}</span> role:
       {children && (
         <ul className="list-disc pl-6">

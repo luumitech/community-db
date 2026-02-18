@@ -1,8 +1,8 @@
 'use client';
-import { Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel } from '~/lib/app-path';
+import { Modal, ModalBody, ModalContent, ModalHeader } from '~/view/base/modal';
 import { SelectTheme } from './select-theme';
 
 interface Params {}
@@ -16,7 +16,6 @@ export default function Preference(props: RouteArgs) {
   return (
     <Modal
       size="xl"
-      placement="top-center"
       scrollBehavior="outside"
       isOpen
       onOpenChange={() => router.back()}

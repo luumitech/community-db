@@ -1,17 +1,17 @@
 'use client';
+import { User } from '@heroui/react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useUserInfo } from '~/custom-hooks/user-info';
+import { appLabel } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  User,
-} from '@heroui/react';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useUserInfo } from '~/custom-hooks/user-info';
-import { appLabel } from '~/lib/app-path';
-import { Button } from '~/view/base/button';
+} from '~/view/base/modal';
 import { BuiltBy } from '~/view/footer/build-by';
 import { DeleteAccount } from './delete-account';
 import { UserInfo } from './user-info';
@@ -23,7 +23,6 @@ export default function UserProfile() {
   return (
     <Modal
       size="xl"
-      placement="top-center"
       scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}

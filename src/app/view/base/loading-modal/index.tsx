@@ -1,6 +1,7 @@
-import { Modal, ModalBody, ModalContent, Spinner } from '@heroui/react';
+import { Spinner } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { Modal, ModalBody, ModalContent } from '~/view/base/modal';
 
 interface Props {}
 

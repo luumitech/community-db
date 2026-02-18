@@ -1,24 +1,28 @@
-import { cn } from '@heroui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { CLASS_DEFAULT } from '../_config';
-import type { ItemWithId, VirtualConfig } from '../_type';
+import type { CommonProps, ItemWithId, VirtualConfig } from '../_type';
 
 type CustomVirtualConfig = Omit<VirtualConfig, 'isVirtualized'>;
 
-interface Props<ItemT extends ItemWithId> extends CustomVirtualConfig {
+interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
+  extends CommonProps<ColumnKey>, CustomVirtualConfig {
   /**
    * Scroll element (i.e. parent element). Used for when `isVirtualized` is
    * enabled
    */
   scrollRef?: React.RefObject<HTMLDivElement | null>;
   items: ItemT[];
+  /** Body container renderer (i.e. rendering a row) */
   children: (item: ItemT) => React.ReactNode;
 }
 
-export function VirtualWrap<ItemT extends ItemWithId>(_props: Props<ItemT>) {
-  const { scrollRef, items, children, ...virtualizerConfig } = _props;
+export function VirtualWrap<
+  ColumnKey extends Readonly<string>,
+  ItemT extends ItemWithId,
+>(props: Props<ColumnKey, ItemT>) {
+  const { scrollRef, items, children, ...virtualizerConfig } = props;
   const { gap = 8, estimateSize, measureElement } = virtualizerConfig;
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -46,7 +50,7 @@ export function VirtualWrap<ItemT extends ItemWithId>(_props: Props<ItemT>) {
 
   return (
     <div
-      className={cn(CLASS_DEFAULT.inheritContainer)}
+      className={twMerge(CLASS_DEFAULT.inheritContainer)}
       style={{
         height: rowVirtualizer.getTotalSize(),
       }}
@@ -58,7 +62,7 @@ export function VirtualWrap<ItemT extends ItemWithId>(_props: Props<ItemT>) {
             key={row.key}
             data-index={row.index}
             ref={rowVirtualizer.measureElement}
-            className={cn(
+            className={twMerge(
               CLASS_DEFAULT.inheritContainer,
               // Force all rows to start at the same grid row, which
               // allowing translateY to perform spacing appropriately
