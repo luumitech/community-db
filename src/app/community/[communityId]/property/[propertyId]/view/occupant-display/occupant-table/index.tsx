@@ -55,12 +55,6 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
     }
   }, []);
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback((item) => {
-    return {
-      shadow: 'none',
-    };
-  }, []);
-
   return (
     <GridTable
       aria-label="Occupant Details Table"
@@ -79,9 +73,7 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
           'hidden sm:grid'
         ),
         bodyContainer: cn('px-3', 'text-sm font-normal text-foreground'),
-        bodyGrid: cn('gap-1'),
       }}
-      itemCardProps={itemCardProps}
       columnKeys={['name', 'detail', 'optOut']}
       columnConfig={{
         name: 'sm:col-span-2',

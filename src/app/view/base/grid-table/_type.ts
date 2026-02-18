@@ -41,15 +41,19 @@ export interface ClassNameConfig {
    * - Good for specifying text styles within data rows
    */
   bodyContainer?: string;
-  /**
-   * Classes applied to the header <CardBody>
-   *
-   * For example:
-   *
-   * - Good for defining grid spacing
-   */
-  bodyGrid?: string;
 }
+
+type DivProps = React.ComponentProps<'div'>;
+
+/**
+ * Render a header row container
+ *
+ * @param props Default attributes that should be applied to the container to
+ *   maintain the grid layout
+ */
+export type HeaderContainerRenderer = (
+  props: Pick<DivProps, 'role' | 'className' | 'children'>
+) => React.ReactNode;
 
 /**
  * Render a header column cell
@@ -77,6 +81,18 @@ export interface ItemWithId {
   // Unique ID for each item
   id: string;
 }
+
+/**
+ * Render a row container of a given row item
+ *
+ * @param item Item of a row
+ * @param props Default attributes that should be applied to the container to
+ *   maintain the grid layout
+ */
+export type ItemContainerRenderer<ItemT> = (
+  item: ItemT,
+  props: Pick<DivProps, 'role' | 'className' | 'children'>
+) => React.ReactNode;
 
 /**
  * Render a column cell of a given row item

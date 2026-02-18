@@ -66,10 +66,16 @@ export const ContactTable: React.FC<ContactTableProps> = ({
         ),
         headerSticky: cn('top-header-height'),
         headerContainer: cn('p-2'),
-        bodyContainer: cn('p-2 text-sm'),
+        bodyContainer: cn('px-2 py-1 text-sm', 'hover:bg-primary-50'),
       }}
       columnKeys={['firstName', 'lastName', 'email', 'address']}
       columnConfig={{
+        /**
+         * Bold the name in small media size, so it's easier to differentiate
+         * between rows
+         */
+        firstName: cn('font-semibold sm:font-normal'),
+        lastName: cn('font-semibold sm:font-normal'),
         email: cn('col-span-2 sm:col-span-1'),
         address: cn('col-span-2 sm:col-span-1'),
       }}

@@ -26,16 +26,6 @@ export const CLASS_DEFAULT: ClassDefault = {
     'grid-rows-[min-content]'
   ),
   gridContainer: cn(
-    /**
-     * - Default gap between header row and 1st body row
-     *
-     * If `isVirtualized`:
-     *
-     * - Is false, this gap is applicable between each row
-     * - Is true, the gap needs to be controlled by the `gap` property in
-     *   `virtualConfig` for each row
-     */
-    'gap-2',
     /** Default grid layout, 6 equal columns */
     'grid-cols-6'
   ),
@@ -69,7 +59,7 @@ export const HEADER_PROPS = [
 export const BODY_PROPS = [
   'virtualConfig',
   'items',
-  'itemCardProps',
+  'renderItemContainer',
   'renderItem',
 ] as const;
 

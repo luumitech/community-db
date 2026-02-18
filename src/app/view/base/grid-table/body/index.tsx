@@ -1,4 +1,3 @@
-import { type CardProps } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { BODY_PROPS, COMMON_PROPS } from '../_config';
@@ -26,8 +25,6 @@ export interface BodyProps<
    */
   virtualConfig?: VirtualConfig;
   items: ItemT[];
-  /** Pass additional props to Card component for each item */
-  itemCardProps?: (item: ItemT) => CardProps | null | undefined;
 }
 
 interface Props<ColumnKey extends Readonly<string>, ItemT extends ItemWithId>
@@ -46,7 +43,7 @@ export function Body<
   const bodyProps = R.pick(props, BODY_PROPS);
   const bodyContainerProps = R.pick(props, BODY_CONTAINER_PROPS);
   const commonProps = R.pick(props, COMMON_PROPS);
-  const { virtualConfig, items, itemCardProps, renderItem } = bodyProps;
+  const { virtualConfig, items } = bodyProps;
 
   if (items.length === 0) {
     return null;
@@ -58,7 +55,6 @@ export function Body<
         key={item.id}
         item={item}
         {...bodyContainerProps}
-        {...itemCardProps?.(item)}
         {...commonProps}
       />
     ));
@@ -73,12 +69,7 @@ export function Body<
       items={items}
     >
       {(item) => (
-        <BodyContainer
-          item={item}
-          {...bodyContainerProps}
-          {...itemCardProps?.(item)}
-          {...commonProps}
-        />
+        <BodyContainer item={item} {...bodyContainerProps} {...commonProps} />
       )}
     </VirtualWrap>
   );

@@ -1,6 +1,5 @@
-import { cn } from '@heroui/react';
+import { Card, CardBody, cn } from '@heroui/react';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 import {
   GridTable,
   type GridTableProps as GenericGTProps,
@@ -100,14 +99,32 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
     [showHeader]
   );
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
-    (item) => {
-      if (onItemPress) {
-        return {
-          isPressable: true,
-          onPress: () => onItemPress(item),
-        };
-      }
+  const renderItemContainer: GTProps['renderItemContainer'] = React.useCallback(
+    (item, containerProps) => {
+      const { children, ...otherContainerProps } = containerProps;
+
+      return (
+        <Card
+          shadow="sm"
+          {...otherContainerProps}
+          {...(onItemPress && {
+            isPressable: true,
+            onPress: () => onItemPress(item),
+          })}
+        >
+          <CardBody
+            className={cn(
+              // inherit grid setting
+              'col-span-full grid grid-cols-subgrid',
+              // Override default padding
+              'p-0',
+              'gap-1 overflow-hidden'
+            )}
+          >
+            {children}
+          </CardBody>
+        </Card>
+      );
     },
     [onItemPress]
   );
@@ -117,7 +134,11 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
       aria-label="Property Table"
       isHeaderSticky
       config={{
-        gridContainer: cn('grid-cols-[repeat(6,1fr)_max-content]', className),
+        gridContainer: cn(
+          'grid-cols-[repeat(6,1fr)_max-content]',
+          'gap-2',
+          className
+        ),
         headerSticky: cn('top-header-height'),
         headerContainer: cn('mx-0.5 px-3 py-2'),
         bodyContainer: cn(
@@ -125,7 +146,6 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
           // Hover styling if item is pressable
           onItemPress && 'hover:bg-primary-50'
         ),
-        bodyGrid: cn('gap-1 overflow-hidden'),
       }}
       columnKeys={['address', 'member', 'memberYear']}
       columnConfig={{
@@ -139,8 +159,8 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
         ),
       }}
       {...(!!showHeader && { renderHeader })}
+      renderItemContainer={renderItemContainer}
       renderItem={renderItem}
-      itemCardProps={itemCardProps}
       {...props}
     />
   );

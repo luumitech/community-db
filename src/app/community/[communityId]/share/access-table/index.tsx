@@ -64,13 +64,6 @@ export const AccessTable: React.FC<AccessTableProps> = ({
     }
   }, []);
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback((item) => {
-    return {
-      shadow: 'none',
-      radius: 'none',
-    };
-  }, []);
-
   return (
     <GridTable
       aria-label="Community Access Management Table"
@@ -83,8 +76,11 @@ export const AccessTable: React.FC<AccessTableProps> = ({
         ),
         headerSticky: cn('mb-2'),
         headerContainer: cn('mx-0.5 px-3 py-2'),
-        bodyContainer: cn('mx-0.5 h-max px-3 py-1', 'hover:bg-primary-50'),
-        bodyGrid: cn('items-center gap-1 overflow-hidden'),
+        bodyContainer: cn(
+          'mx-0.5 h-max px-3 py-1',
+          'hover:bg-primary-50',
+          'items-center gap-1 overflow-hidden'
+        ),
       }}
       columnConfig={{
         user: cn('col-span-4'),
@@ -99,7 +95,6 @@ export const AccessTable: React.FC<AccessTableProps> = ({
       ]}
       renderHeader={renderHeader}
       renderItem={renderItem}
-      itemCardProps={itemCardProps}
       {...props}
     />
   );

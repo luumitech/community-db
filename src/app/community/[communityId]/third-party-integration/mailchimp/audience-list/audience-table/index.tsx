@@ -98,18 +98,6 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
   // Padding on each row (in the card)
   const CARD_PADDING_PX = cardHasBorder ? 8 : 4;
 
-  const itemCardProps: GTProps['itemCardProps'] = React.useCallback(
-    (item) => {
-      if (!cardHasBorder) {
-        return {
-          shadow: 'none',
-          radius: 'none',
-        };
-      }
-    },
-    [cardHasBorder]
-  );
-
   const estimateSize = React.useCallback(() => {
     let height = rowHeight(isSmDevice ? 4 : isMdDevice ? 2 : 1);
     height += CARD_PADDING_PX * 2;
@@ -132,9 +120,9 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
         bodyContainer: cn(
           'mx-0.5 px-3',
           `py-[${CARD_PADDING_PX}]`,
-          'hover:bg-primary-50'
+          'hover:bg-primary-50',
+          'items-center gap-0.5 text-sm'
         ),
-        bodyGrid: cn('items-center gap-0.5 text-sm'),
       }}
       columnKeys={[
         'email_address',
@@ -176,7 +164,6 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
       ]}
       renderHeader={renderHeader}
       renderItem={renderItem}
-      itemCardProps={itemCardProps}
       {...props}
     />
   );
@@ -186,7 +173,7 @@ export const AudienceTable: React.FC<AudienceTableProps> = ({
 function rowHeight(numLine: number) {
   /** Default height for each row */
   const lineHeight = 24;
-  /** BodyGrid gap-0.5 is equivalent to 2px gap */
+  /** Gap-0.5 (in bodyContainer) is equivalent to 2px gap */
   const gap = 2;
 
   return lineHeight * numLine + gap * (numLine - 1);
