@@ -19,6 +19,8 @@ export interface MembershipEntry extends Prisma.MembershipCreateInput {
 
 export type OccupantEntry = Prisma.OccupantCreateInput;
 
+export type PastOccupantEntry = Prisma.PastOccupantCreateInput;
+
 export type ContactInfoEntry = Prisma.ContactInfoCreateInput;
 
 export interface PropertyEntry

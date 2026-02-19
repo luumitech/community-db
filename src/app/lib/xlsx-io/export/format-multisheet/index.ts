@@ -51,8 +51,32 @@ export class ExportMultisheet extends ExportHelper {
       updatedAt: ExportHelper.toDate(property.updatedAt),
       updatedBy: property.updatedBy?.email ?? null,
     });
-    property.occupantList.forEach((occupant) => {
-      this.processMember(occupant, propertyId);
+    property.occupantList.forEach((occupant, idx) => {
+      this.processMember(occupant, propertyId, {
+        setIndex: -1,
+        /**
+         * Within the same setIndex, only the first entry needs to record
+         * start/end date
+         */
+        ...(idx === 0 && {
+          startDate: property.occupantStartDate,
+        }),
+      });
+    });
+    property.pastOccupantList?.forEach((occupantInfo, setIndex) => {
+      occupantInfo.occupantList.forEach((occupant, idx) => {
+        this.processMember(occupant, propertyId, {
+          setIndex,
+          /**
+           * Within the same setIndex, only the first entry needs to record
+           * start/end date
+           */
+          ...(idx === 0 && {
+            startDate: occupantInfo.startDate,
+            endDate: occupantInfo.endDate,
+          }),
+        });
+      });
     });
     property.membershipList.forEach((membership) => {
       this.processMembership(membership, propertyId);
@@ -70,14 +94,25 @@ export class ExportMultisheet extends ExportHelper {
     });
   }
 
-  private processMember(occupant: Occupant, propertyId: number) {
+  private processMember(
+    occupant: Occupant,
+    propertyId: number,
+    opt: {
+      setIndex: number;
+      startDate?: Date | null;
+      endDate?: Date | null;
+    }
+  ) {
     const occupantId = this.rows.occupant.length + 1;
     this.rows.occupant.push({
       occupantId,
       propertyId,
+      setIndex: opt?.setIndex ?? -1,
       firstName: occupant.firstName ?? null,
       lastName: occupant.lastName ?? null,
       optOut: ExportHelper.toBool(occupant.optOut),
+      startDate: ExportHelper.toDate(opt?.startDate),
+      endDate: ExportHelper.toDate(opt?.endDate),
     });
     occupant.infoList.forEach((contact) => {
       this.processContact(contact, occupantId);

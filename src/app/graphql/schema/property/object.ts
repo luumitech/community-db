@@ -3,6 +3,7 @@ import type {
   Event,
   Membership,
   Occupant,
+  PastOccupant,
   Ticket,
 } from '@prisma/client';
 import { builder } from '~/graphql/builder';
@@ -45,6 +46,25 @@ const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
     }),
   }),
 });
+
+const pastOccupantRef = builder
+  .objectRef<PastOccupant>('PastOccupant')
+  .implement({
+    fields: (t) => ({
+      startDate: t.expose('startDate', {
+        type: 'Date',
+        nullable: true,
+      }),
+      endDate: t.expose('endDate', {
+        type: 'Date',
+        nullable: true,
+      }),
+      occupantList: t.field({
+        type: [occupantRef],
+        resolve: (entry) => entry.occupantList,
+      }),
+    }),
+  });
 
 const ticketRef = builder.objectRef<Ticket>('Ticket').implement({
   fields: (t) => ({
@@ -97,10 +117,21 @@ export const propertyRef = builder.prismaObject('Property', {
     notes: t.exposeString('notes', { nullable: true }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
+    occupantStartDate: t.expose('occupantStartDate', {
+      type: 'Date',
+      nullable: true,
+    }),
     occupantList: t.field({
+      description: 'Current list of occupants',
       type: [occupantRef],
       select: { occupantList: true },
       resolve: (entry) => entry.occupantList,
+    }),
+    pastOccupantList: t.field({
+      description: 'Archived Occupant Lists (previous occupants)',
+      type: [pastOccupantRef],
+      select: { pastOccupantList: true },
+      resolve: (entry) => entry.pastOccupantList,
     }),
     membershipList: t.field({
       description: 'Annual Membership information, sorted in descending order',

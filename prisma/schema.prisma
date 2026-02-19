@@ -213,29 +213,44 @@ type SupportedPaymentMethod {
 }
 
 model Property {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  shortId        String       @default(nanoid(6))
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  updatedById    String?      @db.ObjectId
-  updatedBy      User?        @relation(name: "propertyUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
-  address        String
-  streetNo       Int?
-  streetName     String?
-  city           String?
-  country        String?
-  postalCode     String?
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  shortId           String         @default(nanoid(6))
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  updatedById       String?        @db.ObjectId
+  updatedBy         User?          @relation(name: "propertyUpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
+  address           String
+  streetNo          Int?
+  streetName        String?
+  city              String?
+  country           String?
+  postalCode        String?
   /**
    * Since Prisma mongo connector does not support Decimal type,
    * both lat and lon are stored as string type
    */
-  lat            String?
-  lon            String?
-  notes          String?
-  occupantList   Occupant[]
-  membershipList Membership[]
-  communityId    String       @db.ObjectId
-  community      Community    @relation(name: "propertyCommunity", fields: [communityId], references: [id], onDelete: Cascade)
+  lat               String?
+  lon               String?
+  notes             String?
+  /**
+   * Date when current set of occupants moved in
+   */
+  occupantStartDate DateTime?
+  /// Current occupant list
+  occupantList      Occupant[]
+  /// Previous occupant list
+  pastOccupantList  PastOccupant[]
+  membershipList    Membership[]
+  communityId       String         @db.ObjectId
+  community         Community      @relation(name: "propertyCommunity", fields: [communityId], references: [id], onDelete: Cascade)
+}
+
+type PastOccupant {
+  /// When occupants moved in
+  startDate    DateTime?
+  /// When occupants moved out
+  endDate      DateTime?
+  occupantList Occupant[]
 }
 
 /// Occupant information within a property

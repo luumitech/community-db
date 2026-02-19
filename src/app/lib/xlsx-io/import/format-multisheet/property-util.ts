@@ -73,7 +73,7 @@ export class PropertyUtil {
 
       return {
         ...property,
-        occupantList: opt.occupantUtil.occupantList(propertyId, opt),
+        ...opt.occupantUtil.occupantInfo(propertyId, opt),
         membershipList: opt.membershipUtil.membershipList(propertyId, opt),
         ...(updatedBy && { updatedBy }),
       };

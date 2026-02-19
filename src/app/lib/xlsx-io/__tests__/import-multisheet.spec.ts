@@ -18,7 +18,7 @@ describe('import community xlsx (multisheet format)', () => {
 
   test('verify property lists', async () => {
     const document = graphql(/* GraphQL */ `
-      query LcraImport_UserCurrent {
+      query ImportMultisheet_UserCurrent {
         userCurrent {
           email
           accessList {
@@ -40,6 +40,7 @@ describe('import community xlsx (multisheet format)', () => {
                     updatedBy {
                       email
                     }
+                    occupantStartDate
                     occupantList {
                       firstName
                       lastName
@@ -48,6 +49,20 @@ describe('import community xlsx (multisheet format)', () => {
                         label
                         type
                         value
+                      }
+                    }
+                    pastOccupantList {
+                      startDate
+                      endDate
+                      occupantList {
+                        firstName
+                        lastName
+                        optOut
+                        infoList {
+                          label
+                          type
+                          value
+                        }
                       }
                     }
                     membershipList {
@@ -94,6 +109,7 @@ describe('import community xlsx (multisheet format)', () => {
       notes: 'Notes',
       updatedAt: '2023-02-23T03:19:09.000Z',
       updatedBy: null,
+      occupantStartDate: null,
       occupantList: [
         {
           __typename: 'Occupant',
@@ -158,6 +174,22 @@ describe('import community xlsx (multisheet format)', () => {
               type: 'EMAIL',
               label: 'email',
               value: 'Email3',
+            },
+          ],
+        },
+      ],
+      pastOccupantList: [
+        {
+          __typename: 'PastOccupant',
+          startDate: '2021-12-10',
+          endDate: '2023-01-23',
+          occupantList: [
+            {
+              __typename: 'Occupant',
+              firstName: 'Previous',
+              lastName: 'Owner',
+              optOut: true,
+              infoList: [],
             },
           ],
         },
