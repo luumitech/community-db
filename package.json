@@ -121,7 +121,7 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^3.0.1",
     "@parcel/watcher": "^2.4.1",
     "@playwright/test": "^1.57.0",
-    "@react-email/preview-server": "5.1.1",
+    "@react-email/preview-server": "^5.2.8",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/dom-to-image": "^2",
     "@types/jest": "^30.0.0",
@@ -153,7 +153,7 @@
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "prisma": "6",
-    "react-email": "5.1.1",
+    "react-email": "^5.2.8",
     "semantic-release": "^25.0.2",
     "shx": "^0.4.0",
     "tailwindcss": "^4.1.17",
@@ -164,5 +164,5 @@
     "@types/react": "19.1.9",
     "@types/react-dom": "19.1.7"
   },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.12.0"
 }
