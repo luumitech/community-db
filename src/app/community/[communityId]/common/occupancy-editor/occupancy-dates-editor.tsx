@@ -8,13 +8,13 @@ interface Props {
   /**
    * Control name occupancy start date
    *
-   * I.e. pastOccupantList.${number}.startDate
+   * I.e. occupancyInfo.${number}.startDate
    */
   startDateControlName: string;
   /**
    * Control name occupancy start date
    *
-   * I.e. pastOccupantList.${number}.endDate
+   * I.e. occupancyInfo.${number}.endDate
    */
   endDateControlName?: string;
 }

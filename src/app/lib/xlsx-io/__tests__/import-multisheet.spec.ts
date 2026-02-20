@@ -40,18 +40,7 @@ describe('import community xlsx (multisheet format)', () => {
                     updatedBy {
                       email
                     }
-                    occupantStartDate
-                    occupantList {
-                      firstName
-                      lastName
-                      optOut
-                      infoList {
-                        label
-                        type
-                        value
-                      }
-                    }
-                    pastOccupantList {
+                    occupancyInfoList {
                       startDate
                       endDate
                       occupantList {
@@ -109,87 +98,77 @@ describe('import community xlsx (multisheet format)', () => {
       notes: 'Notes',
       updatedAt: '2023-02-23T03:19:09.000Z',
       updatedBy: null,
-      occupantStartDate: null,
-      occupantList: [
+      occupancyInfoList: [
         {
-          __typename: 'Occupant',
-          firstName: 'First1',
-          lastName: 'Last1',
-          optOut: false,
-          infoList: [
-            {
-              __typename: 'ContactInfo',
-              type: 'EMAIL',
-              label: 'email',
-              value: 'Email1',
-            },
-            {
-              __typename: 'ContactInfo',
-              type: 'PHONE',
-              label: 'home',
-              value: '4161234567',
-            },
-            {
-              __typename: 'ContactInfo',
-              type: 'PHONE',
-              label: 'work',
-              value: '4162345678',
-            },
-            {
-              __typename: 'ContactInfo',
-              type: 'PHONE',
-              label: 'cell',
-              value: '4163456789',
-            },
-          ],
-        },
-        {
-          __typename: 'Occupant',
-          firstName: 'First2',
-          lastName: 'Last2',
-          optOut: true,
-          infoList: [
-            {
-              __typename: 'ContactInfo',
-              type: 'EMAIL',
-              label: 'email',
-              value: 'Email2',
-            },
-            {
-              __typename: 'ContactInfo',
-              type: 'PHONE',
-              label: 'home',
-              value: '4171234567',
-            },
-          ],
-        },
-        {
-          __typename: 'Occupant',
-          firstName: 'First3',
-          lastName: 'Last3',
-          optOut: null,
-          infoList: [
-            {
-              __typename: 'ContactInfo',
-              type: 'EMAIL',
-              label: 'email',
-              value: 'Email3',
-            },
-          ],
-        },
-      ],
-      pastOccupantList: [
-        {
-          __typename: 'PastOccupant',
-          startDate: '2021-12-10',
-          endDate: '2023-01-23',
+          __typename: 'OccupancyInfo',
+          startDate: null,
+          endDate: null,
           occupantList: [
             {
               __typename: 'Occupant',
-              firstName: 'Previous',
-              lastName: 'Owner',
+              firstName: 'First1',
+              lastName: 'Last1',
+              optOut: false,
+              infoList: [
+                {
+                  __typename: 'ContactInfo',
+                  type: 'EMAIL',
+                  label: 'email',
+                  value: 'Email1',
+                },
+                {
+                  __typename: 'ContactInfo',
+                  type: 'PHONE',
+                  label: 'home',
+                  value: '4161234567',
+                },
+                {
+                  __typename: 'ContactInfo',
+                  type: 'PHONE',
+                  label: 'work',
+                  value: '4162345678',
+                },
+                {
+                  __typename: 'ContactInfo',
+                  type: 'PHONE',
+                  label: 'cell',
+                  value: '4163456789',
+                },
+              ],
+            },
+            {
+              __typename: 'Occupant',
+              firstName: 'First2',
+              lastName: 'Last2',
               optOut: true,
-              infoList: [],
+              infoList: [
+                {
+                  __typename: 'ContactInfo',
+                  type: 'EMAIL',
+                  label: 'email',
+                  value: 'Email2',
+                },
+                {
+                  __typename: 'ContactInfo',
+                  type: 'PHONE',
+                  label: 'home',
+                  value: '4171234567',
+                },
+              ],
+            },
+            {
+              __typename: 'Occupant',
+              firstName: 'First3',
+              lastName: 'Last3',
+              optOut: null,
+              infoList: [
+                {
+                  __typename: 'ContactInfo',
+                  type: 'EMAIL',
+                  label: 'email',
+                  value: 'Email3',
+                },
+              ],
             },
           ],
         },

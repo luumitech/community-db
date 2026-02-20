@@ -31,6 +31,14 @@ const OccupantInput = builder.inputType('OccupantInput', {
   }),
 });
 
+const OccupancyInfoInput = builder.inputType('OccupancyInfoInput', {
+  fields: (t) => ({
+    startDate: t.string(),
+    endDate: t.string(),
+    occupantList: t.field({ type: [OccupantInput] }),
+  }),
+});
+
 export const EventInput = builder.inputType('EventInput', {
   fields: (t) => ({
     eventName: t.string({ required: true }),
@@ -69,8 +77,7 @@ const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
     lat: t.string(),
     lon: t.string(),
     notes: t.string(),
-    occupantStartDate: t.string(),
-    occupantList: t.field({ type: [OccupantInput] }),
+    occupancyInfoList: t.field({ type: [OccupancyInfoInput] }),
     membershipList: t.field({ type: [MembershipInput] }),
   }),
 });

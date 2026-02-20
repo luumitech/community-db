@@ -51,8 +51,8 @@ export interface OccupantRow {
   /**
    * Number indicating if occupant is current or previous
    *
-   * - -1: current occupant
-   * - 0..n: past occupant list index
+   * - 0: current occupant
+   * - 1..n: past occupant list index
    */
   setIndex: number;
   startDate: string | null;

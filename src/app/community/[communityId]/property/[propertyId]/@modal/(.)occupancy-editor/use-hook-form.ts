@@ -10,6 +10,19 @@ import * as GQL from '~/graphql/generated/graphql';
 import { z, zz } from '~/lib/zod';
 import { useLayoutContext } from '../../layout-context';
 
+const OccupancyEditorOccupantFragment = graphql(/* GraphQL */ `
+  fragment PropertyId_OccupancyEditor_Occupant on Occupant {
+    firstName
+    lastName
+    optOut
+    infoList {
+      type
+      label
+      value
+    }
+  }
+`);
+
 const OccupancyEditorFragment = graphql(/* GraphQL */ `
   fragment PropertyId_OccupancyEditor on Property {
     id
@@ -17,15 +30,15 @@ const OccupancyEditorFragment = graphql(/* GraphQL */ `
     updatedBy {
       ...User
     }
-    occupantStartDate
+    # This is necessary so the occupantList cache will be updated correctly
     occupantList {
-      firstName
-      lastName
-      optOut
-      infoList {
-        type
-        label
-        value
+      ...PropertyId_OccupancyEditor_Occupant
+    }
+    occupancyInfoList {
+      startDate
+      endDate
+      occupantList {
+        ...PropertyId_OccupancyEditor_Occupant
       }
     }
   }
@@ -40,8 +53,13 @@ function schema() {
       id: zz.string.nonEmpty(),
       updatedAt: zz.string.nonEmpty(),
     }),
-    occupantStartDate: zz.coerce.toIsoDate({ nullable: true }),
-    occupantList: occupantListSchema,
+    occupancyInfoList: z.array(
+      z.object({
+        startDate: zz.coerce.toIsoDate({ nullable: true }),
+        endDate: zz.coerce.toIsoDate({ nullable: true }),
+        occupantList: occupantListSchema,
+      })
+    ),
   });
 }
 
@@ -55,14 +73,23 @@ function defaultInputData(
       id: item.id,
       updatedAt: item.updatedAt,
     },
-    occupantStartDate: item.occupantStartDate ?? null,
-    occupantList: item.occupantList.map((entry) => ({
-      firstName: entry.firstName ?? occupantDefault.firstName,
-      lastName: entry.lastName ?? occupantDefault.lastName,
-      optOut: entry.optOut ?? occupantDefault.optOut,
-      infoList: (entry.infoList ?? occupantDefault.infoList).map(
-        ({ type, label, value }) => ({ type, label, value })
-      ),
+    occupancyInfoList: item.occupancyInfoList.map((entry) => ({
+      startDate: entry.startDate ?? null,
+      endDate: entry.endDate ?? null,
+      occupantList: entry.occupantList.map((occupantFragment) => {
+        const occupant = getFragment(
+          OccupancyEditorOccupantFragment,
+          occupantFragment
+        );
+        return {
+          firstName: occupant.firstName ?? occupantDefault.firstName,
+          lastName: occupant.lastName ?? occupantDefault.lastName,
+          optOut: occupant.optOut ?? occupantDefault.optOut,
+          infoList: (occupant.infoList ?? occupantDefault.infoList).map(
+            ({ type, label, value }) => ({ type, label, value })
+          ),
+        };
+      }),
     })),
   };
 }

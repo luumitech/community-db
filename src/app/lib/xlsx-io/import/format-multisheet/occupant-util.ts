@@ -1,7 +1,5 @@
-import { P } from 'pino';
-import * as R from 'remeda';
 import { WorksheetHelper } from '~/lib/worksheet-helper';
-import type { OccupantEntry, PastOccupantEntry } from '../_type';
+import type { OccupancyInfoEntry, OccupantEntry } from '../_type';
 import {
   ImportHelper,
   type MappingColIdxSchema,
@@ -57,21 +55,16 @@ export class OccupantUtil {
 
   /**
    * Separate by occupant list by setIndex, so it would be easy to construct the
-   * occupantList for current and past
+   * occupancyInfoList
    */
   private getOccupantMapInfo(propertyId: number) {
     const excelRows = this.byPropertyId.get(propertyId) ?? [];
-    const current: MappingEntry[] = [];
-    const past = new Map<number, MappingEntry[]>();
+    const occupancyInfoMap = new Map<number, MappingEntry[]>();
 
     excelRows.forEach((entry) => {
-      if (entry.setIndex === -1) {
-        current.push(entry);
-      } else {
-        getMapValue(past, entry.setIndex).push(entry);
-      }
+      getMapValue(occupancyInfoMap, entry.setIndex ?? 0).push(entry);
     });
-    return { current, past };
+    return occupancyInfoMap;
   }
 
   private toOccupantEntry(entry: MappingEntry, opt: UtilOpt): OccupantEntry {
@@ -89,29 +82,20 @@ export class OccupantUtil {
     };
   }
 
-  occupantInfo(propertyId: number, opt: UtilOpt) {
-    const { current, past } = this.getOccupantMapInfo(propertyId);
-
-    const occupantStartDate = current.find(
-      ({ startDate }) => startDate
-    )?.startDate;
-    const occupantList = current.map((entry) =>
-      this.toOccupantEntry(entry, opt)
+  occupancyInfoList(propertyId: number, opt: UtilOpt) {
+    const occupancyInfoMap = this.getOccupantMapInfo(propertyId);
+    const occupancyInfoList: OccupancyInfoEntry[] = new Array(
+      occupancyInfoMap.size
     );
 
-    const pastOccupantList: PastOccupantEntry[] = [];
-    for (const [setIndex, list] of past) {
-      pastOccupantList.push({
+    for (const [setIndex, list] of occupancyInfoMap) {
+      occupancyInfoList[setIndex] = {
         startDate: list.find(({ startDate }) => startDate)?.startDate,
         endDate: list.find(({ endDate }) => endDate)?.endDate,
         occupantList: list.map((entry) => this.toOccupantEntry(entry, opt)),
-      });
+      };
     }
 
-    return {
-      occupantStartDate,
-      occupantList,
-      pastOccupantList,
-    };
+    return occupancyInfoList;
   }
 }

@@ -24,7 +24,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods } = useHookForm();
-  const { control, formState, handleSubmit } = formMethods;
+  const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const goBack = React.useCallback(() => {
@@ -65,7 +65,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
                 </ModalHeader>
                 <ModalBody>
                   <OccupancyEditor
-                    controlNamePrefix="occupantList"
+                    controlNamePrefix="occupancyInfoList.0.occupantList"
                     defaultEmail={defaultEmail}
                   />
                 </ModalBody>
