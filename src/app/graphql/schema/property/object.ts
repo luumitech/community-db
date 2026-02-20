@@ -2,6 +2,7 @@ import type {
   ContactInfo,
   Event,
   Membership,
+  OccupancyInfo,
   Occupant,
   Ticket,
 } from '@prisma/client';
@@ -45,6 +46,25 @@ const occupantRef = builder.objectRef<Occupant>('Occupant').implement({
     }),
   }),
 });
+
+const occupancyInfoRef = builder
+  .objectRef<OccupancyInfo>('OccupancyInfo')
+  .implement({
+    fields: (t) => ({
+      startDate: t.expose('startDate', {
+        type: 'Date',
+        nullable: true,
+      }),
+      endDate: t.expose('endDate', {
+        type: 'Date',
+        nullable: true,
+      }),
+      occupantList: t.field({
+        type: [occupantRef],
+        resolve: (entry) => entry.occupantList,
+      }),
+    }),
+  });
 
 const ticketRef = builder.objectRef<Ticket>('Ticket').implement({
   fields: (t) => ({
@@ -98,9 +118,16 @@ export const propertyRef = builder.prismaObject('Property', {
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
     updatedBy: t.relation('updatedBy', { nullable: true }),
     occupantList: t.field({
+      description: 'Current list of occupants',
       type: [occupantRef],
-      select: { occupantList: true },
-      resolve: (entry) => entry.occupantList,
+      select: { occupancyInfoList: true },
+      resolve: (entry) => entry.occupancyInfoList?.[0]?.occupantList ?? [],
+    }),
+    occupancyInfoList: t.field({
+      description: 'Occupancy info (current and previous occupants)',
+      type: [occupancyInfoRef],
+      select: { occupancyInfoList: true },
+      resolve: (entry) => entry.occupancyInfoList,
     }),
     membershipList: t.field({
       description: 'Annual Membership information, sorted in descending order',

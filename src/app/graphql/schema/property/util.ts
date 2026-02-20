@@ -165,12 +165,16 @@ function propertyListFilterArgs(
     const OR: Prisma.PropertyWhereInput[] = [
       { address: { mode: 'insensitive', contains: trimSearchText } },
       {
-        occupantList: {
+        occupancyInfoList: {
           some: {
-            infoList: {
+            occupantList: {
               some: {
-                type: 'EMAIL',
-                value: { mode: 'insensitive', startsWith: trimSearchText },
+                infoList: {
+                  some: {
+                    type: 'EMAIL',
+                    value: { mode: 'insensitive', startsWith: trimSearchText },
+                  },
+                },
               },
             },
           },
@@ -191,12 +195,26 @@ function propertyListFilterArgs(
       // If only a single name is provided, search against either firstName or lastName
       if (nameList.length === 1) {
         OR.push({
-          occupantList: {
+          occupancyInfoList: {
             some: {
-              OR: [
-                { firstName: { mode: 'insensitive', startsWith: nameList[0] } },
-                { lastName: { mode: 'insensitive', startsWith: nameList[0] } },
-              ],
+              occupantList: {
+                some: {
+                  OR: [
+                    {
+                      firstName: {
+                        mode: 'insensitive',
+                        startsWith: nameList[0],
+                      },
+                    },
+                    {
+                      lastName: {
+                        mode: 'insensitive',
+                        startsWith: nameList[0],
+                      },
+                    },
+                  ],
+                },
+              },
             },
           },
         });
@@ -204,17 +222,23 @@ function propertyListFilterArgs(
         // If both names are provided, search against firstName and lastName
         const searchLast = nameList.pop()!;
         OR.push({
-          occupantList: {
+          occupancyInfoList: {
             some: {
-              AND: [
-                {
-                  firstName: {
-                    mode: 'insensitive',
-                    startsWith: nameList.join(' '),
-                  },
+              occupantList: {
+                some: {
+                  AND: [
+                    {
+                      firstName: {
+                        mode: 'insensitive',
+                        startsWith: nameList.join(' '),
+                      },
+                    },
+                    {
+                      lastName: { mode: 'insensitive', startsWith: searchLast },
+                    },
+                  ],
                 },
-                { lastName: { mode: 'insensitive', startsWith: searchLast } },
-              ],
+              },
             },
           },
         });
@@ -307,12 +331,16 @@ function propertyListFilterArgs(
   // Filter only entries with email matching one of the specified emailList
   if (emailList && emailList.length > 0) {
     AND.push({
-      occupantList: {
+      occupancyInfoList: {
         some: {
-          infoList: {
+          occupantList: {
             some: {
-              type: 'EMAIL',
-              value: { in: emailList, mode: 'insensitive' },
+              infoList: {
+                some: {
+                  type: 'EMAIL',
+                  value: { in: emailList, mode: 'insensitive' },
+                },
+              },
             },
           },
         },

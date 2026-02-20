@@ -51,9 +51,23 @@ export class ExportMultisheet extends ExportHelper {
       updatedAt: ExportHelper.toDate(property.updatedAt),
       updatedBy: property.updatedBy?.email ?? null,
     });
-    property.occupantList.forEach((occupant) => {
-      this.processMember(occupant, propertyId);
+
+    property.occupancyInfoList?.forEach((occupancyInfo, setIndex) => {
+      occupancyInfo.occupantList.forEach((occupant, idx) => {
+        this.processMember(occupant, propertyId, {
+          setIndex,
+          /**
+           * Within the same setIndex, only the first entry needs to record
+           * start/end date
+           */
+          ...(idx === 0 && {
+            startDate: occupancyInfo.startDate,
+            endDate: occupancyInfo.endDate,
+          }),
+        });
+      });
     });
+
     property.membershipList.forEach((membership) => {
       this.processMembership(membership, propertyId);
     });
@@ -70,14 +84,25 @@ export class ExportMultisheet extends ExportHelper {
     });
   }
 
-  private processMember(occupant: Occupant, propertyId: number) {
+  private processMember(
+    occupant: Occupant,
+    propertyId: number,
+    opt: {
+      setIndex: number;
+      startDate?: Date | null;
+      endDate?: Date | null;
+    }
+  ) {
     const occupantId = this.rows.occupant.length + 1;
     this.rows.occupant.push({
       occupantId,
       propertyId,
+      setIndex: opt?.setIndex ?? -1,
       firstName: occupant.firstName ?? null,
       lastName: occupant.lastName ?? null,
       optOut: ExportHelper.toBool(occupant.optOut),
+      startDate: ExportHelper.toDate(opt?.startDate),
+      endDate: ExportHelper.toDate(opt?.endDate),
     });
     occupant.infoList.forEach((contact) => {
       this.processContact(contact, occupantId);
@@ -208,6 +233,7 @@ export class ExportMultisheet extends ExportHelper {
       lat: entry.lat?.toString() ?? null,
       lon: entry.lon?.toString() ?? null,
       occupantList: [],
+      occupancyInfoList: [],
       membershipList: [],
     }));
 

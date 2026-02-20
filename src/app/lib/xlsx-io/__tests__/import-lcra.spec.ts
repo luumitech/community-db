@@ -18,7 +18,7 @@ describe('import community xlsx (singlesheet format)', () => {
 
   test('verify property lists', async () => {
     const document = graphql(/* GraphQL */ `
-      query LcraImport_UserCurrent {
+      query ImportLCRA_UserCurrent {
         userCurrent {
           email
           accessList {

@@ -23,7 +23,7 @@ export const MoreMenu: React.FC<Props> = (props) => {
         'communityMapView',
         'divider',
         ...insertIf(canEdit, 'membershipEditor'),
-        ...insertIf(canEdit, 'occupantEditor'),
+        ...insertIf(canEdit, 'occupancyEditor'),
         'divider',
         ...insertIf(canEdit, 'communityModify'),
         ...insertIf(canEdit, 'batchPropertyModify'),

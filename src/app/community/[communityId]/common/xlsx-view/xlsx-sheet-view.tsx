@@ -116,7 +116,7 @@ export function XlsxSheetView<T>({
                     className={twMerge('flex', vc.index === 0 && pinningClass)}
                     style={{ width: header.getSize() }}
                   >
-                    <div>
+                    <div className="truncate">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()

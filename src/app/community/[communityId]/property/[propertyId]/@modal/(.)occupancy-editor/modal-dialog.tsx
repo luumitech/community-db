@@ -1,10 +1,10 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { FormProvider, useFieldArray } from '~/custom-hooks/hook-form';
+import { OccupancyEditor } from '~/community/[communityId]/common/occupancy-editor';
+import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import { Icon } from '~/view/base/icon';
 import {
   Modal,
   ModalBody,
@@ -12,9 +12,8 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { Editor } from './editor';
 import { MailchimpNotice } from './mailchimp-notice';
-import { InputData, occupantDefault, useHookForm } from './use-hook-form';
+import { InputData, useHookForm } from './use-hook-form';
 
 interface Props {
   onSave: (input: InputData) => Promise<void>;
@@ -25,12 +24,8 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods } = useHookForm();
-  const { control, formState, handleSubmit } = formMethods;
+  const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
-  const occupantListMethods = useFieldArray({
-    control,
-    name: 'occupantList',
-  });
 
   const goBack = React.useCallback(() => {
     router.back();
@@ -65,24 +60,16 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
             {(closeModal) => (
               <>
                 <ModalHeader className="flex flex-col">
-                  {appLabel('occupantEditor')}
+                  {appLabel('occupancyEditor')}
                   <MailchimpNotice />
                 </ModalHeader>
                 <ModalBody>
-                  <Editor
-                    occupantListMethods={occupantListMethods}
+                  <OccupancyEditor
+                    controlNamePrefix="occupancyInfoList.0.occupantList"
                     defaultEmail={defaultEmail}
                   />
                 </ModalBody>
                 <ModalFooter>
-                  <Button
-                    endContent={<Icon icon="person-add" />}
-                    color="primary"
-                    variant="bordered"
-                    onPress={() => occupantListMethods.append(occupantDefault)}
-                  >
-                    Add Contact
-                  </Button>
                   <div className="grow" />
                   <Button
                     variant="bordered"

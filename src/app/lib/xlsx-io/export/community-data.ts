@@ -41,10 +41,10 @@ export type Community = PartialExcept<
 >;
 export type Property = PartialExcept<
   Community['propertyList'][number],
-  'address' | 'occupantList' | 'membershipList'
+  'address' | 'occupancyInfoList' | 'membershipList'
 >;
 export type Occupant = PartialExcept<
-  Property['occupantList'][number],
+  Property['occupancyInfoList'][number]['occupantList'][number],
   'infoList'
 >;
 export type ContactInfo = PartialExcept<
