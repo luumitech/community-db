@@ -42,13 +42,13 @@ export const ContactName: React.FC<Props> = ({
       )}
     >
       <div
-        className={cn({
+        className={cn('truncate', {
           italic: !name,
         })}
       >
         {name || 'No Name'}
       </div>
-      {hasError && <Icon color="" icon="warning" />}
+      {hasError && <Icon className="flex-none" icon="warning" />}
     </div>
   );
 };

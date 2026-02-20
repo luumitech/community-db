@@ -100,13 +100,13 @@ export class OccupantUtil {
     );
 
     const pastOccupantList: PastOccupantEntry[] = [];
-    past.forEach((list, setIndex) => {
+    for (const [setIndex, list] of past) {
       pastOccupantList.push({
         startDate: list.find(({ startDate }) => startDate)?.startDate,
         endDate: list.find(({ endDate }) => endDate)?.endDate,
         occupantList: list.map((entry) => this.toOccupantEntry(entry, opt)),
       });
-    });
+    }
 
     return {
       occupantStartDate,

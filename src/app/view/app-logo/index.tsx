@@ -2,6 +2,7 @@ import { cn } from '@heroui/react';
 import Image, { ImageProps } from 'next/image';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
+
 import styles from './styles.module.css';
 
 type CustomImageProps = Omit<ImageProps, 'src' | 'alt'>;

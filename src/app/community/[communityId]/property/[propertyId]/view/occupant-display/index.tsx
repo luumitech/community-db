@@ -84,7 +84,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
               variant="bordered"
               size="sm"
               endContent={<Icon icon="edit" />}
-              href={appPath('occupantEditor', {
+              href={appPath('occupancyEditor', {
                 path: { communityId: community.id, propertyId: property.id },
               })}
             >

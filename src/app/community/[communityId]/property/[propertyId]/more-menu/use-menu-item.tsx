@@ -20,11 +20,11 @@ export function useMenuItem() {
         children: appLabel('membershipEditor'),
       },
       {
-        key: 'occupantEditor',
-        href: appPath('occupantEditor', {
+        key: 'occupancyEditor',
+        href: appPath('occupancyEditor', {
           path: { communityId: community.id, propertyId: property.id },
         }),
-        children: appLabel('occupantEditor'),
+        children: appLabel('occupancyEditor'),
         showDivider: true,
       },
       {

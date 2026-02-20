@@ -3,6 +3,7 @@ import Image from 'next/image';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { type ScreenshotEntry } from '../../feature-overview-image-list';
+
 import styles from './styles.module.css';
 
 export const Slide: React.FC<ScreenshotEntry> = ({

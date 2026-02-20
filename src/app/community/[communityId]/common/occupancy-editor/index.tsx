@@ -1,33 +1,43 @@
-import { Tab, Tabs } from '@heroui/react';
+import { cn, Divider, Tab, Tabs } from '@heroui/react';
 import React from 'react';
 import { usePreviousDistinct } from 'react-use';
 import * as R from 'remeda';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
+import { Icon } from '~/view/base/icon';
+import { ContactEditor } from './contact-editor';
 import { ContactName } from './contact-name';
-import { OccupantEditor } from './occupant-editor';
+import { OccupancyDatesEditor } from './occupancy-dates-editor';
 import {
+  occupantDefault,
   useHookFormContext,
-  type OccupantFieldArrayReturn,
+  useOccupantListMethods,
 } from './use-hook-form';
 
 interface Props {
   className?: string;
-  occupantListMethods: OccupantFieldArrayReturn;
+  /**
+   * OccupancyList hook-form control name prefix
+   *
+   * I.e. `pastOccupancy.${yearIdx}.occupancyList`
+   */
+  controlNamePrefix: string;
   /** Open tab that contains this email on first render */
   defaultEmail?: string;
 }
 
-export const Editor: React.FC<Props> = ({
+export const OccupancyEditor: React.FC<Props> = ({
   className,
-  occupantListMethods,
+  controlNamePrefix,
   defaultEmail,
 }) => {
   const { isMdDevice } = useAppContext();
   const { formState } = useHookFormContext();
   const { errors } = formState;
-  const { fields, remove } = occupantListMethods;
+
+  const { fields, remove, append } = useOccupantListMethods(controlNamePrefix);
   const prevFieldsLength = usePreviousDistinct(fields.length);
+  const isVerticalTab = !isMdDevice;
 
   /** Find the tab that has the email specified in `defaultTab` */
   const defaultTabId = React.useMemo(() => {
@@ -62,16 +72,29 @@ export const Editor: React.FC<Props> = ({
     (fieldIdx: number) => {
       remove(fieldIdx);
       const fieldToSelect = fields[fieldIdx > 0 ? fieldIdx - 1 : 1];
-      if (fieldToSelect) {
-        setSelectedKey(fieldToSelect.id);
-      }
+      setSelectedKey(fieldToSelect?.id ?? null);
     },
     [remove, fields, setSelectedKey]
   );
 
+  const addContactButton = React.useMemo(() => {
+    return (
+      <div
+        className="flex cursor-pointer items-center gap-2 text-primary"
+        onClick={(evt) => {
+          // Prevent default action, which is to switch to tab content
+          evt.stopPropagation();
+          append(occupantDefault);
+        }}
+      >
+        Add Contact <Icon icon="person-add" />
+      </div>
+    );
+  }, [append]);
+
   React.useEffect(() => {
     // Switch to the newly added tab after new contact is added
-    if (!!prevFieldsLength && fields.length > prevFieldsLength) {
+    if (prevFieldsLength != null && fields.length > prevFieldsLength) {
       const lastField = fields[fields.length - 1];
       if (lastField) {
         setSelectedKey(lastField.id);
@@ -81,32 +104,53 @@ export const Editor: React.FC<Props> = ({
 
   return (
     <Tabs
-      // Note tabs styling currently broken
-      // See: https://github.com/heroui-inc/heroui/issues/5657
       classNames={{
         panel: 'grow',
-        tab: 'justify-start',
-        tabContent: 'w-full',
+        tab: cn('w-auto max-w-[150px] flex-none'),
+        tabContent: cn('h-5 w-full'),
+        tabList: cn('flex flex-wrap gap-1'),
       }}
-      aria-label="Options"
-      isVertical={!isMdDevice}
+      aria-label="Occupancy Editor"
+      disabledKeys={['divider']}
+      isVertical={isVerticalTab}
       selectedKey={selectedKey}
       onSelectionChange={(key) => setSelectedKey(key as string)}
     >
       {fields.map((field, idx) => {
-        const controlNamePrefix = `occupantList.${idx}` as const;
+        const cnPrefix =
+          `${controlNamePrefix}.${idx}` as `occupantList.${number}`;
         return (
           <Tab
             key={field.id}
-            title={<ContactName controlNamePrefix={controlNamePrefix} />}
+            title={<ContactName controlNamePrefix={cnPrefix} />}
           >
-            <OccupantEditor
-              controlNamePrefix={controlNamePrefix}
+            <ContactEditor
+              controlNamePrefix={cnPrefix}
               onRemove={() => onRemove(idx)}
             />
           </Tab>
         );
       })}
+      {fields.length > 0 && (
+        <Tab
+          key="divider"
+          className={cn(
+            isVerticalTab && 'h-[10px] w-full',
+            // Revert default styling when tab is disabled
+            'data-[disabled=true]:cursor-default data-[disabled=true]:opacity-100'
+          )}
+          title={
+            <Divider
+              className={cn(isVerticalTab && 'absolute top-1/2')}
+              orientation={isVerticalTab ? 'horizontal' : 'vertical'}
+            />
+          }
+        />
+      )}
+      <Tab key="addContact" title={addContactButton} />
+      <Tab key="summary" title="Occupancy Dates">
+        <OccupancyDatesEditor startDateControlName="occupantStartDate" />
+      </Tab>
     </Tabs>
   );
 };

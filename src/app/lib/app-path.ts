@@ -37,7 +37,7 @@ export const supportedPathTemplates = {
   propertyModify: `${SPECIFIC_PROPERTY_PATH}/property-modify`,
   propertyDelete: `${SPECIFIC_PROPERTY_PATH}/property-delete`,
   membershipEditor: `${SPECIFIC_PROPERTY_PATH}/membership-editor`,
-  occupantEditor: `${SPECIFIC_PROPERTY_PATH}/occupant-editor`,
+  occupancyEditor: `${SPECIFIC_PROPERTY_PATH}/occupancy-editor`,
   registerEvent: `${SPECIFIC_PROPERTY_PATH}/register-event`,
   composeMembershipMail: `${SPECIFIC_PROPERTY_PATH}/compose-membership-mail`,
 };
@@ -143,7 +143,7 @@ export function appPath(
   }
 ): string;
 export function appPath(
-  template: 'occupantEditor',
+  template: 'occupancyEditor',
   sub: {
     path: {
       communityId: string;
@@ -262,7 +262,7 @@ export function appLabel(key: keyof SupportedPath) {
       return 'Delete Property';
     case 'membershipEditor':
       return 'Edit Membership Detail';
-    case 'occupantEditor':
+    case 'occupancyEditor':
       return 'Edit Contact Information';
     case 'registerEvent':
       return 'Register Event';

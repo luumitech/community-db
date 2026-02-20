@@ -12,7 +12,7 @@ const OccupantMutation = graphql(/* GraphQL */ `
   mutation occupantModify($input: PropertyModifyInput!) {
     propertyModify(input: $input) {
       property {
-        ...PropertyId_OccupantEditor
+        ...PropertyId_OccupancyEditor
       }
     }
   }
@@ -33,7 +33,7 @@ interface RouteArgs {
   searchParams: Promise<SearchParams>;
 }
 
-export default function OccupantEditor(props: RouteArgs) {
+export default function OccupancyEditor(props: RouteArgs) {
   const { email } = React.use(props.searchParams);
   const { communityId } = React.use(props.params);
   const [updateOccupant] = useMutation(OccupantMutation);

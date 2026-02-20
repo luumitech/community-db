@@ -69,6 +69,7 @@ const PropertyModifyInput = builder.inputType('PropertyModifyInput', {
     lat: t.string(),
     lon: t.string(),
     notes: t.string(),
+    occupantStartDate: t.string(),
     occupantList: t.field({ type: [OccupantInput] }),
     membershipList: t.field({ type: [MembershipInput] }),
   }),
