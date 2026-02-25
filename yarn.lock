@@ -15910,6 +15910,7 @@ __metadata:
     better-auth: "npm:^1.4.5"
     commander: "npm:^13.1.0"
     date-fns: "npm:^3.6.0"
+    date-fns-tz: "npm:^3.2.0"
     decimal.js: "npm:^10.4.3"
     dom-to-image: "npm:^2.6.0"
     dotenv-cli: "npm:^7.4.2"
@@ -16572,6 +16573,15 @@ __metadata:
   version: 2.2.3
   resolution: "dataloader@npm:2.2.3"
   checksum: 10c0/9b9a056fbc863ca86da87d59e053e871e263b4966aa4d55e40d61a65e96815fae5530ca220629064ca5f8e3000c0c4ec93292e170c38ff393fb34256b4d7c1aa
+  languageName: node
+  linkType: hard
+
+"date-fns-tz@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "date-fns-tz@npm:3.2.0"
+  peerDependencies:
+    date-fns: ^3.0.0 || ^4.0.0
+  checksum: 10c0/3f43300a4335d59f3515dc5196c66b4b56ef2af129eb82e4445ce0983e8ef31a5d038bc0406d669946bbbcf52ed953527527aa28b4a810995d6631a54655abcc
   languageName: node
   linkType: hard
 

@@ -1,6 +1,5 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { OccupancyEditor } from '~/community/[communityId]/common/occupancy-editor';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
@@ -13,6 +12,7 @@ import {
   ModalHeader,
 } from '~/view/base/modal';
 import { MailchimpNotice } from './mailchimp-notice';
+import { OccupancyEditor } from './occupancy-editor';
 import { InputData, useHookForm } from './use-hook-form';
 
 interface Props {
@@ -64,10 +64,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
                   <MailchimpNotice />
                 </ModalHeader>
                 <ModalBody>
-                  <OccupancyEditor
-                    controlNamePrefix="occupancyInfoList.0.occupantList"
-                    defaultEmail={defaultEmail}
-                  />
+                  <OccupancyEditor defaultEmail={defaultEmail} />
                 </ModalBody>
                 <ModalFooter>
                   <div className="grow" />

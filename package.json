@@ -66,6 +66,7 @@
     "apollo-link-debounce": "^3.0.0",
     "better-auth": "^1.4.5",
     "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.2.0",
     "decimal.js": "^10.4.3",
     "dom-to-image": "^2.6.0",
     "embla-carousel-autoplay": "^8.1.6",

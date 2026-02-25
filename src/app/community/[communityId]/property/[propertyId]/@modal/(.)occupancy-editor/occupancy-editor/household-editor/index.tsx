@@ -5,43 +5,41 @@ import * as R from 'remeda';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
+import {
+  occupantDefault,
+  useFieldArray,
+  useHookFormContext,
+} from '../../use-hook-form';
 import { ContactEditor } from './contact-editor';
 import { ContactName } from './contact-name';
 import { OccupancyDatesEditor } from './occupancy-dates-editor';
-import {
-  occupantDefault,
-  useHookFormContext,
-  useOccupantListMethods,
-} from './use-hook-form';
 
 interface Props {
   className?: string;
-  /**
-   * OccupancyList hook-form control name prefix
-   *
-   * I.e. `pastOccupancy.${yearIdx}.occupancyList`
-   */
-  controlNamePrefix: string;
+  /** OccupancyList hook-form control name prefix */
+  controlNamePrefix: `occupancyInfoList.${number}`;
   /** Open tab that contains this email on first render */
   defaultEmail?: string;
 }
 
-export const OccupancyEditor: React.FC<Props> = ({
+export const HouseholdEditor: React.FC<Props> = ({
   className,
   controlNamePrefix,
   defaultEmail,
 }) => {
   const { isMdDevice } = useAppContext();
-  const { formState } = useHookFormContext();
+  const { control, formState } = useHookFormContext();
   const { errors } = formState;
-
-  const { fields, remove, append } = useOccupantListMethods(controlNamePrefix);
+  const { fields, remove, append } = useFieldArray({
+    control,
+    name: `${controlNamePrefix}.occupantList`,
+  });
   const prevFieldsLength = usePreviousDistinct(fields.length);
   const isVerticalTab = !isMdDevice;
 
   /** Find the tab that has the email specified in `defaultTab` */
   const defaultTabId = React.useMemo(() => {
-    const firstTabId = fields?.[0]?.id;
+    const firstTabId = fields.length > 0 ? fields[0].id : 'occupancyDates';
     if (!defaultEmail) {
       return firstTabId;
     }
@@ -56,7 +54,12 @@ export const OccupancyEditor: React.FC<Props> = ({
 
   const [selectedKey, setSelectedKey] = React.useState(defaultTabId);
 
-  const errObj = R.pathOr(errors, R.stringToPath('occupantList'), {});
+  const errObj = R.pathOr(
+    errors,
+    // @ts-expect-error unable to resolve type error
+    R.stringToPath(controlNamePrefix),
+    {}
+  );
   React.useEffect(() => {
     // If there is a form validation error, select the tab that contains the error
     if (Array.isArray(errObj)) {
@@ -105,7 +108,8 @@ export const OccupancyEditor: React.FC<Props> = ({
   return (
     <Tabs
       classNames={{
-        panel: 'grow',
+        tabWrapper: cn(className),
+        panel: cn('grow', isVerticalTab && 'p-0 pl-3'),
         tab: cn('w-auto max-w-[150px] flex-none'),
         tabContent: cn('h-5 w-full'),
         tabList: cn('flex flex-wrap gap-1'),
@@ -117,15 +121,14 @@ export const OccupancyEditor: React.FC<Props> = ({
       onSelectionChange={(key) => setSelectedKey(key as string)}
     >
       {fields.map((field, idx) => {
-        const cnPrefix =
-          `${controlNamePrefix}.${idx}` as `occupantList.${number}`;
+        const listPrefix = `${controlNamePrefix}.occupantList.${idx}` as const;
         return (
           <Tab
             key={field.id}
-            title={<ContactName controlNamePrefix={cnPrefix} />}
+            title={<ContactName controlNamePrefix={listPrefix} />}
           >
             <ContactEditor
-              controlNamePrefix={cnPrefix}
+              controlNamePrefix={listPrefix}
               onRemove={() => onRemove(idx)}
             />
           </Tab>
@@ -148,8 +151,8 @@ export const OccupancyEditor: React.FC<Props> = ({
         />
       )}
       <Tab key="addContact" title={addContactButton} />
-      <Tab key="summary" title="Occupancy Dates">
-        <OccupancyDatesEditor startDateControlName="occupantStartDate" />
+      <Tab key="occupancyDates" title="Occupancy Dates">
+        <OccupancyDatesEditor controlNamePrefix={controlNamePrefix} />
       </Tab>
     </Tabs>
   );

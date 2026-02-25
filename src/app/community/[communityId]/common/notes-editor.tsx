@@ -2,7 +2,7 @@ import { Input, cn } from '@heroui/react';
 import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { useUserInfo } from '~/custom-hooks/user-info';
-import { formatAsDate } from '~/lib/date-util';
+import { formatLocalDate } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Textarea } from '~/view/base/textarea';
 
@@ -25,7 +25,7 @@ export const NotesEditor: React.FC<Props> = ({
 
   const notePrefix = React.useMemo(() => {
     // prefix each message with `date(name):`
-    return `${formatAsDate(new Date())}(${shortName}):`;
+    return `${formatLocalDate(new Date())}(${shortName}):`;
   }, [shortName]);
 
   const onAddNote = React.useCallback(() => {

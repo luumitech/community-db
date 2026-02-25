@@ -3,11 +3,11 @@ import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '~/view/base/icon';
-import { useHookFormContext } from './use-hook-form';
+import { useHookFormContext } from '../../use-hook-form';
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}`;
+  controlNamePrefix: `occupancyInfoList.${number}.occupantList.${number}`;
 }
 
 export const ContactName: React.FC<Props> = ({

@@ -55,8 +55,8 @@ export interface OccupantRow {
    * - 1..n: past occupant list index
    */
   setIndex: number;
-  startDate: string | null;
-  endDate: string | null;
+  moveInDate: string | null;
+  moveOutDate: string | null;
   firstName: string | null;
   lastName: string | null;
   optOut: number | undefined;

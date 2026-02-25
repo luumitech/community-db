@@ -33,8 +33,8 @@ const OccupantInput = builder.inputType('OccupantInput', {
 
 const OccupancyInfoInput = builder.inputType('OccupancyInfoInput', {
   fields: (t) => ({
-    startDate: t.string(),
-    endDate: t.string(),
+    moveInDate: t.string(),
+    moveOutDate: t.string(),
     occupantList: t.field({ type: [OccupantInput] }),
   }),
 });

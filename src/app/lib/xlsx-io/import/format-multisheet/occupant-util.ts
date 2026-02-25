@@ -16,8 +16,8 @@ const mappingType = {
   firstName: 'string',
   lastName: 'string',
   optOut: 'boolean',
-  startDate: 'date',
-  endDate: 'date',
+  moveInDate: 'date',
+  moveOutDate: 'date',
 } satisfies MappingTypeSchema;
 type MappingEntry = MappingResult<typeof mappingType>;
 
@@ -41,8 +41,8 @@ export class OccupantUtil {
       firstName: importHelper.labelColumn('firstName'),
       lastName: importHelper.labelColumn('lastName'),
       optOut: importHelper.labelColumn('optOut'),
-      startDate: importHelper.labelColumn('startDate'),
-      endDate: importHelper.labelColumn('endDate'),
+      moveInDate: importHelper.labelColumn('moveInDate'),
+      moveOutDate: importHelper.labelColumn('moveOutDate'),
     };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {
@@ -72,8 +72,8 @@ export class OccupantUtil {
       occupantId,
       propertyId: _propertyId,
       setIndex,
-      startDate,
-      endDate,
+      moveInDate,
+      moveOutDate,
       ...occupant
     } = entry;
     return {
@@ -90,8 +90,8 @@ export class OccupantUtil {
 
     for (const [setIndex, list] of occupancyInfoMap) {
       occupancyInfoList[setIndex] = {
-        startDate: list.find(({ startDate }) => startDate)?.startDate,
-        endDate: list.find(({ endDate }) => endDate)?.endDate,
+        moveInDate: list.find(({ moveInDate }) => moveInDate)?.moveInDate,
+        moveOutDate: list.find(({ moveOutDate }) => moveOutDate)?.moveOutDate,
         occupantList: list.map((entry) => this.toOccupantEntry(entry, opt)),
       };
     }

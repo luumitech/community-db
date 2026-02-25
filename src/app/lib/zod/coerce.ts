@@ -1,6 +1,6 @@
 import * as R from 'remeda';
 import { z, type ZodAny, type ZodEffects } from 'zod';
-import { isValidDate } from '~/lib/date-util';
+import { parseAsDate } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import { type ValidateFn } from './validate';
 
@@ -262,12 +262,13 @@ export class Coerce {
           return onError();
         }
       }
-      const date = new Date(val);
-      if (!isValidDate(date)) {
+
+      const zoned = parseAsDate(val);
+      if (zoned == null) {
         return onError();
       }
-      // Remove timestamp portion of date
-      date.setUTCHours(0, 0, 0, 0);
+      // Return string in ISOString format (i.e '2023-02-26T00:00:00.000Z')
+      const date = zoned.toDate();
       return date.toISOString();
     });
   }

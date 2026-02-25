@@ -12,15 +12,12 @@ import * as GQL from '~/graphql/generated/graphql';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
+import { useFieldArray, useHookFormContext } from '../../use-hook-form';
 import { ContactInfoEditor } from './contact-info-editor';
-import {
-  useHookFormContext,
-  useOccupantInfoListMethods,
-} from './use-hook-form';
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}`;
+  controlNamePrefix: `occupancyInfoList.${number}.occupantList.${number}`;
   /** Contact removal */
   onRemove?: () => void;
 }
@@ -30,10 +27,11 @@ export const ContactEditor: React.FC<Props> = ({
   controlNamePrefix,
   onRemove,
 }) => {
-  const { register } = useHookFormContext();
-  const infoMethods = useOccupantInfoListMethods(
-    `${controlNamePrefix}.infoList`
-  );
+  const { register, control } = useHookFormContext();
+  const infoMethods = useFieldArray({
+    control,
+    name: `${controlNamePrefix}.infoList`,
+  });
   const { fields, append, remove, move } = infoMethods;
 
   return (

@@ -51,11 +51,11 @@ const occupancyInfoRef = builder
   .objectRef<OccupancyInfo>('OccupancyInfo')
   .implement({
     fields: (t) => ({
-      startDate: t.expose('startDate', {
+      moveInDate: t.expose('moveInDate', {
         type: 'Date',
         nullable: true,
       }),
-      endDate: t.expose('endDate', {
+      moveOutDate: t.expose('moveOutDate', {
         type: 'Date',
         nullable: true,
       }),

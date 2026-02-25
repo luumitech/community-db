@@ -41,8 +41,8 @@ describe('import community xlsx (multisheet format)', () => {
                       email
                     }
                     occupancyInfoList {
-                      startDate
-                      endDate
+                      moveInDate
+                      moveOutDate
                       occupantList {
                         firstName
                         lastName
@@ -101,8 +101,8 @@ describe('import community xlsx (multisheet format)', () => {
       occupancyInfoList: [
         {
           __typename: 'OccupancyInfo',
-          startDate: null,
-          endDate: null,
+          moveInDate: null,
+          moveOutDate: null,
           occupantList: [
             {
               __typename: 'Occupant',

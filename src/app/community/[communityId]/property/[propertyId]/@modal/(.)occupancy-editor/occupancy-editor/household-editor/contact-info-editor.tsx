@@ -6,12 +6,12 @@ import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
 import { Input } from '~/view/base/input';
 import { PhoneInput } from '~/view/base/phone-input';
+import { useHookFormContext } from '../../use-hook-form';
 import { ContactTypeSelect } from './contact-type-select';
-import { useHookFormContext } from './use-hook-form';
 
 interface ValueInputProps {
   className?: string;
-  controlName: `occupantList.${number}.infoList.${number}.value`;
+  controlName: `occupancyInfoList.${number}.occupantList.${number}.infoList.${number}.value`;
   label?: string;
   ['aria-label']?: string;
   variant?: InputProps['variant'];
@@ -19,7 +19,7 @@ interface ValueInputProps {
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}.infoList.${number}`;
+  controlNamePrefix: `occupancyInfoList.${number}.occupantList.${number}.infoList.${number}`;
   onRemove: () => void;
 }
 

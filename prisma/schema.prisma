@@ -245,9 +245,9 @@ model Property {
 
 type OccupancyInfo {
   /// When occupants moved in
-  startDate    DateTime?
+  moveInDate   DateTime?
   /// When occupants moved out
-  endDate      DateTime?
+  moveOutDate  DateTime?
   occupantList Occupant[]
 }
 

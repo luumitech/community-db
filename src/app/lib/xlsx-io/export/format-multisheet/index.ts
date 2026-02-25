@@ -61,8 +61,8 @@ export class ExportMultisheet extends ExportHelper {
            * start/end date
            */
           ...(idx === 0 && {
-            startDate: occupancyInfo.startDate,
-            endDate: occupancyInfo.endDate,
+            moveInDate: occupancyInfo.moveInDate,
+            moveOutDate: occupancyInfo.moveOutDate,
           }),
         });
       });
@@ -89,8 +89,8 @@ export class ExportMultisheet extends ExportHelper {
     propertyId: number,
     opt: {
       setIndex: number;
-      startDate?: Date | null;
-      endDate?: Date | null;
+      moveInDate?: Date | null;
+      moveOutDate?: Date | null;
     }
   ) {
     const occupantId = this.rows.occupant.length + 1;
@@ -101,8 +101,8 @@ export class ExportMultisheet extends ExportHelper {
       firstName: occupant.firstName ?? null,
       lastName: occupant.lastName ?? null,
       optOut: ExportHelper.toBool(occupant.optOut),
-      startDate: ExportHelper.toDate(opt?.startDate),
-      endDate: ExportHelper.toDate(opt?.endDate),
+      moveInDate: ExportHelper.toDate(opt?.moveInDate),
+      moveOutDate: ExportHelper.toDate(opt?.moveOutDate),
     });
     occupant.infoList.forEach((contact) => {
       this.processContact(contact, occupantId);
