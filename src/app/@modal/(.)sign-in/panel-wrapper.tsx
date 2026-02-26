@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@heroui/react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, type Variants } from 'motion/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { InitiateSignIn } from './initiate-sign-in';
@@ -12,7 +12,7 @@ import {
 import { SendEmailOtp } from './send-email-otp';
 import { VerifyEmailOtp } from './verify-email-otp';
 
-const variants = {
+const variants: Variants = {
   initial: (direction: Direction) => ({
     x: direction === 'forward' ? '130%' : '-130%',
   }),
@@ -38,7 +38,7 @@ export const PanelWrapper: React.FC<React.PropsWithChildren<Props>> = ({
     <>
       {panel !== 'sign-in' && (
         <Button
-          className="absolute left-4 top-4"
+          className="absolute top-4 left-4"
           variant="bordered"
           isIconOnly
           size="sm"
