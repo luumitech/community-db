@@ -1,24 +1,19 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
-import {
-  OccupancyInfoListFieldArray,
-  occupancyInfoDefault,
-} from '../use-hook-form';
+import { useOccupancyEditorContext } from '../occupancy-editor-context';
 
 interface Props {
   className?: string;
-  occupancyInfoListMethods: OccupancyInfoListFieldArray;
-  occupancyFieldId: string;
   onPress?: () => void;
 }
 
 export const HouseholdMakeCurrentButton: React.FC<Props> = ({
   className,
-  occupancyInfoListMethods,
-  occupancyFieldId,
   onPress,
 }) => {
+  const { occupancyInfoListMethods, occupancyFieldId } =
+    useOccupancyEditorContext();
   const { fields, move } = occupancyInfoListMethods;
 
   const makeIntoCurrentOccupant = React.useCallback(() => {

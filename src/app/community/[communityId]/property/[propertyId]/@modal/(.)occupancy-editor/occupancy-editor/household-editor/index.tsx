@@ -6,6 +6,10 @@ import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
 import {
+  findOccupant,
+  useOccupancyEditorContext,
+} from '../../occupancy-editor-context';
+import {
   occupantDefault,
   useFieldArray,
   useHookFormContext,
@@ -18,16 +22,14 @@ interface Props {
   className?: string;
   /** OccupancyList hook-form control name prefix */
   controlNamePrefix: `occupancyInfoList.${number}`;
-  /** Open tab that contains this email on first render */
-  defaultEmail?: string;
 }
 
 export const HouseholdEditor: React.FC<Props> = ({
   className,
   controlNamePrefix,
-  defaultEmail,
 }) => {
   const { isMdDevice } = useAppContext();
+  const { focusEmail } = useOccupancyEditorContext();
   const { control, formState } = useHookFormContext();
   const { errors } = formState;
   const { fields, remove, append } = useFieldArray({
@@ -40,17 +42,9 @@ export const HouseholdEditor: React.FC<Props> = ({
   /** Find the tab that has the email specified in `defaultTab` */
   const defaultTabId = React.useMemo(() => {
     const firstTabId = fields.length > 0 ? fields[0].id : 'occupancyDates';
-    if (!defaultEmail) {
-      return firstTabId;
-    }
-    const foundTab = fields.find(({ infoList }) =>
-      infoList.find(
-        ({ type, value }) =>
-          type === GQL.ContactInfoType.Email && value === defaultEmail
-      )
-    );
+    const foundTab = findOccupant(fields, focusEmail);
     return foundTab?.id ?? firstTabId;
-  }, [fields, defaultEmail]);
+  }, [fields, focusEmail]);
 
   const [selectedKey, setSelectedKey] = React.useState(defaultTabId);
 

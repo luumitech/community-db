@@ -1,8 +1,8 @@
 import { cn, Select, SelectItem } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
+import { useOccupancyEditorContext } from '../../occupancy-editor-context';
 import {
-  OccupancyInfoListFieldArray,
   useHookFormContext,
   type OccupancyInfoEntry,
 } from '../../use-hook-form';
@@ -11,17 +11,12 @@ import { ItemLabel } from './item-label';
 
 interface Props {
   className?: string;
-  occupancyInfoListMethods: OccupancyInfoListFieldArray;
-  occupancyFieldId: string;
   onSelect?: (occupancyFieldId: string) => void;
 }
 
-export const HouseholdSelect: React.FC<Props> = ({
-  className,
-  occupancyInfoListMethods,
-  occupancyFieldId,
-  onSelect,
-}) => {
+export const HouseholdSelect: React.FC<Props> = ({ className, onSelect }) => {
+  const { occupancyInfoListMethods, occupancyFieldId } =
+    useOccupancyEditorContext();
   const { fields } = occupancyInfoListMethods;
   const { subscribe, formState } = useHookFormContext();
   const [occupancyInfoList, setOccupancyInfoList] =
@@ -74,7 +69,7 @@ export const HouseholdSelect: React.FC<Props> = ({
   return (
     <Select
       classNames={{
-        base: className,
+        base: cn('w-auto grow', className),
       }}
       label="Select households"
       items={items}

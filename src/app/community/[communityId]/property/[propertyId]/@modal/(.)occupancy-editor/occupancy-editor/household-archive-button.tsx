@@ -1,24 +1,18 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
-import { Icon } from '~/view/base/icon';
-import {
-  OccupancyInfoListFieldArray,
-  occupancyInfoDefault,
-} from '../use-hook-form';
+import { useOccupancyEditorContext } from '../occupancy-editor-context';
+import { occupancyInfoDefault } from '../use-hook-form';
 
 interface Props {
   className?: string;
-  occupancyInfoListMethods: OccupancyInfoListFieldArray;
-  occupancyFieldId: string;
   onPress?: () => void;
 }
 
 export const HouseholdArchiveButton: React.FC<Props> = ({
   className,
-  occupancyInfoListMethods,
-  occupancyFieldId,
   onPress,
 }) => {
+  const { occupancyInfoListMethods } = useOccupancyEditorContext();
   const { fields, prepend } = occupancyInfoListMethods;
 
   const makeIntoPastOccupant = React.useCallback(() => {

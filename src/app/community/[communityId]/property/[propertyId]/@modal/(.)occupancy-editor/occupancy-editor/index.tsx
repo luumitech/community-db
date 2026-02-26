@@ -1,8 +1,8 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
-import { useFieldArray, useHookFormContext } from '../use-hook-form';
+import { useOccupancyEditorContext } from '../occupancy-editor-context';
 import { HouseholdArchiveButton } from './household-archive-button';
 import { HouseholdDeleteButton } from './household-delete-button';
 import { HouseholdEditor } from './household-editor';
@@ -11,40 +11,12 @@ import { HouseholdSelect } from './household-select';
 
 interface Props {
   className?: string;
-  /** Email to highlight in contact list on first render */
-  defaultEmail?: string;
 }
 
-export const OccupancyEditor: React.FC<Props> = ({
-  className,
-  defaultEmail,
-}) => {
-  const { control } = useHookFormContext();
-  const occupancyInfoListMethods = useFieldArray({
-    control,
-    name: 'occupancyInfoList',
-  });
+export const OccupancyEditor: React.FC<Props> = ({ className }) => {
+  const { occupancyInfoListMethods, occupancyFieldId, setOccupancyFieldId } =
+    useOccupancyEditorContext();
   const { fields } = occupancyInfoListMethods;
-
-  /** Find the household that has the email specified in `defaultTab` */
-  const defaultHouseholdId = React.useMemo(() => {
-    const firstFieldId = fields[0].id;
-    if (!defaultEmail) {
-      return firstFieldId;
-    }
-    const found = fields.find(({ occupantList }) => {
-      return occupantList.find(({ infoList }) =>
-        infoList.find(
-          ({ type, value }) =>
-            type === GQL.ContactInfoType.Email && value === defaultEmail
-        )
-      );
-    });
-    return found?.id ?? firstFieldId;
-  }, [fields, defaultEmail]);
-
-  const [occupancyFieldId, setOccupancyFieldId] =
-    React.useState(defaultHouseholdId);
 
   const onRemove = React.useCallback(
     (removedIdx: number) => {
@@ -52,7 +24,7 @@ export const OccupancyEditor: React.FC<Props> = ({
       const fieldToSelect = fields[removedIdx === 0 ? 1 : 0];
       setOccupancyFieldId(fieldToSelect.id);
     },
-    [fields]
+    [fields, setOccupancyFieldId]
   );
 
   const isSelectedCurrentOccupant = React.useMemo(() => {
@@ -61,32 +33,17 @@ export const OccupancyEditor: React.FC<Props> = ({
 
   return (
     <div className={twMerge('flex flex-col gap-3', className)}>
-      <div className={twMerge('flex items-start gap-2', className)}>
-        <HouseholdSelect
-          occupancyInfoListMethods={occupancyInfoListMethods}
-          occupancyFieldId={occupancyFieldId}
-          onSelect={setOccupancyFieldId}
-        />
+      <div className={twMerge('flex flex-wrap items-start gap-2', className)}>
+        <HouseholdSelect onSelect={setOccupancyFieldId} />
+        {/* Split button control to next line in small media */}
+        <div className="basis-full sm:basis-auto" />
         <div className="flex h-14 gap-2">
           {isSelectedCurrentOccupant ? (
-            <HouseholdArchiveButton
-              className="h-full"
-              occupancyInfoListMethods={occupancyInfoListMethods}
-              occupancyFieldId={occupancyFieldId}
-            />
+            <HouseholdArchiveButton className="h-full" />
           ) : (
-            <HouseholdMakeCurrentButton
-              className="h-full"
-              occupancyInfoListMethods={occupancyInfoListMethods}
-              occupancyFieldId={occupancyFieldId}
-            />
+            <HouseholdMakeCurrentButton className="h-full" />
           )}
-          <HouseholdDeleteButton
-            className="h-full"
-            occupancyInfoListMethods={occupancyInfoListMethods}
-            occupancyFieldId={occupancyFieldId}
-            onPress={onRemove}
-          />
+          <HouseholdDeleteButton className="h-full" onPress={onRemove} />
         </div>
       </div>
       {occupancyInfoListMethods.fields.map((entry, idx) => (
@@ -94,7 +51,6 @@ export const OccupancyEditor: React.FC<Props> = ({
           key={entry.id}
           className={cn(entry.id !== occupancyFieldId && 'hidden')}
           controlNamePrefix={`occupancyInfoList.${idx}`}
-          defaultEmail={defaultEmail}
         />
       ))}
     </div>

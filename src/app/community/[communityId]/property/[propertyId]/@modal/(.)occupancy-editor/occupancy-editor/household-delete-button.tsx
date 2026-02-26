@@ -1,21 +1,19 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
-import { OccupancyInfoListFieldArray } from '../use-hook-form';
+import { useOccupancyEditorContext } from '../occupancy-editor-context';
 
 interface Props {
   className?: string;
-  occupancyInfoListMethods: OccupancyInfoListFieldArray;
-  occupancyFieldId: string;
   onPress?: (removedIdx: number) => void;
 }
 
 export const HouseholdDeleteButton: React.FC<Props> = ({
   className,
-  occupancyInfoListMethods,
-  occupancyFieldId,
   onPress,
 }) => {
+  const { occupancyFieldId, occupancyInfoListMethods } =
+    useOccupancyEditorContext();
   const { fields, remove } = occupancyInfoListMethods;
 
   const onRemove = React.useCallback(() => {

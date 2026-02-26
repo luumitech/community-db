@@ -60,5 +60,5 @@ export default function OccupancyEditor(props: RouteArgs) {
     );
   };
 
-  return <ModalDialog onSave={onSave} defaultEmail={email} />;
+  return <ModalDialog onSave={onSave} focusEmail={email} />;
 }

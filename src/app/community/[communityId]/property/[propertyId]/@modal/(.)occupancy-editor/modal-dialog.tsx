@@ -13,18 +13,19 @@ import {
 } from '~/view/base/modal';
 import { MailchimpNotice } from './mailchimp-notice';
 import { OccupancyEditor } from './occupancy-editor';
+import { OccupancyEditorProvider } from './occupancy-editor-context';
 import { InputData, useHookForm } from './use-hook-form';
 
 interface Props {
   onSave: (input: InputData) => Promise<void>;
-  defaultEmail?: string;
+  focusEmail?: string;
 }
 
-export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
+export const ModalDialog: React.FC<Props> = ({ onSave, focusEmail }) => {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
   const { formMethods } = useHookForm();
-  const { formState, handleSubmit } = formMethods;
+  const { control, formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
   const goBack = React.useCallback(() => {
@@ -64,7 +65,12 @@ export const ModalDialog: React.FC<Props> = ({ onSave, defaultEmail }) => {
                   <MailchimpNotice />
                 </ModalHeader>
                 <ModalBody>
-                  <OccupancyEditor defaultEmail={defaultEmail} />
+                  <OccupancyEditorProvider
+                    control={control}
+                    focusEmail={focusEmail}
+                  >
+                    <OccupancyEditor />
+                  </OccupancyEditorProvider>
                 </ModalBody>
                 <ModalFooter>
                   <div className="grow" />
