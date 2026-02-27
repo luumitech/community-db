@@ -4,8 +4,10 @@ import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { AppLogo } from '~/view/app-logo';
 import { Modal, ModalContent } from '~/view/base/modal';
-import { PanelContextProvider } from './panel-context';
-import { PanelWrapper } from './panel-wrapper';
+import { InitiateSignIn } from './initiate-sign-in';
+import { SendEmailOtp } from './send-email-otp';
+import { VerifyEmailOtp } from './verify-email-otp';
+import { Wizard } from './wizard';
 
 export default function SignIn() {
   const router = useRouter();
@@ -22,9 +24,17 @@ export default function SignIn() {
         <div className="m-auto mt-6">
           <AppLogo size={64} onClick={() => router.push(appPath('home'))} />
         </div>
-        <PanelContextProvider>
-          <PanelWrapper />
-        </PanelContextProvider>
+        <Wizard>
+          <Wizard.Step name="signIn">
+            <InitiateSignIn />
+          </Wizard.Step>
+          <Wizard.Step name="sendEmailOTP">
+            <SendEmailOtp />
+          </Wizard.Step>
+          <Wizard.Step name="verifyEmailOTP">
+            <VerifyEmailOtp />
+          </Wizard.Step>
+        </Wizard>
       </ModalContent>
     </Modal>
   );

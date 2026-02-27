@@ -2,22 +2,22 @@ import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
+import { Wizard } from '../wizard';
 
-interface Props {
+export interface PremiumPlanSuccessProps {
   className?: string;
 }
 
-export const PremiumPlanSuccess: React.FC<Props> = ({ className }) => {
-  const { plan, goToPanel } = usePlanContext();
+export const PremiumPlanSuccess: React.FC<PremiumPlanSuccessProps> = ({
+  className,
+}) => {
+  const { goTo } = Wizard.useWizard();
+  const { plan } = usePlanContext();
   const { isActive, recurringAmount, nextBillingDate } = plan ?? {};
 
   return (
     <div className={cn(className, 'flex items-start')}>
-      <Button
-        isIconOnly
-        variant="light"
-        onPress={() => goToPanel('plan-select')}
-      >
+      <Button isIconOnly variant="light" onPress={() => goTo('selectPlan', {})}>
         <Icon icon="back" />
       </Button>
       <div className="mt-2">

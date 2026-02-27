@@ -3,6 +3,7 @@ import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { usePlanContext } from '../plan-context';
 import { PricePlanWithDescription } from '../price-plan-with-description';
+import { Wizard } from '../wizard';
 
 interface Props {
   className?: string;
@@ -10,7 +11,8 @@ interface Props {
 
 export const FreePlan: React.FC<Props> = ({ className }) => {
   const { env } = useAppContext();
-  const { plan, goToPanel } = usePlanContext();
+  const { plan } = usePlanContext();
+  const { goTo } = Wizard.useWizard();
 
   const planName = env.NEXT_PUBLIC_PLAN_FREE_NAME;
   const planCost = env.NEXT_PUBLIC_PLAN_FREE_COST;
@@ -25,14 +27,14 @@ export const FreePlan: React.FC<Props> = ({ className }) => {
     } else if (plan.isActive) {
       // Already subscribed to a plan
       return (
-        <Button onPress={() => goToPanel('free')}>
+        <Button onPress={() => goTo('free', {})}>
           Downgrade to {planName}
         </Button>
       );
     } else {
       return <Button isDisabled>Your current plan</Button>;
     }
-  }, [plan, goToPanel, planName]);
+  }, [plan, goTo, planName]);
 
   return (
     <PricePlanWithDescription

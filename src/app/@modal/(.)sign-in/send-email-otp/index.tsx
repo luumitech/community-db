@@ -3,11 +3,11 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { SendOtp } from './send-otp';
 import { useHookForm } from './use-hook-form';
 
-interface Props {
+export interface SendEmailOtpProps {
   className?: string;
 }
 
-export const SendEmailOtp: React.FC<Props> = ({ className }) => {
+export const SendEmailOtp: React.FC<SendEmailOtpProps> = ({ className }) => {
   const { formMethods } = useHookForm();
 
   return (
