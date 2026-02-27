@@ -1,16 +1,19 @@
 import { Button, cn } from '@heroui/react';
 import React from 'react';
-import { useWizard } from 'react-use-wizard';
+import { useAnimatedWizardContext } from '~/view/base/animated-wizard';
 import { useOccupancyEditorContext } from '../../occupancy-editor-context';
 import { HouseholdArchiveButton } from '../household-archive-button';
 import { HouseholdDeleteButton } from '../household-delete-button';
 import { HouseholdMakeCurrentButton } from '../household-make-current-button';
 import { HouseholdSelect } from '../household-select';
+import { type StepKeys } from './step-name';
 
-interface Props {}
+interface Props {
+  arg1?: string;
+}
 
 export const Step1: React.FC<Props> = (props) => {
-  const { nextStep, previousStep } = useWizard();
+  const { goBack, goTo } = useAnimatedWizardContext<StepKeys>();
   const { occupancyInfoListMethods, occupancyFieldId, setOccupancyFieldId } =
     useOccupancyEditorContext();
   const { fields } = occupancyInfoListMethods;
@@ -43,7 +46,7 @@ export const Step1: React.FC<Props> = (props) => {
           <HouseholdDeleteButton className="h-full" onPress={onRemove} />
         </div>
       </div>
-      <Button className="h-14" onPress={previousStep}>
+      <Button className="h-14" onPress={() => goTo('editor')}>
         previous
       </Button>
     </div>
