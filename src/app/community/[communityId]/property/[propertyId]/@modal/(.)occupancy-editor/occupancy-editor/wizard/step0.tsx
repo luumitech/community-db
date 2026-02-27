@@ -18,7 +18,7 @@ export const Step0: React.FC<Step0Props> = () => {
         <HouseholdSelect onSelect={setOccupancyFieldId} />
         <Button
           className="h-14"
-          onPress={() => goTo('manager', { anotherProp: 3 })}
+          onPress={() => goTo('manager', { arg: 'override' })}
         >
           manage
         </Button>

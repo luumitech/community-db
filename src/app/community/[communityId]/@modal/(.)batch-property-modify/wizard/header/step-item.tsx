@@ -1,6 +1,6 @@
 import { Chip, cn } from '@heroui/react';
 import React from 'react';
-import { useWizard } from 'react-use-wizard';
+import { Wizard } from '../';
 
 interface Props {
   stepNo: number;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const StepItem: React.FC<Props> = ({ stepNo, stepName }) => {
-  const { activeStep } = useWizard();
+  const { activeStep } = Wizard.useWizard();
   const isActive = activeStep === stepNo;
 
   return (

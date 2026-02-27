@@ -9,7 +9,7 @@ import { usePreviousDistinct } from 'react-use';
  */
 const variants: Variants = {
   initial: (direction) => ({
-    x: direction > 0 ? '130%' : '-130%',
+    x: direction > 0 ? '100%' : '-100%',
     position: 'absolute',
     opacity: 0,
   }),
@@ -19,7 +19,7 @@ const variants: Variants = {
     position: 'relative',
   },
   exit: (direction) => ({
-    x: direction > 0 ? '-130%' : '130%',
+    x: direction > 0 ? '-100%' : '100%',
     position: 'absolute',
     opacity: 0,
   }),
@@ -66,7 +66,29 @@ export function createAnimatedWizard<
     return children;
   }
 
-  function Wizard({ children }: React.PropsWithChildren) {
+  interface WizardProps {
+    /**
+     * Header content before the animated body
+     *
+     * - Header will not be aniamted
+     */
+    renderHeader?: (context: WizardContext) => React.ReactNode;
+    /**
+     * Footer content before the animated body
+     *
+     * - Footer will not be aniamted
+     */
+    renderFooter?: (context: WizardContext) => React.ReactNode;
+    /** Disables animation during transistion */
+    disableAnimation?: boolean;
+  }
+
+  function Wizard({
+    renderHeader,
+    renderFooter,
+    disableAnimation,
+    children,
+  }: React.PropsWithChildren<WizardProps>) {
     const steps = React.Children.toArray(children).filter(
       React.isValidElement
     ) as React.ReactElement<{ name: StepNames } & object>[];
@@ -134,26 +156,39 @@ export function createAnimatedWizard<
       }
     }, [prevStep, prevArg]);
 
+    const contextValue = { activeStep, goTo, goNext, goPrev, goBack };
+    const content = React.cloneElement(
+      steps[activeStep],
+      stepArg as Steps[StepNames]
+    );
+
     return (
-      <Context.Provider value={{ activeStep, goTo, goNext, goPrev, goBack }}>
+      <Context.Provider value={contextValue}>
+        {renderHeader?.(contextValue)}
         <div className="relative overflow-hidden">
-          <AnimatePresence initial={false} custom={direction} mode="popLayout">
-            <motion.div
-              key={activeStep}
+          {disableAnimation ? (
+            <div key={activeStep}>{content}</div>
+          ) : (
+            <AnimatePresence
+              initial={false}
               custom={direction}
-              variants={variants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ type: 'tween', duration: 0.5 }}
+              mode="popLayout"
             >
-              {React.cloneElement(
-                steps[activeStep],
-                stepArg as Steps[StepNames]
-              )}
-            </motion.div>
-          </AnimatePresence>
+              <motion.div
+                key={activeStep}
+                custom={direction}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: 'tween', duration: 0.5 }}
+              >
+                {content}
+              </motion.div>
+            </AnimatePresence>
+          )}
         </div>
+        {renderFooter?.(contextValue)}
       </Context.Provider>
     );
   }

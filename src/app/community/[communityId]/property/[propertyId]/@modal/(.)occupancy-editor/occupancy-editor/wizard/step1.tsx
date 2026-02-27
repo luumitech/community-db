@@ -7,7 +7,9 @@ import { HouseholdMakeCurrentButton } from '../household-make-current-button';
 import { HouseholdSelect } from '../household-select';
 import { Wizard } from './';
 
-export interface Step1Props {}
+export interface Step1Props {
+  arg: string;
+}
 
 export const Step1: React.FC<Step1Props> = (props) => {
   const { goBack, goTo } = Wizard.useWizard();

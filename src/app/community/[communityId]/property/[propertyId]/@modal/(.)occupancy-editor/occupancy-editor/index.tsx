@@ -13,7 +13,7 @@ export const OccupancyEditor: React.FC<Props> = ({ className }) => {
         <Step0 />
       </Wizard.Step>
       <Wizard.Step name="manager">
-        <Step1 />
+        <Step1 arg="default" />
       </Wizard.Step>
     </Wizard>
   );
