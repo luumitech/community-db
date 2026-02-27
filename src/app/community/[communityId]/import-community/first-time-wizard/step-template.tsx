@@ -1,31 +1,30 @@
 import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
 import React from 'react';
-import { type WizardValues } from 'react-use-wizard';
 import { Icon } from '~/view/base/icon';
+import { type WizardContext } from './wizard';
 
 interface Props {
-  wizardValues: WizardValues;
+  wizardContext: WizardContext;
   title?: React.ReactNode;
   body?: React.ReactNode;
 }
 
 export const StepTemplate: React.FC<Props> = ({
-  wizardValues,
+  wizardContext,
   title,
   body,
 }) => {
-  const { activeStep, isLastStep, previousStep, nextStep, goToStep } =
-    wizardValues;
+  const { activeStep, isLastStep, goTo, goNext, goBack } = wizardContext;
 
   return (
     <Card className="w-[inherit]" shadow="none">
       <Button
-        className="absolute right-1 top-1 z-20"
+        className="absolute top-1 right-1 z-20"
         isIconOnly
         size="sm"
         radius="full"
         variant="light"
-        onPress={() => goToStep(0)}
+        onPress={() => goTo(0)}
       >
         <Icon icon="cross" />
       </Button>
@@ -37,19 +36,19 @@ export const StepTemplate: React.FC<Props> = ({
           isIconOnly
           variant="ghost"
           isDisabled={activeStep === 1}
-          onPress={previousStep}
+          onPress={goBack}
         >
           <Icon className="rotate-180" icon="chevron-forward" />
         </Button>
         {isLastStep ? (
           <>
             <div className="grow" />
-            <Button size="sm" variant="ghost" onPress={() => goToStep(0)}>
+            <Button size="sm" variant="ghost" onPress={() => goTo(0)}>
               End
             </Button>
           </>
         ) : (
-          <Button size="sm" isIconOnly variant="ghost" onPress={nextStep}>
+          <Button size="sm" isIconOnly variant="ghost" onPress={goNext}>
             <Icon icon="chevron-forward" />
           </Button>
         )}

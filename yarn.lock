@@ -15966,7 +15966,6 @@ __metadata:
     react-redux: "npm:^9.2.0"
     react-toastify: "npm:^11.0.5"
     react-use: "npm:^17.6.0"
-    react-use-wizard: "npm:^2.3.0"
     remeda: "npm:^2.17.4"
     semantic-release: "npm:^25.0.2"
     sharp: "npm:^0.33.5"
@@ -25229,16 +25228,6 @@ __metadata:
     react: "*"
     tslib: "*"
   checksum: 10c0/97c32ecb7a425c3bcaa92dcf84c46146b49610d928efde9e9ee5518c475a0db942f01634dd490e4f42fcd95cc2f49657c1b96dcef96423c06f077147fe1968ab
-  languageName: node
-  linkType: hard
-
-"react-use-wizard@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "react-use-wizard@npm:2.3.0"
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 10c0/fb12cfa5ebc60e892ead3be26d6cbfb7b66db41bbf5ad63821b8455ece4cbb3618e901b53874e3c54cab08b461a213e1ae45688bbf2c918e2a5a55068cb430ad
   languageName: node
   linkType: hard
 

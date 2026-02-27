@@ -32,6 +32,7 @@ export function createAnimatedWizard<
 
   interface WizardContext {
     activeStep: number;
+    isLastStep: boolean;
 
     /**
      * Go to an arbitrary step by step name
@@ -102,6 +103,7 @@ export function createAnimatedWizard<
     const prevArg = usePreviousDistinct(stepArg);
 
     const stepCount = steps.length;
+    const isLastStep = activeStep === stepCount - 1;
 
     const goTo = React.useCallback<WizardContext['goTo']>(
       (step: string | number, arg?: unknown) => {
@@ -156,7 +158,14 @@ export function createAnimatedWizard<
       }
     }, [prevStep, prevArg]);
 
-    const contextValue = { activeStep, goTo, goNext, goPrev, goBack };
+    const contextValue = {
+      activeStep,
+      isLastStep,
+      goTo,
+      goNext,
+      goPrev,
+      goBack,
+    };
     const content = React.cloneElement(
       steps[activeStep],
       stepArg as Steps[StepNames]
@@ -165,10 +174,11 @@ export function createAnimatedWizard<
     return (
       <Context.Provider value={contextValue}>
         {renderHeader?.(contextValue)}
-        <div className="relative overflow-hidden">
-          {disableAnimation ? (
-            <div key={activeStep}>{content}</div>
-          ) : (
+
+        {disableAnimation ? (
+          <div key={activeStep}>{content}</div>
+        ) : (
+          <div className="relative overflow-hidden">
             <AnimatePresence
               initial={false}
               custom={direction}
@@ -186,8 +196,8 @@ export function createAnimatedWizard<
                 {content}
               </motion.div>
             </AnimatePresence>
-          )}
-        </div>
+          </div>
+        )}
         {renderFooter?.(contextValue)}
       </Context.Provider>
     );

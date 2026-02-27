@@ -1,11 +1,11 @@
 import React from 'react';
-import { useWizard } from 'react-use-wizard';
 import * as GQL from '~/graphql/generated/graphql';
 import { importMethodSelectionList } from '../_type';
 import { usePageContext } from '../page-context';
 import { useHookFormContext } from '../use-hook-form';
 import { SampleXlsx } from './sample-xlsx';
 import { StepTemplate } from './step-template';
+import { Wizard } from './wizard';
 
 const XlsxItem = importMethodSelectionList.find(
   (item) => item.value === GQL.ImportMethod.Xlsx
@@ -17,14 +17,14 @@ interface Props {
 
 export const StepMethodXlsx1: React.FC<Props> = ({ className }) => {
   const { setSelectTooltip } = usePageContext();
-  const wizardValues = useWizard();
+  const wizardContext = Wizard.useWizard();
   const formMethods = useHookFormContext();
   const { setValue } = formMethods;
 
   React.useEffect(() => {
     setSelectTooltip(
       <StepTemplate
-        wizardValues={wizardValues}
+        wizardContext={wizardContext}
         title="Manually import Excel file"
         body={
           <div className="flex flex-col gap-2">
@@ -39,7 +39,7 @@ export const StepMethodXlsx1: React.FC<Props> = ({ className }) => {
         }
       />
     );
-  }, [setSelectTooltip, wizardValues]);
+  }, [setSelectTooltip, wizardContext]);
 
   React.useEffect(() => {
     setValue('method', GQL.ImportMethod.Xlsx);
