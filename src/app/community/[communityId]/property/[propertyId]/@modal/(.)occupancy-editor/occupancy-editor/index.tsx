@@ -1,7 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { AnimatedWizardProvider } from '~/view/base/animated-wizard';
-import { Step0, Step1, STEP_KEYS } from './wizard';
+import { Step0, Step1, Wizard } from './wizard';
 
 interface Props {
   className?: string;
@@ -9,9 +8,13 @@ interface Props {
 
 export const OccupancyEditor: React.FC<Props> = ({ className }) => {
   return (
-    <AnimatedWizardProvider stepKeys={STEP_KEYS}>
-      <Step0 />
-      <Step1 />
-    </AnimatedWizardProvider>
+    <Wizard>
+      <Wizard.Step name="editor">
+        <Step0 />
+      </Wizard.Step>
+      <Wizard.Step name="manager">
+        <Step1 />
+      </Wizard.Step>
+    </Wizard>
   );
 };

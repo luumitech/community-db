@@ -103,7 +103,7 @@ export const HouseholdEditor: React.FC<Props> = ({
     <Tabs
       classNames={{
         tabWrapper: cn(className),
-        panel: cn('grow', isVerticalTab && 'p-0 pl-3'),
+        panel: cn('grow', isVerticalTab && 'p-1.5 pt-0 pl-3'),
         tab: cn('w-auto max-w-[150px] flex-none'),
         tabContent: cn('h-5 w-full'),
         tabList: cn('flex flex-wrap gap-1'),

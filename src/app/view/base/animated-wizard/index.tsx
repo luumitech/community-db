@@ -1,1 +1,1 @@
-export * from './wizard-context';
+export * from './create-animated-wizard';
