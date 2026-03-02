@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Autocomplete, AutocompleteItem, Spinner } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Spinner, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -54,6 +54,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
   const dispatch = useDispatch();
   const { communityId } = useLayoutContext();
   const [searchText, setSearchText] = React.useState('');
+  const [isSuggestionOpen, setIsSuggestionOpen] = React.useState(false);
 
   const searchTextIsEmpty = !searchText || searchText.trim() === '';
   const { data, loading } = useQuery(PropertyAutocompleteSearchQuery, {
@@ -152,35 +153,50 @@ export const PropertyAutocomplete: React.FC<Props> = ({
   }, [totalCount, communityId, setSearchBarText, searchText]);
 
   return (
-    <Autocomplete
-      className={className}
-      aria-label="Search Address, Member Name or Email"
-      placeholder="Search Address, Member Name or Email"
-      startContent={<Icon className="shrink-0" icon="search" />}
-      items={properties}
-      isLoading={loading}
-      allowsCustomValue
-      allowsEmptyCollection={!searchTextIsEmpty}
-      listboxProps={{
-        variant: 'flat',
-        emptyContent,
-      }}
-      /** Current property should not be selectable */
-      disabledKeys={[ITEM_KEY_EMPTY, currentPropertyId]}
-      selectorIcon={null}
-      defaultInputValue={searchText}
-      onInputChange={setSearchText}
-    >
-      <>
-        {/**
-         * When `allowsCustomValue` is specified (allowing arbitrary values to be
-         * entered), the `allowsEmptyCollection` is not working correctly, so
-         * `renderEmptyREsults` is introduced as replacement logic
-         */}
-        {renderEmptyResults(properties)}
-        {renderSearchItems(properties)}
-        {renderViewAllItems()}
-      </>
-    </Autocomplete>
+    <>
+      {/**
+       * Add a blurred back drop when autocomplete sugggestions are open
+       *
+       * We want to avoid the situation where user put in search text in the
+       * autocomplete bar, and exactly one result is returned. It may appear that the
+       * page has already been navigated to the search result, but when in fact, it is
+       * still on the previous property view page. Adding a back drop prevents that
+       * from happening.
+       */}
+      {isSuggestionOpen && (
+        <div className="fixed inset-0 z-40 backdrop-blur-sm transition-opacity" />
+      )}
+      <Autocomplete
+        className={className}
+        aria-label="Search Address, Member Name or Email"
+        placeholder="Search Address, Member Name or Email"
+        startContent={<Icon className="shrink-0" icon="search" />}
+        items={properties}
+        isLoading={loading}
+        allowsCustomValue
+        allowsEmptyCollection={!searchTextIsEmpty}
+        listboxProps={{
+          variant: 'flat',
+          emptyContent,
+        }}
+        /** Current property should not be selectable */
+        disabledKeys={[ITEM_KEY_EMPTY, currentPropertyId]}
+        selectorIcon={null}
+        defaultInputValue={searchText}
+        onInputChange={setSearchText}
+        onOpenChange={setIsSuggestionOpen}
+      >
+        <>
+          {/**
+           * When `allowsCustomValue` is specified (allowing arbitrary values to be
+           * entered), the `allowsEmptyCollection` is not working correctly, so
+           * `renderEmptyResults` is introduced as replacement logic
+           */}
+          {renderEmptyResults(properties)}
+          {renderSearchItems(properties)}
+          {renderViewAllItems()}
+        </>
+      </Autocomplete>
+    </>
   );
 };
