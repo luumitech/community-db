@@ -96,7 +96,6 @@
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "react-hook-form": "^7.61.1",
-    "react-infinite-scroll-hook": "^4.1.1",
     "react-leaflet": "^5.0.0",
     "react-multi-email": "^1.0.25",
     "react-number-format": "^5.4.3",
