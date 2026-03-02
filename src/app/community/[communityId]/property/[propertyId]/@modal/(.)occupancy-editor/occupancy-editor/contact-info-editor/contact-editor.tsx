@@ -8,27 +8,29 @@ import {
   cn,
 } from '@heroui/react';
 import React from 'react';
-import { useFieldArray } from '~/custom-hooks/hook-form';
+import {
+  useFieldArray,
+  useHookFormContext,
+} from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
-import { ContactInfoEditor } from './contact-info-editor';
-import { useHookFormContext } from './use-hook-form';
+import { ContactMethodRow } from './contact-method-row';
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}`;
+  controlNamePrefix: `occupancyInfoList.${number}.occupantList.${number}`;
   /** Contact removal */
   onRemove?: () => void;
 }
 
-export const OccupantEditor: React.FC<Props> = ({
+export const ContactEditor: React.FC<Props> = ({
   className,
   controlNamePrefix,
   onRemove,
 }) => {
-  const { control, register } = useHookFormContext();
+  const { register, control } = useHookFormContext();
   const infoMethods = useFieldArray({
     control,
     name: `${controlNamePrefix}.infoList`,
@@ -71,7 +73,7 @@ export const OccupantEditor: React.FC<Props> = ({
                 key={`${controlNamePrefix}-${field.id}`}
                 id={field.id}
               >
-                <ContactInfoEditor
+                <ContactMethodRow
                   controlNamePrefix={`${controlNamePrefix}.infoList.${idx}`}
                   onRemove={() => remove(idx)}
                 />

@@ -1,15 +1,14 @@
+import { Button, cn } from '@heroui/react';
 import React from 'react';
-import { useWizard } from 'react-use-wizard';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
+import { ModalBody } from '~/view/base/modal';
 import { FilterSelect } from '../filter-select';
 import { useHookFormContext } from '../use-hook-form';
-import { FooterDefault } from './footer-default';
-import { StepTemplate } from './step-template';
 
-interface Props {}
+export interface Step1Props {}
 
-export const Step1: React.FC<Props> = (props) => {
+export const Step1: React.FC<Step1Props> = (props) => {
   const { watch } = useHookFormContext();
   const method = watch('method');
   const memberYearList = watch('filter.memberYearList');
@@ -30,32 +29,15 @@ export const Step1: React.FC<Props> = (props) => {
   const body = React.useMemo(() => {
     switch (method) {
       case GQL.BatchModifyMethod.AddEvent:
-        return <AddEventBody {...props} />;
+        return <FilterSelect className="mb-4" yearRequired />;
 
       case GQL.BatchModifyMethod.AddGps:
-        return <AddGpsBody {...props} />;
+        return <FilterSelect className="mb-4" withGps />;
 
       default:
         throw new Error('Unsupported method');
     }
-  }, [method, props]);
+  }, [method]);
 
-  return (
-    <StepTemplate
-      body={body}
-      footer={<FooterDefault nextDisabled={nextDisabled} />}
-    />
-  );
-};
-
-const AddEventBody: React.FC<Props> = ({}) => {
-  const { previousStep } = useWizard();
-
-  return <FilterSelect className="mb-4" yearRequired />;
-};
-
-const AddGpsBody: React.FC<Props> = ({}) => {
-  const { previousStep } = useWizard();
-
-  return <FilterSelect className="mb-4" withGps />;
+  return <ModalBody>{body}</ModalBody>;
 };

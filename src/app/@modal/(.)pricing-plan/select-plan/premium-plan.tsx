@@ -5,6 +5,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
 import { PricePlanWithDescription } from '../price-plan-with-description';
+import { Wizard } from '../wizard';
 
 interface Props {
   className?: string;
@@ -12,7 +13,8 @@ interface Props {
 
 export const PremiumPlan: React.FC<Props> = ({ className }) => {
   const { env } = useAppContext();
-  const { plan, goToPanel } = usePlanContext();
+  const { plan } = usePlanContext();
+  const { goTo } = Wizard.useWizard();
 
   const planName = env.NEXT_PUBLIC_PLAN_PREMIUM_NAME;
   const planCost = env.NEXT_PUBLIC_PLAN_PREMIUM_COST;
@@ -32,12 +34,12 @@ export const PremiumPlan: React.FC<Props> = ({ className }) => {
       return <Button isDisabled>Your current plan</Button>;
     } else {
       return (
-        <Button onPress={() => goToPanel('premium')}>
+        <Button onPress={() => goTo('premium', {})}>
           Upgrade to {planName}
         </Button>
       );
     }
-  }, [plan, goToPanel, planName]);
+  }, [plan, goTo, planName]);
 
   return (
     <PricePlanWithDescription

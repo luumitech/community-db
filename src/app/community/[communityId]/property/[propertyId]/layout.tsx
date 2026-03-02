@@ -32,7 +32,7 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
         ...PropertyId_MembershipDisplay
         ...PropertyId_MembershipEditor
         ...PropertyId_OccupantDisplay
-        ...PropertyId_OccupantEditor
+        ...PropertyId_OccupancyEditor
         ...PropertyId_PropertyDisplay
         ...PropertyId_PropertyDelete
       }

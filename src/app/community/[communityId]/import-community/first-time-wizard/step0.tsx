@@ -1,10 +1,10 @@
 import { Button, Tooltip } from '@heroui/react';
 import React from 'react';
 import { useLocalStorage } from 'react-use';
-import { useWizard } from 'react-use-wizard';
 import { lsFlags } from '~/lib/env';
 import { Icon } from '~/view/base/icon';
 import { usePageContext } from '../page-context';
+import { Wizard } from './wizard';
 
 interface Props {
   className?: string;
@@ -16,14 +16,14 @@ export const Step0: React.FC<Props> = ({ className }) => {
     true
   );
   const { setSelectTooltip } = usePageContext();
-  const { nextStep } = useWizard();
+  const { goNext } = Wizard.useWizard();
 
   React.useEffect(() => {
     if (isFirstTime) {
       setIsFirstTime(false);
-      nextStep();
+      goNext();
     }
-  }, [isFirstTime, setIsFirstTime, nextStep]);
+  }, [isFirstTime, setIsFirstTime, goNext]);
 
   React.useEffect(() => {
     setSelectTooltip(undefined);
@@ -39,7 +39,7 @@ export const Step0: React.FC<Props> = ({ className }) => {
         isIconOnly
         size="sm"
         radius="full"
-        onPress={nextStep}
+        onPress={goNext}
       >
         <Icon icon="helpbook" />
       </Button>

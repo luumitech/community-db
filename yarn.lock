@@ -15910,6 +15910,7 @@ __metadata:
     better-auth: "npm:^1.4.5"
     commander: "npm:^13.1.0"
     date-fns: "npm:^3.6.0"
+    date-fns-tz: "npm:^3.2.0"
     decimal.js: "npm:^10.4.3"
     dom-to-image: "npm:^2.6.0"
     dotenv-cli: "npm:^7.4.2"
@@ -15958,14 +15959,12 @@ __metadata:
     react-dom: "npm:19.1.1"
     react-email: "npm:^5.2.8"
     react-hook-form: "npm:^7.61.1"
-    react-infinite-scroll-hook: "npm:^4.1.1"
     react-leaflet: "npm:^5.0.0"
     react-multi-email: "npm:^1.0.25"
     react-number-format: "npm:^5.4.3"
     react-redux: "npm:^9.2.0"
     react-toastify: "npm:^11.0.5"
     react-use: "npm:^17.6.0"
-    react-use-wizard: "npm:^2.3.0"
     remeda: "npm:^2.17.4"
     semantic-release: "npm:^25.0.2"
     sharp: "npm:^0.33.5"
@@ -16572,6 +16571,15 @@ __metadata:
   version: 2.2.3
   resolution: "dataloader@npm:2.2.3"
   checksum: 10c0/9b9a056fbc863ca86da87d59e053e871e263b4966aa4d55e40d61a65e96815fae5530ca220629064ca5f8e3000c0c4ec93292e170c38ff393fb34256b4d7c1aa
+  languageName: node
+  linkType: hard
+
+"date-fns-tz@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "date-fns-tz@npm:3.2.0"
+  peerDependencies:
+    date-fns: ^3.0.0 || ^4.0.0
+  checksum: 10c0/3f43300a4335d59f3515dc5196c66b4b56ef2af129eb82e4445ce0983e8ef31a5d038bc0406d669946bbbcf52ed953527527aa28b4a810995d6631a54655abcc
   languageName: node
   linkType: hard
 
@@ -25091,26 +25099,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-infinite-scroll-hook@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "react-infinite-scroll-hook@npm:4.1.1"
-  dependencies:
-    react-intersection-observer-hook: "npm:^2.1.1"
-  peerDependencies:
-    react: ">=16.8.0"
-  checksum: 10c0/43b49a12032bea13ecf60ad104135292e1b9d3e99833f0b06401ffb2e73f05c886a928e019e2a9b9c7654bf601035d8318ca5cf55645d722eb6d98efbd1e0ed3
-  languageName: node
-  linkType: hard
-
-"react-intersection-observer-hook@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "react-intersection-observer-hook@npm:2.1.1"
-  peerDependencies:
-    react: ">=16.8.0"
-  checksum: 10c0/a960a9e6c75cee0cf76cb332157622b5dd2837e6d2f17762d720c2647de0f18a0c7a957e819b5491f1e4129f681748b7db3754290c4551c03ab3bcf74c06aa49
-  languageName: node
-  linkType: hard
-
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -25219,16 +25207,6 @@ __metadata:
     react: "*"
     tslib: "*"
   checksum: 10c0/97c32ecb7a425c3bcaa92dcf84c46146b49610d928efde9e9ee5518c475a0db942f01634dd490e4f42fcd95cc2f49657c1b96dcef96423c06f077147fe1968ab
-  languageName: node
-  linkType: hard
-
-"react-use-wizard@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "react-use-wizard@npm:2.3.0"
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 10c0/fb12cfa5ebc60e892ead3be26d6cbfb7b66db41bbf5ad63821b8455ece4cbb3618e901b53874e3c54cab08b461a213e1ae45688bbf2c918e2a5a55068cb430ad
   languageName: node
   linkType: hard
 

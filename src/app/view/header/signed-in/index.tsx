@@ -12,8 +12,9 @@ import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 import { BmcLabel, BmcLogo, BmcUrl } from '~/view/buy-me-a-coffee';
-import styles from './styles.module.css';
 import { ThemeSelect } from './theme-select';
+
+import styles from './styles.module.css';
 
 interface Props {}
 

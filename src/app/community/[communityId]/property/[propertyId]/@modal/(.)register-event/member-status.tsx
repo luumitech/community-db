@@ -3,7 +3,7 @@ import React from 'react';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { Occupant } from '~/community/[communityId]/property-list/property-table/occupant';
 import * as GQL from '~/graphql/generated/graphql';
-import { formatAsDate } from '~/lib/date-util';
+import { formatUTCDate } from '~/lib/date-util';
 import { useHookFormContext } from './use-hook-form';
 
 interface Props {
@@ -40,13 +40,9 @@ export const MemberStatus: React.FC<Props> = ({
                 <span className="font-semibold">
                   {/**
                    * Format date similar to getCurrentDate(), to be consistent with rest of the
-                   * dialog
+                   * dialog. eventDate is stored as UTC date
                    */}
-                  {formatAsDate(
-                    // eventDate is UTC date, add T00:00:00 to interpret as local
-                    `${memberEvent.eventDate}T00:00:00`,
-                    'MMM d, yyyy'
-                  )}
+                  {formatUTCDate(memberEvent.eventDate, 'MMM d, yyyy')}
                 </span>
               </span>
             )}

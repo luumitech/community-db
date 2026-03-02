@@ -1,7 +1,7 @@
 import React from 'react';
-import { useWizard } from 'react-use-wizard';
 import { usePageContext } from '../page-context';
 import { StepTemplate } from './step-template';
+import { Wizard } from './wizard';
 
 interface Props {
   className?: string;
@@ -9,12 +9,12 @@ interface Props {
 
 export const StepMethodXlsx2: React.FC<Props> = ({ className }) => {
   const { setSelectTooltip } = usePageContext();
-  const wizardValues = useWizard();
+  const wizardContext = Wizard.useWizard();
 
   React.useEffect(() => {
     setSelectTooltip(
       <StepTemplate
-        wizardValues={wizardValues}
+        wizardContext={wizardContext}
         title="More about Excel file format"
         body={
           <div className="flex flex-col gap-2">
@@ -37,7 +37,7 @@ export const StepMethodXlsx2: React.FC<Props> = ({ className }) => {
         }
       />
     );
-  }, [setSelectTooltip, wizardValues]);
+  }, [setSelectTooltip, wizardContext]);
 
   return null;
 };

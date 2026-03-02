@@ -32,7 +32,7 @@ export class ExportLcra extends ExportHelper {
     // - minimum year in membership list
     community.propertyList.forEach((property) => {
       this.maxOccupantCount = Math.max(
-        property.occupantList.length,
+        property.occupancyInfoList[0]?.occupantList.length ?? 0,
         this.maxOccupantCount
       );
       property.membershipList.forEach((membership) => {
@@ -69,7 +69,7 @@ export class ExportLcra extends ExportHelper {
     };
 
     R.range(0, this.maxOccupantCount).forEach((idx) => {
-      const occupant = property.occupantList[idx];
+      const occupant = property.occupancyInfoList[0]?.occupantList[idx];
       row[`FirstName${idx + 1}`] = occupant?.firstName;
       row[`LastName${idx + 1}`] = occupant?.lastName;
       row[`EMail${idx + 1}OptOut`] = ExportHelper.toBool(occupant?.optOut);

@@ -134,11 +134,11 @@ test.describe.serial('Take @screenshot for landing screen', () => {
     await clickButton(page, 'Cancel');
   });
 
-  test('Occupant Editor', async ({ theme }) => {
+  test('Occupancy Editor', async ({ theme }) => {
     await headerMoreMenu(page, /Edit Contact Information/);
     await waitForDialog(page, /Edit Contact Information/);
-    await expect(page).toHaveURL(/occupant-editor$/);
-    await takeScreenshot(page, theme, 'occupant-editor');
+    await expect(page).toHaveURL(/occupancy-editor$/);
+    await takeScreenshot(page, theme, 'occupancy-editor');
     await clickButton(page, 'Cancel');
   });
 

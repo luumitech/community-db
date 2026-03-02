@@ -5,7 +5,7 @@ import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
 import { toast } from '~/view/base/toastify';
-import { usePanelContext } from '../panel-context';
+import { Wizard } from '../wizard';
 import { useHookFormContext, type InputData } from './use-hook-form';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 export const SendOtp: React.FC<Props> = ({ className }) => {
   const [pending, startTransition] = React.useTransition();
-  const { goToPanel } = usePanelContext();
+  const { goTo } = Wizard.useWizard();
   const formMethods = useHookFormContext();
   const { handleSubmit, formState } = formMethods;
   const { isDirty } = formState;
@@ -31,10 +31,10 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
           toast.error(error.message);
         }
         if (data?.success) {
-          goToPanel('verify-email-otp', { email });
+          goTo('verifyEmailOTP', { email });
         }
       }),
-    [goToPanel]
+    [goTo]
   );
 
   return (

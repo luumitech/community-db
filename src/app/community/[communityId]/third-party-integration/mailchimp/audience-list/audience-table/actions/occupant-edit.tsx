@@ -22,14 +22,14 @@ export const OccupantEditButton: React.FC<Props> = ({
 
   return (
     <Link
-      href={appPath('occupantEditor', {
+      href={appPath('occupancyEditor', {
         path: {
           communityId: community.id,
           propertyId: property.id,
         },
         query: { email },
       })}
-      tooltip={appLabel('occupantEditor')}
+      tooltip={appLabel('occupancyEditor')}
       tooltipProps={{ isFixed: true }}
       iconOnly={{
         icon: 'contact-editor',

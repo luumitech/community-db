@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client';
 import { Button, Link, cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import useInfiniteScroll from 'react-infinite-scroll-hook';
 import * as R from 'remeda';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
@@ -64,21 +63,8 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     },
     onError,
   });
-  const { data, loading, fetchMore } = result;
+  const { data, fetchMore } = result;
   const pageInfo = data?.communityFromId.propertyList.pageInfo;
-  const [loadingRef] = useInfiniteScroll({
-    loading,
-    disabled: !!result.error,
-    hasNextPage: !!pageInfo?.hasNextPage,
-    onLoadMore: () => {
-      fetchMore({
-        variables: {
-          after: pageInfo?.endCursor,
-          filter: filterArg,
-        },
-      });
-    },
-  });
 
   const community = React.useMemo(() => data?.communityFromId, [data]);
 
@@ -129,8 +115,20 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     if (!pageInfo?.hasNextPage) {
       return null;
     }
-    return <Loading className="mb-4 flex justify-center" ref={loadingRef} />;
-  }, [pageInfo, loadingRef]);
+    return (
+      <Loading
+        className="mb-4 flex justify-center"
+        onShown={() =>
+          fetchMore({
+            variables: {
+              after: pageInfo?.endCursor,
+              filter: filterArg,
+            },
+          })
+        }
+      />
+    );
+  }, [pageInfo, fetchMore, filterArg]);
 
   const onItemPress = React.useCallback(
     (item: PropertyEntry) => {

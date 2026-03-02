@@ -5,11 +5,11 @@ import { Link } from '~/view/base/link';
 import { FreePlan } from './free-plan';
 import { PremiumPlan } from './premium-plan';
 
-interface Props {
+export interface SelectPlanProps {
   className?: string;
 }
 
-export const SelectPlan: React.FC<Props> = ({ className }) => {
+export const SelectPlan: React.FC<SelectPlanProps> = ({ className }) => {
   return (
     <div className={className}>
       <div className="grid grid-cols-2 grid-rows-[repeat(4,auto)] divide-x">

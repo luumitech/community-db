@@ -1,13 +1,20 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { Wizard } from 'react-use-wizard';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { Modal, ModalContent, ModalHeader } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
 import { InputData, useHookForm } from './use-hook-form';
-import { Header, Step0, Step1, Step2 } from './wizard';
+import {
+  Footer,
+  Header,
+  Step0,
+  Step1,
+  Step2,
+  Wizard,
+  WizardContext,
+} from './wizard';
 
 interface Props {
   onSave: (input: InputData) => Promise<void>;
@@ -38,6 +45,24 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
     [onSave, goBack]
   );
 
+  const renderHeader = React.useCallback((context: WizardContext) => {
+    return <Header context={context} />;
+  }, []);
+
+  const renderFooter = React.useCallback(
+    // eslint-disable-next-line react/display-name
+    (closeModal: () => void) => (context: WizardContext) => {
+      return (
+        <Footer
+          context={context}
+          isSubmitting={pending}
+          closeModal={closeModal}
+        />
+      );
+    },
+    [pending]
+  );
+
   return (
     <Modal
       size="5xl"
@@ -54,10 +79,13 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
             {(closeModal) => (
               <>
                 <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
-                <Wizard header={<Header />}>
+                <Wizard
+                  renderHeader={renderHeader}
+                  renderFooter={renderFooter(closeModal)}
+                >
                   <Step0 />
                   <Step1 />
-                  <Step2 isSubmitting={pending} closeModal={closeModal} />
+                  <Step2 />
                 </Wizard>
               </>
             )}

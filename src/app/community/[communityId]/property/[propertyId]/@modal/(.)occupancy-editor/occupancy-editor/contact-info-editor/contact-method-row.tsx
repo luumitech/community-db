@@ -1,17 +1,17 @@
 import { type InputProps } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
+import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
 import { Input } from '~/view/base/input';
 import { PhoneInput } from '~/view/base/phone-input';
-import { ContactTypeSelect } from './contact-type-select';
-import { useHookFormContext } from './use-hook-form';
+import { ContactMethodSelect } from './contact-method-select';
 
 interface ValueInputProps {
   className?: string;
-  controlName: `occupantList.${number}.infoList.${number}.value`;
+  controlName: `occupancyInfoList.${number}.occupantList.${number}.infoList.${number}.value`;
   label?: string;
   ['aria-label']?: string;
   variant?: InputProps['variant'];
@@ -19,11 +19,11 @@ interface ValueInputProps {
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}.infoList.${number}`;
+  controlNamePrefix: `occupancyInfoList.${number}.occupantList.${number}.infoList.${number}`;
   onRemove: () => void;
 }
 
-export const ContactInfoEditor: React.FC<Props> = ({
+export const ContactMethodRow: React.FC<Props> = ({
   className,
   controlNamePrefix,
   onRemove,
@@ -59,7 +59,7 @@ export const ContactInfoEditor: React.FC<Props> = ({
       role="rowgroup"
     >
       <DragHandle className="col-start-1" />
-      <ContactTypeSelect
+      <ContactMethodSelect
         className="col-start-2 sm:col-start-auto"
         controlName={`${controlNamePrefix}.type`}
         aria-label="type"

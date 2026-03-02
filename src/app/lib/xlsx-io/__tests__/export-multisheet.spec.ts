@@ -23,6 +23,16 @@ describe('export to xlsx (multisheet format)', () => {
     await testUtil.terminate();
   });
 
+  /**
+   * Note that this does not check the actual content of the database. It seeds
+   * (actual) database data from a Excel spreadsheet (in fixture), and then
+   * exports the database into to the same format of Excel, and then reimport it
+   * into a (test) database. Finally, it compares both actual and test
+   * database.
+   *
+   * So this is more of a bootstrapping export comparison. To verify the content
+   * of the data, use the import-*.spec.ts test cases
+   */
   test('verify export workbook', async () => {
     const community = await prisma.community.findFirstOrThrow({
       include: {

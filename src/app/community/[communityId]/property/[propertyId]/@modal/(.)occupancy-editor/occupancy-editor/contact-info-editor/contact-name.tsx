@@ -2,12 +2,12 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
+import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { Icon } from '~/view/base/icon';
-import { useHookFormContext } from './use-hook-form';
 
 interface Props {
   className?: string;
-  controlNamePrefix: `occupantList.${number}`;
+  controlNamePrefix: `occupancyInfoList.${number}.occupantList.${number}`;
 }
 
 export const ContactName: React.FC<Props> = ({
@@ -42,13 +42,13 @@ export const ContactName: React.FC<Props> = ({
       )}
     >
       <div
-        className={cn({
+        className={cn('truncate', {
           italic: !name,
         })}
       >
         {name || 'No Name'}
       </div>
-      {hasError && <Icon color="" icon="warning" />}
+      {hasError && <Icon className="flex-none" icon="warning" />}
     </div>
   );
 };

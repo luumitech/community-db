@@ -1,2 +1,2 @@
-export { PremiumPlanConfirmation } from './confirmation';
-export { PremiumPlanSuccess } from './success';
+export * from './confirmation';
+export * from './success';

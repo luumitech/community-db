@@ -18,9 +18,9 @@ export const screenshotConfig = {
     caption: 'Keep record of event attendance',
     alt: 'Membership editor screenshot',
   },
-  ['occupant-editor']: {
+  ['occupancy-editor']: {
     caption: 'Keep record of member contact information',
-    alt: 'Occupant editor screenshot',
+    alt: 'Occupancy editor screenshot',
   },
   ['dashboard']: {
     caption: 'Visualize membership information',

@@ -1,11 +1,15 @@
 import { type DateValue } from '@heroui/react';
 import {
+  CalendarDate,
+  CalendarDateTime,
+  ZonedDateTime,
   parseDate,
   parseTime,
   toCalendarDateTime,
   toZoned,
 } from '@internationalized/date';
 import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import * as GQL from '~/graphql/generated/graphql';
 
 type GQLDateTime = GQL.Scalars['DateTime']['output'];
@@ -57,12 +61,17 @@ export function parseAsDate(input: GQLDate | DateValue | null | undefined) {
   }
   const midnight = parseTime('00:00');
 
-  if (typeof input === 'object') {
+  if (
+    input instanceof CalendarDate ||
+    input instanceof CalendarDateTime ||
+    input instanceof ZonedDateTime
+  ) {
     // Probably one of the supported DateValue object (i.e. CalendarDate)
     return toZoned(toCalendarDateTime(input, midnight), 'UTC');
   }
 
   try {
+    // Keep the YYYY-MM-DD portion of the string
     const dateObj = parseDate(input.slice(0, 10));
     return toZoned(toCalendarDateTime(dateObj, midnight), 'UTC');
   } catch (err) {
@@ -102,18 +111,38 @@ export function getCurrentDateAsISOString() {
 }
 
 /**
- * Format date as yyyy-MM-dd
+ * Format local date as yyyy-MM-dd
  *
  * ```js
- * expect(formatAsDate(new Date(2000, 0, 1)).toBe("2000-01-01")
+ * expect(formatLocalDate(new Date(2000, 0, 1)).toBe("2000-01-01")
+ * // If you are in EST, you will be behind UTC time line
+ * expect(formatLocalDate('2000-01-01T00:00:00.000Z').toBe("1999-12-31")
  * ```
  *
- * @param input Input Date
+ * @param input Input Date. Interprets dates in local time zone
  * @param dateFmt Optional date format, default to 'yyyy-MM-dd'
  * @returns Date in string format
  */
-export function formatAsDate(input: string | number | Date, dateFmt?: string) {
+export function formatLocalDate(
+  input: string | number | Date,
+  dateFmt?: string
+) {
   return format(input, dateFmt ?? 'yyyy-MM-dd');
+}
+
+/**
+ * Format UTC date as yyyy-MM-dd
+ *
+ * ```js
+ * expect(formatUTCDate('2000-01-01T00:00:00.000Z').toBe("2000-01-01")
+ * ```
+ *
+ * @param input Input Date. Interprets dates in UTC time zone
+ * @param dateFmt Optional date format, default to 'yyyy-MM-dd'
+ * @returns Date in string format
+ */
+export function formatUTCDate(input: string | number | Date, dateFmt?: string) {
+  return formatInTimeZone(input, 'UTC', dateFmt ?? 'yyyy-MM-dd');
 }
 
 /**

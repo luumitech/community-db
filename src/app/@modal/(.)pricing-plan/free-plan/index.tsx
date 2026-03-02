@@ -1,2 +1,2 @@
-export { FreePlanConfirmation } from './confirmation';
-export { FreePlanSuccess } from './success';
+export * from './confirmation';
+export * from './success';

@@ -9,7 +9,9 @@ import { useLoadingModalContext, type LoadingState } from './loading-modal';
 
 interface ContextT extends Readonly<ConfirmationState>, Readonly<LoadingState> {
   env: NextPublicEnvSchema;
+  /** Is screen's max width < 640px */
   isSmDevice: boolean;
+  /** Is screen's max width < 768px */
   isMdDevice: boolean;
 }
 

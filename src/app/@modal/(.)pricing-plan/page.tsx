@@ -9,7 +9,6 @@ import {
   ModalFooter,
   ModalHeader,
 } from '~/view/base/modal';
-import { PanelWrapper } from './panel-wrapper';
 import { PlanContextProvider } from './plan-context';
 
 export default function PricingPlan() {
@@ -27,9 +26,7 @@ export default function PricingPlan() {
       <ModalContent className="overflow-hidden">
         <ModalHeader>{appLabel('pricingPlan')}</ModalHeader>
         <ModalBody>
-          <PlanContextProvider>
-            <PanelWrapper />
-          </PlanContextProvider>
+          <PlanContextProvider />
         </ModalBody>
         <ModalFooter className="justify-center" />
       </ModalContent>

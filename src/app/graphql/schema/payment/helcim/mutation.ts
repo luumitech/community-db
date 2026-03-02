@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { userRef } from '~/graphql/schema/user/object';
 import { getUserEntry } from '~/graphql/schema/user/util';
-import { formatAsDate } from '~/lib/date-util';
+import { formatLocalDate } from '~/lib/date-util';
 import { env } from '~/lib/env/server-env';
 import { HelcimApi } from '~/lib/helcim-api';
 import prisma from '~/lib/prisma';
@@ -88,7 +88,7 @@ builder.mutationField('helcimPurchase', (t) =>
       const subResult = await api.subscriptions.create(
         {
           customerCode,
-          dateActivated: formatAsDate(new Date(Date.now())),
+          dateActivated: formatLocalDate(new Date(Date.now())),
           paymentPlanId: env('PAYMENT_HELCIM_PLAN_ID'),
           recurringAmount: env('NEXT_PUBLIC_PLAN_PREMIUM_COST'),
           paymentMethod: 'card',

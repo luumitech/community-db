@@ -211,7 +211,7 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
     propertyList.push({
       ...property,
       membershipList,
-      occupantList,
+      occupancyInfoList: [{ occupantList }],
       ...(updatedBy && { updatedBy }),
     });
   }

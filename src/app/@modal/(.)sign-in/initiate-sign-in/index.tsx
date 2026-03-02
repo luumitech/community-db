@@ -5,11 +5,13 @@ import { SignInDev } from './sign-in-dev';
 import { SignInEmailOtp } from './sign-in-email-otp';
 import { SignInSocial } from './sign-in-social';
 
-interface Props {
+export interface InitiateSignInProps {
   className?: string;
 }
 
-export const InitiateSignIn: React.FC<Props> = ({ className }) => {
+export const InitiateSignIn: React.FC<InitiateSignInProps> = ({
+  className,
+}) => {
   return (
     <>
       <ModalHeader className="flex flex-col items-center text-3xl font-semibold">

@@ -48,6 +48,15 @@ export interface PropertyRow {
 export interface OccupantRow {
   occupantId: number;
   propertyId: number;
+  /**
+   * Number indicating if occupant is current or previous
+   *
+   * - 0: current occupant
+   * - 1..n: past occupant list index
+   */
+  setIndex: number;
+  moveInDate: string | null;
+  moveOutDate: string | null;
   firstName: string | null;
   lastName: string | null;
   optOut: number | undefined;

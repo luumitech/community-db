@@ -4,15 +4,19 @@ import { useAppContext } from '~/custom-hooks/app-context';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
 import { PricePlan } from '../price-plan';
+import { Wizard } from '../wizard';
 import { CancelSubscriptionButton } from './cancel-subscription';
 
-interface Props {
+export interface FreePlanConfirmationProps {
   className?: string;
 }
 
-export const FreePlanConfirmation: React.FC<Props> = ({ className }) => {
+export const FreePlanConfirmation: React.FC<FreePlanConfirmationProps> = ({
+  className,
+}) => {
   const { env } = useAppContext();
-  const { plan, goToPanel } = usePlanContext();
+  const { goTo } = Wizard.useWizard();
+  const { plan } = usePlanContext();
   const { isActive, recurringAmount, nextBillingDate } = plan ?? {};
 
   const planName = env.NEXT_PUBLIC_PLAN_FREE_NAME;
@@ -20,11 +24,7 @@ export const FreePlanConfirmation: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn(className, 'flex items-start')}>
-      <Button
-        isIconOnly
-        variant="light"
-        onPress={() => goToPanel('plan-select')}
-      >
+      <Button isIconOnly variant="light" onPress={() => goTo('selectPlan', {})}>
         <Icon icon="back" />
       </Button>
       <div className="mt-2">
@@ -35,7 +35,7 @@ export const FreePlanConfirmation: React.FC<Props> = ({ className }) => {
       <CancelSubscriptionButton
         className="grow self-center"
         color="primary"
-        onSuccess={() => goToPanel('free-success')}
+        onSuccess={() => goTo('freeSuccess', {})}
       >
         Cancel Current Subscription
       </CancelSubscriptionButton>
