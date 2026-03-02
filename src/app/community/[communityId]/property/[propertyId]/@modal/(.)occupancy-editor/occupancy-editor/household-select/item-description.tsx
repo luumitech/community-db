@@ -2,8 +2,8 @@ import { Chip, cn, type ChipProps } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
+import { type OccupancyInfoEntry } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { Truncate } from '~/view/base/truncate';
-import { type OccupancyInfoEntry } from '../../use-hook-form';
 
 interface Props extends ChipProps {
   className?: string;

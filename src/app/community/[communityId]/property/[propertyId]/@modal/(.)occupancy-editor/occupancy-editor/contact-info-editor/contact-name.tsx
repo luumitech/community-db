@@ -2,8 +2,8 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
+import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { Icon } from '~/view/base/icon';
-import { useHookFormContext } from '../../use-hook-form';
 
 interface Props {
   className?: string;

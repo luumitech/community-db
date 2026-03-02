@@ -1,17 +1,8 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
-import { appLabel } from '~/lib/app-path';
-import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
-import { MailchimpNotice } from './mailchimp-notice';
+import { Modal, ModalContent } from '~/view/base/modal';
 import { OccupancyEditor } from './occupancy-editor';
 import { OccupancyEditorProvider } from './occupancy-editor-context';
 import { InputData, useHookForm } from './use-hook-form';
@@ -59,38 +50,14 @@ export const ModalDialog: React.FC<Props> = ({ onSave, focusEmail }) => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(closeModal) => (
-              <>
-                <ModalHeader className="flex flex-col">
-                  {appLabel('occupancyEditor')}
-                  <MailchimpNotice />
-                </ModalHeader>
-                <ModalBody>
-                  <OccupancyEditorProvider
-                    control={control}
-                    focusEmail={focusEmail}
-                  >
-                    <OccupancyEditor />
-                  </OccupancyEditorProvider>
-                </ModalBody>
-                <ModalFooter>
-                  <div className="grow" />
-                  <Button
-                    variant="bordered"
-                    isDisabled={pending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    isDisabled={!formState.isDirty}
-                    isLoading={pending}
-                  >
-                    Save
-                  </Button>
-                </ModalFooter>
-              </>
+              <OccupancyEditorProvider
+                control={control}
+                focusEmail={focusEmail}
+                closeModal={closeModal}
+                isPending={pending}
+              >
+                <OccupancyEditor />
+              </OccupancyEditorProvider>
             )}
           </ModalContent>
         </Form>

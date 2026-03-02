@@ -1,7 +1,8 @@
-import { Button, cn } from '@heroui/react';
+import { ModalBody, cn } from '@heroui/react';
 import React from 'react';
-import { useOccupancyEditorContext } from '../../occupancy-editor-context';
-import { HouseholdEditor } from '../household-editor';
+import { useOccupancyEditorContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
+import { Button } from '~/view/base/button';
+import { ContactInfoEditor } from '../contact-info-editor';
 import { HouseholdSelect } from '../household-select';
 import { Wizard } from './';
 
@@ -13,26 +14,24 @@ export const Step0: React.FC<Step0Props> = () => {
     useOccupancyEditorContext();
 
   return (
-    <div className={cn('flex flex-col gap-3')}>
+    <ModalBody className={cn('flex flex-col gap-3')}>
       <div className={cn('flex items-start gap-2')}>
         <HouseholdSelect onSelect={setOccupancyFieldId} />
         <Button
           className="h-14"
-          onPress={() => goTo('manager', { arg: 'override' })}
+          tooltip="Manage households"
+          onPress={() => goTo('manager', {})}
         >
-          manage
+          Manage
         </Button>
       </div>
       {occupancyInfoListMethods.fields.map((entry, idx) => (
-        <HouseholdEditor
+        <ContactInfoEditor
           key={entry.id}
-          className={cn(
-            // 'm-1.5 mt-0',
-            entry.id !== occupancyFieldId && 'hidden'
-          )}
+          className={cn('grow', entry.id !== occupancyFieldId && 'hidden')}
           controlNamePrefix={`occupancyInfoList.${idx}`}
         />
       ))}
-    </div>
+    </ModalBody>
   );
 };

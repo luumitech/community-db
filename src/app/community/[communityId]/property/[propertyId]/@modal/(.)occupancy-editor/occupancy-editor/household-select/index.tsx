@@ -1,11 +1,11 @@
 import { cn, Select, SelectItem } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import { useOccupancyEditorContext } from '../../occupancy-editor-context';
+import { useOccupancyEditorContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
 import {
   useHookFormContext,
   type OccupancyInfoEntry,
-} from '../../use-hook-form';
+} from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { ItemDescription } from './item-description';
 import { ItemLabel } from './item-label';
 

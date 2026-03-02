@@ -1,8 +1,8 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { type OccupancyInfoEntry } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { formatUTCDate, parseAsDate } from '~/lib/date-util';
 import { Icon } from '~/view/base/icon';
-import { type OccupancyInfoEntry } from '../../use-hook-form';
 
 interface Props {
   className?: string;

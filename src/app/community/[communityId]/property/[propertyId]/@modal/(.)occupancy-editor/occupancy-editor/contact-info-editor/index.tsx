@@ -2,18 +2,18 @@ import { cn, Divider, Tab, Tabs } from '@heroui/react';
 import React from 'react';
 import { usePreviousDistinct } from 'react-use';
 import * as R from 'remeda';
-import { useAppContext } from '~/custom-hooks/app-context';
-import * as GQL from '~/graphql/generated/graphql';
-import { Icon } from '~/view/base/icon';
 import {
   findOccupant,
   useOccupancyEditorContext,
-} from '../../occupancy-editor-context';
+} from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
 import {
   occupantDefault,
   useFieldArray,
   useHookFormContext,
-} from '../../use-hook-form';
+} from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
+import { useAppContext } from '~/custom-hooks/app-context';
+import * as GQL from '~/graphql/generated/graphql';
+import { Icon } from '~/view/base/icon';
 import { ContactEditor } from './contact-editor';
 import { ContactName } from './contact-name';
 import { OccupancyDatesEditor } from './occupancy-dates-editor';
@@ -24,7 +24,7 @@ interface Props {
   controlNamePrefix: `occupancyInfoList.${number}`;
 }
 
-export const HouseholdEditor: React.FC<Props> = ({
+export const ContactInfoEditor: React.FC<Props> = ({
   className,
   controlNamePrefix,
 }) => {
@@ -103,7 +103,7 @@ export const HouseholdEditor: React.FC<Props> = ({
     <Tabs
       classNames={{
         tabWrapper: cn(className),
-        panel: cn('grow', isVerticalTab && 'p-1.5 pt-0 pl-3'),
+        panel: cn('grow', isVerticalTab && 'p-0 pl-3'),
         tab: cn('w-auto max-w-[150px] flex-none'),
         tabContent: cn('h-5 w-full'),
         tabList: cn('flex flex-wrap gap-1'),

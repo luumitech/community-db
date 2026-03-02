@@ -17,6 +17,10 @@ type ContextT = Readonly<{
   occupancyFieldId: string;
   /** Change the currently selected occupancy field ID */
   setOccupancyFieldId: (fieldId: string) => void;
+  /** Close modal dialog */
+  closeModal: () => void;
+  /** Pending saving operation */
+  isPending: boolean;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -29,11 +33,17 @@ interface Props {
    * component first renders
    */
   focusEmail?: string;
+  /** Close modal dialog */
+  closeModal: () => void;
+  /** Pending saving operation */
+  isPending: boolean;
 }
 
 export function OccupancyEditorProvider({
   control,
   focusEmail,
+  closeModal,
+  isPending,
   ...props
 }: React.PropsWithChildren<Props>) {
   const occupancyInfoListMethods = useFieldArray({
@@ -62,6 +72,8 @@ export function OccupancyEditorProvider({
         focusEmail,
         occupancyFieldId,
         setOccupancyFieldId,
+        closeModal,
+        isPending,
       }}
       {...props}
     />

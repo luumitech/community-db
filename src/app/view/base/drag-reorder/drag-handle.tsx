@@ -7,20 +7,25 @@ interface Props {
   className?: string;
 }
 
-export const DragHandle: React.FC<Props> = ({ className }) => {
+export const DragHandle: React.FC<React.PropsWithChildren<Props>> = ({
+  className,
+  children,
+}) => {
   const { sortable } = useReorderItemContext();
   const { attributes, listeners } = sortable;
 
   return (
-    <FlatButton
+    <div
       className={twMerge(
         'text-foreground-500',
         'cursor-grab active:cursor-grabbing',
         className
       )}
-      icon="drag-handle"
       {...attributes}
       {...listeners}
-    />
+    >
+      <FlatButton icon="drag-handle" />
+      {children}
+    </div>
   );
 };

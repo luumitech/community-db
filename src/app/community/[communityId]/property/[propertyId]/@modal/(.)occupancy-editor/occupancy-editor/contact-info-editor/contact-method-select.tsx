@@ -2,14 +2,14 @@ import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { Select, SelectItem, SelectProps } from '~/view/base/select';
 
-interface ContactTypeItem {
+interface ContactMethodItem {
   /** Label to appear in selection list */
   label: string;
   /** Value corresponding to the selection item */
   value: GQL.ContactInfoType;
 }
 
-export const contactTypeItems: ContactTypeItem[] = [
+export const contactMethodItems: ContactMethodItem[] = [
   {
     label: 'Email',
     value: GQL.ContactInfoType.Email,
@@ -24,19 +24,22 @@ export const contactTypeItems: ContactTypeItem[] = [
   },
 ];
 
-type CustomProps = Omit<SelectProps<ContactTypeItem>, 'children'>;
+type CustomProps = Omit<SelectProps<ContactMethodItem>, 'children'>;
 
 interface Props extends CustomProps {
   className?: string;
 }
 
-export const ContactTypeSelect: React.FC<Props> = ({ className, ...props }) => {
+export const ContactMethodSelect: React.FC<Props> = ({
+  className,
+  ...props
+}) => {
   return (
     <Select
       classNames={{
         base: className,
       }}
-      items={contactTypeItems}
+      items={contactMethodItems}
       selectionMode="single"
       disallowEmptySelection
       {...props}

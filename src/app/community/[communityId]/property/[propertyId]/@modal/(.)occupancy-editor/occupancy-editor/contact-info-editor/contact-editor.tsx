@@ -8,12 +8,15 @@ import {
   cn,
 } from '@heroui/react';
 import React from 'react';
+import {
+  useFieldArray,
+  useHookFormContext,
+} from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { Input } from '~/view/base/input';
-import { useFieldArray, useHookFormContext } from '../../use-hook-form';
-import { ContactInfoEditor } from './contact-info-editor';
+import { ContactMethodRow } from './contact-method-row';
 
 interface Props {
   className?: string;
@@ -70,7 +73,7 @@ export const ContactEditor: React.FC<Props> = ({
                 key={`${controlNamePrefix}-${field.id}`}
                 id={field.id}
               >
-                <ContactInfoEditor
+                <ContactMethodRow
                   controlNamePrefix={`${controlNamePrefix}.infoList.${idx}`}
                   onRemove={() => remove(idx)}
                 />

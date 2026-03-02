@@ -174,7 +174,6 @@ export function createAnimatedWizard<
     return (
       <Context.Provider value={contextValue}>
         {renderHeader?.(contextValue)}
-
         {disableAnimation ? (
           <div key={activeStep}>{content}</div>
         ) : (
