@@ -3,7 +3,8 @@ import * as GQL from '~/graphql/generated/graphql';
 export type CommunityEntry =
   GQL.ExportContactPropertyListQuery['communityFromId'];
 export type PropertyEntry = CommunityEntry['rawPropertyList'][number];
-export type OccupantEntry = PropertyEntry['occupantList'][number];
+export type OccupancyInfoEntry = PropertyEntry['occupancyInfoList'][number];
+export type OccupantEntry = OccupancyInfoEntry['occupantList'][number];
 
 export interface ContactListEntry extends Omit<
   OccupantEntry,

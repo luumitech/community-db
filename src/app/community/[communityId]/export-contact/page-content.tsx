@@ -18,14 +18,16 @@ const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
       rawPropertyList(filter: $filter) {
         id
         address
-        occupantList {
-          firstName
-          lastName
-          optOut
-          infoList {
-            type
-            value
-            label
+        occupancyInfoList {
+          occupantList {
+            firstName
+            lastName
+            optOut
+            infoList {
+              type
+              value
+              label
+            }
           }
         }
       }

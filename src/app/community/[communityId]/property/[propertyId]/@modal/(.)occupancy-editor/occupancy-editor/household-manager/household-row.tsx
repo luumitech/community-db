@@ -33,17 +33,16 @@ export const HouseholdRow: React.FC<Props> = ({
     <Card shadow="sm" role="rowgroup">
       <CardBody
         className={twMerge(
-          'grid grid-cols-[1fr_20px_20px]',
+          'grid grid-cols-[minmax(0,1fr)_20px_20px]',
           'items-center gap-2',
+          'overflow-hidden',
           className
         )}
       >
         <DragHandle className="col-start-1 flex items-center gap-2">
-          <div className="flex flex-col gap-0.5 overflow-hidden text-xs">
+          <div className="flex grow flex-col gap-0.5 overflow-hidden text-xs">
             <ItemLabel occupancyInfo={entry} isCurrent={isCurrent} />
-            <div className="flex flex-wrap overflow-hidden">
-              <ItemDescription occupancyInfo={entry} />
-            </div>
+            <ItemDescription occupancyInfo={entry} />
           </div>
         </DragHandle>
         <FlatButton icon="edit" tooltip="Edit" onClick={onEdit} />

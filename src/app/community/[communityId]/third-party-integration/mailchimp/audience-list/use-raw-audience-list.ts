@@ -32,11 +32,13 @@ const ThirdPartyIntegration_EmailPropertyListQuery = graphql(/* GraphQL */ `
       rawPropertyList(filter: $filter) {
         id
         address
-        occupantList {
-          optOut
-          infoList {
-            type
-            value
+        occupancyInfoList {
+          occupantList {
+            optOut
+            infoList {
+              type
+              value
+            }
           }
         }
       }
@@ -91,12 +93,14 @@ export function useRawAudienceList(arg: AudienceListArg) {
     const resultMap = new Map<string, [Property, Occupant]>();
     propertyListResult.data.communityFromId.rawPropertyList.forEach(
       (property) => {
-        property.occupantList?.forEach((occupant) => {
-          occupant.infoList?.forEach(({ type, value }) => {
-            if (type === GQL.ContactInfoType.Email) {
-              const email = value.toLocaleLowerCase();
-              resultMap.set(email, [property, occupant]);
-            }
+        property.occupancyInfoList?.forEach((occupancy) => {
+          occupancy.occupantList?.forEach((occupant) => {
+            occupant.infoList?.forEach(({ type, value }) => {
+              if (type === GQL.ContactInfoType.Email) {
+                const email = value.toLocaleLowerCase();
+                resultMap.set(email, [property, occupant]);
+              }
+            });
           });
         });
       }
