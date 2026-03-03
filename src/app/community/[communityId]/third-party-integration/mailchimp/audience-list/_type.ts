@@ -7,7 +7,8 @@ type AudienceEntry =
   ThirdPartyIntegrationMailchimpMemberListQuery['mailchimpMemberList'][number];
 export type Property =
   ThirdPartyIntegrationEmailPropertyListQuery['communityFromId']['rawPropertyList'][number];
-export type Occupant = Property['occupantList'][number];
+export type OccupancyInfo = Property['occupancyInfoList'][number];
+export type Occupant = OccupancyInfo['occupantList'][number];
 
 /**
  * Add additional properties to audience list to help user synchronize the

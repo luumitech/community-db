@@ -172,6 +172,20 @@ describe('import community xlsx (multisheet format)', () => {
             },
           ],
         },
+        {
+          __typename: 'OccupancyInfo',
+          moveInDate: null,
+          moveOutDate: null,
+          occupantList: [
+            {
+              __typename: 'Occupant',
+              firstName: 'Previous',
+              infoList: [],
+              lastName: 'Owner',
+              optOut: null,
+            },
+          ],
+        },
       ],
       membershipList: [
         {

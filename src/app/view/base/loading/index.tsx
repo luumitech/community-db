@@ -6,6 +6,7 @@ import styles from './styles.module.css';
 
 interface Props {
   className?: string;
+  /** Callback when the div is visible in browser */
   onShown?: () => void;
 }
 

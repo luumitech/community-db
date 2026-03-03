@@ -11,20 +11,22 @@ import type { ContactInfo, ContactListEntry, PropertyEntry } from './_type';
 export function toContactList(propertyList: PropertyEntry[]): ContactInfo {
   const contactList = propertyList
     .flatMap((property) =>
-      property.occupantList.flatMap((occupant, idx) => {
-        const { optOut, infoList, ...other } = occupant;
-        if (optOut) {
-          return [];
-        }
-        return infoList
-          ?.filter(({ type }) => type === GQL.ContactInfoType.Email)
-          .map((info, infoIdx) => ({
-            id: `${property.id}-${idx}-${infoIdx}`,
-            address: property.address,
-            ...other,
-            email: info.value,
-          }));
-      })
+      property.occupancyInfoList.flatMap((occupancy) =>
+        occupancy.occupantList.flatMap((occupant, idx) => {
+          const { optOut, infoList, ...other } = occupant;
+          if (optOut) {
+            return [];
+          }
+          return infoList
+            ?.filter(({ type }) => type === GQL.ContactInfoType.Email)
+            .map((info, infoIdx) => ({
+              id: `${property.id}-${idx}-${infoIdx}`,
+              address: property.address,
+              ...other,
+              email: info.value,
+            }));
+        })
+      )
     )
     .filter((entry): entry is ContactListEntry => entry != null);
 
