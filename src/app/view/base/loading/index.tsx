@@ -6,28 +6,11 @@ import styles from './styles.module.css';
 
 interface Props {
   className?: string;
-  /** Callback when the div is visible in browser */
-  onShown?: () => void;
 }
 
-export const Loading: React.FC<Props> = ({ className, onShown, ...props }) => {
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        onShown?.();
-      }
-    });
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-    return () => observer.disconnect();
-  }, [onShown]);
-
+export const Loading: React.FC<Props> = ({ className, ...props }) => {
   return (
     <div
-      ref={ref}
       aria-label="Loading"
       className={twMerge('px-4 py-2 text-primary-300', className)}
       {...props}

@@ -1,4 +1,5 @@
-import { format } from 'date-fns';
+import * as R from 'remeda';
+import { formatLocalDate } from '~/lib/date-util';
 import { type Community } from '~/lib/xlsx-io/export';
 
 /**
@@ -9,6 +10,9 @@ import { type Community } from '~/lib/xlsx-io/export';
  */
 export function getDefaultXlsxFn(community: Community) {
   const { createdAt, updatedAt } = community;
-  const dateStr = format(updatedAt ?? createdAt ?? new Date(), 'yyyyMMdd');
-  return `db-${dateStr}.xlsx`;
+  const dateStr = formatLocalDate(
+    updatedAt ?? createdAt ?? new Date(),
+    'yyyyMMdd'
+  );
+  return `${R.toKebabCase(community.name)}-${dateStr}.xlsx`;
 }
