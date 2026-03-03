@@ -1,8 +1,9 @@
 import { useQuery } from '@apollo/client';
-import { Button, Link, cn } from '@heroui/react';
+import { Button, Card, Link, Skeleton, cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
+import { useOnVisible } from '~/custom-hooks/on-visible';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -111,24 +112,29 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     return <PropertySearchHeader className="mb-2" community={community} />;
   }, [community]);
 
+  const loadMore = React.useCallback(() => {
+    fetchMore({
+      variables: {
+        after: pageInfo?.endCursor,
+        filter: filterArg,
+      },
+    });
+  }, [pageInfo, fetchMore, filterArg]);
+  const loadMoreRef = useOnVisible<HTMLDivElement>(loadMore);
+
   const bottomContent = React.useMemo(() => {
     if (!pageInfo?.hasNextPage) {
       return null;
     }
     return (
-      <Loading
-        className="mb-4 flex justify-center"
-        onShown={() =>
-          fetchMore({
-            variables: {
-              after: pageInfo?.endCursor,
-              filter: filterArg,
-            },
-          })
-        }
-      />
+      <Card ref={loadMoreRef} className="relative" shadow="sm">
+        <Skeleton className="h-12" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Loading />
+        </div>
+      </Card>
     );
-  }, [pageInfo, fetchMore, filterArg]);
+  }, [loadMoreRef, pageInfo?.hasNextPage]);
 
   const onItemPress = React.useCallback(
     (item: PropertyEntry) => {
