@@ -88,7 +88,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
                 path: { communityId: community.id, propertyId: property.id },
               })}
             >
-              Edit Member Details
+              {appLabel('occupancyEditor')}
             </Button>
           )}
         </div>

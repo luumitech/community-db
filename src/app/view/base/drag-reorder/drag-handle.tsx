@@ -24,7 +24,10 @@ export const DragHandle: React.FC<React.PropsWithChildren<Props>> = ({
       {...attributes}
       {...listeners}
     >
-      <FlatButton icon="drag-handle" />
+      <FlatButton
+        className="cursor-grab active:cursor-grabbing"
+        icon="drag-handle"
+      />
       {children}
     </div>
   );
