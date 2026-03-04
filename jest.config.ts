@@ -47,6 +47,9 @@ async function config() {
     '@better-auth',
     '@noble',
     'jose',
+    /** Agenda has depency on ESModules after ^6 */
+    '@agendajs/mongo-backend',
+    'agenda',
   ];
 
   const createConfig = createJestConfig(customJestConfig);
