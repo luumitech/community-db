@@ -1,6 +1,6 @@
-import { Job } from '@hokify/agenda';
 import { Community } from '@prisma/client';
 import * as turf from '@turf/turf';
+import { Job } from 'agenda';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';

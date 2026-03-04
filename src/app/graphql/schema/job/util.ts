@@ -1,4 +1,4 @@
-import { Job } from '@hokify/agenda';
+import { Job } from 'agenda';
 import { StepProgress } from '~/lib/step-progress';
 
 /** Return type of `jobProgress` function */

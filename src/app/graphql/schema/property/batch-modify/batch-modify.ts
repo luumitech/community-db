@@ -1,5 +1,5 @@
-import { Job } from '@hokify/agenda';
 import { Community, Property } from '@prisma/client';
+import { Job } from 'agenda';
 import { GraphQLError } from 'graphql';
 import {
   communityMinMaxYearUpdateArgs,
