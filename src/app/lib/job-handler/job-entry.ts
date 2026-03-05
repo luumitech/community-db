@@ -12,6 +12,10 @@ export class JobEntry<T = unknown> {
     return jobId;
   }
 
+  get data(): T {
+    return this.job.attrs.data;
+  }
+
   /** Current progress of job */
   get progress(): number | null | undefined {
     return this.job.attrs.progress;

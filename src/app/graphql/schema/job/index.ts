@@ -1,2 +1,2 @@
 import './object';
-import './query';
+import './subscription';

@@ -5,8 +5,8 @@ import React from 'react';
 import { genUploader } from 'uploadthing/client';
 import type { UploadRouter } from '~/api/uploadthing/uploadthing';
 import { FormProvider } from '~/custom-hooks/hook-form';
-import { useJobStatus } from '~/custom-hooks/job-status';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
+import { trackJobProgress } from '~/graphql/apollo-client/track-job-progress';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { appPath } from '~/lib/app-path';
@@ -42,7 +42,6 @@ export default function ImportCommunity(props: RouteArgs) {
   const client = useApolloClient();
   const { communityId } = params;
   const [importCommunity] = useMutation(CommunityImportMutation);
-  const { waitUntilDone } = useJobStatus();
   const { formMethods } = useHookForm(communityId);
   const { handleSubmit } = formMethods;
 
@@ -51,6 +50,19 @@ export default function ImportCommunity(props: RouteArgs) {
       const { hidden, ...input } = _input;
 
       const toastHelper = new ToastHelper(input.method);
+
+      const handleError = (err: unknown) => {
+        const errMsg =
+          err instanceof Error ? (
+            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
+              {err.message}
+            </div>
+          ) : (
+            'Unknown error'
+          );
+        toastHelper.updateError(errMsg);
+      };
+
       try {
         let xlsx: GQL.UploadthingInput | undefined;
         if (input.method === 'xlsx') {
@@ -81,28 +93,26 @@ export default function ImportCommunity(props: RouteArgs) {
           throw new Error(result.errors[0].message);
         } else if (result.data) {
           const jobId = result.data.communityImport.id;
-          await waitUntilDone(jobId, {
-            cb: (progress) => toastHelper.updateImportProgress({ progress }),
+          await trackJobProgress(client, jobId, {
+            onProgress: (progress) =>
+              toastHelper.updateImportProgress({ progress }),
+            onError: (msg) => handleError(msg),
+            onComplete: () => {
+              evictCache(client.cache, 'Community', input.id);
+              // Redirect to property list
+              router.push(
+                appPath('propertyList', {
+                  path: { communityId: input.id },
+                })
+              );
+            },
           });
-          evictCache(client.cache, 'Community', input.id);
-          // Redirect to property list
-          router.push(
-            appPath('propertyList', { path: { communityId: input.id } })
-          );
         }
       } catch (err) {
-        const errMsg =
-          err instanceof Error ? (
-            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
-              {err.message}
-            </div>
-          ) : (
-            'Unknown error'
-          );
-        toastHelper.updateError(errMsg);
+        handleError(err);
       }
     },
-    [importCommunity, router, waitUntilDone, client]
+    [importCommunity, router, client]
   );
 
   return (

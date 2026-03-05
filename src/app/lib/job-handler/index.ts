@@ -6,6 +6,7 @@ import { batchPropertyModifyTask } from '~/graphql/schema/property/batch-modify'
 import { env } from '~/lib/env/server-env';
 import { Logger } from '~/lib/logger';
 import { JobEntry } from './job-entry';
+import { publishJobStatus } from './publish-job-status';
 
 export { JobEntry } from './job-entry';
 
@@ -25,17 +26,21 @@ export class JobHandler {
     if (this._agenda == null) {
       this._agenda = new Agenda({
         backend: new MongoBackend({ address: env('MONGODB_URI') }),
-        /**
-         * Would be cool to use this so we don't leave artifacts in the
-         * database, but if this is on, then we can't use polling to determine
-         * when a job is finished, because the job document would have already
-         * been erased, once the job completes
-         */
-        // removeOnComplete: true,
+        /** Only enable this if job progress tracking in by subscription */
+        removeOnComplete: true,
       });
 
       this._agenda.on('error', (err) => {
         logger.error('Agenda error:', err);
+      });
+
+      /** There isn't much value to let UI know that a job has started */
+      // this._agenda.on('start', (job) => {
+      //   publishJobStatus(job);
+      // });
+      this._agenda.on('complete', (job) => {
+        // This will be called whether the job succeed or fail
+        publishJobStatus(job);
       });
 
       this._agenda.define('communityImport', communityImportTask);
