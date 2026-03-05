@@ -1,6 +1,7 @@
 /** Graphql-Yoga pubsub */
 import { createPubSub } from '@graphql-yoga/subscription';
 import type { Community, Property } from '@prisma/client';
+import type { JobEntry } from '~/lib/job-handler';
 
 // See: https://the-guild.dev/graphql/yoga-server/tutorial/advanced/02-subscriptions#subscribing-to-new-link-elements
 export enum MessageType {
@@ -23,11 +24,14 @@ export interface PubSubPropertyEvent extends PubSubEvent {
   property: Property;
 }
 
+export interface PubSubJobProgressEvent extends PubSubEvent {
+  job: JobEntry;
+}
+
 interface PubSubEventsImpl {
-  // i.e. /community/${communityId}/
   [key: `community/${string}/`]: [PubSubCommunityEvent];
-  // i.e. /community/${communityId}/property
   [key: `community/${string}/property`]: [PubSubPropertyEvent];
+  [key: `jobProgress/${string}/`]: [PubSubJobProgressEvent];
 }
 type ValueOf<T> = T[keyof T];
 

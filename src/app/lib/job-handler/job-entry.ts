@@ -1,4 +1,4 @@
-import { Job } from '@hokify/agenda';
+import { Job } from 'agenda';
 
 export class JobEntry<T = unknown> {
   constructor(private job: Job<T>) {}
@@ -9,7 +9,11 @@ export class JobEntry<T = unknown> {
     if (jobId == null) {
       throw new Error('jobId must be defined');
     }
-    return jobId.toHexString();
+    return jobId;
+  }
+
+  get data(): T {
+    return this.job.attrs.data;
   }
 
   /** Current progress of job */

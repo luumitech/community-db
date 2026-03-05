@@ -1,5 +1,5 @@
-import { Job } from '@hokify/agenda';
 import { Role } from '@prisma/client';
+import { Job } from 'agenda';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
 import { verifyAccess } from '~/graphql/schema/access/util';

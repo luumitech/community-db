@@ -4,3 +4,4 @@ import './delete';
 import './modify';
 import './object';
 import './register-event';
+import './subscription';
