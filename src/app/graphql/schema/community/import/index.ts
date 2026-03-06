@@ -5,7 +5,6 @@ import { builder } from '~/graphql/builder';
 import { verifyAccess } from '~/graphql/schema/access/util';
 import { jobPayloadRef } from '~/graphql/schema/job/object';
 import { type ContextUser } from '~/lib/context-user';
-import { JobHandler } from '~/lib/job-handler';
 import { CommunityImport } from './community-import';
 
 const ImportMethod = builder.enumType('ImportMethod', {
@@ -74,16 +73,14 @@ builder.mutationField('communityImport', (t) =>
       input: t.arg({ type: CommunityImportInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = ctx;
+      const { user, jobHandler } = ctx;
       const { input } = args;
       const { id: shortId } = input;
 
       // Make sure user has permission to modify
       await verifyAccess(user, { shortId }, [Role.ADMIN]);
 
-      const agenda = await JobHandler.init();
-
-      const job = await agenda.start<CommunityImportJobArg>('communityImport', {
+      const job = await jobHandler.start('communityImport', {
         user,
         input,
       });

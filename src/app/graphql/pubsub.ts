@@ -33,9 +33,32 @@ interface PubSubEventsImpl {
   [key: `community/${string}/property`]: [PubSubPropertyEvent];
   [key: `jobProgress/${string}/`]: [PubSubJobProgressEvent];
 }
-type ValueOf<T> = T[keyof T];
 
-type PubSubEvents = PubSubEventsImpl &
-  Record<string, ValueOf<PubSubEventsImpl>>;
-
-export const pubSub = createPubSub<PubSubEvents>();
+/**
+ * Ideally, I want to
+ *
+ * ```ts
+ * // Use the graphql-yoga's native typing
+ * const pubSub = createPubSub<PubSubEventsImpl>();
+ * ```
+ *
+ * But I'm getting the error:
+ *
+ *     Index signature for type 'string' is missing in type 'PubSubEventsImpl'
+ *
+ * So I'm manufacturing the correct types manually
+ */
+const _pubSub = createPubSub();
+export const pubSub = {
+  publish<TKey extends keyof PubSubEventsImpl>(
+    key: TKey,
+    ...args: PubSubEventsImpl[TKey]
+  ): void {
+    _pubSub.publish(key as string, ...(args as [unknown]));
+  },
+  subscribe<TKey extends keyof PubSubEventsImpl>(
+    key: TKey
+  ): AsyncIterable<PubSubEventsImpl[TKey][0]> {
+    return _pubSub.subscribe(key) as AsyncIterable<PubSubEventsImpl[TKey][0]>;
+  },
+};

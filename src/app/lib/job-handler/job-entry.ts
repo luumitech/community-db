@@ -35,4 +35,9 @@ export class JobEntry<T = unknown> {
   get failReason(): string | null | undefined {
     return this.job.attrs.failReason;
   }
+
+  /** Remove job from database */
+  async remove() {
+    return this.job.remove();
+  }
 }

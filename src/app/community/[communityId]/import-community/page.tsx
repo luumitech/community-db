@@ -50,19 +50,6 @@ export default function ImportCommunity(props: RouteArgs) {
       const { hidden, ...input } = _input;
 
       const toastHelper = new ToastHelper(input.method);
-
-      const handleError = (err: unknown) => {
-        const errMsg =
-          err instanceof Error ? (
-            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
-              {err.message}
-            </div>
-          ) : (
-            'Unknown error'
-          );
-        toastHelper.updateError(errMsg);
-      };
-
       try {
         let xlsx: GQL.UploadthingInput | undefined;
         if (input.method === 'xlsx') {
@@ -96,20 +83,25 @@ export default function ImportCommunity(props: RouteArgs) {
           await trackJobProgress(client, jobId, {
             onProgress: (progress) =>
               toastHelper.updateImportProgress({ progress }),
-            onError: (msg) => handleError(msg),
-            onComplete: () => {
-              evictCache(client.cache, 'Community', input.id);
-              // Redirect to property list
-              router.push(
-                appPath('propertyList', {
-                  path: { communityId: input.id },
-                })
-              );
-            },
           });
+          evictCache(client.cache, 'Community', input.id);
+          // Redirect to property list
+          router.push(
+            appPath('propertyList', {
+              path: { communityId: input.id },
+            })
+          );
         }
       } catch (err) {
-        handleError(err);
+        const errMsg =
+          err instanceof Error ? (
+            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
+              {err.message}
+            </div>
+          ) : (
+            'Unknown error'
+          );
+        toastHelper.updateError(errMsg);
       }
     },
     [importCommunity, router, client]

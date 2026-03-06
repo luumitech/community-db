@@ -5,6 +5,7 @@ import type { Context } from '~/graphql/context';
 import { pubSub } from '~/graphql/pubsub';
 import { schema } from '~/graphql/schema';
 import { type ContextUser } from '~/lib/context-user';
+import { JobHandler } from '~/lib/job-handler';
 
 interface ExecuteSingle<TResult, TVariables> {
   document: TypedDocumentNode<TResult, TVariables>;
@@ -21,6 +22,8 @@ export class GraphQLUtil {
       email: process.env.AUTH_TEST_EMAIL!,
     },
     pubSub,
+    // Not expected to be used in tests
+    jobHandler: null as unknown as JobHandler,
     clientIp: '127.0.0.1',
   };
 
