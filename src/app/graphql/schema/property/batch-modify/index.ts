@@ -76,20 +76,17 @@ builder.mutationField('batchPropertyModify', (t) =>
       input: t.arg({ type: BatchPropertyModifyInput, required: true }),
     },
     resolve: async (_parent, args, ctx) => {
-      const { user, pubSub } = ctx;
+      const { user, jobHandler } = ctx;
       const { input } = args;
       const shortId = input.self.id;
 
       // Make sure user has permission to modify
       await verifyAccess(user, { shortId }, [Role.ADMIN, Role.EDITOR]);
 
-      const agenda = await JobHandler.init();
-
-      const job = await agenda.start<BatchPropertyModifyJobArg>(
-        'batchPropertyModify',
-        { user, input }
-      );
-
+      const job = await jobHandler.start('batchPropertyModify', {
+        user,
+        input,
+      });
       return job;
     },
   })

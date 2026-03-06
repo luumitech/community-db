@@ -23,17 +23,6 @@ export default function BatchPropertyModify() {
   const onSave = React.useCallback(
     async (input: InputData) => {
       const toastHelper = new ToastHelper();
-      const handleError = (err: unknown) => {
-        const errMsg =
-          err instanceof Error ? (
-            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
-              {err.message}
-            </div>
-          ) : (
-            'Unknown error'
-          );
-        toastHelper.updateError(errMsg);
-      };
       try {
         const result = await updateProperty({
           variables: { input },
@@ -44,15 +33,22 @@ export default function BatchPropertyModify() {
           const jobId = result.data.batchPropertyModify.id;
           await trackJobProgress(client, jobId, {
             onProgress: (progress) => toastHelper.updateProgress(progress),
-            onError: (msg) => handleError(msg),
-            onComplete: () => {
-              evictCache(client.cache, 'Community', input.self.id);
-              evictCache(client.cache, 'CommunityStat', input.self.id);
-            },
           });
+          evictCache(client.cache, 'Community', input.self.id);
+          evictCache(client.cache, 'CommunityStat', input.self.id);
         }
       } catch (err) {
-        handleError(err);
+        const errMsg =
+          err instanceof Error ? (
+            <div className="max-h-[200px] overflow-auto whitespace-pre-wrap">
+              {err.message}
+            </div>
+          ) : (
+            'Unknown error'
+          );
+        toastHelper.updateError(errMsg);
+        // rethrow the err, so modal dialog is not dismissed
+        throw err;
       }
     },
     [client, updateProperty]
