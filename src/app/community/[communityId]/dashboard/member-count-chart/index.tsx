@@ -28,14 +28,14 @@ const MemberCountStatQuery = graphql(/* GraphQL */ `
   }
 `);
 
-interface Props {
+export interface MemberCountChartProps {
   className?: string;
   communityId: string;
   selectedYear?: number | null;
   onYearSelect?: (year: number) => void;
 }
 
-export const MemberCountChart: React.FC<Props> = ({
+export const MemberCountChart: React.FC<MemberCountChartProps> = ({
   className,
   communityId,
   selectedYear,

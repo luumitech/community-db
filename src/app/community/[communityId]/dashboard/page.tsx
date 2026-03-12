@@ -2,6 +2,7 @@
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { MoreMenu } from '../common/more-menu';
+import { CustomGrid } from './custom-grid';
 import { MemberCountChart } from './member-count-chart';
 import { YearlyChart } from './yearly-chart';
 
@@ -22,14 +23,15 @@ export default function Dashboard(props: RouteArgs) {
   return (
     <div className="mt-page-top">
       <MoreMenu omitKeys={['communityDashboard']} />
+      <CustomGrid communityId={communityId} />
       <div className="mb-4 grid gap-4 md:grid-cols-2">
-        <MemberCountChart
+        {/* <MemberCountChart
           // Top chart always occupy first row
           className="col-span-full"
           communityId={communityId}
           selectedYear={yearSelected}
           onYearSelect={(year) => dispatch(actions.ui.setYearSelected(year))}
-        />
+        /> */}
         {yearSelected != null && (
           <YearlyChart communityId={communityId} year={yearSelected} />
         )}

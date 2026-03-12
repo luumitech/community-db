@@ -113,12 +113,30 @@ function toastError<TData = unknown>(
 }
 
 /**
+ * Customize toast update, to re-open the toast if it's not active/dismissed.
+ *
+ * @param toastId ToastId to update
+ * @param options Toast update options
+ * @returns
+ */
+function toastUpdate<TData = unknown>(
+  toastId: Id,
+  options?: UpdateOptions<TData>
+) {
+  if (!toastify.isActive(toastId)) {
+    toastify('', { toastId });
+  }
+  return toastify.update(toastId, options);
+}
+
+/**
  * Customize react-toastify toast object
  *
  * - Toast.promise will display error message automatically
  */
 export const toast = {
   ...toastify,
+  update: toastUpdate,
   promise: toastPromise,
   error: toastError,
 };

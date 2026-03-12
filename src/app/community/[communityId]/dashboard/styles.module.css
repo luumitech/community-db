@@ -1,0 +1,14 @@
+.gridWrapper {
+  :global(.grid-stack-item-content) {
+    /* Allow Card shadow to render properly */
+    overflow: visible !important;
+  }
+
+  /* Placeholder styles when dragging widgets */
+  :global(.grid-stack-placeholder > .placeholder-content) {
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 2px dashed #a0a0a0;
+    /* Match Card's border radius */
+    border-radius: 12px;
+  }
+}
