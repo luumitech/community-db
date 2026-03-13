@@ -1,4 +1,4 @@
-import type { WidgetDefinition } from './_types';
+import type { WidgetDefinition } from './_type';
 
 /**
  * When defining widgets, this utility function can be used to provide better

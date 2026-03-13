@@ -1,5 +1,5 @@
 import React from 'react';
-import { WidgetDefinition } from './_types';
+import { WidgetDefinition } from './_type';
 import { getWidgetDivId } from './widget-util';
 
 interface Props {

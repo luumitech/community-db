@@ -17,8 +17,8 @@ export interface WidgetBase {
    * properties are essential for defining the layout of the dashboard and how
    * widgets are arranged within it.
    */
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   w: number;
   h: number;
 }

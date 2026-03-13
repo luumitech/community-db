@@ -8,7 +8,6 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { type DashboardEntry } from '../_type';
 import { useYearlyContext } from '../yearly-context';
 import { EventNameSelect } from './event-name-select';
 import { ParticipationChart } from './participation-chart';
@@ -38,19 +37,11 @@ const EventTicketFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment?: DashboardEntry;
-  year: number;
-  isLoading?: boolean;
 }
 
-export const ByEvent: React.FC<Props> = ({
-  className,
-  fragment,
-  year,
-  isLoading,
-}) => {
-  const { eventSelected } = useYearlyContext();
-  const entry = getFragment(EventTicketFragment, fragment);
+export const ByEvent: React.FC<Props> = ({ className }) => {
+  const { eventSelected, community, year, isLoading } = useYearlyContext();
+  const entry = getFragment(EventTicketFragment, community);
   const ticketStat = entry?.communityStat.ticketStat ?? [];
   const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
   const ticketList = ticketStat.filter(

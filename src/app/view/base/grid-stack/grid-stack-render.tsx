@@ -7,20 +7,16 @@ import { WidgetContainer } from './widget-container';
 export interface GridStackRenderProps {}
 
 export function GridStackRender(props: GridStackRenderProps) {
-  const { widgets, gridContainer } = useGridStackContext();
+  const { widgets, gridNode } = useGridStackContext();
 
   return (
     <>
       {widgets.map((widget) => (
         <WidgetContainer key={widget.id} widget={widget} />
       ))}
-      {gridContainer != null &&
+      {gridNode != null &&
         widgets.map((widget) => (
-          <Widget
-            key={widget.id}
-            widget={widget}
-            gridContainer={gridContainer}
-          />
+          <Widget key={widget.id} widget={widget} gridContainer={gridNode} />
         ))}
     </>
   );

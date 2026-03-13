@@ -18,7 +18,6 @@ import {
 } from '~/view/base/chart';
 import { TableTooltip } from '~/view/base/chart/tooltip';
 import { ChartDataHelperUtil } from '../../chart-data-helper';
-import { type DashboardEntry } from '../_type';
 import { useYearlyContext } from '../yearly-context';
 
 const EventFragment = graphql(/* GraphQL */ `
@@ -117,19 +116,12 @@ function customTooltip(helper: ChartDataHelper) {
 
 interface Props {
   className?: string;
-  fragment?: DashboardEntry;
-  year: number;
-  isLoading?: boolean;
 }
 
-export const EventParticipation: React.FC<Props> = ({
-  className,
-  fragment,
-  year,
-  isLoading,
-}) => {
-  const { setEventSelected, eventSelected } = useYearlyContext();
-  const entry = getFragment(EventFragment, fragment);
+export const EventParticipation: React.FC<Props> = ({ className }) => {
+  const { setEventSelected, eventSelected, community, year, isLoading } =
+    useYearlyContext();
+  const entry = getFragment(EventFragment, community);
 
   const chartHelper = React.useMemo(() => {
     const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];

@@ -11,4 +11,15 @@
     /* Match Card's border radius */
     border-radius: 12px;
   }
+
+  /* Override default resize icon */
+  :global(.grid-stack-item)  {
+    :global(.ui-resizable-handle) {
+      background-image: url('/image/icon-svg/mdi--resize-bottom-right.svg');
+    }
+
+    :global(.ui-resizable-se) {
+      transform: rotate(0);
+    }
+  }
 }

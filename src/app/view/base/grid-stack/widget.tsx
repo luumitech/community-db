@@ -1,5 +1,5 @@
 import React from 'react';
-import { WidgetDefinition } from './_types';
+import { WidgetDefinition } from './_type';
 import { WidgetPortal } from './widget-portal';
 import { getWidgetDivId } from './widget-util';
 

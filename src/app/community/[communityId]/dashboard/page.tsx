@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
+import { useSelector } from '~/custom-hooks/redux';
+import { GridStackWithCard } from '~/view/base/grid-stack-with-card';
 import { MoreMenu } from '../common/more-menu';
-import { CustomGrid } from './custom-grid';
-import { MemberCountChart } from './member-count-chart';
+import { useWidgetDefinition } from './widget-definition';
 import { YearlyChart } from './yearly-chart';
 
 interface Params {
@@ -17,25 +17,16 @@ interface RouteArgs {
 export default function Dashboard(props: RouteArgs) {
   const params = React.use(props.params);
   const { communityId } = params;
-  const dispatch = useDispatch();
+  const widgets = useWidgetDefinition(communityId);
   const { yearSelected } = useSelector((state) => state.ui);
 
   return (
     <div className="mt-page-top">
       <MoreMenu omitKeys={['communityDashboard']} />
-      <CustomGrid communityId={communityId} />
-      <div className="mb-4 grid gap-4 md:grid-cols-2">
-        {/* <MemberCountChart
-          // Top chart always occupy first row
-          className="col-span-full"
-          communityId={communityId}
-          selectedYear={yearSelected}
-          onYearSelect={(year) => dispatch(actions.ui.setYearSelected(year))}
-        /> */}
-        {yearSelected != null && (
-          <YearlyChart communityId={communityId} year={yearSelected} />
-        )}
-      </div>
+      <GridStackWithCard widgets={widgets} />
+      {yearSelected != null && (
+        <YearlyChart communityId={communityId} year={yearSelected} />
+      )}
     </div>
   );
 }
