@@ -4,7 +4,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { ChartDataHelperUtil } from '../../chart-data-helper';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
 
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
@@ -55,7 +55,7 @@ interface Props {
 }
 
 export const MembershipSource: React.FC<Props> = ({ className }) => {
-  const { setEventSelected, community, year, isLoading } = useYearlyContext();
+  const { setEventSelected, community, year, isLoading } = usePageContext();
   const entry = getFragment(MembershipSourceFragment, community);
 
   const chartHelper = React.useMemo(() => {

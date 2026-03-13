@@ -1,6 +1,7 @@
+import type { GridStackPosition } from 'gridstack';
 import React from 'react';
 
-export interface WidgetBase {
+export interface WidgetBase extends GridStackPosition {
   /**
    * Unique identifier for the widget. This is used to track the widget's
    * position and state within the grid. It should be a string that uniquely
@@ -9,18 +10,6 @@ export interface WidgetBase {
    * handling widget interactions and updates.
    */
   id: string;
-  /**
-   * The x and y coordinates specify the position of the widget on the grid,
-   * while w and h specify the width and height of the widget in terms of grid
-   * units. For example, x: 0, y: 0, w: 3, h: 2 would place the widget at the
-   * top-left corner of the grid, spanning 3 columns and 2 rows. These
-   * properties are essential for defining the layout of the dashboard and how
-   * widgets are arranged within it.
-   */
-  x?: number;
-  y?: number;
-  w: number;
-  h: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -10,13 +10,19 @@ import styles from './styles.module.css';
 
 interface Props {
   className?: string;
+  id: string;
   widgets: WidgetDefinition[];
 }
 
-export const GridStackWithCard: React.FC<Props> = ({ className, widgets }) => {
+export const GridStackWithCard: React.FC<Props> = ({
+  className,
+  id,
+  widgets,
+}) => {
   return (
     <GridStackProvider
       className={cn(styles.gridWrapper, className)}
+      id={id}
       initialOptions={{
         margin: 8,
         cellHeight: '50px',

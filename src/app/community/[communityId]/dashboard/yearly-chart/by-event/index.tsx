@@ -8,7 +8,7 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
 import { EventNameSelect } from './event-name-select';
 import { ParticipationChart } from './participation-chart';
 import { TicketSaleTable } from './ticket-sale-table';
@@ -40,7 +40,7 @@ interface Props {
 }
 
 export const ByEvent: React.FC<Props> = ({ className }) => {
-  const { eventSelected, community, year, isLoading } = useYearlyContext();
+  const { eventSelected, community, year, isLoading } = usePageContext();
   const entry = getFragment(EventTicketFragment, community);
   const ticketStat = entry?.communityStat.ticketStat ?? [];
   const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
@@ -60,7 +60,7 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
   }, [eventList]);
 
   const EventDetails = React.useCallback(() => {
-    if (!eventList.length || !eventSelected) {
+    if (!eventList.length || !eventSelected || !year) {
       return null;
     }
     return (

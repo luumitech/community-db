@@ -1,13 +1,18 @@
 import { cn } from '@heroui/react';
 import { GridStack, type GridStackOptions } from 'gridstack';
 import React from 'react';
+import { usePreviousDistinct, useUpdate } from 'react-use';
+import * as R from 'remeda';
 import type { WidgetDefinition } from './_type';
+import { useLayoutUtil } from './layout-util';
 
 interface ContextT {
-  /** The set of widgets to be rendered in the grid. */
-  widgets: WidgetDefinition[];
+  /** GridStack instance */
+  gridStack?: GridStack | null;
   /** The grid container Div */
   gridNode?: HTMLDivElement;
+  /** The set of widgets to be rendered in the grid. */
+  widgets: WidgetDefinition[];
 }
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -16,6 +21,11 @@ const Context = React.createContext<ContextT>();
 interface Props {
   /** Applied to the outer grid container */
   className?: string;
+  /**
+   * Unique ID for each gridstack, so you can render multiple gridstacks per
+   * page
+   */
+  id: string;
   /**
    * Initial options for the GridStack instance. This allows you to customize
    * the behavior and appearance of the grid, such as setting the cell height,
@@ -28,13 +38,18 @@ interface Props {
 
 export function GridStackProvider({
   className,
+  id,
   initialOptions,
   widgets,
   children,
   ...props
 }: React.PropsWithChildren<Props>) {
-  const gridInstance = React.useRef<GridStack>(null);
+  const [gridStack, setGridStack] = React.useState<GridStack>();
   const [gridNode, setGridNode] = React.useState<HTMLDivElement>();
+  const prevInitialOptions = usePreviousDistinct(initialOptions, R.isDeepEqual);
+  const previousWidget = usePreviousDistinct(widgets, R.isDeepEqual);
+  const { saveLayout, restoreLayout } = useLayoutUtil(id);
+  const forceRerender = useUpdate();
 
   const gridRef = React.useCallback((node: HTMLDivElement | null) => {
     if (!node) {
@@ -43,32 +58,45 @@ export function GridStackProvider({
     setGridNode(node);
   }, []);
 
+  const initGrid = React.useCallback(() => {
+    if (gridNode) {
+      const grid = GridStack.init(initialOptions, gridNode);
+      // Here is where you can add grid listeners
+      return grid;
+    }
+  }, [gridNode, initialOptions]);
+
   React.useLayoutEffect(() => {
-    if (!gridNode) {
-      return;
+    // Force Re-render of widgets on changes
+    if (previousWidget && previousWidget !== widgets && gridStack) {
+      gridStack.load(widgets);
+      forceRerender();
+    }
+  }, [previousWidget, widgets, gridStack, forceRerender]);
+
+  React.useLayoutEffect(() => {
+    if (
+      prevInitialOptions &&
+      prevInitialOptions !== initialOptions &&
+      gridStack
+    ) {
+      gridStack.removeAll(false);
+      gridStack.destroy(false);
+      setGridStack(initGrid());
     }
 
-    if (gridInstance.current) {
-      gridInstance.current.removeAll(false);
-      gridInstance.current.destroy(false);
-      gridInstance.current = null;
+    if (!gridStack) {
+      setGridStack(initGrid());
     }
-
-    gridInstance.current = GridStack.init(initialOptions, gridNode);
-
-    const grid = gridInstance.current;
-
-    grid.on('change', () => {
-      const layout = grid.save(false);
-      localStorage.setItem('dashboard-layout', JSON.stringify(layout));
-    });
-
-    return () => {
-      grid.removeAll(false);
-      grid.destroy(false);
-      gridInstance.current = null;
-    };
-  }, [initialOptions, widgets, gridNode]);
+  }, [
+    prevInitialOptions,
+    initialOptions,
+    gridStack,
+    initGrid,
+    setGridStack,
+    previousWidget,
+    widgets,
+  ]);
 
   return (
     <Context.Provider
@@ -78,7 +106,7 @@ export function GridStackProvider({
       }}
       {...props}
     >
-      <div ref={gridRef} className={cn('grid-stack', className)}>
+      <div ref={gridRef} id={id} className={cn('grid-stack', className)}>
         {children}
       </div>
     </Context.Provider>

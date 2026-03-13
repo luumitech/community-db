@@ -1,7 +1,7 @@
 import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
 import { MembershipFeeTable } from './membership-fee-table';
 
 const EventMembershipFragment = graphql(/* GraphQL */ `
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export const MembershipFee: React.FC<Props> = ({ className }) => {
-  const { community, year, isLoading } = useYearlyContext();
+  const { community, year, isLoading } = usePageContext();
   const entry = getFragment(EventMembershipFragment, community);
 
   const membershipFeeStat = entry?.communityStat.membershipFeeStat ?? [];

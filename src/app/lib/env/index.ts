@@ -18,6 +18,8 @@ export const lsFlags = {
   dashboardMembershipFeeGroupBy: 'cd-dashboard-membership-fee-group-by',
   /** Group by settings in 'Event Ticket Sale' table */
   dashboardEventTicketSaleGroupBy: 'cd-dashboard-event-ticket-sale-group-by',
+  /** Gridstack layout */
+  gridLayout: 'cd-grid-layout',
   /** Reach import dialog for the first time */
   importFirstTime: 'cd-import-first-time',
   /** MapView: show boundary around properties */

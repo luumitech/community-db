@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import React from 'react';
-import { useSelector } from '~/custom-hooks/redux';
+import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { type DashboardEntry } from './_type';
@@ -22,7 +22,8 @@ const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
 
 type ContextT = Readonly<{
   communityId: string;
-  year: number;
+  year: number | null;
+  onYearSelect: (year: number) => void;
   community: DashboardEntry | null;
   isLoading: boolean;
   eventSelected: string;
@@ -34,32 +35,31 @@ const Context = React.createContext<ContextT>();
 
 interface Props {
   communityId: string;
-  year: number | null;
   children: React.ReactNode;
 }
 
-export function YearlyProvider({
-  communityId,
-  year,
-  children,
-  ...props
-}: Props) {
+export function PageProvider({ communityId, children, ...props }: Props) {
+  const dispatch = useDispatch();
   const { lastEventSelected } = useSelector((state) => state.ui);
   const [eventSelected, setEventSelected] = React.useState(
     lastEventSelected ?? ''
   );
+  const { yearSelected } = useSelector((state) => state.ui);
+  const onYearSelect = React.useCallback(
+    (year: number) => {
+      dispatch(actions.ui.setYearSelected(year));
+    },
+    [dispatch]
+  );
+
   const result = useQuery(DashboardYearlyChartQuery, {
     variables: {
       id: communityId,
-      year: year!,
+      year: yearSelected!,
     },
-    skip: year == null,
+    skip: yearSelected == null,
     onError,
   });
-
-  if (year == null) {
-    return null;
-  }
 
   const community = result.data?.communityFromId ?? null;
 
@@ -67,7 +67,8 @@ export function YearlyProvider({
     <Context.Provider
       value={{
         communityId,
-        year,
+        year: yearSelected,
+        onYearSelect,
         community,
         isLoading: !!result.loading,
         eventSelected,
@@ -80,10 +81,10 @@ export function YearlyProvider({
   );
 }
 
-export function useYearlyContext() {
+export function usePageContext() {
   const context = React.useContext(Context);
   if (!context) {
-    throw new Error(`useYearlyContext must be used within a YearlyProvider`);
+    throw new Error(`usePageContext must be used within a PageProvider`);
   }
   return context;
 }

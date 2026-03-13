@@ -18,7 +18,7 @@ import {
 } from '~/view/base/chart';
 import { TableTooltip } from '~/view/base/chart/tooltip';
 import { ChartDataHelperUtil } from '../../chart-data-helper';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
 
 const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
@@ -120,7 +120,7 @@ interface Props {
 
 export const EventParticipation: React.FC<Props> = ({ className }) => {
   const { setEventSelected, eventSelected, community, year, isLoading } =
-    useYearlyContext();
+    usePageContext();
   const entry = getFragment(EventFragment, community);
 
   const chartHelper = React.useMemo(() => {
