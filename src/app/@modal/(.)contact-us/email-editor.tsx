@@ -1,7 +1,10 @@
 import { Divider } from '@heroui/react';
 import React from 'react';
-import { Input } from '~/view/base/input';
+import { createInput } from '~/view/base/input';
 import { Textarea } from '~/view/base/textarea';
+import { type InputData } from './use-hook-form';
+
+const Input = createInput<InputData>();
 
 interface Props {
   className?: string;

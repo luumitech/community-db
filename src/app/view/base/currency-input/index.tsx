@@ -62,7 +62,7 @@ export const CurrencyInput = React.forwardRef(
             customInput={Input}
             {...(isControlled
               ? { value: field.value ?? '' }
-              : { defaultInputValue: field.value ?? '' })}
+              : { defaultValue: field.value ?? '' })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);

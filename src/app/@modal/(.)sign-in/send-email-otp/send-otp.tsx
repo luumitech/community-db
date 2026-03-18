@@ -3,10 +3,12 @@ import React from 'react';
 import { authClient } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
-import { Input } from '~/view/base/input';
+import { createInput } from '~/view/base/input';
 import { toast } from '~/view/base/toastify';
 import { Wizard } from '../wizard';
 import { useHookFormContext, type InputData } from './use-hook-form';
+
+const Input = createInput<InputData>();
 
 interface Props {
   className?: string;

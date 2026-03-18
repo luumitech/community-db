@@ -1,5 +1,8 @@
 import React from 'react';
-import { DatePicker } from '~/view/base/date-picker';
+import { createDatePicker } from '~/view/base/date-picker';
+import { type InputData } from '../use-hook-form';
+
+const DatePicker = createDatePicker<InputData>();
 
 interface Props {
   className?: string;
