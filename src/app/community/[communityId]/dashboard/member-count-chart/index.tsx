@@ -12,6 +12,7 @@ import { useLocalStorage } from 'react-use';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { lsFlags } from '~/lib/env';
+import { usePageContext } from '../page-context';
 import { FootNote } from './foot-note';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
@@ -30,17 +31,12 @@ const MemberCountStatQuery = graphql(/* GraphQL */ `
 
 export interface MemberCountChartProps {
   className?: string;
-  communityId: string;
-  selectedYear?: number | null;
-  onYearSelect?: (year: number) => void;
 }
 
 export const MemberCountChart: React.FC<MemberCountChartProps> = ({
   className,
-  communityId,
-  selectedYear,
-  onYearSelect,
 }) => {
+  const { communityId, year, onYearSelect } = usePageContext();
   const [yearRange = 10, setYearRange] = useLocalStorage(
     lsFlags.dashboardYearRange,
     10
@@ -64,9 +60,7 @@ export const MemberCountChart: React.FC<MemberCountChartProps> = ({
             <YearSelect
               minYear={community.minYear}
               maxYear={community.maxYear}
-              selectedKeys={
-                selectedYear != null ? [selectedYear.toString()] : []
-              }
+              selectedKeys={year != null ? [year.toString()] : []}
               onSelectionChange={(keys) => {
                 const [firstKey] = keys;
                 onYearSelect?.(parseInt(firstKey as string, 10));
@@ -94,7 +88,7 @@ export const MemberCountChart: React.FC<MemberCountChartProps> = ({
           <MemberCountBarChart
             fragment={community}
             yearRange={yearRange}
-            selectedYear={selectedYear}
+            selectedYear={year}
             onYearSelect={onYearSelect}
           />
         </Skeleton>

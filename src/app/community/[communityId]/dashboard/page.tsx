@@ -22,10 +22,6 @@ export default function Dashboard(props: RouteArgs) {
       <PageProvider communityId={communityId}>
         <PageContent />
       </PageProvider>
-      {/* <GridStackWithCard id="membership-count" widgets={widgets} />
-      {yearSelected != null && (
-        <YearlyChart communityId={communityId} year={yearSelected} />
-      )} */}
     </div>
   );
 }

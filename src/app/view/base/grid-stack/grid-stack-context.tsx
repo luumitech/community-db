@@ -1,17 +1,14 @@
 import { cn } from '@heroui/react';
 import { GridStack, type GridStackOptions } from 'gridstack';
 import React from 'react';
-import { usePreviousDistinct, useUpdate } from 'react-use';
+import { usePrevious, useUnmount, useUpdate } from 'react-use';
 import * as R from 'remeda';
 import type { WidgetDefinition } from './_type';
-import { useLayoutUtil } from './layout-util';
+import { Widget } from './widget';
+import { isWidgetDefinitionsEqual } from './widget-util';
 
 interface ContextT {
-  /** GridStack instance */
-  gridStack?: GridStack | null;
-  /** The grid container Div */
-  gridNode?: HTMLDivElement;
-  /** The set of widgets to be rendered in the grid. */
+  grid?: GridStack;
   widgets: WidgetDefinition[];
 }
 
@@ -44,69 +41,82 @@ export function GridStackProvider({
   children,
   ...props
 }: React.PropsWithChildren<Props>) {
-  const [gridStack, setGridStack] = React.useState<GridStack>();
+  const gridRef = React.useRef<GridStack>(null);
+  const [grid, setGrid] = React.useState<GridStack>();
   const [gridNode, setGridNode] = React.useState<HTMLDivElement>();
-  const prevInitialOptions = usePreviousDistinct(initialOptions, R.isDeepEqual);
-  const previousWidget = usePreviousDistinct(widgets, R.isDeepEqual);
-  const { saveLayout, restoreLayout } = useLayoutUtil(id);
+  const prevInitialOptions = usePrevious(initialOptions);
+  const previousWidget = usePrevious(widgets);
   const forceRerender = useUpdate();
 
-  const gridRef = React.useCallback((node: HTMLDivElement | null) => {
-    if (!node) {
-      return;
+  const gridNodeRef = React.useCallback((node: HTMLDivElement) => {
+    if (node) {
+      setGridNode(node);
     }
-    setGridNode(node);
   }, []);
+
+  useUnmount(() => {
+    if (gridRef.current) {
+      gridRef.current.removeAll(true);
+      gridRef.current.destroy(true);
+    }
+  });
 
   const initGrid = React.useCallback(() => {
     if (gridNode) {
-      const grid = GridStack.init(initialOptions, gridNode);
-      // Here is where you can add grid listeners
-      return grid;
+      let _grid = gridRef.current;
+      if (_grid != null) {
+        _grid.removeAll(false);
+        _grid.destroy(false);
+      }
+      _grid = GridStack.init(initialOptions, gridNode);
+      setGrid(_grid);
+      gridRef.current = _grid;
     }
   }, [gridNode, initialOptions]);
 
+  React.useEffect(() => {
+    initGrid();
+  }, [initGrid]);
+
   React.useLayoutEffect(() => {
+    const _grid = gridRef.current;
     // Force Re-render of widgets on changes
-    if (previousWidget && previousWidget !== widgets && gridStack) {
-      gridStack.load(widgets);
+    if (
+      _grid &&
+      previousWidget &&
+      !isWidgetDefinitionsEqual(previousWidget, widgets)
+    ) {
+      _grid.load(widgets);
       forceRerender();
     }
-  }, [previousWidget, widgets, gridStack, forceRerender]);
+  }, [previousWidget, widgets, forceRerender]);
 
   React.useLayoutEffect(() => {
+    const _grid = gridRef.current;
+    // Reinitialize grid instance when intialOptions are modified
     if (
+      _grid &&
       prevInitialOptions &&
-      prevInitialOptions !== initialOptions &&
-      gridStack
+      !R.isDeepEqual(prevInitialOptions, initialOptions)
     ) {
-      gridStack.removeAll(false);
-      gridStack.destroy(false);
-      setGridStack(initGrid());
+      _grid.removeAll(false);
+      _grid.destroy(false);
+      initGrid();
     }
-
-    if (!gridStack) {
-      setGridStack(initGrid());
-    }
-  }, [
-    prevInitialOptions,
-    initialOptions,
-    gridStack,
-    initGrid,
-    setGridStack,
-    previousWidget,
-    widgets,
-  ]);
+  }, [prevInitialOptions, initialOptions, initGrid]);
 
   return (
     <Context.Provider
       value={{
+        grid,
         widgets,
-        gridNode,
       }}
       {...props}
     >
-      <div ref={gridRef} id={id} className={cn('grid-stack', className)}>
+      <div ref={gridNodeRef} id={id} className={cn('grid-stack', className)}>
+        {widgets.map((widget) => (
+          <Widget key={widget.id} widget={widget} />
+        ))}
         {children}
       </div>
     </Context.Provider>

@@ -1,10 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import {
-  GridStackProvider,
-  GridStackRender,
-  WidgetDefinition,
-} from '~/view/base/grid-stack';
+import { GridStackProvider, WidgetDefinition } from '~/view/base/grid-stack';
 
 import styles from './styles.module.css';
 
@@ -14,11 +10,12 @@ interface Props {
   widgets: WidgetDefinition[];
 }
 
-export const GridStackWithCard: React.FC<Props> = ({
+export function GridStackWithCard({
   className,
   id,
   widgets,
-}) => {
+  ...props
+}: React.PropsWithChildren<Props>) {
   return (
     <GridStackProvider
       className={cn(styles.gridWrapper, className)}
@@ -37,8 +34,7 @@ export const GridStackWithCard: React.FC<Props> = ({
         },
       }}
       widgets={widgets}
-    >
-      <GridStackRender />
-    </GridStackProvider>
+      {...props}
+    />
   );
-};
+}

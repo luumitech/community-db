@@ -1,6 +1,9 @@
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { Select, SelectItem, SelectProps } from '~/view/base/select';
+import { createSelect, SelectItem, SelectProps } from '~/view/base/select';
+import { type InputData } from '../../use-hook-form';
+
+const Select = createSelect<InputData>();
 
 interface ContactMethodItem {
   /** Label to appear in selection list */
@@ -24,7 +27,7 @@ export const contactMethodItems: ContactMethodItem[] = [
   },
 ];
 
-type CustomProps = Omit<SelectProps<ContactMethodItem>, 'children'>;
+type CustomProps = Omit<SelectProps<ContactMethodItem, InputData>, 'children'>;
 
 interface Props extends CustomProps {
   className?: string;

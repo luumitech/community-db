@@ -1,8 +1,10 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Select, SelectItem } from '~/view/base/select';
-import { useHookFormContext } from '../use-hook-form';
+import { SelectItem, createSelect } from '~/view/base/select';
+import { useHookFormContext, type InputData } from '../use-hook-form';
 import { YearItemLabel, yearSelectItems } from '../year-select-items';
+
+const Select = createSelect<InputData>();
 
 interface Props {
   className?: string;

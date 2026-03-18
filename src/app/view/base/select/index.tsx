@@ -5,15 +5,21 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection, type SelectedItems } from '@heroui/react';
 
 export interface SelectProps<
   T extends object = object,
+  P extends FieldValues = FieldValues,
 > extends NextUISelectProps<T> {
-  controlName: string;
+  controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
    * work properly
@@ -42,83 +48,85 @@ function coerceToString(input: string | boolean | number) {
   return R.isEmpty(input) ? '' : input.trim();
 }
 
-export function Select<T extends object>(props: SelectProps<T>) {
-  const SelectImpl = React.forwardRef<HTMLSelectElement | null, SelectProps<T>>(
-    (
-      {
-        classNames,
-        controlName,
-        isControlled,
-        onBlur,
-        onChange,
-        isReadOnly,
-        ...selectProps
-      },
-      ref
-    ) => {
-      const { control } = useFormContext();
+function toSelectedKeys(values: string | number | string[] | number[]) {
+  if (values == null) {
+    return [];
+  }
+  if (values === 'all') {
+    return 'all' as const;
+  }
+  const result = Array.isArray(values)
+    ? values.map(coerceToString)
+    : coerceToString(values).split(',');
+  return result.filter((v): v is string => !!v);
+}
 
-      const selectedKeys = React.useCallback(
-        (values: string | number | string[] | number[]) => {
-          if (values == null) {
-            return [];
-          } else if (values === 'all') {
-            return 'all';
-          }
+export const Select = React.forwardRef(
+  <T extends object, P extends FieldValues>(
+    {
+      classNames,
+      controlName,
+      isControlled,
+      onBlur,
+      onChange,
+      isReadOnly,
+      ...selectProps
+    }: SelectProps<T, P>,
+    ref: React.ForwardedRef<HTMLSelectElement>
+  ) => {
+    const { control } = useFormContext<P>();
 
-          const result = Array.isArray(values)
-            ? values.map(coerceToString)
-            : coerceToString(values).split(',');
-          const keys = result.filter((v): v is string => !!v);
-          return keys;
-        },
-        []
-      );
+    return (
+      <Controller
+        control={control}
+        name={controlName}
+        render={({ field, fieldState }) => (
+          <NextUISelect<T>
+            ref={mergeRefs(field.ref, ref)}
+            classNames={{
+              ...classNames,
+              base: cn(classNames?.base, { 'opacity-100': isReadOnly }),
+              trigger: cn(classNames?.trigger, {
+                'border-none bg-transparent shadow-none': isReadOnly,
+              }),
+              selectorIcon: cn({ hidden: isReadOnly }),
+            }}
+            {...(isControlled
+              ? { selectedKeys: toSelectedKeys(field.value) }
+              : { defaultSelectedKeys: toSelectedKeys(field.value) })}
+            onBlur={(evt) => {
+              field.onBlur();
+              onBlur?.(evt);
+            }}
+            onChange={(evt) => {
+              field.onChange(evt);
+              onChange?.(evt);
+            }}
+            errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
+            {...(isReadOnly && { isDisabled: true })}
+            {...selectProps}
+          />
+        )}
+      />
+    );
+  }
+) as (<T extends object, P extends FieldValues>(
+  props: SelectProps<T, P> & { ref?: React.ForwardedRef<HTMLSelectElement> }
+) => React.ReactElement) & { displayName?: string };
 
-      return (
-        <Controller
-          control={control}
-          name={controlName}
-          render={({ field, fieldState }) => (
-            <NextUISelect<T>
-              ref={mergeRefs(field.ref, ref)}
-              classNames={{
-                ...classNames,
-                // Render readonly field by removing all input decoration
-                base: cn(classNames?.base, {
-                  'opacity-100': isReadOnly,
-                }),
-                trigger: cn(classNames?.trigger, {
-                  'border-none bg-transparent shadow-none': isReadOnly,
-                }),
-                selectorIcon: cn({
-                  hidden: isReadOnly,
-                }),
-              }}
-              // Force component into a controlled component
-              {...(isControlled && { selectedKeys: selectedKeys(field.value) })}
-              defaultSelectedKeys={selectedKeys(field.value)}
-              onBlur={(evt) => {
-                field.onBlur();
-                onBlur?.(evt);
-              }}
-              onChange={(evt) => {
-                field.onChange(evt);
-                onChange?.(evt);
-              }}
-              errorMessage={fieldState.error?.message}
-              isInvalid={fieldState.invalid}
-              {...(!!isReadOnly && {
-                isDisabled: true,
-              })}
-              {...selectProps}
-            />
-          )}
-        />
-      );
-    }
-  );
+Select.displayName = 'Select';
 
-  SelectImpl.displayName = 'Select';
-  return <SelectImpl {...props} />;
+/**
+ * A Select factory that takes the FieldValues as generic to produce a Select
+ * component that would provide type assistance to controlName property
+ */
+export function createSelect<P extends FieldValues>() {
+  type Props<T extends object> = SelectProps<T, P>;
+
+  const component = Select as <T extends object>(
+    props: Props<T> & { ref?: React.ForwardedRef<HTMLSelectElement> }
+  ) => React.ReactElement;
+
+  return component;
 }

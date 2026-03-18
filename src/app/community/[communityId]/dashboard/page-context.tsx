@@ -3,7 +3,7 @@ import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
-import { type DashboardEntry } from './_type';
+import type { DashboardEntry } from './_type';
 
 const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
   query dashboardYearlyChart($id: String!, $year: Int!) {

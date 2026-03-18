@@ -1,7 +1,10 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
-import { Select, SelectItem } from '~/view/base/select';
+import { createSelect, SelectItem } from '~/view/base/select';
+import { type InputData } from '../use-hook-form';
+
+const Select = createSelect<InputData>();
 
 const methodItems = [
   {

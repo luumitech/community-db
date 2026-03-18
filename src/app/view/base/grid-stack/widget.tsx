@@ -1,24 +1,39 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { WidgetDefinition } from './_type';
-import { WidgetPortal } from './widget-portal';
-import { getWidgetDivId } from './widget-util';
 
 interface Props {
   widget: WidgetDefinition;
-  gridContainer: HTMLDivElement;
 }
 
-/** Renders the content of a widget within its container. */
-export const Widget: React.FC<Props> = ({ widget, gridContainer }) => {
-  const container = gridContainer.querySelector(`#${getWidgetDivId(widget)}`);
-  if (!container) {
-    return null;
-  }
+export const Widget: React.FC<Props> = ({ widget }) => {
+  const [widgetNode, setWidgetNode] = React.useState<HTMLDivElement>();
+  const { id, x, y, w, h } = widget;
+
+  const widgetNodeRef = React.useCallback((node: HTMLDivElement) => {
+    setWidgetNode(node);
+  }, []);
 
   const Component = widget.component;
+
   return (
-    <WidgetPortal key={widget.id} container={container}>
-      <Component {...widget.props} />
-    </WidgetPortal>
+    <>
+      <div
+        className="grid-stack-item"
+        gs-id={id}
+        gs-x={x}
+        gs-y={y}
+        gs-w={w}
+        gs-h={h}
+      >
+        <div
+          ref={widgetNodeRef}
+          id={`widget-${widget.id}`}
+          className="grid-stack-item-content"
+        />
+      </div>
+      {widgetNode != null &&
+        createPortal(<Component {...widget.props} />, widgetNode)}
+    </>
   );
 };

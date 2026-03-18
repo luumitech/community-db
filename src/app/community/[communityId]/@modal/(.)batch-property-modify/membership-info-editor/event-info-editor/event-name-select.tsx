@@ -6,7 +6,10 @@ import {
   renderEmptyResult,
   renderSections,
 } from '~/community/[communityId]/layout-util/render-select';
-import { Select } from '~/view/base/select';
+import { createSelect } from '~/view/base/select';
+import { type InputData } from '../../use-hook-form';
+
+const Select = createSelect<InputData>();
 
 interface Props {
   className?: string;
@@ -19,7 +22,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={twMerge('min-w-32 max-w-sm', className)}
+      className={twMerge('max-w-sm min-w-32', className)}
       controlName="membership.eventAttended.eventName"
       aria-label="Event Name"
       variant="underlined"

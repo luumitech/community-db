@@ -1,6 +1,9 @@
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { Select, SelectItem, SelectProps } from '~/view/base/select';
+import { createSelect, SelectItem, SelectProps } from '~/view/base/select';
+import { type InputData } from '../modify-access-modal/use-hook-form';
+
+const Select = createSelect<InputData>();
 
 /**
  * Status items and corresponding labels for GQL.Role
@@ -31,7 +34,7 @@ export const roleItems: RoleStatusItem[] = [
   },
 ];
 
-type CustomProps = Omit<SelectProps<RoleStatusItem>, 'children'>;
+type CustomProps = Omit<SelectProps<RoleStatusItem, InputData>, 'children'>;
 
 interface Props extends CustomProps {
   className?: string;
