@@ -9,10 +9,11 @@ import * as GQL from '~/graphql/generated/graphql';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
 import { createInput } from '~/view/base/input';
-import { PhoneInput } from '~/view/base/phone-input';
+import { createPhoneInput } from '~/view/base/phone-input';
 import { ContactMethodSelect } from './contact-method-select';
 
 const Input = createInput<InputData>();
+const PhoneInput = createPhoneInput<InputData>();
 
 interface ValueInputProps {
   className?: string;

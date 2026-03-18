@@ -3,10 +3,11 @@ import { twMerge } from 'tailwind-merge';
 import { createCurrencyInput } from '~/view/base/currency-input';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
-import { NumberInput } from '~/view/base/number-input';
+import { createNumberInput } from '~/view/base/number-input';
 import { type InputData } from '../use-hook-form';
 
 const CurrencyInput = createCurrencyInput<InputData>();
+const NumberInput = createNumberInput<InputData>();
 
 interface Props {
   className?: string;

@@ -4,11 +4,18 @@ import {
   cn,
 } from '@heroui/react';
 import React from 'react';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
-export interface NumberInputProps extends NextUINumberInputProps {
-  controlName: string;
+export interface NumberInputProps<
+  P extends FieldValues = FieldValues,
+> extends NextUINumberInputProps {
+  controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
    * work properly
@@ -16,8 +23,8 @@ export interface NumberInputProps extends NextUINumberInputProps {
   isControlled?: boolean;
 }
 
-export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
-  (
+export const NumberInput = React.forwardRef(
+  <P extends FieldValues = FieldValues>(
     {
       classNames,
       controlName,
@@ -27,10 +34,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       onValueChange,
       isReadOnly,
       ...props
-    },
-    ref
+    }: NumberInputProps<P>,
+    ref: React.ForwardedRef<HTMLInputElement>
   ) => {
-    const { control } = useFormContext();
+    const { control } = useFormContext<P>();
 
     return (
       <Controller
@@ -49,9 +56,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
                 'border-none bg-transparent shadow-none': isReadOnly,
               }),
             }}
-            defaultValue={field.value ?? NaN}
             // Force component into a controlled component
-            {...(isControlled && { value: field.value ?? NaN })}
+            {...(isControlled
+              ? { value: field.value ?? NaN }
+              : { defaultValue: field.value ?? NaN })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);
@@ -85,6 +93,24 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       />
     );
   }
-);
+) as (<P extends FieldValues>(
+  props: NumberInputProps<P> & {
+    ref?: React.ForwardedRef<HTMLInputElement>;
+  }
+) => React.ReactElement) & { displayName?: string };
 
 NumberInput.displayName = 'NumberInput';
+
+/**
+ * A component factory that takes the FieldValues as generic to produce a
+ * component that would provide type assistance to controlName property
+ */
+export function createNumberInput<P extends FieldValues>() {
+  type Props = NumberInputProps<P>;
+
+  const component = NumberInput as (
+    props: Props & { ref?: React.ForwardedRef<HTMLInputElement> }
+  ) => React.ReactElement;
+
+  return component;
+}

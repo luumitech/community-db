@@ -10,9 +10,11 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { authClient, useSignIn } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
-import { InputOtp } from '~/view/base/input-otp';
+import { createInputOtp } from '~/view/base/input-otp';
 import { toast } from '~/view/base/toastify';
 import { useHookFormContext, type InputData } from './use-hook-form';
+
+const InputOtp = createInputOtp<InputData>();
 
 interface Props {
   className?: string;
