@@ -1,24 +1,46 @@
 import React from 'react';
-import { GridStackWithCard } from '~/view/base/grid-stack-with-card';
+import { useSet } from 'react-use';
+import {
+  GridStackWithCard,
+  useLocalStorageLayout,
+  type OnSizeChangeFn,
+} from '~/view/base/grid-stack-with-card';
+import { Demo } from '~/view/base/grid-stack/demo';
 import { ConfigDrawer } from './config-drawer';
-import { type InputData } from './config-drawer/use-hook-form';
-import { useWidgetDefinition } from './widget-definition';
+import {
+  useWidgetDefinition,
+  widgetIdList,
+  type WidgetId,
+} from './widget-definition';
+
+const DASHBOARD_ID = 'dashboard';
 
 interface Props {
   className?: string;
 }
 
 export const PageContent: React.FC<Props> = ({ className }) => {
-  const { widgets } = useWidgetDefinition();
+  const [bkCols, setBkCols] = React.useState<number>(12);
+  const { getLayout } = useLocalStorageLayout(DASHBOARD_ID);
+  const layout = getLayout(bkCols);
+  const { widgets, addWidget, removeWidget, setWidgets } =
+    useWidgetDefinition(layout);
 
-  const onSaveLayout = React.useCallback(async (input: InputData) => {
-    //TODO:
-    // console.log({ input });
+  const onSizeChange: OnSizeChangeFn = React.useCallback((grid, cols) => {
+    setBkCols(cols);
   }, []);
 
+  const widgetIdsShown = widgets.map(({ id }) => id);
+
   return (
-    <GridStackWithCard id="dashboard" widgets={widgets}>
-      <ConfigDrawer onSave={onSaveLayout} />
+    // <Demo />
+    <GridStackWithCard
+      id={DASHBOARD_ID}
+      widgets={widgets}
+      onSizeChange={onSizeChange}
+      onRemove={(id) => removeWidget(id as WidgetId)}
+    >
+      <ConfigDrawer widgetIdsShown={widgetIdsShown} setWidgets={setWidgets} />
     </GridStackWithCard>
   );
 };

@@ -1,7 +1,8 @@
-import type { GridStackPosition } from 'gridstack';
+import type { GridStackWidget } from 'gridstack';
 import React from 'react';
 
-export interface WidgetBase<Id extends string> extends GridStackPosition {
+type GSWidget = Omit<GridStackWidget, 'id' | 'content'>;
+export interface Widget<Id extends string = string> extends GSWidget {
   /**
    * Unique identifier for the widget. This is used to track the widget's
    * position and state within the grid. It should be a string that uniquely
@@ -10,19 +11,6 @@ export interface WidgetBase<Id extends string> extends GridStackPosition {
    * handling widget interactions and updates.
    */
   id: Id;
+  /** React component to render for the widget */
+  content: React.ReactNode;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyProps = any;
-
-/**
- * Provide a type-safe way to define widgets and their corresponding component
- * props.
- */
-export type WidgetDefinition<
-  Id extends string = string,
-  P extends AnyProps = AnyProps,
-> = WidgetBase<Id> & {
-  component: React.ComponentType<P>;
-  props: P;
-};

@@ -3,8 +3,7 @@ import { type GridStack } from 'gridstack';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { z, zz } from '~/lib/zod';
-import { useGridStackContext } from '~/view/base/grid-stack';
-import { widgetIdList } from '../widget-definition';
+import { widgetIdList, type WidgetId } from '../widget-definition';
 
 function schema() {
   return z.object({
@@ -14,17 +13,22 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultInputData(grid?: GridStack): InputData {
+function defaultInputData(
+  grid: GridStack,
+  widgetsToShow: readonly WidgetId[]
+): InputData {
   return {
-    widgetIdList: [...widgetIdList],
+    widgetIdList: [...widgetsToShow],
   };
 }
 
-export function useHookForm() {
-  const { grid } = useGridStackContext();
+export function useHookForm(
+  grid: GridStack,
+  widgetsToShow: readonly WidgetId[]
+) {
   const defaultValues = React.useMemo(() => {
-    return defaultInputData(grid);
-  }, [grid]);
+    return defaultInputData(grid, widgetsToShow);
+  }, [grid, widgetsToShow]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

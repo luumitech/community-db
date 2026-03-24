@@ -132,7 +132,7 @@ export const ContactInfoEditor: React.FC<Props> = ({
         <Tab
           key="divider"
           className={cn(
-            isVerticalTab && 'h-[10px] w-full',
+            isVerticalTab && 'h-2.5 w-full',
             // Revert default styling when tab is disabled
             'data-[disabled=true]:cursor-default data-[disabled=true]:opacity-100'
           )}

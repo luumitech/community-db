@@ -1,55 +1,43 @@
 import { Drawer } from '@heroui/react';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
-import { FormProvider } from '~/custom-hooks/hook-form';
-import { Form } from '~/view/base/form';
-import { useWidgetDefinition } from '../widget-definition';
-import { ConfigContent, type DrawerArg } from './config-content';
+import { useGridStackContext } from '~/view/base/grid-stack';
+import { type WidgetId } from '../widget-definition';
+import { ConfigForm, type DrawerArg } from './config-form';
 import { DrawerButton } from './drawer-button';
-import { useHookForm, type InputData } from './use-hook-form';
 
 const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
 interface Props {
-  onSave: (input: InputData) => Promise<void>;
+  widgetIdsShown: WidgetId[];
+  setWidgets: (idList: WidgetId[]) => void;
 }
 
-export const ConfigDrawer: React.FC<Props> = ({ onSave }) => {
-  const [pending, startTransition] = React.useTransition();
+export const ConfigDrawer: React.FC<Props> = ({
+  widgetIdsShown,
+  setWidgets,
+}) => {
   const { arg, disclosure, open } = useDrawerControl();
-  const { isOpen, onOpenChange, onClose } = disclosure;
-  const { formMethods } = useHookForm();
-  const { handleSubmit, reset } = formMethods;
+  const { isOpen, onOpenChange } = disclosure;
+  const { grid } = useGridStackContext();
 
-  const onSubmit = React.useCallback(
-    async (input: InputData) =>
-      startTransition(async () => {
-        try {
-          await onSave(input);
-          onClose();
-        } catch (err) {
-          // error handled by parent
-        }
-      }),
-    [onSave, onClose]
-  );
-  const openDrawer = React.useCallback(() => open({}), [open]);
+  const openDrawer = React.useCallback(() => {
+    if (grid) {
+      open({ grid });
+    }
+  }, [grid, open]);
 
   return (
     <>
       <DrawerButton onOpen={openDrawer} />
-      {arg != null && (
-        <Drawer
-          isOpen={isOpen}
-          placement="left"
-          onOpenChange={onOpenChange}
-          onClose={() => reset()}
-        >
-          <FormProvider {...formMethods}>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-              <ConfigContent {...arg} disclosure={disclosure} />
-            </Form>
-          </FormProvider>
+      {arg != null && grid != null && (
+        <Drawer isOpen={isOpen} placement="left" onOpenChange={onOpenChange}>
+          <ConfigForm
+            {...arg}
+            disclosure={disclosure}
+            widgetIdsShown={widgetIdsShown}
+            setWidgets={setWidgets}
+          />
         </Drawer>
       )}
     </>

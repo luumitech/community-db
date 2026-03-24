@@ -9,25 +9,18 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Checkbox, CheckboxGroup } from '~/view/base/checkbox';
-import { useGridStackContext, useLayoutUtil } from '~/view/base/grid-stack';
-import { useWidgetDefinition, widgetIdList } from '../widget-definition';
+import { widgetName } from '../widget-definition';
+import { type DrawerArg } from './config-form';
 import { useHookFormContext, type InputData } from './use-hook-form';
-
-export interface DrawerArg {}
 
 interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
 }
 
 export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
-  const { onClose } = disclosure;
   const { formMethods, canReset } = useHookFormContext();
-  const { widgets } = useGridStackContext();
-  const { widgetList } = useWidgetDefinition();
-  const { saveLayout, getLayout, resetLayout } = useLayoutUtil('dashboard');
-  const { formState, control, watch, reset } = formMethods;
-  const { isDirty } = formState;
-  const widgetIdLst = watch('widgetIdList');
+  // const { widgetList } = useWidgetDefinition();
+  const { reset } = formMethods;
 
   return (
     <DrawerContent>
@@ -37,7 +30,7 @@ export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
           <DrawerBody className="flex flex-col gap-4">
             <div className="flex flex-col">
               <CheckboxGroup<InputData> controlName="widgetIdList">
-                {Object.values(widgetList).map(({ id, name }) => (
+                {Object.entries(widgetName).map(([id, name]) => (
                   <Checkbox key={id} value={id}>
                     {name}
                   </Checkbox>
@@ -64,10 +57,14 @@ export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
             <Button
               type="submit"
               color="primary"
-              isDisabled={!isDirty}
-              // onPress={saveLayout}
+              /**
+               * Don't want to disable this button, even if there is no change
+               * in the form, we still want to store the current layout into
+               * localstorage
+               */
+              // isDisabled={!isDirty}
             >
-              Save Layout
+              Apply Change
             </Button>
           </DrawerFooter>
         </>

@@ -1,7 +1,5 @@
-import 'gridstack/dist/gridstack.min.css';
-
-export { type GridStackOptions } from 'gridstack';
+export { type GridStackOptions, type GridStackWidget } from 'gridstack';
 export * from './_type';
-export * from './grid-stack-context';
-export * from './layout-util';
+export * from './grid-stack';
+export * from './gs-context';
 export * from './widget-util';
