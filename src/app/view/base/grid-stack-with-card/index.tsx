@@ -6,6 +6,7 @@ import {
   GridStackProvider,
   OnSizeChangeFn,
   type GridStackProps,
+  type GridStackProviderProps,
   type OnChangeFn,
   type RenderItemFn,
 } from '~/view/base/grid-stack';
@@ -17,10 +18,12 @@ import styles from './styles.module.css';
 export * from './localstorage-layout';
 export type { OnChangeFn, OnSizeChangeFn };
 
-interface Props extends GridStackProps {
+type CustomGridStackProps = Pick<GridStackProps, 'widgets'>;
+
+interface Props extends GridStackProviderProps, CustomGridStackProps {
   className?: string;
   id: string;
-  onRemove?: (widgetId: string) => void;
+  onRemove?: (grid: GS, widgetId: string) => void;
 }
 
 export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
@@ -29,9 +32,9 @@ export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
   options,
   onChange,
   onSizeChange,
+  widgets,
   onRemove,
   children,
-  ...props
 }) => {
   const { saveLayout } = useLocalStorageLayout(id);
 
@@ -44,7 +47,7 @@ export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
   );
 
   const renderItem: RenderItemFn = React.useCallback(
-    (widget) => {
+    (grid, widget) => {
       return {
         className: 'group',
         children: (
@@ -57,7 +60,7 @@ export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
             size="sm"
             variant="shadow"
             isIconOnly
-            onPress={() => onRemove?.(widget.id)}
+            onPress={() => onRemove?.(grid, widget.id)}
           >
             <Icon icon="cross" size={16} />
           </Button>
@@ -68,26 +71,26 @@ export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
   );
 
   return (
-    <GridStackProvider className={cn(styles.gridWrapper, className)}>
-      <GridStack
-        options={{
-          margin: 8,
-          cellHeight: '50px',
-          columnOpts: {
-            breakpointForWindow: true,
-            breakpoints: [
-              { w: 1280, c: 12 }, // xl
-              { w: 1024, c: 12 }, // lg
-              { w: 768, c: 1 }, // md
-              { w: 640, c: 1 }, // sm
-            ],
-          },
-          ...options,
-        }}
-        onChange={customOnChange}
-        renderItem={renderItem}
-        {...props}
-      />
+    <GridStackProvider
+      className={cn(styles.gridWrapper, className)}
+      options={{
+        margin: 8,
+        cellHeight: '50px',
+        columnOpts: {
+          breakpointForWindow: true,
+          breakpoints: [
+            { w: 1280, c: 12 }, // xl
+            { w: 1024, c: 12 }, // lg
+            { w: 768, c: 1 }, // md
+            { w: 640, c: 1 }, // sm
+          ],
+        },
+        ...options,
+      }}
+      onChange={customOnChange}
+      onSizeChange={onSizeChange}
+    >
+      <GridStack widgets={widgets} renderItem={renderItem} />
       {children}
     </GridStackProvider>
   );

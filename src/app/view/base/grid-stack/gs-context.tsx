@@ -1,55 +1,106 @@
 import { cn } from '@heroui/react';
-import { GridStack as GS } from 'gridstack';
+import {
+  GridStack as GS,
+  type GridStackOptions,
+  type GridStackWidget,
+} from 'gridstack';
 import React from 'react';
+import { useMount, usePrevious, useUnmount } from 'react-use';
+import * as R from 'remeda';
 
 interface ContextT {
-  /** The node that wraps the entire grid system */
-  containerNode?: HTMLDivElement;
-  /** The GridStack instance reference */
-  gsRef: React.RefObject<GS | null>;
-  /**
-   * Current Gridstack instance, allow children component to perform
-   * re-rendering whenver grid instance is modified
-   */
-  grid?: GS;
-  setGrid: (grid: GS) => void;
+  /** Gridstack instance */
+  grid: GS;
 }
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
 
-interface Props {
-  className?: string;
+export type OnChangeFn = (grid: GS, items: GridStackWidget[]) => void;
+export type OnSizeChangeFn = (grid: GS, cols: number) => void;
+
+export interface GridStackInnerProviderProps {
+  containerNode: HTMLDivElement;
+  options?: GridStackOptions;
+  /** Fired when any widget is moved or resized. */
+  onChange?: OnChangeFn;
+  /** Fired when grid container size changes */
+  onSizeChange?: OnSizeChangeFn;
 }
 
-export function GridStackProvider({
-  className,
+export function GridStackInnerProvider({
+  containerNode,
+  options,
+  onChange,
+  onSizeChange,
   children,
-  ...props
-}: React.PropsWithChildren<Props>) {
-  const [containerNode, setContainerNode] = React.useState<HTMLDivElement>();
+}: React.PropsWithChildren<GridStackInnerProviderProps>) {
   const gsRef = React.useRef<GS | null>(null);
   const [grid, setGrid] = React.useState<GS>();
+  const prevOptions = usePrevious(options);
 
-  const containerNodeRef = React.useCallback((node: HTMLDivElement) => {
-    if (node) {
-      setContainerNode(node);
+  useMount(() => {
+    const gs = intializeGridStack(containerNode, {
+      options,
+      onChange,
+    });
+    gsRef.current = gs;
+    setGrid(gs);
+  });
+
+  useUnmount(() => {
+    const gs = gsRef.current;
+    if (gs) {
+      gs.destroy(false);
+      gsRef.current = null;
+      setGrid(undefined);
     }
-  }, []);
+  });
+
+  // Reinitialize grid instance when options are modified
+  React.useLayoutEffect(() => {
+    let gs = gsRef.current;
+    if (!gs || !containerNode || R.isDeepEqual(prevOptions, options)) {
+      return;
+    }
+
+    gs.removeAll(false);
+    gs.destroy(false);
+    gs = intializeGridStack(containerNode, {
+      options,
+      onChange,
+    });
+    gsRef.current = gs;
+    setGrid(gs);
+  }, [containerNode, gsRef, onChange, prevOptions, options, setGrid]);
+
+  React.useEffect(() => {
+    const gs = gsRef.current;
+    if (!gs || !containerNode) {
+      return;
+    }
+
+    const update = () => {
+      onSizeChange?.(gs, gs.getColumn());
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(containerNode);
+    update();
+
+    return () => observer.disconnect();
+  }, [containerNode, gsRef, onSizeChange]);
+
+  if (!grid) {
+    return null;
+  }
 
   return (
     <Context.Provider
       value={{
-        containerNode,
-        gsRef,
         grid,
-        setGrid,
       }}
-      {...props}
     >
-      <div ref={containerNodeRef} className={cn('grid-stack', className)}>
-        {containerNode != null && children}
-      </div>
+      {children}
     </Context.Provider>
   );
 }
@@ -62,4 +113,20 @@ export function useGridStackContext() {
     );
   }
   return context;
+}
+
+interface InitGridStackOpt {
+  options?: GridStackOptions;
+  onChange?: OnChangeFn;
+}
+function intializeGridStack(
+  containerNode: HTMLDivElement,
+  opt?: InitGridStackOpt
+) {
+  const gs = GS.init(opt?.options, containerNode);
+
+  gs.on('change', (_event, items) => {
+    opt?.onChange?.(gs, items as GridStackWidget[]);
+  });
+  return gs;
 }
