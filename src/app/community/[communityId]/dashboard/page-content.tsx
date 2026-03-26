@@ -1,46 +1,47 @@
 import React from 'react';
-import { useSet } from 'react-use';
+import { useSelector } from '~/custom-hooks/redux';
 import {
   GridStackWithCard,
-  useLocalStorageLayout,
-  type OnSizeChangeFn,
+  type WidgetFilterFn,
 } from '~/view/base/grid-stack-with-card';
 import { Demo } from '~/view/base/grid-stack/demo';
 import { ConfigDrawer } from './config-drawer';
-import {
-  useWidgetDefinition,
-  widgetIdList,
-  type WidgetId,
-} from './widget-definition';
-
-const DASHBOARD_ID = 'dashboard';
+import { allowableWidgets, type WidgetId } from './widget-definition';
 
 interface Props {
   className?: string;
 }
 
 export const PageContent: React.FC<Props> = ({ className }) => {
-  const [bkCols, setBkCols] = React.useState<number>(12);
-  const { getLayout } = useLocalStorageLayout(DASHBOARD_ID);
-  const layout = getLayout(bkCols);
-  const { widgets, addWidget, removeWidget, setWidgets } =
-    useWidgetDefinition(layout);
+  const { yearSelected } = useSelector((state) => state.ui);
 
-  const onSizeChange: OnSizeChangeFn = React.useCallback((grid, cols) => {
-    setBkCols(cols);
-  }, []);
+  const widgetFilter = React.useCallback<WidgetFilterFn<WidgetId>>(
+    (widget) => {
+      switch (widget.id) {
+        case 'memberCount':
+          return true;
+        case 'membershipSource':
+        case 'membershipFee':
+        case 'eventParticipation':
+        case 'byEvent':
+          return yearSelected != null;
+        default:
+          throw new Error(`Unrecognized widget ID: ${widget.id}`);
+      }
+    },
+    [yearSelected]
+  );
 
-  const widgetIdsShown = widgets.map(({ id }) => id);
+  // Kept for debugging purpose
+  // return <Demo />;
 
   return (
-    // <Demo />
     <GridStackWithCard
-      id={DASHBOARD_ID}
-      widgets={widgets}
-      onSizeChange={onSizeChange}
-      onRemove={(id) => removeWidget(id as WidgetId)}
+      lsSuffix="dashboard"
+      allowableWidgets={allowableWidgets}
+      widgetFilter={widgetFilter}
     >
-      <ConfigDrawer widgetIdsShown={widgetIdsShown} setWidgets={setWidgets} />
+      <ConfigDrawer />
     </GridStackWithCard>
   );
 };

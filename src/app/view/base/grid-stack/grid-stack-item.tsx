@@ -5,12 +5,15 @@ import type { Widget } from './_type';
 
 type DivProps = React.ComponentProps<'div'>;
 
-interface Props extends DivProps {
-  widget: Widget;
+interface Props<WidgetId extends string> extends DivProps {
+  widget: Widget<WidgetId>;
 }
 
-export const GridStackItem = React.forwardRef<HTMLDivElement, Props>(
-  ({ className, widget, children, ...props }, ref) => {
+export const GridStackItem = React.forwardRef(
+  <WidgetId extends string>(
+    { className, widget, children, ...props }: Props<WidgetId>,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
     const [widgetNode, setWidgetNode] = React.useState<HTMLDivElement>();
     const { id, x, y, w, h } = widget;
 
@@ -35,6 +38,10 @@ export const GridStackItem = React.forwardRef<HTMLDivElement, Props>(
       </div>
     );
   }
-);
+) as (<WidgetId extends string>(
+  props: Props<WidgetId> & {
+    ref?: React.ForwardedRef<HTMLDivElement>;
+  }
+) => React.ReactElement) & { displayName?: string };
 
 GridStackItem.displayName = 'GridStackItem';

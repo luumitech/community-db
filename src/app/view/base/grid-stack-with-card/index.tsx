@@ -1,78 +1,57 @@
-import { Button, cn } from '@heroui/react';
-import { GridStack as GS } from 'gridstack';
+import { cn } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import {
-  GridStack,
+  GRID_STACK_PROVIDER_PROPS,
   GridStackProvider,
-  OnSizeChangeFn,
-  type GridStackProps,
   type GridStackProviderProps,
   type OnChangeFn,
-  type RenderItemFn,
 } from '~/view/base/grid-stack';
-import { Icon } from '~/view/base/icon';
+import {
+  LAYOUT_MANAGER_PROPS,
+  LayoutManagerProvider,
+  type LayoutManagerProps,
+} from './layout-manager-context';
 import { useLocalStorageLayout } from './localstorage-layout';
 
 import styles from './styles.module.css';
 
-export * from './localstorage-layout';
-export type { OnChangeFn, OnSizeChangeFn };
+export type * from './_type';
+export { useLayoutManagerContext } from './layout-manager-context';
 
-type CustomGridStackProps = Pick<GridStackProps, 'widgets'>;
-
-interface Props extends GridStackProviderProps, CustomGridStackProps {
+interface Props<WidgetId extends string>
+  extends LayoutManagerProps<WidgetId>, GridStackProviderProps {
   className?: string;
-  id: string;
-  onRemove?: (grid: GS, widgetId: string) => void;
+  /** Suffix attached to localstorage key to store grid layout information */
+  lsSuffix: string;
 }
 
-export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
+export function GridStackWithCard<WidgetId extends string>({
   className,
-  id,
-  options,
-  onChange,
-  onSizeChange,
-  widgets,
-  onRemove,
+  lsSuffix,
   children,
-}) => {
-  const { saveLayout } = useLocalStorageLayout(id);
+  ...props
+}: React.PropsWithChildren<Props<WidgetId>>) {
+  const lsUtil = useLocalStorageLayout<WidgetId>(lsSuffix);
+  const { updateLayout } = lsUtil;
+
+  const gsProviderProps = R.pick(props, GRID_STACK_PROVIDER_PROPS);
+  const layoutMgrProps = R.pick(props, LAYOUT_MANAGER_PROPS);
+  const { options, onChange } = gsProviderProps;
 
   const customOnChange: OnChangeFn = React.useCallback(
     (grid, items) => {
-      saveLayout(grid);
+      // items only contain items that have been changed
+      updateLayout(grid, items);
       onChange?.(grid, items);
     },
-    [onChange, saveLayout]
-  );
-
-  const renderItem: RenderItemFn = React.useCallback(
-    (grid, widget) => {
-      return {
-        className: 'group',
-        children: (
-          <Button
-            className={cn(
-              'absolute -top-1 -right-1',
-              'z-10 rounded-full',
-              'opacity-0 group-hover:opacity-100'
-            )}
-            size="sm"
-            variant="shadow"
-            isIconOnly
-            onPress={() => onRemove?.(grid, widget.id)}
-          >
-            <Icon icon="cross" size={16} />
-          </Button>
-        ),
-      };
-    },
-    [onRemove]
+    [updateLayout, onChange]
   );
 
   return (
     <GridStackProvider
       className={cn(styles.gridWrapper, className)}
+      {...gsProviderProps}
       options={{
         margin: 8,
         cellHeight: '50px',
@@ -88,10 +67,10 @@ export const GridStackWithCard: React.FC<React.PropsWithChildren<Props>> = ({
         ...options,
       }}
       onChange={customOnChange}
-      onSizeChange={onSizeChange}
     >
-      <GridStack widgets={widgets} renderItem={renderItem} />
-      {children}
+      <LayoutManagerProvider {...layoutMgrProps} lsUtil={lsUtil}>
+        {children}
+      </LayoutManagerProvider>
     </GridStackProvider>
   );
-};
+}

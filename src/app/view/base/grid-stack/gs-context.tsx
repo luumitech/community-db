@@ -1,8 +1,8 @@
 import { cn } from '@heroui/react';
 import {
   GridStack as GS,
+  type GridStackNode,
   type GridStackOptions,
-  type GridStackWidget,
 } from 'gridstack';
 import React from 'react';
 import { useMount, usePrevious, useUnmount } from 'react-use';
@@ -16,16 +16,26 @@ interface ContextT {
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
 
-export type OnChangeFn = (grid: GS, items: GridStackWidget[]) => void;
+export type OnChangeFn = (grid: GS, items: GridStackNode[]) => void;
 export type OnSizeChangeFn = (grid: GS, cols: number) => void;
 
+export const GRID_STACK_INNER_PROVIDER_PROPS = [
+  'options',
+  'onChange',
+  'onSizeChange',
+] as const;
+
+/** Properties expected to be passed by user */
 export interface GridStackInnerProviderProps {
-  containerNode: HTMLDivElement;
   options?: GridStackOptions;
   /** Fired when any widget is moved or resized. */
   onChange?: OnChangeFn;
   /** Fired when grid container size changes */
   onSizeChange?: OnSizeChangeFn;
+}
+
+interface Props extends GridStackInnerProviderProps {
+  containerNode: HTMLDivElement;
 }
 
 export function GridStackInnerProvider({
@@ -34,16 +44,13 @@ export function GridStackInnerProvider({
   onChange,
   onSizeChange,
   children,
-}: React.PropsWithChildren<GridStackInnerProviderProps>) {
+}: React.PropsWithChildren<Props>) {
   const gsRef = React.useRef<GS | null>(null);
   const [grid, setGrid] = React.useState<GS>();
   const prevOptions = usePrevious(options);
 
   useMount(() => {
-    const gs = intializeGridStack(containerNode, {
-      options,
-      onChange,
-    });
+    const gs = GS.init(options, containerNode);
     gsRef.current = gs;
     setGrid(gs);
   });
@@ -66,13 +73,23 @@ export function GridStackInnerProvider({
 
     gs.removeAll(false);
     gs.destroy(false);
-    gs = intializeGridStack(containerNode, {
-      options,
-      onChange,
-    });
+    gs = GS.init(options, containerNode);
     gsRef.current = gs;
     setGrid(gs);
-  }, [containerNode, gsRef, onChange, prevOptions, options, setGrid]);
+  }, [containerNode, gsRef, prevOptions, options, setGrid]);
+
+  // Re-install onChange handler when callback has changed
+  React.useEffect(() => {
+    const gs = gsRef.current;
+    if (!gs) {
+      return;
+    }
+
+    gs.off('change');
+    if (onChange) {
+      gs.on('change', (evt, items) => onChange(gs, items));
+    }
+  }, [gsRef, onChange]);
 
   React.useEffect(() => {
     const gs = gsRef.current;
@@ -113,20 +130,4 @@ export function useGridStackContext() {
     );
   }
   return context;
-}
-
-interface InitGridStackOpt {
-  options?: GridStackOptions;
-  onChange?: OnChangeFn;
-}
-function intializeGridStack(
-  containerNode: HTMLDivElement,
-  opt?: InitGridStackOpt
-) {
-  const gs = GS.init(opt?.options, containerNode);
-
-  gs.on('change', (_event, items) => {
-    opt?.onChange?.(gs, items as GridStackWidget[]);
-  });
-  return gs;
 }

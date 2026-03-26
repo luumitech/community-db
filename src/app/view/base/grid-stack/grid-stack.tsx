@@ -7,21 +7,24 @@ import { useGridStackContext } from './gs-context';
 import 'gridstack/dist/gridstack.min.css';
 
 type DivProps = React.ComponentProps<'div'>;
-export type RenderItemFn = (grid: GS, widget: Widget) => DivProps;
+export type RenderItemFn<WidgetId extends string> = (
+  grid: GS,
+  widget: Widget<WidgetId>
+) => DivProps;
 
-export interface GridStackProps {
-  widgets: Widget[];
+export interface GridStackProps<WidgetId extends string> {
+  widgets: Widget<WidgetId>[];
   /** Passed to each widget to render additional components in each grid item */
-  renderItem?: RenderItemFn;
+  renderItem?: RenderItemFn<WidgetId>;
 }
 
-export const GridStack: React.FC<GridStackProps> = ({
+export function GridStack<WidgetId extends string>({
   widgets,
   renderItem,
-}) => {
+}: GridStackProps<WidgetId>) {
   const { grid } = useGridStackContext();
-  const itemElsRef = React.useRef(new Map<string, HTMLDivElement>());
-  const prevIdsRef = React.useRef<string[]>([]);
+  const itemElsRef = React.useRef(new Map<WidgetId, HTMLDivElement>());
+  const prevIdsRef = React.useRef<WidgetId[]>([]);
 
   React.useEffect(() => {
     const currentIds = new Set(widgets.map((w) => w.id));
@@ -57,7 +60,7 @@ export const GridStack: React.FC<GridStackProps> = ({
   }, [grid, widgets]);
 
   const initItemRefs = React.useCallback(
-    (el: HTMLDivElement | null, id: string) => {
+    (el: HTMLDivElement | null, id: WidgetId) => {
       if (el && !itemElsRef.current.has(id)) {
         itemElsRef.current.set(id, el);
       }
@@ -75,4 +78,4 @@ export const GridStack: React.FC<GridStackProps> = ({
       />
     );
   });
-};
+}

@@ -184,12 +184,11 @@ export function Demo() {
         </button>
       </div>
 
-      <GridStackProvider>
-        <GridStack
-          widgets={widgets}
-          options={{ column: 12, cellHeight: 80 }}
-          onChange={handleChange}
-        />
+      <GridStackProvider
+        options={{ column: 12, cellHeight: 80 }}
+        onChange={handleChange}
+      >
+        <GridStack widgets={widgets} />
       </GridStackProvider>
 
       {log.length > 0 && (
