@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { usePageContext } from '../../page-context';
+import { widgetInfo } from '../../widget-definition';
 import { EventNameSelect } from './event-name-select';
 import { ParticipationChart } from './participation-chart';
 import { TicketSaleTable } from './ticket-sale-table';
@@ -80,12 +81,12 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} Event Details`}</p>
+          <p className="text-md font-bold">{`${year} ${widgetInfo.byEvent.label}`}</p>
         </div>
       </CardHeader>
       <CardBody>
         <Skeleton
-          className="flex min-h-[400px] flex-col rounded-lg"
+          className="flex h-full flex-col rounded-lg"
           aria-label="skeleton"
           isLoaded={!isLoading}
         >

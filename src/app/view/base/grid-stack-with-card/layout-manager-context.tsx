@@ -112,7 +112,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
             className={cn(
               'absolute -top-1 -right-1',
               'z-10 rounded-full',
-              'touch:opacity-100 opacity-0 group-hover:opacity-100'
+              'opacity-0 group-hover:opacity-100 touch:opacity-100'
             )}
             size="sm"
             variant="shadow"

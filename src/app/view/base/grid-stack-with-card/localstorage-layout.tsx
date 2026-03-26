@@ -143,9 +143,9 @@ export function useLocalStorageLayout<WidgetId extends string>(suffix: string) {
    */
   const resetLayout = React.useCallback(
     (grid: GS) => {
-      const cols = grid.getColumn();
       if (lsValue.current) {
-        const { [cols]: _, ...layout } = lsValue.current;
+        const cols = grid.getColumn();
+        const { [cols]: _, idList, ...layout } = lsValue.current;
         setValue(layout);
       }
     },

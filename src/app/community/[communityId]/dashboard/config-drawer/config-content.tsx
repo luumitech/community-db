@@ -9,7 +9,10 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Checkbox, CheckboxGroup } from '~/view/base/checkbox';
-import { widgetName } from '../widget-definition';
+import { useGridStackContext } from '~/view/base/grid-stack';
+import { useLayoutManagerContext } from '~/view/base/grid-stack-with-card';
+import type { WidgetId } from '../widget-definition';
+import { widgetInfo } from '../widget-definition';
 import { type DrawerArg } from './config-form';
 import { useHookFormContext, type InputData } from './use-hook-form';
 
@@ -18,9 +21,11 @@ interface Props extends DrawerArg {
 }
 
 export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
-  const { formMethods, canReset } = useHookFormContext();
-  // const { widgetList } = useWidgetDefinition();
-  const { reset } = formMethods;
+  const { grid } = useGridStackContext();
+  const { resetLayout } = useLayoutManagerContext<WidgetId>();
+  const { formMethods } = useHookFormContext();
+  const { reset, formState } = formMethods;
+  const { isDirty } = formState;
 
   return (
     <DrawerContent>
@@ -28,15 +33,17 @@ export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
         <>
           <DrawerHeader>Configuration</DrawerHeader>
           <DrawerBody className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <CheckboxGroup<InputData> controlName="widgetIdList">
-                {Object.entries(widgetName).map(([id, name]) => (
-                  <Checkbox key={id} value={id}>
-                    {name}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-            </div>
+            <span className="font-bold">
+              Select widgets to display in dashboard:
+            </span>
+            <CheckboxGroup<InputData> controlName="widgetIdList">
+              {Object.entries(widgetInfo).map(([id, info]) => (
+                <Checkbox key={id} value={id}>
+                  <div>{info.label}</div>
+                  <div>{info.description}</div>
+                </Checkbox>
+              ))}
+            </CheckboxGroup>
           </DrawerBody>
           <DrawerFooter>
             <Button
@@ -49,21 +56,14 @@ export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
             <Button
               color="danger"
               variant="bordered"
-              isDisabled={!canReset}
-              onPress={() => reset()}
+              onPress={() => {
+                resetLayout(grid);
+                closeDrawer();
+              }}
             >
-              Reset
+              Restore To Default
             </Button>
-            <Button
-              type="submit"
-              color="primary"
-              /**
-               * Don't want to disable this button, even if there is no change
-               * in the form, we still want to store the current layout into
-               * localstorage
-               */
-              // isDisabled={!isDirty}
-            >
+            <Button type="submit" color="primary" isDisabled={!isDirty}>
               Apply Change
             </Button>
           </DrawerFooter>

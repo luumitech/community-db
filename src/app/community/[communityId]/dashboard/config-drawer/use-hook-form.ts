@@ -39,18 +39,6 @@ export function useHookForm(
 
 export function useHookFormContext() {
   const formMethods = useFormContext<InputData>();
-  const { setValue, watch } = formMethods;
-  const formValues = watch();
 
-  /** Check if the form can be reset to its original state */
-  const canReset = React.useMemo(() => {
-    const result = schema().safeParse(formValues);
-    if (!result.success) {
-      return true;
-    }
-    // check if grid layout is saved?
-    return true;
-  }, [formValues]);
-
-  return { formMethods, canReset };
+  return { formMethods };
 }

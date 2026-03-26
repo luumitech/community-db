@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { usePageContext } from '../../page-context';
+import { widgetInfo } from '../../widget-definition';
 import { MembershipFeeTable } from './membership-fee-table';
 
 const EventMembershipFragment = graphql(/* GraphQL */ `
@@ -33,12 +34,12 @@ export const MembershipFee: React.FC<Props> = ({ className }) => {
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} Membership Fee`}</p>
+          <p className="text-md font-bold">{`${year} ${widgetInfo.membershipFee.label}`}</p>
         </div>
       </CardHeader>
       <CardBody>
         <Skeleton
-          className="min-h-[400px] rounded-lg"
+          className="h-full rounded-lg"
           aria-label="skeleton"
           isLoaded={!isLoading}
         >
