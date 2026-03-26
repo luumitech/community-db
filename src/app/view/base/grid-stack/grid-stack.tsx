@@ -24,30 +24,48 @@ export function GridStack<WidgetId extends string>({
 }: GridStackProps<WidgetId>) {
   const { grid } = useGridStackContext();
   const itemElsRef = React.useRef(new Map<WidgetId, HTMLDivElement>());
-  const prevIdsRef = React.useRef<WidgetId[]>([]);
 
   React.useEffect(() => {
-    const currentIds = new Set(widgets.map((w) => w.id));
+    // Incoming set of widget IDs that should be rendered
+    const widgetIdSet = new Set(widgets.map((w) => w.id));
+
+    // Gather list of widget nodes managed by GridStack currently
+    const updateSet = new Set<WidgetId>();
+    const removeSet = new Set<WidgetId>();
+    grid.engine.nodes.forEach(({ id: _id, el }) => {
+      const id = _id as WidgetId | undefined;
+      if (id != null) {
+        if (widgetIdSet.has(id)) {
+          updateSet.add(id);
+        } else {
+          removeSet.add(id);
+        }
+      } else if (el) {
+        // We don't expect to generate nodes without id
+        console.error('grid-stack-item without id found, removed.');
+        grid.removeWidget(el, false);
+      }
+    });
+
+    // Don't recalculate layouts until all widget layouts have been done
+    grid.batchUpdate(true);
 
     // Remove widgets that no longer needs to be rendered
-    prevIdsRef.current
-      .filter((id) => !currentIds.has(id))
-      .forEach((id) => {
-        const el = itemElsRef.current.get(id);
-        if (el) {
-          grid.removeWidget(el, false);
-          itemElsRef.current.delete(id);
-        }
-      });
+    removeSet.forEach((id) => {
+      const el = itemElsRef.current.get(id);
+      if (el) {
+        grid.removeWidget(el, false);
+        itemElsRef.current.delete(id);
+      }
+    });
 
-    grid.batchUpdate(true);
     widgets.forEach(({ content: _content, ...widgetOpts }) => {
       const { id } = widgetOpts;
       const el = itemElsRef.current.get(id);
       if (!el) {
         return;
       }
-      const isNew = !prevIdsRef.current.includes(id);
+      const isNew = !updateSet.has(id);
       if (isNew) {
         grid.makeWidget(el, widgetOpts);
       } else {
@@ -55,8 +73,6 @@ export function GridStack<WidgetId extends string>({
       }
     });
     grid.batchUpdate(false);
-
-    prevIdsRef.current = widgets.map((w) => w.id);
   }, [grid, widgets]);
 
   const initItemRefs = React.useCallback(

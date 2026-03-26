@@ -66,6 +66,12 @@ export function LayoutManagerProvider<WidgetId extends string>({
     resetAllLayout,
   } = lsUtil;
 
+  /**
+   * This is not memoized because we want the latest layoutMap whenever
+   * localstorage is altered
+   */
+  const layoutMap = getLayout(grid);
+
   /** Set of widget IDs that should be visible on the GridStack */
   const widgetIdList = React.useMemo(() => {
     return layoutIdList ?? (Object.keys(allowableWidgets) as WidgetId[]);
@@ -106,13 +112,13 @@ export function LayoutManagerProvider<WidgetId extends string>({
   const renderItem: RenderItemFn<WidgetId> = React.useCallback(
     (gs, widget) => {
       return {
-        className: 'group',
         children: (
           <Button
             className={cn(
+              'widget-control',
               'absolute -top-1 -right-1',
               'z-10 rounded-full',
-              'opacity-0 group-hover:opacity-100 touch:opacity-100'
+              'opacity-100'
             )}
             size="sm"
             variant="shadow"
@@ -133,7 +139,6 @@ export function LayoutManagerProvider<WidgetId extends string>({
    */
   const widgets = React.useMemo<Widget<WidgetId>[]>(() => {
     const result: Widget<WidgetId>[] = [];
-    const layoutMap = getLayout(grid);
     for (const widgetId of widgetIdList) {
       const defaultWidget = allowableWidgets[widgetId];
       if (!defaultWidget) {
@@ -151,7 +156,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
       }
     }
     return result;
-  }, [grid, getLayout, widgetIdList, allowableWidgets, widgetFilter]);
+  }, [layoutMap, widgetIdList, allowableWidgets, widgetFilter]);
 
   const Context = getContext<WidgetId>();
 

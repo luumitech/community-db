@@ -28,19 +28,28 @@ interface WidgetInfo {
 export const widgetInfo: Record<WidgetId, WidgetInfo> = {
   memberCount: {
     label: 'Total Membership Count',
-    description: '',
+    description:
+      'Visualizes the growth or decline of your total membership base over time, with each bar representing the cumulative member count for a given year.',
   },
   membershipSource: {
     label: 'Membership Source',
+    description:
+      'Breaks down the distribution of how members were acquired, showing the relative contribution of each event as a proportion of total membership.',
   },
   membershipFee: {
     label: 'Membership Fee',
+    description:
+      'Provides a detailed breakdown of membership fee collection, including payment method and totals to help track revenue from member subscriptions.',
   },
   eventParticipation: {
     label: 'Event Participation',
+    description:
+      'Compares attendance across all events within a selected year, making it easy to identify your most and least popular events at a glance.',
   },
   byEvent: {
     label: 'Event Details',
+    description:
+      'Offers a granular view of ticket sales performance for each individual event, including sales volumes and other key metrics to assess event-level success.',
   },
 };
 

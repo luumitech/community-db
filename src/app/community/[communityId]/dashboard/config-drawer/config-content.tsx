@@ -31,16 +31,31 @@ export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
     <DrawerContent>
       {(closeDrawer) => (
         <>
-          <DrawerHeader>Configuration</DrawerHeader>
+          <DrawerHeader>Dashboard Configuration</DrawerHeader>
           <DrawerBody className="flex flex-col gap-4">
-            <span className="font-bold">
-              Select widgets to display in dashboard:
-            </span>
+            <span>Select widgets to display in dashboard:</span>
             <CheckboxGroup<InputData> controlName="widgetIdList">
               {Object.entries(widgetInfo).map(([id, info]) => (
-                <Checkbox key={id} value={id}>
-                  <div>{info.label}</div>
-                  <div>{info.description}</div>
+                <Checkbox
+                  aria-label={info.label}
+                  classNames={{
+                    base: cn(
+                      'm-0 flex max-w-full bg-content1',
+                      'items-center justify-start hover:bg-content2',
+                      'gap-2 rounded-lg border-2 p-4',
+                      'data-[selected=true]:border-primary'
+                    ),
+                    label: 'w-full',
+                  }}
+                  key={id}
+                  value={id}
+                >
+                  <div className="flex flex-col">
+                    {info.label}
+                    <span className="text-tiny text-default-500">
+                      {info.description}
+                    </span>
+                  </div>
                 </Checkbox>
               ))}
             </CheckboxGroup>

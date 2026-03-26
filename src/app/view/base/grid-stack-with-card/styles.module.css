@@ -2,6 +2,8 @@
   :global(.grid-stack-item-content) {
     /* Allow Card shadow to render properly */
     overflow: visible !important;
+    /* Match the Card component border radius */
+    border-radius: var(--heroui-radius-large);
   }
 
   /* Placeholder styles when dragging widgets */
@@ -24,5 +26,25 @@
       the header z-index */
       z-index: 10 !important;
     }
+
+    /* Hide other widget control components when resizable handles are hidden */
+    &:global(.ui-resizable-autohide),
+    &:global(.ui-draggable-dragging) {
+      :global(.widget-control) {
+        opacity: 0;
+      }
+    }
+
+    cursor: grab;
+    &:global(.ui-draggable-dragging) {
+      transform: rotate(1.5deg);
+      /* cursor: grabbing; */
+    }
   }
+}
+
+/* Adding grabbing above didn't work, so try to apply it globally */
+:global(body):has(:global(.ui-draggable-dragging)),
+:global(body):has(:global(.ui-draggable-dragging)) * {
+  cursor: grabbing;
 }
