@@ -20,6 +20,9 @@
 
     :global(.ui-resizable-se) {
       transform: rotate(0);
+      /* Override the default z-100, this value needs to be lower than
+      the header z-index */
+      z-index: 10 !important;
     }
   }
 }

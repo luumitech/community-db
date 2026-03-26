@@ -17,21 +17,14 @@ interface ContextT {
 const Context = React.createContext<ContextT>();
 
 export type OnChangeFn = (grid: GS, items: GridStackNode[]) => void;
-export type OnSizeChangeFn = (grid: GS, cols: number) => void;
 
-export const GRID_STACK_INNER_PROVIDER_PROPS = [
-  'options',
-  'onChange',
-  'onSizeChange',
-] as const;
+export const GRID_STACK_INNER_PROVIDER_PROPS = ['options', 'onChange'] as const;
 
 /** Properties expected to be passed by user */
 export interface GridStackInnerProviderProps {
   options?: GridStackOptions;
   /** Fired when any widget is moved or resized. */
   onChange?: OnChangeFn;
-  /** Fired when grid container size changes */
-  onSizeChange?: OnSizeChangeFn;
 }
 
 interface Props extends GridStackInnerProviderProps {
@@ -42,7 +35,6 @@ export function GridStackInnerProvider({
   containerNode,
   options,
   onChange,
-  onSizeChange,
   children,
 }: React.PropsWithChildren<Props>) {
   const gsRef = React.useRef<GS | null>(null);
@@ -90,22 +82,6 @@ export function GridStackInnerProvider({
       gs.on('change', (evt, items) => onChange(gs, items));
     }
   }, [gsRef, onChange]);
-
-  React.useEffect(() => {
-    const gs = gsRef.current;
-    if (!gs || !containerNode) {
-      return;
-    }
-
-    const update = () => {
-      onSizeChange?.(gs, gs.getColumn());
-    };
-    const observer = new ResizeObserver(update);
-    observer.observe(containerNode);
-    update();
-
-    return () => observer.disconnect();
-  }, [containerNode, gsRef, onSizeChange]);
 
   if (!grid) {
     return null;

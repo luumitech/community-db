@@ -8,6 +8,19 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
+  Hover event won't work properly in touch device.
+  This allow you to say do, for example:
+    opacity-0 hover:opacity-100 touch:opacity-100
+  - so on regular browser, hovering would make element appear
+  - on touch devices, the elemnt is always visible
+*/
+@custom-variant touch {
+  @media (hover: none) {
+    @slot;
+  }
+}
+
+/*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.

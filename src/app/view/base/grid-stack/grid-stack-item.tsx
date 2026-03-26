@@ -17,9 +17,12 @@ export const GridStackItem = React.forwardRef(
     const [widgetNode, setWidgetNode] = React.useState<HTMLDivElement>();
     const { id, x, y, w, h } = widget;
 
-    const widgetNodeRef = React.useCallback((node: HTMLDivElement) => {
-      setWidgetNode(node);
-    }, []);
+    const widgetNodeRef = React.useCallback(
+      (node: HTMLDivElement) => {
+        setWidgetNode(node);
+      },
+      [setWidgetNode]
+    );
 
     return (
       <div

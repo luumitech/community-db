@@ -91,14 +91,12 @@ export function LayoutManagerProvider<WidgetId extends string>({
     [widgetIdList, saveLayoutIds]
   );
 
-  /** Replace layout with given set of widget IDs */
+  /** Replace current set of widget IDs with new ones */
   const setWidgets = React.useCallback(
     (idList: WidgetId[]) => {
-      const currentSet = new Set(widgetIdList);
-      idList.map((id) => currentSet.add(id));
-      saveLayoutIds([...currentSet]);
+      saveLayoutIds(idList);
     },
-    [widgetIdList, saveLayoutIds]
+    [saveLayoutIds]
   );
 
   /**
@@ -114,7 +112,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
             className={cn(
               'absolute -top-1 -right-1',
               'z-10 rounded-full',
-              'opacity-0 group-hover:opacity-100'
+              'touch:opacity-100 opacity-0 group-hover:opacity-100'
             )}
             size="sm"
             variant="shadow"
@@ -136,7 +134,14 @@ export function LayoutManagerProvider<WidgetId extends string>({
   const widgets = React.useMemo<Widget<WidgetId>[]>(() => {
     const result: Widget<WidgetId>[] = [];
     const layoutMap = getLayout(grid);
-    widgetIdList.forEach((widgetId) => {
+    for (const widgetId of widgetIdList) {
+      const defaultWidget = allowableWidgets[widgetId];
+      if (!defaultWidget) {
+        // This is not suppose to happen, but add it as a guard
+        // in case, we don't know how to render this widgetId
+        console.error(`Unknown widget ${widgetId} encountered, skipping`);
+        continue;
+      }
       const widget = {
         ...allowableWidgets[widgetId],
         ...layoutMap[widgetId],
@@ -144,7 +149,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
       if (widgetFilter == null || widgetFilter?.(widget)) {
         result.push(widget);
       }
-    });
+    }
     return result;
   }, [grid, getLayout, widgetIdList, allowableWidgets, widgetFilter]);
 
