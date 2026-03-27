@@ -2,16 +2,25 @@ import { Button, Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
 import { ScrollShadow } from '@heroui/scroll-shadow';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
+import { getFragment, graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
 import { Icon } from '~/view/base/icon';
 
+const MembershipNotesFragment = graphql(/* GraphQL */ `
+  fragment PropertyId_MembershipNotes on Property {
+    id
+    notes
+  }
+`);
+
 interface Props {
   className?: string;
-  notes?: string | null;
 }
 
-export const NotesView: React.FC<Props> = ({ className, notes }) => {
-  const { community, property } = useLayoutContext();
+export const NotesView: React.FC<Props> = ({ className }) => {
+  const { community, property: propertyFragment } = useLayoutContext();
+  const property = getFragment(MembershipNotesFragment, propertyFragment);
+  const { notes } = property;
 
   return (
     <Card className={cn(className)}>
@@ -19,7 +28,7 @@ export const NotesView: React.FC<Props> = ({ className, notes }) => {
         Notes
         <Button
           as={Link}
-          className="absolute right-2 top-2"
+          className="absolute top-2 right-2"
           color="primary"
           variant="bordered"
           size="sm"
@@ -33,8 +42,8 @@ export const NotesView: React.FC<Props> = ({ className, notes }) => {
         </Button>
       </CardHeader>
       <CardBody>
-        <ScrollShadow className="h-28">
-          <span className="whitespace-pre-wrap text-sm">{notes ?? ''}</span>
+        <ScrollShadow className="h-full">
+          <span className="text-sm whitespace-pre-wrap">{notes ?? ''}</span>
         </ScrollShadow>
       </CardBody>
     </Card>

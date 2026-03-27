@@ -40,6 +40,9 @@ export const PageContent: React.FC<Props> = ({ className }) => {
       lsSuffix="dashboard"
       allowableWidgets={allowableWidgets}
       widgetFilter={widgetFilter}
+      options={{
+        margin: 8,
+      }}
     >
       <ConfigDrawer />
     </GridStackWithCard>

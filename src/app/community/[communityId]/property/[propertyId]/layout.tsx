@@ -29,7 +29,8 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
           ...User
         }
         ...PropertyId_PropertyEditor
-        ...PropertyId_MembershipDisplay
+        ...PropertyId_MembershipStatus
+        ...PropertyId_MembershipNotes
         ...PropertyId_MembershipEditor
         ...PropertyId_OccupantDisplay
         ...PropertyId_OccupancyEditor

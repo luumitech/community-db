@@ -35,7 +35,10 @@
       }
     }
 
-    cursor: grab;
+    :global(.grid-stack-item-content) {
+      cursor: grab;
+    }
+
     &:global(.ui-draggable-dragging) {
       transform: rotate(1.5deg);
       /* cursor: grabbing; */

@@ -26,6 +26,9 @@ export function GridStack<WidgetId extends string>({
   const itemElsRef = React.useRef(new Map<WidgetId, HTMLDivElement>());
 
   React.useEffect(() => {
+    if (!grid) {
+      return;
+    }
     // Incoming set of widget IDs that should be rendered
     const widgetIdSet = new Set(widgets.map((w) => w.id));
 

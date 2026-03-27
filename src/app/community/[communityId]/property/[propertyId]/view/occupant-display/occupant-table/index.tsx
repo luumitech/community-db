@@ -58,6 +58,7 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
   return (
     <GridTable
       aria-label="Occupant Details Table"
+      isHeaderSticky
       config={{
         gridContainer: cn(
           'gap-2',

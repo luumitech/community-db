@@ -13,7 +13,7 @@ type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
 interface Props extends CustomSelectProps {
   className?: string;
   yearRange: [number, number];
-  membershipList: GQL.PropertyId_MembershipDisplayFragment['membershipList'];
+  membershipList: GQL.PropertyId_MembershipStatusFragment['membershipList'];
   selectedYear?: string | null;
   onYearChange: (year: string) => void;
 }

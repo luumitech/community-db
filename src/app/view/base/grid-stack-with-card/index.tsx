@@ -53,7 +53,7 @@ export function GridStackWithCard<WidgetId extends string>({
       className={cn(styles.gridWrapper, className)}
       {...gsProviderProps}
       options={{
-        margin: 8,
+        margin: 6,
         cellHeight: '50px',
         columnOpts: {
           breakpointForWindow: true,

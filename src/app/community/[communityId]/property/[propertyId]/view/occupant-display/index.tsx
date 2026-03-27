@@ -56,43 +56,50 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
     return hasEmail && membership?.isMember;
   }, [occupantList, property.membershipList, yearSelected]);
 
+  const communityId = community.id;
+  const propertyId = property.id;
+  const topContent = React.useMemo(() => {
+    return (
+      <div className="mb-2 flex flex-wrap justify-end gap-2">
+        <Button
+          as={Link}
+          isDisabled={!canSendEmail}
+          size="sm"
+          endContent={<Icon icon="email" />}
+          color="primary"
+          variant="bordered"
+          href={appPath('composeMembershipMail', {
+            path: { communityId, propertyId },
+            query: {
+              membershipYear: yearSelected?.toString() ?? '',
+            },
+          })}
+        >
+          {appLabel('composeMembershipMail')}
+        </Button>
+        {canEdit && (
+          <Button
+            as={Link}
+            color="primary"
+            variant="bordered"
+            size="sm"
+            endContent={<Icon icon="edit" />}
+            href={appPath('occupancyEditor', {
+              path: { communityId, propertyId },
+            })}
+          >
+            {appLabel('occupancyEditor')}
+          </Button>
+        )}
+      </div>
+    );
+  }, [canEdit, canSendEmail, communityId, propertyId, yearSelected]);
+
   return (
     <Card className={className}>
       <CardHeader>Contact</CardHeader>
-      <CardBody className="gap-2">
-        <div className="flex flex-wrap gap-2 self-end">
-          <Button
-            as={Link}
-            isDisabled={!canSendEmail}
-            size="sm"
-            endContent={<Icon icon="email" />}
-            color="primary"
-            variant="bordered"
-            href={appPath('composeMembershipMail', {
-              path: { communityId: community.id, propertyId: property.id },
-              query: {
-                membershipYear: yearSelected?.toString() ?? '',
-              },
-            })}
-          >
-            {appLabel('composeMembershipMail')}
-          </Button>
-          {canEdit && (
-            <Button
-              as={Link}
-              color="primary"
-              variant="bordered"
-              size="sm"
-              endContent={<Icon icon="edit" />}
-              href={appPath('occupancyEditor', {
-                path: { communityId: community.id, propertyId: property.id },
-              })}
-            >
-              {appLabel('occupancyEditor')}
-            </Button>
-          )}
-        </div>
-        <OccupantTable items={occupantList} />
+      <CardBody className="p-3 pt-0">
+        <OccupantTable items={occupantList} topContent={topContent} />
       </CardBody>
     </Card>
   );

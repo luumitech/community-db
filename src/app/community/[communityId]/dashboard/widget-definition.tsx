@@ -60,45 +60,50 @@ export const widgetInfo: Record<WidgetId, WidgetInfo> = {
  * - Specifying x,y explicitly allows layout reset to restore layout to the
  *   explicitly specified position
  */
+const memberCount = defineWidget({
+  id: 'memberCount',
+  w: 12,
+  h: 12,
+  x: 0,
+  y: 0,
+  content: <MemberCountChart className="h-full w-full" />,
+});
+const membershipSource = defineWidget({
+  id: 'membershipSource',
+  w: 6,
+  h: 10,
+  x: 0,
+  y: memberCount.y! + memberCount.h!,
+  content: <MembershipSource className="h-full w-full" />,
+});
+const membershipFee = defineWidget({
+  id: 'membershipFee',
+  w: 6,
+  h: 10,
+  x: membershipSource.x! + membershipSource.w!,
+  y: memberCount.y! + memberCount.h!,
+  content: <MembershipFee className="h-full w-full" />,
+});
+const eventParticipation = defineWidget({
+  id: 'eventParticipation',
+  w: 6,
+  h: 10,
+  x: membershipSource.x!,
+  y: membershipSource.y! + membershipSource.h!,
+  content: <EventParticipation className="h-full w-full" />,
+});
+const byEvent = defineWidget({
+  id: 'byEvent',
+  w: 6,
+  h: 10,
+  x: membershipFee.x!,
+  y: membershipFee.y! + membershipFee.h!,
+  content: <ByEvent className="h-full w-full" />,
+});
 export const allowableWidgets: WidgetMap<WidgetId> = {
-  memberCount: defineWidget({
-    id: 'memberCount',
-    w: 12,
-    h: 12,
-    x: 0,
-    y: 0,
-    content: <MemberCountChart className="h-full w-full" />,
-  }),
-  membershipSource: defineWidget({
-    id: 'membershipSource',
-    w: 6,
-    h: 10,
-    x: 0,
-    y: 12,
-    content: <MembershipSource className="h-full w-full" />,
-  }),
-  membershipFee: defineWidget({
-    id: 'membershipFee',
-    w: 6,
-    h: 10,
-    x: 6,
-    y: 12,
-    content: <MembershipFee className="h-full w-full" />,
-  }),
-  eventParticipation: defineWidget({
-    id: 'eventParticipation',
-    w: 6,
-    h: 10,
-    x: 0,
-    y: 22,
-    content: <EventParticipation className="h-full w-full" />,
-  }),
-  byEvent: defineWidget({
-    id: 'byEvent',
-    w: 6,
-    h: 10,
-    x: 6,
-    y: 22,
-    content: <ByEvent className="h-full w-full" />,
-  }),
+  memberCount,
+  membershipSource,
+  membershipFee,
+  eventParticipation,
+  byEvent,
 };

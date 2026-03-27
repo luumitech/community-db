@@ -14,15 +14,7 @@ export const GridStackItem = React.forwardRef(
     { className, widget, children, ...props }: Props<WidgetId>,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
-    const [widgetNode, setWidgetNode] = React.useState<HTMLDivElement>();
     const { id, x, y, w, h } = widget;
-
-    const widgetNodeRef = React.useCallback(
-      (node: HTMLDivElement) => {
-        setWidgetNode(node);
-      },
-      [setWidgetNode]
-    );
 
     return (
       <div
@@ -35,9 +27,8 @@ export const GridStackItem = React.forwardRef(
         gs-h={h}
         {...props}
       >
-        <div ref={widgetNodeRef} className="grid-stack-item-content" />
+        <div className="grid-stack-item-content">{widget.content}</div>
         {children}
-        {widgetNode != null && createPortal(widget.content, widgetNode, id)}
       </div>
     );
   }
