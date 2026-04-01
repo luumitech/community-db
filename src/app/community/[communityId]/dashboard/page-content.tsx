@@ -5,8 +5,11 @@ import {
   type WidgetFilterFn,
 } from '~/view/base/grid-stack-with-card';
 import { Demo } from '~/view/base/grid-stack/demo';
-import { ConfigDrawer } from './config-drawer';
-import { allowableWidgets, type WidgetId } from './widget-definition';
+import {
+  allowableWidgets,
+  widgetInfo,
+  type WidgetId,
+} from './widget-definition';
 
 interface Props {
   className?: string;
@@ -39,12 +42,11 @@ export const PageContent: React.FC<Props> = ({ className }) => {
     <GridStackWithCard
       lsSuffix="dashboard"
       allowableWidgets={allowableWidgets}
+      widgetInfo={widgetInfo}
       widgetFilter={widgetFilter}
       options={{
         margin: 8,
       }}
-    >
-      <ConfigDrawer />
-    </GridStackWithCard>
+    />
   );
 };

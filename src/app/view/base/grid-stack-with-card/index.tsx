@@ -2,9 +2,9 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import {
-  GRID_STACK_PROVIDER_PROPS,
-  GridStackProvider,
-  type GridStackProviderProps,
+  GRID_STACK_PROPS,
+  GridStack,
+  type GridStackProps,
   type OnChangeFn,
 } from '~/view/base/grid-stack';
 import {
@@ -20,7 +20,7 @@ export type * from './_type';
 export { useLayoutManagerContext } from './layout-manager-context';
 
 interface Props<WidgetId extends string>
-  extends LayoutManagerProps<WidgetId>, GridStackProviderProps {
+  extends LayoutManagerProps<WidgetId>, GridStackProps {
   className?: string;
   /** Suffix attached to localstorage key to store grid layout information */
   lsSuffix: string;
@@ -35,9 +35,9 @@ export function GridStackWithCard<WidgetId extends string>({
   const lsUtil = useLocalStorageLayout<WidgetId>(lsSuffix);
   const { updateLayout } = lsUtil;
 
-  const gsProviderProps = R.pick(props, GRID_STACK_PROVIDER_PROPS);
+  const gsProps = R.pick(props, GRID_STACK_PROPS);
   const layoutMgrProps = R.pick(props, LAYOUT_MANAGER_PROPS);
-  const { options, onChange } = gsProviderProps;
+  const { options, onChange } = gsProps;
 
   const customOnChange: OnChangeFn = React.useCallback(
     (grid, items) => {
@@ -49,9 +49,9 @@ export function GridStackWithCard<WidgetId extends string>({
   );
 
   return (
-    <GridStackProvider
+    <GridStack
       className={cn(styles.gridWrapper, className)}
-      {...gsProviderProps}
+      {...gsProps}
       options={{
         margin: 6,
         cellHeight: '50px',
@@ -71,6 +71,6 @@ export function GridStackWithCard<WidgetId extends string>({
       <LayoutManagerProvider {...layoutMgrProps} lsUtil={lsUtil}>
         {children}
       </LayoutManagerProvider>
-    </GridStackProvider>
+    </GridStack>
   );
 }

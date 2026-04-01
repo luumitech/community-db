@@ -33,6 +33,7 @@ const PropertyFromIdQuery = graphql(/* GraphQL */ `
         ...PropertyId_MembershipNotes
         ...PropertyId_MembershipEditor
         ...PropertyId_OccupantDisplay
+        ...PropertyId_TicketStatus
         ...PropertyId_OccupancyEditor
         ...PropertyId_PropertyDisplay
         ...PropertyId_PropertyDelete

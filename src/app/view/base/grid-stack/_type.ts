@@ -14,3 +14,6 @@ export interface Widget<Id extends string = string> extends GSWidget {
   /** React component to render for the widget */
   content: React.ReactNode;
 }
+
+export type { RenderItemFn } from './grid-stack-widgets';
+export type { OnChangeFn } from './gs-context';

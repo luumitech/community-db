@@ -2,15 +2,12 @@
 import { Divider } from '@heroui/react';
 import React from 'react';
 import { PropertyAutocomplete } from '~/community/[communityId]/common/property-autocomplete';
-import {
-  GridStackWithCard,
-  type WidgetFilterFn,
-} from '~/view/base/grid-stack-with-card';
+import { GridStackWithCard } from '~/view/base/grid-stack-with-card';
 import { LastModified } from '~/view/last-modified';
 import { useLayoutContext } from '../layout-context';
 import { MoreMenu } from '../more-menu';
 import { PropertyDisplay } from './property-display';
-import { allowableWidgets, type WidgetId } from './widget-definition';
+import { allowableWidgets, widgetInfo } from './widget-definition';
 
 interface Params {
   communityId: string;
@@ -37,6 +34,7 @@ export default function Property(props: RouteArgs) {
         <GridStackWithCard
           lsSuffix="property-view"
           allowableWidgets={allowableWidgets}
+          widgetInfo={widgetInfo}
           options={{
             cellHeight: '60px',
           }}

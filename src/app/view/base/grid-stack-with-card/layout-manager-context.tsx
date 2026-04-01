@@ -8,7 +8,8 @@ import {
   type Widget,
 } from '~/view/base/grid-stack';
 import { Icon } from '~/view/base/icon';
-import type { WidgetFilterFn, WidgetMap } from './_type';
+import type { WidgetFilterFn, WidgetInfo, WidgetMap } from './_type';
+import { ConfigDrawer } from './config-drawer';
 import { useLocalStorageLayout } from './localstorage-layout';
 
 interface ContextT<WidgetId extends string> {
@@ -35,6 +36,7 @@ function getContext<WidgetId extends string>() {
 
 export const LAYOUT_MANAGER_PROPS = [
   'allowableWidgets',
+  'widgetInfo',
   'widgetFilter',
 ] as const;
 
@@ -42,6 +44,8 @@ export const LAYOUT_MANAGER_PROPS = [
 export interface LayoutManagerProps<WidgetId extends string> {
   /** List of all allowable widgets that can be displayed in the grid */
   allowableWidgets: WidgetMap<WidgetId>;
+  /** Widget detail information, to be displayed in configuration panel */
+  widgetInfo: Record<WidgetId, WidgetInfo>;
   /** Custom filter function to control if the widget should be shown */
   widgetFilter?: WidgetFilterFn<WidgetId>;
 }
@@ -53,6 +57,7 @@ interface Props<WidgetId extends string> extends LayoutManagerProps<WidgetId> {
 
 export function LayoutManagerProvider<WidgetId extends string>({
   allowableWidgets,
+  widgetInfo,
   widgetFilter,
   lsUtil,
   children,
@@ -171,7 +176,10 @@ export function LayoutManagerProvider<WidgetId extends string>({
         resetAllLayout,
       }}
     >
-      <GridStack widgets={widgets} renderItem={renderItem} />
+      <GridStack.Widgets widgets={widgets} renderItem={renderItem} />
+      <GridStack.Footer>
+        <ConfigDrawer widgetInfo={widgetInfo} />
+      </GridStack.Footer>
       {children}
     </Context.Provider>
   );

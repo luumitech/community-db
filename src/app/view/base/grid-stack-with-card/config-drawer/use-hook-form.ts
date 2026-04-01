@@ -3,11 +3,10 @@ import { type GridStack } from 'gridstack';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { z, zz } from '~/lib/zod';
-import { widgetIdList, type WidgetId } from '../widget-definition';
 
 function schema() {
   return z.object({
-    widgetIdList: z.array(z.enum(widgetIdList)),
+    widgetIdList: z.array(z.string()),
   });
 }
 
@@ -15,17 +14,14 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
   grid: GridStack,
-  widgetsToShow: readonly WidgetId[]
+  widgetsToShow: readonly string[]
 ): InputData {
   return {
     widgetIdList: [...widgetsToShow],
   };
 }
 
-export function useHookForm(
-  grid: GridStack,
-  widgetsToShow: readonly WidgetId[]
-) {
+export function useHookForm(grid: GridStack, widgetsToShow: readonly string[]) {
   const defaultValues = React.useMemo(() => {
     return defaultInputData(grid, widgetsToShow);
   }, [grid, widgetsToShow]);

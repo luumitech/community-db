@@ -1,11 +1,7 @@
 import { Button, cn } from '@heroui/react';
 import { GridStack as GS, GridStackWidget as GSWidget } from 'gridstack';
 import React from 'react';
-import {
-  GridStack,
-  GridStackProvider,
-  type Widget,
-} from '~/view/base/grid-stack';
+import { GridStack, type Widget } from '~/view/base/grid-stack';
 import { ChartWidget } from './chart-widget';
 import { StatWidget } from './stat-widget';
 
@@ -136,12 +132,12 @@ export const Demo: React.FC<Props> = ({ className }) => {
         <Button onPress={() => setGap(10)}>Set padding to 10</Button>
       </div>
 
-      <GridStackProvider
+      <GridStack
         options={{ column: 12, cellHeight: 80, margin: gap }}
         onChange={handleChange}
       >
-        <GridStack widgets={widgets} />
-      </GridStackProvider>
+        <GridStack.Widgets widgets={widgets} />
+      </GridStack>
 
       {log.length > 0 && (
         <div className="text-xs text-default-500">

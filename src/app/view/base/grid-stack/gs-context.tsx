@@ -18,20 +18,20 @@ const Context = React.createContext<ContextT>();
 
 export type OnChangeFn = (grid: GS, items: GridStackNode[]) => void;
 
-export const GRID_STACK_INNER_PROVIDER_PROPS = ['options', 'onChange'] as const;
+export const GRID_STACK_PROVIDER_PROPS = ['options', 'onChange'] as const;
 
 /** Properties expected to be passed by user */
-export interface GridStackInnerProviderProps {
+export interface GridStackProviderProps {
   options?: GridStackOptions;
   /** Fired when any widget is moved or resized. */
   onChange?: OnChangeFn;
 }
 
-interface Props extends GridStackInnerProviderProps {
+interface Props extends GridStackProviderProps {
   containerNode: HTMLDivElement;
 }
 
-export function GridStackInnerProvider({
+export function GridStackProvider({
   containerNode,
   options,
   onChange,
@@ -101,9 +101,7 @@ export function GridStackInnerProvider({
 export function useGridStackContext() {
   const context = React.useContext(Context);
   if (!context) {
-    throw new Error(
-      'useGridStackContext must be used within a GridStackProvider'
-    );
+    throw new Error('useGridStackContext must be used within a GridStack');
   }
   return context;
 }

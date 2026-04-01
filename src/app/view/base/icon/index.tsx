@@ -69,6 +69,7 @@ const supportedIcon = {
   ellipsis: 'lucide:ellipsis',
   mapSetting: 'tabler:map-cog',
   printer: 'mdi:printer-outline',
+  gridConfig: 'mdi:view-dashboard-edit-outline',
 } as const;
 
 export type IconType = keyof typeof supportedIcon;

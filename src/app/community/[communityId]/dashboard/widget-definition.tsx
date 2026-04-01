@@ -1,6 +1,9 @@
 import React from 'react';
 import { defineWidget } from '~/view/base/grid-stack';
-import { type WidgetMap } from '~/view/base/grid-stack-with-card';
+import {
+  type WidgetInfo,
+  type WidgetMap,
+} from '~/view/base/grid-stack-with-card';
 import { MemberCountChart } from './member-count-chart';
 import {
   ByEvent,
@@ -19,11 +22,6 @@ export const widgetIdList = [
 ] as const;
 
 export type WidgetId = (typeof widgetIdList)[number];
-
-interface WidgetInfo {
-  label: string;
-  description?: string;
-}
 
 export const widgetInfo: Record<WidgetId, WidgetInfo> = {
   memberCount: {

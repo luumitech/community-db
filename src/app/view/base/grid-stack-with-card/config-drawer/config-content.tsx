@@ -11,8 +11,6 @@ import { Button } from '~/view/base/button';
 import { Checkbox, CheckboxGroup } from '~/view/base/checkbox';
 import { useGridStackContext } from '~/view/base/grid-stack';
 import { useLayoutManagerContext } from '~/view/base/grid-stack-with-card';
-import type { WidgetId } from '../widget-definition';
-import { widgetInfo } from '../widget-definition';
 import { type DrawerArg } from './config-form';
 import { useHookFormContext, type InputData } from './use-hook-form';
 
@@ -20,12 +18,13 @@ interface Props extends DrawerArg {
   disclosure: UseDisclosureReturn;
 }
 
-export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
+export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
   const { grid } = useGridStackContext();
-  const { resetLayout } = useLayoutManagerContext<WidgetId>();
+  const { resetLayout } = useLayoutManagerContext<string>();
   const { formMethods } = useHookFormContext();
   const { reset, formState } = formMethods;
   const { isDirty } = formState;
+  const { widgetInfo } = arg;
 
   return (
     <DrawerContent>
@@ -34,7 +33,10 @@ export const ConfigContent: React.FC<Props> = ({ disclosure }) => {
           <DrawerHeader>Dashboard Configuration</DrawerHeader>
           <DrawerBody className="flex flex-col gap-4">
             <span>Select widgets to display in dashboard:</span>
-            <CheckboxGroup<InputData> controlName="widgetIdList">
+            <CheckboxGroup<InputData>
+              controlName="widgetIdList"
+              orientation="horizontal"
+            >
               {Object.entries(widgetInfo).map(([id, info]) => (
                 <Checkbox
                   aria-label={info.label}

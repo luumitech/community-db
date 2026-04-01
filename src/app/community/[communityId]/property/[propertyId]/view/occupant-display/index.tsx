@@ -98,7 +98,13 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
   return (
     <Card className={className}>
       <CardHeader>Contact</CardHeader>
-      <CardBody className="p-3 pt-0">
+      <CardBody
+        /**
+         * This is to prevent the text in OccupantTable in scrolling to the top
+         * padding of the cardbody
+         */
+        className="p-3 pt-0"
+      >
         <OccupantTable items={occupantList} topContent={topContent} />
       </CardBody>
     </Card>

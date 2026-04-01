@@ -4,12 +4,13 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
 import { useLayoutManagerContext } from '~/view/base/grid-stack-with-card';
-import type { WidgetId } from '../widget-definition';
+import type { WidgetInfo } from '../_type';
 import { ConfigContent } from './config-content';
 import { useHookForm, type InputData } from './use-hook-form';
 
 export interface DrawerArg {
   grid: GridStack;
+  widgetInfo: Record<string, WidgetInfo>;
 }
 
 interface Props extends DrawerArg {
@@ -18,7 +19,7 @@ interface Props extends DrawerArg {
 
 export const ConfigForm: React.FC<Props> = ({ disclosure, ...arg }) => {
   const { onClose } = disclosure;
-  const { widgetIdList, setWidgets } = useLayoutManagerContext<WidgetId>();
+  const { widgetIdList, setWidgets } = useLayoutManagerContext<string>();
   const { formMethods } = useHookForm(arg.grid, widgetIdList);
   const { handleSubmit } = formMethods;
 

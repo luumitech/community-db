@@ -44,17 +44,15 @@ export const MembershipStatus: React.FC<Props> = ({ className }) => {
   return (
     <Card className={className}>
       <CardHeader>Membership Status</CardHeader>
-      <CardBody>
+      <CardBody className="gap-2">
         <YearSelect
           yearRange={[minYear, maxYear]}
           membershipList={property.membershipList}
           selectedYear={yearSelected?.toString()}
           onYearChange={(year) => dispatch(actions.ui.setYearSelected(year))}
         />
-      </CardBody>
-      <CardFooter>
         <RegisteredEventList membership={membership} />
-      </CardFooter>
+      </CardBody>
     </Card>
   );
 };
