@@ -35,7 +35,7 @@ export const CLASS_DEFAULT: ClassDefault = {
   ),
   headerSticky: cn(
     /** Default sticky to top of container */
-    'sticky top-0 z-50 bg-background'
+    'sticky top-0 z-50'
   ),
   headerContainer: cn(
     /** Background color */

@@ -5,7 +5,7 @@ import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { ChartDataHelperUtil } from '../../chart-data-helper';
 import { usePageContext } from '../../page-context';
-import { widgetInfo } from '../../widget-definition';
+import { allowableWidgets } from '../../widget-definition';
 
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
@@ -71,7 +71,7 @@ export const MembershipSource: React.FC<Props> = ({ className }) => {
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} ${widgetInfo.membershipSource.label}`}</p>
+          <p className="text-md font-bold">{`${year} ${allowableWidgets.membershipSource.info.label}`}</p>
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">

@@ -36,7 +36,6 @@ function getContext<WidgetId extends string>() {
 
 export const LAYOUT_MANAGER_PROPS = [
   'allowableWidgets',
-  'widgetInfo',
   'widgetFilter',
 ] as const;
 
@@ -44,8 +43,6 @@ export const LAYOUT_MANAGER_PROPS = [
 export interface LayoutManagerProps<WidgetId extends string> {
   /** List of all allowable widgets that can be displayed in the grid */
   allowableWidgets: WidgetMap<WidgetId>;
-  /** Widget detail information, to be displayed in configuration panel */
-  widgetInfo: Record<WidgetId, WidgetInfo>;
   /** Custom filter function to control if the widget should be shown */
   widgetFilter?: WidgetFilterFn<WidgetId>;
 }
@@ -57,7 +54,6 @@ interface Props<WidgetId extends string> extends LayoutManagerProps<WidgetId> {
 
 export function LayoutManagerProvider<WidgetId extends string>({
   allowableWidgets,
-  widgetInfo,
   widgetFilter,
   lsUtil,
   children,
@@ -79,7 +75,18 @@ export function LayoutManagerProvider<WidgetId extends string>({
 
   /** Set of widget IDs that should be visible on the GridStack */
   const widgetIdList = React.useMemo(() => {
-    return layoutIdList ?? (Object.keys(allowableWidgets) as WidgetId[]);
+    if (layoutIdList) {
+      return layoutIdList;
+    }
+
+    const defaultWidgetIds: WidgetId[] = [];
+    Object.keys(allowableWidgets).forEach((id) => {
+      const widgetId = id as WidgetId;
+      if (!allowableWidgets[widgetId].hide) {
+        defaultWidgetIds.push(widgetId);
+      }
+    });
+    return defaultWidgetIds;
   }, [layoutIdList, allowableWidgets]);
 
   /** Add a widget */
@@ -145,7 +152,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
   const widgets = React.useMemo<Widget<WidgetId>[]>(() => {
     const result: Widget<WidgetId>[] = [];
     for (const widgetId of widgetIdList) {
-      const defaultWidget = allowableWidgets[widgetId];
+      const defaultWidget = allowableWidgets[widgetId].widget;
       if (!defaultWidget) {
         // This is not suppose to happen, but add it as a guard
         // in case, we don't know how to render this widgetId
@@ -153,7 +160,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
         continue;
       }
       const widget = {
-        ...allowableWidgets[widgetId],
+        ...allowableWidgets[widgetId].widget,
         ...layoutMap[widgetId],
       };
       if (widgetFilter == null || widgetFilter?.(widget)) {
@@ -178,7 +185,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
     >
       <GridStack.Widgets widgets={widgets} renderItem={renderItem} />
       <GridStack.Footer>
-        <ConfigDrawer widgetInfo={widgetInfo} />
+        <ConfigDrawer allowableWidgets={allowableWidgets} />
       </GridStack.Footer>
       {children}
     </Context.Provider>

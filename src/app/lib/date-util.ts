@@ -16,6 +16,14 @@ type GQLDateTime = GQL.Scalars['DateTime']['output'];
 type GQLDate = GQL.Scalars['Date']['output'];
 
 /**
+ * The smallest date possibled in UTC
+ *
+ * - (i.e. '0001-01-01T00:00:00+00:00[UTC]')
+ * - Useful for date sorting
+ */
+const MIN_ZONED_DATE = toZoned(new CalendarDateTime(1, 1, 1, 0, 0, 0), 'UTC');
+
+/**
  * Given a DateTime string, return a date time local string
  *
  * @param input ISOString (i.e. 2024-05-13T15:58:12.957Z)
@@ -153,4 +161,25 @@ export function formatUTCDate(input: string | number | Date, dateFmt?: string) {
  */
 export async function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Return a function that sorts dates
+ *
+ * Sort input date in ascending or descending orders
+ *
+ * @param direction 'asc' or 'desc'
+ * @returns Sort function that accepts two dates
+ */
+export function sortDate(direction: 'asc' | 'desc') {
+  return (
+    dateA: GQLDate | DateValue | null | undefined,
+    dateB: GQLDate | DateValue | null | undefined
+  ) => {
+    const zonedA = parseAsDate(dateA) ?? MIN_ZONED_DATE;
+    const zonedB = parseAsDate(dateB) ?? MIN_ZONED_DATE;
+    return direction === 'asc'
+      ? zonedA.compare(zonedB)
+      : zonedB.compare(zonedA);
+  };
 }

@@ -7,20 +7,37 @@ import { type Widget } from '~/view/base/grid-stack';
  */
 export type WidgetMap<WidgetId extends string> = Record<
   WidgetId,
-  Widget<WidgetId>
+  {
+    /** Contains widget dimension, render function */
+    widget: Widget<WidgetId>;
+    /** Contains widget labels, descriptions */
+    info: WidgetInfo;
+    /**
+     * Whether widgets should be hidden by default
+     *
+     * - By default, if localstorage is not configured, the widget is shown, turn
+     *   this on to hide the widget upon initialization
+     */
+    hide?: boolean;
+  }
 >;
 
 export type WidgetFilterFn<WidgetId extends string> = (
   widget: Widget<WidgetId>
 ) => boolean;
 
-/**
- * Widget Information for display purpose
- *
- * - Label: short label for widgetId
- * - Description: description for widgetId
- */
+/** Additional Widget Information (used exclusively in GridStackWithCard) */
 export interface WidgetInfo {
+  /**
+   * Short label for widgetId
+   *
+   * - Used in widget configuration
+   */
   label: string;
+  /**
+   * A more verbose description for widgetId
+   *
+   * - Used in widget configuration
+   */
   description?: string;
 }

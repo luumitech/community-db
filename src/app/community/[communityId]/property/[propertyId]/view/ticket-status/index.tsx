@@ -1,9 +1,12 @@
 import { Card, CardBody, CardHeader, cn } from '@heroui/react';
 import React from 'react';
-import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useLayoutContext as useViewLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
+import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
-import { TicketInfo } from './ticket-info';
+import { sortDate } from '~/lib/date-util';
+import { TicketSelect } from './ticket-select';
+import { TicketTable } from './ticket-table';
+import { makeTicketRow, ticketInfoForYear } from './ticket-util';
 
 const TicketStatusFragment = graphql(/* GraphQL */ `
   fragment PropertyId_TicketStatus on Property {
@@ -12,6 +15,7 @@ const TicketStatusFragment = graphql(/* GraphQL */ `
       isMember
       eventAttendedList {
         eventName
+        eventDate
         ticketList {
           ticketName
           price
@@ -29,25 +33,33 @@ interface Props {
 export const TicketStatus: React.FC<Props> = ({ className }) => {
   const { property: propertyFragment } = useViewLayoutContext();
   const property = getFragment(TicketStatusFragment, propertyFragment);
+  const { yearSelected, ticketSelected } = useSelector((state) => state.ui);
 
-  /**
-   * TODO:
-   *
-   * - Most of the time, should only display tickets for current selected year
-   * - And maybe for the current selected event(?)
-   * - Should show amount paid, when paid, and tickets purchased.
-   */
-  const ticketList = property.membershipList.flatMap((membership) => {
-    return membership.eventAttendedList.flatMap((event) => {
-      return event.ticketList;
-    });
-  });
+  const allTicketList = React.useMemo(
+    () => ticketInfoForYear(property),
+    [property]
+  );
+
+  const ticketList = React.useMemo(() => {
+    return allTicketList
+      .filter(
+        ({ membership, ticket }) =>
+          membership.year === yearSelected &&
+          ticket.ticketName === ticketSelected
+      )
+      .sort((a, b) => sortDate('desc')(a.event.eventDate, b.event.eventDate))
+      .map((ticket) => makeTicketRow(ticket));
+  }, [allTicketList, yearSelected, ticketSelected]);
+
+  const topContent = React.useMemo(() => {
+    return <TicketSelect className="mb-2" />;
+  }, []);
 
   return (
     <Card className={className}>
       <CardHeader>Ticket Status</CardHeader>
       <CardBody>
-        <TicketInfo ticketList={ticketList} />
+        <TicketTable topContent={topContent} items={ticketList} />
       </CardBody>
     </Card>
   );

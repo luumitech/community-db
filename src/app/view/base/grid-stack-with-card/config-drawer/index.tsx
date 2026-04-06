@@ -2,26 +2,26 @@ import { Drawer } from '@heroui/react';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { useGridStackContext } from '~/view/base/grid-stack';
-import type { WidgetInfo } from '../_type';
+import type { WidgetMap } from '../_type';
 import { ConfigForm, type DrawerArg } from './config-form';
 import { DrawerButton } from './drawer-button';
 
 const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
 interface Props {
-  widgetInfo: Record<string, WidgetInfo>;
+  allowableWidgets: WidgetMap<string>;
 }
 
-export const ConfigDrawer: React.FC<Props> = ({ widgetInfo }) => {
+export const ConfigDrawer: React.FC<Props> = ({ allowableWidgets }) => {
   const { arg, disclosure, open } = useDrawerControl();
   const { isOpen, onOpenChange } = disclosure;
   const { grid } = useGridStackContext();
 
   const openDrawer = React.useCallback(() => {
     if (grid) {
-      open({ grid, widgetInfo });
+      open({ grid, allowableWidgets });
     }
-  }, [grid, open, widgetInfo]);
+  }, [grid, open, allowableWidgets]);
 
   return (
     <>
@@ -29,7 +29,12 @@ export const ConfigDrawer: React.FC<Props> = ({ widgetInfo }) => {
         <DrawerButton onOpen={openDrawer} />
       </div>
       {arg != null && grid != null && (
-        <Drawer isOpen={isOpen} placement="bottom" onOpenChange={onOpenChange}>
+        <Drawer
+          isOpen={isOpen}
+          placement="bottom"
+          size="xl"
+          onOpenChange={onOpenChange}
+        >
           <ConfigForm {...arg} disclosure={disclosure} />
         </Drawer>
       )}

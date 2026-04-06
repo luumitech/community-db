@@ -1,22 +1,18 @@
 import React from 'react';
-import { useSelector } from '~/custom-hooks/redux';
 import {
   GridStackWithCard,
   type WidgetFilterFn,
 } from '~/view/base/grid-stack-with-card';
 import { Demo } from '~/view/base/grid-stack/demo';
-import {
-  allowableWidgets,
-  widgetInfo,
-  type WidgetId,
-} from './widget-definition';
+import { usePageContext } from './page-context';
+import { allowableWidgets, type WidgetId } from './widget-definition';
 
 interface Props {
   className?: string;
 }
 
 export const PageContent: React.FC<Props> = ({ className }) => {
-  const { yearSelected } = useSelector((state) => state.ui);
+  const { community } = usePageContext();
 
   const widgetFilter = React.useCallback<WidgetFilterFn<WidgetId>>(
     (widget) => {
@@ -27,12 +23,12 @@ export const PageContent: React.FC<Props> = ({ className }) => {
         case 'membershipFee':
         case 'eventParticipation':
         case 'byEvent':
-          return yearSelected != null;
+          return community != null;
         default:
           throw new Error(`Unrecognized widget ID: ${widget.id}`);
       }
     },
-    [yearSelected]
+    [community]
   );
 
   // Kept for debugging purpose
@@ -42,7 +38,6 @@ export const PageContent: React.FC<Props> = ({ className }) => {
     <GridStackWithCard
       lsSuffix="dashboard"
       allowableWidgets={allowableWidgets}
-      widgetInfo={widgetInfo}
       widgetFilter={widgetFilter}
       options={{
         margin: 8,

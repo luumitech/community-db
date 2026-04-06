@@ -1,9 +1,6 @@
 import React from 'react';
 import { defineWidget } from '~/view/base/grid-stack';
-import {
-  type WidgetInfo,
-  type WidgetMap,
-} from '~/view/base/grid-stack-with-card';
+import { type WidgetMap } from '~/view/base/grid-stack-with-card';
 import { CurrentEvent } from './current-event';
 import { MembershipStatus } from './membership-status';
 import { NotesView } from './notes-view';
@@ -20,30 +17,6 @@ export const widgetIdList = [
 ] as const;
 
 export type WidgetId = (typeof widgetIdList)[number];
-
-export const widgetInfo: Record<WidgetId, WidgetInfo> = {
-  membershipStatus: {
-    label: 'Membership Status',
-    // description:
-    //   'Visualizes the growth or decline of your total membership base over time, with each bar representing the cumulative member count for a given year.',
-  },
-  currentEvent: {
-    label: 'Current Event',
-    // description:
-    //   'Breaks down the distribution of how members were acquired, showing the relative contribution of each event as a proportion of total membership.',
-  },
-  notesView: {
-    label: 'Notes',
-    // description:
-    //   'Provides a detailed breakdown of membership fee collection, including payment method and totals to help track revenue from member subscriptions.',
-  },
-  occupantDisplay: {
-    label: 'Contact',
-  },
-  ticketStatus: {
-    label: 'Ticket Status',
-  },
-};
 
 /**
  * List of allowable widgets to render in dashboard
@@ -92,10 +65,47 @@ const ticketStatus = defineWidget({
   y: occupantDisplay.y! + occupantDisplay.h!,
   content: <TicketStatus className="h-full w-full" />,
 });
+
 export const allowableWidgets: WidgetMap<WidgetId> = {
-  membershipStatus,
-  currentEvent,
-  notesView: notesView,
-  occupantDisplay,
-  ticketStatus,
+  membershipStatus: {
+    widget: membershipStatus,
+    info: {
+      label: 'Membership Status',
+      description:
+        "Review a member's standing for any given year. Also shows other events attended for the year.",
+    },
+  },
+  currentEvent: {
+    widget: currentEvent,
+    info: {
+      label: 'Current Event',
+      description:
+        'Look up an event and register the current member as an attendee directly from this widget. Ideal for front-desk check-ins or manual registration.',
+    },
+  },
+  notesView: {
+    widget: notesView,
+    info: {
+      label: 'Notes',
+      description:
+        "Read and update notes tied to this household. Useful for logging special requests, follow-ups, or any context that doesn't fit structured fields.",
+    },
+  },
+  occupantDisplay: {
+    widget: occupantDisplay,
+    info: {
+      label: 'Contact',
+      description:
+        'View and update contact details for everyone in the current household.',
+    },
+  },
+  ticketStatus: {
+    widget: ticketStatus,
+    info: {
+      label: 'Ticket Status',
+      description:
+        'See a summary of tickets purchased or assigned to this member for a selected year, including status and event associations.',
+    },
+    hide: true,
+  },
 };

@@ -17,6 +17,7 @@
   /* Override default resize icon */
   :global(.grid-stack-item)  {
     :global(.ui-resizable-handle) {
+      /* Fixed color svg with fill: #484848, so it works on both dark/light theme */
       background-image: url('/image/icon-svg/mdi--resize-bottom-right.svg');
     }
 

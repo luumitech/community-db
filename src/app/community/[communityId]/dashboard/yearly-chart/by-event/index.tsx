@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { usePageContext } from '../../page-context';
-import { widgetInfo } from '../../widget-definition';
+import { allowableWidgets } from '../../widget-definition';
 import { EventNameSelect } from './event-name-select';
 import { ParticipationChart } from './participation-chart';
 import { TicketSaleTable } from './ticket-sale-table';
@@ -81,7 +81,7 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} ${widgetInfo.byEvent.label}`}</p>
+          <p className="text-md font-bold">{`${year} ${allowableWidgets.byEvent.info.label}`}</p>
         </div>
       </CardHeader>
       <CardBody>

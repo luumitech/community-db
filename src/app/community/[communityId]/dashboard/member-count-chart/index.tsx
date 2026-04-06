@@ -13,7 +13,7 @@ import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { lsFlags } from '~/lib/env';
 import { usePageContext } from '../page-context';
-import { widgetInfo } from '../widget-definition';
+import { allowableWidgets } from '../widget-definition';
 import { FootNote } from './foot-note';
 import { MemberCountBarChart } from './member-count-bar-chart';
 import { YearRangeSelect } from './year-range-select';
@@ -54,7 +54,7 @@ export const MemberCountChart: React.FC<MemberCountChartProps> = ({
         className={cn('flex flex-col gap-2', 'items-start', 'sm:flex-row')}
       >
         <p className={cn('sm:flex-1', 'text-md font-bold')}>
-          {widgetInfo.memberCount.label}
+          {allowableWidgets.memberCount.info.label}
         </p>
         <div className="flex gap-2 self-end">
           {community != null && (

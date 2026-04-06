@@ -24,20 +24,27 @@ export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
   const { formMethods } = useHookFormContext();
   const { reset, formState } = formMethods;
   const { isDirty } = formState;
-  const { widgetInfo } = arg;
+  const { allowableWidgets } = arg;
 
   return (
     <DrawerContent>
       {(closeDrawer) => (
         <>
-          <DrawerHeader>Dashboard Configuration</DrawerHeader>
+          <DrawerHeader>Widgets Configuration</DrawerHeader>
           <DrawerBody className="flex flex-col gap-4">
-            <span>Select widgets to display in dashboard:</span>
+            <span>Select widgets to display:</span>
             <CheckboxGroup<InputData>
               controlName="widgetIdList"
-              orientation="horizontal"
+              classNames={{
+                wrapper: cn(
+                  'grid grid-cols-1',
+                  'sm:grid-cols-2',
+                  'md:grid-cols-3',
+                  'lg:grid-cols-4'
+                ),
+              }}
             >
-              {Object.entries(widgetInfo).map(([id, info]) => (
+              {Object.entries(allowableWidgets).map(([id, { info }]) => (
                 <Checkbox
                   aria-label={info.label}
                   classNames={{

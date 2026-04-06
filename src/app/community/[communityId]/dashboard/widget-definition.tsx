@@ -23,34 +23,6 @@ export const widgetIdList = [
 
 export type WidgetId = (typeof widgetIdList)[number];
 
-export const widgetInfo: Record<WidgetId, WidgetInfo> = {
-  memberCount: {
-    label: 'Total Membership Count',
-    description:
-      'Visualizes the growth or decline of your total membership base over time, with each bar representing the cumulative member count for a given year.',
-  },
-  membershipSource: {
-    label: 'Membership Source',
-    description:
-      'Breaks down the distribution of how members were acquired, showing the relative contribution of each event as a proportion of total membership.',
-  },
-  membershipFee: {
-    label: 'Membership Fee',
-    description:
-      'Provides a detailed breakdown of membership fee collection, including payment method and totals to help track revenue from member subscriptions.',
-  },
-  eventParticipation: {
-    label: 'Event Participation',
-    description:
-      'Compares attendance across all events within a selected year, making it easy to identify your most and least popular events at a glance.',
-  },
-  byEvent: {
-    label: 'Event Details',
-    description:
-      'Offers a granular view of ticket sales performance for each individual event, including sales volumes and other key metrics to assess event-level success.',
-  },
-};
-
 /**
  * List of allowable widgets to render in dashboard
  *
@@ -98,10 +70,46 @@ const byEvent = defineWidget({
   y: membershipFee.y! + membershipFee.h!,
   content: <ByEvent className="h-full w-full" />,
 });
+
 export const allowableWidgets: WidgetMap<WidgetId> = {
-  memberCount,
-  membershipSource,
-  membershipFee,
-  eventParticipation,
-  byEvent,
+  memberCount: {
+    widget: memberCount,
+    info: {
+      label: 'Total Membership Count',
+      description:
+        'Track how your membership base has grown or shrunk year over year.',
+    },
+  },
+  membershipSource: {
+    widget: membershipSource,
+    info: {
+      label: 'Membership Source',
+      description:
+        'See which events are driving new memberships. Displays each event as a share of total members acquired, so you can identify your most effective recruitment channels.',
+    },
+  },
+  membershipFee: {
+    widget: membershipFee,
+    info: {
+      label: 'Membership Fee',
+      description:
+        'Monitor revenue collected from membership fees, broken down by payment method. Useful for reconciling payments and understanding how members prefer to pay.',
+    },
+  },
+  eventParticipation: {
+    widget: eventParticipation,
+    info: {
+      label: 'Event Participation',
+      description:
+        'Compare attendance across all events in a selected year at a glance. Quickly spot which events drew the biggest crowds and which may need more promotion.',
+    },
+  },
+  byEvent: {
+    widget: byEvent,
+    info: {
+      label: 'Event Details',
+      description:
+        'Dive into ticket sales and key performance metrics for a specific event. Ideal for evaluating individual event success and informing planning for future events.',
+    },
+  },
 };

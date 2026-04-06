@@ -56,7 +56,7 @@ export const GridStack = function GridStack({
 
   return (
     <div className="grid-stack-wrapper">
-      <div ref={headerNodeRef} />
+      <div className="grid-stack-header" ref={headerNodeRef} />
       {headerNode && footerNode && (
         <GridStackWrapperProvider
           headerNode={headerNode}
@@ -74,11 +74,12 @@ export const GridStack = function GridStack({
           </div>
         </GridStackWrapperProvider>
       )}
-      <div ref={footerNodeRef} />
+      <div className="grid-stack-footer" ref={footerNodeRef} />
     </div>
   );
 };
 
+/** Render widgets within the GridStack component */
 GridStack.Widgets = GridStackWidgets;
 /** Render elements above the grid */
 GridStack.Header = GridStackHeader;

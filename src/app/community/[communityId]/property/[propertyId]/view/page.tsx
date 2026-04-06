@@ -7,7 +7,7 @@ import { LastModified } from '~/view/last-modified';
 import { useLayoutContext } from '../layout-context';
 import { MoreMenu } from '../more-menu';
 import { PropertyDisplay } from './property-display';
-import { allowableWidgets, widgetInfo } from './widget-definition';
+import { allowableWidgets } from './widget-definition';
 
 interface Params {
   communityId: string;
@@ -34,7 +34,6 @@ export default function Property(props: RouteArgs) {
         <GridStackWithCard
           lsSuffix="property-view"
           allowableWidgets={allowableWidgets}
-          widgetInfo={widgetInfo}
           options={{
             cellHeight: '60px',
           }}

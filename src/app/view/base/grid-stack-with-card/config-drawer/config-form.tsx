@@ -4,13 +4,13 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
 import { useLayoutManagerContext } from '~/view/base/grid-stack-with-card';
-import type { WidgetInfo } from '../_type';
+import type { WidgetMap } from '../_type';
 import { ConfigContent } from './config-content';
 import { useHookForm, type InputData } from './use-hook-form';
 
 export interface DrawerArg {
   grid: GridStack;
-  widgetInfo: Record<string, WidgetInfo>;
+  allowableWidgets: WidgetMap<string>;
 }
 
 interface Props extends DrawerArg {
