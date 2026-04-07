@@ -74,6 +74,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
           // Hide header in small media query
           'hidden sm:grid'
         ),
+        headerSticky: cn('bg-content1'),
         bodyContainer: cn('px-3', 'text-sm font-normal text-foreground'),
       }}
       columnKeys={['eventName', 'eventDate', 'ticketCount', 'ticketPrice']}
