@@ -47,6 +47,11 @@
   --header-height: 64px;
 }
 
+.dark {
+  /* Override the default blue to make it easier on the eye in dark mode */
+  --heroui-primary: 210 57% 60%;
+}
+
 @theme {
   --spacing-header-height: var(--header-height);
   /** The available height in <main/> */

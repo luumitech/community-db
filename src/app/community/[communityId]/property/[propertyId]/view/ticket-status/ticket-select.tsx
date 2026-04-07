@@ -23,7 +23,7 @@ export const TicketSelect: React.FC<Props> = ({ className }) => {
     <Select
       className={cn(className, 'max-w-xs min-w-32')}
       aria-label="Ticket Name"
-      placeholder="Select ticket name"
+      placeholder="Select ticket"
       selectedKeys={ticketSelected ? [ticketSelected] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
