@@ -16,6 +16,7 @@ const DashboardYearlyChartQuery = graphql(/* GraphQL */ `
       ...Dashboard_EventMembership
       ...Dashboard_EventParticipation
       ...Dashboard_EventTicket
+      ...Dashboard_ByTicket
     }
   }
 `);
@@ -28,6 +29,8 @@ type ContextT = Readonly<{
   isLoading: boolean;
   eventSelected: string;
   setEventSelected: (event: string) => void;
+  ticketSelected: string;
+  setTicketSelected: (ticketName: string) => void;
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -40,9 +43,12 @@ interface Props {
 
 export function PageProvider({ communityId, children, ...props }: Props) {
   const dispatch = useDispatch();
-  const { lastEventSelected } = useSelector((state) => state.ui);
+  const uiState = useSelector((state) => state.ui);
   const [eventSelected, setEventSelected] = React.useState(
-    lastEventSelected ?? ''
+    uiState.lastEventSelected ?? ''
+  );
+  const [ticketSelected, setTicketSelected] = React.useState(
+    uiState.ticketSelected ?? ''
   );
   const { yearSelected } = useSelector((state) => state.ui);
   const onYearSelect = React.useCallback(
@@ -73,6 +79,8 @@ export function PageProvider({ communityId, children, ...props }: Props) {
         isLoading: !!result.loading,
         eventSelected,
         setEventSelected,
+        ticketSelected,
+        setTicketSelected,
       }}
       {...props}
     >

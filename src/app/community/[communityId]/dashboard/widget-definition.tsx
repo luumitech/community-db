@@ -1,12 +1,10 @@
 import React from 'react';
 import { defineWidget } from '~/view/base/grid-stack';
-import {
-  type WidgetInfo,
-  type WidgetMap,
-} from '~/view/base/grid-stack-with-card';
+import { type WidgetMap } from '~/view/base/grid-stack-with-card';
 import { MemberCountChart } from './member-count-chart';
 import {
   ByEvent,
+  ByTicket,
   EventParticipation,
   MembershipFee,
   MembershipSource,
@@ -19,6 +17,7 @@ export const widgetIdList = [
   'membershipFee',
   'eventParticipation',
   'byEvent',
+  'byTicket',
 ] as const;
 
 export type WidgetId = (typeof widgetIdList)[number];
@@ -70,6 +69,14 @@ const byEvent = defineWidget({
   y: membershipFee.y! + membershipFee.h!,
   content: <ByEvent className="h-full w-full" />,
 });
+const byTicket = defineWidget({
+  id: 'byTicket',
+  w: 6,
+  h: 10,
+  x: eventParticipation.x!,
+  y: eventParticipation.y! + eventParticipation.h!,
+  content: <ByTicket className="h-full w-full" />,
+});
 
 export const allowableWidgets: WidgetMap<WidgetId> = {
   memberCount: {
@@ -109,7 +116,15 @@ export const allowableWidgets: WidgetMap<WidgetId> = {
     info: {
       label: 'Event Details',
       description:
-        'Dive into ticket sales and key performance metrics for a specific event. Ideal for evaluating individual event success and informing planning for future events.',
+        'Dive into ticket sales metrics for a specific event. Ideal for evaluating individual event success and informing planning for future events.',
     },
+  },
+  byTicket: {
+    widget: byTicket,
+    info: {
+      label: 'Ticket Details',
+      description: 'Dive into ticket sales during the year.',
+    },
+    hide: true,
   },
 };

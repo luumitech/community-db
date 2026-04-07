@@ -23,6 +23,7 @@ export const PageContent: React.FC<Props> = ({ className }) => {
         case 'membershipFee':
         case 'eventParticipation':
         case 'byEvent':
+        case 'byTicket':
           return community != null;
         default:
           throw new Error(`Unrecognized widget ID: ${widget.id}`);
