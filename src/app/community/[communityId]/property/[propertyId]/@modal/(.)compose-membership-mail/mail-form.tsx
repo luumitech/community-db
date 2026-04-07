@@ -1,9 +1,12 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { InputEmail } from '~/view/base/input-email';
+import { createInputEmail } from '~/view/base/input-email';
 import { mentionClass } from './editor-util';
 import { TextEditor } from './text-editor';
 import { ToSelect } from './to-select';
+import { type InputData } from './use-hook-form';
+
+const InputEmail = createInputEmail<InputData>();
 
 interface Props {
   className?: string;

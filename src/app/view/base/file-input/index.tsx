@@ -1,22 +1,31 @@
 import { Input, InputProps } from '@heroui/react';
 import React from 'react';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 import { FlatButton } from '~/view/base/flat-button';
 
-type ReactInputProps = React.InputHTMLAttributes<HTMLInputElement>;
+type ReactInputProps = React.ComponentProps<'input'>;
 type CustomInputProps = Omit<
   InputProps,
   'readOnly' | 'endContent' | keyof ReactInputProps
 >;
 
-export interface FileInputProps extends CustomInputProps, ReactInputProps {
-  controlName: string;
+export interface FileInputProps<P extends FieldValues = FieldValues>
+  extends CustomInputProps, ReactInputProps {
+  controlName: Path<P>;
 }
 
-export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
-  ({ controlName, onBlur, onChange, onClear, ...props }, ref) => {
+export const FileInput = React.forwardRef(
+  <P extends FieldValues = FieldValues>(
+    { controlName, onBlur, onChange, onClear, ...props }: FileInputProps<P>,
+    ref: React.ForwardedRef<HTMLInputElement>
+  ) => {
     const inputRef = useForwardRef<HTMLInputElement>(ref);
     const { control } = useFormContext();
     const [filename, setFilename] = React.useState<string>();
@@ -84,6 +93,24 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
       />
     );
   }
-);
+) as (<P extends FieldValues>(
+  props: FileInputProps<P> & {
+    ref?: React.ForwardedRef<HTMLInputElement>;
+  }
+) => React.ReactElement) & { displayName?: string };
 
 FileInput.displayName = 'FileInput';
+
+/**
+ * A component factory that takes the FieldValues as generic to produce a
+ * component that would provide type assistance to controlName property
+ */
+export function createFileInput<P extends FieldValues>() {
+  type Props = FileInputProps<P>;
+
+  const component = FileInput as (
+    props: Props & { ref?: React.ForwardedRef<HTMLInputElement> }
+  ) => React.ReactElement;
+
+  return component;
+}

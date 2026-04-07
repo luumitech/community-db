@@ -1,17 +1,21 @@
 import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { NumericFormat, type NumericFormatProps } from 'react-number-format';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
 type CustomInputProps = Omit<InputProps, keyof NumericFormatProps>;
 
-export interface CurrencyInputProps
-  extends NumericFormatProps,
-    CustomInputProps {
-  controlName: string;
+export interface CurrencyInputProps<P extends FieldValues = FieldValues>
+  extends NumericFormatProps, CustomInputProps {
+  controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
    * work properly
@@ -19,11 +23,8 @@ export interface CurrencyInputProps
   isControlled?: boolean;
 }
 
-export const CurrencyInput = React.forwardRef<
-  HTMLInputElement,
-  CurrencyInputProps
->(
-  (
+export const CurrencyInput = React.forwardRef(
+  <P extends FieldValues = FieldValues>(
     {
       classNames,
       controlName,
@@ -32,10 +33,10 @@ export const CurrencyInput = React.forwardRef<
       onChange,
       isReadOnly,
       ...props
-    },
-    ref
+    }: CurrencyInputProps<P>,
+    ref: React.ForwardedRef<HTMLInputElement>
   ) => {
-    const { control } = useFormContext();
+    const { control } = useFormContext<P>();
 
     return (
       <Controller
@@ -59,9 +60,9 @@ export const CurrencyInput = React.forwardRef<
             }}
             // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
             customInput={Input}
-            defaultValue={field.value ?? ''}
-            // Force component into a controlled component
-            {...(isControlled && { value: field.value ?? '' })}
+            {...(isControlled
+              ? { value: field.value ?? '' }
+              : { defaultValue: field.value ?? '' })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);
@@ -78,7 +79,7 @@ export const CurrencyInput = React.forwardRef<
             fixedDecimalScale
             startContent={
               <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">$</span>
+                <span className="text-small text-default-400">$</span>
               </div>
             }
             onKeyDown={(e) => {
@@ -97,6 +98,24 @@ export const CurrencyInput = React.forwardRef<
       />
     );
   }
-);
+) as (<P extends FieldValues>(
+  props: CurrencyInputProps<P> & {
+    ref?: React.ForwardedRef<HTMLInputElement>;
+  }
+) => React.ReactElement) & { displayName?: string };
 
 CurrencyInput.displayName = 'CurrencyInput';
+
+/**
+ * A component factory that takes the FieldValues as generic to produce a
+ * component that would provide type assistance to controlName property
+ */
+export function createCurrencyInput<P extends FieldValues>() {
+  type Props = CurrencyInputProps<P>;
+
+  const component = CurrencyInput as (
+    props: Props & { ref?: React.ForwardedRef<HTMLInputElement> }
+  ) => React.ReactElement;
+
+  return component;
+}

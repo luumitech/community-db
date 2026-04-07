@@ -11,12 +11,15 @@ import React from 'react';
 import {
   useFieldArray,
   useHookFormContext,
+  type InputData,
 } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
-import { Input } from '~/view/base/input';
+import { createInput } from '~/view/base/input';
 import { ContactMethodRow } from './contact-method-row';
+
+const Input = createInput<InputData>();
 
 interface Props {
   className?: string;

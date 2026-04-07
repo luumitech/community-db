@@ -1,6 +1,6 @@
 import { Select, SelectItem, cn } from '@heroui/react';
 import React from 'react';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
 
 interface Props {
   className?: string;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const EventNameSelect: React.FC<Props> = ({ className, eventList }) => {
-  const { eventSelected, setEventSelected } = useYearlyContext();
+  const { eventSelected, setEventSelected } = usePageContext();
   const eventItems = eventList.map((eventName) => ({
     label: eventName,
     value: eventName,

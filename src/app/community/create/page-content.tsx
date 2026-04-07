@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
-import { Input } from '~/view/base/input';
+import { createInput } from '~/view/base/input';
 import { toast } from '~/view/base/toastify';
 import {
   CommunityCreateMutation,
-  InputData,
   useHookFormContext,
+  type InputData,
 } from './use-hook-form';
+
+const Input = createInput<InputData>();
 
 interface Props {}
 

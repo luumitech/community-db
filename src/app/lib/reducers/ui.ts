@@ -4,13 +4,20 @@ type State = Readonly<{
   /** Last event selected while editing membership detail */
   lastEventSelected?: string;
   /**
-   * Year selected In:
+   * Year selected in:
    *
+   * - Property View
    * - Membership editor
    * - Dashboard
    * - Map view
    */
   yearSelected: number | null;
+  /**
+   * Ticket selected in:
+   *
+   * - Property view
+   */
+  ticketSelected?: string;
 }>;
 
 const initialState: State = {
@@ -20,6 +27,7 @@ const initialState: State = {
    * available for current year
    */
   yearSelected: null,
+  ticketSelected: undefined,
 };
 
 export const uiSlice = createSlice({
@@ -37,6 +45,12 @@ export const uiSlice = createSlice({
       const yearNum =
         typeof payload === 'string' ? parseInt(payload, 10) : payload;
       state.yearSelected = isNaN(yearNum) ? null : yearNum;
+    },
+    setTicketSelected: (
+      state,
+      { payload }: PayloadAction<string | undefined>
+    ) => {
+      state.ticketSelected = payload ?? undefined;
     },
   },
 });

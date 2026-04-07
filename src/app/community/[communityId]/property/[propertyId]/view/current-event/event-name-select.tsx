@@ -6,7 +6,6 @@ import {
   renderEmptyResult,
   renderItems,
 } from '~/community/[communityId]/layout-util/render-select';
-
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { getCurrentDate } from '~/lib/date-util';
 
@@ -23,7 +22,7 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
 
   return (
     <Select
-      className={cn(className, 'min-w-32 max-w-xs')}
+      className={cn(className, 'max-w-xs min-w-32')}
       aria-label="Current Event Name"
       placeholder="Select current event"
       description={getCurrentDate()}

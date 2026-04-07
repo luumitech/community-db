@@ -4,8 +4,8 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { PieChart } from '~/view/base/chart';
 import { ChartDataHelperUtil } from '../../chart-data-helper';
-import { type DashboardEntry } from '../_type';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
+import { allowableWidgets } from '../../widget-definition';
 
 const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
@@ -53,19 +53,11 @@ class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
 
 interface Props {
   className?: string;
-  fragment?: DashboardEntry;
-  year: number;
-  isLoading?: boolean;
 }
 
-export const MembershipSource: React.FC<Props> = ({
-  className,
-  fragment,
-  year,
-  isLoading,
-}) => {
-  const { setEventSelected } = useYearlyContext();
-  const entry = getFragment(MembershipSourceFragment, fragment);
+export const MembershipSource: React.FC<Props> = ({ className }) => {
+  const { setEventSelected, community, year, isLoading } = usePageContext();
+  const entry = getFragment(MembershipSourceFragment, community);
 
   const chartHelper = React.useMemo(() => {
     const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
@@ -79,7 +71,7 @@ export const MembershipSource: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} Membership Source`}</p>
+          <p className="text-md font-bold">{`${year} ${allowableWidgets.membershipSource.info.label}`}</p>
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">

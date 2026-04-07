@@ -1,20 +1,39 @@
 import { Chip, cn } from '@heroui/react';
 import React from 'react';
 import { ReactMultiEmail, type IReactMultiEmailProps } from 'react-multi-email';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
 type CustomReactMultiEmailProps = Omit<IReactMultiEmailProps, 'getLabel'>;
 
-export interface InputEmailProps extends CustomReactMultiEmailProps {
-  controlName: string;
+export interface InputEmailProps<
+  P extends FieldValues = FieldValues,
+> extends CustomReactMultiEmailProps {
+  controlName: Path<P>;
   label?: React.ReactNode;
   description?: React.ReactNode;
 }
 
+const getLabel: IReactMultiEmailProps['getLabel'] = (
+  email,
+  index,
+  removeEmail
+) => {
+  return (
+    <Chip key={index} size="sm" onClose={() => removeEmail(index)}>
+      {email}
+    </Chip>
+  );
+};
+
 /** ReactMultiEmail is only available in controlled form */
-export const InputEmail: React.FC<InputEmailProps> = ({
+export function InputEmail<P extends FieldValues = FieldValues>({
   className,
   controlName,
   label,
@@ -22,19 +41,8 @@ export const InputEmail: React.FC<InputEmailProps> = ({
   onChange,
   description,
   ...props
-}) => {
+}: InputEmailProps<P>) {
   const { control } = useFormContext();
-
-  const getLabel = React.useCallback<IReactMultiEmailProps['getLabel']>(
-    (email, index, removeEmail) => {
-      return (
-        <Chip key={index} size="sm" onClose={() => removeEmail(index)}>
-          {email}
-        </Chip>
-      );
-    },
-    []
-  );
 
   return (
     <Controller
@@ -96,4 +104,15 @@ export const InputEmail: React.FC<InputEmailProps> = ({
       )}
     />
   );
-};
+}
+
+/**
+ * A component factory that takes the FieldValues as generic to produce a
+ * component that would provide type assistance to controlName property
+ */
+export function createInputEmail<P extends FieldValues>() {
+  type Props = InputEmailProps<P>;
+
+  const component = InputEmail as (props: Props) => React.ReactElement;
+  return component;
+}

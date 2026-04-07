@@ -1,7 +1,12 @@
 import { Input, InputProps, cn } from '@heroui/react';
 import React from 'react';
 import { PatternFormat, type PatternFormatProps } from 'react-number-format';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { SelectItem, SelectSection } from '@heroui/react';
@@ -9,10 +14,9 @@ export { SelectItem, SelectSection } from '@heroui/react';
 type CustomPatternFormatProps = Omit<PatternFormatProps, 'format'>;
 type CustomInputProps = Omit<InputProps, keyof CustomPatternFormatProps>;
 
-export interface PhoneInputProps
-  extends CustomPatternFormatProps,
-    CustomInputProps {
-  controlName: string;
+export interface PhoneInputProps<P extends FieldValues = FieldValues>
+  extends CustomPatternFormatProps, CustomInputProps {
+  controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
    * work properly
@@ -20,8 +24,8 @@ export interface PhoneInputProps
   isControlled?: boolean;
 }
 
-export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-  (
+export const PhoneInput = React.forwardRef(
+  <P extends FieldValues = FieldValues>(
     {
       classNames,
       controlName,
@@ -30,10 +34,10 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       onChange,
       isReadOnly,
       ...props
-    },
-    ref
+    }: PhoneInputProps<P>,
+    ref: React.ForwardedRef<HTMLInputElement>
   ) => {
-    const { control } = useFormContext();
+    const { control } = useFormContext<P>();
 
     return (
       <Controller
@@ -57,9 +61,9 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             }}
             // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
             customInput={Input}
-            defaultValue={field.value ?? ''}
-            // Force component into a controlled component
-            {...(isControlled && { value: field.value ?? '' })}
+            {...(isControlled
+              ? { value: field.value ?? '' }
+              : { defaultValue: field.value ?? '' })}
             onBlur={(evt) => {
               field.onBlur();
               onBlur?.(evt);
@@ -89,6 +93,24 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       />
     );
   }
-);
+) as (<P extends FieldValues>(
+  props: PhoneInputProps<P> & {
+    ref?: React.ForwardedRef<HTMLInputElement>;
+  }
+) => React.ReactElement) & { displayName?: string };
 
 PhoneInput.displayName = 'PhoneInput';
+
+/**
+ * A component factory that takes the FieldValues as generic to produce a
+ * component that would provide type assistance to controlName property
+ */
+export function createPhoneInput<P extends FieldValues>() {
+  type Props = PhoneInputProps<P>;
+
+  const component = PhoneInput as (
+    props: Props & { ref?: React.ForwardedRef<HTMLInputElement> }
+  ) => React.ReactElement;
+
+  return component;
+}

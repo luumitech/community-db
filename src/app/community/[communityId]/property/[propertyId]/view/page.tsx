@@ -2,12 +2,12 @@
 import { Divider } from '@heroui/react';
 import React from 'react';
 import { PropertyAutocomplete } from '~/community/[communityId]/common/property-autocomplete';
+import { GridStackWithCard } from '~/view/base/grid-stack-with-card';
 import { LastModified } from '~/view/last-modified';
 import { useLayoutContext } from '../layout-context';
 import { MoreMenu } from '../more-menu';
-import { MembershipDisplay } from './membership-display';
-import { OccupantDisplay } from './occupant-display';
 import { PropertyDisplay } from './property-display';
+import { allowableWidgets } from './widget-definition';
 
 interface Params {
   communityId: string;
@@ -19,20 +19,25 @@ interface RouteArgs {
 }
 
 export default function Property(props: RouteArgs) {
-  const { property, community } = useLayoutContext();
+  const { property } = useLayoutContext();
 
   return (
     <>
       <MoreMenu />
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col">
         <PropertyAutocomplete
-          className="sticky top-header-height z-50 bg-background"
+          className="sticky top-header-height z-50 mb-3 bg-background"
           currentPropertyId={property.id}
         />
         <PropertyDisplay />
-        <Divider />
-        <MembershipDisplay />
-        <OccupantDisplay />
+        <Divider className="mt-3 mb-1" />
+        <GridStackWithCard
+          lsSuffix="property-view"
+          allowableWidgets={allowableWidgets}
+          options={{
+            cellHeight: '60px',
+          }}
+        />
         <LastModified
           updatedAt={property.updatedAt}
           updatedBy={property.updatedBy}

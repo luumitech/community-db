@@ -18,8 +18,8 @@ import {
 } from '~/view/base/chart';
 import { TableTooltip } from '~/view/base/chart/tooltip';
 import { ChartDataHelperUtil } from '../../chart-data-helper';
-import { type DashboardEntry } from '../_type';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
+import { allowableWidgets } from '../../widget-definition';
 
 const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
@@ -117,19 +117,12 @@ function customTooltip(helper: ChartDataHelper) {
 
 interface Props {
   className?: string;
-  fragment?: DashboardEntry;
-  year: number;
-  isLoading?: boolean;
 }
 
-export const EventParticipation: React.FC<Props> = ({
-  className,
-  fragment,
-  year,
-  isLoading,
-}) => {
-  const { setEventSelected, eventSelected } = useYearlyContext();
-  const entry = getFragment(EventFragment, fragment);
+export const EventParticipation: React.FC<Props> = ({ className }) => {
+  const { setEventSelected, eventSelected, community, year, isLoading } =
+    usePageContext();
+  const entry = getFragment(EventFragment, community);
 
   const chartHelper = React.useMemo(() => {
     const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
@@ -173,7 +166,7 @@ export const EventParticipation: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} Event Participation`}</p>
+          <p className="text-md font-bold">{`${year} ${allowableWidgets.eventParticipation.info.label}`}</p>
         </div>
       </CardHeader>
       <CardBody className="overflow-hidden">

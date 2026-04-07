@@ -1,10 +1,12 @@
 import React from 'react';
 import * as XLSX from 'xlsx';
 import { XlsxView } from '~/community/[communityId]/common/xlsx-view';
-import { FileInput } from '~/view/base/file-input';
+import { createFileInput } from '~/view/base/file-input';
 import { toast } from '~/view/base/toastify';
 import { StartImport } from '../start-import';
-import { useHookFormContext } from '../use-hook-form';
+import { useHookFormContext, type InputData } from '../use-hook-form';
+
+const FileInput = createFileInput<InputData>();
 
 interface Props {}
 

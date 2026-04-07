@@ -35,11 +35,13 @@ export const CLASS_DEFAULT: ClassDefault = {
   ),
   headerSticky: cn(
     /** Default sticky to top of container */
-    'sticky top-0 z-50 bg-background'
+    'sticky top-0 z-50',
+    /** Matches the default background color */
+    'bg-background'
   ),
   headerContainer: cn(
     /** Background color */
-    'bg-default-200/50',
+    'bg-default-200',
     'rounded-small',
     /** Default header text */
     'text-xs font-semibold text-default-400'

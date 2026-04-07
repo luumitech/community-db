@@ -3,7 +3,7 @@ import { Card, CardHeader } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { graphql } from '~/graphql/generated';
-import { useYearlyContext } from '../../yearly-context';
+import { usePageContext } from '../../../page-context';
 import { type MemberSourceStat } from '../_type';
 import { MemberCount } from './member-count';
 import { NoMember } from './no-member';
@@ -36,7 +36,7 @@ export const ParticipationChart: React.FC<Props> = ({
   year,
   memberSourceStat,
 }) => {
-  const { communityId, eventSelected } = useYearlyContext();
+  const { communityId, eventSelected } = usePageContext();
   /**
    * This query can fail if there is no statistics available for the previous
    * year. In that case, let the query fail and handle it gracefully.

@@ -1,6 +1,9 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Input } from '~/view/base/input';
+import { createInput } from '~/view/base/input';
+import { type InputData } from '../use-hook-form';
+
+const Input = createInput<InputData>();
 
 interface Props {
   className?: string;

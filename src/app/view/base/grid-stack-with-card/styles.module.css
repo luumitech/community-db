@@ -1,0 +1,54 @@
+.gridWrapper {
+  :global(.grid-stack-item-content) {
+    /* Allow Card shadow to render properly */
+    overflow: visible !important;
+    /* Match the Card component border radius */
+    border-radius: var(--heroui-radius-large);
+  }
+
+  /* Placeholder styles when dragging widgets */
+  :global(.grid-stack-placeholder > .placeholder-content) {
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 2px dashed #a0a0a0;
+    /* Match Card's border radius */
+    border-radius: 12px;
+  }
+
+  /* Override default resize icon */
+  :global(.grid-stack-item)  {
+    :global(.ui-resizable-handle) {
+      /* Fixed color svg with fill: #484848, so it works on both dark/light theme */
+      background-image: url('/image/icon-svg/mdi--resize-bottom-right.svg');
+    }
+
+    :global(.ui-resizable-se) {
+      transform: rotate(0);
+      /* Override the default z-100, this value needs to be lower than
+      the header z-index */
+      z-index: 10 !important;
+    }
+
+    /* Hide other widget control components when resizable handles are hidden */
+    &:global(.ui-resizable-autohide),
+    &:global(.ui-draggable-dragging) {
+      :global(.widget-control) {
+        opacity: 0;
+      }
+    }
+
+    :global(.grid-stack-item-content) {
+      cursor: grab;
+    }
+
+    &:global(.ui-draggable-dragging) {
+      transform: rotate(1.5deg);
+      /* cursor: grabbing; */
+    }
+  }
+}
+
+/* Adding grabbing above didn't work, so try to apply it globally */
+:global(body):has(:global(.ui-draggable-dragging)),
+:global(body):has(:global(.ui-draggable-dragging)) * {
+  cursor: grabbing;
+}

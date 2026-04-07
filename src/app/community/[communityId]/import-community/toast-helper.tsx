@@ -72,7 +72,9 @@ export class ToastHelper {
     this.import = {
       progress: 0,
     };
-    this.toastId = toast.loading('Importing (Please wait)...');
+    this.toastId = toast.loading('Importing (Please wait)...', {
+      closeButton: true,
+    });
   }
 
   get uploadProgress() {
@@ -108,7 +110,6 @@ export class ToastHelper {
       ...(totalProgress >= 1 && {
         progress: undefined,
         isLoading: false,
-        closeButton: true,
         autoClose: 5000,
       }),
     });
@@ -137,7 +138,6 @@ export class ToastHelper {
       render: errMsg,
       progress: undefined,
       isLoading: false,
-      closeButton: true,
     });
   }
 }

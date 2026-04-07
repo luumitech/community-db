@@ -1,13 +1,19 @@
 import { type InputProps } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
+import {
+  useHookFormContext,
+  type InputData,
+} from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
-import { Input } from '~/view/base/input';
-import { PhoneInput } from '~/view/base/phone-input';
+import { createInput } from '~/view/base/input';
+import { createPhoneInput } from '~/view/base/phone-input';
 import { ContactMethodSelect } from './contact-method-select';
+
+const Input = createInput<InputData>();
+const PhoneInput = createPhoneInput<InputData>();
 
 interface ValueInputProps {
   className?: string;

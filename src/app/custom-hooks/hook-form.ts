@@ -11,6 +11,7 @@ export {
   FormProvider,
   useFieldArray,
   useFormContext,
+  type FieldValues,
   type Path,
   type UseFieldArrayReturn,
   type UseFormReturn,

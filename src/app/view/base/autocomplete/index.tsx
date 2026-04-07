@@ -5,14 +5,21 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import { Controller, useFormContext } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type FieldValues,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
 export { AutocompleteItem, AutocompleteSection } from '@heroui/react';
 
-export interface AutocompleteProps<T extends object = object>
-  extends NextUIAutocompleteProps<T> {
-  controlName: string;
+export interface AutocompleteProps<
+  T extends object = object,
+  P extends FieldValues = FieldValues,
+> extends NextUIAutocompleteProps<T> {
+  controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
    * work properly
@@ -39,57 +46,66 @@ function coerceToString(input: string | boolean | number) {
   return R.isEmpty(input) ? '' : input.trim();
 }
 
-export function Autocomplete<T extends object>(props: AutocompleteProps<T>) {
-  const AutocompleteImpl = React.forwardRef<
-    HTMLInputElement | null,
-    AutocompleteProps<T>
-  >(
-    (
-      {
-        classNames,
-        controlName,
-        isControlled,
-        onBlur,
-        onClear,
-        ...selectProps
-      },
-      ref
-    ) => {
-      const { control } = useFormContext();
+const Autocomplete = React.forwardRef(
+  <T extends object, P extends FieldValues = FieldValues>(
+    {
+      classNames,
+      controlName,
+      isControlled,
+      onBlur,
+      onClear,
+      ...selectProps
+    }: AutocompleteProps<T, P>,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
+    const { control } = useFormContext<P>();
 
-      return (
-        <Controller
-          control={control}
-          name={controlName}
-          render={({ field, fieldState }) => (
-            <NextUIAutocomplete<T>
-              key="abc"
-              ref={mergeRefs(field.ref, ref)}
-              classNames={{
-                ...classNames,
-              }}
-              // Force component into a controlled component
-              {...(isControlled && {
-                value: coerceToString(field.value),
-              })}
-              defaultInputValue={coerceToString(field.value)}
-              onInputChange={(val) => {
-                field.onChange(val);
-              }}
-              onBlur={(evt) => {
-                field.onBlur();
-                onBlur?.(evt);
-              }}
-              errorMessage={fieldState.error?.message}
-              isInvalid={fieldState.invalid}
-              {...selectProps}
-            />
-          )}
-        />
-      );
-    }
-  );
+    return (
+      <Controller
+        control={control}
+        name={controlName}
+        render={({ field, fieldState }) => (
+          <NextUIAutocomplete<T>
+            ref={mergeRefs(field.ref, ref)}
+            classNames={{
+              ...classNames,
+            }}
+            {...(isControlled
+              ? { value: coerceToString(field.value) }
+              : { defaultInputValue: coerceToString(field.value) })}
+            onInputChange={(val) => {
+              field.onChange(val);
+            }}
+            onBlur={(evt) => {
+              field.onBlur();
+              onBlur?.(evt);
+            }}
+            errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
+            {...selectProps}
+          />
+        )}
+      />
+    );
+  }
+) as (<T extends object, P extends FieldValues>(
+  props: AutocompleteProps<T, P> & {
+    ref?: React.ForwardedRef<HTMLDivElement>;
+  }
+) => React.ReactElement) & { displayName?: string };
 
-  AutocompleteImpl.displayName = 'Autocomplete';
-  return <AutocompleteImpl {...props} />;
+Autocomplete.displayName = 'Autocomplete';
+
+/**
+ * A component factory that takes the FieldValues as generic to produce a
+ * component that would provide type assistance to controlName property
+ */
+export function createAutocomplete<P extends FieldValues>() {
+  type Props<T extends object> = AutocompleteProps<T, P>;
+
+  const component = Autocomplete as <T extends object>(
+    props: Props<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  ) => React.ReactElement;
+
+  return component;
 }

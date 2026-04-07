@@ -2,14 +2,16 @@ import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
-import { Select, SelectItem } from '~/view/base/select';
+import { SelectItem, createSelect } from '~/view/base/select';
 import { importMethodSelectionList } from './_type';
 import { MethodMap } from './method-map';
 import { useCheckMethodRequirement } from './method-map/check-method-requirement';
 import { MethodRandom } from './method-random';
 import { MethodXlsx } from './method-xlsx';
 import { usePageContext } from './page-context';
-import { useHookFormContext } from './use-hook-form';
+import { useHookFormContext, type InputData } from './use-hook-form';
+
+const Select = createSelect<InputData>();
 
 interface Props {
   className?: string;

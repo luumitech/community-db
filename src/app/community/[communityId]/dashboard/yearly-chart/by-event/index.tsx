@@ -8,8 +8,8 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { type DashboardEntry } from '../_type';
-import { useYearlyContext } from '../yearly-context';
+import { usePageContext } from '../../page-context';
+import { allowableWidgets } from '../../widget-definition';
 import { EventNameSelect } from './event-name-select';
 import { ParticipationChart } from './participation-chart';
 import { TicketSaleTable } from './ticket-sale-table';
@@ -38,19 +38,11 @@ const EventTicketFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment?: DashboardEntry;
-  year: number;
-  isLoading?: boolean;
 }
 
-export const ByEvent: React.FC<Props> = ({
-  className,
-  fragment,
-  year,
-  isLoading,
-}) => {
-  const { eventSelected } = useYearlyContext();
-  const entry = getFragment(EventTicketFragment, fragment);
+export const ByEvent: React.FC<Props> = ({ className }) => {
+  const { eventSelected, community, year, isLoading } = usePageContext();
+  const entry = getFragment(EventTicketFragment, community);
   const ticketStat = entry?.communityStat.ticketStat ?? [];
   const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
   const ticketList = ticketStat.filter(
@@ -69,7 +61,7 @@ export const ByEvent: React.FC<Props> = ({
   }, [eventList]);
 
   const EventDetails = React.useCallback(() => {
-    if (!eventList.length || !eventSelected) {
+    if (!eventList.length || !eventSelected || !year) {
       return null;
     }
     return (
@@ -89,12 +81,12 @@ export const ByEvent: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} Event Details`}</p>
+          <p className="text-md font-bold">{`${year} ${allowableWidgets.byEvent.info.label}`}</p>
         </div>
       </CardHeader>
       <CardBody>
         <Skeleton
-          className="flex min-h-[400px] flex-col rounded-lg"
+          className="flex h-full flex-col rounded-lg"
           aria-label="skeleton"
           isLoaded={!isLoading}
         >

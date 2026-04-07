@@ -1,7 +1,8 @@
 import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import { type DashboardEntry } from '../_type';
+import { usePageContext } from '../../page-context';
+import { allowableWidgets } from '../../widget-definition';
 import { MembershipFeeTable } from './membership-fee-table';
 
 const EventMembershipFragment = graphql(/* GraphQL */ `
@@ -21,18 +22,11 @@ const EventMembershipFragment = graphql(/* GraphQL */ `
 
 interface Props {
   className?: string;
-  fragment?: DashboardEntry;
-  year: number;
-  isLoading?: boolean;
 }
 
-export const MembershipFee: React.FC<Props> = ({
-  className,
-  fragment,
-  year,
-  isLoading,
-}) => {
-  const entry = getFragment(EventMembershipFragment, fragment);
+export const MembershipFee: React.FC<Props> = ({ className }) => {
+  const { community, year, isLoading } = usePageContext();
+  const entry = getFragment(EventMembershipFragment, community);
 
   const membershipFeeStat = entry?.communityStat.membershipFeeStat ?? [];
 
@@ -40,12 +34,12 @@ export const MembershipFee: React.FC<Props> = ({
     <Card className={cn(className)}>
       <CardHeader>
         <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} Membership Fee`}</p>
+          <p className="text-md font-bold">{`${year} ${allowableWidgets.membershipFee.info.label}`}</p>
         </div>
       </CardHeader>
       <CardBody>
         <Skeleton
-          className="min-h-[400px] rounded-lg"
+          className="h-full rounded-lg"
           aria-label="skeleton"
           isLoaded={!isLoading}
         >

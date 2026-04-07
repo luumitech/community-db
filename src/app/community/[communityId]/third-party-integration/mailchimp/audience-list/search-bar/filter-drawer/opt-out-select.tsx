@@ -1,5 +1,6 @@
 import React from 'react';
-import { Select, SelectItem, SelectProps } from '~/view/base/select';
+import { SelectItem, SelectProps, createSelect } from '~/view/base/select';
+import type { InputData } from '../use-hook-form';
 
 interface OptOutItem {
   /** Label to appear in selection list */
@@ -20,6 +21,7 @@ export const items: OptOutItem[] = [
 ];
 
 type CustomProps = Omit<SelectProps<OptOutItem>, 'controlName' | 'children'>;
+const Select = createSelect<InputData>();
 
 interface Props extends CustomProps {
   className?: string;

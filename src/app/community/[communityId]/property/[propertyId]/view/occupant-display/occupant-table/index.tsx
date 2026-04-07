@@ -58,6 +58,7 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
   return (
     <GridTable
       aria-label="Occupant Details Table"
+      isHeaderSticky
       config={{
         gridContainer: cn(
           'gap-2',
@@ -65,6 +66,7 @@ export const OccupantTable: React.FC<OccupantTableProps> = ({
           'grid-cols-2 sm:grid-cols-7',
           className
         ),
+        headerSticky: cn('bg-content1'),
         headerContainer: cn(
           'items-center',
           'rounded-lg',
