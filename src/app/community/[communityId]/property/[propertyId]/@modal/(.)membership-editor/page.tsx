@@ -47,8 +47,7 @@ export default function MembershipEditor(props: RouteArgs) {
   const [updateProperty] = useMutation(PropertyMutation);
   const { isFilterSpecified } = useSelector((state) => state.searchBar);
 
-  const onSave = async (_input: InputData) => {
-    const { hidden, ...input } = _input;
+  const onSave = async (input: InputData) => {
     await toast.promise(
       updateProperty({
         variables: { input },

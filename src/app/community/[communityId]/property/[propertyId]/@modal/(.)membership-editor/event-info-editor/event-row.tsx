@@ -5,13 +5,9 @@ import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
-import {
-  useHookFormContext,
-  type EventAttendedListFieldArray,
-} from '../use-hook-form';
+import { useHookFormContext } from '../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 import { EventNameSelect } from './event-name-select';
-import { useTicketAccordion } from './use-ticket-acoordion';
 
 interface EventHeaderProps {
   className?: string;
@@ -39,27 +35,34 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
 
 interface EventRowProps {
   className?: string;
-  eventAttendedListMethods: EventAttendedListFieldArray;
-  yearIdx: number;
-  eventIdx: number;
+  membershipPrefix: `membershipList.${number}`;
+  eventPrefix: `membershipList.${number}.eventAttendedList.${number}`;
+  /**
+   * Is this the first event?
+   *
+   * - Membership Fee entry are shown as the first entry in the ticket table
+   */
+  isFirstEvent: boolean;
+  showTicketEditor: boolean;
+  onTicketEditorToggle: () => void;
+  onRemove?: () => void;
 }
 
 export const EventRow: React.FC<EventRowProps> = ({
   className,
-  eventAttendedListMethods,
-  yearIdx,
-  eventIdx,
+  membershipPrefix,
+  eventPrefix,
+  isFirstEvent,
+  showTicketEditor,
+  onTicketEditorToggle,
+  onRemove,
 }) => {
-  const { control, setValue } = useHookFormContext();
-  const { isExpanded, toggle } = useTicketAccordion(yearIdx);
-  const membershipPrefix = `membershipList.${yearIdx}` as const;
-  const ticketListPrefix =
-    `${membershipPrefix}.eventAttendedList.${eventIdx}.ticketList` as const;
+  const { control } = useHookFormContext();
+  const ticketListPrefix = `${eventPrefix}.ticketList` as const;
   const ticketListMethods = useFieldArray({
     control,
     name: ticketListPrefix,
   });
-  const isFirstEvent = eventIdx === 0;
   const ticketCount =
     ticketListMethods.fields.length +
     // Show membership fee in the ticket section of first event
@@ -74,7 +77,7 @@ export const EventRow: React.FC<EventRowProps> = ({
         <FlatButton
           className={cn('pt-3')}
           // disabled={ticketCount === 0}
-          onClick={() => toggle(eventIdx)}
+          onClick={onTicketEditorToggle}
         >
           <Badge
             placement="bottom-right"
@@ -86,7 +89,7 @@ export const EventRow: React.FC<EventRowProps> = ({
               className="justify-self-center text-foreground-400"
               role="cell"
               animate={{
-                rotate: isExpanded(eventIdx) ? 90 : 0,
+                rotate: showTicketEditor ? 90 : 0,
               }}
             >
               <Icon icon="chevron-forward" />
@@ -94,13 +97,16 @@ export const EventRow: React.FC<EventRowProps> = ({
           </Badge>
         </FlatButton>
         <div role="cell">
-          <EventNameSelect yearIdx={yearIdx} eventIdx={eventIdx} />
+          <EventNameSelect
+            membershipPrefix={membershipPrefix}
+            eventPrefix={eventPrefix}
+          />
         </div>
         <div role="cell">
           <EventDatePicker
             className="max-w-xs"
-            yearIdx={yearIdx}
-            eventIdx={eventIdx}
+            membershipPrefix={membershipPrefix}
+            eventPrefix={eventPrefix}
           />
         </div>
         <div className="flex gap-2 pt-3" role="cell">
@@ -108,26 +114,13 @@ export const EventRow: React.FC<EventRowProps> = ({
             className="text-danger"
             icon="cross"
             tooltip="Remove Event"
-            onClick={() => {
-              eventAttendedListMethods.remove(eventIdx);
-              if (eventAttendedListMethods.fields.length === 1) {
-                // About to remove last entry, clear paymentMethod/price
-                setValue(`${membershipPrefix}.paymentMethod`, null, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-                setValue(`${membershipPrefix}.price`, null, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-              }
-            }}
+            onClick={onRemove}
           />
         </div>
       </div>
       <div className="col-span-full">
         <AnimatePresence initial={false}>
-          {isExpanded(eventIdx) && (
+          {showTicketEditor && (
             <motion.div
               className="overflow-hidden"
               initial="collapsed"

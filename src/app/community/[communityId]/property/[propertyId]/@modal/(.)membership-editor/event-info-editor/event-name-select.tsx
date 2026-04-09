@@ -13,14 +13,14 @@ const Select = createSelect<InputData>();
 
 interface Props {
   className?: string;
-  yearIdx: number;
-  eventIdx: number;
+  membershipPrefix: `membershipList.${number}`;
+  eventPrefix: `membershipList.${number}.eventAttendedList.${number}`;
 }
 
 export const EventNameSelect: React.FC<Props> = ({
   className,
-  yearIdx,
-  eventIdx,
+  membershipPrefix,
+  eventPrefix,
 }) => {
   const { communityId, selectEventSections } = useLayoutContext();
   const { clearErrors } = useHookFormContext();
@@ -32,9 +32,9 @@ export const EventNameSelect: React.FC<Props> = ({
          * This is needed because errors like duplicate event names are not
          * cleared automatically after selection is changed
          */
-        clearErrors(`membershipList.${yearIdx}.eventAttendedList`);
+        clearErrors(`${membershipPrefix}.eventAttendedList`);
       },
-      [clearErrors, yearIdx]
+      [clearErrors, membershipPrefix]
     );
 
   const hasNoItem = selectEventSections.length === 0;
@@ -42,7 +42,7 @@ export const EventNameSelect: React.FC<Props> = ({
   return (
     <Select
       className={twMerge('max-w-xs min-w-32', className)}
-      controlName={`membershipList.${yearIdx}.eventAttendedList.${eventIdx}.eventName`}
+      controlName={`${eventPrefix}.eventName`}
       aria-label="Event Name"
       variant="underlined"
       // placeholder="Select an event"

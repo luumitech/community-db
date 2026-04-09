@@ -89,20 +89,6 @@ function schema() {
           }
         )
     ),
-    hidden: z.object({
-      /**
-       * For controlling which ticketList table should be shown
-       *
-       * Used in `Edit Membership Detail` modal, where we only show one
-       * ticketList table at a time (i.e. accordian style)
-       */
-      membershipList: z.array(
-        z.object({
-          // Means ticketList should be expanded for event section of specified index
-          expandTicketListEventIdx: z.number().nullable(),
-        })
-      ),
-    }),
   });
 }
 
@@ -164,12 +150,6 @@ function defaultInputData(
         price: membershipItem?.price ?? defaultItem.price ?? null,
       };
     }),
-    hidden: {
-      membershipList: membershipList.map((v) => ({
-        // Automatically expand the ticketList table in the first event
-        expandTicketListEventIdx: 0,
-      })),
-    },
   };
 }
 
