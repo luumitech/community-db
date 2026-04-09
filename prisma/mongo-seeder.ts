@@ -40,7 +40,7 @@ export class MongoSeeder {
   static fromRandom(count = 100) {
     // Randomly create a workbook containing address with membership info
     const seedJson = seedCommunityData(count);
-    const wsHelper = WorksheetHelper.fromJson(seedJson, 'Sample Community');
+    const wsHelper = WorksheetHelper.fromJson(seedJson, 'fromRandom');
     return new MongoSeeder(wsHelper.wb);
   }
 
@@ -54,24 +54,22 @@ export class MongoSeeder {
    * ```
    *
    * @param prisma Prisma instance
-   * @param owner Owner information for creating this community
+   * @param communityName Community name (optional, default to name specified in
+   *   workbook)
    */
-  async seed(prisma: PrismaClient) {
+  async seed(prisma: PrismaClient, communityName?: string) {
     const communityCreateInput = importXlsx(this.workbook);
 
     const communitySeed: Prisma.CommunityCreateInput[] = [
       {
-        /**
-         * Assign default name to community, but this value would most likely be
-         * overridden by tthe imported result
-         */
-        name: 'CommunityName',
         owner: {
           connect: {
             email: this.authUser.email,
           },
         },
         ...communityCreateInput,
+        /** Override community name, if provided */
+        ...(communityName != null && { name: communityName }),
       },
     ];
 

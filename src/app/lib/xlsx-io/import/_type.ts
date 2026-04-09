@@ -30,6 +30,7 @@ export interface PropertyEntry
 }
 
 export interface CommunityEntry extends Partial<Prisma.CommunityCreateInput> {
+  name: string;
   propertyList: {
     create: PropertyEntry[];
   };
