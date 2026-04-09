@@ -53,6 +53,7 @@ const TicketInput = builder.inputType('TicketInput', {
     count: t.int(),
     price: t.string(),
     paymentMethod: t.string(),
+    paymentDate: t.string(),
   }),
 });
 

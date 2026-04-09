@@ -1,11 +1,8 @@
 import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { useSelector } from '~/custom-hooks/redux';
-import { getCurrentDateAsISOString } from '~/lib/date-util';
-import { Button } from '~/view/base/button';
-import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
+import { EventAddButton } from './event-add-button';
 import { EventRow, EventRowHeader } from './event-row';
 
 interface Props {
@@ -14,41 +11,26 @@ interface Props {
 }
 
 export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
-  const { lastEventSelected } = useSelector((state) => state.ui);
-  const { control, formState } = useHookFormContext();
+  const { control, formState, watch } = useHookFormContext();
   const { errors } = formState;
   const eventAttendedListMethods = useFieldArray({
     control,
     name: `membershipList.${yearIdx}.eventAttendedList`,
   });
+  const eventAttendedList = watch(
+    `membershipList.${yearIdx}.eventAttendedList`
+  );
+
+  const excludeEvents = React.useMemo(() => {
+    if (eventAttendedList.length === 0) {
+      return undefined;
+    }
+    return eventAttendedList.map(({ eventName }) => eventName);
+  }, [eventAttendedList]);
+
   const { fields, append } = eventAttendedListMethods;
   const eventAttendedListError =
     errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
-
-  const topContent = React.useMemo(() => {
-    return (
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-foreground-500">
-          Attended Events
-        </span>
-        <Button
-          color="primary"
-          variant="bordered"
-          size="sm"
-          endContent={<Icon icon="add" />}
-          onPress={() =>
-            append({
-              eventName: lastEventSelected ?? '',
-              eventDate: getCurrentDateAsISOString(),
-              ticketList: [],
-            })
-          }
-        >
-          Add Event
-        </Button>
-      </div>
-    );
-  }, [append, lastEventSelected]);
 
   const bottomContent = React.useMemo(() => {
     return <div className="text-sm text-danger">{eventAttendedListError}</div>;
@@ -56,7 +38,6 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
 
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
-      {topContent}
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div
           className={cn('grid grid-cols-[40px_repeat(2,1fr)_80px]', 'gap-2')}
@@ -82,6 +63,14 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
               eventIdx={eventIdx}
             />
           ))}
+          <div className="col-span-full grid grid-cols-subgrid">
+            <div />
+            <EventAddButton
+              className="justify-self-start"
+              excludeEvents={excludeEvents}
+              onAppend={append}
+            />
+          </div>
         </div>
       </ScrollShadow>
       {bottomContent}

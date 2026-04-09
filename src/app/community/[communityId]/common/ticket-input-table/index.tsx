@@ -20,7 +20,6 @@ import {
 } from './ticket-row';
 
 export * from './_type';
-export { TicketAddButton } from './ticket-add-button';
 
 interface Props {
   className?: string;
@@ -83,15 +82,6 @@ export const TicketInputTable: React.FC<Props> = ({
     );
   }, [error]);
 
-  // Don't render anything if there is nothing to show
-  if (
-    transactionConfig == null &&
-    membershipConfig == null &&
-    ticketListMethods.fields.length === 0
-  ) {
-    return null;
-  }
-
   return (
     <TicketProvider
       ticketListConfig={ticketListConfig}
@@ -101,7 +91,7 @@ export const TicketInputTable: React.FC<Props> = ({
     >
       <div className={cn(className)}>
         <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
-          <div className="grid grid-cols-[25px_repeat(4,1fr)_75px] gap-2">
+          <div className="mb-2 grid grid-cols-[25px_repeat(4,1fr)_75px] gap-2">
             <TicketRowHeader />
             <TicketListReadonly />
             {transactionConfig != null && <TransactionHeader />}
@@ -124,7 +114,7 @@ export const TicketInputTable: React.FC<Props> = ({
                 </ReorderItem>
               ))}
             </ReorderGroup>
-            {transactionConfig != null && <TransactionFooter />}
+            <TransactionFooter />
             {transactionConfig != null && <TransactionTotal />}
           </div>
         </ScrollShadow>

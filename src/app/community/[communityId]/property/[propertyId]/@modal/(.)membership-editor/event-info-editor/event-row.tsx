@@ -1,10 +1,7 @@
 import { Badge, cn } from '@heroui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
-import {
-  TicketAddButton,
-  TicketInputTable,
-} from '~/community/[communityId]/common/ticket-input-table';
+import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
@@ -27,7 +24,7 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
         className,
         'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'items-center font-semibold text-tiny',
+        'items-center text-tiny font-semibold',
         'rounded-lg px-3'
       )}
       role="row"
@@ -54,7 +51,7 @@ export const EventRow: React.FC<EventRowProps> = ({
   eventIdx,
 }) => {
   const { control, setValue } = useHookFormContext();
-  const { isExpanded, toggle, expand, collapse } = useTicketAccordion(yearIdx);
+  const { isExpanded, toggle } = useTicketAccordion(yearIdx);
   const membershipPrefix = `membershipList.${yearIdx}` as const;
   const ticketListPrefix =
     `${membershipPrefix}.eventAttendedList.${eventIdx}.ticketList` as const;
@@ -76,7 +73,7 @@ export const EventRow: React.FC<EventRowProps> = ({
       >
         <FlatButton
           className={cn('pt-3')}
-          disabled={ticketCount === 0}
+          // disabled={ticketCount === 0}
           onClick={() => toggle(eventIdx)}
         >
           <Badge
@@ -89,7 +86,7 @@ export const EventRow: React.FC<EventRowProps> = ({
               className="justify-self-center text-foreground-400"
               role="cell"
               animate={{
-                rotate: isExpanded(eventIdx) && ticketCount > 0 ? 90 : 0,
+                rotate: isExpanded(eventIdx) ? 90 : 0,
               }}
             >
               <Icon icon="chevron-forward" />
@@ -109,7 +106,7 @@ export const EventRow: React.FC<EventRowProps> = ({
         <div className="flex gap-2 pt-3" role="cell">
           <FlatButton
             className="text-danger"
-            icon="trash"
+            icon="cross"
             tooltip="Remove Event"
             onClick={() => {
               eventAttendedListMethods.remove(eventIdx);
@@ -124,13 +121,6 @@ export const EventRow: React.FC<EventRowProps> = ({
                   shouldValidate: true,
                 });
               }
-            }}
-          />
-          <TicketAddButton
-            includeHiddenFields
-            onClick={(ticket) => {
-              ticketListMethods.append(ticket);
-              setTimeout(() => expand(eventIdx));
             }}
           />
         </div>
@@ -151,7 +141,7 @@ export const EventRow: React.FC<EventRowProps> = ({
               <TicketInputTable
                 className={cn(
                   'rounded-lg border-medium border-divider',
-                  'ml-[40px] p-1'
+                  'ml-10 p-1'
                 )}
                 ticketListConfig={{
                   controlNamePrefix: ticketListPrefix,
@@ -164,12 +154,6 @@ export const EventRow: React.FC<EventRowProps> = ({
                   },
                 })}
                 includeHiddenFields
-                onRemove={(ticketIdx: number) => {
-                  if (ticketCount === 1) {
-                    // About to remove last ticket entry, collapse ticketList table
-                    collapse();
-                  }
-                }}
               />
             </motion.div>
           )}

@@ -13,6 +13,7 @@ export const ticketListSchema = z.array(
       }),
       paymentMethod: z.string().nullable(),
       price: zz.coerce.toCurrency(),
+      paymentDate: zz.coerce.toIsoDate({ nullable: true }),
     })
     .refine(
       (form) => {
@@ -44,7 +45,7 @@ export const ticketListSchema = z.array(
 );
 
 export type TicketList = z.infer<typeof ticketListSchema>;
-export type Ticket = TicketList[0];
+export type Ticket = TicketList[number];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TicketListFieldArray = UseFieldArrayReturn<any, any>;

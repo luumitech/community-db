@@ -127,8 +127,9 @@ export const TransactionFooter: React.FC<EmptyProps> = () => {
   const { ticketListConfig } = useTicketContext();
 
   return (
-    <div className={cn('col-span-full grid')}>
-      <div className="ml-3">
+    <div className={cn('col-span-full grid grid-cols-subgrid')}>
+      <div />
+      <div>
         <TicketAddButton
           onClick={(ticket) => {
             ticketListConfig.fieldMethods.append({ ...ticket });
@@ -139,6 +140,7 @@ export const TransactionFooter: React.FC<EmptyProps> = () => {
             color="primary"
             variant="bordered"
             radius="sm"
+            size="sm"
             startContent={<Icon icon="add-ticket" />}
           >
             Add Ticket
@@ -186,11 +188,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
         />
       </div>
       <div className="flex gap-2" role="cell">
-        {/* <TicketAddButton
-          onClick={(ticket) => {
-            ticketListConfig.fieldMethods.append({ ...ticket, paymentMethod });
-          }}
-        /> */}
+        {/* Action buttons */}
       </div>
     </div>
   );

@@ -405,6 +405,7 @@ export function mapEventEntry(input: typeof EventInput.$inferInput): Event {
       count: entry.count ?? null,
       price: entry.price ?? null,
       paymentMethod: entry.paymentMethod ?? null,
+      paymentDate: entry.paymentDate ? new Date(entry.paymentDate) : null,
     })),
   };
 }

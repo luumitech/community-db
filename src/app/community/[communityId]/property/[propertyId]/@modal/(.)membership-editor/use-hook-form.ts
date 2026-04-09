@@ -33,6 +33,7 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
           count
           price
           paymentMethod
+          paymentDate
         }
       }
       paymentMethod
@@ -155,6 +156,7 @@ function defaultInputData(
             count: ticket.count ?? null,
             price: ticket.price ?? '',
             paymentMethod: ticket.paymentMethod ?? '',
+            paymentDate: ticket.paymentDate ?? null,
           })),
         })),
         paymentMethod:

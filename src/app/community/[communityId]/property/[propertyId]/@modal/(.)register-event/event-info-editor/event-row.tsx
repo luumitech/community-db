@@ -20,7 +20,7 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
       className={twMerge(
         'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'items-center font-semibold text-tiny',
+        'items-center text-tiny font-semibold',
         'rounded-lg px-3',
         className
       )}
@@ -77,16 +77,12 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
           <EventDatePicker className="max-w-xs" />
         </div>
         <div className="flex gap-2 pt-3" role="cell">
-          {/* Ticket Add function will be on the total line */}
-          {/* <TicketAddButton onClick={ticketListMethods.append} /> */}
+          {/* Action buttons */}
         </div>
       </div>
       <div className="col-span-full">
         <TicketInputTable
-          className={cn(
-            'rounded-lg border-medium border-divider',
-            'ml-[40px] p-1'
-          )}
+          className={cn('rounded-lg border-medium border-divider', 'ml-10 p-1')}
           transactionConfig={{
             controlNamePrefix: 'hidden.transaction',
             ticketList: ticketList ?? [],

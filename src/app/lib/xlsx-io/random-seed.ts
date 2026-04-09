@@ -89,7 +89,8 @@ function genTicket(eventCount: number) {
       const count = faker.number.int({ min: 0, max: 20 });
       const price = faker.finance.amount({ min: 0, max: 10, dec: 0 });
       const paymentMethod = genPaymentMethod();
-      return { ticketName, count, price, paymentMethod };
+      const paymentDate = null;
+      return { ticketName, count, price, paymentMethod, paymentDate };
     });
     return toTicketList(ticketList);
   });

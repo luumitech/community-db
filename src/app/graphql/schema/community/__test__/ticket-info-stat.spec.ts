@@ -78,8 +78,20 @@ describe('Ticket Info Statistices', () => {
     const row2 = ws.cell(colIdx!, '2');
     const row3 = ws.cell(colIdx!, '3');
     row2.v = toTicketList([
-      { ticketName: 'meal', count: 0, price: '0', paymentMethod: '' },
-      { ticketName: 'drink', count: 1, price: '1', paymentMethod: 'cash' },
+      {
+        ticketName: 'meal',
+        count: 0,
+        price: '0',
+        paymentMethod: '',
+        paymentDate: null,
+      },
+      {
+        ticketName: 'drink',
+        count: 1,
+        price: '1',
+        paymentMethod: 'cash',
+        paymentDate: null,
+      },
     ]);
     // No ticket information for row 3 (for both events)
     row3.v = [toTicketList([]), toTicketList([])].join(ITEM_DELIMITER);
@@ -109,12 +121,14 @@ describe('Ticket Info Statistices', () => {
         count: 2,
         price: '0.03',
         paymentMethod: 'ca:s/h;',
+        paymentDate: null,
       },
       {
         ticketName: 'd:r:/i;nk',
         count: 1,
         price: '1.23',
         paymentMethod: 'cas::h',
+        paymentDate: null,
       },
     ]);
     // No ticket information for row 3 (for both events)

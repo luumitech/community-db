@@ -188,27 +188,27 @@ type GeoapifySetting {
 }
 
 type SupportedEventItem {
-  /// select item name
+  /// event name
   name   String
-  /// Should select item name be visible in selection list
+  /// Should event name be visible in selection list
   hidden Boolean?
 }
 
 type SupportedTicketItem {
-  /// select item name
+  /// ticket item name
   name      String
   /// Default ticket count for ticket item
   count     Int?
   /// Default price per ticket
   unitPrice String?
-  /// Should select item name be visible in selection list
+  /// Should ticket item name be visible in selection list
   hidden    Boolean?
 }
 
 type SupportedPaymentMethod {
-  /// select item name
+  /// payment method name
   name   String
-  /// Should select item name be visible in selection list
+  /// Should payment method name be visible in selection list
   hidden Boolean?
 }
 
@@ -293,6 +293,7 @@ type Ticket {
   count         Int?
   price         String?
   paymentMethod String?
+  paymentDate   DateTime?
 }
 
 /// Membership information within a property
