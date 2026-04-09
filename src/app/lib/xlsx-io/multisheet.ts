@@ -94,4 +94,5 @@ export interface TicketRow {
   count: number | null;
   price: string | null;
   paymentMethod: string | null;
+  paymentDate: string | null;
 }

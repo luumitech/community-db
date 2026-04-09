@@ -65,6 +65,7 @@ describe('import community xlsx (multisheet format)', () => {
                           count
                           price
                           paymentMethod
+                          paymentDate
                         }
                       }
                       price
@@ -209,6 +210,7 @@ describe('import community xlsx (multisheet format)', () => {
                   __typename: 'Ticket',
                   count: 20,
                   paymentMethod: 'free',
+                  paymentDate: null,
                   price: '0',
                   ticketName: 'meal',
                 },
@@ -216,6 +218,7 @@ describe('import community xlsx (multisheet format)', () => {
                   __typename: 'Ticket',
                   count: 1,
                   paymentMethod: 'cash',
+                  paymentDate: '2023-06-12',
                   price: '1',
                   ticketName: 'cotton-candy',
                 },
@@ -230,6 +233,7 @@ describe('import community xlsx (multisheet format)', () => {
                   __typename: 'Ticket',
                   count: 10,
                   paymentMethod: 'cash',
+                  paymentDate: null,
                   price: '5',
                   ticketName: 'meal',
                 },
@@ -237,6 +241,7 @@ describe('import community xlsx (multisheet format)', () => {
                   __typename: 'Ticket',
                   count: 1,
                   paymentMethod: 'e-Transfer',
+                  paymentDate: null,
                   price: '1',
                   ticketName: 'drink',
                 },

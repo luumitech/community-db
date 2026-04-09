@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { SAMPLE_COMMUNITY } from '../utils/mongodb-seed';
 import { waitUntilStable } from './common';
 
 /**
@@ -13,7 +14,7 @@ export async function navigatePropertyList(page: Page) {
   await expect(page.getByTestId('signed-in-user-avatar')).toBeVisible();
 
   await page.getByRole('link', { name: 'Select Community' }).click();
-  await page.getByRole('option', { name: 'Sample Community' }).click();
+  await page.getByRole('option', { name: SAMPLE_COMMUNITY }).click();
 
   const rows = page.getByLabel('Property Table').getByRole('row');
   await expect(rows.first()).toBeVisible();

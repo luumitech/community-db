@@ -139,7 +139,13 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
           'gap-2',
           className
         ),
-        headerSticky: cn('top-header-height'),
+        /**
+         * Override default GridTable z-index to match the z-index of the
+         * header, so the header elements will not be covered by the header.
+         * This is important so that the PropertyAutoComplete search bar's focus
+         * ring remains on top of the header.
+         */
+        headerSticky: cn('top-header-height z-50'),
         headerContainer: cn('mx-0.5 px-3 py-2'),
         bodyContainer: cn(
           'mx-0.5 p-3',

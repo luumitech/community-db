@@ -26,6 +26,10 @@ export default function Property(props: RouteArgs) {
       <MoreMenu />
       <div className="flex flex-col">
         <PropertyAutocomplete
+          /**
+           * The z-index needs to be the same as the autocomplete blurred
+           * background z-index
+           */
           className="sticky top-header-height z-50 mb-3 bg-background"
           currentPropertyId={property.id}
         />

@@ -16,6 +16,7 @@ const mappingType = {
   count: 'number',
   price: 'string',
   paymentMethod: 'string',
+  paymentDate: 'date',
 } satisfies MappingTypeSchema;
 type MappingEntry = MappingResult<typeof mappingType>;
 
@@ -39,6 +40,7 @@ export class TicketUtil {
       count: importHelper.labelColumn('count'),
       price: importHelper.labelColumn('price'),
       paymentMethod: importHelper.labelColumn('paymentMethod'),
+      paymentDate: importHelper.labelColumn('paymentDate'),
     };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {

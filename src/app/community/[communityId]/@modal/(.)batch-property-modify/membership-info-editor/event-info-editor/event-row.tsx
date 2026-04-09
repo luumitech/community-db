@@ -1,10 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import {
-  TicketAddButton,
-  TicketInputTable,
-} from '~/community/[communityId]/common/ticket-input-table';
+import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useHookFormContext } from '../../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
@@ -60,7 +57,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
           <EventDatePicker />
         </div>
         <div className="flex gap-2 pt-3" role="cell">
-          <TicketAddButton onClick={ticketListMethods.append} />
+          {/* Action buttons */}
         </div>
       </div>
       <div className="col-span-full">

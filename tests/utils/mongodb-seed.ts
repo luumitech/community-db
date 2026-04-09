@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { MongoSeeder } from '../../prisma/mongo-seeder';
 
+export const SAMPLE_COMMUNITY = 'Sample Community';
+
 /**
  * Seed Mongo database with fixture located in the `/__fixtures__` directory
  *
@@ -17,7 +19,7 @@ export async function mongodbSeedFromFixture(fixture: string) {
   try {
     const seeder = MongoSeeder.fromXlsx(fixture);
     await prisma.$runCommandRaw({ dropDatabase: 1 });
-    await seeder.seed(prisma);
+    await seeder.seed(prisma, SAMPLE_COMMUNITY);
   } catch (err) {
     console.error(err);
     process.exit(1);
@@ -32,7 +34,7 @@ export async function mongodbSeedRandom(count: number) {
   try {
     const seeder = MongoSeeder.fromRandom(count);
     await prisma.$runCommandRaw({ dropDatabase: 1 });
-    await seeder.seed(prisma);
+    await seeder.seed(prisma, SAMPLE_COMMUNITY);
   } catch (err) {
     console.error(err);
     process.exit(1);

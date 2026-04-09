@@ -57,6 +57,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
             count: ticketDef?.count ?? null,
             price: decMul(ticketDef?.unitPrice, ticketDef?.count) ?? null,
             paymentMethod: null,
+            paymentDate: null,
           });
         }}
       >

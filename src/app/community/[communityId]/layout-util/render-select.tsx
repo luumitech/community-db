@@ -5,6 +5,8 @@ import { Link } from '~/view/base/link';
 import { SelectItem, SelectSection } from '~/view/base/select';
 import { type SelectItemT, type SelectSectionT } from './community-context';
 
+export { type SelectItemT } from './community-context';
+
 /**
  * Used to render select item when no items are available. By default, if you
  * don't use this, the `Select` component will render 'No items.' in the

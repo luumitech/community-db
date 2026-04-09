@@ -147,6 +147,7 @@ export class ExportMultisheet extends ExportHelper {
       count: ticket.count ?? null,
       price: ticket.price ?? null,
       paymentMethod: ticket.paymentMethod ?? null,
+      paymentDate: ExportHelper.toDate(ticket.paymentDate),
     });
   }
 

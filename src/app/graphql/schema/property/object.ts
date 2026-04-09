@@ -72,6 +72,7 @@ const ticketRef = builder.objectRef<Ticket>('Ticket').implement({
     count: t.exposeInt('count', { nullable: true }),
     price: t.exposeString('price', { nullable: true }),
     paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
+    paymentDate: t.expose('paymentDate', { type: 'Date', nullable: true }),
   }),
 });
 

@@ -1,54 +1,46 @@
 import { ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
+import * as R from 'remeda';
 import { useFieldArray } from '~/custom-hooks/hook-form';
-import { useSelector } from '~/custom-hooks/redux';
-import { getCurrentDateAsISOString } from '~/lib/date-util';
-import { Button } from '~/view/base/button';
-import { Icon } from '~/view/base/icon';
 import { useHookFormContext } from '../use-hook-form';
+import { EventAddButton } from './event-add-button';
 import { EventRow, EventRowHeader } from './event-row';
+import { useTicketAccordion } from './use-ticket-accordion';
 
 interface Props {
   className?: string;
-  yearIdx: number;
+  membershipPrefix: `membershipList.${number}`;
 }
 
-export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
-  const { lastEventSelected } = useSelector((state) => state.ui);
-  const { control, formState } = useHookFormContext();
+export const EventInfoEditor: React.FC<Props> = ({
+  className,
+  membershipPrefix,
+}) => {
+  const { control, formState, watch, setValue } = useHookFormContext();
   const { errors } = formState;
   const eventAttendedListMethods = useFieldArray({
     control,
-    name: `membershipList.${yearIdx}.eventAttendedList`,
+    name: `${membershipPrefix}.eventAttendedList`,
   });
-  const { fields, append } = eventAttendedListMethods;
-  const eventAttendedListError =
-    errors.membershipList?.[yearIdx]?.eventAttendedList?.message;
+  const eventAttendedList = watch(`${membershipPrefix}.eventAttendedList`);
+  const excludeEvents = React.useMemo(() => {
+    if (eventAttendedList.length === 0) {
+      return undefined;
+    }
+    return eventAttendedList.map(({ eventName }) => eventName);
+  }, [eventAttendedList]);
 
-  const topContent = React.useMemo(() => {
-    return (
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-foreground-500">
-          Attended Events
-        </span>
-        <Button
-          color="primary"
-          variant="bordered"
-          size="sm"
-          endContent={<Icon icon="add" />}
-          onPress={() =>
-            append({
-              eventName: lastEventSelected ?? '',
-              eventDate: getCurrentDateAsISOString(),
-              ticketList: [],
-            })
-          }
-        >
-          Add Event
-        </Button>
-      </div>
-    );
-  }, [append, lastEventSelected]);
+  const { fields, append, remove } = eventAttendedListMethods;
+  const eventAttendedListErrObj = R.pathOr(
+    errors,
+    // @ts-expect-error unable to resolve type error
+    R.stringToPath(`${membershipPrefix}.eventAttendedList`),
+    {}
+  );
+  const eventAttendedListError = eventAttendedListErrObj?.message;
+
+  // Open the first section by default
+  const { isExpanded, toggle } = useTicketAccordion(fields[0]?.id);
 
   const bottomContent = React.useMemo(() => {
     return <div className="text-sm text-danger">{eventAttendedListError}</div>;
@@ -56,7 +48,6 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
 
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
-      {topContent}
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div
           className={cn('grid grid-cols-[40px_repeat(2,1fr)_80px]', 'gap-2')}
@@ -77,11 +68,35 @@ export const EventInfoEditor: React.FC<Props> = ({ className, yearIdx }) => {
           {fields.map((field, eventIdx) => (
             <EventRow
               key={field.id}
-              eventAttendedListMethods={eventAttendedListMethods}
-              yearIdx={yearIdx}
-              eventIdx={eventIdx}
+              membershipPrefix={membershipPrefix}
+              eventPrefix={`${membershipPrefix}.eventAttendedList.${eventIdx}`}
+              isFirstEvent={eventIdx === 0}
+              showTicketEditor={isExpanded(field.id)}
+              onTicketEditorToggle={() => toggle(field.id)}
+              onRemove={() => {
+                remove(eventIdx);
+                if (fields.length === 1) {
+                  // About to remove last entry, clear paymentMethod/price
+                  setValue(`${membershipPrefix}.paymentMethod`, null, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  setValue(`${membershipPrefix}.price`, null, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                }
+              }}
             />
           ))}
+          <div className="col-span-full grid grid-cols-subgrid">
+            <div />
+            <EventAddButton
+              className="justify-self-start"
+              excludeEvents={excludeEvents}
+              onAppend={append}
+            />
+          </div>
         </div>
       </ScrollShadow>
       {bottomContent}

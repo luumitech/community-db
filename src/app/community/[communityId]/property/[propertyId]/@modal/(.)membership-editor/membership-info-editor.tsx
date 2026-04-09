@@ -6,6 +6,7 @@ import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { EventInfoEditor } from './event-info-editor';
 import { useHookFormContext } from './use-hook-form';
+
 import { YearSelect } from './year-select';
 
 interface Props {
@@ -48,7 +49,12 @@ export const MembershipInfoEditor: React.FC<Props> = ({
         }}
       />
       <Spacer y={4} />
-      {idx > -1 && <EventInfoEditor key={fields[idx].id} yearIdx={idx} />}
+      {idx > -1 && (
+        <EventInfoEditor
+          key={fields[idx].id}
+          membershipPrefix={`membershipList.${idx}`}
+        />
+      )}
     </div>
   );
 };

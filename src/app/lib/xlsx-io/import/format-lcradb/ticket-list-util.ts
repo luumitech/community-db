@@ -1,5 +1,6 @@
 import { type Ticket } from '@prisma/client';
 import * as R from 'remeda';
+import { parseAsDate } from '~/lib/date-util';
 import { parseAsNumber } from '~/lib/number-util';
 import * as delimiterUtil from '~/lib/xlsx-io/delimiter-util';
 
@@ -33,12 +34,13 @@ function removeDelimiter(input: string) {
  */
 export function toTicketList(input: Ticket[]) {
   const arr = input.map((ticket) => {
-    const { ticketName, count, price, paymentMethod } = ticket;
+    const { ticketName, count, price, paymentMethod, paymentDate } = ticket;
     return [
       ticketName ?? '',
       count?.toString() ?? '',
       price ?? '',
       paymentMethod ?? '',
+      paymentDate?.toISOString() ?? '',
     ]
       .map(removeDelimiter)
       .join(TICKET_PROPERTY_DELIMITER);
@@ -56,11 +58,13 @@ export function parseTicketList(input?: string): Ticket[] {
   }
   return input.split(TICKET_DELIMITER).map((ticketStr) => {
     const ticketProp = ticketStr.split(TICKET_PROPERTY_DELIMITER);
+    const ticketDateObj = parseAsDate(ticketProp[4]);
     const ticket: Ticket = {
       ticketName: ticketProp[0] ?? '',
       count: parseAsNumber(ticketProp[1]),
       price: ticketProp[2] ?? null,
       paymentMethod: ticketProp[3] ?? null,
+      paymentDate: ticketDateObj?.toDate() ?? null,
     };
     return ticket;
   });

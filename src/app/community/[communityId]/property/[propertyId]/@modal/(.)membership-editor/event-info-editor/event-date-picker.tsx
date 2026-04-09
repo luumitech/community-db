@@ -6,19 +6,18 @@ const DatePicker = createDatePicker<InputData>();
 
 interface Props {
   className?: string;
-  yearIdx: number;
-  eventIdx: number;
+  membershipPrefix: `membershipList.${number}`;
+  eventPrefix: `membershipList.${number}.eventAttendedList.${number}`;
 }
 
 export const EventDatePicker: React.FC<Props> = ({
   className,
-  yearIdx,
-  eventIdx,
+  eventPrefix,
 }) => {
   return (
     <DatePicker
       className={className}
-      controlName={`membershipList.${yearIdx}.eventAttendedList.${eventIdx}.eventDate`}
+      controlName={`${eventPrefix}.eventDate`}
       aria-label="Event Date"
       variant="underlined"
       granularity="day"
