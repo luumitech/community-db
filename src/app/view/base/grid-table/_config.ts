@@ -34,8 +34,15 @@ export const CLASS_DEFAULT: ClassDefault = {
     'gap-1'
   ),
   headerSticky: cn(
-    /** Default sticky to top of container */
-    'sticky top-0 z-50',
+    /**
+     * Default sticky to top of container
+     *
+     * - The highest z-index in the app is z-50 (same as dialog z-index)
+     * - The property autocomplete blurred background is z-40
+     * - So the default for the sticky header is next level lower, so it go behind
+     *   the blurred background
+     */
+    'sticky top-0 z-30',
     /** Matches the default background color */
     'bg-background'
   ),

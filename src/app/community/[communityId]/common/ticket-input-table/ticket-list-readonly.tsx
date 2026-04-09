@@ -4,6 +4,7 @@ import React from 'react';
 import { useToggle } from 'react-use';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
+import { formatUTCDate } from '~/lib/date-util';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { Icon } from '~/view/base/icon';
 import { useTicketContext } from './ticket-context';
@@ -112,6 +113,9 @@ const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
       <div className="pl-1" role="cell">
         <span className="pr-1.5 text-default-400"> $</span>
         <span>{formatCurrency(ticket.price)}</span>
+      </div>
+      <div className="pl-1" role="cell">
+        {ticket.paymentDate != null ? formatUTCDate(ticket.paymentDate) : ''}
       </div>
       <div className="pl-1" role="cell">
         {ticket.paymentMethod ?? ''}

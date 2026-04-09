@@ -91,7 +91,7 @@ export const TicketInputTable: React.FC<Props> = ({
     >
       <div className={cn(className)}>
         <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
-          <div className="mb-2 grid grid-cols-[25px_repeat(4,1fr)_75px] gap-2">
+          <div className="mb-2 grid grid-cols-[25px_repeat(5,1fr)_25px] gap-2">
             <TicketRowHeader />
             <TicketListReadonly />
             {transactionConfig != null && <TransactionHeader />}

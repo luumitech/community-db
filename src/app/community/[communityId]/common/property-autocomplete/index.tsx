@@ -155,7 +155,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
   return (
     <>
       {/**
-       * Add a blurred back drop when autocomplete sugggestions are open
+       * Add a blurred back drop when autocomplete suggestions are open
        *
        * We want to avoid the situation where user put in search text in the
        * autocomplete bar, and exactly one result is returned. It may appear that the

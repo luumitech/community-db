@@ -8,6 +8,7 @@ import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { type TicketList } from './_type';
 import { MembershipPriceInput } from './membership-price-input';
+import { PaymentDatePicker } from './payment-date-picker';
 import { PaymentSelect } from './payment-select';
 import { PriceInput } from './price-input';
 import { TicketAddButton } from './ticket-add-button';
@@ -33,6 +34,7 @@ export const TicketRowHeader: React.FC<EmptyProps> = () => {
       <div role="columnheader">Ticket Type</div>
       <div role="columnheader">Ticket #</div>
       <div role="columnheader">Price</div>
+      <div role="columnheader">Payment Date</div>
       <div role="columnheader">Payment Method</div>
       <div role="columnheader" />
     </div>
@@ -84,6 +86,9 @@ export const TicketRow: React.FC<TicketRowProps> = ({
       </div>
       <div role="cell">
         <PriceInput controlNamePrefix={controlNamePrefix} />
+      </div>
+      <div role="cell">
+        <PaymentDatePicker controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
         {!transactionConfig && (
@@ -180,15 +185,13 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
         <span className="pr-1.5 text-default-400">$</span>
         <span>{formatCurrency(totalPrice)}</span>
       </div>
+      <div>{/* payment date */}</div>
       <div className="col-span-2" role="cell">
         <TransactionTotalPaymentSelect
           controlName={`${transactionConfig?.controlNamePrefix}.paymentMethod`}
           placeholder="Select Payment"
           {...transactionConfig?.selectPaymentProps}
         />
-      </div>
-      <div className="flex gap-2" role="cell">
-        {/* Action buttons */}
       </div>
     </div>
   );

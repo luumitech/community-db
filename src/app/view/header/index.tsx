@@ -31,6 +31,10 @@ export const Header: React.FC<Props> = ({}) => {
   const menuItems = useNavMenu();
 
   return (
+    /**
+     * Makes sure header has the highest z-index in the app, but lower or equal
+     * to dialog z-index (which is set to z-50)
+     */
     <header className="sticky top-0 z-50 h-header-height">
       <Navbar
         maxWidth="full"
