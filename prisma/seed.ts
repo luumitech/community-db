@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../src/app/lib/prisma';
 import { MongoSeeder } from './mongo-seeder';
 
 async function main() {
-  const prisma = new PrismaClient();
   try {
     const seeder = MongoSeeder.fromRandom(100);
     await seeder.seed(prisma);

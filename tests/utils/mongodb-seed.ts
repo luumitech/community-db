@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { MongoSeeder } from '../../prisma/mongo-seeder';
+import prisma from '../../src/app/lib/prisma';
 
 export const SAMPLE_COMMUNITY = 'Sample Community';
 
@@ -15,7 +15,6 @@ export const SAMPLE_COMMUNITY = 'Sample Community';
  * @returns True if successful
  */
 export async function mongodbSeedFromFixture(fixture: string) {
-  const prisma = new PrismaClient();
   try {
     const seeder = MongoSeeder.fromXlsx(fixture);
     await prisma.$runCommandRaw({ dropDatabase: 1 });
@@ -30,7 +29,6 @@ export async function mongodbSeedFromFixture(fixture: string) {
 }
 
 export async function mongodbSeedRandom(count: number) {
-  const prisma = new PrismaClient();
   try {
     const seeder = MongoSeeder.fromRandom(count);
     await prisma.$runCommandRaw({ dropDatabase: 1 });
