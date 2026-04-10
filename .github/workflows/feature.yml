@@ -62,3 +62,8 @@ jobs:
       #     name: playwright-report
       #     path: playwright-report/
       #     retention-days: 5
+
+      # Run a build, and make sure it builds correctly without error
+      - name: Production build
+        run: |
+          yarn build

@@ -46,9 +46,3 @@
     }
   }
 }
-
-/* Adding grabbing above didn't work, so try to apply it globally */
-:global(body):has(:global(.ui-draggable-dragging)),
-:global(body):has(:global(.ui-draggable-dragging)) * {
-  cursor: grabbing;
-}
