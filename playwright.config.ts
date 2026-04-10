@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
-import { insertIf } from '~/lib/insert-if';
 import { SETUP_FILE } from './tests/setup/setup-file';
 
 /**

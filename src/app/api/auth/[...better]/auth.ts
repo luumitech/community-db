@@ -27,6 +27,7 @@ export const auth = betterAuth({
      * See: https://github.com/better-auth/better-auth/issues/5536
      */
     disableOriginCheck: isDev,
+    disableCSRFCheck: isDev,
   },
   user: {
     // By default, better-auth uses 'User' as the model name, but we are
