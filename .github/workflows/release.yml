@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+env:
+  NODE_VERSION: '24'
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
