@@ -10,6 +10,7 @@ import {
   type BatchPropertyModifyJobArg,
 } from '~/graphql/schema/property/batch-modify';
 import { env } from '~/lib/env/server-env';
+import { appGlobal } from '~/lib/global';
 import { Logger } from '~/lib/logger';
 import { JobEntry } from './job-entry';
 import { publishJobStatus } from './publish-job-status';
@@ -23,6 +24,38 @@ interface AgendaJobMap {
   batchPropertyModify: BatchPropertyModifyJobArg;
 }
 
+async function initAgenda() {
+  const agenda = new Agenda({
+    backend: new MongoBackend({ address: env('MONGODB_URI') }),
+    /**
+     * It would be nice to removeOnComplete by default, but we need to handle
+     * the case when the subscription for job progress happens after the job has
+     * already been completed. So we leave this false, so we can manage the job
+     * document manually
+     */
+    removeOnComplete: false,
+  });
+
+  agenda.on('error', (err) => {
+    logger.error('Agenda error:', err);
+  });
+
+  /** There isn't much value to let UI know that a job has started */
+  // this._agenda.on('start', (job) => {
+  //   publishJobStatus(job);
+  // });
+  agenda.on('complete', async (job) => {
+    // This will be called whether the job succeed or fail
+    publishJobStatus(job);
+  });
+
+  agenda.define('communityImport', communityImportTask);
+  agenda.define('batchPropertyModify', batchPropertyModifyTask);
+
+  await agenda.start();
+  return agenda;
+}
+
 /**
  * Helper class for queuing long running job
  *
@@ -31,35 +64,14 @@ interface AgendaJobMap {
 export class JobHandler {
   constructor(private agenda: Agenda) {}
 
+  /**
+   * We only want to have one agenda instance running for each application
+   *
+   * Keep track of the instance in the global object
+   */
   static async init() {
-    const agenda = new Agenda({
-      backend: new MongoBackend({ address: env('MONGODB_URI') }),
-      /**
-       * It would be nice to removeOnComplete by default, but we need to handle
-       * the case when the subscription for job progress happens after the job
-       * has already been completed. So we leave this false, so we can manage
-       * the job document manually
-       */
-      removeOnComplete: false,
-    });
-
-    agenda.on('error', (err) => {
-      logger.error('Agenda error:', err);
-    });
-
-    /** There isn't much value to let UI know that a job has started */
-    // this._agenda.on('start', (job) => {
-    //   publishJobStatus(job);
-    // });
-    agenda.on('complete', async (job) => {
-      // This will be called whether the job succeed or fail
-      publishJobStatus(job);
-    });
-
-    agenda.define('communityImport', communityImportTask);
-    agenda.define('batchPropertyModify', batchPropertyModifyTask);
-
-    await agenda.start();
+    const agenda = appGlobal.agenda ?? (await initAgenda());
+    appGlobal.agenda ??= agenda;
     return new JobHandler(agenda);
   }
 
