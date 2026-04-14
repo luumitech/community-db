@@ -8,6 +8,8 @@ import {
   batchPropertyModifyTask,
   type BatchPropertyModifyJobArg,
 } from '~/graphql/schema/property/batch-modify';
+import { isProduction } from '~/lib/env';
+import { appGlobal } from '~/lib/global';
 import { Logger } from '~/lib/logger';
 import { mongoClient } from '~/lib/mongo-client';
 import { publishJobStatus } from './publish-job-status';
@@ -21,6 +23,22 @@ export interface AgendaJobMap {
 
 /** Create an Agenda singleton for use within the application */
 export async function getAgenda() {
+  if (appGlobal.agenda) {
+    if (isProduction()) {
+      return appGlobal.agenda;
+    }
+
+    /**
+     * For unknown reason, Agenda is not working correctly after hot reload
+     *
+     * - This is a workaround to stop existing Agenda instance, so we can create a
+     *   fresh one in development environment
+     */
+    await appGlobal.agenda.stop();
+    appGlobal.agenda.removeAllListeners();
+    appGlobal.agenda = undefined;
+  }
+
   const agenda = new Agenda({
     backend: new MongoBackend({
       // Reuse the single global instance of the mongo database
@@ -52,5 +70,6 @@ export async function getAgenda() {
   agenda.define('batchPropertyModify', batchPropertyModifyTask);
 
   await agenda.start();
+  appGlobal.agenda = agenda;
   return agenda;
 }

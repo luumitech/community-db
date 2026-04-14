@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { Agenda } from 'agenda';
 import { MongoClient } from 'mongodb';
 
 /**
@@ -6,7 +7,9 @@ import { MongoClient } from 'mongodb';
  * variable
  */
 export const appGlobal = globalThis as unknown as {
-  /** Single instance of MongoClient */
+  /** Common mongoClient (for Agenda use currently) */
   mongoClient: MongoClient | undefined;
+  agenda: Agenda | undefined;
+  /** Prisma manages its own mongo client */
   prisma: PrismaClient | undefined;
 };
