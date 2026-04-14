@@ -10,6 +10,7 @@ function schema() {
     memberYearList: zz.coerce.toNumberList(),
     nonMemberYearList: zz.coerce.toNumberList(),
     memberEventList: zz.coerce.toStringList(),
+    ticketList: zz.coerce.toStringList(),
     withGps: zz.coerce.toBoolean({ nullable: true }),
   });
 }
@@ -39,11 +40,17 @@ export function useHookForm() {
   }, [formValues]);
 
   const reset = React.useCallback(() => {
-    const { memberYearList, nonMemberYearList, memberEventList, withGps } =
-      initialState.filter;
+    const {
+      memberYearList,
+      nonMemberYearList,
+      memberEventList,
+      ticketList,
+      withGps,
+    } = initialState.filter;
     setValue('memberYearList', memberYearList, { shouldDirty: true });
     setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
     setValue('memberEventList', memberEventList, { shouldDirty: true });
+    setValue('ticketList', ticketList, { shouldDirty: true });
     setValue('withGps', withGps, { shouldDirty: true });
   }, [setValue]);
 

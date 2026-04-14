@@ -1,6 +1,7 @@
 import { Badge, cn } from '@heroui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
+import * as R from 'remeda';
 import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { FlatButton } from '~/view/base/flat-button';
@@ -57,7 +58,7 @@ export const EventRow: React.FC<EventRowProps> = ({
   onTicketEditorToggle,
   onRemove,
 }) => {
-  const { control } = useHookFormContext();
+  const { control, formState } = useHookFormContext();
   const ticketListPrefix = `${eventPrefix}.ticketList` as const;
   const ticketListMethods = useFieldArray({
     control,
@@ -67,6 +68,13 @@ export const EventRow: React.FC<EventRowProps> = ({
     ticketListMethods.fields.length +
     // Show membership fee in the ticket section of first event
     (isFirstEvent ? 1 : 0);
+  const errObj = R.pathOr(
+    formState.errors,
+    // @ts-expect-error unable to resolve type error
+    R.stringToPath(ticketListPrefix),
+    {}
+  );
+  const ticketListContainsError = !R.isEmpty(errObj);
 
   return (
     <>
@@ -83,7 +91,13 @@ export const EventRow: React.FC<EventRowProps> = ({
             placement="bottom-right"
             size="sm"
             variant="flat"
-            content={ticketCount}
+            content={
+              <span className="flex items-center">
+                {ticketCount}
+                {ticketListContainsError && <Icon icon="warning" size={10} />}
+              </span>
+            }
+            color={ticketListContainsError ? 'danger' : 'default'}
           >
             <motion.div
               className="justify-self-center text-foreground-400"

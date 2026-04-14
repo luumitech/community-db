@@ -30,7 +30,7 @@ export function makeTicketRow(ticketInfo: TicketInfoEntry) {
   return {
     id: `${membership.year}-${event.eventName}-${ticket.ticketName}-${ticketIdx}`,
     eventName: event.eventName,
-    eventDate: event.eventDate,
+    ticketDate: ticket.paymentDate ?? event.eventDate,
     ticketCount: ticket.count,
     ticketPrice: ticket.price,
   };

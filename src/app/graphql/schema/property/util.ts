@@ -153,9 +153,10 @@ function propertyListFilterArgs(
 
   const {
     searchText,
-    memberYearList,
     nonMemberYearList,
+    memberYearList,
     memberEventList,
+    ticketList,
     withGps,
     emailList,
   } = args ?? {};
@@ -274,10 +275,43 @@ function propertyListFilterArgs(
     });
   }
 
+  function getMemberEventFilter() {
+    const memberEventSpecified =
+      memberEventList != null && memberEventList.length > 0;
+    const ticketFilter = getTicketFilter();
+    if (memberEventSpecified) {
+      return {
+        AND: memberEventList.map((eventName) => ({
+          eventAttendedList: {
+            some: { eventName, ...ticketFilter },
+          },
+        })),
+      };
+    } else if (ticketFilter != null) {
+      return {
+        eventAttendedList: {
+          some: { ...ticketFilter },
+        },
+      };
+    }
+  }
+
+  function getTicketFilter() {
+    const ticketSpecified = ticketList != null && ticketList.length > 0;
+    if (ticketSpecified) {
+      return {
+        AND: ticketList.map((ticketName) => ({
+          ticketList: {
+            some: { ticketName },
+          },
+        })),
+      };
+    }
+  }
+
   const memberYearSpecified =
     memberYearList != null && memberYearList.length > 0;
-  const memberEventSpecified =
-    memberEventList != null && memberEventList.length > 0;
+  const memberEventFilter = getMemberEventFilter();
   if (memberYearSpecified) {
     AND.push(
       ...memberYearList.map((memberYear) => ({
@@ -286,26 +320,16 @@ function propertyListFilterArgs(
             // non-empty `eventAttendedList` implies user is a member
             eventAttendedList: { isEmpty: false },
             year: memberYear,
-            ...(memberEventSpecified && {
-              AND: memberEventList.map((memberEvent) => ({
-                eventAttendedList: {
-                  some: { eventName: memberEvent },
-                },
-              })),
-            }),
+            ...memberEventFilter,
           },
         },
       }))
     );
-  } else if (memberEventSpecified) {
+  } else if (memberEventFilter != null) {
     AND.push({
       membershipList: {
         some: {
-          AND: memberEventList.map((memberEvent) => ({
-            eventAttendedList: {
-              some: { eventName: memberEvent },
-            },
-          })),
+          ...memberEventFilter,
         },
       },
     });

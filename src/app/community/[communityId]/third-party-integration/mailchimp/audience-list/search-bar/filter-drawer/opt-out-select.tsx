@@ -34,6 +34,7 @@ export const OptOutSelect: React.FC<Props> = ({ className, ...props }) => {
         base: className,
       }}
       controlName="optOut"
+      isControlled
       label="Opt-Out"
       items={items}
       isDisabled={!items.length}

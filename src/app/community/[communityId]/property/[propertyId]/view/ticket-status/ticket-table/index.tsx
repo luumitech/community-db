@@ -13,7 +13,7 @@ import type { TicketRowEntry } from '../ticket-util';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-type ColumnKey = 'eventName' | 'eventDate' | 'ticketCount' | 'ticketPrice';
+type ColumnKey = 'eventName' | 'ticketDate' | 'ticketCount' | 'ticketPrice';
 type GridTableProps = GenericGTProps<ColumnKey, TicketRowEntry>;
 type GTProps = Required<GridTableProps>;
 
@@ -34,7 +34,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
     switch (key) {
       case 'eventName':
         return <span className="truncate">Event</span>;
-      case 'eventDate':
+      case 'ticketDate':
         return <span className="truncate">Date</span>;
       case 'ticketCount':
         return <span className="truncate">Count</span>;
@@ -47,8 +47,8 @@ export const TicketTable: React.FC<TicketTableProps> = ({
     switch (key) {
       case 'eventName':
         return item.eventName;
-      case 'eventDate':
-        return item.eventDate;
+      case 'ticketDate':
+        return item.ticketDate;
       case 'ticketCount':
         return item.ticketCount;
       case 'ticketPrice':
@@ -77,10 +77,10 @@ export const TicketTable: React.FC<TicketTableProps> = ({
         headerSticky: cn('bg-content1'),
         bodyContainer: cn('px-3', 'text-sm font-normal text-foreground'),
       }}
-      columnKeys={['eventName', 'eventDate', 'ticketCount', 'ticketPrice']}
+      columnKeys={['eventName', 'ticketDate', 'ticketCount', 'ticketPrice']}
       columnConfig={{
         eventName: cn('col-span-2 truncate'),
-        eventDate: cn('col-span-2 truncate'),
+        ticketDate: cn('col-span-2 truncate'),
         ticketCount: cn('truncate'),
         ticketPrice: cn('truncate'),
       }}

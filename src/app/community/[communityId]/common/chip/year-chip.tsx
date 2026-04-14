@@ -24,7 +24,7 @@ export const YearChip: React.FC<YearChipProps> = ({
       color={isMember ? 'success' : 'default'}
       {...props}
     >
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1">
         {year}
         {!!showIcon && (
           <Icon icon={isMember ? 'thumb-up' : 'thumb-down'} size={16} />

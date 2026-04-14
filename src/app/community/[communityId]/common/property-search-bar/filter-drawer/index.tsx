@@ -11,6 +11,7 @@ import React from 'react';
 import {
   EventSelect,
   GpsSelect,
+  TicketSelect,
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
@@ -54,6 +55,7 @@ export const FilterDrawer: React.FC<Props> = ({
                 description="Show properties that are members in the specified year(s)"
                 isMember
                 controlName="memberYearList"
+                isControlled
                 size="sm"
                 isClearable
               />
@@ -62,12 +64,21 @@ export const FilterDrawer: React.FC<Props> = ({
                 description="Show properties that are NOT members in the specified year(s)"
                 isMember={false}
                 controlName="nonMemberYearList"
+                isControlled
                 size="sm"
                 isClearable
               />
               <EventSelect
                 description="Show properties that registered at the specified event(s)"
                 controlName="memberEventList"
+                isControlled
+                size="sm"
+                isClearable
+              />
+              <TicketSelect
+                description="Show properties with members who purchased specified ticket(s)"
+                controlName="ticketList"
+                isControlled
                 size="sm"
                 isClearable
               />

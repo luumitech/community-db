@@ -10,6 +10,7 @@ function schema() {
     memberYearList: zz.coerce.toNumberList(),
     nonMemberYearList: zz.coerce.toNumberList(),
     memberEventList: zz.coerce.toStringList(),
+    ticketList: zz.coerce.toStringList(),
     // Not used currently
     withGps: zz.coerce.toBoolean({ nullable: true }),
   });
@@ -36,11 +37,12 @@ export function useHookForm(drawerArg: DrawerArg) {
   }, [formValues]);
 
   const reset = React.useCallback(() => {
-    const { memberYearList, nonMemberYearList, memberEventList } =
+    const { memberYearList, nonMemberYearList, memberEventList, ticketList } =
       initialState.filter;
     setValue('memberYearList', memberYearList, { shouldDirty: true });
     setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
     setValue('memberEventList', memberEventList, { shouldDirty: true });
+    setValue('ticketList', ticketList, { shouldDirty: true });
   }, [setValue]);
 
   return { formMethods, canReset, reset };

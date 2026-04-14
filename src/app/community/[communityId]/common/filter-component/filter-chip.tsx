@@ -3,6 +3,7 @@ import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import {
   EventChip,
+  TicketChip,
   WithGpsChip,
   YearChip,
 } from '~/community/[communityId]/common/chip';
@@ -26,8 +27,13 @@ export const FilterChip: React.FC<Props> = ({
   isDisabled,
   onFilterChange,
 }) => {
-  const { memberYearList, nonMemberYearList, memberEventList, withGps } =
-    filters;
+  const {
+    memberYearList,
+    nonMemberYearList,
+    memberEventList,
+    ticketList,
+    withGps,
+  } = filters;
 
   const removeMemberYear = React.useCallback(
     (year: number) => {
@@ -60,6 +66,18 @@ export const FilterChip: React.FC<Props> = ({
       onFilterChange?.({
         ...filters,
         memberEventList: [...eventSet],
+      });
+    },
+    [filters, onFilterChange]
+  );
+
+  const removeTicket = React.useCallback(
+    (ticketName: string) => {
+      const ticketSet = new Set(filters.ticketList);
+      ticketSet.delete(ticketName);
+      onFilterChange?.({
+        ...filters,
+        ticketList: [...ticketSet],
       });
     },
     [filters, onFilterChange]
@@ -108,6 +126,16 @@ export const FilterChip: React.FC<Props> = ({
             eventName={eventName}
             isDisabled={isDisabled}
             onClose={() => removeEvent(eventName)}
+          />
+        ))}
+
+      {!R.isDeepEqual(ticketList, initialState.filter.ticketList) &&
+        ticketList.map((ticketName) => (
+          <TicketChip
+            key={ticketName}
+            ticketName={ticketName}
+            isDisabled={isDisabled}
+            onClose={() => removeTicket(ticketName)}
           />
         ))}
 

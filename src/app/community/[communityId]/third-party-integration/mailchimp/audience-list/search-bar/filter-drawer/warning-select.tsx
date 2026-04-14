@@ -34,6 +34,7 @@ export const WarningSelect: React.FC<Props> = ({ className, ...props }) => {
         base: className,
       }}
       controlName="warning"
+      isControlled
       label="Warning"
       items={items}
       isDisabled={!items.length}

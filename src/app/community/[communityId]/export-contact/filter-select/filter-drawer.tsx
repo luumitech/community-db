@@ -10,6 +10,7 @@ import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import {
   EventSelect,
+  TicketSelect,
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
@@ -51,6 +52,7 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerBody className="flex flex-col gap-4">
               <YearSelect
                 controlName="memberYearList"
+                isControlled
                 isMember
                 size="sm"
                 label="Member In Year(s)"
@@ -60,6 +62,7 @@ export const FilterDrawer: React.FC<Props> = ({
               />
               <YearSelect
                 controlName="nonMemberYearList"
+                isControlled
                 isMember={false}
                 size="sm"
                 label="Non-Member In Year(s)"
@@ -68,9 +71,18 @@ export const FilterDrawer: React.FC<Props> = ({
               />
               <EventSelect
                 controlName="memberEventList"
+                isControlled
                 size="sm"
                 label="Membership Event(s)"
                 description="Include only members who registered at the specified event(s)"
+                isClearable
+              />
+              <TicketSelect
+                controlName="ticketList"
+                isControlled
+                size="sm"
+                label="Ticket Name(s)"
+                description="Include only members who purchased specified ticket(s)"
                 isClearable
               />
             </DrawerBody>
