@@ -6,7 +6,7 @@ import { MongoClient } from 'mongodb';
  * variable
  */
 export const appGlobal = globalThis as unknown as {
-  /** Mongo Client created for Agenda task manager */
+  /** Single instance of MongoClient */
   mongoClient: MongoClient | undefined;
   prisma: PrismaClient | undefined;
 };
