@@ -19,7 +19,7 @@ export const FilterSelect: React.FC<Props> = ({
 }) => {
   return (
     <div className={twMerge('flex flex-col gap-4', className)}>
-      <p>Find tune filters to select a group of properties to modify:</p>
+      <p>Fine tune filters to select a group of properties to modify:</p>
       <YearSelect
         className="ml-4 max-w-xs min-w-32"
         controlName="filter.memberYearList"

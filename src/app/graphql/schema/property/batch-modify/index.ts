@@ -6,7 +6,6 @@ import { verifyAccess } from '~/graphql/schema/access/util';
 import { UpdateInput } from '~/graphql/schema/common';
 import { jobPayloadRef } from '~/graphql/schema/job/object';
 import { type ContextUser } from '~/lib/context-user';
-import { JobHandler } from '~/lib/job-handler';
 import { EventInput } from '../modify';
 import { BatchModify } from './batch-modify';
 
@@ -25,6 +24,10 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
     }),
     memberEventList: t.field({
       description: 'Only properties that attended the given event(s)',
+      type: ['String'],
+    }),
+    ticketList: t.field({
+      description: 'Only properties that purchased the given ticket(s)',
       type: ['String'],
     }),
     withGps: t.boolean({

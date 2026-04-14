@@ -18,6 +18,7 @@ const TicketStatusFragment = graphql(/* GraphQL */ `
         eventDate
         ticketList {
           ticketName
+          paymentDate
           price
           count
         }

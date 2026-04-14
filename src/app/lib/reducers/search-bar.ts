@@ -8,6 +8,7 @@ export interface FilterT {
   memberYearList: number[];
   nonMemberYearList: number[];
   memberEventList: string[];
+  ticketList: string[];
   withGps: boolean | null;
 }
 
@@ -46,6 +47,7 @@ export const initialState: State = {
     memberYearList: [],
     nonMemberYearList: [],
     memberEventList: [],
+    ticketList: [],
     withGps: null,
   },
   isFilterSpecified: false,
@@ -76,6 +78,7 @@ function filterArg(state: State) {
   arg.memberYearList = state.filter.memberYearList;
   arg.nonMemberYearList = state.filter.nonMemberYearList;
   arg.memberEventList = state.filter.memberEventList;
+  arg.ticketList = state.filter.ticketList;
 
   if (state.filter.withGps != null) {
     arg.withGps = state.filter.withGps;
@@ -102,6 +105,7 @@ export const searchBarSlice = createSlice({
       state.filter.memberYearList = payload.memberYearList;
       state.filter.nonMemberYearList = payload.nonMemberYearList;
       state.filter.memberEventList = payload.memberEventList;
+      state.filter.ticketList = payload.ticketList;
       state.filter.withGps = payload.withGps;
       state.isFilterSpecified = isFilterSpecified(state.filter);
       state.filterArg = filterArg(state);

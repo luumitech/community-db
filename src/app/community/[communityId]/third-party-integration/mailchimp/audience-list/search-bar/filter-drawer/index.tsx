@@ -49,6 +49,7 @@ export const FilterDrawer: React.FC<Props> = ({
             <DrawerBody className="flex flex-col gap-4">
               <StatusSelect
                 controlName="subscriberStatusList"
+                isControlled
                 label="Mailchimp Subscriber Status"
                 placeholder="Unspecified"
                 selectionMode="multiple"
