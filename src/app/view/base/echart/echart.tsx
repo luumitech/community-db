@@ -4,7 +4,7 @@ import * as echarts from 'echarts/core';
 import React from 'react';
 import { useMeasure } from 'react-use';
 import { twMerge } from 'tailwind-merge';
-import { registerColumnClick, type OnColumnClickCB } from './grid-util';
+import { registerColumnClick, type OnColumnClickCB } from './bar-chart';
 import themeObj from './theme.json';
 
 echarts.registerTheme('default-theme', themeObj);

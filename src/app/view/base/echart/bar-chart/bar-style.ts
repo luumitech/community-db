@@ -1,7 +1,7 @@
 import type { BarSeriesOption } from 'echarts';
 
 /**
- * Custom bar label that render the y-axis value within the bar
+ * Custom bar label that renders value within the bar
  *
  * Used in 'series' option:
  *
@@ -14,7 +14,7 @@ import type { BarSeriesOption } from 'echarts';
  *       }
  *     ]
  */
-export const barLabel = {
+export const barSeriesLabel = {
   show: true,
   position: 'inside',
   color: 'rgb(79,109,140)',
@@ -27,7 +27,8 @@ export const barLabel = {
   },
 } satisfies BarSeriesOption['label'];
 
-export const barSelectedStyle = {
+/** Custom style to apply on bar that has been selected */
+export const barSeriesSelectedItemStyle = {
   decal: {
     symbol: 'rect',
     color: 'rgba(255,255,255,0.8)',

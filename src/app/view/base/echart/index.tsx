@@ -8,7 +8,7 @@ export type {
   ElementEvent,
   LabelFormatterCallback,
 } from 'echarts';
-export * from './bar-util';
+export * from './bar-chart';
 export { EChart } from './echart';
-export type { OnColumnClickCB } from './grid-util';
+export * from './total-util';
 export { ReactECharts };

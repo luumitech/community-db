@@ -3,8 +3,8 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
-  barLabel,
-  barSelectedStyle,
+  barSeriesLabel,
+  barSeriesSelectedItemStyle,
   type EChartsOption,
   type OnColumnClickCB,
   type ReactECharts,
@@ -51,7 +51,7 @@ class ChartDataHelper {
     return dataIndex === -1 ? null : dataIndex;
   }
 
-  xAxisData() {
+  categories() {
     return this.#stat.map((entry) => entry.year);
   }
 
@@ -60,7 +60,7 @@ class ChartDataHelper {
       yearToAddDecal != null ? this.toDataIndex(yearToAddDecal) : null;
     return this.#stat.map((entry, idx) => ({
       value: entry[key],
-      ...(idx === decalDataIndex && { itemStyle: barSelectedStyle }),
+      ...(idx === decalDataIndex && { itemStyle: barSeriesSelectedItemStyle }),
     }));
   }
 }
@@ -119,7 +119,7 @@ export const MemberCountBarChart: React.FC<Props> = ({
           show: true,
           alignWithLabel: true,
         },
-        data: chartHelper.xAxisData(),
+        data: chartHelper.categories(),
       },
       yAxis: {
         type: 'value',
@@ -139,14 +139,14 @@ export const MemberCountBarChart: React.FC<Props> = ({
           type: 'bar',
           stack: 'members',
           data: chartHelper.values('renew', selectedYear),
-          label: barLabel,
+          label: barSeriesLabel,
         },
         {
           name: 'new',
           type: 'bar',
           stack: 'members',
           data: chartHelper.values('new', selectedYear),
-          label: barLabel,
+          label: barSeriesLabel,
         },
       ],
     };

@@ -307,6 +307,7 @@
     "bottom": 10
   },
   "tooltip": {
+    "confine": true,
     "axisPointer": {
       "lineStyle": {
         "color": "#ccc",

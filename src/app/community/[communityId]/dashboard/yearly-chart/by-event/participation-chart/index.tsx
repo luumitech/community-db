@@ -5,7 +5,7 @@ import * as R from 'remeda';
 import { graphql } from '~/graphql/generated';
 import { usePageContext } from '../../../page-context';
 import { type MemberSourceStat } from '../_type';
-import { MemberCount } from './member-count';
+import { MemberCountChart } from './member-count-chart';
 import { NoMember } from './no-member';
 
 const DashboardPrevYearMemberSourceStatQuery = graphql(/* GraphQL */ `
@@ -28,7 +28,7 @@ const DashboardPrevYearMemberSourceStatQuery = graphql(/* GraphQL */ `
 interface Props {
   className?: string;
   year: number;
-  memberSourceStat: MemberSourceStat;
+  memberSourceStat: MemberSourceStat | null;
 }
 
 export const ParticipationChart: React.FC<Props> = ({
@@ -49,13 +49,12 @@ export const ParticipationChart: React.FC<Props> = ({
   });
   const prevYearStat = (
     result.data?.communityFromId.communityStat.memberSourceStat ?? []
-  ).filter(({ eventName }) => eventName === eventSelected);
+  ).find(({ eventName }) => eventName === eventSelected);
 
   /** Check if there are any member count data in the statistics */
   const noMember = React.useMemo(() => {
-    const sum = R.sumBy(
-      [...memberSourceStat, ...prevYearStat],
-      (entry) => entry.existing + entry.new + entry.renew
+    const sum = R.sumBy([memberSourceStat, prevYearStat], (entry) =>
+      entry != null ? entry.existing + entry.new + entry.renew : 0
     );
     return sum === 0;
   }, [memberSourceStat, prevYearStat]);
@@ -66,10 +65,10 @@ export const ParticipationChart: React.FC<Props> = ({
       {noMember ? (
         <NoMember />
       ) : (
-        <MemberCount
+        <MemberCountChart
           year={year}
           yearStat={memberSourceStat}
-          prevYearStat={prevYearStat}
+          prevYearStat={prevYearStat ?? null}
         />
       )}
     </Card>

@@ -1,11 +1,11 @@
-import type { BarSeriesOption } from 'echarts';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
-  barLabel,
-  barSelectedStyle,
+  TotalUtil,
+  barSeriesLabel,
+  barSeriesSelectedItemStyle,
   type EChartsOption,
   type OnColumnClickCB,
 } from '~/view/base/echart';
@@ -49,7 +49,7 @@ class ChartDataHelper {
     return dataIndex === -1 ? null : dataIndex;
   }
 
-  xAxisData() {
+  categories() {
     return this.#stat.map((entry) => entry.eventName);
   }
 
@@ -63,51 +63,23 @@ class ChartDataHelper {
         : null;
     return this.#stat.map((entry, idx) => ({
       value: entry[key],
-      ...(idx === decalDataIndex && { itemStyle: barSelectedStyle }),
+      ...(idx === decalDataIndex && { itemStyle: barSeriesSelectedItemStyle }),
     }));
   }
 
-  totalBar(): BarSeriesOption {
-    return {
-      data: this.#totalBarData(),
-      label: this.#totalBarLabel(),
-      tooltip: {
-        valueFormatter: (value, dataIndex) => `${this.#totalValue(dataIndex)}`,
+  totalBar() {
+    const totalUtil = new TotalUtil({
+      categoryNum: this.#stat.length,
+      totalFn: (dataIndex) => {
+        const entry = this.#stat[dataIndex];
+        if (entry != null) {
+          return entry.existing + entry.new + entry.renew;
+        } else {
+          return 0;
+        }
       },
-    };
-  }
-
-  #totalValue(dataIndex: number) {
-    const entry = this.#stat[dataIndex];
-    if (entry != null) {
-      return entry.existing + entry.new + entry.renew;
-    } else {
-      return 0;
-    }
-  }
-
-  #totalBarData() {
-    return this.#stat.map(() => ({
-      value: 6,
-      itemStyle: {
-        color: 'transparent',
-      },
-    })) satisfies BarSeriesOption['data'];
-  }
-
-  #totalBarLabel() {
-    return {
-      show: true,
-      position: 'insideBottom',
-      fontSize: 10,
-      color: 'black',
-      fontWeight: 'bold',
-      formatter: (params) => {
-        const { dataIndex } = params;
-        const total = this.#totalValue(dataIndex);
-        return total === 0 ? 'n/a' : `${total}`;
-      },
-    } satisfies BarSeriesOption['label'];
+    });
+    return totalUtil.totalBar('top');
   }
 }
 
@@ -138,6 +110,9 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
   const option = React.useMemo<EChartsOption>(() => {
     return {
       grid: {
+        // Add a little room in case the total label is outside the graph
+        top: 15,
+        // Reserve enough space for the x-axis label
         bottom: 100,
       },
       tooltip: {
@@ -148,6 +123,7 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
         data: [{ name: 'new' }, { name: 'renewed' }, { name: 'existing' }],
       },
       xAxis: {
+        type: 'category',
         name: 'Event',
         nameLocation: 'middle',
         nameGap: 10,
@@ -161,7 +137,7 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
           width: 80,
           overflow: 'truncate',
         },
-        data: chartHelper.xAxisData(),
+        data: chartHelper.categories(),
       },
       yAxis: {
         type: 'value',
@@ -176,23 +152,22 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
           type: 'bar',
           stack: 'members',
           data: chartHelper.values('existing', eventSelected),
-          label: barLabel,
+          label: barSeriesLabel,
         },
         {
           name: 'renewed',
           type: 'bar',
           stack: 'members',
           data: chartHelper.values('renew', eventSelected),
-          label: barLabel,
+          label: barSeriesLabel,
         },
         {
           name: 'new',
           type: 'bar',
           stack: 'members',
           data: chartHelper.values('new', eventSelected),
-          label: barLabel,
+          label: barSeriesLabel,
         },
-
         {
           name: 'total',
           type: 'bar',
