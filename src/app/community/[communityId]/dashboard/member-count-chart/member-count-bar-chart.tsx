@@ -3,9 +3,10 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
-  barSeriesLabel,
-  barSeriesSelectedItemStyle,
+  barStyle,
+  type BarSeriesOption,
   type EChartsOption,
+  type LineSeriesOption,
   type OnColumnClickCB,
   type ReactECharts,
 } from '~/view/base/echart';
@@ -55,13 +56,21 @@ class ChartDataHelper {
     return this.#stat.map((entry) => entry.year);
   }
 
-  values(key: 'renew' | 'new' | 'noRenewal', yearToAddDecal?: number | null) {
+  barData(key: 'renew' | 'new', selectedYear?: number | null) {
     const decalDataIndex =
-      yearToAddDecal != null ? this.toDataIndex(yearToAddDecal) : null;
+      selectedYear != null ? this.toDataIndex(selectedYear) : null;
     return this.#stat.map((entry, idx) => ({
       value: entry[key],
-      ...(idx === decalDataIndex && { itemStyle: barSeriesSelectedItemStyle }),
-    }));
+      ...barStyle({
+        isSelected: idx === decalDataIndex,
+      }),
+    })) satisfies BarSeriesOption['data'];
+  }
+
+  lineData(key: 'noRenewal') {
+    return this.#stat.map((entry) => ({
+      value: entry[key],
+    })) satisfies LineSeriesOption['data'];
   }
 }
 
@@ -132,21 +141,19 @@ export const MemberCountBarChart: React.FC<Props> = ({
         {
           name: 'no renewal',
           type: 'line',
-          data: chartHelper.values('noRenewal', selectedYear),
+          data: chartHelper.lineData('noRenewal'),
         },
         {
           name: 'renewed',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('renew', selectedYear),
-          label: barSeriesLabel,
+          data: chartHelper.barData('renew', selectedYear),
         },
         {
           name: 'new',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('new', selectedYear),
-          label: barSeriesLabel,
+          data: chartHelper.barData('new', selectedYear),
         },
       ],
     };

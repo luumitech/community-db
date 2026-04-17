@@ -7,8 +7,11 @@ export type {
   EChartsType,
   ElementEvent,
   LabelFormatterCallback,
+  LineSeriesOption,
+  PieSeriesOption,
 } from 'echarts';
 export * from './bar-chart';
 export { EChart } from './echart';
+export * from './pie-chart';
 export * from './total-util';
 export { ReactECharts };

@@ -20,3 +20,10 @@ type AnyDispatch<State> = import('@reduxjs/toolkit').ThunkDispatch<
 type ActionCreatorMap<T extends Record<string, AnyFunction>> = {
   [K in keyof T]: ReplaceReturnType<T[K], void>;
 };
+
+/** Extract only types that extends object */
+type OnlyObject<T> = T extends unknown[]
+  ? never // If it's an array, discard it
+  : T extends object // If it's an object (and not an array)
+    ? T // Keep it
+    : never;

@@ -4,8 +4,8 @@ import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
   TotalUtil,
-  barSeriesLabel,
-  barSeriesSelectedItemStyle,
+  barStyle,
+  type BarSeriesOption,
   type EChartsOption,
   type OnColumnClickCB,
 } from '~/view/base/echart';
@@ -53,18 +53,13 @@ class ChartDataHelper {
     return this.#stat.map((entry) => entry.eventName);
   }
 
-  values(
-    key: 'renew' | 'new' | 'existing',
-    eventNameToAddDecal?: string | null
-  ) {
+  barData(key: 'renew' | 'new' | 'existing', eventSelected?: string | null) {
     const decalDataIndex =
-      eventNameToAddDecal != null
-        ? this.toDataIndex(eventNameToAddDecal)
-        : null;
+      eventSelected != null ? this.toDataIndex(eventSelected) : null;
     return this.#stat.map((entry, idx) => ({
       value: entry[key],
-      ...(idx === decalDataIndex && { itemStyle: barSeriesSelectedItemStyle }),
-    }));
+      ...barStyle({ isSelected: idx === decalDataIndex }),
+    })) satisfies BarSeriesOption['data'];
   }
 
   totalBar() {
@@ -151,22 +146,19 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
           name: 'existing',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('existing', eventSelected),
-          label: barSeriesLabel,
+          data: chartHelper.barData('existing', eventSelected),
         },
         {
           name: 'renewed',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('renew', eventSelected),
-          label: barSeriesLabel,
+          data: chartHelper.barData('renew', eventSelected),
         },
         {
           name: 'new',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('new', eventSelected),
-          label: barSeriesLabel,
+          data: chartHelper.barData('new', eventSelected),
         },
         {
           name: 'total',

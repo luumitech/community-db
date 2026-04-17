@@ -3,7 +3,8 @@ import React from 'react';
 import {
   EChart,
   TotalUtil,
-  barSeriesLabel,
+  barStyle,
+  type BarSeriesOption,
   type EChartsOption,
 } from '~/view/base/echart';
 import { type MemberSourceStat } from '../_type';
@@ -27,10 +28,13 @@ class ChartDataHelper {
     return [this.#year, this.#year - 1];
   }
 
-  values(key: 'renew' | 'new' | 'existing') {
+  barData(key: 'renew' | 'new' | 'existing') {
     const curValue = this.#yearStat?.[key] ?? 0;
     const prevValue = this.#prevYearStat?.[key] ?? 0;
-    return [{ value: curValue }, { value: prevValue }];
+    return [
+      { value: curValue, ...barStyle() },
+      { value: prevValue, ...barStyle() },
+    ] satisfies BarSeriesOption['data'];
   }
 
   totalBar() {
@@ -96,22 +100,19 @@ export const MemberCountChart: React.FC<Props> = ({
           name: 'existing',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('existing'),
-          label: barSeriesLabel,
+          data: chartHelper.barData('existing'),
         },
         {
           name: 'renewed',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('renew'),
-          label: barSeriesLabel,
+          data: chartHelper.barData('renew'),
         },
         {
           name: 'new',
           type: 'bar',
           stack: 'members',
-          data: chartHelper.values('new'),
-          label: barSeriesLabel,
+          data: chartHelper.barData('new'),
         },
         {
           name: 'total',
