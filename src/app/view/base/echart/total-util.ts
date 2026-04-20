@@ -42,6 +42,8 @@ export class TotalUtil {
     return {
       data: this.#totalBarData(),
       label: this.#totalBarLabel(position),
+      // Override the default labelLayout logic, to always show the total value
+      labelLayout: { fontSize: 10 },
       tooltip: {
         valueFormatter: (_value, dataIndex) => `${this.#totalFn(dataIndex)}`,
       },
@@ -65,7 +67,6 @@ export class TotalUtil {
     return {
       show: true,
       position,
-      fontSize: 10,
       color: this.#theme.valueAxis.axisLabel.color,
       fontWeight: 'bold',
       formatter: (params) => {

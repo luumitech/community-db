@@ -1,3 +1,5 @@
+import type { LabelLayoutOptionCallbackParams } from 'echarts';
+
 export const commonTheme = {
   grid: {
     left: '5%',
@@ -31,6 +33,16 @@ export const commonTheme = {
     color: 'rgb(79,109,140)',
     fontSize: 11,
     fontFamily: 'sans-serif',
+  },
+  labelLayout: (params: LabelLayoutOptionCallbackParams) => {
+    /**
+     * Assume the label position is 'inside', if the container rect is not big
+     * enough to hold the label, don't display it
+     */
+    const { labelRect, rect } = params;
+    if (rect.width < labelRect.width || rect.height < labelRect.height) {
+      return { fontSize: 0 };
+    }
   },
   /**
    * This is not supported natively by EChart, but is used in the app to high

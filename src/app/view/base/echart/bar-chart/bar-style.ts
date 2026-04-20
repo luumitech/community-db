@@ -31,11 +31,7 @@ export function barStyle(theme: EChartTheme, opt?: BarStyleOpt): BarSeriesData {
   const label = {
     show: true,
     position: 'inside',
-    // formatter: '{c}',
-    formatter: (params) => {
-      const value = (params.value ?? 0) as number;
-      return value < 5 ? '' : value.toString();
-    },
+    formatter: '{c}',
   } satisfies BarSeriesOption['label'];
 
   return {
