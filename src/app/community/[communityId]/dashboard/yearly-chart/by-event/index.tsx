@@ -49,7 +49,7 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
     ({ eventName }) => eventName === eventSelected
   );
   const eventList = memberSourceStat.map(({ eventName }) => eventName);
-  const yearMemberSourceStat = memberSourceStat.filter(
+  const yearMemberSourceStat = memberSourceStat.find(
     ({ eventName }) => eventName === eventSelected
   );
 
@@ -69,7 +69,7 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
         <Spacer y={4} />
         <ParticipationChart
           year={year}
-          memberSourceStat={yearMemberSourceStat}
+          memberSourceStat={yearMemberSourceStat ?? null}
         />
         <Spacer y={4} />
         <TicketSaleTable ticketList={ticketList} />

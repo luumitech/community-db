@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className }) => {
-  const { community } = usePageContext();
+  const { year } = usePageContext();
 
   const widgetFilter = React.useCallback<WidgetFilterFn<WidgetId>>(
     (widget) => {
@@ -24,12 +24,12 @@ export const PageContent: React.FC<Props> = ({ className }) => {
         case 'eventParticipation':
         case 'byEvent':
         case 'byTicket':
-          return community != null;
+          return year != null;
         default:
           throw new Error(`Unrecognized widget ID: ${widget.id}`);
       }
     },
-    [community]
+    [year]
   );
 
   // Kept for debugging purpose

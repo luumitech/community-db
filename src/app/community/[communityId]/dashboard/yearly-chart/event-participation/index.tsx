@@ -1,166 +1,15 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Divider,
-  Skeleton,
-  cn,
-} from '@heroui/react';
+import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
 import React from 'react';
-import { getFragment, graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
-import {
-  BarChart,
-  barHighlightSelected,
-  barSelectable,
-  barTotal,
-  getItemColor,
-} from '~/view/base/chart';
-import { TableTooltip } from '~/view/base/chart/tooltip';
-import { ChartDataHelperUtil } from '../../chart-data-helper';
 import { usePageContext } from '../../page-context';
 import { allowableWidgets } from '../../widget-definition';
-
-const EventFragment = graphql(/* GraphQL */ `
-  fragment Dashboard_EventParticipation on Community {
-    communityStat {
-      id
-      memberSourceStat(year: $year) {
-        eventName
-        new
-        renew
-        existing
-      }
-    }
-  }
-`);
-
-type MemberSourceStat =
-  GQL.Dashboard_EventParticipationFragment['communityStat']['memberSourceStat'];
-
-interface ChartDataEntry extends Record<string, string | number> {
-  eventName: string;
-  new: number;
-  renewed: number;
-  existing: number;
-}
-
-class ChartDataHelper extends ChartDataHelperUtil<ChartDataEntry> {
-  public chartKeys = ['existing', 'renewed', 'new'];
-
-  constructor(private stat: MemberSourceStat) {
-    super();
-    this.chartData = this.stat.map((entry) => ({
-      eventName: entry.eventName,
-      new: entry.new,
-      renewed: entry.renew,
-      existing: entry.existing,
-    }));
-  }
-
-  getDataColor(label: keyof ChartDataEntry) {
-    const itemIdx = this.chartKeys.indexOf(label as string);
-    if (itemIdx !== -1) {
-      return getItemColor(itemIdx);
-    }
-    return getItemColor(0);
-  }
-}
-
-/** Custom tool tip when hovering over bars */
-function customTooltip(helper: ChartDataHelper) {
-  // const Tooltip: React.FC<BarTooltipProps<ChartDataEntry>> = ({ data }) => {
-  const Tooltip: React.FC<{ data: ChartDataEntry }> = ({ data }) => {
-    const dataValue = React.useCallback(
-      (labelKey: keyof ChartDataEntry) => {
-        const entry = helper.chartData.find(
-          ({ eventName }) => eventName === data.eventName
-        );
-        return (entry?.[labelKey as keyof typeof entry] as number) ?? 0;
-      },
-      [data]
-    );
-
-    const row = React.useCallback(
-      (symbol: 'bar' | 'none', label: string, value: number) => {
-        const itemColor = helper.getDataColor(label);
-        const firstCol = (
-          <span
-            className={cn('mt-[3px] block w-3', symbol === 'bar' && 'h-3')}
-            style={{ backgroundColor: itemColor }}
-          />
-        );
-        return [firstCol, label, <strong key="col-3">{value}</strong>];
-      },
-      []
-    );
-
-    return (
-      <TableTooltip
-        title={<strong>{dataValue('eventName')}</strong>}
-        rows={[
-          row('bar', 'existing', dataValue('existing')),
-          row('bar', 'renewed', dataValue('renewed')),
-          row('bar', 'new', dataValue('new')),
-          [<Divider key="divider" />],
-          row(
-            'none',
-            'total',
-            dataValue('existing') + dataValue('new') + dataValue('renewed')
-          ),
-        ]}
-      />
-    );
-  };
-  return Tooltip;
-}
+import { EventParticipationChart } from './event-participation-chart';
 
 interface Props {
   className?: string;
 }
 
 export const EventParticipation: React.FC<Props> = ({ className }) => {
-  const { setEventSelected, eventSelected, community, year, isLoading } =
-    usePageContext();
-  const entry = getFragment(EventFragment, community);
-
-  const chartHelper = React.useMemo(() => {
-    const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
-    const helper = new ChartDataHelper(memberSourceStat);
-    return helper;
-  }, [entry]);
-
-  const { chartData } = chartHelper;
-
-  const CustomBar = React.useMemo(() => {
-    return barHighlightSelected(chartData, eventSelected);
-  }, [chartData, eventSelected]);
-  const CustomTooltip = React.useMemo(
-    () => customTooltip(chartHelper),
-    [chartHelper]
-  );
-
-  const SelectableBar = React.useMemo(
-    () =>
-      barSelectable(chartData, {
-        renderToolTip: (data) => <CustomTooltip data={data} />,
-        onDataClick: (data) => setEventSelected?.(data.eventName),
-      }),
-    [chartData, CustomTooltip, setEventSelected]
-  );
-
-  const CustomTotals = React.useMemo(() => {
-    return barTotal(chartData, 'vertical');
-  }, [chartData]);
-
-  const gridYValues = React.useMemo(
-    () =>
-      chartHelper.getIntegerTicks(
-        10,
-        (data) => data.existing + data.renewed + data.new
-      ),
-    [chartHelper]
-  );
+  const { year, isLoading } = usePageContext();
 
   return (
     <Card className={cn(className)}>
@@ -178,45 +27,7 @@ export const EventParticipation: React.FC<Props> = ({ className }) => {
           aria-label="skeleton"
           isLoaded={!isLoading}
         >
-          <BarChart
-            className="min-h-[400px]"
-            data={chartData}
-            keys={chartHelper.chartKeys}
-            indexBy="eventName"
-            margin={{
-              top: 40,
-              bottom: 100,
-            }}
-            axisBottom={{
-              legend: 'Event',
-              tickRotation: -15,
-              legendOffset: 55,
-            }}
-            gridYValues={gridYValues}
-            axisLeft={{
-              legend: 'Member Count',
-              tickValues: gridYValues,
-            }}
-            // enableTotals
-            legendPos="bottom"
-            legendProp={{
-              translateY: 90,
-              itemWidth: 80,
-            }}
-            // This is being hidden by the bars rendered by CustomBar
-            // onDataClick={(data) => setEventSelected(data.eventName)}
-            layers={[
-              'grid',
-              'axes',
-              // 'bars',
-              CustomBar,
-              SelectableBar,
-              // 'totals',
-              CustomTotals,
-              'markers',
-              'legends',
-            ]}
-          />
+          <EventParticipationChart />
         </Skeleton>
       </CardBody>
     </Card>

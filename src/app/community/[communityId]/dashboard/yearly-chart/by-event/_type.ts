@@ -4,4 +4,4 @@ export type EventTicketFragment = Dashboard_EventTicketFragment;
 export type TicketStat = EventTicketFragment['communityStat']['ticketStat'];
 export type TicketStatEntry = Omit<TicketStat[number], '__typename'>;
 export type MemberSourceStat =
-  EventTicketFragment['communityStat']['memberSourceStat'];
+  EventTicketFragment['communityStat']['memberSourceStat'][number];

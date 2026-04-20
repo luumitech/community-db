@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: { allowedOrigins: ['localhost:3443'] },
   },
+  transpilePackages: [
+    /** Required by https://github.com/hustcc/echarts-for-react */
+    'echarts',
+    'zrender',
+  ],
   serverExternalPackages: [
     /**
      * This is added to avoid the error
