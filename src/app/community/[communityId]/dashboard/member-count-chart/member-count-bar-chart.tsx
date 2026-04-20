@@ -4,7 +4,9 @@ import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
   barStyle,
+  useEChartTheme,
   type BarSeriesOption,
+  type EChartTheme,
   type EChartsOption,
   type LineSeriesOption,
   type OnColumnClickCB,
@@ -30,9 +32,11 @@ type ByYearStat =
   GQL.Dashboard_MemberCountFragment['communityStat']['memberCountStat'][number];
 
 class ChartDataHelper {
+  #theme: EChartTheme;
   #stat: ByYearStat[];
 
-  constructor(stat: ByYearStat[], yearRange: number) {
+  constructor(theme: EChartTheme, stat: ByYearStat[], yearRange: number) {
+    this.#theme = theme;
     if (yearRange > 0) {
       this.#stat = stat.slice(-yearRange);
     } else {
@@ -56,21 +60,38 @@ class ChartDataHelper {
     return this.#stat.map((entry) => entry.year);
   }
 
-  barData(key: 'renew' | 'new', selectedYear?: number | null) {
+  barSeries(
+    key: 'renew' | 'new',
+    name: string,
+    selectedYear?: number | null
+  ): BarSeriesOption {
     const decalDataIndex =
       selectedYear != null ? this.toDataIndex(selectedYear) : null;
-    return this.#stat.map((entry, idx) => ({
+    const data = this.#stat.map((entry, idx) => ({
       value: entry[key],
-      ...barStyle({
+      ...barStyle(this.#theme, {
         isSelected: idx === decalDataIndex,
       }),
     })) satisfies BarSeriesOption['data'];
+
+    return {
+      name,
+      type: 'bar',
+      stack: 'members',
+      data,
+    };
   }
 
-  lineData(key: 'noRenewal') {
-    return this.#stat.map((entry) => ({
+  lineSeries(key: 'noRenewal', name: string): LineSeriesOption {
+    const data = this.#stat.map((entry) => ({
       value: entry[key],
     })) satisfies LineSeriesOption['data'];
+
+    return {
+      name,
+      type: 'line',
+      data,
+    };
   }
 }
 
@@ -90,16 +111,18 @@ export const MemberCountBarChart: React.FC<Props> = ({
   onYearSelect,
 }) => {
   const chartRef = React.useRef<ReactECharts>(null);
+  const theme = useEChartTheme();
   const entry = getFragment(MemberCountFragment, fragment);
   const communityStat = entry?.communityStat;
 
   const chartHelper = React.useMemo(() => {
     const helper = new ChartDataHelper(
+      theme,
       communityStat?.memberCountStat ?? [],
       yearRange
     );
     return helper;
-  }, [communityStat, yearRange]);
+  }, [theme, communityStat, yearRange]);
 
   const onColumnClick = React.useCallback<OnColumnClickCB>(
     (chartInst, dataIndex) => {
@@ -138,23 +161,9 @@ export const MemberCountBarChart: React.FC<Props> = ({
         minInterval: 1,
       },
       series: [
-        {
-          name: 'no renewal',
-          type: 'line',
-          data: chartHelper.lineData('noRenewal'),
-        },
-        {
-          name: 'renewed',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('renew', selectedYear),
-        },
-        {
-          name: 'new',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('new', selectedYear),
-        },
+        chartHelper.lineSeries('noRenewal', 'no renewal'),
+        chartHelper.barSeries('renew', 'renewed', selectedYear),
+        chartHelper.barSeries('new', 'new', selectedYear),
       ],
     };
   }, [chartHelper, selectedYear]);

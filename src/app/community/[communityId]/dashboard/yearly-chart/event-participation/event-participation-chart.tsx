@@ -5,7 +5,9 @@ import {
   EChart,
   TotalUtil,
   barStyle,
+  useEChartTheme,
   type BarSeriesOption,
+  type EChartTheme,
   type EChartsOption,
   type OnColumnClickCB,
 } from '~/view/base/echart';
@@ -29,9 +31,11 @@ type MemberSourceStat =
   GQL.Dashboard_EventParticipationFragment['communityStat']['memberSourceStat'][number];
 
 class ChartDataHelper {
+  #theme: EChartTheme;
   #stat: MemberSourceStat[];
 
-  constructor(stat: MemberSourceStat[]) {
+  constructor(theme: EChartTheme, stat: MemberSourceStat[]) {
+    this.#theme = theme;
     this.#stat = stat;
   }
 
@@ -53,17 +57,28 @@ class ChartDataHelper {
     return this.#stat.map((entry) => entry.eventName);
   }
 
-  barData(key: 'renew' | 'new' | 'existing', eventSelected?: string | null) {
+  barSeries(
+    key: 'renew' | 'new' | 'existing',
+    name: string,
+    eventSelected?: string | null
+  ): BarSeriesOption {
     const decalDataIndex =
       eventSelected != null ? this.toDataIndex(eventSelected) : null;
-    return this.#stat.map((entry, idx) => ({
+    const data = this.#stat.map((entry, idx) => ({
       value: entry[key],
-      ...barStyle({ isSelected: idx === decalDataIndex }),
+      ...barStyle(this.#theme, { isSelected: idx === decalDataIndex }),
     })) satisfies BarSeriesOption['data'];
+
+    return {
+      name,
+      type: 'bar',
+      stack: 'members',
+      data,
+    };
   }
 
-  totalBar() {
-    const totalUtil = new TotalUtil({
+  totalBarSeries(): BarSeriesOption {
+    const totalUtil = new TotalUtil(this.#theme, {
       categoryNum: this.#stat.length,
       totalFn: (dataIndex) => {
         const entry = this.#stat[dataIndex];
@@ -74,7 +89,13 @@ class ChartDataHelper {
         }
       },
     });
-    return totalUtil.totalBar('top');
+
+    return {
+      name: 'total',
+      type: 'bar',
+      stack: 'members',
+      ...totalUtil.totalBar('top'),
+    };
   }
 }
 
@@ -84,13 +105,17 @@ interface Props {
 
 export const EventParticipationChart: React.FC<Props> = ({ className }) => {
   const { setEventSelected, eventSelected, community } = usePageContext();
+  const theme = useEChartTheme();
   const entry = getFragment(EventFragment, community);
   const communityStat = entry?.communityStat;
 
   const chartHelper = React.useMemo(() => {
-    const helper = new ChartDataHelper(communityStat?.memberSourceStat ?? []);
+    const helper = new ChartDataHelper(
+      theme,
+      communityStat?.memberSourceStat ?? []
+    );
     return helper;
-  }, [communityStat]);
+  }, [theme, communityStat]);
 
   const onColumnClick = React.useCallback<OnColumnClickCB>(
     (chartInst, dataIndex) => {
@@ -142,30 +167,10 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
         minInterval: 1,
       },
       series: [
-        {
-          name: 'existing',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('existing', eventSelected),
-        },
-        {
-          name: 'renewed',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('renew', eventSelected),
-        },
-        {
-          name: 'new',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('new', eventSelected),
-        },
-        {
-          name: 'total',
-          type: 'bar',
-          stack: 'members',
-          ...chartHelper.totalBar(),
-        },
+        chartHelper.barSeries('existing', 'existing', eventSelected),
+        chartHelper.barSeries('renew', 'renewed', eventSelected),
+        chartHelper.barSeries('new', 'new', eventSelected),
+        chartHelper.totalBarSeries(),
       ],
     };
   }, [chartHelper, eventSelected]);

@@ -1,5 +1,5 @@
 import type { BarSeriesOption } from 'echarts';
-import { defaultStyle } from '../common-style';
+import { EChartTheme } from '../use-echart-theme';
 
 type BarSeriesData = OnlyObject<NonNullable<BarSeriesOption['data']>[number]>;
 
@@ -26,10 +26,10 @@ interface BarStyleOpt {
  * - Add label within the bar
  * - Apply selected style
  */
-export function barStyle(opt?: BarStyleOpt): BarSeriesData {
+export function barStyle(theme: EChartTheme, opt?: BarStyleOpt): BarSeriesData {
   /** Add label in the middle of the bar */
   const label = {
-    ...defaultStyle.label,
+    show: true,
     position: 'inside',
     // formatter: '{c}',
     formatter: (params) => {
@@ -38,14 +38,10 @@ export function barStyle(opt?: BarStyleOpt): BarSeriesData {
     },
   } satisfies BarSeriesOption['label'];
 
-  const selectedItemStyle = {
-    ...defaultStyle.selectedItemStyle,
-  } satisfies BarSeriesOption['itemStyle'];
-
   return {
     label,
     itemStyle: {
-      ...(opt?.isSelected && selectedItemStyle),
+      ...(opt?.isSelected && theme.selectedItemStyle),
     },
   } satisfies BarSeriesOption;
 }

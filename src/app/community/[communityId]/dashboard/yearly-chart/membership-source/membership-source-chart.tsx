@@ -4,7 +4,9 @@ import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
   pieSeriesStyle,
+  useEChartTheme,
   type ECElementEvent,
+  type EChartTheme,
   type EChartsOption,
   type EChartsType,
   type PieSeriesOption,
@@ -28,9 +30,11 @@ type MemberSourceStat =
   GQL.Dashboard_MembershipSourceFragment['communityStat']['memberSourceStat'][number];
 
 class ChartDataHelper {
+  #theme: EChartTheme;
   #stat: MemberSourceStat[];
 
-  constructor(stat: MemberSourceStat[]) {
+  constructor(theme: EChartTheme, stat: MemberSourceStat[]) {
+    this.#theme = theme;
     this.#stat = stat.filter((entry) => entry.new + entry.renew > 0);
   }
 
@@ -52,14 +56,26 @@ class ChartDataHelper {
     return this.#stat.map((entry) => entry.eventName);
   }
 
-  pieData(eventSelected?: string | null) {
+  #pieDataLabel() {
+    return this.#stat.map((entry) => {
+      return {
+        value: entry.new + entry.renew,
+        name: entry.eventName,
+        ...pieSeriesStyle(this.#theme, {
+          showCategory: true,
+        }),
+      };
+    }) satisfies PieSeriesOption['data'];
+  }
+
+  #pieData(eventSelected?: string | null) {
     return this.#stat.map((entry, idx) => {
       const decalDataIndex =
         eventSelected != null ? this.toDataIndex(eventSelected) : null;
       return {
         value: entry.new + entry.renew,
         name: entry.eventName,
-        ...pieSeriesStyle({
+        ...pieSeriesStyle(this.#theme, {
           showValue: true,
           isSelected: idx === decalDataIndex,
         }),
@@ -67,16 +83,17 @@ class ChartDataHelper {
     }) satisfies PieSeriesOption['data'];
   }
 
-  pieDataLabel() {
-    return this.#stat.map((entry) => {
-      return {
-        value: entry.new + entry.renew,
-        name: entry.eventName,
-        ...pieSeriesStyle({
-          showCategory: true,
-        }),
-      };
-    }) satisfies PieSeriesOption['data'];
+  pieSeries(
+    type: 'label' | 'value',
+    eventSelected?: string | null
+  ): PieSeriesOption {
+    return {
+      type: 'pie',
+      center: ['50%', '40%'],
+      radius: ['30%', '70%'],
+      data:
+        type === 'label' ? this.#pieDataLabel() : this.#pieData(eventSelected),
+    };
   }
 }
 
@@ -86,13 +103,17 @@ interface Props {
 
 export const MembershipSourceChart: React.FC<Props> = ({ className }) => {
   const { setEventSelected, eventSelected, community } = usePageContext();
+  const theme = useEChartTheme();
   const entry = getFragment(MembershipSourceFragment, community);
   const communityStat = entry?.communityStat;
 
   const chartHelper = React.useMemo(() => {
-    const helper = new ChartDataHelper(communityStat?.memberSourceStat ?? []);
+    const helper = new ChartDataHelper(
+      theme,
+      communityStat?.memberSourceStat ?? []
+    );
     return helper;
-  }, [communityStat]);
+  }, [theme, communityStat]);
 
   const onPieSelect = React.useCallback(
     (evt: ECElementEvent, chartInst: EChartsType) => {
@@ -121,20 +142,8 @@ export const MembershipSourceChart: React.FC<Props> = ({ className }) => {
         },
       },
       series: [
-        {
-          name: 'label layer',
-          type: 'pie',
-          center: ['50%', '40%'],
-          radius: ['30%', '70%'],
-          data: chartHelper.pieDataLabel(),
-        },
-        {
-          name: 'membership source',
-          type: 'pie',
-          center: ['50%', '40%'],
-          radius: ['30%', '70%'],
-          data: chartHelper.pieData(eventSelected),
-        },
+        chartHelper.pieSeries('label'),
+        chartHelper.pieSeries('value', eventSelected),
       ],
     };
   }, [chartHelper, eventSelected]);

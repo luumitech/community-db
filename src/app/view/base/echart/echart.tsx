@@ -1,13 +1,16 @@
 import { EChartsOption, type EChartsType } from 'echarts';
 import ReactECharts, { type EChartsReactProps } from 'echarts-for-react';
 import * as echarts from 'echarts/core';
+import { useTheme } from 'next-themes';
 import React from 'react';
 import { useMeasure } from 'react-use';
 import { twMerge } from 'tailwind-merge';
 import { registerColumnClick, type OnColumnClickCB } from './bar-chart';
-import themeObj from './theme.json';
+import { darkTheme, lightTheme } from './theme';
 
-echarts.registerTheme('default-theme', themeObj);
+const THEME_PREFIX = 'cd-echart';
+echarts.registerTheme(`${THEME_PREFIX}-light`, lightTheme);
+echarts.registerTheme(`${THEME_PREFIX}-dark`, darkTheme);
 
 interface Props extends EChartsReactProps {
   className?: string;
@@ -18,6 +21,7 @@ interface Props extends EChartsReactProps {
 export const EChart = React.forwardRef<ReactECharts, Props>(
   ({ className, onColumnClick, onChartReady, ...props }, ref) => {
     const [divRef, { height, width }] = useMeasure<HTMLDivElement>();
+    const { resolvedTheme: theme } = useTheme();
 
     const customOnChartReady = React.useCallback(
       (chartInst: EChartsType) => {
@@ -35,7 +39,7 @@ export const EChart = React.forwardRef<ReactECharts, Props>(
           <ReactECharts
             ref={ref}
             style={{ width, height }}
-            theme={'default-theme'}
+            theme={`${THEME_PREFIX}-${theme}`}
             onChartReady={customOnChartReady}
             {...props}
           />

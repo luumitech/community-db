@@ -1,5 +1,5 @@
 import type { PieSeriesOption } from 'echarts';
-import { defaultStyle } from '../common-style';
+import { EChartTheme } from '../use-echart-theme';
 
 type PieSeriesData = OnlyObject<NonNullable<PieSeriesOption['data']>[number]>;
 
@@ -24,17 +24,20 @@ interface PieStyleOpt {
  *       }
  *     ]
  */
-export function pieSeriesStyle(opt?: PieStyleOpt): PieSeriesData {
+export function pieSeriesStyle(
+  theme: EChartTheme,
+  opt?: PieStyleOpt
+): PieSeriesData {
   const valueLabel = {
-    ...defaultStyle.label,
     position: 'inside',
     formatter: '{c}',
   } satisfies PieSeriesOption['label'];
 
   const categoryLabel = {
-    ...defaultStyle.label,
+    show: true,
     formatter: '{b}',
     opacity: 1,
+    color: theme.categoryAxis.axisLabel.color,
   } satisfies PieSeriesOption['label'];
 
   const categoryLabelLine = {
@@ -44,14 +47,7 @@ export function pieSeriesStyle(opt?: PieStyleOpt): PieSeriesData {
     },
   } satisfies PieSeriesOption['labelLine'];
 
-  const selectedItemStyle = {
-    ...defaultStyle.selectedItemStyle,
-  } satisfies PieSeriesOption['itemStyle'];
-
   return {
-    label: {
-      show: false,
-    },
     ...(opt?.showCategory && {
       label: categoryLabel,
       labelLine: categoryLabelLine,
@@ -59,7 +55,7 @@ export function pieSeriesStyle(opt?: PieStyleOpt): PieSeriesData {
     ...(opt?.showValue && { label: valueLabel }),
     itemStyle: {
       borderRadius: 3,
-      ...(opt?.isSelected && selectedItemStyle),
+      ...(opt?.isSelected && theme.selectedItemStyle),
       // Hide each slice when showing category labels
       ...(opt?.showCategory && { opacity: 0 }),
     },

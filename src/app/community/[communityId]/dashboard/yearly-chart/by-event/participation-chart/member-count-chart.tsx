@@ -4,21 +4,26 @@ import {
   EChart,
   TotalUtil,
   barStyle,
+  useEChartTheme,
   type BarSeriesOption,
+  type EChartTheme,
   type EChartsOption,
 } from '~/view/base/echart';
 import { type MemberSourceStat } from '../_type';
 
 class ChartDataHelper {
+  #theme: EChartTheme;
   #year: number;
   #yearStat: MemberSourceStat | null;
   #prevYearStat: MemberSourceStat | null;
 
   constructor(
+    theme: EChartTheme,
     year: number,
     yearStat: MemberSourceStat | null,
     prevYearStat: MemberSourceStat | null
   ) {
+    this.#theme = theme;
     this.#year = year;
     this.#yearStat = yearStat;
     this.#prevYearStat = prevYearStat;
@@ -28,17 +33,24 @@ class ChartDataHelper {
     return [this.#year, this.#year - 1];
   }
 
-  barData(key: 'renew' | 'new' | 'existing') {
+  barSeries(key: 'renew' | 'new' | 'existing', name: string): BarSeriesOption {
     const curValue = this.#yearStat?.[key] ?? 0;
     const prevValue = this.#prevYearStat?.[key] ?? 0;
-    return [
-      { value: curValue, ...barStyle() },
-      { value: prevValue, ...barStyle() },
+    const data = [
+      { value: curValue, ...barStyle(this.#theme) },
+      { value: prevValue, ...barStyle(this.#theme) },
     ] satisfies BarSeriesOption['data'];
+
+    return {
+      name,
+      type: 'bar',
+      stack: 'members',
+      data,
+    };
   }
 
-  totalBar() {
-    const totalUtil = new TotalUtil({
+  totalBarSeries(): BarSeriesOption {
+    const totalUtil = new TotalUtil(this.#theme, {
       categoryNum: 2,
       totalFn: (dataIndex) => {
         const entry = dataIndex === 0 ? this.#yearStat : this.#prevYearStat;
@@ -49,7 +61,13 @@ class ChartDataHelper {
         }
       },
     });
-    return totalUtil.totalBar('insideLeft');
+
+    return {
+      name: 'total',
+      type: 'bar',
+      stack: 'members',
+      ...totalUtil.totalBar('insideLeft'),
+    };
   }
 }
 
@@ -66,10 +84,12 @@ export const MemberCountChart: React.FC<Props> = ({
   yearStat,
   prevYearStat,
 }) => {
+  const theme = useEChartTheme();
+
   const chartHelper = React.useMemo(() => {
-    const helper = new ChartDataHelper(year, yearStat, prevYearStat);
+    const helper = new ChartDataHelper(theme, year, yearStat, prevYearStat);
     return helper;
-  }, [year, yearStat, prevYearStat]);
+  }, [theme, year, yearStat, prevYearStat]);
 
   const option = React.useMemo<EChartsOption>(() => {
     return {
@@ -96,30 +116,10 @@ export const MemberCountChart: React.FC<Props> = ({
         },
       },
       series: [
-        {
-          name: 'existing',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('existing'),
-        },
-        {
-          name: 'renewed',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('renew'),
-        },
-        {
-          name: 'new',
-          type: 'bar',
-          stack: 'members',
-          data: chartHelper.barData('new'),
-        },
-        {
-          name: 'total',
-          type: 'bar',
-          stack: 'members',
-          ...chartHelper.totalBar(),
-        },
+        chartHelper.barSeries('existing', 'existing'),
+        chartHelper.barSeries('renew', 'renewed'),
+        chartHelper.barSeries('new', 'new'),
+        chartHelper.totalBarSeries(),
       ],
     };
   }, [chartHelper]);

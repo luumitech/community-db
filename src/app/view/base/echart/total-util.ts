@@ -1,4 +1,5 @@
 import { type BarSeriesOption } from 'echarts';
+import { type EChartTheme } from './use-echart-theme';
 
 type DataTotalFn = (dataIndex: number) => number;
 
@@ -10,10 +11,12 @@ interface TotalUtilOpt {
 }
 
 export class TotalUtil {
+  #theme: EChartTheme;
   #categoryNum: number;
   #totalFn: DataTotalFn;
 
-  constructor(opt: TotalUtilOpt) {
+  constructor(theme: EChartTheme, opt: TotalUtilOpt) {
+    this.#theme = theme;
     this.#categoryNum = opt.categoryNum;
     this.#totalFn = opt.totalFn;
   }
@@ -63,7 +66,7 @@ export class TotalUtil {
       show: true,
       position,
       fontSize: 10,
-      color: 'black',
+      color: this.#theme.valueAxis.axisLabel.color,
       fontWeight: 'bold',
       formatter: (params) => {
         const { dataIndex } = params;

@@ -14,4 +14,5 @@ export * from './bar-chart';
 export { EChart } from './echart';
 export * from './pie-chart';
 export * from './total-util';
+export * from './use-echart-theme';
 export { ReactECharts };
