@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineWidget } from '~/view/base/grid-stack';
-import { type WidgetMap } from '~/view/base/grid-stack-with-card';
+import { WidgetTitle, type WidgetMap } from '~/view/base/grid-stack-with-card';
 import { CurrentEvent } from './current-event';
 import { MembershipStatus } from './membership-status';
 import { NotesView } from './notes-view';
@@ -31,6 +31,7 @@ const membershipStatus = defineWidget({
   h: 3,
   x: 0,
   y: 0,
+  title: <WidgetTitle>Membership Status</WidgetTitle>,
   content: <MembershipStatus className="h-full w-full" />,
 });
 const currentEvent = defineWidget({
@@ -39,6 +40,7 @@ const currentEvent = defineWidget({
   h: 3,
   x: membershipStatus.x! + membershipStatus.w!,
   y: membershipStatus.y!,
+  title: <WidgetTitle>Current Event</WidgetTitle>,
   content: <CurrentEvent className="h-full w-full" />,
 });
 const notesView = defineWidget({
@@ -47,6 +49,7 @@ const notesView = defineWidget({
   h: 4,
   x: membershipStatus.x!,
   y: membershipStatus.y! + membershipStatus.h!,
+  title: <WidgetTitle>Notes</WidgetTitle>,
   content: <NotesView className="h-full w-full" />,
 });
 const occupantDisplay = defineWidget({
@@ -55,6 +58,7 @@ const occupantDisplay = defineWidget({
   h: 4,
   x: notesView.x!,
   y: notesView.y! + notesView.h!,
+  title: <WidgetTitle>Contact</WidgetTitle>,
   content: <OccupantDisplay className="h-full w-full" />,
 });
 const ticketStatus = defineWidget({
@@ -63,6 +67,7 @@ const ticketStatus = defineWidget({
   h: 4,
   x: occupantDisplay.x!,
   y: occupantDisplay.y! + occupantDisplay.h!,
+  title: <WidgetTitle>Ticket Status</WidgetTitle>,
   content: <TicketStatus className="h-full w-full" />,
 });
 

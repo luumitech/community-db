@@ -37,13 +37,23 @@
     }
 
     :global(.widget-control-bar) {
+      /* This needs to match the padding-top in .grid-stack-item-content */
       height: 24px;
-      background-color: hsl(var(--heroui-default));
+      /* Match the .grid-stack-item-content position */
+      position: absolute;
+      top: var(--gs-item-margin-top);
+      left: var(--gs-item-margin-left);
+      right: var(--gs-item-margin-right);
+
+      background-color: hsl(var(--heroui-default)/50%);
+      &:hover {
+        background-color: hsl(var(--heroui-default));
+      }
     }
 
     :global(.grid-stack-item-content) {
       &> div  {
-        /* This needs to match the height of widget-control-bar */
+        /* This needs to match the height of .widget-control-bar */
         padding-top: 24px;
       }
     }

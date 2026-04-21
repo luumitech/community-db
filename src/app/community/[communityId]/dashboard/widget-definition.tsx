@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineWidget } from '~/view/base/grid-stack';
 import { type WidgetMap } from '~/view/base/grid-stack-with-card';
-import { MemberCountChart } from './member-count-chart';
+import { MemberCount } from './member-count';
 import {
   ByEvent,
   ByTicket,
@@ -35,7 +35,8 @@ const memberCount = defineWidget({
   h: 12,
   x: 0,
   y: 0,
-  content: <MemberCountChart className="h-full w-full" />,
+  title: <MemberCount.Title />,
+  content: <MemberCount.Chart className="h-full w-full" />,
 });
 const membershipSource = defineWidget({
   id: 'membershipSource',
@@ -43,7 +44,8 @@ const membershipSource = defineWidget({
   h: 10,
   x: 0,
   y: memberCount.y! + memberCount.h!,
-  content: <MembershipSource className="h-full w-full" />,
+  title: <MembershipSource.Title />,
+  content: <MembershipSource.Chart className="h-full w-full" />,
 });
 const membershipFee = defineWidget({
   id: 'membershipFee',
@@ -51,7 +53,8 @@ const membershipFee = defineWidget({
   h: 10,
   x: membershipSource.x! + membershipSource.w!,
   y: memberCount.y! + memberCount.h!,
-  content: <MembershipFee className="h-full w-full" />,
+  title: <MembershipFee.Title />,
+  content: <MembershipFee.Chart className="h-full w-full" />,
 });
 const eventParticipation = defineWidget({
   id: 'eventParticipation',
@@ -59,7 +62,8 @@ const eventParticipation = defineWidget({
   h: 10,
   x: membershipSource.x!,
   y: membershipSource.y! + membershipSource.h!,
-  content: <EventParticipation className="h-full w-full" />,
+  title: <EventParticipation.Title />,
+  content: <EventParticipation.Chart className="h-full w-full" />,
 });
 const byEvent = defineWidget({
   id: 'byEvent',
@@ -67,7 +71,8 @@ const byEvent = defineWidget({
   h: 10,
   x: membershipFee.x!,
   y: membershipFee.y! + membershipFee.h!,
-  content: <ByEvent className="h-full w-full" />,
+  title: <ByEvent.Title />,
+  content: <ByEvent.Chart className="h-full w-full" />,
 });
 const byTicket = defineWidget({
   id: 'byTicket',
@@ -75,7 +80,8 @@ const byTicket = defineWidget({
   h: 10,
   x: eventParticipation.x!,
   y: eventParticipation.y! + eventParticipation.h!,
-  content: <ByTicket className="h-full w-full" />,
+  title: <ByTicket.Title />,
+  content: <ByTicket.Chart className="h-full w-full" />,
 });
 
 export const allowableWidgets: WidgetMap<WidgetId> = {

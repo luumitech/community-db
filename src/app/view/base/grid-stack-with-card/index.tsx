@@ -18,6 +18,7 @@ import styles from './styles.module.css';
 
 export type * from './_type';
 export { useLayoutManagerContext } from './layout-manager-context';
+export { WidgetTitle } from './widget-title';
 
 interface Props<WidgetId extends string>
   extends LayoutManagerProps<WidgetId>, GridStackProps {

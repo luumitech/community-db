@@ -62,7 +62,7 @@ export function GridStackWidgets<WidgetId extends string>({
       }
     });
 
-    widgets.forEach(({ content: _content, ...widgetOpts }) => {
+    widgets.forEach(({ content: _content, title: _title, ...widgetOpts }) => {
       const { id } = widgetOpts;
       const el = itemElsRef.current.get(id);
       if (!el) {

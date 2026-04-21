@@ -13,6 +13,8 @@ export interface Widget<Id extends string = string> extends GSWidget {
   id: Id;
   /** React component to render for the widget */
   content: React.ReactNode;
+  /** React component to render title for the widget */
+  title?: React.ReactNode;
 }
 
 export type { RenderItemFn } from './grid-stack-widgets';

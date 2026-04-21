@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
+import { Button, Card, CardBody, Link, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
@@ -16,7 +16,6 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardHeader>Current Event</CardHeader>
       <CardBody>
         <div className="flex items-start gap-2">
           <EventNameSelect />
