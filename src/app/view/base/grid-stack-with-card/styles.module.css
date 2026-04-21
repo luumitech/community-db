@@ -31,18 +31,25 @@
     /* Hide other widget control components when resizable handles are hidden */
     &:global(.ui-resizable-autohide),
     &:global(.ui-draggable-dragging) {
-      :global(.widget-control) {
+      :global(.widget-hover-control) {
         opacity: 0;
       }
     }
 
+    :global(.widget-control-bar) {
+      height: 24px;
+      background-color: hsl(var(--heroui-default));
+    }
+
     :global(.grid-stack-item-content) {
-      cursor: grab;
+      &> div  {
+        /* This needs to match the height of widget-control-bar */
+        padding-top: 24px;
+      }
     }
 
     &:global(.ui-draggable-dragging) {
       transform: rotate(1.5deg);
-      /* cursor: grabbing; */
     }
   }
 }

@@ -118,27 +118,39 @@ export function LayoutManagerProvider<WidgetId extends string>({
   );
 
   /**
-   * Add a delete widget button on the top right of the card, when the card is
-   * hovered over
+   * Overlay a widget control bar on top of all cards
+   *
+   * - It serves as the widget drag bar
+   * - It houses the widget control (i.e remove button)
    */
   const renderItem: RenderItemFn<WidgetId> = React.useCallback(
     (gs, widget) => {
       return {
         children: (
-          <Button
+          <div
             className={cn(
-              'widget-control',
-              'absolute -top-1 -right-1',
-              'z-10 rounded-full',
-              'opacity-100'
+              'widget-control-bar drag-handle',
+              'cursor-grab active:cursor-grabbing',
+              'top-[8px] right-[8px] left-[8px]',
+              'rounded-t-large px-3',
+              'flex items-center',
+              'absolute z-10'
             )}
-            size="sm"
-            variant="shadow"
-            isIconOnly
-            onPress={() => removeWidget(widget.id)}
           >
-            <Icon icon="cross" size={16} />
-          </Button>
+            <Icon icon="drag-handle" />
+            <Button
+              className={cn(
+                'widget-hover-control',
+                'ml-auto',
+                'h-3 w-3 min-w-3'
+              )}
+              color="danger"
+              isIconOnly
+              onPress={() => removeWidget(widget.id)}
+            >
+              <Icon icon="cross" size={12} />
+            </Button>
+          </div>
         ),
       };
     },
