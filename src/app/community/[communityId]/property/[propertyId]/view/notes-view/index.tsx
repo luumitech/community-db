@@ -25,10 +25,9 @@ export const NotesView: React.FC<Props> = ({ className }) => {
   return (
     <Card className={cn(className)}>
       <CardHeader>
-        Notes
         <Button
           as={Link}
-          className="absolute top-2 right-2"
+          className="ml-auto"
           color="primary"
           variant="bordered"
           size="sm"

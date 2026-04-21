@@ -1,13 +1,7 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Skeleton,
-  Spacer,
-  cn,
-} from '@heroui/react';
+import { Card, CardBody, Skeleton, Spacer, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
+import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../../page-context';
 import { allowableWidgets } from '../../widget-definition';
 import { TicketNameSelect } from './ticket-name-select';
@@ -29,11 +23,18 @@ const ByTicketFragment = graphql(/* GraphQL */ `
   }
 `);
 
+const Title: React.FC = () => {
+  const { year } = usePageContext();
+  return (
+    <WidgetTitle>{`${year} ${allowableWidgets.byTicket.info.label}`}</WidgetTitle>
+  );
+};
+
 interface Props {
   className?: string;
 }
 
-export const ByTicket: React.FC<Props> = ({ className }) => {
+const Chart: React.FC<Props> = ({ className }) => {
   const { community, ticketSelected, year, isLoading } = usePageContext();
   const entry = getFragment(ByTicketFragment, community);
   const ticketStat = React.useMemo(() => {
@@ -70,11 +71,6 @@ export const ByTicket: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardHeader>
-        <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} ${allowableWidgets.byTicket.info.label}`}</p>
-        </div>
-      </CardHeader>
       <CardBody>
         <Skeleton
           className="flex h-full flex-col rounded-lg"
@@ -87,4 +83,9 @@ export const ByTicket: React.FC<Props> = ({ className }) => {
       </CardBody>
     </Card>
   );
+};
+
+export const ByTicket = {
+  Chart,
+  Title,
 };

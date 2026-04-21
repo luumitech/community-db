@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader, cn } from '@heroui/react';
+import { Card, CardBody, CardFooter, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useLayoutContext as useViewLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
@@ -43,7 +43,6 @@ export const MembershipStatus: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardHeader>Membership Status</CardHeader>
       <CardBody className="gap-2">
         <YearSelect
           yearRange={[minYear, maxYear]}

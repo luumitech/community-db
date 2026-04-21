@@ -12,6 +12,7 @@ import { useLocalStorage } from 'react-use';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { lsFlags } from '~/lib/env';
+import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../page-context';
 import { allowableWidgets } from '../widget-definition';
 import { FootNote } from './foot-note';
@@ -30,13 +31,15 @@ const MemberCountStatQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export interface MemberCountChartProps {
+const Title: React.FC = () => {
+  return <WidgetTitle>{allowableWidgets.memberCount.info.label}</WidgetTitle>;
+};
+
+interface Props {
   className?: string;
 }
 
-export const MemberCountChart: React.FC<MemberCountChartProps> = ({
-  className,
-}) => {
+const Chart: React.FC<Props> = ({ className }) => {
   const { communityId, year, onYearSelect } = usePageContext();
   const [yearRange = 10, setYearRange] = useLocalStorage(
     lsFlags.dashboardYearRange,
@@ -53,9 +56,6 @@ export const MemberCountChart: React.FC<MemberCountChartProps> = ({
       <CardHeader
         className={cn('flex flex-col gap-2', 'items-start', 'sm:flex-row')}
       >
-        <p className={cn('sm:flex-1', 'text-md font-bold')}>
-          {allowableWidgets.memberCount.info.label}
-        </p>
         <div className="flex gap-2 self-end">
           {community != null && (
             <YearSelect
@@ -99,4 +99,9 @@ export const MemberCountChart: React.FC<MemberCountChartProps> = ({
       </CardFooter>
     </Card>
   );
+};
+
+export const MemberCount = {
+  Chart,
+  Title,
 };

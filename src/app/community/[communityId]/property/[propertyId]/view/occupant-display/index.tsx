@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, Link } from '@heroui/react';
+import { Button, Card, CardBody, Link } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
@@ -97,13 +97,12 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardHeader>Contact</CardHeader>
       <CardBody
         /**
          * This is to prevent the text in OccupantTable in scrolling to the top
          * padding of the cardbody
          */
-        className="p-3 pt-0"
+        className="p-3"
       >
         <OccupantTable items={occupantList} topContent={topContent} />
       </CardBody>

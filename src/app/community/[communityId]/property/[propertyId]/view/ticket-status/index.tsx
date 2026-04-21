@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, cn } from '@heroui/react';
+import { Card, CardBody, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext as useViewLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
@@ -58,7 +58,6 @@ export const TicketStatus: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardHeader>Ticket Status</CardHeader>
       <CardBody>
         <TicketTable topContent={topContent} items={ticketList} />
       </CardBody>

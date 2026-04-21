@@ -1,6 +1,7 @@
-import { Card, CardBody, CardHeader, Skeleton, cn } from '@heroui/react';
+import { Card, CardBody, Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
+import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../../page-context';
 import { allowableWidgets } from '../../widget-definition';
 import { MembershipFeeTable } from './membership-fee-table';
@@ -20,11 +21,18 @@ const EventMembershipFragment = graphql(/* GraphQL */ `
   }
 `);
 
+const Title: React.FC = () => {
+  const { year } = usePageContext();
+  return (
+    <WidgetTitle>{`${year} ${allowableWidgets.membershipFee.info.label}`}</WidgetTitle>
+  );
+};
+
 interface Props {
   className?: string;
 }
 
-export const MembershipFee: React.FC<Props> = ({ className }) => {
+const Chart: React.FC<Props> = ({ className }) => {
   const { community, year, isLoading } = usePageContext();
   const entry = getFragment(EventMembershipFragment, community);
 
@@ -32,11 +40,6 @@ export const MembershipFee: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardHeader>
-        <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} ${allowableWidgets.membershipFee.info.label}`}</p>
-        </div>
-      </CardHeader>
       <CardBody>
         <Skeleton
           className="h-full rounded-lg"
@@ -48,4 +51,9 @@ export const MembershipFee: React.FC<Props> = ({ className }) => {
       </CardBody>
     </Card>
   );
+};
+
+export const MembershipFee = {
+  Chart,
+  Title,
 };

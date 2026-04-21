@@ -131,13 +131,13 @@ export function LayoutManagerProvider<WidgetId extends string>({
             className={cn(
               'widget-control-bar drag-handle',
               'cursor-grab active:cursor-grabbing',
-              'top-[8px] right-[8px] left-[8px]',
               'rounded-t-large px-3',
-              'flex items-center',
-              'absolute z-10'
+              'flex items-center gap-2',
+              'z-10'
             )}
           >
             <Icon icon="drag-handle" />
+            {widget.title}
             <Button
               className={cn(
                 'widget-hover-control',

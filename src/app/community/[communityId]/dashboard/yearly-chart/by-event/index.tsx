@@ -1,13 +1,7 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Skeleton,
-  Spacer,
-  cn,
-} from '@heroui/react';
+import { Card, CardBody, Skeleton, Spacer, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
+import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../../page-context';
 import { allowableWidgets } from '../../widget-definition';
 import { EventNameSelect } from './event-name-select';
@@ -36,11 +30,18 @@ const EventTicketFragment = graphql(/* GraphQL */ `
   }
 `);
 
+const Title: React.FC = () => {
+  const { year } = usePageContext();
+  return (
+    <WidgetTitle>{`${year} ${allowableWidgets.byEvent.info.label}`}</WidgetTitle>
+  );
+};
+
 interface Props {
   className?: string;
 }
 
-export const ByEvent: React.FC<Props> = ({ className }) => {
+const Chart: React.FC<Props> = ({ className }) => {
   const { eventSelected, community, year, isLoading } = usePageContext();
   const entry = getFragment(EventTicketFragment, community);
   const ticketStat = entry?.communityStat.ticketStat ?? [];
@@ -79,11 +80,6 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardHeader>
-        <div className="flex flex-col">
-          <p className="text-md font-bold">{`${year} ${allowableWidgets.byEvent.info.label}`}</p>
-        </div>
-      </CardHeader>
       <CardBody>
         <Skeleton
           className="flex h-full flex-col rounded-lg"
@@ -96,4 +92,9 @@ export const ByEvent: React.FC<Props> = ({ className }) => {
       </CardBody>
     </Card>
   );
+};
+
+export const ByEvent = {
+  Title,
+  Chart,
 };
