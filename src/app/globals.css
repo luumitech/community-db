@@ -71,14 +71,6 @@
 body {
   color: hsl(var(--heroui-foreground));
   background: hsl(var(--heroui-background));
-
-  /* This is additional styling added for GridStack.js.
-   * When user grabs a widget, we want the cursor to reflect the grabbing state
-   */
-  :has(.ui-draggable-dragging) {
-    cursor: grabbing;
-  }
-
 }
 
 /* Hide default google RECAPTCHA badge */

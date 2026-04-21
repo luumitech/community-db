@@ -64,6 +64,9 @@ export function GridStackWithCard<WidgetId extends string>({
             { w: 640, c: 1 }, // sm
           ],
         },
+        draggable: {
+          handle: '.drag-handle',
+        },
         ...options,
       }}
       onChange={customOnChange}

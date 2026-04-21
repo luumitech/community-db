@@ -41,7 +41,8 @@ export const commonTheme = {
      */
     const { labelRect, rect } = params;
     if (rect.width < labelRect.width || rect.height < labelRect.height) {
-      return { fontSize: 0 };
+      // On mobile device, fontSize: 0 doesn't work, so using x, to put the label out of bound
+      return { fontSize: 0, x: '100%' };
     }
   },
   /**
