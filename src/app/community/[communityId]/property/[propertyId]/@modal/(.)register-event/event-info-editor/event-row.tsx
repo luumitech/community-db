@@ -20,7 +20,7 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
       className={twMerge(
         'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'items-center text-tiny font-semibold',
+        'items-center text-xs font-semibold',
         'rounded-lg px-3',
         className
       )}
@@ -82,7 +82,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
       </div>
       <div className="col-span-full">
         <TicketInputTable
-          className={cn('rounded-lg border-medium border-divider', 'ml-10 p-1')}
+          className={cn('rounded-lg border-2 border-divider', 'ml-10 p-1')}
           transactionConfig={{
             controlNamePrefix: 'hidden.transaction',
             ticketList: ticketList ?? [],

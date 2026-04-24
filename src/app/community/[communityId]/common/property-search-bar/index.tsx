@@ -72,7 +72,7 @@ export const PropertySearchBar: React.FC<Props> = ({
         }
         // endContent={
         //   <div className="pointer-events-none flex items-center">
-        //     <span className="text-default-400 text-small">.org/</span>
+        //     <span className="text-default-400 text-sm">.org/</span>
         //   </div>
         // }
         value={searchBar.searchText ?? ''}

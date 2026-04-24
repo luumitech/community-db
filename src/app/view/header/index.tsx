@@ -1,15 +1,5 @@
 'use client';
-import {
-  BreadcrumbItem,
-  Breadcrumbs,
-  Link,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuItem,
-  NavbarMenuToggle,
-} from '@heroui/react';
+import { BreadcrumbItem, Breadcrumbs, Link, cn } from '@heroui/react';
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
@@ -17,7 +7,6 @@ import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
 import { NotSignedIn } from './not-signed-in';
 import { SignedIn } from './signed-in';
-import { useNavMenu } from './use-nav-menu';
 import { useTopMenu } from './use-top-menu';
 
 export * from './header-menu';
@@ -27,91 +16,60 @@ interface Props {}
 export const Header: React.FC<Props> = ({}) => {
   const { data, isPending } = useSession();
   const breadcrumbItems = useTopMenu();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const menuItems = useNavMenu();
 
   return (
-    /**
-     * Makes sure header has the highest z-index in the app, but lower or equal
-     * to dialog z-index (which is set to z-50)
-     */
-    <header className="sticky top-0 z-50 h-header-height">
-      <Navbar
-        maxWidth="full"
-        isMenuOpen={isMenuOpen}
-        onMenuOpenChange={setIsMenuOpen}
+    <header
+      className={cn(
+        /**
+         * Makes sure header has the highest z-index in the app, but lower or
+         * equal to dialog z-index (which is set to z-50)
+         */
+        'sticky top-0 z-50 h-header-height',
+        'bg-background/70 backdrop-blur-lg',
+        'flex items-center gap-4 px-6'
+      )}
+    >
+      {/** App Logo */}
+      <div className="items-center">
+        <Link className="gap-1 text-foreground" href={appPath('home')}>
+          <div className="w-9">
+            <AppLogo priority size={36} />
+          </div>
+          {/* Hide appTitle in small layout */}
+          <span
+            className={cn(
+              'max-w-min max-sm:hidden',
+              'text-center leading-5',
+              'font-bold text-balance whitespace-normal'
+            )}
+          >
+            {appTitle}
+          </span>
+        </Link>
+      </div>
+      {/** Top breadcrumb menu */}
+      <Breadcrumbs
         classNames={{
-          // Add underline to active item
-          item: [
-            'flex',
-            'relative',
-            'h-full',
-            'items-center',
-            "data-[active=true]:after:content-['']",
-            'data-[active=true]:after:absolute',
-            'data-[active=true]:after:bottom-4',
-            'data-[active=true]:after:left-0',
-            'data-[active=true]:after:right-0',
-            'data-[active=true]:after:h-[3px]',
-            'data-[active=true]:after:bg-primary',
-          ],
+          // Hide overflow, so items within breadcrumbs can truncate correctly
+          base: 'overflow-hidden',
         }}
       >
-        {/** Hamburger menu */}
-        {/* {menuItems.length > 0 && (
-          <NavbarMenuToggle
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+        {breadcrumbItems.map(({ id, ...entry }) => (
+          <BreadcrumbItem
+            classNames={{
+              // Inherit the max-width from parent
+              base: 'max-w-full',
+            }}
+            key={id}
+            {...entry}
           />
-        )} */}
-        <NavbarBrand className="grow-0 items-center">
-          <Link className="gap-1" href={appPath('home')} color="foreground">
-            <div className="w-[36px]">
-              <AppLogo priority size={36} />
-            </div>
-            {/* Hide appTitle in small layout */}
-            <span className="max-w-min text-center leading-5 font-bold text-balance whitespace-normal max-sm:hidden">
-              {appTitle}
-            </span>
-          </Link>
-        </NavbarBrand>
-        {/** Top breadcrumb menu */}
-        <Breadcrumbs
-          classNames={{
-            // Hide overflow, so items within breadcrumbs can truncate correctly
-            base: 'overflow-hidden',
-          }}
-        >
-          {breadcrumbItems.map(({ id, ...entry }) => (
-            <BreadcrumbItem
-              classNames={{
-                // Inherit the max-width from parent
-                base: 'max-w-full',
-              }}
-              key={id}
-              {...entry}
-            />
-          ))}
-        </Breadcrumbs>
-        <NavbarContent justify="end">
-          {/* placeholder for calculating position of more menu */}
-          <div id="nav-bar-avatar" />
-          {data != null ? <SignedIn /> : <NotSignedIn isLoading={isPending} />}
-        </NavbarContent>
-        {/** Menu items for burger menu */}
-        <NavbarMenu>
-          {menuItems.map(({ id, isActive, ...entry }) => (
-            <NavbarMenuItem key={id} className="flex" isActive={isActive}>
-              <Link
-                className="w-full"
-                size="lg"
-                color={isActive ? 'primary' : 'foreground'}
-                onPress={() => setIsMenuOpen(false)}
-                {...entry}
-              />
-            </NavbarMenuItem>
-          ))}
-        </NavbarMenu>
-      </Navbar>
+        ))}
+      </Breadcrumbs>
+      <div className="ml-auto flex items-center gap-2">
+        {/* placeholder for calculating position of more menu */}
+        <div id="nav-bar-avatar" />
+        {data != null ? <SignedIn /> : <NotSignedIn isLoading={isPending} />}
+      </div>
     </header>
   );
 };

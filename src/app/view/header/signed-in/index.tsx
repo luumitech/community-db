@@ -1,9 +1,9 @@
 import {
+  Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  User,
 } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
@@ -20,7 +20,7 @@ interface Props {}
 
 export const SignedIn: React.FC<Props> = () => {
   const { env } = useAppContext();
-  const { initial, email, image } = useUserInfo();
+  const { fullName, email, image } = useUserInfo();
   const signOut = useSignOut();
 
   const subscriptionPlanEnable = env.NEXT_PUBLIC_PLAN_ENABLE;
@@ -28,17 +28,14 @@ export const SignedIn: React.FC<Props> = () => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <User
-          className="cursor-pointer transition-transform"
+        <Avatar
+          className="cursor-pointer bg-transparent transition-transform"
           data-testid="signed-in-user-avatar"
-          name=""
           isFocusable
-          avatarProps={{
-            isBordered: true,
-            className: 'bg-transparent',
-            ...(initial && { name: initial }),
-            ...(!!image && { src: image }),
-          }}
+          isBordered
+          size="md"
+          name={fullName}
+          src={image}
         />
       </DropdownTrigger>
       <DropdownMenu

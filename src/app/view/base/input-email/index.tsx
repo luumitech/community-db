@@ -52,9 +52,9 @@ export function InputEmail<P extends FieldValues = FieldValues>({
         <div className={className}>
           <div
             className={cn(
-              'border-medium border-default-200 hover:border-default-400',
+              'border-2 border-default-200 hover:border-default-400',
               'focus-within:border-default-foreground',
-              'rounded-medium px-3 py-2',
+              'rounded-xl px-3 py-2',
               { 'border-danger': fieldState.invalid }
             )}
           >
@@ -73,7 +73,7 @@ export function InputEmail<P extends FieldValues = FieldValues>({
               emails={field.value}
               className="flex flex-wrap items-center gap-2"
               inputClassName={cn(
-                'bg-clip-text text-small font-normal placeholder:text-foreground-500',
+                'bg-clip-text text-sm font-normal placeholder:text-foreground-500',
                 'focus-visible:outline-hidden',
                 'grow'
               )}
@@ -92,7 +92,7 @@ export function InputEmail<P extends FieldValues = FieldValues>({
           {(!!description || !!fieldState.error?.message) && (
             <div className="flex-col gap-1.5 p-1">
               <div
-                className={cn('text-tiny text-foreground-400', {
+                className={cn('text-xs text-foreground-400', {
                   'text-danger': fieldState.invalid,
                 })}
               >

@@ -108,7 +108,7 @@ export const HeaderMenu: React.FC<Props> = ({
           </DropdownTrigger>
           <DropdownMenu aria-label="Header More Menu" variant="flat">
             {menuItemsWithDivider.map(({ key, ...entry }) => (
-              <DropdownItem className="text-medium" key={key} {...entry} />
+              <DropdownItem className="text-base" key={key} {...entry} />
             ))}
           </DropdownMenu>
         </Dropdown>

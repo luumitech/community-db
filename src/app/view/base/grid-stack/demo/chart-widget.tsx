@@ -9,7 +9,7 @@ interface Props {
 export const ChartWidget: React.FC<Props> = ({ title, color }) => {
   return (
     <div
-      className={cn('flex h-full flex-col gap-2', 'rounded-medium p-4')}
+      className={cn('flex h-full flex-col gap-2', 'rounded-md p-4')}
       style={{
         background: color,
       }}
