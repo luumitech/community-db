@@ -11,7 +11,7 @@ export const StatWidget: React.FC<Props> = ({ label, value }) => {
     <div
       className={cn(
         'flex h-full flex-col items-center justify-center',
-        'rounded-medium bg-blue-200'
+        'rounded-md bg-blue-200'
       )}
     >
       <div className="text-3xl font-extrabold">{value}</div>

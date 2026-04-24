@@ -132,7 +132,7 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
     <div className={cn('col-span-full grid')}>
       <div
         className={cn(
-          'flex h-10 items-center gap-2 rounded-md border-medium border-divider px-2',
+          'flex h-10 items-center gap-2 rounded-md border-2 border-divider px-2',
           'cursor-pointer hover:opacity-hover'
         )}
         aria-label="Previous Transaction Toggle"

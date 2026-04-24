@@ -131,7 +131,8 @@ export function LayoutManagerProvider<WidgetId extends string>({
             className={cn(
               'widget-control-bar drag-handle',
               'cursor-grab active:cursor-grabbing',
-              'rounded-t-large px-3',
+              // Match the Card default rounded-ness
+              'rounded-t-[14px] px-3',
               'flex items-center gap-2',
               'z-10'
             )}

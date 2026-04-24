@@ -49,7 +49,7 @@ export const CLASS_DEFAULT: ClassDefault = {
   headerContainer: cn(
     /** Background color */
     'bg-default-200',
-    'rounded-small',
+    'rounded-lg',
     /** Default header text */
     'text-xs font-semibold text-default-400'
   ),

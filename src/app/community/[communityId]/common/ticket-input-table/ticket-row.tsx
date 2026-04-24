@@ -25,7 +25,7 @@ export const TicketRowHeader: React.FC<EmptyProps> = () => {
       className={cn(
         'col-span-full grid grid-cols-subgrid',
         'h-10 bg-default-100 text-foreground-500',
-        'items-center text-tiny font-semibold',
+        'items-center text-xs font-semibold',
         'rounded-lg px-3'
       )}
       role="row"

@@ -72,9 +72,9 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
           contentEditable={
             <div
               className={cn(
-                'border-medium border-default-200 hover:border-default-400',
+                'border-2 border-default-200 hover:border-default-400',
                 'focus-within:border-default-foreground',
-                'rounded-medium px-3 py-2'
+                'rounded-xl px-3 py-2'
               )}
             >
               {label && (
@@ -89,7 +89,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
               )}
               <ContentEditable
                 className={cn(
-                  'bg-clip-text text-small font-normal placeholder:text-foreground-500',
+                  'bg-clip-text text-sm font-normal placeholder:text-foreground-500',
                   'focus-visible:outline-hidden'
                 )}
                 aria-placeholder={'Message Content'}
@@ -101,7 +101,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
         />
         {description && (
           <div className="flex-col gap-1.5 p-1">
-            <div className="text-tiny text-foreground-400">{description}</div>
+            <div className="text-xs text-foreground-400">{description}</div>
           </div>
         )}
         <HistoryPlugin />

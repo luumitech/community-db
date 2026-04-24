@@ -13,6 +13,9 @@ interface ContextT extends Readonly<ConfirmationState>, Readonly<LoadingState> {
   isSmDevice: boolean;
   /** Is screen's max width < 768px */
   isMdDevice: boolean;
+  /** Element for anchoring more menu (beside the user avatar on top right) */
+  moreMenuAnchor?: HTMLDivElement;
+  setMoreMenuAnchor: (elem: HTMLDivElement) => void;
 }
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -28,6 +31,7 @@ export function AppProvider({ env, ...props }: Props) {
   const confirmValues = useConfirmationModalContext();
   const isSmDevice = useMedia('(max-width: 640px)', true);
   const isMdDevice = useMedia('(max-width: 768px)', true);
+  const [moreMenuAnchor, setMoreMenuAnchor] = React.useState<HTMLDivElement>();
 
   return (
     <Context.Provider
@@ -37,6 +41,8 @@ export function AppProvider({ env, ...props }: Props) {
         ...loadingValues,
         isSmDevice,
         isMdDevice,
+        moreMenuAnchor,
+        setMoreMenuAnchor,
       }}
       {...props}
     />

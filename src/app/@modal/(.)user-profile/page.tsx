@@ -1,5 +1,5 @@
 'use client';
-import { User } from '@heroui/react';
+import { Avatar } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useUserInfo } from '~/custom-hooks/user-info';
@@ -18,7 +18,7 @@ import { UserInfo } from './user-info';
 
 export default function UserProfile() {
   const router = useRouter();
-  const { initial, image } = useUserInfo();
+  const { fullName, image } = useUserInfo();
 
   return (
     <Modal
@@ -33,17 +33,13 @@ export default function UserProfile() {
         {(closeModal) => (
           <>
             <ModalHeader className="items-center gap-2 text-2xl">
-              <User
-                className="cursor-pointer transition-transform"
+              <Avatar
+                className="bg-transparent"
                 data-testid="signed-in-user-avatar"
-                name=""
                 isFocusable
-                avatarProps={{
-                  isBordered: true,
-                  className: 'bg-transparent',
-                  ...(initial && { name: initial }),
-                  ...(!!image && { src: image }),
-                }}
+                isBordered
+                {...(fullName != null && { name: fullName })}
+                {...(image != null && { src: image })}
               />
               {appLabel('userProfile')}
             </ModalHeader>

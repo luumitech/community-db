@@ -83,7 +83,7 @@ export const FlatButton = React.forwardRef<HTMLDivElement, Props>(
                   cn(
                     'relative after:absolute',
                     'after:inset-0 after:rounded-xl',
-                    'after:opacity-0 after:transition-background',
+                    'after:opacity-0 after:transition',
                     'hover:after:bg-primary/20 hover:after:opacity-100'
                   )
               ),
