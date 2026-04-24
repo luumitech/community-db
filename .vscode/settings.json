@@ -1,5 +1,4 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
   "prettier.prettierPath": "node_modules/prettier",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
@@ -7,5 +6,6 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.classFunctions": ["cn", "twMerge"]
+  "tailwindCSS.classFunctions": ["cn", "twMerge"],
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

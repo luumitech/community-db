@@ -38,8 +38,8 @@ export default function UserProfile() {
                 data-testid="signed-in-user-avatar"
                 isFocusable
                 isBordered
-                name={fullName}
-                src={image}
+                {...(fullName != null && { name: fullName })}
+                {...(image != null && { src: image })}
               />
               {appLabel('userProfile')}
             </ModalHeader>

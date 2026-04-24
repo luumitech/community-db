@@ -34,8 +34,8 @@ export const SignedIn: React.FC<Props> = () => {
           isFocusable
           isBordered
           size="md"
-          name={fullName}
-          src={image}
+          {...(fullName != null && { name: fullName })}
+          {...(image != null && { src: image })}
         />
       </DropdownTrigger>
       <DropdownMenu

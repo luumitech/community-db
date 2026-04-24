@@ -1,6 +1,7 @@
 'use client';
 import { BreadcrumbItem, Breadcrumbs, Link, cn } from '@heroui/react';
 import React from 'react';
+import { useAppContext } from '~/custom-hooks/app-context';
 import { useSession } from '~/custom-hooks/auth';
 import { appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
@@ -15,7 +16,16 @@ interface Props {}
 
 export const Header: React.FC<Props> = ({}) => {
   const { data, isPending } = useSession();
+  const moreMenuAnchorDiv = React.useRef<HTMLDivElement>(null);
+  const { setMoreMenuAnchor } = useAppContext();
   const breadcrumbItems = useTopMenu();
+
+  React.useEffect(() => {
+    const elem = moreMenuAnchorDiv.current;
+    if (elem) {
+      setMoreMenuAnchor(elem);
+    }
+  }, [setMoreMenuAnchor]);
 
   return (
     <header
@@ -66,8 +76,8 @@ export const Header: React.FC<Props> = ({}) => {
         ))}
       </Breadcrumbs>
       <div className="ml-auto flex items-center gap-2">
-        {/* placeholder for calculating position of more menu */}
-        <div id="nav-bar-avatar" />
+        {/* placeholder for inserting more menu */}
+        <div ref={moreMenuAnchorDiv} id="header-more-menu" />
         {data != null ? <SignedIn /> : <NotSignedIn isLoading={isPending} />}
       </div>
     </header>
