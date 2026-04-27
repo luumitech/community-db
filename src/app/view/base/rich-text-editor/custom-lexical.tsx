@@ -80,7 +80,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
               {label && (
                 <label
                   className={cn(
-                    'pointer-events-none z-10 cursor-text text-default-600',
+                    'pointer-events-none z-10 cursor-text text-foreground/70',
                     'max-w-full truncate pe-2 pb-0.5 text-xs'
                   )}
                 >
@@ -89,7 +89,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
               )}
               <ContentEditable
                 className={cn(
-                  'bg-clip-text text-sm font-normal placeholder:text-foreground-500',
+                  'bg-clip-text text-sm font-normal placeholder:text-foreground/60',
                   'focus-visible:outline-hidden'
                 )}
                 aria-placeholder={'Message Content'}
@@ -101,7 +101,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
         />
         {description && (
           <div className="flex-col gap-1.5 p-1">
-            <div className="text-xs text-foreground-400">{description}</div>
+            <div className="text-xs text-foreground/50">{description}</div>
           </div>
         )}
         <HistoryPlugin />

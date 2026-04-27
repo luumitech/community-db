@@ -55,7 +55,7 @@ export const NotesEditor: React.FC<Props> = ({
           autoFocus={autoFocus}
           value={line}
           startContent={
-            <span className="pointer-events-none text-xs text-nowrap text-default-400">
+            <span className="pointer-events-none text-xs text-nowrap text-foreground/60">
               {notePrefix}
             </span>
           }

@@ -29,7 +29,7 @@ export const StepMethodXlsx1: React.FC<Props> = ({ className }) => {
         body={
           <div className="flex flex-col gap-2">
             <p>
-              Select <span className="text-foreground-500">Import Method</span>{' '}
+              Select <span className="text-foreground/60">Import Method</span>{' '}
               &quot;{XlsxItem.label}&quot;, to initialize database with your own
               content by uploading an Excel file.
             </p>

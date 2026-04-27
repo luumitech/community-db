@@ -84,7 +84,7 @@ export const ModifyModal: React.FC<Props> = ({
               <>
                 <ModalHeader className="flex flex-col">
                   Modify Mailchimp Contact
-                  <div className="text-xs font-normal text-default-400">
+                  <div className="text-xs font-normal text-foreground/60">
                     This changes information in Mailchimp only. To update
                     contact information in the {appTitle}, please locate the
                     occupant’s property and update the contact details there.

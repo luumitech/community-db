@@ -12,7 +12,7 @@ interface Props {
 export const DefaultSetting: React.FC<Props> = ({ className }) => {
   return (
     <div className={twMerge('flex flex-col gap-2', className)}>
-      <span className="text-sm font-semibold text-foreground-500">
+      <span className="text-sm font-semibold text-foreground/60">
         Default Settings
       </span>
       <CurrencyInput

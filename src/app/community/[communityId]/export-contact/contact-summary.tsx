@@ -18,7 +18,7 @@ export const ContactSummary: React.FC<Props> = ({
 
   return (
     <Skeleton className="rounded-md" isLoaded={!isLoading}>
-      <span className="text-xs text-foreground-400">
+      <span className="text-xs text-foreground/50">
         Result contains {contactCount} emails from {propertyCount} households
       </span>
     </Skeleton>

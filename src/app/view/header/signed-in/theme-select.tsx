@@ -26,7 +26,7 @@ export const ThemeSelect: React.FC<Props> = ({ className }) => {
         'z-10 w-18 rounded-md p-0.5 text-xs outline-hidden',
         'group-data-[hover=true]:border-default-500',
         'border border-default-300 dark:border-default-200',
-        'bg-transparent text-default-500'
+        'bg-transparent text-foreground/70'
       )}
       id="theme"
       name="theme"

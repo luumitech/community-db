@@ -19,7 +19,7 @@ export const ChartWidget: React.FC<Props> = ({ title, color }) => {
         className={cn(
           'flex flex-1 items-center justify-center',
           'rounded-2xl',
-          'bg-background/35 text-default-500'
+          'bg-background/35 text-foreground/70'
         )}
       >
         Chart area

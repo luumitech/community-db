@@ -12,7 +12,7 @@ export const EventInfoEditor: React.FC<Props> = ({ className }) => {
   const memberYear = watch('membership.year');
 
   const Keyword = ({ children }: React.PropsWithChildren) => (
-    <span className="font-semibold text-foreground-500">{children}</span>
+    <span className="font-semibold text-foreground/60">{children}</span>
   );
 
   return (

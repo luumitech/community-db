@@ -18,7 +18,7 @@ export const LastModified: React.FC<Props> = ({
   const updatedAtStr = toLocalDateTime(updatedAt);
 
   return (
-    <div className={twMerge('text-xs text-foreground-500', className)}>
+    <div className={twMerge('text-xs text-foreground/60', className)}>
       Last modified on {updatedAtStr} by <UserName userFragment={updatedBy} />
     </div>
   );

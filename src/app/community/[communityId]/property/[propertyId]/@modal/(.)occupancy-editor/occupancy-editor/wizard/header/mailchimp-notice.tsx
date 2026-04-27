@@ -18,7 +18,7 @@ export const MailchimpNotice: React.FC<Props> = ({ className }) => {
   }
 
   return (
-    <div className={cn('text-xs font-normal text-default-400', className)}>
+    <div className={cn('text-xs font-normal text-foreground/60', className)}>
       This change applies only to the {appTitle}. To update contact information
       in Mailchimp, use{' '}
       <Link

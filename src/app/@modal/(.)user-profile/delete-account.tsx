@@ -102,7 +102,7 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
       >
         Delete Account
       </Button>
-      <p className="text-sm text-default-400">
+      <p className="text-sm text-foreground/60">
         This will permanently delete your account and all of its data. You will
         not be able to reactivate this account.
       </p>

@@ -10,7 +10,7 @@ export const FootNote: React.FC<Props> = ({ className }) => {
     return (
       <>
         <dt className="font-semibold">{term}</dt>
-        <dd className="text-default-500">{definition}</dd>
+        <dd className="text-foreground/70">{definition}</dd>
       </>
     );
   }, []);

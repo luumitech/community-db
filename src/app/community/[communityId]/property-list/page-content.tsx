@@ -78,7 +78,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
     }
     return (
       <div className="flex flex-col items-center">
-        <p className="mt-6 mb-2 font-semibold text-default-400">
+        <p className="mt-6 mb-2 font-semibold text-foreground/60">
           No data to display.
         </p>
         {R.isEmpty(filterArg) && (

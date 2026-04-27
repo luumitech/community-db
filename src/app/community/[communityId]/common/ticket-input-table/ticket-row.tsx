@@ -24,7 +24,7 @@ export const TicketRowHeader: React.FC<EmptyProps> = () => {
     <div
       className={cn(
         'col-span-full grid grid-cols-subgrid',
-        'h-10 bg-default-100 text-foreground-500',
+        'h-10 bg-default/30 text-foreground/60',
         'items-center text-xs font-semibold',
         'rounded-lg px-3'
       )}
@@ -77,7 +77,7 @@ export const TicketRow: React.FC<TicketRowProps> = ({
           controlNamePrefix={controlNamePrefix}
           startContent={
             <div className="pointer-events-none flex items-center">
-              <span className="text-xs whitespace-nowrap text-default-400">
+              <span className="text-xs whitespace-nowrap text-foreground/60">
                 ${unitPrice} ⨉
               </span>
             </div>
@@ -120,7 +120,7 @@ export const TransactionHeader: React.FC<EmptyProps> = () => {
   return (
     <div className={cn('col-span-full grid')}>
       <fieldset className="border-t-2 border-divider">
-        <legend className="m-auto px-4 text-sm text-default-400">
+        <legend className="m-auto px-4 text-sm text-foreground/60">
           Current Transaction
         </legend>
       </fieldset>
@@ -170,19 +170,19 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
     <div
       className={cn(
         'col-span-full grid grid-cols-subgrid',
-        'items-center bg-default-100',
+        'items-center bg-default/30',
         'rounded-lg'
       )}
       role="row"
     >
       <div
         role="cell"
-        className="col-span-3 text-right text-sm text-default-500"
+        className="col-span-3 text-right text-sm text-foreground/70"
       >
         Current Transaction Total
       </div>
       <div className="pl-1 text-sm" role="cell">
-        <span className="pr-1.5 text-default-400">$</span>
+        <span className="pr-1.5 text-foreground/60">$</span>
         <span>{formatCurrency(totalPrice)}</span>
       </div>
       <div>{/* payment date */}</div>

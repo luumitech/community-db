@@ -140,7 +140,7 @@ export const Demo: React.FC<Props> = ({ className }) => {
       </GridStack>
 
       {log.length > 0 && (
-        <div className="text-xs text-default-500">
+        <div className="text-xs text-foreground/70">
           <strong>onChange log:</strong>
           {log.map((entry, i) => (
             <div key={i}>{entry}</div>

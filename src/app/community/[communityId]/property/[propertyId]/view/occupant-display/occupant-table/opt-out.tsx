@@ -23,7 +23,7 @@ export const OptOut: React.FC<Props> = ({ className, entry }) => {
       )}
     >
       <span
-        className={cn('text-xs font-semibold text-foreground-500', 'sm:hidden')}
+        className={cn('text-xs font-semibold text-foreground/60', 'sm:hidden')}
       >
         Opt out
       </span>

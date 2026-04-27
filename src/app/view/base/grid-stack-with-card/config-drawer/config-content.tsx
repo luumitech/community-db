@@ -61,7 +61,7 @@ export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
                 >
                   <div className="flex flex-col">
                     {info.label}
-                    <span className="text-xs text-default-500">
+                    <span className="text-xs text-foreground/70">
                       {info.description}
                     </span>
                   </div>

@@ -152,7 +152,7 @@ export function renderDropdownSections(sections: SelectSectionT[]) {
 /** Redirect user to communityModify event tab */
 export function PleaseConfigureEvents(props: { communityId: string }) {
   return (
-    <div className="text-sm text-foreground-400">
+    <div className="text-sm text-foreground/50">
       Please configure events in{' '}
       <Link
         className="text-sm"
@@ -170,7 +170,7 @@ export function PleaseConfigureEvents(props: { communityId: string }) {
 /** Redirect user to communityModify Payment Method tab */
 export function PleaseConfigurePaymentMethods(props: { communityId: string }) {
   return (
-    <div className="text-sm text-foreground-400">
+    <div className="text-sm text-foreground/50">
       Please configure payment methods in{' '}
       <Link
         className="text-sm"
@@ -188,7 +188,7 @@ export function PleaseConfigurePaymentMethods(props: { communityId: string }) {
 /** Redirect user to communityModify Tickets tab */
 export function PleaseConfigureTickets(props: { communityId: string }) {
   return (
-    <div className="text-sm text-foreground-400">
+    <div className="text-sm text-foreground/50">
       Please configure tickets in{' '}
       <Link
         className="text-sm"

@@ -19,7 +19,7 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
     <div
       className={twMerge(
         'col-span-full grid grid-cols-subgrid',
-        'h-10 bg-default-100 text-foreground-500',
+        'h-10 bg-default/30 text-foreground/60',
         'items-center text-xs font-semibold',
         'rounded-lg px-3',
         className

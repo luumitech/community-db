@@ -18,7 +18,7 @@ export const PropertySearchHeader: React.FC<Props> = ({
       <PropertySearchBar
         autoFocus
         description={
-          <span className="text-xs text-foreground-400">
+          <span className="text-xs text-foreground/50">
             {totalCount} entries found
           </span>
         }

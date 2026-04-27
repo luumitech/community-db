@@ -46,7 +46,7 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
     >
       <ModalHeader className="flex flex-col items-center gap-2">
         <span className="text-3xl font-semibold">Enter your email</span>
-        <p className="text-center text-sm font-normal text-default-400">
+        <p className="text-center text-sm font-normal text-foreground/60">
           We will send an OTP code to your email
         </p>
       </ModalHeader>

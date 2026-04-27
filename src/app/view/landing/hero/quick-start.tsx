@@ -27,7 +27,7 @@ const CustomButton: React.FC<React.PropsWithChildren<CustomButtonProps>> = ({
       isHoverable
     >
       <CardHeader className="justify-center font-semibold">{label}</CardHeader>
-      <CardBody className="text-center text-sm text-default-500">
+      <CardBody className="text-center text-sm text-foreground/70">
         {children}
       </CardBody>
     </Card>

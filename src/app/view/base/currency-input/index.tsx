@@ -79,7 +79,7 @@ export const CurrencyInput = React.forwardRef(
             fixedDecimalScale
             startContent={
               <div className="pointer-events-none flex items-center">
-                <span className="text-sm text-default-400">$</span>
+                <span className="text-sm text-foreground/60">$</span>
               </div>
             }
             onKeyDown={(e) => {

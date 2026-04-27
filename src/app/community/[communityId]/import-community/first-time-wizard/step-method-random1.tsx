@@ -29,7 +29,7 @@ export const StepMethodRandom1: React.FC<Props> = ({ className }) => {
         body={
           <div className="flex flex-col gap-2">
             <p>
-              Select <span className="text-foreground-500">Import Method</span>{' '}
+              Select <span className="text-foreground/60">Import Method</span>{' '}
               &quot;{RandomItem.label}&quot;, to create a few random entries
               into the database.
             </p>

@@ -60,7 +60,7 @@ export const EventInfoEditor: React.FC<Props> = ({
                 'content-center justify-self-center'
               )}
             >
-              <div className="text-sm text-foreground-500">
+              <div className="text-sm text-foreground/60">
                 No data to display
               </div>
             </div>

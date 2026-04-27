@@ -8,7 +8,7 @@ export interface Props {
 export const NoTicket: React.FC<Props> = ({ className }) => {
   return (
     <CardBody
-      className={cn(className, 'text-center text-sm text-foreground-500')}
+      className={cn(className, 'text-center text-sm text-foreground/60')}
     >
       No data to display
     </CardBody>

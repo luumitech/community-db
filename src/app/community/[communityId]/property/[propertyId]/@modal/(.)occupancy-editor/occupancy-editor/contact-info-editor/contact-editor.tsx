@@ -63,7 +63,7 @@ export const ContactEditor: React.FC<Props> = ({
             className="sm:col-span-2"
             {...register(`${controlNamePrefix}.optOut`)}
           >
-            <span className="text-sm text-default-600">
+            <span className="text-sm text-foreground/70">
               Opt out to receive email
             </span>
           </Checkbox>

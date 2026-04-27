@@ -89,7 +89,7 @@ export const ToSelect: React.FC<Props> = ({ className }) => {
         <SelectItem key={user.email} textValue={user.fullName}>
           <div className="flex flex-col">
             <span className="text-sm">{user.fullName}</span>
-            <span className="text-xs text-default-400">{user.email}</span>
+            <span className="text-xs text-foreground/60">{user.email}</span>
           </div>
         </SelectItem>
       )}

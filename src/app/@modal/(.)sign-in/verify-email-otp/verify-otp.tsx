@@ -75,7 +75,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
     >
       <ModalHeader className="flex flex-col items-center gap-2">
         <span className="text-3xl font-semibold">Verify your email</span>
-        <p className="text-center text-sm font-normal text-default-400">
+        <p className="text-center text-sm font-normal text-foreground/60">
           We&apos;ve sent an OTP code to <span className="italic">{email}</span>
           <br />
           Enter your OTP code here
@@ -104,7 +104,7 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
             doSignIn({ otp: value });
           }}
         />
-        <span className="pt-6 text-sm font-normal text-default-400">
+        <span className="pt-6 text-sm font-normal text-foreground/60">
           Didn&apos;t receive any code?
         </span>
         <Button

@@ -48,10 +48,10 @@ export const CLASS_DEFAULT: ClassDefault = {
   ),
   headerContainer: cn(
     /** Background color */
-    'bg-default-200',
+    'bg-default/40',
     'rounded-lg',
     /** Default header text */
-    'text-xs font-semibold text-default-400'
+    'text-xs font-semibold text-foreground/60'
   ),
   bodyContainer: cn(''),
 };

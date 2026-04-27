@@ -97,7 +97,7 @@ export const StatusSelect: React.FC<Props> = ({
         <SelectItem key={item.key} textValue={item.label}>
           <div className="flex flex-col">
             <span className="text-sm">{item.label}</span>
-            <span className="text-xs text-default-400">{item.desc}</span>
+            <span className="text-xs text-foreground/60">{item.desc}</span>
           </div>
         </SelectItem>
       )}

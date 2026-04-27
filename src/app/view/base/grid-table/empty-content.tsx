@@ -11,7 +11,7 @@ export const EmptyContent: React.FC<Props> = ({ emptyContent }) => {
   const DefaultEmptyContent = React.useCallback(() => {
     return (
       <div className="mt-6 mb-2 flex items-center justify-center">
-        <p className="font-semibold text-default-400">No data to display.</p>
+        <p className="font-semibold text-foreground/60">No data to display.</p>
       </div>
     );
   }, []);

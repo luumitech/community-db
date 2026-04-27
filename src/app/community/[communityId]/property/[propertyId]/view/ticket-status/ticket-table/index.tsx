@@ -54,7 +54,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
       case 'ticketPrice':
         return (
           <div className="truncate">
-            <span className="pr-0.5 text-default-400">$</span>
+            <span className="pr-0.5 text-foreground/60">$</span>
             <span>{formatCurrency(item.ticketPrice)}</span>
           </div>
         );
