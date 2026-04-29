@@ -1,4 +1,4 @@
-import { Input, InputProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { NumericFormat, type NumericFormatProps } from 'react-number-format';
 import {
@@ -8,13 +8,15 @@ import {
   type Path,
 } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
+import { PlainInput, type PlainInputProps } from '~/view/base/input';
 
 export { SelectItem, SelectSection } from '@heroui/react';
 
-type CustomInputProps = Omit<InputProps, keyof NumericFormatProps>;
+type CustomNumericFormatProps = Omit<NumericFormatProps, ''>;
+type CustomInputProps = Omit<PlainInputProps, keyof CustomNumericFormatProps>;
 
 export interface CurrencyInputProps<P extends FieldValues = FieldValues>
-  extends NumericFormatProps, CustomInputProps {
+  extends CustomNumericFormatProps, CustomInputProps {
   controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
@@ -31,7 +33,6 @@ export const CurrencyInput = React.forwardRef(
       isControlled,
       onBlur,
       onChange,
-      isReadOnly,
       ...props
     }: CurrencyInputProps<P>,
     ref: React.ForwardedRef<HTMLInputElement>
@@ -51,15 +52,11 @@ export const CurrencyInput = React.forwardRef(
               base: cn(
                 classNames?.base,
                 // Enough space for $99.99
-                'min-w-20',
-                { 'opacity-100': isReadOnly }
+                'min-w-20'
               ),
-              inputWrapper: cn(classNames?.inputWrapper, {
-                'border-none bg-transparent shadow-none': isReadOnly,
-              }),
             }}
-            // @ts-expect-error conflicting arg 'size' between Input and NumericFormat
-            customInput={Input}
+            // @ts-expect-error conflicting arg 'size' between PlainInput and NumericFormat
+            customInput={PlainInput}
             {...(isControlled
               ? { value: field.value ?? '' }
               : { defaultValue: field.value ?? '' })}
@@ -88,10 +85,6 @@ export const CurrencyInput = React.forwardRef(
                 e.preventDefault();
               }
             }}
-            {...(!!isReadOnly && {
-              isReadOnly: true,
-              isDisabled: true,
-            })}
             {...props}
           />
         )}

@@ -45,6 +45,10 @@
 
   /* header bar height */
   --header-height: 64px;
+
+  /* redefine tailwindcss foreground/background */
+  --foreground: hsl(var(--heroui-foreground));
+  --background: hsl(var(--heroui-background));
 }
 
 .dark {
@@ -66,11 +70,6 @@
   * busy background
   */
   --drop-shadow-text: 0 1.5px 1.5px hsl(var(--heroui-background));
-}
-
-body {
-  color: hsl(var(--heroui-foreground));
-  background: hsl(var(--heroui-background));
 }
 
 /* Hide default google RECAPTCHA badge */

@@ -35,7 +35,7 @@ export const Header: React.FC<Props> = ({}) => {
          * equal to dialog z-index (which is set to z-50)
          */
         'sticky top-0 z-50 h-header-height',
-        'bg-background/70 backdrop-blur-lg',
+        'backdrop-blur-2xl',
         'flex items-center gap-4 px-6'
       )}
     >

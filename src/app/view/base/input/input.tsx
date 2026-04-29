@@ -1,6 +1,5 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { PatternFormat, type PatternFormatProps } from 'react-number-format';
 import {
   Controller,
   useFormContext,
@@ -8,15 +7,11 @@ import {
   type Path,
 } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
-import { PlainInput, type PlainInputProps } from '~/view/base/input';
+import { PlainInput, type PlainInputProps } from './plain-input';
 
-export { SelectItem, SelectSection } from '@heroui/react';
-
-type CustomPatternFormatProps = Omit<PatternFormatProps, 'format'>;
-type CustomInputProps = Omit<PlainInputProps, keyof CustomPatternFormatProps>;
-
-export interface PhoneInputProps<P extends FieldValues = FieldValues>
-  extends CustomPatternFormatProps, CustomInputProps {
+export interface InputProps<
+  P extends FieldValues = FieldValues,
+> extends PlainInputProps {
   controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
@@ -25,7 +20,7 @@ export interface PhoneInputProps<P extends FieldValues = FieldValues>
   isControlled?: boolean;
 }
 
-export const PhoneInput = React.forwardRef(
+export const Input = React.forwardRef(
   <P extends FieldValues = FieldValues>(
     {
       classNames,
@@ -33,8 +28,10 @@ export const PhoneInput = React.forwardRef(
       isControlled,
       onBlur,
       onChange,
+      onClear,
+      onValueChange,
       ...props
-    }: PhoneInputProps<P>,
+    }: InputProps<P>,
     ref: React.ForwardedRef<HTMLInputElement>
   ) => {
     const { control } = useFormContext<P>();
@@ -44,19 +41,8 @@ export const PhoneInput = React.forwardRef(
         control={control}
         name={controlName}
         render={({ field, fieldState }) => (
-          <PatternFormat
+          <PlainInput
             ref={mergeRefs(field.ref, ref)}
-            classNames={{
-              ...classNames,
-              // Render readonly field by removing all input decoration
-              base: cn(
-                classNames?.base,
-                // Enough space for (999)999-9999
-                'min-w-40 font-mono'
-              ),
-            }}
-            // @ts-expect-error conflicting arg 'size' between PlainInput and NumericFormat
-            customInput={PlainInput}
             {...(isControlled
               ? { value: field.value ?? '' }
               : { defaultValue: field.value ?? '' })}
@@ -68,17 +54,14 @@ export const PhoneInput = React.forwardRef(
               field.onChange(evt);
               onChange?.(evt);
             }}
+            {...(!!props.isClearable && {
+              onClear: () => {
+                field.onChange('');
+                onClear?.();
+              },
+            })}
             errorMessage={fieldState.error?.message}
             isInvalid={fieldState.invalid}
-            format="(###)###-####"
-            mask="_"
-            allowEmptyFormatting
-            onKeyDown={(e) => {
-              // Prevent Enter key inside input from submitting form
-              if (e.key === 'Enter') {
-                e.preventDefault();
-              }
-            }}
             {...props}
           />
         )}
@@ -86,21 +69,21 @@ export const PhoneInput = React.forwardRef(
     );
   }
 ) as (<P extends FieldValues>(
-  props: PhoneInputProps<P> & {
+  props: InputProps<P> & {
     ref?: React.ForwardedRef<HTMLInputElement>;
   }
 ) => React.ReactElement) & { displayName?: string };
 
-PhoneInput.displayName = 'PhoneInput';
+Input.displayName = 'Input';
 
 /**
  * A component factory that takes the FieldValues as generic to produce a
  * component that would provide type assistance to controlName property
  */
-export function createPhoneInput<P extends FieldValues>() {
-  type Props = PhoneInputProps<P>;
+export function createInput<P extends FieldValues>() {
+  type Props = InputProps<P>;
 
-  const component = PhoneInput as (
+  const component = Input as (
     props: Props & { ref?: React.ForwardedRef<HTMLInputElement> }
   ) => React.ReactElement;
 

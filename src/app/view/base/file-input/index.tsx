@@ -1,4 +1,3 @@
-import { Input, InputProps } from '@heroui/react';
 import React from 'react';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
 import {
@@ -9,10 +8,11 @@ import {
 } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 import { FlatButton } from '~/view/base/flat-button';
+import { PlainInput, type PlainInputProps } from '~/view/base/input';
 
 type ReactInputProps = React.ComponentProps<'input'>;
 type CustomInputProps = Omit<
-  InputProps,
+  PlainInputProps,
   'readOnly' | 'endContent' | keyof ReactInputProps
 >;
 
@@ -59,7 +59,7 @@ export const FileInput = React.forwardRef(
         name={controlName}
         render={({ field, fieldState }) => (
           <>
-            <Input
+            <PlainInput
               variant="bordered"
               readOnly
               endContent={

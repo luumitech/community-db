@@ -1,9 +1,10 @@
-import { Input, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { useUserInfo } from '~/custom-hooks/user-info';
 import { formatLocalDate } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
+import { PlainInput } from '~/view/base/input';
 import { Textarea } from '~/view/base/textarea';
 
 interface Props {
@@ -47,7 +48,7 @@ export const NotesEditor: React.FC<Props> = ({
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
       <div className="flex items-end gap-2">
-        <Input
+        <PlainInput
           label="Notes"
           labelPlacement="outside"
           variant="bordered"
