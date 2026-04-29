@@ -10,8 +10,6 @@ import {
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 import { PlainInput, type PlainInputProps } from '~/view/base/input';
 
-export { SelectItem, SelectSection } from '@heroui/react';
-
 type CustomNumericFormatProps = Omit<NumericFormatProps, ''>;
 type CustomInputProps = Omit<PlainInputProps, keyof CustomNumericFormatProps>;
 

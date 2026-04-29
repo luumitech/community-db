@@ -1,18 +1,10 @@
 import React from 'react';
 import { TicketChip } from '~/community/[communityId]/common/chip/';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { renderItems } from '~/community/[communityId]/layout-util/render-select';
-import {
-  Select,
-  type SelectProps,
-  type SelectedItems,
-} from '~/view/base/select';
+import { type SelectItemT } from '~/community/[communityId]/layout-util/community-context';
+import { Select, type SelectProps } from '~/view/base/select';
 
-type TicketItem = ReturnType<
-  typeof useLayoutContext
->['visibleTicketItems'][number];
-
-type CustomProps = Omit<SelectProps<TicketItem>, 'children'>;
+type CustomProps = Omit<SelectProps<SelectItemT>, 'items'>;
 
 interface Props extends CustomProps {
   className?: string;
@@ -21,7 +13,7 @@ interface Props extends CustomProps {
 export const TicketSelect: React.FC<Props> = ({ className, ...props }) => {
   const { visibleTicketItems } = useLayoutContext();
 
-  const renderValue = React.useCallback((items: SelectedItems<TicketItem>) => {
+  const renderValue = React.useCallback((items: SelectItemT[]) => {
     return (
       <div className="flex flex-wrap items-center gap-1">
         {items.map((item) => (
@@ -43,10 +35,9 @@ export const TicketSelect: React.FC<Props> = ({ className, ...props }) => {
       isMultiline
       isDisabled={hasNoItems}
       placeholder="Unspecified"
+      items={visibleTicketItems}
       renderValue={renderValue}
       {...props}
-    >
-      {renderItems(visibleTicketItems)}
-    </Select>
+    />
   );
 };

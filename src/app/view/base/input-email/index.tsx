@@ -8,8 +8,6 @@ import {
   type Path,
 } from '~/custom-hooks/hook-form';
 
-export { SelectItem, SelectSection } from '@heroui/react';
-
 type CustomReactMultiEmailProps = Omit<IReactMultiEmailProps, 'getLabel'>;
 
 export interface InputEmailProps<

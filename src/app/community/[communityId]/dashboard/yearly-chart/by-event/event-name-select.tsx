@@ -1,5 +1,6 @@
-import { Select, SelectItem, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
+import { PlainSelect, type SelectItem } from '~/view/base/select';
 import { usePageContext } from '../../page-context';
 
 interface Props {
@@ -9,13 +10,13 @@ interface Props {
 
 export const EventNameSelect: React.FC<Props> = ({ className, eventList }) => {
   const { eventSelected, setEventSelected } = usePageContext();
-  const eventItems = eventList.map((eventName) => ({
-    label: eventName,
-    value: eventName,
+  const eventItems = eventList.map<SelectItem>((eventName) => ({
+    key: eventName,
+    textValue: eventName,
   }));
 
   return (
-    <Select
+    <PlainSelect
       className={cn(className, 'w-full min-w-32')}
       aria-label="Event Name"
       items={eventItems}
@@ -25,12 +26,6 @@ export const EventNameSelect: React.FC<Props> = ({ className, eventList }) => {
         const [firstKey] = keys;
         setEventSelected(firstKey?.toString() ?? '');
       }}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          {item.label}
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

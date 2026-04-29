@@ -11,8 +11,6 @@ import {
 } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
 
-export { SelectItem, SelectSection } from '@heroui/react';
-
 export interface TextareaProps<
   P extends FieldValues = FieldValues,
 > extends NextUITextareaProps {

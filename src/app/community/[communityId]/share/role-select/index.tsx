@@ -1,6 +1,7 @@
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { createSelect, SelectItem, SelectProps } from '~/view/base/select';
+import { SelectProps, createSelect, type SelectItem } from '~/view/base/select';
 import { type InputData } from '../modify-access-modal/use-hook-form';
 
 const Select = createSelect<InputData>();
@@ -16,28 +17,38 @@ export interface RoleStatusItem {
   desc: string;
 }
 
-export const roleItems: RoleStatusItem[] = [
+export const roleItems: SelectItem[] = [
   {
     key: GQL.Role.Admin,
-    label: 'Admin',
-    desc: 'Full access, including managing users, importing data, and creating or deleting communities and properties',
+    textValue: 'Admin',
+    description:
+      'Full access, including managing users, importing data, and creating or deleting communities and properties',
   },
   {
     key: GQL.Role.Editor,
-    label: 'Editor',
-    desc: 'Can view and edit community and property information',
+    textValue: 'Editor',
+    description: 'Can view and edit community and property information',
   },
   {
     key: GQL.Role.Viewer,
-    label: 'Viewer',
-    desc: 'View-only access to communities and properties',
+    textValue: 'Viewer',
+    description: 'View-only access to communities and properties',
   },
-];
+].map((item) => ({
+  ...item,
+  props: {
+    classNames: {
+      // Reverse the default 'truncate' for description
+      description: cn('overflow-visible text-clip whitespace-normal'),
+    },
+  },
+}));
 
-type CustomProps = Omit<SelectProps<RoleStatusItem, InputData>, 'children'>;
+type CustomProps = Omit<SelectProps, 'items'>;
 
 interface Props extends CustomProps {
   className?: string;
+  controlName: `role`;
 }
 
 export const RoleSelect: React.FC<Props> = ({ className, ...props }) => {
@@ -48,15 +59,6 @@ export const RoleSelect: React.FC<Props> = ({ className, ...props }) => {
       disallowEmptySelection
       placeholder="Select a role"
       {...props}
-    >
-      {(item) => (
-        <SelectItem key={item.key} textValue={item.label}>
-          <div className="flex flex-col">
-            <span className="text-sm">{item.label}</span>
-            <span className="text-xs text-foreground/60">{item.desc}</span>
-          </div>
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

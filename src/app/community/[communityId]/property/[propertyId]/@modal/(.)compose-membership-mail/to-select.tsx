@@ -1,7 +1,12 @@
-import { Chip, Select, SelectItem, SelectProps, cn } from '@heroui/react';
+import { Chip, cn } from '@heroui/react';
 import { produce } from 'immer';
 import React from 'react';
 import { MentionUtil } from '~/view/base/rich-text-editor';
+import {
+  PlainSelect,
+  SelectItem,
+  type PlainSelectProps,
+} from '~/view/base/select';
 import { createMentionMapping, createMentionValues } from './editor-util';
 import { useHookFormContext } from './use-hook-form';
 
@@ -20,7 +25,20 @@ export const ToSelect: React.FC<Props> = ({ className }) => {
   const { errors, isDirty } = formState;
   const errMsg = errors.hidden?.toEmail?.message;
 
-  const onSelectionChange: NonNullable<SelectProps['onSelectionChange']> =
+  const items = React.useMemo<SelectItem[]>(() => {
+    return toItems.map((item) => ({
+      key: item.email,
+      textValue: item.fullName,
+      rendered: (
+        <div className="flex flex-col">
+          <span className="text-sm">{item.fullName}</span>
+          <span className="text-xs text-foreground/60">{item.email}</span>
+        </div>
+      ),
+    }));
+  }, [toItems]);
+
+  const onSelectionChange: NonNullable<PlainSelectProps['onSelectionChange']> =
     React.useCallback(
       (keys) => {
         const newToEmail = [...keys].join(',');
@@ -58,41 +76,34 @@ export const ToSelect: React.FC<Props> = ({ className }) => {
       [isDirty, membershipYear, message, reset, setValue, subject, toItems]
     );
 
+  const renderValue = React.useCallback((selectedItems: SelectItem[]) => {
+    return (
+      <div className="flex flex-wrap gap-2">
+        {selectedItems.map((item) => (
+          <Chip key={item.key} size="sm">
+            {item.textValue}
+          </Chip>
+        ))}
+      </div>
+    );
+  }, []);
+
   return (
-    <Select
+    <PlainSelect
       className={cn(className)}
       placeholder="Select at least one recipient"
       fullWidth
       isMultiline={true}
       label="To"
       variant="bordered"
-      items={toItems}
-      renderValue={(items) => {
-        return (
-          <div className="flex flex-wrap gap-2">
-            {items.map((item) => (
-              <Chip key={item.key} size="sm">
-                {item.data?.fullName}
-              </Chip>
-            ))}
-          </div>
-        );
-      }}
+      items={items}
+      renderValue={renderValue}
       selectionMode="multiple"
       disallowEmptySelection
       errorMessage={errMsg}
       isInvalid={!!errMsg}
       defaultSelectedKeys={toEmail.split(',')}
       onSelectionChange={onSelectionChange}
-    >
-      {(user) => (
-        <SelectItem key={user.email} textValue={user.fullName}>
-          <div className="flex flex-col">
-            <span className="text-sm">{user.fullName}</span>
-            <span className="text-xs text-foreground/60">{user.email}</span>
-          </div>
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

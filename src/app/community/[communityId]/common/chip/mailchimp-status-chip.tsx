@@ -15,9 +15,9 @@ export const MailchimpStatusChip: React.FC<Props> = ({ status, ...props }) => {
   }
 
   return (
-    <Tooltip isFixed content={found.desc}>
+    <Tooltip isFixed content={found.description}>
       <Chip className="text-xs capitalize" size="sm" {...props}>
-        <div className="flex items-center gap-2">{found.label}</div>
+        <div className="flex items-center gap-2">{found.textValue}</div>
       </Chip>
     </Tooltip>
   );

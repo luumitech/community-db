@@ -1,10 +1,11 @@
-import { Select, SelectItem, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { ExportMethod } from '~/server-action/export-community/_type';
+import { PlainSelect, type SelectItem } from '~/view/base/select';
 
-const exportMethodItems = [
-  { label: 'Multiple Sheets', value: ExportMethod.Multisheet },
-  { label: 'Single Sheet', value: ExportMethod.Singlesheet },
+const exportMethodItems: SelectItem[] = [
+  { textValue: 'Multiple Sheets', key: ExportMethod.Multisheet },
+  { textValue: 'Single Sheet', key: ExportMethod.Singlesheet },
 ];
 
 interface Props {
@@ -30,7 +31,7 @@ export const ExportMethodSelect: React.FC<Props> = ({
   }, [exportMethod]);
 
   return (
-    <Select
+    <PlainSelect
       className={cn(className, 'max-w-sm')}
       size="sm"
       label="Export Methods"
@@ -43,12 +44,6 @@ export const ExportMethodSelect: React.FC<Props> = ({
         const [method] = keys;
         onChange(method as ExportMethod);
       }}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          {item.label}
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

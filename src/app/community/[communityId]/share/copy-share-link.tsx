@@ -1,10 +1,10 @@
-import { Input } from '@heroui/react';
 import React from 'react';
 import { useCopyToClipboard } from 'react-use';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
+import { PlainInput } from '~/view/base/input';
 import { toast } from '~/view/base/toastify';
 
 interface Props {
@@ -35,7 +35,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
   return (
     <div className={className}>
       <div className="flex items-start gap-2">
-        <Input
+        <PlainInput
           variant="bordered"
           value={url}
           readOnly

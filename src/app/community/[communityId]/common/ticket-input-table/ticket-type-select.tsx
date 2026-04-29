@@ -1,9 +1,5 @@
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import {
-  renderItems,
-  renderSections,
-} from '~/community/[communityId]/layout-util/render-select';
 import { Select, type SelectProps } from '~/view/base/select';
 
 type CustomSelectProps = Omit<
@@ -34,17 +30,16 @@ export const TicketTypeSelect: React.FC<Props> = ({
   return (
     <div className={className}>
       <Select
-        className="min-w-32 max-w-xs"
+        className="max-w-xs min-w-32"
         controlName={`${controlNamePrefix}.ticketName`}
         aria-label="Ticket Name"
         variant="underlined"
         selectionMode="single"
+        {...(includeHiddenFields
+          ? { sections: selectTicketSections }
+          : { items: visibleTicketItems })}
         {...props}
-      >
-        {includeHiddenFields
-          ? renderSections(selectTicketSections)
-          : renderItems(visibleTicketItems)}
-      </Select>
+      />
     </div>
   );
 };

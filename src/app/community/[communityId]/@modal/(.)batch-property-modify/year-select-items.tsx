@@ -1,14 +1,26 @@
 import React from 'react';
 import * as R from 'remeda';
-import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
+import { type SelectItem } from '~/view/base/select';
 
-export interface YearItem {
-  /** Label to appear in selection list */
-  label: string;
+export interface YearItem extends SelectItem {
   /** Value corresponding to the selection item (year) */
-  value: number;
+  key: number;
+  /** Label to appear in selection list */
+  textValue: string;
 }
+
+interface YearItemLabelProps {
+  item?: YearItem | null;
+}
+
+const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
+  if (!item) {
+    return null;
+  }
+
+  return <div className="flex items-center gap-2">{item.textValue}</div>;
+};
 
 /**
  * Construct list of SelectItems that includes every year (increment by 1). Year
@@ -25,7 +37,7 @@ export interface YearItem {
 export function yearSelectItems(
   yearRange: [number, number],
   _yearToInclude?: string | number | null
-) {
+): YearItem[] {
   const yearToIncludeNum = Number(_yearToInclude);
   const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;
   const currentYear = getCurrentYear();
@@ -37,21 +49,13 @@ export function yearSelectItems(
   );
 
   return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
+    const item = {
+      key: yr,
+      textValue: yr.toString(),
+    };
     return {
-      label: yr.toString(),
-      value: yr,
+      ...item,
+      rendered: <YearItemLabel item={item} />,
     };
   });
 }
-
-interface YearItemLabelProps {
-  item?: YearItem | null;
-}
-
-export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
-  if (!item) {
-    return null;
-  }
-
-  return <div className="flex items-center gap-2">{item.label}</div>;
-};

@@ -1,35 +1,30 @@
-import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
+import {
+  PlainSelect,
+  type PlainSelectProps,
+  type SelectItem,
+} from '~/view/base/select';
 
-interface YearRangeSelectItem {
-  label: string;
-  value: number;
-}
-const yearRangeSelectionList: YearRangeSelectItem[] = [
-  { label: '5', value: 5 },
-  { label: '10', value: 10 },
-  { label: '15', value: 15 },
-  { label: 'Max', value: -1 },
+const yearRangeSelectionList: SelectItem[] = [
+  { textValue: '5', key: 5 },
+  { textValue: '10', key: 10 },
+  { textValue: '15', key: 15 },
+  { textValue: 'Max', key: -1 },
 ];
 
-interface Props extends Omit<SelectProps<YearRangeSelectItem>, 'children'> {
+interface Props extends Omit<PlainSelectProps, 'items'> {
   className?: string;
 }
 
 export const YearRangeSelect: React.FC<Props> = ({ className, ...props }) => {
   return (
-    <Select
+    <PlainSelect
       className={cn(className, 'min-w-[130px]')}
       label="Years To Show"
       items={yearRangeSelectionList}
       disallowEmptySelection
       {...props}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          {item.label}
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

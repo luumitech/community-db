@@ -14,7 +14,7 @@ export const StepTemplate: React.FC<Props> = ({
   title,
   body,
 }) => {
-  const { activeStep, isLastStep, goTo, goNext, goBack } = wizardContext;
+  const { activeStep, isLastStep, goTo, goPrev, goNext } = wizardContext;
 
   return (
     <Card className="w-[inherit]" shadow="none">
@@ -36,7 +36,7 @@ export const StepTemplate: React.FC<Props> = ({
           isIconOnly
           variant="ghost"
           isDisabled={activeStep === 1}
-          onPress={goBack}
+          onPress={goPrev}
         >
           <Icon className="rotate-180" icon="chevron-forward" />
         </Button>

@@ -4,15 +4,16 @@ import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
+import { type SelectItem, type SelectSection } from '~/view/base/select';
 import { type CommunityEntry } from './community-query';
 
-export interface SelectItemT {
-  label: string;
-  value: string;
+export interface SelectItemT extends SelectItem {
+  // Enforce key into string type
+  key: string;
 }
-export interface SelectSectionT {
+export interface SelectSectionT extends SelectSection {
   title: string;
-  items: SelectItemT[];
+  items: Iterable<SelectItemT>;
   showDivider?: boolean;
 }
 
@@ -60,9 +61,9 @@ function createSelectionItems(
   const hiddenItems: SelectItemT[] = [];
   list.forEach((entry) => {
     if (entry.hidden) {
-      hiddenItems.push({ label: entry.name, value: entry.name });
+      hiddenItems.push({ key: entry.name, textValue: entry.name });
     } else {
-      visibleItems.push({ label: entry.name, value: entry.name });
+      visibleItems.push({ key: entry.name, textValue: entry.name });
     }
   });
   const selectSections = [

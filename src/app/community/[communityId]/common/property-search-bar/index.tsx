@@ -1,17 +1,19 @@
-import { cn, Input, InputProps } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { FilterChip } from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
+import { PlainInput, type PlainInputProps } from '~/view/base/input';
 import { FilterButton } from './filter-button';
 import { FilterDrawer, type DrawerArg } from './filter-drawer';
 import { InputData } from './use-hook-form';
 
 const useDrawerControl = useDisclosureWithArg<DrawerArg>;
 
-interface Props extends InputProps {
+type CustomInputProps = PlainInputProps;
+interface Props extends CustomInputProps {
   onChange?: () => void;
 }
 
@@ -40,7 +42,7 @@ export const PropertySearchBar: React.FC<Props> = ({
 
   return (
     <>
-      <Input
+      <PlainInput
         placeholder="Search Address, Member Name or Email"
         startContent={<Icon className="shrink-0" icon="search" />}
         // isClearable

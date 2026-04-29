@@ -38,18 +38,20 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
       if (excludeEvents == null) {
         return selectItems;
       }
-      return selectItems.filter((item) => !excludeEvents.includes(item.value));
+      return selectItems.filter((item) => !excludeEvents.includes(item.key));
     },
     [excludeEvents]
   );
 
   const eventSections = React.useCallback(() => {
-    return selectEventSections.map((section) => {
-      return {
-        ...section,
-        items: eventItems(section.items),
-      };
-    });
+    return selectEventSections
+      .map((section) => {
+        return {
+          ...section,
+          items: eventItems([...(section.items ?? [])]),
+        };
+      })
+      .filter(({ items }) => items.length > 0);
   }, [selectEventSections, eventItems]);
 
   const emptyContent = React.useMemo(() => {

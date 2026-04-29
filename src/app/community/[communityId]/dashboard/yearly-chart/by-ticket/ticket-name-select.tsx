@@ -1,5 +1,6 @@
-import { Select, SelectItem, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
+import { PlainSelect, type SelectItem } from '~/view/base/select';
 import { usePageContext } from '../../page-context';
 
 interface Props {
@@ -12,13 +13,13 @@ export const TicketNameSelect: React.FC<Props> = ({
   ticketNameList,
 }) => {
   const { ticketSelected, setTicketSelected } = usePageContext();
-  const ticketItems = ticketNameList.map((ticketName) => ({
-    label: ticketName,
-    value: ticketName,
+  const ticketItems = ticketNameList.map<SelectItem>((ticketName) => ({
+    key: ticketName,
+    textValue: ticketName,
   }));
 
   return (
-    <Select
+    <PlainSelect
       className={cn(className, 'w-full min-w-32')}
       aria-label="Ticket Name"
       items={ticketItems}
@@ -28,12 +29,6 @@ export const TicketNameSelect: React.FC<Props> = ({
         const [firstKey] = keys;
         setTicketSelected(firstKey?.toString() ?? '');
       }}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          {item.label}
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

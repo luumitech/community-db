@@ -47,7 +47,7 @@ export const MembershipStatus: React.FC<Props> = ({ className }) => {
         <YearSelect
           yearRange={[minYear, maxYear]}
           membershipList={property.membershipList}
-          selectedYear={yearSelected?.toString()}
+          selectedYear={yearSelected}
           onYearChange={(year) => dispatch(actions.ui.setYearSelected(year))}
         />
         <RegisteredEventList membership={membership} />
