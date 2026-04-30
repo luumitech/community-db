@@ -1,15 +1,10 @@
-import {
-  Avatar,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from '@heroui/react';
+import { Avatar } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useSignOut } from '~/custom-hooks/auth';
 import { useUserInfo } from '~/custom-hooks/user-info';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Dropdown } from '~/view/base/dropdown';
 import { Icon } from '~/view/base/icon';
 import { BmcLabel, BmcLogo, BmcUrl } from '~/view/buy-me-a-coffee';
 import { ThemeSelect } from './theme-select';
@@ -27,7 +22,7 @@ export const SignedIn: React.FC<Props> = () => {
 
   return (
     <Dropdown placement="bottom-end">
-      <DropdownTrigger>
+      <Dropdown.Trigger>
         <Avatar
           className="cursor-pointer bg-transparent transition-transform"
           data-testid="signed-in-user-avatar"
@@ -37,14 +32,14 @@ export const SignedIn: React.FC<Props> = () => {
           {...(fullName != null && { name: fullName })}
           {...(image != null && { src: image })}
         />
-      </DropdownTrigger>
-      <DropdownMenu
+      </Dropdown.Trigger>
+      <Dropdown.Menu
         className={styles['drop-down']}
         aria-label="Open system navigation menu"
         variant="flat"
         disabledKeys={[subscriptionPlanEnable ? 'buyMeACoffee' : 'pricingPlan']}
       >
-        <DropdownItem
+        <Dropdown.Item
           key="profile"
           textValue={appLabel('userProfile')}
           href={appPath('userProfile')}
@@ -52,30 +47,30 @@ export const SignedIn: React.FC<Props> = () => {
           showDivider
         >
           <p className="font-semibold">{email}</p>
-        </DropdownItem>
-        <DropdownItem
+        </Dropdown.Item>
+        <Dropdown.Item
           key="about"
           href={appPath('about')}
           startContent={<Icon icon="about" />}
         >
           {appLabel('about')}
-        </DropdownItem>
-        {/* <DropdownItem
+        </Dropdown.Item>
+        {/* <Dropdown.Item
           key="preference"
           href={appPath('preference')}
           startContent={<Icon icon="settings" />}
         >
           {appLabel('preference')}
-        </DropdownItem> */}
-        <DropdownItem
+        </Dropdown.Item> */}
+        <Dropdown.Item
           key="theme"
           isReadOnly
           startContent={<Icon icon="sunMoon" />}
           endContent={<ThemeSelect />}
         >
           Theme
-        </DropdownItem>
-        <DropdownItem
+        </Dropdown.Item>
+        <Dropdown.Item
           key="pricingPlan"
           href={appPath('pricingPlan')}
           startContent={
@@ -84,8 +79,8 @@ export const SignedIn: React.FC<Props> = () => {
           showDivider
         >
           {appLabel('pricingPlan')}
-        </DropdownItem>
-        <DropdownItem
+        </Dropdown.Item>
+        <Dropdown.Item
           classNames={{
             base: 'bg-primary-200 data-[hover=true]:hover:bg-primary',
           }}
@@ -98,15 +93,15 @@ export const SignedIn: React.FC<Props> = () => {
           showDivider
         >
           <BmcLabel />
-        </DropdownItem>
-        <DropdownItem
+        </Dropdown.Item>
+        <Dropdown.Item
           key="tutorial"
           href={appPath('tutorial')}
           startContent={<Icon icon="helpbook" />}
         >
           {appLabel('tutorial')}
-        </DropdownItem>
-        <DropdownItem
+        </Dropdown.Item>
+        <Dropdown.Item
           key="reportIssue"
           href={appPath('contactUs', {
             query: {
@@ -122,16 +117,16 @@ export const SignedIn: React.FC<Props> = () => {
           startContent={<Icon icon="bug" />}
         >
           Report An Issue
-        </DropdownItem>
-        <DropdownItem
+        </Dropdown.Item>
+        <Dropdown.Item
           key="logout"
           color="danger"
           onPress={signOut}
           startContent={<Icon icon="logout" />}
         >
           Log Out
-        </DropdownItem>
-      </DropdownMenu>
+        </Dropdown.Item>
+      </Dropdown.Menu>
     </Dropdown>
   );
 };

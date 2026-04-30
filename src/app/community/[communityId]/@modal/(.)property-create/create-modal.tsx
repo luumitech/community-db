@@ -5,13 +5,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
 import { useHookForm, type InputData } from './use-hook-form';
 
@@ -56,14 +50,14 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('propertyCreate')}</ModalHeader>
-                <ModalBody>
+                <Modal.Header>{appLabel('propertyCreate')}</Modal.Header>
+                <Modal.Body>
                   <AddressEditor />
-                </ModalBody>
-                <ModalFooter>
+                </Modal.Body>
+                <Modal.Footer>
                   <Button
                     variant="bordered"
                     isDisabled={pending}
@@ -79,10 +73,10 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
                   >
                     Create
                   </Button>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

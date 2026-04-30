@@ -5,13 +5,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { useLayoutContext } from '../../layout-context';
 import { EventListEditor } from './event-list-editor';
@@ -65,13 +59,13 @@ export const ModifyModal: React.FC<Props> = ({
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader className="flex justify-between">
+                <Modal.Header className="flex justify-between">
                   {appLabel('communityModify')}
-                </ModalHeader>
-                <ModalBody>
+                </Modal.Header>
+                <Modal.Body>
                   <Tabs
                     aria-label={`${appLabel('communityModify')} Options`}
                     classNames={{
@@ -96,8 +90,8 @@ export const ModifyModal: React.FC<Props> = ({
                       <PaymentMethodListEditor />
                     </Tab>
                   </Tabs>
-                </ModalBody>
-                <ModalFooter className="flex items-center justify-between">
+                </Modal.Body>
+                <Modal.Footer className="flex items-center justify-between">
                   <LastModified
                     updatedAt={community.updatedAt}
                     updatedBy={community.updatedBy}
@@ -119,10 +113,10 @@ export const ModifyModal: React.FC<Props> = ({
                       Save
                     </Button>
                   </div>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

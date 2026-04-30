@@ -2,13 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel } from '~/lib/app-path';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { PlanContextProvider } from './plan-context';
 
 export default function PricingPlan() {
@@ -23,13 +17,13 @@ export default function PricingPlan() {
       isDismissable={false}
       // isKeyboardDismissDisabled
     >
-      <ModalContent className="overflow-hidden">
-        <ModalHeader>{appLabel('pricingPlan')}</ModalHeader>
-        <ModalBody>
+      <Modal.Content className="overflow-hidden">
+        <Modal.Header>{appLabel('pricingPlan')}</Modal.Header>
+        <Modal.Body>
           <PlanContextProvider />
-        </ModalBody>
-        <ModalFooter className="justify-center" />
-      </ModalContent>
+        </Modal.Body>
+        <Modal.Footer className="justify-center" />
+      </Modal.Content>
     </Modal>
   );
 }

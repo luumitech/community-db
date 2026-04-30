@@ -4,7 +4,7 @@ import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
 import { Link } from '~/view/base/link';
-import { Modal, ModalBody, ModalContent, ModalHeader } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { Item } from './item';
 
 export default function Terms() {
@@ -18,9 +18,9 @@ export default function Terms() {
       isDismissable
       // isKeyboardDismissDisabled
     >
-      <ModalContent>
-        <ModalHeader className="text-2xl">{appLabel('terms')}</ModalHeader>
-        <ModalBody className="gap-6">
+      <Modal.Content>
+        <Modal.Header className="text-2xl">{appLabel('terms')}</Modal.Header>
+        <Modal.Body className="gap-6">
           <Item title="1. Acceptance of Terms">
             By accessing and using {appTitle}, you agree to comply with and be
             bound by these Terms of Service. If you do not agree to these terms,
@@ -82,8 +82,8 @@ export default function Terms() {
             </Link>
             .
           </Item>
-        </ModalBody>
-      </ModalContent>
+        </Modal.Body>
+      </Modal.Content>
     </Modal>
   );
 }

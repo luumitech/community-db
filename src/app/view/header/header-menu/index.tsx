@@ -1,13 +1,7 @@
-import {
-  Button,
-  ButtonGroup,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from '@heroui/react';
+import { Button, ButtonGroup } from '@heroui/react';
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
+import { Dropdown } from '~/view/base/dropdown';
 import { Icon } from '~/view/base/icon';
 import type { MenuItemEntry } from './_type';
 import { HeaderMenuShortcut } from './shortcut';
@@ -97,7 +91,7 @@ export const HeaderMenu: React.FC<Props> = ({
           }
         />
         <Dropdown placement="bottom-end">
-          <DropdownTrigger>
+          <Dropdown.Trigger>
             <Button
               className="text-2xl"
               aria-label="Open Header More Menu"
@@ -105,12 +99,12 @@ export const HeaderMenu: React.FC<Props> = ({
             >
               <Icon icon="more" />
             </Button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Header More Menu" variant="flat">
+          </Dropdown.Trigger>
+          <Dropdown.Menu aria-label="Header More Menu" variant="flat">
             {menuItemsWithDivider.map(({ key, ...entry }) => (
-              <DropdownItem className="text-base" key={key} {...entry} />
+              <Dropdown.Item className="text-base" key={key} {...entry} />
             ))}
-          </DropdownMenu>
+          </Dropdown.Menu>
         </Dropdown>
       </ButtonGroup>
     </HeaderMenuWrapper>

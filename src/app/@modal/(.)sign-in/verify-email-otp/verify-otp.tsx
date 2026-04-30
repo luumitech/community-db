@@ -1,16 +1,10 @@
-import {
-  Button,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Spinner,
-  cn,
-} from '@heroui/react';
+import { Button, Spinner, cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { authClient, useSignIn } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
 import { createInputOtp } from '~/view/base/input-otp';
+import { Modal } from '~/view/base/modal';
 import { toast } from '~/view/base/toastify';
 import { useHookFormContext, type InputData } from './use-hook-form';
 
@@ -73,15 +67,15 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
       className={cn(className, 'flex flex-col gap-4')}
       // onSubmit={handleSubmit(doSignIn)}
     >
-      <ModalHeader className="flex flex-col items-center gap-2">
+      <Modal.Header className="flex flex-col items-center gap-2">
         <span className="text-3xl font-semibold">Verify your email</span>
         <p className="text-center text-sm font-normal text-foreground/60">
           We&apos;ve sent an OTP code to <span className="italic">{email}</span>
           <br />
           Enter your OTP code here
         </p>
-      </ModalHeader>
-      <ModalBody className="flex flex-col items-center gap-2">
+      </Modal.Header>
+      <Modal.Body className="flex flex-col items-center gap-2">
         <InputOtp
           classNames={{
             // width of 6 digit OTP input
@@ -115,8 +109,8 @@ export const VerifyOtp: React.FC<Props> = ({ className, email }) => {
         >
           Resend New Code
         </Button>
-      </ModalBody>
-      <ModalFooter>{signingIn && <Spinner />}</ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>{signingIn && <Spinner />}</Modal.Footer>
     </Form>
   );
 };

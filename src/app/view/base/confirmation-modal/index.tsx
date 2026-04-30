@@ -1,13 +1,7 @@
 import { Button } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  type ModalProps,
-} from '~/view/base/modal';
+import { Modal, type ModalProps } from '~/view/base/modal';
 
 interface ContentArg {
   closeModal: () => void;
@@ -68,14 +62,14 @@ export const ConfirmationModal: React.FC<Props> = () => {
       hideCloseButton
       {...modalProps}
     >
-      <ModalContent>
+      <Modal.Content>
         {(closeModal) =>
           content ? (
             content({ closeModal, onConfirm, onCancel })
           ) : (
             <>
-              <ModalBody>{body ?? 'Discard Changes?'}</ModalBody>
-              <ModalFooter>
+              <Modal.Body>{body ?? 'Discard Changes?'}</Modal.Body>
+              <Modal.Footer>
                 <Button
                   variant="bordered"
                   onPress={(evt) => {
@@ -94,11 +88,11 @@ export const ConfirmationModal: React.FC<Props> = () => {
                 >
                   OK
                 </Button>
-              </ModalFooter>
+              </Modal.Footer>
             </>
           )
         }
-      </ModalContent>
+      </Modal.Content>
     </Modal>
   );
 };

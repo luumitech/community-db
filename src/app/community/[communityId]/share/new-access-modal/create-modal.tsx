@@ -3,13 +3,7 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import type { AccessEntry } from '../_type';
 import { RoleSelect } from '../role-select';
 import { EmailEditor } from './email-editor';
@@ -62,15 +56,15 @@ export const CreateModal: React.FC<Props> = ({
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader>Add User To Access List</ModalHeader>
-                <ModalBody>
+                <Modal.Header>Add User To Access List</Modal.Header>
+                <Modal.Body>
                   <EmailEditor />
                   <RoleSelect controlName="role" />
-                </ModalBody>
-                <ModalFooter>
+                </Modal.Body>
+                <Modal.Footer>
                   <Button
                     variant="bordered"
                     isDisabled={pending}
@@ -86,10 +80,10 @@ export const CreateModal: React.FC<Props> = ({
                   >
                     Share
                   </Button>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

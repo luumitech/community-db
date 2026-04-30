@@ -4,7 +4,7 @@ import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
 import { Link } from '~/view/base/link';
-import { Modal, ModalBody, ModalContent, ModalHeader } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { Item } from './item';
 
 export default function Privacy() {
@@ -18,9 +18,9 @@ export default function Privacy() {
       isDismissable
       // isKeyboardDismissDisabled
     >
-      <ModalContent>
-        <ModalHeader className="text-2xl">{appLabel('privacy')}</ModalHeader>
-        <ModalBody className="gap-6">
+      <Modal.Content>
+        <Modal.Header className="text-2xl">{appLabel('privacy')}</Modal.Header>
+        <Modal.Body className="gap-6">
           <Item title="1. Introduction">
             Welcome to {appTitle}. We are committed to protecting your personal
             information and your right to privacy. This Privacy Policy outlines
@@ -88,8 +88,8 @@ export default function Privacy() {
             </Link>
             .
           </Item>
-        </ModalBody>
-      </ModalContent>
+        </Modal.Body>
+      </Modal.Content>
     </Modal>
   );
 }

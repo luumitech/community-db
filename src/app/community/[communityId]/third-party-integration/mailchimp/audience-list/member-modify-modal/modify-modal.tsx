@@ -5,13 +5,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { appTitle } from '~/lib/env';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import type { AudienceMember } from '../_type';
 import { EmailEditor } from './email-editor';
 import { FullNameEditor } from './full-name-editor';
@@ -79,23 +73,23 @@ export const ModifyModal: React.FC<Props> = ({
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader className="flex flex-col">
+                <Modal.Header className="flex flex-col">
                   Modify Mailchimp Contact
                   <div className="text-xs font-normal text-foreground/60">
                     This changes information in Mailchimp only. To update
                     contact information in the {appTitle}, please locate the
                     occupant’s property and update the contact details there.
                   </div>
-                </ModalHeader>
-                <ModalBody>
+                </Modal.Header>
+                <Modal.Body>
                   <EmailEditor />
                   <FullNameEditor />
                   <StatusEditor />
-                </ModalBody>
-                <ModalFooter>
+                </Modal.Body>
+                <Modal.Footer>
                   <Button
                     variant="bordered"
                     isDisabled={pending}
@@ -111,10 +105,10 @@ export const ModifyModal: React.FC<Props> = ({
                   >
                     Save
                   </Button>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

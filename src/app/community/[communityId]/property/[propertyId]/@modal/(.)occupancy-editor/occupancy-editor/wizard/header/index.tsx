@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalHeader } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { type WizardContext } from '..';
 import { Step0Header } from './step0-header';
 import { Step1Header } from './step1-header';
@@ -24,5 +24,5 @@ export const Header: React.FC<Props> = ({ context }) => {
     }
   }, [activeStep, context]);
 
-  return <ModalHeader>{header}</ModalHeader>;
+  return <Modal.Header>{header}</Modal.Header>;
 };

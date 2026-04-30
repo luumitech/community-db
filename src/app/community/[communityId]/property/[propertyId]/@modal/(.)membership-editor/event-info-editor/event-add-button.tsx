@@ -1,4 +1,4 @@
-import { Dropdown, DropdownMenu, DropdownTrigger, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -9,6 +9,7 @@ import {
 } from '~/community/[communityId]/layout-util/render-select';
 import { getCurrentDateAsISOString } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
+import { Dropdown } from '~/view/base/dropdown';
 import { Icon } from '~/view/base/icon';
 import { InputData } from '../use-hook-form';
 
@@ -63,7 +64,7 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <Dropdown placement="bottom-start">
-      <DropdownTrigger>
+      <Dropdown.Trigger>
         {children ?? (
           <Button
             className={cn(className)}
@@ -76,8 +77,8 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
             Add Event
           </Button>
         )}
-      </DropdownTrigger>
-      <DropdownMenu
+      </Dropdown.Trigger>
+      <Dropdown.Menu
         aria-label="Add Event"
         emptyContent={emptyContent}
         onAction={(key) => {
@@ -92,7 +93,7 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
         {includeHiddenFields
           ? renderDropdownSections(eventSections())
           : renderDropdownItems(eventItems(visibleEventItems))}
-      </DropdownMenu>
+      </Dropdown.Menu>
     </Dropdown>
   );
 };

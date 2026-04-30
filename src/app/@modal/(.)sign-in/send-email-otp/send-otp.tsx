@@ -1,9 +1,10 @@
-import { Button, cn, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import React from 'react';
 import { authClient } from '~/custom-hooks/auth';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { createInput } from '~/view/base/input';
+import { Modal } from '~/view/base/modal';
 import { toast } from '~/view/base/toastify';
 import { Wizard } from '../wizard';
 import { useHookFormContext, type InputData } from './use-hook-form';
@@ -44,13 +45,13 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
       className={cn(className, 'flex flex-col gap-4')}
       onSubmit={handleSubmit(onSendOtp)}
     >
-      <ModalHeader className="flex flex-col items-center gap-2">
+      <Modal.Header className="flex flex-col items-center gap-2">
         <span className="text-3xl font-semibold">Enter your email</span>
         <p className="text-center text-sm font-normal text-foreground/60">
           We will send an OTP code to your email
         </p>
-      </ModalHeader>
-      <ModalBody className="flex flex-col items-center gap-2">
+      </Modal.Header>
+      <Modal.Body className="flex flex-col items-center gap-2">
         <Input
           isRequired
           controlName="email"
@@ -59,8 +60,8 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
           placeholder="Enter your email"
           variant="bordered"
         />
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <Button
           type="submit"
           variant="bordered"
@@ -70,7 +71,7 @@ export const SendOtp: React.FC<Props> = ({ className }) => {
         >
           <Icon icon="forward" />
         </Button>
-      </ModalFooter>
+      </Modal.Footer>
     </Form>
   );
 };

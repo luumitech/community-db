@@ -1,4 +1,4 @@
-import { Dropdown, DropdownMenu, DropdownTrigger, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -7,6 +7,7 @@ import {
   renderDropdownSections,
 } from '~/community/[communityId]/layout-util/render-select';
 import { decMul } from '~/lib/decimal-util';
+import { Dropdown } from '~/view/base/dropdown';
 import { FlatButton } from '~/view/base/flat-button';
 import { Ticket } from './_type';
 
@@ -37,7 +38,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <Dropdown placement="bottom-start">
-      <DropdownTrigger>
+      <Dropdown.Trigger>
         {children ?? (
           <FlatButton
             className={cn(className, 'text-primary')}
@@ -45,8 +46,8 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
             tooltip="Add Ticket"
           />
         )}
-      </DropdownTrigger>
-      <DropdownMenu
+      </Dropdown.Trigger>
+      <Dropdown.Menu
         aria-label="Add ticket item"
         emptyContent={<PleaseConfigureTickets communityId={communityId} />}
         onAction={(key) => {
@@ -64,7 +65,7 @@ export const TicketAddButton: React.FC<React.PropsWithChildren<Props>> = ({
         {includeHiddenFields
           ? renderDropdownSections(selectTicketSections)
           : renderDropdownItems(visibleTicketItems)}
-      </DropdownMenu>
+      </Dropdown.Menu>
     </Dropdown>
   );
 };

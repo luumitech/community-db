@@ -3,7 +3,7 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
-import { Modal, ModalContent, ModalHeader } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
 import { InputData, useHookForm } from './use-hook-form';
 import {
@@ -75,10 +75,10 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('batchPropertyModify')}</ModalHeader>
+                <Modal.Header>{appLabel('batchPropertyModify')}</Modal.Header>
                 <Wizard
                   renderHeader={renderHeader}
                   renderFooter={renderFooter(closeModal)}
@@ -89,7 +89,7 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
                 </Wizard>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>
