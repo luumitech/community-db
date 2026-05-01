@@ -5,22 +5,20 @@ import {
 } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { useForwardRef } from '~/custom-hooks/forward-ref';
 
 export interface TooltipProps extends NextUITooltipProps {
   /** Fix tooltip to bottom left corner of window */
   isFixed?: boolean;
 }
 
-export const Tooltip = React.forwardRef<HTMLElement | null, TooltipProps>(
+export const Tooltip = React.forwardRef<HTMLElement, TooltipProps>(
   (props, ref) => {
-    const tooltipRef = useForwardRef<HTMLElement>(ref);
     const { className, classNames, isFixed, ...tooltipProps } = props;
     const { base, content, ...restClassNames } = classNames ?? {};
 
     return (
       <NextUITooltip
-        ref={tooltipRef}
+        ref={ref}
         classNames={{
           base: twMerge(
             // Should be fixed at bottom-right corner of screen
