@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, cn } from '@heroui/react';
+import { Button, Divider, cn } from '@heroui/react';
 import React from 'react';
 import {
   useFieldArray,
@@ -7,6 +7,7 @@ import {
 } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { Card } from '~/view/base/card';
+import { Checkbox } from '~/view/base/checkbox';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { createInput } from '~/view/base/input';
