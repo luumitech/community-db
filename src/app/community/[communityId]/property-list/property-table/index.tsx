@@ -1,5 +1,6 @@
-import { Card, CardBody, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 import {
   GridTable,
   type GridTableProps as GenericGTProps,
@@ -112,7 +113,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
             onPress: () => onItemPress(item),
           })}
         >
-          <CardBody
+          <Card.Body
             className={cn(
               // inherit grid setting
               'col-span-full grid grid-cols-subgrid',
@@ -122,7 +123,7 @@ export const PropertyTable: React.FC<PropertyTableProps> = ({
             )}
           >
             {children}
-          </CardBody>
+          </Card.Body>
         </Card>
       );
     },

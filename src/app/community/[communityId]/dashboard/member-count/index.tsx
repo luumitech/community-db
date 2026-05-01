@@ -1,17 +1,11 @@
 import { useQuery } from '@apollo/client';
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Skeleton,
-  cn,
-} from '@heroui/react';
+import { Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { useLocalStorage } from 'react-use';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { lsFlags } from '~/lib/env';
+import { Card } from '~/view/base/card';
 import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../page-context';
 import { allowableWidgets } from '../widget-definition';
@@ -53,7 +47,7 @@ const Chart: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardHeader
+      <Card.Header
         className={cn('flex flex-col gap-2', 'items-start', 'sm:flex-row')}
       >
         <div className="flex gap-2 self-end">
@@ -76,8 +70,8 @@ const Chart: React.FC<Props> = ({ className }) => {
             }}
           />
         </div>
-      </CardHeader>
-      <CardBody className="overflow-hidden">
+      </Card.Header>
+      <Card.Body className="overflow-hidden">
         <Skeleton
           classNames={{
             base: 'rounded-lg h-full',
@@ -93,10 +87,10 @@ const Chart: React.FC<Props> = ({ className }) => {
             onYearSelect={onYearSelect}
           />
         </Skeleton>
-      </CardBody>
-      <CardFooter className="justify-center">
+      </Card.Body>
+      <Card.Footer className="justify-center">
         <FootNote />
-      </CardFooter>
+      </Card.Footer>
     </Card>
   );
 };

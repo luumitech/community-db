@@ -1,14 +1,7 @@
 'use client';
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Divider,
-  Skeleton,
-  cn,
-} from '@heroui/react';
+import { Divider, Skeleton, cn } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 import {
   ListBox,
   type ListBoxItemProps,
@@ -17,7 +10,7 @@ import {
 
 export type { ListBoxItemProps } from '~/view/base/list-box';
 
-interface Props extends Omit<ListBoxProps, 'ref' | 'children'> {
+interface Props extends Omit<ListBoxProps, 'children'> {
   className?: string;
   header?: React.ReactNode;
   footer?: React.ReactNode;
@@ -37,11 +30,11 @@ export const ListBoxInCard: React.FC<Props> = ({
     <Card className={cn(className)}>
       {!!header && (
         <>
-          <CardHeader className="text-lg">{header}</CardHeader>
+          <Card.Header className="text-lg">{header}</Card.Header>
           <Divider />
         </>
       )}
-      <CardBody>
+      <Card.Body>
         <Skeleton className="rounded-lg" isLoaded={!loading}>
           <ListBox aria-label="main menu" {...listBoxProps}>
             {items.map(({ key, ...itemProps }) => (
@@ -49,8 +42,8 @@ export const ListBoxInCard: React.FC<Props> = ({
             ))}
           </ListBox>
         </Skeleton>
-      </CardBody>
-      {!!footer && <CardFooter>{footer}</CardFooter>}
+      </Card.Body>
+      {!!footer && <Card.Footer>{footer}</Card.Footer>}
     </Card>
   );
 };

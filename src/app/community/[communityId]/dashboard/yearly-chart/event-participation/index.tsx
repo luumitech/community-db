@@ -1,5 +1,6 @@
-import { Card, CardBody, Skeleton, cn } from '@heroui/react';
+import { Skeleton, cn } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../../page-context';
 import { allowableWidgets } from '../../widget-definition';
@@ -21,7 +22,7 @@ const Chart: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardBody className="overflow-hidden">
+      <Card.Body className="overflow-hidden">
         <Skeleton
           classNames={{
             base: 'rounded-lg h-full',
@@ -32,7 +33,7 @@ const Chart: React.FC<Props> = ({ className }) => {
         >
           <EventParticipationChart />
         </Skeleton>
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

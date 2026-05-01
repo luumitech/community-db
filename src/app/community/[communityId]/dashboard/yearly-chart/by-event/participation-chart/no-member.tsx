@@ -1,5 +1,6 @@
-import { CardBody, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 
 interface Props {
   className?: string;
@@ -7,10 +8,10 @@ interface Props {
 
 export const NoMember: React.FC<Props> = ({ className }) => {
   return (
-    <CardBody
+    <Card.Body
       className={cn(className, 'text-center text-sm text-foreground/60')}
     >
       No data to display
-    </CardBody>
+    </Card.Body>
   );
 };

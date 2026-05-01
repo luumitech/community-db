@@ -1,8 +1,9 @@
-import { CardBody, Divider, ScrollShadow, cn } from '@heroui/react';
+import { Divider, ScrollShadow, cn } from '@heroui/react';
 import React from 'react';
 import { useLocalStorage } from 'react-use';
 import * as R from 'remeda';
 import { lsFlags } from '~/lib/env';
+import { Card } from '~/view/base/card';
 import { type TicketStat } from '../_type';
 import { GroupBy } from './group-by';
 import { TableHeader, TableRow, TableSumRow } from './table-row';
@@ -19,7 +20,7 @@ export const TicketTable: React.FC<Props> = ({ className, ticketList }) => {
   );
 
   return (
-    <CardBody className={cn(className, 'gap-2')}>
+    <Card.Body className={cn(className, 'gap-2')}>
       <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
       <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
         <div className="grid grid-cols-[repeat(5,max-content)] gap-x-6 gap-y-2">
@@ -70,6 +71,6 @@ export const TicketTable: React.FC<Props> = ({ className, ticketList }) => {
           <TableSumRow ticketList={ticketList} />
         </div>
       </ScrollShadow>
-    </CardBody>
+    </Card.Body>
   );
 };

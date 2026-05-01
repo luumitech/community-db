@@ -8,6 +8,8 @@ import {
 } from '@heroui/react';
 import React from 'react';
 
+export type { DropdownItemProps } from '@heroui/react';
+
 type Dropdown = typeof DropdownImpl & {
   Trigger: typeof DropdownTrigger;
   Menu: typeof DropdownMenu;

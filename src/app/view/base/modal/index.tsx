@@ -40,7 +40,7 @@ export interface ModalProps extends NextUIModalProps {
   beforeConfirm?: () => Promise<boolean>;
 }
 
-const ModalImpl = React.forwardRef<HTMLDivElement, ModalProps>(
+const ModalImpl = React.forwardRef<HTMLElement, ModalProps>(
   (
     {
       className,

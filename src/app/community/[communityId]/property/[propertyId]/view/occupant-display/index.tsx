@@ -1,10 +1,11 @@
-import { Button, Card, CardBody, Link } from '@heroui/react';
+import { Button, Link } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Card } from '~/view/base/card';
 import { Icon } from '~/view/base/icon';
 import { OccupantTable } from './occupant-table';
 
@@ -97,7 +98,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardBody
+      <Card.Body
         /**
          * This is to prevent the text in OccupantTable in scrolling to the top
          * padding of the cardbody
@@ -105,7 +106,7 @@ export const OccupantDisplay: React.FC<Props> = ({ className }) => {
         className="p-3"
       >
         <OccupantTable items={occupantList} topContent={topContent} />
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

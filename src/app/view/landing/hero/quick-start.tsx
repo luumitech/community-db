@@ -1,6 +1,7 @@
-import { Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Card } from '~/view/base/card';
 
 interface CustomButtonProps {
   label: string;
@@ -25,10 +26,12 @@ const CustomButton: React.FC<React.PropsWithChildren<CustomButtonProps>> = ({
       shadow="none"
       isHoverable
     >
-      <CardHeader className="justify-center font-semibold">{label}</CardHeader>
-      <CardBody className="text-center text-sm text-foreground/70">
+      <Card.Header className="justify-center font-semibold">
+        {label}
+      </Card.Header>
+      <Card.Body className="text-center text-sm text-foreground/70">
         {children}
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

@@ -15,7 +15,7 @@ type ListBox = typeof ListBoxImpl & {
 
 export interface ListBoxProps extends NextUIListboxProps {}
 
-const ListBoxImpl = React.forwardRef<HTMLDivElement, ListBoxProps>(
+const ListBoxImpl = React.forwardRef<HTMLElement, ListBoxProps>(
   ({ ...props }, ref) => {
     return <NextUIListbox ref={ref} {...props} />;
   }

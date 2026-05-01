@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Checkbox,
-  Divider,
-  cn,
-} from '@heroui/react';
+import { Button, Checkbox, Divider, cn } from '@heroui/react';
 import React from 'react';
 import {
   useFieldArray,
@@ -14,6 +6,7 @@ import {
   type InputData,
 } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import * as GQL from '~/graphql/generated/graphql';
+import { Card } from '~/view/base/card';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { createInput } from '~/view/base/input';
@@ -42,7 +35,7 @@ export const ContactEditor: React.FC<Props> = ({
 
   return (
     <Card>
-      <CardBody className="gap-2">
+      <Card.Body className="gap-2">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-6" role="rowgroup">
           <Input
             className="sm:col-span-3"
@@ -98,8 +91,8 @@ export const ContactEditor: React.FC<Props> = ({
         >
           Add email, phone, or others
         </Button>
-      </CardBody>
-      <CardFooter className="justify-end">
+      </Card.Body>
+      <Card.Footer className="justify-end">
         <Button
           endContent={<Icon icon="trash" />}
           color="danger"
@@ -107,7 +100,7 @@ export const ContactEditor: React.FC<Props> = ({
         >
           Delete Contact
         </Button>
-      </CardFooter>
+      </Card.Footer>
     </Card>
   );
 };
