@@ -5,7 +5,7 @@ import React from 'react';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
-import { ListBox, ListboxItemProps } from '~/view/base/list-box';
+import { ListBoxInCard, ListBoxItemProps } from '~/view/base/list-box-in-card';
 import { MoreMenu } from '../common/more-menu';
 
 const CurrentUserInfoQuery = graphql(/* GraphQL */ `
@@ -30,14 +30,16 @@ export default function CommunitySelect() {
     onError,
   });
 
-  const accessList = result.data?.userCurrent.accessList ?? [];
-  const items: ListboxItemProps[] = accessList.map((entry) => ({
-    key: entry.community.id,
-    href: appPath('propertyList', {
-      path: { communityId: entry.community.id },
-    }),
-    children: entry.community.name,
-  }));
+  const items: ListBoxItemProps[] = React.useMemo(() => {
+    const accessList = result.data?.userCurrent.accessList ?? [];
+    return accessList.map((entry) => ({
+      key: entry.community.id,
+      href: appPath('propertyList', {
+        path: { communityId: entry.community.id },
+      }),
+      children: entry.community.name,
+    }));
+  }, [result.data?.userCurrent.accessList]);
 
   const emptyContent = React.useMemo(() => {
     return (
@@ -53,12 +55,15 @@ export default function CommunitySelect() {
   return (
     <div className="mt-page-top">
       <MoreMenu omitKeys={['communitySelect']} />
-      <ListBox
-        header="Select Community"
-        loading={result.loading}
-        items={items}
-        emptyContent={emptyContent}
-      />
+      <div className="flex flex-row items-center justify-center">
+        <ListBoxInCard
+          className="w-80 md:w-96"
+          header="Select Community"
+          loading={result.loading}
+          items={items}
+          emptyContent={emptyContent}
+        />
+      </div>
     </div>
   );
 }

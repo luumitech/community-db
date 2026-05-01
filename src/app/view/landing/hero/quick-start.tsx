@@ -15,7 +15,6 @@ const CustomButton: React.FC<React.PropsWithChildren<CustomButtonProps>> = ({
   return (
     <Card
       className={cn(
-        'border dark:border-gray-600',
         // Override default hover opacity on Link component
         'hover:opacity-100!',
         'data-[hover=true]:scale-105',
