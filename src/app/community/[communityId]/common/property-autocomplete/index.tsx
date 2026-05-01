@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Autocomplete, AutocompleteItem, Spinner, cn } from '@heroui/react';
+import { Spinner, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -11,6 +11,7 @@ import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
 import { appPath } from '~/lib/app-path';
+import { PlainComboBox } from '~/view/base/combo-box';
 import { Icon } from '~/view/base/icon';
 
 const PropertyAutocompleteSearchQuery = graphql(/* GraphQL */ `
@@ -101,9 +102,9 @@ export const PropertyAutocomplete: React.FC<Props> = ({
 
       if (itemList.length === 0) {
         return (
-          <AutocompleteItem key={ITEM_KEY_EMPTY} textValue="empty">
+          <PlainComboBox.Item key={ITEM_KEY_EMPTY} textValue="empty">
             {emptyContent}
-          </AutocompleteItem>
+          </PlainComboBox.Item>
         );
       }
 
@@ -117,7 +118,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       return itemList.slice(0, 5).map((item) => {
         const propertyId = item.id;
         return (
-          <AutocompleteItem
+          <PlainComboBox.Item
             classNames={{
               title: 'flex items-center gap-6',
             }}
@@ -128,7 +129,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
           >
             <PropertyAddress fragment={item} />
             <Occupant className="grow" fragment={item} />
-          </AutocompleteItem>
+          </PlainComboBox.Item>
         );
       });
     },
@@ -140,7 +141,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       return null;
     }
     return (
-      <AutocompleteItem
+      <PlainComboBox.Item
         className="text-primary italic"
         key={ITEM_KEY_SHOWALL}
         textValue={ITEM_KEY_SHOWALL}
@@ -148,7 +149,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
         onPress={() => setSearchBarText(searchText)}
       >
         View all {totalCount} results
-      </AutocompleteItem>
+      </PlainComboBox.Item>
     );
   }, [totalCount, communityId, setSearchBarText, searchText]);
 
@@ -166,7 +167,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
       {isSuggestionOpen && (
         <div className="fixed inset-0 z-40 backdrop-blur-sm transition-opacity" />
       )}
-      <Autocomplete
+      <PlainComboBox
         className={className}
         aria-label="Search Address, Member Name or Email"
         placeholder="Search Address, Member Name or Email"
@@ -196,7 +197,7 @@ export const PropertyAutocomplete: React.FC<Props> = ({
           {renderSearchItems(properties)}
           {renderViewAllItems()}
         </>
-      </Autocomplete>
+      </PlainComboBox>
     </>
   );
 };
