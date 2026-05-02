@@ -1,11 +1,12 @@
 import React from 'react';
 import * as R from 'remeda';
+import { type SelectItem } from '~/view/base/select';
 
-export interface YearItem {
-  /** Label to appear in selection list */
-  label: string;
+export interface YearItem extends SelectItem {
   /** Value corresponding to the selection item (year) */
-  value: number;
+  key: number;
+  /** Label to appear in selection list */
+  textValue: string;
 }
 
 /**
@@ -17,15 +18,15 @@ export interface YearItem {
  * @param yearRange
  * @returns SelectItems with years in descending order
  */
-export function yearSelectItems(yearRange: [number, number]) {
+export function yearSelectItems(yearRange: [number, number]): YearItem[] {
   const minYear = yearRange[0];
   const maxYear = yearRange[1];
 
   const range = R.range(minYear, maxYear + 1);
   return R.reverse(range).map((yr) => {
     return {
-      label: yr.toString(),
-      value: yr,
+      key: yr,
+      textValue: yr.toString(),
     };
   });
 }

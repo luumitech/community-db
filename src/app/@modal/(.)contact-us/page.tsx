@@ -10,13 +10,7 @@ import { tsr } from '~/providers/tsr';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { toast } from '~/view/base/toastify';
 import { EmailEditor } from './email-editor';
 import { InputData, useHookForm } from './use-hook-form';
@@ -96,12 +90,12 @@ export default function ContactUs(props: RouteArgs) {
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSend)}>
-          <ModalContent>
-            <ModalHeader>{title}</ModalHeader>
-            <ModalBody>
+          <Modal.Content>
+            <Modal.Header>{title}</Modal.Header>
+            <Modal.Body>
               <EmailEditor messageDescription={messageDescription} />
-            </ModalBody>
-            <ModalFooter className="items-center">
+            </Modal.Body>
+            <Modal.Footer className="items-center">
               <div className="text-xs">
                 This site is protected by reCAPTCHA and the Google{' '}
                 <Link
@@ -133,8 +127,8 @@ export default function ContactUs(props: RouteArgs) {
               >
                 Send
               </Button>
-            </ModalFooter>
-          </ModalContent>
+            </Modal.Footer>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

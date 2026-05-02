@@ -1,5 +1,6 @@
-import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
+import { Button } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 import { Icon } from '~/view/base/icon';
 import { type WizardContext } from './wizard';
 
@@ -14,7 +15,7 @@ export const StepTemplate: React.FC<Props> = ({
   title,
   body,
 }) => {
-  const { activeStep, isLastStep, goTo, goNext, goBack } = wizardContext;
+  const { activeStep, isLastStep, goTo, goPrev, goNext } = wizardContext;
 
   return (
     <Card className="w-[inherit]" shadow="none">
@@ -28,15 +29,15 @@ export const StepTemplate: React.FC<Props> = ({
       >
         <Icon icon="cross" />
       </Button>
-      {title && <CardHeader className="font-semibold">{title}</CardHeader>}
-      {body && <CardBody>{body}</CardBody>}
-      <CardFooter className="gap-2">
+      {title && <Card.Header className="font-semibold">{title}</Card.Header>}
+      {body && <Card.Body>{body}</Card.Body>}
+      <Card.Footer className="gap-2">
         <Button
           size="sm"
           isIconOnly
           variant="ghost"
           isDisabled={activeStep === 1}
-          onPress={goBack}
+          onPress={goPrev}
         >
           <Icon className="rotate-180" icon="chevron-forward" />
         </Button>
@@ -52,7 +53,7 @@ export const StepTemplate: React.FC<Props> = ({
             <Icon icon="chevron-forward" />
           </Button>
         )}
-      </CardFooter>
+      </Card.Footer>
     </Card>
   );
 };

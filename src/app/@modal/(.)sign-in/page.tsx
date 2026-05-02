@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
 import { AppLogo } from '~/view/app-logo';
-import { Modal, ModalContent } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { InitiateSignIn } from './initiate-sign-in';
 import { SendEmailOtp } from './send-email-otp';
 import { VerifyEmailOtp } from './verify-email-otp';
@@ -20,7 +20,7 @@ export default function SignIn() {
       isKeyboardDismissDisabled
       isDismissable={false}
     >
-      <ModalContent className="overflow-x-hidden">
+      <Modal.Content className="overflow-x-hidden">
         <div className="m-auto mt-6">
           <AppLogo size={64} onClick={() => router.push(appPath('home'))} />
         </div>
@@ -35,7 +35,7 @@ export default function SignIn() {
             <VerifyEmailOtp />
           </Wizard.Step>
         </Wizard>
-      </ModalContent>
+      </Modal.Content>
     </Modal>
   );
 }

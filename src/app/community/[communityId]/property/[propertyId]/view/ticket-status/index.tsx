@@ -1,9 +1,10 @@
-import { Card, CardBody, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext as useViewLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import { sortDate } from '~/lib/date-util';
+import { Card } from '~/view/base/card';
 import { TicketSelect } from './ticket-select';
 import { TicketTable } from './ticket-table';
 import { makeTicketRow, ticketInfoForYear } from './ticket-util';
@@ -58,9 +59,9 @@ export const TicketStatus: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardBody>
+      <Card.Body>
         <TicketTable topContent={topContent} items={ticketList} />
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

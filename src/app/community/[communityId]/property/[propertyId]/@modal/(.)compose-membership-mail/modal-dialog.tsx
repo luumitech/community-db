@@ -5,13 +5,7 @@ import { useSelector } from '~/custom-hooks/redux';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
 import { MailForm } from './mail-form';
 import {
@@ -88,14 +82,14 @@ export const ModalDialog: React.FC<Props> = ({
     >
       <FormProvider {...formMethods}>
         <Form>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('composeMembershipMail')}</ModalHeader>
-                <ModalBody>
+                <Modal.Header>{appLabel('composeMembershipMail')}</Modal.Header>
+                <Modal.Body>
                   <MailForm />
-                </ModalBody>
-                <ModalFooter>
+                </Modal.Body>
+                <Modal.Footer>
                   {canEdit && (
                     <Button
                       color="primary"
@@ -122,10 +116,10 @@ export const ModalDialog: React.FC<Props> = ({
                   >
                     Launch Email Client...
                   </Button>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

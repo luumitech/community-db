@@ -6,13 +6,7 @@ import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
 import { Icon } from '~/view/base/icon';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { BuiltBy } from '~/view/footer/build-by';
 
 export default function About() {
@@ -26,12 +20,12 @@ export default function About() {
       isDismissable
       // isKeyboardDismissDisabled
     >
-      <ModalContent>
-        <ModalHeader className="items-center gap-2">
+      <Modal.Content>
+        <Modal.Header className="items-center gap-2">
           <AppLogo />
           {appTitle}
-        </ModalHeader>
-        <ModalBody>
+        </Modal.Header>
+        <Modal.Body>
           <div className="grid grid-cols-[repeat(2,max-content)] gap-x-4 gap-y-2">
             <div className="italic">Version</div>
             <div className="truncate font-mono">
@@ -58,8 +52,8 @@ export default function About() {
               {process.env.NEXT_PUBLIC_GIT_COMMIT_HASH?.slice(0, 7)}
             </div>
           </div>
-        </ModalBody>
-        <ModalFooter>
+        </Modal.Body>
+        <Modal.Footer>
           <BuiltBy className="grow" />
           <Button
             color="primary"
@@ -68,8 +62,8 @@ export default function About() {
           >
             {appLabel('contactUs')}
           </Button>
-        </ModalFooter>
-      </ModalContent>
+        </Modal.Footer>
+      </Modal.Content>
     </Modal>
   );
 }

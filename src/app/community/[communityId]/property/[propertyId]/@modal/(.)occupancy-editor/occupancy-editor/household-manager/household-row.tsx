@@ -1,8 +1,9 @@
-import { ButtonGroup, Card, CardBody } from '@heroui/react';
+import { ButtonGroup } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { Button } from '~/view/base/button';
+import { Card } from '~/view/base/card';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { ItemDescription } from '../household-select/item-description';
@@ -32,7 +33,7 @@ export const HouseholdRow: React.FC<Props> = ({
 
   return (
     <Card shadow="sm" role="rowgroup">
-      <CardBody
+      <Card.Body
         className={twMerge(
           'grid grid-cols-[minmax(0,1fr)_auto]',
           'items-center gap-2',
@@ -62,7 +63,7 @@ export const HouseholdRow: React.FC<Props> = ({
             onClick={onRemove}
           />
         </ButtonGroup>
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

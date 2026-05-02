@@ -1,9 +1,10 @@
-import { Button, Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
+import { Button, Link, cn } from '@heroui/react';
 import { ScrollShadow } from '@heroui/scroll-shadow';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { getFragment, graphql } from '~/graphql/generated';
 import { appPath } from '~/lib/app-path';
+import { Card } from '~/view/base/card';
 import { Icon } from '~/view/base/icon';
 
 const MembershipNotesFragment = graphql(/* GraphQL */ `
@@ -24,7 +25,7 @@ export const NotesView: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardHeader>
+      <Card.Header>
         <Button
           as={Link}
           className="ml-auto"
@@ -39,12 +40,12 @@ export const NotesView: React.FC<Props> = ({ className }) => {
         >
           Edit Notes
         </Button>
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Body>
         <ScrollShadow className="h-full">
           <span className="text-sm whitespace-pre-wrap">{notes ?? ''}</span>
         </ScrollShadow>
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

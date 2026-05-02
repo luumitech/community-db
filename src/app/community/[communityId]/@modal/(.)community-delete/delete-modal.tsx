@@ -3,13 +3,7 @@ import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
 import { useHookForm } from './use-hook-form';
 
@@ -51,17 +45,17 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <ModalContent>
+      <Modal.Content>
         {(closeModal) => (
           <>
-            <ModalHeader>{appLabel('communityDelete')}</ModalHeader>
-            <ModalBody>
+            <Modal.Header>{appLabel('communityDelete')}</Modal.Header>
+            <Modal.Body>
               <div>
                 This will delete community &apos;{community.name}&apos; and all
                 data within it.
               </div>
-            </ModalBody>
-            <ModalFooter>
+            </Modal.Body>
+            <Modal.Footer>
               <Button variant="bordered" onPress={closeModal}>
                 Cancel
               </Button>
@@ -74,10 +68,10 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
               >
                 Delete
               </Button>
-            </ModalFooter>
+            </Modal.Footer>
           </>
         )}
-      </ModalContent>
+      </Modal.Content>
     </Modal>
   );
 };

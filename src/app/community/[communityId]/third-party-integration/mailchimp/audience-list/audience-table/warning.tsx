@@ -19,7 +19,7 @@ export const Warning: React.FC<Props> = ({ className, item }) => {
   return (
     <Tooltip
       isFixed
-      content={<div className="max-w-48 text-tiny text-wrap">{warning}</div>}
+      content={<div className="max-w-48 text-xs text-wrap">{warning}</div>}
     >
       <Icon className="text-warning" icon="warning" size={16} />
     </Tooltip>

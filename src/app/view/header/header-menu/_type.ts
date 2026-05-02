@@ -1,4 +1,4 @@
-import { DropdownItemProps } from '@heroui/react';
+import type { DropdownItemProps } from '~/view/base/dropdown';
 
 export interface MenuItemEntry extends DropdownItemProps {
   /**

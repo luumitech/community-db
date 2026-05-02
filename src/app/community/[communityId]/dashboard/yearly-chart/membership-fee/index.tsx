@@ -1,6 +1,7 @@
-import { Card, CardBody, Skeleton, cn } from '@heroui/react';
+import { Skeleton, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
+import { Card } from '~/view/base/card';
 import { WidgetTitle } from '~/view/base/grid-stack-with-card';
 import { usePageContext } from '../../page-context';
 import { allowableWidgets } from '../../widget-definition';
@@ -40,7 +41,7 @@ const Chart: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <CardBody>
+      <Card.Body>
         <Skeleton
           className="h-full rounded-lg"
           aria-label="skeleton"
@@ -48,7 +49,7 @@ const Chart: React.FC<Props> = ({ className }) => {
         >
           <MembershipFeeTable membershipFeeStat={membershipFeeStat} />
         </Skeleton>
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

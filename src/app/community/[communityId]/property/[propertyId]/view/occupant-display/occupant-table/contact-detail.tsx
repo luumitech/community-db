@@ -48,14 +48,14 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ entry }) => {
       case GQL.ContactInfoType.Email:
         return (
           <div className="flex items-center gap-1">
-            <Icon className="text-default-500" icon="email" />
+            <Icon className="text-foreground/70" icon="email" />
             {value}
           </div>
         );
       case GQL.ContactInfoType.Phone:
         return (
           <div className="flex items-center gap-1">
-            <span className="text-default-500">{label}</span>
+            <span className="text-foreground/70">{label}</span>
             {formatPhoneNumber(value)}
           </div>
         );

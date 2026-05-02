@@ -1,17 +1,14 @@
 import * as GQL from '~/graphql/generated/graphql';
+import { type SelectItem } from '~/view/base/select';
 
-interface ImportMethodSelectItem {
-  label: string;
-  value: GQL.ImportMethod;
-}
-export const importMethodSelectionList: ImportMethodSelectItem[] = [
-  { label: 'Excel', value: GQL.ImportMethod.Xlsx },
+export const importMethodSelectionList: SelectItem[] = [
+  { key: GQL.ImportMethod.Xlsx, textValue: 'Excel' },
   {
-    label: 'Draw map boundary',
-    value: GQL.ImportMethod.Map,
+    key: GQL.ImportMethod.Map,
+    textValue: 'Draw map boundary',
   },
   {
-    label: 'Randomly generate sample data',
-    value: GQL.ImportMethod.Random,
+    textValue: 'Randomly generate sample data',
+    key: GQL.ImportMethod.Random,
   },
 ];

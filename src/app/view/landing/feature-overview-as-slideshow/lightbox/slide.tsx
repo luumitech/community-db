@@ -21,7 +21,7 @@ export const Slide: React.FC<ScreenshotEntry> = ({
         <Image className="w-full rounded-lg" alt={alt} {...props} />
       </div>
       {caption && (
-        <div className="text-center text-xl font-bold text-foreground-700">
+        <div className="text-center text-xl font-bold text-foreground">
           {caption}
         </div>
       )}

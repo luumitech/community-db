@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalFooter } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { type WizardContext } from '../';
 import { Step0Footer } from './step0-footer';
 import { Step1Footer } from './step1-footer';
@@ -30,5 +30,5 @@ export const Footer: React.FC<Props> = ({ context, ...props }) => {
     }
   }, [activeStep, context, props]);
 
-  return <ModalFooter>{footer}</ModalFooter>;
+  return <Modal.Footer>{footer}</Modal.Footer>;
 };

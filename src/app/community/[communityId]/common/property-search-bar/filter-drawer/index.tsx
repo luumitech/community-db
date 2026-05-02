@@ -1,11 +1,4 @@
-import {
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-} from '@heroui/react';
+import { Button } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import {
@@ -15,6 +8,7 @@ import {
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { Drawer } from '~/view/base/drawer';
 import { Form } from '~/view/base/form';
 import { useHookForm, type InputData } from '../use-hook-form';
 
@@ -47,9 +41,9 @@ export const FilterDrawer: React.FC<Props> = ({
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <DrawerContent>
-            <DrawerHeader>Filter Options</DrawerHeader>
-            <DrawerBody className="flex flex-col gap-4">
+          <Drawer.Content>
+            <Drawer.Header>Filter Options</Drawer.Header>
+            <Drawer.Body className="flex flex-col gap-4">
               <YearSelect
                 label="Member In Year(s)"
                 description="Show properties that are members in the specified year(s)"
@@ -88,8 +82,8 @@ export const FilterDrawer: React.FC<Props> = ({
                 size="sm"
                 isClearable
               />
-            </DrawerBody>
-            <DrawerFooter>
+            </Drawer.Body>
+            <Drawer.Footer>
               <Button variant="light" onPress={onClose}>
                 Cancel
               </Button>
@@ -104,8 +98,8 @@ export const FilterDrawer: React.FC<Props> = ({
               <Button color="primary" isDisabled={!isDirty} type="submit">
                 Apply
               </Button>
-            </DrawerFooter>
-          </DrawerContent>
+            </Drawer.Footer>
+          </Drawer.Content>
         </Form>
       </FormProvider>
     </Drawer>

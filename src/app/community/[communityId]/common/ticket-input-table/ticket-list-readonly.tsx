@@ -111,7 +111,7 @@ const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
         {ticket.count ?? ''}
       </div>
       <div className="pl-1" role="cell">
-        <span className="pr-1.5 text-default-400"> $</span>
+        <span className="pr-1.5 text-foreground/60"> $</span>
         <span>{formatCurrency(ticket.price)}</span>
       </div>
       <div className="pl-1" role="cell">
@@ -132,7 +132,7 @@ const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
     <div className={cn('col-span-full grid')}>
       <div
         className={cn(
-          'flex h-10 items-center gap-2 rounded-md border-medium border-divider px-2',
+          'flex h-10 items-center gap-2 rounded-md border-2 border-divider px-2',
           'cursor-pointer hover:opacity-hover'
         )}
         aria-label="Previous Transaction Toggle"
@@ -163,7 +163,7 @@ export const TicketListTotal: React.FC<PreviousTransaction> = ({
     <div
       className={cn(
         'col-span-full grid grid-cols-subgrid',
-        'items-center bg-default-100',
+        'items-center bg-default/30',
         'h-10 rounded-lg'
       )}
       role="row"
@@ -171,12 +171,12 @@ export const TicketListTotal: React.FC<PreviousTransaction> = ({
       <div role="cell" />
       <div
         role="cell"
-        className="col-span-2 text-right text-sm text-default-500"
+        className="col-span-2 text-right text-sm text-foreground/70"
       >
         Previous Total
       </div>
       <div className="pl-1 text-sm" role="cell">
-        <span className="pr-1.5 text-default-400">$</span>
+        <span className="pr-1.5 text-foreground/60">$</span>
         <span>{formatCurrency(totalPrice)}</span>
       </div>
       <div role="cell" />

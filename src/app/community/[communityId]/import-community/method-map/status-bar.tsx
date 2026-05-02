@@ -33,8 +33,8 @@ export const StatusBar: React.FC<Props> = ({ className, editMode }) => {
   return (
     <div
       className={twMerge(
-        'bg-default-100 text-sm text-default-500',
-        'rounded-b-medium px-2 py-1',
+        'bg-default/30 text-sm text-foreground/70',
+        'rounded-b-md px-2 py-1',
         className
       )}
     >

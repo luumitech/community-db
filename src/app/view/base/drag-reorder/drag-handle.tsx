@@ -17,7 +17,7 @@ export const DragHandle: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <div
       className={twMerge(
-        'text-foreground-500',
+        'text-foreground/60',
         'cursor-grab active:cursor-grabbing',
         className
       )}

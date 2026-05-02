@@ -5,13 +5,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { useHookForm, type InputData } from './use-hook-form';
 
@@ -55,14 +49,14 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('propertyModify')}</ModalHeader>
-                <ModalBody>
+                <Modal.Header>{appLabel('propertyModify')}</Modal.Header>
+                <Modal.Body>
                   <AddressEditor />
-                </ModalBody>
-                <ModalFooter className="flex items-center justify-between">
+                </Modal.Body>
+                <Modal.Footer className="flex items-center justify-between">
                   <LastModified
                     className="text-right"
                     updatedAt={property.updatedAt}
@@ -85,10 +79,10 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
                       Save
                     </Button>
                   </div>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

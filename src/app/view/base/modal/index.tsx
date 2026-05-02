@@ -1,18 +1,22 @@
 import {
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Modal as NextUIModal,
-  ModalProps as NextUIModalProps,
+  type ModalProps as NextUIModalProps,
 } from '@heroui/react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
 
-export {
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '@heroui/react';
+type Modal = typeof ModalImpl & {
+  Content: typeof ModalContent;
+  Header: typeof ModalHeader;
+  Body: typeof ModalBody;
+  Footer: typeof ModalFooter;
+};
 
 export interface ModalProps extends NextUIModalProps {
   /**
@@ -36,44 +40,58 @@ export interface ModalProps extends NextUIModalProps {
   beforeConfirm?: () => Promise<boolean>;
 }
 
-export const Modal: React.FC<ModalProps> = ({
-  className,
-  confirmation,
-  confirmationArg,
-  beforeConfirm,
-  onOpenChange,
-  ...props
-}) => {
-  const pathname = usePathname();
-  const { confirmationModal } = useAppContext();
-  const { open } = confirmationModal;
-
-  const customOnOpenChange = React.useCallback<(modalIsOpen: boolean) => void>(
-    async (modalIsOpen) => {
-      if (!confirmation) {
-        onOpenChange?.(modalIsOpen);
-        return;
-      }
-      const showDialog = (await beforeConfirm?.()) ?? true;
-      if (showDialog) {
-        open({
-          ...confirmationArg,
-          onConfirm: () => {
-            confirmationArg?.onConfirm?.();
-            onOpenChange?.(modalIsOpen);
-          },
-        });
-      }
+const ModalImpl = React.forwardRef<HTMLElement, ModalProps>(
+  (
+    {
+      className,
+      confirmation,
+      confirmationArg,
+      beforeConfirm,
+      onOpenChange,
+      ...props
     },
-    [beforeConfirm, confirmation, confirmationArg, onOpenChange, open]
-  );
+    ref
+  ) => {
+    const pathname = usePathname();
+    const { confirmationModal } = useAppContext();
+    const { open } = confirmationModal;
 
-  return (
-    <NextUIModal
-      // This ensure the modal is remounted whenever the route changes
-      key={pathname}
-      onOpenChange={customOnOpenChange}
-      {...props}
-    />
-  );
-};
+    const customOnOpenChange = React.useCallback<
+      (modalIsOpen: boolean) => void
+    >(
+      async (modalIsOpen) => {
+        if (!confirmation) {
+          onOpenChange?.(modalIsOpen);
+          return;
+        }
+        const showDialog = (await beforeConfirm?.()) ?? true;
+        if (showDialog) {
+          open({
+            ...confirmationArg,
+            onConfirm: () => {
+              confirmationArg?.onConfirm?.();
+              onOpenChange?.(modalIsOpen);
+            },
+          });
+        }
+      },
+      [beforeConfirm, confirmation, confirmationArg, onOpenChange, open]
+    );
+
+    return (
+      <NextUIModal
+        // This ensure the modal is remounted whenever the route changes
+        key={pathname}
+        onOpenChange={customOnOpenChange}
+        {...props}
+      />
+    );
+  }
+);
+ModalImpl.displayName = 'Modal';
+
+export const Modal = ModalImpl as Modal;
+Modal.Content = ModalContent;
+Modal.Header = ModalHeader;
+Modal.Body = ModalBody;
+Modal.Footer = ModalFooter;

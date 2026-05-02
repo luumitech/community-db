@@ -1,6 +1,5 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { createPortal } from 'react-dom';
 import type { Widget } from './_type';
 
 type DivProps = React.ComponentProps<'div'>;

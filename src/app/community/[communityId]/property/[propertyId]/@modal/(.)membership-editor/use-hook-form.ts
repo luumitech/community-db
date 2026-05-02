@@ -124,11 +124,11 @@ function defaultInputData(
     notes: item.notes ?? '',
     // Makes sure the membership list always contain all the years listed
     // in the year selection list (and in the same order as selection list)
-    membershipList: membershipList.map(({ value }) => {
+    membershipList: membershipList.map(({ key }) => {
       const membershipItem = item.membershipList.find(
-        (mEntry) => mEntry.year === value
+        (mEntry) => mEntry.year === key
       );
-      const defaultItem = membershipDefault(value);
+      const defaultItem = membershipDefault(key);
 
       return {
         year: membershipItem?.year ?? defaultItem.year,

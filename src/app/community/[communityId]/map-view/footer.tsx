@@ -10,7 +10,7 @@ interface Props {
 export const Footer: React.FC<Props> = ({ className }) => {
   return (
     <ToolbarControl className="mr-2.5 bg-background p-1" position="bottomleft">
-      <p className="text-xs text-default-600">
+      <p className="text-xs text-foreground/70">
         Click on any property within the boundary to see more information.
         Properties with
         <MarkerIcon className="mx-0.5 inline-flex" isMember size={12} />

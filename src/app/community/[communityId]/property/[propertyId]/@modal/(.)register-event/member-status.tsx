@@ -28,7 +28,7 @@ export const MemberStatus: React.FC<Props> = ({
       <MemberStatusChip isMember={isMember} hideText>
         {memberYear}
       </MemberStatusChip>
-      <div className="text-sm text-default-600">
+      <div className="text-sm text-foreground/70">
         {isMember && memberEvent ? (
           <div>
             These members registered at{' '}
@@ -57,7 +57,7 @@ export const MemberStatus: React.FC<Props> = ({
       <Occupant
         className="grow"
         fragment={property}
-        emptyContent={<span className="text-sm text-default-600">n/a</span>}
+        emptyContent={<span className="text-sm text-foreground/70">n/a</span>}
       />
     </div>
   );

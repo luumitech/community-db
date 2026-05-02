@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
-import { Card, CardHeader } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { graphql } from '~/graphql/generated';
+import { Card } from '~/view/base/card';
 import { usePageContext } from '../../../page-context';
 import { type MemberSourceStat } from '../_type';
 import { MemberCountChart } from './member-count-chart';
@@ -61,7 +61,7 @@ export const ParticipationChart: React.FC<Props> = ({
 
   return (
     <Card shadow="sm">
-      <CardHeader className="font-semibold">Member Count</CardHeader>
+      <Card.Header className="font-semibold">Member Count</Card.Header>
       {noMember ? (
         <NoMember />
       ) : (

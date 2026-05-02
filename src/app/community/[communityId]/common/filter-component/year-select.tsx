@@ -1,15 +1,10 @@
 import React from 'react';
 import { YearChip } from '~/community/[communityId]/common/chip';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import {
-  Select,
-  SelectItem,
-  SelectProps,
-  type SelectedItems,
-} from '~/view/base/select';
+import { Select, type SelectProps } from '~/view/base/select';
 import { yearSelectItems, type YearItem } from './year-select-items';
 
-type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
+type CustomSelectProps = Omit<SelectProps<YearItem>, 'items'>;
 
 interface Props extends CustomSelectProps {
   className?: string;
@@ -28,13 +23,13 @@ export const YearSelect: React.FC<Props> = ({
   }, [minYear, maxYear]);
 
   const renderValue = React.useCallback(
-    (items: SelectedItems<YearItem>) => {
+    (items: YearItem[]) => {
       return (
         <div className="flex flex-wrap items-center gap-1">
           {items.map((item) => (
             <YearChip
               key={item.key}
-              year={item.data?.label ?? ''}
+              year={item.textValue}
               isMember={isMember}
             />
           ))}
@@ -57,14 +52,6 @@ export const YearSelect: React.FC<Props> = ({
       // disallowEmptySelection
       renderValue={renderValue}
       {...props}
-    >
-      {(item) => {
-        return (
-          <SelectItem key={item.value} textValue={item.label}>
-            {item.label}
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

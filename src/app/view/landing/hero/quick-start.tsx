@@ -1,6 +1,7 @@
-import { Card, CardBody, CardHeader, Link, cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Card } from '~/view/base/card';
 
 interface CustomButtonProps {
   label: string;
@@ -15,7 +16,6 @@ const CustomButton: React.FC<React.PropsWithChildren<CustomButtonProps>> = ({
   return (
     <Card
       className={cn(
-        'border dark:border-gray-600',
         // Override default hover opacity on Link component
         'hover:opacity-100!',
         'data-[hover=true]:scale-105',
@@ -26,10 +26,12 @@ const CustomButton: React.FC<React.PropsWithChildren<CustomButtonProps>> = ({
       shadow="none"
       isHoverable
     >
-      <CardHeader className="justify-center font-semibold">{label}</CardHeader>
-      <CardBody className="text-center text-sm text-default-500">
+      <Card.Header className="justify-center font-semibold">
+        {label}
+      </Card.Header>
+      <Card.Body className="text-center text-sm text-foreground/70">
         {children}
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

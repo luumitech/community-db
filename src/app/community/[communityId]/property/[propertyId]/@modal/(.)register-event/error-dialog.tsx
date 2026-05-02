@@ -2,13 +2,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 
 interface Props {}
 
@@ -27,19 +21,19 @@ export const ErrorDialog: React.FC<Props> = (props) => {
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
-      <ModalContent>
+      <Modal.Content>
         {(closeModal) => (
           <>
-            <ModalHeader>{appLabel('registerEvent')}</ModalHeader>
-            <ModalBody>Error: Event Name missing</ModalBody>
-            <ModalFooter>
+            <Modal.Header>{appLabel('registerEvent')}</Modal.Header>
+            <Modal.Body>Error: Event Name missing</Modal.Body>
+            <Modal.Footer>
               <Button variant="bordered" onPress={closeModal}>
                 OK
               </Button>
-            </ModalFooter>
+            </Modal.Footer>
           </>
         )}
-      </ModalContent>
+      </Modal.Content>
     </Modal>
   );
 };

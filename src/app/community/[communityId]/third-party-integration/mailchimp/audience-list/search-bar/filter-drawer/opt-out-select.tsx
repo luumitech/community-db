@@ -1,26 +1,19 @@
 import React from 'react';
-import { SelectItem, SelectProps, createSelect } from '~/view/base/select';
+import { SelectProps, createSelect, type SelectItem } from '~/view/base/select';
 import type { InputData } from '../use-hook-form';
 
-interface OptOutItem {
-  /** Label to appear in selection list */
-  label: string;
-  /** Value corresponding to the selection item */
-  value: boolean;
-}
-
-export const items: OptOutItem[] = [
+const items: SelectItem[] = [
   {
-    label: 'Opt-Out',
-    value: true,
+    key: true.toString(),
+    textValue: 'Opt-Out',
   },
   {
-    label: 'Not Opt-Out',
-    value: false,
+    key: false.toString(),
+    textValue: 'Not Opt-Out',
   },
 ];
 
-type CustomProps = Omit<SelectProps<OptOutItem>, 'controlName' | 'children'>;
+type CustomProps = Omit<SelectProps, 'controlName' | 'items'>;
 const Select = createSelect<InputData>();
 
 interface Props extends CustomProps {
@@ -42,14 +35,6 @@ export const OptOutSelect: React.FC<Props> = ({ className, ...props }) => {
       placeholder="Unspecified"
       description="Show only entries matching the opt-out setting"
       {...props}
-    >
-      {(item) => {
-        return (
-          <SelectItem key={item.value.toString()} textValue={item.label}>
-            <div>{item.label}</div>
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

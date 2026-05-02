@@ -1,11 +1,12 @@
-import { Select, SelectItem, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
+import { PlainSelect } from '~/view/base/select';
 import {
   SelectedYearItem,
-  YearItemLabel,
   yearSelectItems,
+  type YearItem,
 } from '../../year-select-items';
 import { membershipDefault, useHookFormContext } from './use-hook-form';
 
@@ -32,7 +33,7 @@ export const YearSelect: React.FC<Props> = ({
   const { formState } = useHookFormContext();
   const { errors } = formState;
 
-  const yearItems = React.useMemo(() => {
+  const yearItems = React.useMemo<YearItem[]>(() => {
     const membershipListWithMember = membershipList.map((entry) => ({
       ...entry,
       isMember: entry.eventAttendedList.length > 0,
@@ -42,11 +43,15 @@ export const YearSelect: React.FC<Props> = ({
       membershipListWithMember,
       selectedYear
     );
-    const maxYear = items[0].value;
+    const maxYear = items[0].key;
 
     return [
       // Add an option to add future years
-      { label: `Add Year ${maxYear + 1}`, value: maxYear + 1, isMember: null },
+      {
+        textValue: `Add Year ${maxYear + 1}`,
+        key: maxYear + 1,
+        isMember: null,
+      },
       ...items,
     ];
   }, [yearRange, membershipList, selectedYear]);
@@ -59,7 +64,7 @@ export const YearSelect: React.FC<Props> = ({
       const userSelectedYearInt = parseInt(userSelectedYear, 10);
       // Selecting first entry in selection list will append
       // a new item to the membershipList
-      if (userSelectedYearInt === yearItems[0].value) {
+      if (userSelectedYearInt === yearItems[0].key) {
         onAddYear(membershipDefault(userSelectedYearInt));
       } else {
         onChange(userSelectedYear);
@@ -84,7 +89,7 @@ export const YearSelect: React.FC<Props> = ({
   }, [errors, yearRange, selectedYear]);
 
   return (
-    <Select
+    <PlainSelect
       classNames={{
         base: cn(className, 'max-w-sm'),
         label: 'whitespace-nowrap self-center',
@@ -100,12 +105,6 @@ export const YearSelect: React.FC<Props> = ({
       renderValue={(items) => <SelectedYearItem items={items} />}
       errorMessage={errorMsg}
       isInvalid={!!errorMsg}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          <YearItemLabel item={item} />
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

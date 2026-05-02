@@ -1,6 +1,5 @@
-import { Listbox, ListboxItem } from '@heroui/react';
-import { usePathname } from 'next/navigation';
 import React from 'react';
+import { ListBox } from '~/view/base/list-box';
 import { GUIDE_ITEMS, type GuideItem } from './guide-items';
 import { useCurrentItem } from './use-current-item';
 
@@ -10,38 +9,10 @@ interface Props {
 }
 
 export const MenuOptions: React.FC<Props> = ({ className, onSelect }) => {
-  const listboxRef = React.useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
   const selectedItem = useCurrentItem();
 
-  React.useEffect(() => {
-    if (listboxRef.current) {
-      /**
-       * There is likely a NextUI bug in ListBox, i.e:
-       *
-       * - Select 2nd entry in the list item
-       * - Navigate to default route (i.e. /tutorial)
-       * - The first item in the listbox is highlighted, as expected
-       * - But the 2nd entry is also highlighted, due to the fact that it retained
-       *   the focus css effect. (But clicking elsewhere should have cleared it
-       *   already)
-       *
-       * To mitigate this problem, it's necessary to add additional logic to
-       * clear the focus state programmatically.
-       */
-      listboxRef.current
-        .querySelectorAll('a[role="option"]')
-        .forEach((elem) => {
-          if (elem instanceof HTMLAnchorElement) {
-            elem.blur();
-          }
-        });
-    }
-  }, [pathname]);
-
   return (
-    <Listbox
-      ref={listboxRef}
+    <ListBox
       className={className}
       aria-label="Tutorial options"
       selectionMode="single"
@@ -49,7 +20,7 @@ export const MenuOptions: React.FC<Props> = ({ className, onSelect }) => {
       hideSelectedIcon
     >
       {GUIDE_ITEMS.map((item) => (
-        <ListboxItem
+        <ListBox.Item
           classNames={{
             base: 'data-[selected=true]:bg-default',
           }}
@@ -58,8 +29,8 @@ export const MenuOptions: React.FC<Props> = ({ className, onSelect }) => {
           onPress={() => onSelect?.(item)}
         >
           {item.label}
-        </ListboxItem>
+        </ListBox.Item>
       ))}
-    </Listbox>
+    </ListBox>
   );
 };

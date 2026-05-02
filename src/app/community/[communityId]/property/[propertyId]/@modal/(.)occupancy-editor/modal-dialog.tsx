@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { Form } from '~/view/base/form';
-import { Modal, ModalContent } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { OccupancyEditor } from './occupancy-editor';
 import { OccupancyEditorProvider } from './occupancy-editor-context';
 import { InputData, useHookForm } from './use-hook-form';
@@ -48,7 +48,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave, focusEmail }) => {
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <OccupancyEditorProvider
                 control={control}
@@ -59,7 +59,7 @@ export const ModalDialog: React.FC<Props> = ({ onSave, focusEmail }) => {
                 <OccupancyEditor />
               </OccupancyEditorProvider>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

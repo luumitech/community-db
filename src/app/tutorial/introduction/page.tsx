@@ -1,6 +1,6 @@
 'use client';
-import { Card, CardBody, CardHeader } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 import { GUIDE_ITEMS } from '../guide-menu/guide-items';
 
 export default function Introduction() {
@@ -10,10 +10,10 @@ export default function Introduction() {
 
   return (
     <Card className="w-full">
-      <CardHeader className="text-2xl font-extrabold">
+      <Card.Header className="text-2xl font-extrabold">
         Welcome to the step-by-step guide
-      </CardHeader>
-      <CardBody className="gap-2">
+      </Card.Header>
+      <Card.Body className="gap-2">
         <p>
           Welcome to our tutorial guide for the community database! In this
           series of step-by-step tutorials, we&apos;ll walk you through various
@@ -33,7 +33,7 @@ export default function Introduction() {
           Let&apos;s get started and take the first step toward building a
           powerful and efficient system for your community!
         </p>
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 }

@@ -1,6 +1,6 @@
 import { BreadcrumbItem, Breadcrumbs, Divider } from '@heroui/react';
 import React from 'react';
-import { ModalBody } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { type WizardContext } from '..';
 import { StepItem } from './step-item';
 
@@ -16,7 +16,7 @@ export const Header: React.FC<Props> = ({ context }) => {
   ];
 
   return (
-    <ModalBody>
+    <Modal.Body>
       <Breadcrumbs
         // Disables navigation
         isDisabled
@@ -34,6 +34,6 @@ export const Header: React.FC<Props> = ({ context }) => {
         ))}
       </Breadcrumbs>
       <Divider />
-    </ModalBody>
+    </Modal.Body>
   );
 };

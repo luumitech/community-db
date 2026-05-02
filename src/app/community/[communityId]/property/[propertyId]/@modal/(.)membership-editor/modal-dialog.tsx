@@ -6,13 +6,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { appLabel } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { MembershipInfoEditor } from './membership-info-editor';
 import { InputData, useHookForm } from './use-hook-form';
@@ -74,18 +68,18 @@ export const ModalDialog: React.FC<Props> = ({ onSave, autoFocus }) => {
     >
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
+          <Modal.Content>
             {(closeModal) => (
               <>
-                <ModalHeader>{appLabel('membershipEditor')}</ModalHeader>
-                <ModalBody className="gap-4">
+                <Modal.Header>{appLabel('membershipEditor')}</Modal.Header>
+                <Modal.Body className="gap-4">
                   <MembershipInfoEditor property={property} />
                   <NotesEditor
                     controlName="notes"
                     autoFocus={autoFocus === 'notes-helper'}
                   />
-                </ModalBody>
-                <ModalFooter className="flex items-center justify-between">
+                </Modal.Body>
+                <Modal.Footer className="flex items-center justify-between">
                   <LastModified
                     updatedAt={property.updatedAt}
                     updatedBy={property.updatedBy}
@@ -107,10 +101,10 @@ export const ModalDialog: React.FC<Props> = ({ onSave, autoFocus }) => {
                       Save
                     </Button>
                   </div>
-                </ModalFooter>
+                </Modal.Footer>
               </>
             )}
-          </ModalContent>
+          </Modal.Content>
         </Form>
       </FormProvider>
     </Modal>

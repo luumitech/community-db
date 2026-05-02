@@ -1,25 +1,18 @@
 import React from 'react';
-import { Select, SelectItem, SelectProps } from '~/view/base/select';
+import { Select, SelectProps, type SelectItem } from '~/view/base/select';
 
-interface GpsItem {
-  /** Label to appear in selection list */
-  label: string;
-  /** Value corresponding to the selection item */
-  value: boolean;
-}
-
-export const gpsItems: GpsItem[] = [
+export const gpsItems: SelectItem[] = [
   {
-    label: 'With GPS coordinate',
-    value: true,
+    key: true.toString(),
+    textValue: 'With GPS coordinate',
   },
   {
-    label: 'Without GPS coordinate',
-    value: false,
+    key: false.toString(),
+    textValue: 'Without GPS coordinate',
   },
 ];
 
-type CustomProps = Omit<SelectProps<GpsItem>, 'children'>;
+type CustomProps = Omit<SelectProps, 'children'>;
 
 interface Props extends CustomProps {
   className?: string;
@@ -37,14 +30,6 @@ export const GpsSelect: React.FC<Props> = ({ className, ...props }) => {
       selectionMode="single"
       placeholder="Unspecified"
       {...props}
-    >
-      {(item) => {
-        return (
-          <SelectItem key={item.value.toString()} textValue={item.label}>
-            <div>{item.label}</div>
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { graphql } from '~/graphql/generated';
 import { Button } from '~/view/base/button';
+import { Card } from '~/view/base/card';
 import { Form } from '~/view/base/form';
 import { toast } from '~/view/base/toastify';
 import { usePageContext } from '../../page-context';
@@ -59,19 +59,19 @@ export const Settings: React.FC<Props> = () => {
     <FormProvider {...formMethods}>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card shadow="none">
-          <CardHeader className="flex justify-between">
+          <Card.Header className="flex justify-between">
             Mailchimp Integration Settings
-          </CardHeader>
-          <CardBody>
+          </Card.Header>
+          <Card.Body>
             <div className="flex flex-col gap-4">
-              <p className="text-sm text-foreground-500">
+              <p className="text-sm text-foreground/60">
                 Adding a Mailchimp API key enables reading of Mailchimp audience
                 list.
               </p>
               <ApiKey />
             </div>
-          </CardBody>
-          <CardFooter className="flex items-center">
+          </Card.Body>
+          <Card.Footer className="flex items-center">
             <div className="flex items-center gap-2">
               <Button
                 type="submit"
@@ -82,7 +82,7 @@ export const Settings: React.FC<Props> = () => {
                 Update
               </Button>
             </div>
-          </CardFooter>
+          </Card.Footer>
         </Card>
       </Form>
     </FormProvider>

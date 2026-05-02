@@ -28,7 +28,9 @@ export const RoleInfo: React.FC<Props> = ({ className, fragment }) => {
 
   return (
     <Tooltip isFixed content={<RoleDescription role={entry.role} />}>
-      <div className={twMerge('truncate', className)}>{found?.label ?? ''}</div>
+      <div className={twMerge('truncate', className)}>
+        {found?.textValue ?? ''}
+      </div>
     </Tooltip>
   );
 };

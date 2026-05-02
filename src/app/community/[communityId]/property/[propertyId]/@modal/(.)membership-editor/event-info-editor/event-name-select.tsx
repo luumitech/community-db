@@ -1,11 +1,7 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import {
-  PleaseConfigureEvents,
-  renderEmptyResult,
-  renderSections,
-} from '~/community/[communityId]/layout-util/render-select';
+import { PleaseConfigureEvents } from '~/community/[communityId]/layout-util/render-select';
 import { SelectProps, createSelect } from '~/view/base/select';
 import { useHookFormContext, type InputData } from '../use-hook-form';
 
@@ -37,7 +33,9 @@ export const EventNameSelect: React.FC<Props> = ({
       [clearErrors, membershipPrefix]
     );
 
-  const hasNoItem = selectEventSections.length === 0;
+  const emptyContent = React.useMemo(() => {
+    return <PleaseConfigureEvents communityId={communityId} />;
+  }, [communityId]);
 
   return (
     <Select
@@ -47,14 +45,8 @@ export const EventNameSelect: React.FC<Props> = ({
       variant="underlined"
       // placeholder="Select an event"
       onSelectionChange={onSelectionChange}
-    >
-      <>
-        {hasNoItem &&
-          renderEmptyResult(
-            <PleaseConfigureEvents communityId={communityId} />
-          )}
-        {renderSections(selectEventSections)}
-      </>
-    </Select>
+      sections={selectEventSections}
+      emptyContent={emptyContent}
+    />
   );
 };

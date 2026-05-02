@@ -1,4 +1,4 @@
-import { Dropdown, DropdownMenu, DropdownTrigger, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import {
@@ -9,6 +9,7 @@ import {
 } from '~/community/[communityId]/layout-util/render-select';
 import { getCurrentDateAsISOString } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
+import { Dropdown } from '~/view/base/dropdown';
 import { Icon } from '~/view/base/icon';
 import { InputData } from '../use-hook-form';
 
@@ -38,18 +39,20 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
       if (excludeEvents == null) {
         return selectItems;
       }
-      return selectItems.filter((item) => !excludeEvents.includes(item.value));
+      return selectItems.filter((item) => !excludeEvents.includes(item.key));
     },
     [excludeEvents]
   );
 
   const eventSections = React.useCallback(() => {
-    return selectEventSections.map((section) => {
-      return {
-        ...section,
-        items: eventItems(section.items),
-      };
-    });
+    return selectEventSections
+      .map((section) => {
+        return {
+          ...section,
+          items: eventItems([...(section.items ?? [])]),
+        };
+      })
+      .filter(({ items }) => items.length > 0);
   }, [selectEventSections, eventItems]);
 
   const emptyContent = React.useMemo(() => {
@@ -61,7 +64,7 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <Dropdown placement="bottom-start">
-      <DropdownTrigger>
+      <Dropdown.Trigger>
         {children ?? (
           <Button
             className={cn(className)}
@@ -74,8 +77,8 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
             Add Event
           </Button>
         )}
-      </DropdownTrigger>
-      <DropdownMenu
+      </Dropdown.Trigger>
+      <Dropdown.Menu
         aria-label="Add Event"
         emptyContent={emptyContent}
         onAction={(key) => {
@@ -90,7 +93,7 @@ export const EventAddButton: React.FC<React.PropsWithChildren<Props>> = ({
         {includeHiddenFields
           ? renderDropdownSections(eventSections())
           : renderDropdownItems(eventItems(visibleEventItems))}
-      </DropdownMenu>
+      </Dropdown.Menu>
     </Dropdown>
   );
 };

@@ -1,2 +1,2 @@
-export { Checkbox, type CheckboxProps } from '@heroui/react';
-export { CheckboxGroup, type CheckboxGroupProps } from './checkbox-group';
+export * from './checkbox';
+export * from './checkbox-group';

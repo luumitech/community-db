@@ -9,8 +9,8 @@ export const RowHeader: React.FC<Props> = ({ className }) => {
     <div
       className={twMerge(
         'col-span-full grid grid-cols-subgrid',
-        'h-10 bg-default-100 text-foreground-500',
-        'items-center font-semibold text-tiny',
+        'h-10 bg-default/30 text-foreground/60',
+        'items-center text-xs font-semibold',
         'rounded-lg px-3',
         className
       )}

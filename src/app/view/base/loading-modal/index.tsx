@@ -1,7 +1,7 @@
 import { Spinner } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { Modal, ModalBody, ModalContent } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 
 interface Props {}
 
@@ -21,12 +21,12 @@ export const LoadingModal: React.FC<Props> = () => {
       hideCloseButton
       isDismissable={false}
     >
-      <ModalContent>
-        <ModalBody className="my-6 flex items-center">
+      <Modal.Content>
+        <Modal.Body className="my-6 flex items-center">
           <div className="text-xl">Please wait...</div>
           <Spinner className="" variant="wave" size="lg" />
-        </ModalBody>
-      </ModalContent>
+        </Modal.Body>
+      </Modal.Content>
     </Modal>
   );
 };

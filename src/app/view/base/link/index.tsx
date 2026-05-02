@@ -4,7 +4,6 @@ import {
   LinkProps as NextUILinkProps,
 } from '@heroui/react';
 import React from 'react';
-import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { Tooltip, TooltipProps } from '~/view/base/tooltip';
 import { IconOnlyButton, IconOnlyButtonProps } from './icon-only-button';
 
@@ -15,15 +14,13 @@ export interface LinkProps extends NextUILinkProps {
   tooltipProps?: TooltipProps;
 }
 
-export const Link = React.forwardRef<HTMLAnchorElement | null, LinkProps>(
+export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   (props, ref) => {
     const { className, iconOnly, tooltip, tooltipProps, ...linkProps } = props;
-    const linkRef = useForwardRef<HTMLAnchorElement>(ref);
 
     const renderLink = React.useMemo(() => {
       return (
         <NextUILink
-          ref={linkRef}
           className={cn(
             'underline decoration-dotted hover:decoration-solid',
             className
@@ -36,7 +33,7 @@ export const Link = React.forwardRef<HTMLAnchorElement | null, LinkProps>(
           {...linkProps}
         />
       );
-    }, [className, iconOnly, linkProps, linkRef]);
+    }, [className, iconOnly, linkProps]);
 
     return tooltip ? (
       <Tooltip content={tooltip} {...tooltipProps}>

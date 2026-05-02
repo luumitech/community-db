@@ -1,13 +1,6 @@
-import {
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  cn,
-  useDisclosure,
-} from '@heroui/react';
+import { cn, useDisclosure } from '@heroui/react';
 import React from 'react';
+import { Drawer } from '~/view/base/drawer';
 import { FlatButton } from '~/view/base/flat-button';
 import { MenuOptions } from './menu-options';
 import { useCurrentItem } from './use-current-item';
@@ -31,16 +24,16 @@ export const TopMenu: React.FC<Props> = ({ className }) => {
         {selectedItem.label}
       </div>
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement="left">
-        <DrawerContent className="max-w-xs">
+        <Drawer.Content className="max-w-xs">
           {(onClose) => (
             <>
-              <DrawerHeader>Step-By-Step Guides</DrawerHeader>
-              <DrawerBody>
+              <Drawer.Header>Step-By-Step Guides</Drawer.Header>
+              <Drawer.Body>
                 <MenuOptions onSelect={() => onClose()} />
-              </DrawerBody>
+              </Drawer.Body>
             </>
           )}
-        </DrawerContent>
+        </Drawer.Content>
       </Drawer>
     </>
   );

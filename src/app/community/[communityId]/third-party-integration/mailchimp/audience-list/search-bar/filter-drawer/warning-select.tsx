@@ -1,26 +1,19 @@
 import React from 'react';
-import { SelectItem, SelectProps, createSelect } from '~/view/base/select';
+import { SelectProps, createSelect, type SelectItem } from '~/view/base/select';
 import type { InputData } from '../use-hook-form';
 
-interface WarningItem {
-  /** Label to appear in selection list */
-  label: string;
-  /** Value corresponding to the selection item */
-  value: boolean;
-}
-
-export const items: WarningItem[] = [
+const items: SelectItem[] = [
   {
-    label: 'Has Warning',
-    value: true,
+    key: true.toString(),
+    textValue: 'Has Warning',
   },
   {
-    label: 'No Warning',
-    value: false,
+    key: false.toString(),
+    textValue: 'No Warning',
   },
 ];
 
-type CustomProps = Omit<SelectProps<WarningItem>, 'controlName' | 'children'>;
+type CustomProps = Omit<SelectProps, 'controlName' | 'items'>;
 const Select = createSelect<InputData>();
 
 interface Props extends CustomProps {
@@ -42,14 +35,6 @@ export const WarningSelect: React.FC<Props> = ({ className, ...props }) => {
       placeholder="Unspecified"
       description="Show only entries matching the warning setting"
       {...props}
-    >
-      {(item) => {
-        return (
-          <SelectItem key={item.value.toString()} textValue={item.label}>
-            <div>{item.label}</div>
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

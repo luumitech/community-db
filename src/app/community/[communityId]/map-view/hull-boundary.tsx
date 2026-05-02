@@ -1,4 +1,4 @@
-import { Checkbox, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import * as turf from '@turf/turf';
 import type { MultiPolygon, Polygon } from 'geojson';
 import dynamic from 'next/dynamic';
@@ -6,6 +6,7 @@ import React from 'react';
 import { useMap } from 'react-leaflet';
 import { useLocalStorage } from 'react-use';
 import { lsFlags } from '~/lib/env';
+import { Checkbox } from '~/view/base/checkbox';
 import { ToolbarControl } from '~/view/base/map';
 
 const Polygon = dynamic(

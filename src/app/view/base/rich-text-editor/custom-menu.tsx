@@ -22,8 +22,8 @@ export const CustomMenu: React.FC<BeautifulMentionsMenuProps> = ({
     <ul
       ref={ul}
       className={cn(
-        'w-max border-small',
-        'rounded-small border-default-200 dark:border-default-100',
+        'w-max border',
+        'rounded-lg border-default-200 dark:border-default-100',
         'bg-background',
         'flex flex-col px-1 py-2'
       )}
@@ -52,7 +52,7 @@ export const CustomMenuItem = React.forwardRef<
     return (
       <li
         ref={ref}
-        className={cn('px-2 py-1 text-sm', 'cursor-pointer rounded-small', {
+        className={cn('px-2 py-1 text-sm', 'cursor-pointer rounded-lg', {
           'bg-default text-default-foreground': selected,
         })}
         {...props}

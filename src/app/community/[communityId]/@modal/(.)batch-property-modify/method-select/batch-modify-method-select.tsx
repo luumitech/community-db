@@ -1,19 +1,19 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import * as GQL from '~/graphql/generated/graphql';
-import { createSelect, SelectItem } from '~/view/base/select';
+import { createSelect, type SelectItem } from '~/view/base/select';
 import { type InputData } from '../use-hook-form';
 
 const Select = createSelect<InputData>();
 
-const methodItems = [
+const methodItems: SelectItem[] = [
   {
-    label: 'Add an event or update membership',
-    value: GQL.BatchModifyMethod.AddEvent,
+    key: GQL.BatchModifyMethod.AddEvent,
+    textValue: 'Add an event or update membership',
   },
   {
-    label: 'Update GPS Information for properties',
-    value: GQL.BatchModifyMethod.AddGps,
+    key: GQL.BatchModifyMethod.AddGps,
+    textValue: 'Update GPS Information for properties',
   },
 ];
 
@@ -32,14 +32,6 @@ export const BatchModifyMethodSelect: React.FC<Props> = ({ className }) => {
       selectionMode="single"
       disallowEmptySelection
       autoFocus
-    >
-      {(item) => {
-        return (
-          <SelectItem key={item.value} textValue={item.label}>
-            <div>{item.label}</div>
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

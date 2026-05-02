@@ -1,13 +1,10 @@
-import { Select, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import {
-  PleaseConfigureEvents,
-  renderEmptyResult,
-  renderItems,
-} from '~/community/[communityId]/layout-util/render-select';
+import { PleaseConfigureEvents } from '~/community/[communityId]/layout-util/render-select';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { getCurrentDate } from '~/lib/date-util';
+import { PlainSelect } from '~/view/base/select';
 
 interface Props {
   className?: string;
@@ -18,10 +15,12 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
   const { lastEventSelected } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
-  const hasNoItem = visibleEventItems.length === 0;
+  const emptyContent = React.useMemo(() => {
+    return <PleaseConfigureEvents communityId={communityId} />;
+  }, [communityId]);
 
   return (
-    <Select
+    <PlainSelect
       className={cn(className, 'max-w-xs min-w-32')}
       aria-label="Current Event Name"
       placeholder="Select current event"
@@ -31,14 +30,8 @@ export const EventNameSelect: React.FC<Props> = ({ className }) => {
         const [firstKey] = keys;
         dispatch(actions.ui.setLastEventSelected(firstKey?.toString()));
       }}
-    >
-      <>
-        {hasNoItem &&
-          renderEmptyResult(
-            <PleaseConfigureEvents communityId={communityId} />
-          )}
-        {renderItems(visibleEventItems)}
-      </>
-    </Select>
+      emptyContent={emptyContent}
+      items={visibleEventItems}
+    />
   );
 };

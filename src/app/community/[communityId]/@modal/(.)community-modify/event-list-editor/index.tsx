@@ -1,8 +1,9 @@
-import { Input, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
+import { PlainInput } from '~/view/base/input';
 import { useHookFormContext } from '../use-hook-form';
 import { HiddenList } from './hidden-list';
 import { RowHeader } from './row-header';
@@ -73,7 +74,7 @@ export const EventListEditor: React.FC<Props> = ({ className }) => {
         <HiddenList fieldArray={hiddenEventList} onRemove={addVisibleItem} />
       </div>
       <div className="flex items-start gap-2">
-        <Input
+        <PlainInput
           className="max-w-xs"
           label="New event name"
           value={newItem}

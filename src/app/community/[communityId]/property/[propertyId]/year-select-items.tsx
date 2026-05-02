@@ -4,18 +4,46 @@ import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
 import { getCurrentYear } from '~/lib/date-util';
 import { Icon } from '~/view/base/icon';
+import { type SelectItem } from '~/view/base/select';
 
-export interface YearItem {
-  /** Label to appear in selection list */
-  label: string;
+export interface YearItem extends SelectItem {
   /** Value corresponding to the selection item (year) */
-  value: number;
+  key: number;
+  /** Label to appear in selection list */
+  textValue: string;
   /**
    * Whether membership is active for the year item null means not to render
    * membership status icon
    */
   isMember: boolean | null;
 }
+
+interface YearItemLabelProps {
+  item?: YearItem | null;
+}
+
+const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
+  if (!item) {
+    return null;
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      {item.textValue}
+      <div className="grow" />
+      {item.isMember != null && (
+        <Chip
+          variant="bordered"
+          radius="md"
+          size="sm"
+          color={item.isMember ? 'success' : 'default'}
+        >
+          <Icon icon={item.isMember ? 'thumb-up' : 'thumb-down'} size={14} />
+        </Chip>
+      )}
+    </div>
+  );
+};
 
 /**
  * Construct list of SelectItems that includes every year (increment by 1). Year
@@ -33,7 +61,7 @@ export function yearSelectItems(
   yearRange: [number, number],
   membershipList: Pick<GQL.Membership, 'year' | 'isMember'>[],
   _yearToInclude?: string | number | null
-) {
+): YearItem[] {
   const yearToIncludeNum = Number(_yearToInclude);
   const yearToInclude = yearToIncludeNum <= 0 ? NaN : yearToIncludeNum;
   const currentYear = getCurrentYear();
@@ -45,43 +73,20 @@ export function yearSelectItems(
   );
 
   return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
-    return {
-      label: yr.toString(),
-      value: yr,
+    const item = {
+      key: yr,
+      textValue: yr.toString(),
       isMember: !!membershipList.find((entry) => entry.year === yr)?.isMember,
+    };
+    return {
+      ...item,
+      rendered: <YearItemLabel item={item} />,
     };
   });
 }
 
-interface YearItemLabelProps {
-  item?: YearItem | null;
-}
-
-export const YearItemLabel: React.FC<YearItemLabelProps> = ({ item }) => {
-  if (!item) {
-    return null;
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      {item.label}
-      <div className="grow" />
-      {item.isMember != null && (
-        <Chip
-          variant="bordered"
-          radius="md"
-          size="sm"
-          color={item.isMember ? 'success' : 'default'}
-        >
-          <Icon icon={item.isMember ? 'thumb-up' : 'thumb-down'} size={14} />
-        </Chip>
-      )}
-    </div>
-  );
-};
-
 interface SelectedYearItemProps {
-  items: SelectedItems<YearItem>;
+  items: YearItem[];
 }
 
 export const SelectedYearItem: React.FC<SelectedYearItemProps> = ({
@@ -90,7 +95,7 @@ export const SelectedYearItem: React.FC<SelectedYearItemProps> = ({
   return (
     <div>
       {items.map((item) => (
-        <YearItemLabel key={item.key} item={item.data} />
+        <YearItemLabel key={item.key} item={item} />
       ))}
     </div>
   );

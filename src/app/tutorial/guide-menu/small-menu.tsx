@@ -1,13 +1,6 @@
-import {
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  cn,
-  useDisclosure,
-} from '@heroui/react';
+import { Button, cn, useDisclosure } from '@heroui/react';
 import React from 'react';
+import { Drawer } from '~/view/base/drawer';
 import { Icon } from '~/view/base/icon';
 import { MenuOptions } from './menu-options';
 import { useCurrentItem } from './use-current-item';
@@ -36,16 +29,16 @@ export const SmallMenu: React.FC<Props> = ({ className }) => {
         </div>
       </div>
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement="left">
-        <DrawerContent className="max-w-xs">
+        <Drawer.Content className="max-w-xs">
           {(onClose) => (
             <>
-              <DrawerHeader>Step-By-Step Guides</DrawerHeader>
-              <DrawerBody>
+              <Drawer.Header>Step-By-Step Guides</Drawer.Header>
+              <Drawer.Body>
                 <MenuOptions onSelect={() => onClose()} />
-              </DrawerBody>
+              </Drawer.Body>
             </>
           )}
-        </DrawerContent>
+        </Drawer.Content>
       </Drawer>
     </>
   );

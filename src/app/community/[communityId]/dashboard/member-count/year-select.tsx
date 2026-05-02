@@ -1,11 +1,11 @@
-import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-
-interface YearItem {
-  label: string;
-  value: number;
-}
+import {
+  PlainSelect,
+  type PlainSelectProps,
+  type SelectItem,
+} from '~/view/base/select';
 
 /**
  * Construct list of SelectItems that includes every year (increment by 1).
@@ -14,16 +14,16 @@ interface YearItem {
  * @param maxYear - The maximum year to end at
  * @returns SelectItems with years in descending order
  */
-function yearSelectItems(minYear: number, maxYear: number): YearItem[] {
+function yearSelectItems(minYear: number, maxYear: number): SelectItem[] {
   return R.reverse(R.range(minYear, maxYear + 1)).map((yr) => {
     return {
-      label: yr.toString(),
-      value: yr,
+      key: yr,
+      textValue: yr.toString(),
     };
   });
 }
 
-type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
+type CustomSelectProps = Omit<PlainSelectProps, 'items'>;
 
 interface Props extends CustomSelectProps {
   className?: string;
@@ -42,17 +42,11 @@ export const YearSelect: React.FC<Props> = ({
   }, [minYear, maxYear]);
 
   return (
-    <Select
+    <PlainSelect
       className={cn(className, 'min-w-40')}
       label="View Detail For Year"
       items={yearItems}
       {...props}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          {item.label}
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

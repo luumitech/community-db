@@ -23,7 +23,7 @@ export const AudienceList: React.FC<Props> = () => {
       <div
         className={cn(
           'flex flex-col items-center',
-          'mt-6 mb-2 font-semibold text-default-400'
+          'mt-6 mb-2 font-semibold text-foreground/60'
         )}
       >
         <p className="mb-2">No data to display.</p>
@@ -64,7 +64,7 @@ export const AudienceList: React.FC<Props> = () => {
           })}
           isDisabled={!audienceListId || loading}
           description={
-            <span className="text-xs text-default-400">
+            <span className="text-xs text-foreground/60">
               Total {audienceList.length} entries ({warningItem.length} with
               warnings)
             </span>

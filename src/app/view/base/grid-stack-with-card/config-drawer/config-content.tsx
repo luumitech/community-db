@@ -1,14 +1,9 @@
-import {
-  DrawerBody,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  cn,
-} from '@heroui/react';
+import { cn } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import { Checkbox, CheckboxGroup } from '~/view/base/checkbox';
+import { Drawer } from '~/view/base/drawer';
 import { useGridStackContext } from '~/view/base/grid-stack';
 import { useLayoutManagerContext } from '~/view/base/grid-stack-with-card';
 import { type DrawerArg } from './config-form';
@@ -27,11 +22,11 @@ export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
   const { allowableWidgets } = arg;
 
   return (
-    <DrawerContent>
+    <Drawer.Content>
       {(closeDrawer) => (
         <>
-          <DrawerHeader>Widgets Configuration</DrawerHeader>
-          <DrawerBody className="flex flex-col gap-4">
+          <Drawer.Header>Widgets Configuration</Drawer.Header>
+          <Drawer.Body className="flex flex-col gap-4">
             <span>Select widgets to display:</span>
             <CheckboxGroup<InputData>
               controlName="widgetIdList"
@@ -61,15 +56,15 @@ export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
                 >
                   <div className="flex flex-col">
                     {info.label}
-                    <span className="text-tiny text-default-500">
+                    <span className="text-xs text-foreground/70">
                       {info.description}
                     </span>
                   </div>
                 </Checkbox>
               ))}
             </CheckboxGroup>
-          </DrawerBody>
-          <DrawerFooter>
+          </Drawer.Body>
+          <Drawer.Footer>
             <Button
               variant="bordered"
               // isDisabled={pending}
@@ -90,9 +85,9 @@ export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
             <Button type="submit" color="primary" isDisabled={!isDirty}>
               Apply Change
             </Button>
-          </DrawerFooter>
+          </Drawer.Footer>
         </>
       )}
-    </DrawerContent>
+    </Drawer.Content>
   );
 };

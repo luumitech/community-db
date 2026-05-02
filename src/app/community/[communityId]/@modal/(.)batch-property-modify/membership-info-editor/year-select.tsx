@@ -1,8 +1,8 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { SelectItem, createSelect } from '~/view/base/select';
+import { createSelect } from '~/view/base/select';
 import { useHookFormContext, type InputData } from '../use-hook-form';
-import { YearItemLabel, yearSelectItems } from '../year-select-items';
+import { yearSelectItems, type YearItem } from '../year-select-items';
 
 const Select = createSelect<InputData>();
 
@@ -15,13 +15,13 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
   const { watch } = useHookFormContext();
   const selectedYear = watch('membership.year');
 
-  const yearItems = React.useMemo(() => {
+  const yearItems = React.useMemo<YearItem[]>(() => {
     const items = yearSelectItems(yearRange, selectedYear);
-    const maxYear = items[0].value;
+    const maxYear = items[0].key;
 
     return [
       // Add an option to add future years
-      { label: `Add Year ${maxYear + 1}`, value: maxYear + 1, isMember: null },
+      { textValue: `Add Year ${maxYear + 1}`, key: maxYear + 1 },
       ...items,
     ];
   }, [yearRange, selectedYear]);
@@ -40,12 +40,6 @@ export const YearSelect: React.FC<Props> = ({ className, yearRange }) => {
       items={yearItems}
       selectionMode="single"
       autoFocus
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          <YearItemLabel item={item} />
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

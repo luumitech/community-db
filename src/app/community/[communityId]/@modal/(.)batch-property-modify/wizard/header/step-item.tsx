@@ -15,7 +15,7 @@ export const StepItem: React.FC<Props> = ({ stepNo, stepName }) => {
     <div
       className={cn(
         'flex items-center gap-2 py-1',
-        isActive ? 'text-primary' : 'text-foreground-300'
+        isActive ? 'text-primary' : 'text-default'
       )}
     >
       <Chip

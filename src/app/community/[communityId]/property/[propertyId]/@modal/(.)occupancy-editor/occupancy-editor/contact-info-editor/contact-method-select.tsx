@@ -1,36 +1,34 @@
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { createSelect, SelectItem, SelectProps } from '~/view/base/select';
+import {
+  createSelect,
+  type SelectItem,
+  type SelectProps,
+} from '~/view/base/select';
 import { type InputData } from '../../use-hook-form';
 
 const Select = createSelect<InputData>();
 
-interface ContactMethodItem {
-  /** Label to appear in selection list */
-  label: string;
-  /** Value corresponding to the selection item */
-  value: GQL.ContactInfoType;
-}
-
-export const contactMethodItems: ContactMethodItem[] = [
+export const contactMethodItems: SelectItem[] = [
   {
-    label: 'Email',
-    value: GQL.ContactInfoType.Email,
+    key: GQL.ContactInfoType.Email,
+    textValue: 'Email',
   },
   {
-    label: 'Phone',
-    value: GQL.ContactInfoType.Phone,
+    key: GQL.ContactInfoType.Phone,
+    textValue: 'Phone',
   },
   {
-    label: 'Other',
-    value: GQL.ContactInfoType.Other,
+    key: GQL.ContactInfoType.Other,
+    textValue: 'Other',
   },
 ];
 
-type CustomProps = Omit<SelectProps<ContactMethodItem, InputData>, 'children'>;
+type CustomProps = Omit<SelectProps, 'items'>;
 
 interface Props extends CustomProps {
   className?: string;
+  controlName: `occupancyInfoList.${number}.occupantList.${number}.infoList.${number}.type`;
 }
 
 export const ContactMethodSelect: React.FC<Props> = ({
@@ -46,14 +44,6 @@ export const ContactMethodSelect: React.FC<Props> = ({
       selectionMode="single"
       disallowEmptySelection
       {...props}
-    >
-      {(item) => {
-        return (
-          <SelectItem key={item.value.toString()} textValue={item.label}>
-            <div>{item.label}</div>
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

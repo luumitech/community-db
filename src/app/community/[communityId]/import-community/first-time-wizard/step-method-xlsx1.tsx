@@ -8,7 +8,7 @@ import { StepTemplate } from './step-template';
 import { Wizard } from './wizard';
 
 const XlsxItem = importMethodSelectionList.find(
-  (item) => item.value === GQL.ImportMethod.Xlsx
+  (item) => item.key === GQL.ImportMethod.Xlsx
 )!;
 
 interface Props {
@@ -29,9 +29,9 @@ export const StepMethodXlsx1: React.FC<Props> = ({ className }) => {
         body={
           <div className="flex flex-col gap-2">
             <p>
-              Select <span className="text-foreground-500">Import Method</span>{' '}
-              &quot;{XlsxItem.label}&quot;, to initialize database with your own
-              content by uploading an Excel file.
+              Select <span className="text-foreground/60">Import Method</span>{' '}
+              &quot;{XlsxItem.textValue}&quot;, to initialize database with your
+              own content by uploading an Excel file.
             </p>
             <p>The excel file must have at least the following headings:</p>
             <SampleXlsx />

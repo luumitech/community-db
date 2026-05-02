@@ -1,6 +1,6 @@
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
-import { ModalBody } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { GpsInputEditor } from '../gps-input-editor';
 import { MembershipInfoEditor } from '../membership-info-editor';
 import { useHookFormContext } from '../use-hook-form';
@@ -24,5 +24,5 @@ export const Step2: React.FC<Step2Props> = (props) => {
     }
   }, [method]);
 
-  return <ModalBody>{body}</ModalBody>;
+  return <Modal.Body>{body}</Modal.Body>;
 };

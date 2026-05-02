@@ -8,7 +8,7 @@ import { StepTemplate } from './step-template';
 import { Wizard } from './wizard';
 
 const MapItem = importMethodSelectionList.find(
-  (item) => item.value === GQL.ImportMethod.Map
+  (item) => item.key === GQL.ImportMethod.Map
 )!;
 
 interface Props {
@@ -29,9 +29,9 @@ export const StepMethodMap1: React.FC<Props> = ({ className }) => {
         body={
           <div className="flex flex-col gap-2">
             <p>
-              Select <span className="text-foreground-500">Import Method</span>{' '}
-              &quot;{MapItem.label}&quot;, to import property entries by drawing
-              a map boundary.
+              Select <span className="text-foreground/60">Import Method</span>{' '}
+              &quot;{MapItem.textValue}&quot;, to import property entries by
+              drawing a map boundary.
             </p>
             <p>
               Try this if each property in the community has a unique address

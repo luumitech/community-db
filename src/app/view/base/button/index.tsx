@@ -34,7 +34,7 @@ export interface ButtonProps extends NextUIButtonProps {
 
 type OnPressFn = NonNullable<NextUIButtonProps['onPress']>;
 
-export const Button = React.forwardRef<HTMLButtonElement | null, ButtonProps>(
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       confirmation,

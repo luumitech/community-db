@@ -2,7 +2,7 @@ import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
-import { SelectItem, createSelect } from '~/view/base/select';
+import { createSelect } from '~/view/base/select';
 import { importMethodSelectionList } from './_type';
 import { MethodMap } from './method-map';
 import { useCheckMethodRequirement } from './method-map/check-method-requirement';
@@ -49,13 +49,7 @@ export const ImportForm: React.FC<Props> = ({ className }) => {
             placeholder="Select an import method"
             disallowEmptySelection
             isControlled
-          >
-            {(item) => (
-              <SelectItem key={item.value} textValue={item.label}>
-                {item.label}
-              </SelectItem>
-            )}
-          </Select>
+          />
         </div>
       </Tooltip>
       {msg}

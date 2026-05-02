@@ -8,7 +8,7 @@ import { StepTemplate } from './step-template';
 import { Wizard } from './wizard';
 
 const RandomItem = importMethodSelectionList.find(
-  (item) => item.value === GQL.ImportMethod.Random
+  (item) => item.key === GQL.ImportMethod.Random
 )!;
 
 interface Props {
@@ -29,8 +29,8 @@ export const StepMethodRandom1: React.FC<Props> = ({ className }) => {
         body={
           <div className="flex flex-col gap-2">
             <p>
-              Select <span className="text-foreground-500">Import Method</span>{' '}
-              &quot;{RandomItem.label}&quot;, to create a few random entries
+              Select <span className="text-foreground/60">Import Method</span>{' '}
+              &quot;{RandomItem.textValue}&quot;, to create a few random entries
               into the database.
             </p>
             <p>

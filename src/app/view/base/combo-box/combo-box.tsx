@@ -1,8 +1,4 @@
-import {
-  Autocomplete as NextUIAutocomplete,
-  AutocompleteProps as NextUIAutocompleteProps,
-  cn,
-} from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import {
@@ -12,13 +8,12 @@ import {
   type Path,
 } from '~/custom-hooks/hook-form';
 import { mergeRefs } from '~/custom-hooks/merge-ref';
+import { PlainComboBox, type PlainComboBoxProps } from './plain-combo-box';
 
-export { AutocompleteItem, AutocompleteSection } from '@heroui/react';
-
-export interface AutocompleteProps<
+export interface ComboBoxProps<
   T extends object = object,
   P extends FieldValues = FieldValues,
-> extends NextUIAutocompleteProps<T> {
+> extends PlainComboBoxProps<T> {
   controlName: Path<P>;
   /**
    * Force component into a controlled component, useful if you need setValue to
@@ -46,7 +41,7 @@ function coerceToString(input: string | boolean | number) {
   return R.isEmpty(input) ? '' : input.trim();
 }
 
-const Autocomplete = React.forwardRef(
+const ComboBoxImpl = React.forwardRef(
   <T extends object, P extends FieldValues = FieldValues>(
     {
       classNames,
@@ -54,9 +49,9 @@ const Autocomplete = React.forwardRef(
       isControlled,
       onBlur,
       onClear,
-      ...selectProps
-    }: AutocompleteProps<T, P>,
-    ref: React.ForwardedRef<HTMLDivElement>
+      ...props
+    }: ComboBoxProps<T, P>,
+    ref: React.ForwardedRef<HTMLElement>
   ) => {
     const { control } = useFormContext<P>();
 
@@ -65,7 +60,7 @@ const Autocomplete = React.forwardRef(
         control={control}
         name={controlName}
         render={({ field, fieldState }) => (
-          <NextUIAutocomplete<T>
+          <PlainComboBox<T>
             ref={mergeRefs(field.ref, ref)}
             classNames={{
               ...classNames,
@@ -82,29 +77,32 @@ const Autocomplete = React.forwardRef(
             }}
             errorMessage={fieldState.error?.message}
             isInvalid={fieldState.invalid}
-            {...selectProps}
+            {...props}
           />
         )}
       />
     );
   }
 ) as (<T extends object, P extends FieldValues>(
-  props: AutocompleteProps<T, P> & {
+  props: ComboBoxProps<T, P> & {
     ref?: React.ForwardedRef<HTMLDivElement>;
   }
 ) => React.ReactElement) & { displayName?: string };
 
-Autocomplete.displayName = 'Autocomplete';
+ComboBoxImpl.displayName = 'ComboBox';
+export const ComboBox = ComboBoxImpl as typeof PlainComboBox;
+ComboBox.Item = PlainComboBox.Item;
+ComboBox.Section = PlainComboBox.Section;
 
 /**
  * A component factory that takes the FieldValues as generic to produce a
  * component that would provide type assistance to controlName property
  */
-export function createAutocomplete<P extends FieldValues>() {
-  type Props<T extends object> = AutocompleteProps<T, P>;
+export function createComboBox<P extends FieldValues>() {
+  type Props<T extends object> = ComboBoxProps<T, P>;
 
-  const component = Autocomplete as <T extends object>(
-    props: Props<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  const component = ComboBox as <T extends object>(
+    props: Props<T> & { ref?: React.ForwardedRef<HTMLElement> }
   ) => React.ReactElement;
 
   return component;

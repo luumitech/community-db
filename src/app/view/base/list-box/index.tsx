@@ -1,61 +1,27 @@
-'use client';
 import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Divider,
-  Listbox,
   ListboxItem,
-  ListboxItemProps,
-  ListboxProps,
-  Skeleton,
-  cn,
+  ListboxSection,
+  Listbox as NextUIListbox,
+  type ListboxProps as NextUIListboxProps,
 } from '@heroui/react';
 import React from 'react';
 
-export { type ListboxItemProps } from '@heroui/react';
+export type { ListboxItemProps as ListBoxItemProps } from '@heroui/react';
 
-interface Props extends Omit<ListboxProps, 'children'> {
-  className?: string;
-  header?: React.ReactNode;
-  footer?: React.ReactNode;
-  items: ListboxItemProps[];
-  loading?: boolean;
-}
-
-export const ListBox: React.FC<Props> = ({
-  className,
-  header,
-  footer,
-  items,
-  loading,
-  ...listBoxProps
-}) => {
-  return (
-    <div className={cn(className, 'flex flex-row items-center justify-center')}>
-      <Card className="w-80 md:w-96">
-        {!!header && (
-          <>
-            <CardHeader className="text-lg">{header}</CardHeader>
-            <Divider />
-          </>
-        )}
-        <CardBody>
-          {loading ? (
-            <Skeleton className="rounded-lg">
-              <div className="h-8 rounded-lg bg-default-300" />
-            </Skeleton>
-          ) : (
-            <Listbox aria-label="main menu" {...listBoxProps}>
-              {items.map(({ key, ...itemProps }) => (
-                <ListboxItem key={key} {...itemProps} />
-              ))}
-            </Listbox>
-          )}
-        </CardBody>
-        {!!footer && <CardFooter>{footer}</CardFooter>}
-      </Card>
-    </div>
-  );
+type ListBox = typeof ListBoxImpl & {
+  Item: typeof ListboxItem;
+  Section: typeof ListboxSection;
 };
+
+export interface ListBoxProps extends NextUIListboxProps {}
+
+const ListBoxImpl = React.forwardRef<HTMLElement, ListBoxProps>(
+  ({ ...props }, ref) => {
+    return <NextUIListbox ref={ref} {...props} />;
+  }
+);
+ListBoxImpl.displayName = 'ListBox';
+
+export const ListBox = ListBoxImpl as ListBox;
+ListBox.Item = ListboxItem;
+ListBox.Section = ListboxSection;

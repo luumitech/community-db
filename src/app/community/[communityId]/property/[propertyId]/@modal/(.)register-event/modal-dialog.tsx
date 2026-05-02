@@ -7,13 +7,7 @@ import { appLabel } from '~/lib/app-path';
 import { getCurrentDate } from '~/lib/date-util';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { LastModified } from '~/view/last-modified';
 import { EventInfoEditor } from './event-info-editor';
 import { MemberStatus } from './member-status';
@@ -90,27 +84,27 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
       <XtraArgProvider {...xtraProps}>
         <FormProvider {...formMethods}>
           <Form onSubmit={preSubmit}>
-            <ModalContent>
+            <Modal.Content>
               {(closeModal) => (
                 <>
-                  <ModalHeader className="flex-wrap gap-x-6 gap-y-0.5">
+                  <Modal.Header className="flex-wrap gap-x-6 gap-y-0.5">
                     {appLabel('registerEvent')}
                     <div className="flex items-center gap-2">
                       <EventChip eventName={eventName} />
-                      <span className="text-sm text-default-500">
+                      <span className="text-sm text-foreground/70">
                         on {getCurrentDate()}
                       </span>
                     </div>
-                  </ModalHeader>
-                  <ModalBody className="gap-6">
+                  </Modal.Header>
+                  <Modal.Body className="gap-6">
                     <MemberStatus
                       property={xtraProps.property}
                       membership={xtraProps.membership}
                     />
                     <EventInfoEditor />
                     <NotesEditor controlName="notes" />
-                  </ModalBody>
-                  <ModalFooter className="flex items-center justify-between">
+                  </Modal.Body>
+                  <Modal.Footer className="flex items-center justify-between">
                     <LastModified
                       updatedAt={xtraProps.property.updatedAt}
                       updatedBy={xtraProps.property.updatedBy}
@@ -132,10 +126,10 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
                         {canRegister ? 'Register' : 'Save'}
                       </Button>
                     </div>
-                  </ModalFooter>
+                  </Modal.Footer>
                 </>
               )}
-            </ModalContent>
+            </Modal.Content>
           </Form>
         </FormProvider>
       </XtraArgProvider>

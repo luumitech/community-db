@@ -1,6 +1,6 @@
 import React from 'react';
 import { isProduction } from '~/lib/env';
-import { ModalBody, ModalFooter, ModalHeader } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { SignInDev } from './sign-in-dev';
 import { SignInEmailOtp } from './sign-in-email-otp';
 import { SignInSocial } from './sign-in-social';
@@ -14,10 +14,10 @@ export const InitiateSignIn: React.FC<InitiateSignInProps> = ({
 }) => {
   return (
     <>
-      <ModalHeader className="flex flex-col items-center text-3xl font-semibold">
+      <Modal.Header className="flex flex-col items-center text-3xl font-semibold">
         Sign In
-      </ModalHeader>
-      <ModalBody className="flex flex-col gap-2">
+      </Modal.Header>
+      <Modal.Body className="flex flex-col gap-2">
         <SignInEmailOtp />
         <SignInSocial
           provider="google"
@@ -31,8 +31,8 @@ export const InitiateSignIn: React.FC<InitiateSignInProps> = ({
         />
         <SignInSocial provider="twitter" label="Continue with X" icon="x" />
         {!isProduction() && <SignInDev />}
-      </ModalBody>
-      <ModalFooter className="flex flex-col gap-4" />
+      </Modal.Body>
+      <Modal.Footer className="flex flex-col gap-4" />
     </>
   );
 };

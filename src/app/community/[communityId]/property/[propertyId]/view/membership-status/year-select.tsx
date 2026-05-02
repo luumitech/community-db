@@ -1,21 +1,21 @@
-import { Select, SelectItem, SelectProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import {
   SelectedYearItem,
-  YearItemLabel,
   yearSelectItems,
   type YearItem,
 } from '~/community/[communityId]/property/[propertyId]/year-select-items';
 import * as GQL from '~/graphql/generated/graphql';
+import { PlainSelect, type PlainSelectProps } from '~/view/base/select';
 
-type CustomSelectProps = Omit<SelectProps<YearItem>, 'children'>;
+type CustomSelectProps = Omit<PlainSelectProps<YearItem>, 'items'>;
 
 interface Props extends CustomSelectProps {
   className?: string;
   yearRange: [number, number];
   membershipList: GQL.PropertyId_MembershipStatusFragment['membershipList'];
-  selectedYear?: string | null;
-  onYearChange: (year: string) => void;
+  selectedYear?: number | null;
+  onYearChange: (year: number) => void;
 }
 
 export const YearSelect: React.FC<Props> = ({
@@ -31,33 +31,25 @@ export const YearSelect: React.FC<Props> = ({
   }, [yearRange, membershipList, selectedYear]);
 
   return (
-    <Select
+    <PlainSelect
       classNames={{
         base: cn(className, 'items-start'),
         label: 'whitespace-nowrap',
         mainWrapper: 'min-w-32 max-w-xs',
       }}
       // label="Membership Info For Year"
-      // labelPlacement="outside-left"
       aria-label="Membership Info For Year"
       placeholder="Select a year"
       items={yearItems}
-      selectedKeys={selectedYear ? [selectedYear] : []}
-      selectionMode="single"
-      disallowEmptySelection
-      renderValue={(items) => <SelectedYearItem items={items} />}
+      selectedKeys={selectedYear != null ? [selectedYear.toString()] : []}
       onSelectionChange={(keys) => {
         const [firstKey] = keys;
-        const yearSelected = firstKey as string;
-        onYearChange(yearSelected);
+        const asNum = parseInt(firstKey as string, 10);
+        onYearChange(asNum);
       }}
+      disallowEmptySelection
+      renderValue={(items) => <SelectedYearItem items={items} />}
       {...props}
-    >
-      {(item) => (
-        <SelectItem key={item.value} textValue={item.label}>
-          <YearItemLabel item={item} />
-        </SelectItem>
-      )}
-    </Select>
+    />
   );
 };

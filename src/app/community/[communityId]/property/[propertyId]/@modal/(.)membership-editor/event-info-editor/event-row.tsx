@@ -20,8 +20,8 @@ export const EventRowHeader: React.FC<EventHeaderProps> = ({ className }) => {
       className={cn(
         className,
         'col-span-full grid grid-cols-subgrid',
-        'h-10 bg-default-100 text-foreground-500',
-        'items-center text-tiny font-semibold',
+        'h-10 bg-default/30 text-foreground/60',
+        'items-center text-xs font-semibold',
         'rounded-lg px-3'
       )}
       role="row"
@@ -100,7 +100,7 @@ export const EventRow: React.FC<EventRowProps> = ({
             color={ticketListContainsError ? 'danger' : 'default'}
           >
             <motion.div
-              className="justify-self-center text-foreground-400"
+              className="justify-self-center text-foreground/50"
               role="cell"
               animate={{
                 rotate: showTicketEditor ? 90 : 0,
@@ -147,7 +147,7 @@ export const EventRow: React.FC<EventRowProps> = ({
             >
               <TicketInputTable
                 className={cn(
-                  'rounded-lg border-medium border-divider',
+                  'rounded-lg border-2 border-divider',
                   'ml-10 p-1'
                 )}
                 ticketListConfig={{

@@ -1,5 +1,6 @@
-import { CardBody, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
+import { Card } from '~/view/base/card';
 import {
   EChart,
   TotalUtil,
@@ -125,8 +126,8 @@ export const MemberCountChart: React.FC<Props> = ({
   }, [chartHelper]);
 
   return (
-    <CardBody className={cn(className, 'h-[150px]')}>
+    <Card.Body className={cn(className, 'h-[150px]')}>
       <EChart className={className} option={option} />
-    </CardBody>
+    </Card.Body>
   );
 };

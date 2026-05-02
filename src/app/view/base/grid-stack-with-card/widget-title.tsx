@@ -11,7 +11,7 @@ export const WidgetTitle: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   return (
-    <span className={twMerge('text-small font-semibold', className)}>
+    <span className={twMerge('text-sm font-semibold', className)}>
       {children}
     </span>
   );

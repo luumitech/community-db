@@ -13,8 +13,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className }) => {
     <div
       className={twMerge(
         'col-span-full grid grid-cols-subgrid',
-        'h-10 bg-default-100 text-foreground-500',
-        'items-center font-semibold text-tiny',
+        'h-10 bg-default/30 text-foreground/60',
+        'items-center text-xs font-semibold',
         'rounded-lg px-3',
         className
       )}
@@ -51,7 +51,7 @@ export const TableRow: React.FC<TableRowProps> = ({ className, stat }) => {
           <span className="font-mono">{stat.count}</span>
         </div>
         <div className="flex justify-between gap-2" role="cell">
-          <span className="text-default-400">$</span>
+          <span className="text-foreground/60">$</span>
           <span className="font-mono">{formatCurrency(stat.price)}</span>
         </div>
         <div role="cell">{stat.paymentMethod}</div>

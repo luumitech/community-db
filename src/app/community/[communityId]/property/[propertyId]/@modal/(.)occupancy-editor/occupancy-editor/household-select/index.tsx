@@ -1,4 +1,4 @@
-import { cn, Select, SelectItem } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { useOccupancyEditorContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
@@ -6,6 +6,7 @@ import {
   useHookFormContext,
   type OccupancyInfoEntry,
 } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
+import { PlainSelect, type SelectItem } from '~/view/base/select';
 import { ItemDescription } from './item-description';
 import { ItemLabel } from './item-label';
 
@@ -50,8 +51,8 @@ export const HouseholdSelect: React.FC<Props> = ({ className, onSelect }) => {
       const hasError = !R.isEmpty(errObj?.[idx] ?? {});
       return {
         key: fields[idx].id,
-        textLabel: idx === 0 ? 'Current Occupants' : 'Previous Occupants',
-        label: (
+        textValue: idx === 0 ? 'Current Occupants' : 'Previous Occupants',
+        rendered: (
           <ItemLabel
             occupancyInfo={entry}
             isCurrent={isCurrent}
@@ -66,8 +67,12 @@ export const HouseholdSelect: React.FC<Props> = ({ className, onSelect }) => {
     });
   }, [fields, occupancyInfoList, errObj]);
 
+  const renderValue = React.useCallback((selectedItems: SelectItem[]) => {
+    return selectedItems.map((item) => item.rendered);
+  }, []);
+
   return (
-    <Select
+    <PlainSelect
       classNames={{
         base: cn('w-auto grow', className),
       }}
@@ -80,23 +85,9 @@ export const HouseholdSelect: React.FC<Props> = ({ className, onSelect }) => {
         const [firstKey] = keys;
         onSelect?.(firstKey as string);
       }}
-      renderValue={(selectItems) => {
-        return selectItems.map((item) => item.data?.label);
-      }}
+      renderValue={renderValue}
       isInvalid={!!items.find(({ hasError }) => hasError)}
       errorMessage="Please check households for errors"
-    >
-      {(item) => {
-        return (
-          <SelectItem
-            key={item.key}
-            textValue={item.textLabel}
-            description={item.description}
-          >
-            {item.label}
-          </SelectItem>
-        );
-      }}
-    </Select>
+    />
   );
 };

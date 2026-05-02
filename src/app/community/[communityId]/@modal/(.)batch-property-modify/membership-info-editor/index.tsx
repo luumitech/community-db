@@ -1,6 +1,7 @@
-import { Card, CardBody, CardHeader, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
+import { Card } from '~/view/base/card';
 import { EventInfoEditor } from './event-info-editor';
 import { YearSelect } from './year-select';
 
@@ -15,12 +16,12 @@ export const MembershipInfoEditor: React.FC<Props> = ({ className }) => {
     <div className={cn(className)}>
       Specify new event to add:
       <Card className="mt-2">
-        <CardHeader className="gap-2">
+        <Card.Header className="gap-2">
           <YearSelect yearRange={[minYear, maxYear]} />
-        </CardHeader>
-        <CardBody className="gap-2">
+        </Card.Header>
+        <Card.Body className="gap-2">
           <EventInfoEditor />
-        </CardBody>
+        </Card.Body>
       </Card>
     </div>
   );

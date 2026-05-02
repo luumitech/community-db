@@ -1,18 +1,10 @@
 import React from 'react';
 import { EventChip } from '~/community/[communityId]/common/chip/';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import { renderItems } from '~/community/[communityId]/layout-util/render-select';
-import {
-  Select,
-  type SelectProps,
-  type SelectedItems,
-} from '~/view/base/select';
+import { type SelectItemT } from '~/community/[communityId]/layout-util/community-context';
+import { Select, type SelectProps } from '~/view/base/select';
 
-type EventItem = ReturnType<
-  typeof useLayoutContext
->['visibleEventItems'][number];
-
-type CustomProps = Omit<SelectProps<EventItem>, 'children'>;
+type CustomProps = Omit<SelectProps<SelectItemT>, 'items'>;
 
 interface Props extends CustomProps {
   className?: string;
@@ -21,7 +13,7 @@ interface Props extends CustomProps {
 export const EventSelect: React.FC<Props> = ({ className, ...props }) => {
   const { visibleEventItems } = useLayoutContext();
 
-  const renderValue = React.useCallback((items: SelectedItems<EventItem>) => {
+  const renderValue = React.useCallback((items: SelectItemT[]) => {
     return (
       <div className="flex flex-wrap items-center gap-1">
         {items.map((item) => (
@@ -31,8 +23,6 @@ export const EventSelect: React.FC<Props> = ({ className, ...props }) => {
     );
   }, []);
 
-  const hasNoItems = visibleEventItems.length === 0;
-
   return (
     <Select
       classNames={{
@@ -41,12 +31,10 @@ export const EventSelect: React.FC<Props> = ({ className, ...props }) => {
       label="Membership Event(s)"
       selectionMode="multiple"
       isMultiline
-      isDisabled={hasNoItems}
       placeholder="Unspecified"
+      items={visibleEventItems}
       renderValue={renderValue}
       {...props}
-    >
-      {renderItems(visibleEventItems)}
-    </Select>
+    />
   );
 };

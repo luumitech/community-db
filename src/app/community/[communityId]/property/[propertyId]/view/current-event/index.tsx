@@ -1,8 +1,9 @@
-import { Button, Card, CardBody, Link, cn } from '@heroui/react';
+import { Button, Link, cn } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { appPath } from '~/lib/app-path';
+import { Card } from '~/view/base/card';
 import { Icon } from '~/view/base/icon';
 import { EventNameSelect } from './event-name-select';
 
@@ -16,7 +17,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardBody>
+      <Card.Body>
         <div className="flex items-start gap-2">
           <EventNameSelect />
           <Button
@@ -34,7 +35,7 @@ export const CurrentEvent: React.FC<Props> = ({ className }) => {
             I&apos;m here!
           </Button>
         </div>
-      </CardBody>
+      </Card.Body>
     </Card>
   );
 };

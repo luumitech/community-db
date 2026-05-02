@@ -1,8 +1,9 @@
-import { Checkbox, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { type Id } from 'react-toastify';
 import * as GQL from '~/graphql/generated/graphql';
 import { formatBytes } from '~/lib/number-util';
+import { Checkbox } from '~/view/base/checkbox';
 import { toast } from '~/view/base/toastify';
 
 interface Props {

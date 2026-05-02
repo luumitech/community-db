@@ -1,8 +1,8 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as GQL from '~/graphql/generated/graphql';
-import { ModalBody } from '~/view/base/modal';
+import { Modal } from '~/view/base/modal';
 import { FilterSelect } from '../filter-select';
 import { useHookFormContext } from '../use-hook-form';
 
@@ -39,5 +39,5 @@ export const Step1: React.FC<Step1Props> = (props) => {
     }
   }, [method]);
 
-  return <ModalBody>{body}</ModalBody>;
+  return <Modal.Body>{body}</Modal.Body>;
 };
