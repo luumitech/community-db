@@ -58,6 +58,8 @@ function schema() {
       z
         .object({
           year: zz.coerce.toNumber({ message: 'Must select a year' }),
+          paymentMethod: z.string().nullable(),
+          price: zz.coerce.toCurrency(),
           eventAttendedList: z
             .array(
               z.object({
@@ -73,8 +75,6 @@ function schema() {
               },
               { message: 'Event Name must be unique', path: [''] }
             ),
-          paymentMethod: z.string().nullable(),
-          price: zz.coerce.toCurrency(),
         })
         .refine(
           (form) => {
@@ -99,9 +99,9 @@ export function membershipDefault(
 ): InputData['membershipList'][number] {
   return {
     year,
-    eventAttendedList: [],
     paymentMethod: null,
     price: null,
+    eventAttendedList: [],
   };
 }
 

@@ -28,7 +28,7 @@ export const ItemLabel: React.FC<Props> = ({
         className
       )}
     >
-      {hasError && <Icon icon="warning" color="danger" />}
+      {hasError && <Icon icon="warning" />}
       <span>{`${isCurrent ? 'Current' : 'Past'} occupants`}</span>
       <div className="flex items-center gap-0.5 text-xs opacity-70">
         {moveInDate != null && <DateChip dateVal={moveInDate} />}

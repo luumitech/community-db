@@ -16,21 +16,21 @@ export const EventInfoEditor: React.FC<Props> = ({
   className,
   membershipPrefix,
 }) => {
-  const { control, formState, watch, setValue } = useHookFormContext();
+  const { control, formState, setValue } = useHookFormContext();
   const { errors } = formState;
   const eventAttendedListMethods = useFieldArray({
     control,
     name: `${membershipPrefix}.eventAttendedList`,
   });
-  const eventAttendedList = watch(`${membershipPrefix}.eventAttendedList`);
-  const excludeEvents = React.useMemo(() => {
-    if (eventAttendedList.length === 0) {
+  const recentlyInsertedFieldIdx = React.useRef<number>(null);
+  const { fields, append, remove } = eventAttendedListMethods;
+  const addExcludeEvents = React.useMemo(() => {
+    if (fields.length === 0) {
       return undefined;
     }
-    return eventAttendedList.map(({ eventName }) => eventName);
-  }, [eventAttendedList]);
+    return fields.map(({ eventName }) => eventName);
+  }, [fields]);
 
-  const { fields, append, remove } = eventAttendedListMethods;
   const eventAttendedListErrObj = R.pathOr(
     errors,
     // @ts-expect-error unable to resolve type error
@@ -41,6 +41,15 @@ export const EventInfoEditor: React.FC<Props> = ({
 
   // Open the first section by default
   const { isExpanded, toggle } = useTicketAccordion(fields[0]?.id);
+
+  React.useEffect(() => {
+    /** When adding a new event, automatically expand the ticket section */
+    if (recentlyInsertedFieldIdx.current != null) {
+      const fieldIdToToggle = fields[recentlyInsertedFieldIdx.current].id;
+      recentlyInsertedFieldIdx.current = null;
+      toggle(fieldIdToToggle);
+    }
+  }, [fields, toggle]);
 
   const bottomContent = React.useMemo(() => {
     return <div className="text-sm text-danger">{eventAttendedListError}</div>;
@@ -93,8 +102,11 @@ export const EventInfoEditor: React.FC<Props> = ({
             <div />
             <EventAddButton
               className="justify-self-start"
-              excludeEvents={excludeEvents}
-              onAppend={append}
+              excludeEvents={addExcludeEvents}
+              onAppend={(newItem) => {
+                recentlyInsertedFieldIdx.current = fields.length;
+                append(newItem);
+              }}
             />
           </div>
         </div>

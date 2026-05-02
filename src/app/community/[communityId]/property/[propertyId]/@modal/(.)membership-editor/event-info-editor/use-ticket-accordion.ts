@@ -38,5 +38,7 @@ export function useTicketAccordion(initialFieldId?: string) {
     expand,
     /** Toggle the ticketList section of the given event index */
     toggle,
+    /** Field ID of the expanded section */
+    openFieldId: sectionId,
   };
 }
