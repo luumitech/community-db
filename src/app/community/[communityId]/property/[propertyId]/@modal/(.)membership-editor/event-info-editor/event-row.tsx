@@ -68,13 +68,26 @@ export const EventRow: React.FC<EventRowProps> = ({
     ticketListMethods.fields.length +
     // Show membership fee in the ticket section of first event
     (isFirstEvent ? 1 : 0);
-  const errObj = R.pathOr(
+  const ticketListErrObj = R.pathOr(
     formState.errors,
     // @ts-expect-error unable to resolve type error
     R.stringToPath(ticketListPrefix),
     {}
   );
-  const ticketListContainsError = !R.isEmpty(errObj);
+  const membershipErrObj = R.pipe(
+    // @ts-expect-error unable to resolve type error
+    formState.errors,
+    R.pathOr(
+      // @ts-expect-error unable to resolve type error
+      R.stringToPath(membershipPrefix),
+      {}
+    ),
+    // @ts-expect-error unable to resolve type error
+    R.omit(['eventAttendedList'])
+  );
+  const rowContainsError =
+    !R.isEmpty(ticketListErrObj) ||
+    (isFirstEvent && !R.isEmpty(membershipErrObj));
 
   return (
     <>
@@ -82,22 +95,13 @@ export const EventRow: React.FC<EventRowProps> = ({
         className={cn(className, 'col-span-full mx-3 grid grid-cols-subgrid')}
         role="row"
       >
-        <FlatButton
-          className={cn('pt-3')}
-          // disabled={ticketCount === 0}
-          onClick={onTicketEditorToggle}
-        >
+        <FlatButton className={cn('pt-3')} onClick={onTicketEditorToggle}>
           <Badge
             placement="bottom-right"
             size="sm"
             variant="flat"
-            content={
-              <span className="flex items-center">
-                {ticketCount}
-                {ticketListContainsError && <Icon icon="warning" size={10} />}
-              </span>
-            }
-            color={ticketListContainsError ? 'danger' : 'default'}
+            content={ticketCount}
+            color={rowContainsError ? 'danger' : 'default'}
           >
             <motion.div
               className="justify-self-center text-foreground/50"
@@ -106,9 +110,17 @@ export const EventRow: React.FC<EventRowProps> = ({
                 rotate: showTicketEditor ? 90 : 0,
               }}
             >
-              <Icon icon="chevron-forward" />
+              <Icon
+                className={cn({
+                  'text-danger': rowContainsError,
+                })}
+                icon="chevron-forward"
+              />
             </motion.div>
           </Badge>
+          {rowContainsError && (
+            <Icon className="text-danger" icon="warning" size={12} />
+          )}
         </FlatButton>
         <div role="cell">
           <EventNameSelect

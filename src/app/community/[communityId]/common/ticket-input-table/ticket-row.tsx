@@ -217,6 +217,7 @@ export const MembershipRow: React.FC<EmptyProps> = () => {
       <div role="cell">
         <MembershipPriceInput controlNamePrefix={controlNamePrefix} />
       </div>
+      <div role="cell" />
       <div role="cell">
         {!transactionConfig && (
           <PaymentSelect
