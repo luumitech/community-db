@@ -7,7 +7,6 @@ import type {
   Ticket,
 } from '@prisma/client';
 import { builder } from '~/graphql/builder';
-import { isMember } from './util';
 
 export const contactInfoTypeRef = builder.enumType('ContactInfoType', {
   values: {
@@ -90,17 +89,16 @@ const eventRef = builder.objectRef<Event>('Event').implement({
 const membershipRef = builder.objectRef<Membership>('Membership').implement({
   fields: (t) => ({
     year: t.exposeInt('year'),
-    isMember: t.field({
-      type: 'Boolean',
-      resolve: (entry) => isMember(entry),
-    }),
+    isMember: t.exposeBoolean('isMember', { nullable: true }),
+    paymentEventName: t.exposeString('paymentEventName', { nullable: true }),
+    paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
+    paymentDate: t.expose('paymentDate', { type: 'Date', nullable: true }),
+    paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),
+    price: t.exposeString('price', { nullable: true }),
     eventAttendedList: t.field({
       type: [eventRef],
       resolve: (entry) => entry.eventAttendedList,
     }),
-    paymentMethod: t.exposeString('paymentMethod', { nullable: true }),
-    paymentDeposited: t.exposeBoolean('paymentDeposited', { nullable: true }),
-    price: t.exposeString('price', { nullable: true }),
   }),
 });
 

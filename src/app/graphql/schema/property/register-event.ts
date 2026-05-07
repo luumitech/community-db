@@ -14,8 +14,9 @@ const RegisterEventMembershipInput = builder.inputType(
   {
     fields: (t) => ({
       year: t.int({ required: true }),
+      isMember: t.boolean(),
       price: t.string(),
-      paymentMethod: t.string({ required: true }),
+      paymentDate: t.string(),
     }),
   }
 );
@@ -26,6 +27,7 @@ const RegisterEventInput = builder.inputType('RegisterEventInput', {
     notes: t.string(),
     membership: t.field({ type: RegisterEventMembershipInput, required: true }),
     event: t.field({ type: EventInput, required: true }),
+    transactionPaymentMethod: t.string(),
   }),
 });
 
@@ -61,9 +63,20 @@ builder.mutationField('registerEvent', (t) =>
         self,
         event: eventInput,
         membership: membershipInput,
+        transactionPaymentMethod,
         ...input
       } = args.input;
       const shortId = self.id;
+
+      /** Complete missing input fields from other input information */
+      if (transactionPaymentMethod) {
+        if (membershipInput.isMember) {
+          membershipInput.paymentDate ??= eventInput.eventDate;
+        }
+        eventInput.ticketList?.forEach((ticket) => {
+          ticket.paymentMethod ??= transactionPaymentMethod;
+        });
+      }
 
       const entry = await getPropertyEntry(user, shortId, {
         select: {
@@ -104,8 +117,15 @@ builder.mutationField('registerEvent', (t) =>
         eventInput.eventName
       );
       const membership = entry.membershipList[result.membershipIdx];
-      membership.price = membershipInput.price ?? null;
-      membership.paymentMethod = membershipInput.paymentMethod ?? null;
+      if (membershipInput.isMember) {
+        membership.isMember = true;
+        membership.price = membershipInput.price ?? null;
+        membership.paymentEventName = eventInput.eventName ?? null;
+        membership.paymentDate = membershipInput.paymentDate
+          ? new Date(membershipInput.paymentDate)
+          : null;
+        membership.paymentMethod = transactionPaymentMethod ?? null;
+      }
 
       // Update event and ticketList information
       const newEvent = mapEventEntry(eventInput);

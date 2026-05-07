@@ -38,12 +38,6 @@ interface EventRowProps {
   className?: string;
   membershipPrefix: `membershipList.${number}`;
   eventPrefix: `membershipList.${number}.eventAttendedList.${number}`;
-  /**
-   * Is this the first event?
-   *
-   * - Membership Fee entry are shown as the first entry in the ticket table
-   */
-  isFirstEvent: boolean;
   showTicketEditor: boolean;
   onTicketEditorToggle: () => void;
   onRemove?: () => void;
@@ -53,7 +47,6 @@ export const EventRow: React.FC<EventRowProps> = ({
   className,
   membershipPrefix,
   eventPrefix,
-  isFirstEvent,
   showTicketEditor,
   onTicketEditorToggle,
   onRemove,
@@ -64,30 +57,14 @@ export const EventRow: React.FC<EventRowProps> = ({
     control,
     name: ticketListPrefix,
   });
-  const ticketCount =
-    ticketListMethods.fields.length +
-    // Show membership fee in the ticket section of first event
-    (isFirstEvent ? 1 : 0);
+  const ticketCount = ticketListMethods.fields.length;
   const ticketListErrObj = R.pathOr(
     formState.errors,
     // @ts-expect-error unable to resolve type error
     R.stringToPath(ticketListPrefix),
     {}
   );
-  const membershipErrObj = R.pipe(
-    // @ts-expect-error unable to resolve type error
-    formState.errors,
-    R.pathOr(
-      // @ts-expect-error unable to resolve type error
-      R.stringToPath(membershipPrefix),
-      {}
-    ),
-    // @ts-expect-error unable to resolve type error
-    R.omit(['eventAttendedList'])
-  );
-  const rowContainsError =
-    !R.isEmpty(ticketListErrObj) ||
-    (isFirstEvent && !R.isEmpty(membershipErrObj));
+  const rowContainsError = !R.isEmpty(ticketListErrObj);
 
   return (
     <>
@@ -129,11 +106,7 @@ export const EventRow: React.FC<EventRowProps> = ({
           />
         </div>
         <div role="cell">
-          <EventDatePicker
-            className="max-w-xs"
-            membershipPrefix={membershipPrefix}
-            eventPrefix={eventPrefix}
-          />
+          <EventDatePicker className="max-w-xs" eventPrefix={eventPrefix} />
         </div>
         <div className="flex gap-2 pt-3" role="cell">
           <FlatButton
@@ -166,12 +139,6 @@ export const EventRow: React.FC<EventRowProps> = ({
                   controlNamePrefix: ticketListPrefix,
                   fieldMethods: ticketListMethods,
                 }}
-                {...(isFirstEvent && {
-                  membershipConfig: {
-                    controlNamePrefix: membershipPrefix,
-                    canEdit: true,
-                  },
-                })}
                 includeHiddenFields
               />
             </motion.div>

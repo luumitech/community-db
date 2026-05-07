@@ -223,13 +223,14 @@ describe('Register Event (community stat changes)', () => {
           },
           membership: {
             year: newEvent.year,
-            paymentMethod: 'custom-test-payment',
+            isMember: true,
           },
           event: {
             eventName: newEvent.eventName,
             eventDate: new Date(Date.UTC(newEvent.year, 11, 31)).toISOString(),
             ticketList: [],
           },
+          transactionPaymentMethod: 'custom-test-payment',
         },
       },
     });

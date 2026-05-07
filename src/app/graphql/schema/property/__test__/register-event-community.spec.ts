@@ -190,13 +190,14 @@ describe('Register Event (minYear/maxYear changes)', () => {
           },
           membership: {
             year: newEvent.year,
-            paymentMethod: 'custom-test-payment',
+            isMember: true,
           },
           event: {
             eventName: newEventName,
             eventDate: new Date(Date.UTC(2024, 11, 31)).toISOString(),
             ticketList: [newTicket],
           },
+          transactionPaymentMethod: 'custom-test-payment',
         },
       },
     });

@@ -114,16 +114,16 @@ export class BatchModify {
           input.eventAttended
         );
       }
-      if (result.isNewMember) {
-        // Membership Fee will only be applied to properties
-        // that do not have an existing membership
-        membership.price = input.price ?? null;
-        membership.paymentMethod = input.paymentMethod;
+      // If input contains an membership entry, apply it to existing membership entries
+      if (input.isMember) {
+        membership.isMember = true;
+        membership.price ??= input.price ?? null;
+        membership.paymentEventName ??= input.eventAttended.eventName ?? null;
+        membership.paymentDate ??= input.paymentDate
+          ? new Date(input.paymentDate)
+          : null;
+        membership.paymentMethod ??= input.paymentMethod ?? null;
       }
-      // If a property has a Membership Fee entry, but does not have
-      // Price information specified, the record will be updated with
-      // the new Price information.
-      membership.price ??= input.price ?? null;
     });
 
     const communityUpdateDataArgs = communityMinMaxYearUpdateArgs(

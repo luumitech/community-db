@@ -35,13 +35,15 @@ function schema() {
       }),
       membership: z.object({
         year: zz.coerce.toNumber({ message: 'Must select a year' }),
+        isMember: z.boolean().nullable(),
+        price: zz.coerce.toCurrency(),
+        paymentDate: zz.coerce.toIsoDate({ nullable: true }),
+        paymentMethod: z.string().nullable(),
         eventAttended: z.object({
           eventName: z.string(),
           eventDate: zz.coerce.toIsoDate(),
-          ticketList: ticketListSchema,
+          ticketList: ticketListSchema({ validatePaymentMethod: true }),
         }),
-        price: zz.coerce.toCurrency(),
-        paymentMethod: z.string(),
       }),
       gps: z.object({
         city: z.string().nullable(),
@@ -52,25 +54,41 @@ function schema() {
     .superRefine((form, ctx) => {
       if (form.method === GQL.BatchModifyMethod.AddEvent) {
         if (form.filter.memberYearList.length === 0) {
-          return ctx.addIssue({
+          ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Must select a year',
             path: ['filter', 'memberYearList'],
           });
         }
         if (isNonEmpty()(form.membership.eventAttended.eventName) != null) {
-          return ctx.addIssue({
+          ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Must select an event',
             path: ['membership', 'eventAttended', 'eventName'],
           });
         }
-        if (isNonEmpty()(form.membership.paymentMethod) != null) {
-          return ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Must specify payment method',
-            path: ['membership', 'paymentMethod'],
-          });
+        if (form.membership.isMember) {
+          if (isNonEmpty()(form.membership.price) != null) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Must specify membership fee',
+              path: ['membership', 'price'],
+            });
+          }
+          if (isNonEmpty()(form.membership.paymentDate) != null) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Must specify payment date',
+              path: ['membership', 'paymentDate'],
+            });
+          }
+          if (isNonEmpty()(form.membership.paymentMethod) != null) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Must specify payment method',
+              path: ['membership', 'paymentMethod'],
+            });
+          }
         }
       }
     });
@@ -92,13 +110,15 @@ function defaultInputData(
     filter: searchBar.filter,
     membership: {
       year: getCurrentYear(),
+      isMember: false,
+      price: defaultSetting.membershipFee ?? null,
+      paymentDate: null,
+      paymentMethod: null,
       eventAttended: {
         eventName: '',
         eventDate: getCurrentDateAsISOString(),
         ticketList: [],
       },
-      price: defaultSetting.membershipFee ?? null,
-      paymentMethod: '',
     },
     gps: {
       city: null,

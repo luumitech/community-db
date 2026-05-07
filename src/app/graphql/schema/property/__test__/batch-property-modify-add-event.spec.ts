@@ -267,6 +267,7 @@ describe('BatchPropertyModify - Add Event', () => {
       filter,
       membership: {
         year: newEvent.year,
+        isMember: true,
         paymentMethod: newEvent.paymentMethod,
         price: newEvent.price,
         eventAttended: {

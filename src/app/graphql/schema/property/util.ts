@@ -98,32 +98,6 @@ export async function getPropertyEntryWithinCommunity<T extends FindArgs>(
 }
 
 /**
- * Verify if a membership entry is considered to be a valid member
- *
- * @param entry Membership entry
- * @returns
- */
-export function isMember(entry?: Pick<Membership, 'eventAttendedList'> | null) {
-  if (!entry) {
-    return false;
-  }
-  return entry.eventAttendedList.length > 0;
-}
-
-/**
- * Given a list of membership entries for every year, find if client has
- * membership of a given year
- *
- * @param list List of membership entries
- * @param year Year to look into
- * @returns
- */
-export function isMemberInYear(list: Membership[], year: number) {
-  const membershipEntry = list.find((entry) => entry.year === year);
-  return isMember(membershipEntry);
-}
-
-/**
  * Construct the base propertyList arguments given a communityId
  *
  * @param communityId Community Id associated to property
@@ -317,9 +291,8 @@ function propertyListFilterArgs(
       ...memberYearList.map((memberYear) => ({
         membershipList: {
           some: {
-            // non-empty `eventAttendedList` implies user is a member
-            eventAttendedList: { isEmpty: false },
             year: memberYear,
+            isMember: true,
             ...memberEventFilter,
           },
         },
@@ -440,12 +413,11 @@ export function mapEventEntry(input: typeof EventInput.$inferInput): Event {
  * If not found, add a placeholder entry for it, and also return additional
  * information like:
  *
- * - Whether an event has been added.
- * - Whether the new event is a new membership
+ * - Whether an event has been added
  *
  * @param membershipList List of existing membership list in database
  * @param memberYear MemberYear associated with event
- * @param input Event input
+ * @param eventName Event name to add
  * @returns MembershipIdx and eventIdx to locate the event object
  */
 export function findOrAddEvent(
@@ -469,10 +441,13 @@ export function findOrAddEvent(
   if (membership?.year !== memberYear) {
     const newMembership = {
       year: memberYear,
+      isMember: null,
+      paymentEventName: null,
+      price: null,
+      paymentDate: null,
+      paymentMethod: null,
       paymentDeposited: null,
       eventAttendedList: [],
-      price: null,
-      paymentMethod: null,
     };
     membershipList.splice(membershipIdx, 0, newMembership);
     membership = membershipList[membershipIdx];
@@ -482,7 +457,6 @@ export function findOrAddEvent(
     (entry) => entry.eventName === eventName
   );
   const isNewEvent = eventIdx === -1;
-  const isNewMember = membership.eventAttendedList.length === 0;
   if (isNewEvent) {
     eventIdx = membership.eventAttendedList.length;
     membership.eventAttendedList.push({
@@ -510,7 +484,6 @@ export function findOrAddEvent(
   return {
     membershipIdx,
     eventIdx,
-    isNewMember,
     isNewEvent,
   };
 }

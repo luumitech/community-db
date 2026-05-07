@@ -75,7 +75,9 @@ export interface MembershipRow {
   propertyId: number;
   year: number | null;
   isMember: number | undefined;
+  paymentEventName: string | null;
   price: string | null;
+  paymentDate: string | null;
   paymentMethod: string | null;
   paymentDeposited: number | undefined;
 }

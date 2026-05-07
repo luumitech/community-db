@@ -301,8 +301,13 @@ type Membership {
   year              Int
   /// List of events attended
   eventAttendedList Event[]
+  /// Is a member for the current year
+  isMember          Boolean?
   /// Price paid for membership
   price             String?
+  /// Event when payment is made
+  paymentEventName  String?
   paymentMethod     String?
+  paymentDate       DateTime?
   paymentDeposited  Boolean?
 }

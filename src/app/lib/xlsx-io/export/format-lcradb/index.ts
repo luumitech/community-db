@@ -1,7 +1,6 @@
 import { ContactInfoType } from '@prisma/client';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
-import { isMember } from '~/graphql/schema/property/util';
 import { ITEM_DELIMITER, removeDelimiter } from '~/lib/xlsx-io/delimiter-util';
 import { toTicketList } from '../../import/format-lcradb/ticket-list-util';
 import {
@@ -106,7 +105,7 @@ export class ExportLcra extends ExportHelper {
           (entry) => entry.year === year
         );
         const prfx = `Y${year - 2000}`;
-        row[`${prfx}`] = ExportHelper.toBool(isMember(membership));
+        row[`${prfx}`] = ExportHelper.toBool(membership?.isMember);
         row[`${prfx}-event`] = membership?.eventAttendedList
           .map((event) => removeDelimiter(event.eventName))
           .join(ITEM_DELIMITER);

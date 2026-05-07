@@ -23,16 +23,14 @@ export class MembershipFee {
 
   /** Get statistic entry */
   private getByKey(membership: Membership): MembershipFeeStat {
-    const { paymentMethod, year } = membership;
-    const joinEvent = membership.eventAttendedList[0];
-    const { eventName } = joinEvent;
-    const key = `${year}-${eventName}-${paymentMethod ?? ''}`;
+    const { paymentMethod, paymentEventName, year } = membership;
+    const key = `${year}-${paymentEventName}-${paymentMethod ?? ''}`;
     let entry = this.statMap.get(key);
     if (!entry) {
       entry = {
         key,
         membershipYear: year,
-        eventName,
+        eventName: paymentEventName ?? '',
         paymentMethod: paymentMethod ?? '',
         count: 0,
         price: '0',

@@ -1,5 +1,4 @@
 import * as XLSX from 'xlsx';
-import { isMember } from '~/graphql/schema/property/util';
 import { type GeocodeResult } from '~/lib/geoapify-api/resource';
 import { worksheetNames, type WorksheetRows } from '~/lib/xlsx-io/multisheet';
 import type {
@@ -115,9 +114,12 @@ export class ExportMultisheet extends ExportHelper {
       membershipId,
       propertyId,
       year: membership.year ?? null,
-      isMember: ExportHelper.toBool(isMember(membership)),
-      paymentMethod: membership.paymentMethod ?? null,
+      isMember: ExportHelper.toBool(membership.isMember),
+      paymentEventName: membership.paymentEventName ?? null,
       price: membership.price ?? null,
+      paymentDate: ExportHelper.toDate(membership?.paymentDate),
+      paymentMethod: membership.paymentMethod ?? null,
+
       paymentDeposited: ExportHelper.toBool(membership.paymentDeposited),
     });
     membership.eventAttendedList.forEach((event) => {

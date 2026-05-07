@@ -26,12 +26,8 @@ export interface MembershipConfig {
 }
 
 export interface TransactionConfig {
-  /**
-   * Control name prefix for fields within the `Current Transaction Total`
-   *
-   * For example, used for payment method selection
-   */
-  controlNamePrefix: string;
+  /** Payment control name for the `Current Transaction Total` */
+  paymentControlName: string;
   /**
    * Existing ticket list
    *

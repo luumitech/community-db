@@ -10,6 +10,7 @@ import { type UtilOpt } from './_type';
 import { getMapValue } from './map-util';
 
 const mappingType = {
+  isMember: 'boolean',
   membershipId: 'number',
   propertyId: 'number',
   year: 'number',
@@ -33,6 +34,7 @@ export class MembershipUtil {
     const importHelper = new ImportHelper(wsHelper, { headerCol: 0 });
 
     const mappingColIdx: MappingColIdxSchema<typeof mappingType> = {
+      isMember: importHelper.labelColumn('isMember'),
       membershipId: importHelper.labelColumn('membershipId'),
       propertyId: importHelper.labelColumn('propertyId'),
       year: importHelper.labelColumn('year'),

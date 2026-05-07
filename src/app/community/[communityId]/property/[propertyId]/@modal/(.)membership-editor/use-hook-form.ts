@@ -10,7 +10,7 @@ import {
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
-import { z, zz } from '~/lib/zod';
+import { isNonEmpty, z, zz } from '~/lib/zod';
 import { useLayoutContext } from '../../layout-context';
 import { yearSelectItems } from '../../year-select-items';
 
@@ -25,6 +25,11 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
     membershipList {
       year
       isMember
+      paymentEventName
+      paymentDate
+      paymentMethod
+      paymentDeposited
+      price
       eventAttendedList {
         eventName
         eventDate
@@ -36,9 +41,6 @@ export const MembershipEditorFragment = graphql(/* GraphQL */ `
           paymentDate
         }
       }
-      paymentMethod
-      paymentDeposited
-      price
     }
     ...PropertyList_Occupant
   }
@@ -58,14 +60,17 @@ function schema() {
       z
         .object({
           year: zz.coerce.toNumber({ message: 'Must select a year' }),
-          paymentMethod: z.string().nullable(),
+          isMember: z.boolean().nullable(),
+          paymentEventName: z.string().nullable(),
           price: zz.coerce.toCurrency(),
+          paymentDate: zz.coerce.toIsoDate({ nullable: true }),
+          paymentMethod: z.string().nullable(),
           eventAttendedList: z
             .array(
               z.object({
                 eventName: zz.string.nonEmpty('Must specify a value'),
                 eventDate: zz.coerce.toIsoDate(),
-                ticketList: ticketListSchema,
+                ticketList: ticketListSchema({ validatePaymentMethod: true }),
               })
             )
             .refine(
@@ -76,18 +81,38 @@ function schema() {
               { message: 'Event Name must be unique', path: [''] }
             ),
         })
-        .refine(
-          (form) => {
-            if (form.eventAttendedList.length === 0) {
-              return true;
+        .superRefine((form, ctx) => {
+          if (form.isMember) {
+            if (isNonEmpty()(form.paymentEventName) != null) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Must select an event',
+                path: ['paymentEventName'],
+              });
             }
-            return !!form.paymentMethod;
-          },
-          {
-            message: 'Must specify payment method for membership fee',
-            path: ['paymentMethod'],
+            if (isNonEmpty()(form.price) != null) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Must specify membership fee',
+                path: ['price'],
+              });
+            }
+            if (isNonEmpty()(form.paymentDate) != null) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Must select a date',
+                path: ['paymentDate'],
+              });
+            }
+            if (isNonEmpty()(form.paymentMethod) != null) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Must select payment method',
+                path: ['paymentMethod'],
+              });
+            }
           }
-        )
+        })
     ),
   });
 }
@@ -99,8 +124,11 @@ export function membershipDefault(
 ): InputData['membershipList'][number] {
   return {
     year,
-    paymentMethod: null,
+    isMember: null,
+    paymentEventName: null,
     price: null,
+    paymentDate: null,
+    paymentMethod: null,
     eventAttendedList: [],
   };
 }
@@ -132,6 +160,13 @@ function defaultInputData(
 
       return {
         year: membershipItem?.year ?? defaultItem.year,
+        isMember: membershipItem?.isMember ?? defaultItem.isMember,
+        paymentEventName:
+          membershipItem?.paymentEventName ?? defaultItem.paymentEventName,
+        price: membershipItem?.price ?? defaultItem.price ?? null,
+        paymentDate: membershipItem?.paymentDate ?? defaultItem.paymentDate,
+        paymentMethod:
+          membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
         eventAttendedList: (
           membershipItem?.eventAttendedList ?? defaultItem.eventAttendedList
         ).map((event) => ({
@@ -145,9 +180,6 @@ function defaultInputData(
             paymentDate: ticket.paymentDate ?? null,
           })),
         })),
-        paymentMethod:
-          membershipItem?.paymentMethod ?? defaultItem.paymentMethod,
-        price: membershipItem?.price ?? defaultItem.price ?? null,
       };
     }),
   };

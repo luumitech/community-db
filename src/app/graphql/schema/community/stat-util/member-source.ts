@@ -29,11 +29,13 @@ export class MemberSource {
   /**
    * Process the event attended list, and collect statistics
    *
+   * @param joinEventName Event where membership is registered at
    * @param eventAttendedList Event attended list
    * @param isMemberThisYear Is this household a member this year?
    * @param isMemberLastYear Is this household a member last year?
    */
   add(
+    joinEventName: string | null,
     eventAttendedList: Event[],
     isMemberThisYear: boolean,
     isMemberLastYear: boolean
@@ -42,18 +44,24 @@ export class MemberSource {
       return;
     }
 
-    const renew = isMemberLastYear;
-    // `isMemberThisYear` guarantees `entry.eventAttendedList` to have at least one entry
-    const [joinEvent, ...otherEvent] = eventAttendedList;
+    const eventSet = new Set<string>();
+    eventAttendedList.forEach(({ eventName }) => eventSet.add(eventName));
 
-    const stat = this.getOneStat(joinEvent.eventName);
-    if (renew) {
-      stat.renew++;
+    const renew = isMemberLastYear;
+    if (joinEventName) {
+      const stat = this.getOneStat(joinEventName);
+      if (renew) {
+        stat.renew++;
+      } else {
+        stat.new++;
+      }
+      eventSet.delete(joinEventName);
     } else {
-      stat.new++;
+      throw new Error('paymentEventName missing from membership record');
     }
-    otherEvent.forEach((event) => {
-      this.getOneStat(event.eventName).existing++;
+
+    eventSet.forEach((eventName) => {
+      this.getOneStat(eventName).existing++;
     });
   }
 

@@ -6,7 +6,6 @@ import { useFormContext } from '~/custom-hooks/hook-form';
 import * as GQL from '~/graphql/generated/graphql';
 import { formatUTCDate } from '~/lib/date-util';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
-import { Icon } from '~/view/base/icon';
 import { useTicketContext } from './ticket-context';
 
 interface EmptyProps {}
@@ -25,9 +24,16 @@ export const TicketListReadonly: React.FC<EmptyProps> = () => {
   const membershipPrice = getValues(
     `${membershipConfig?.controlNamePrefix}.price`
   );
+  const membershipPaymentDate = getValues(
+    `${membershipConfig?.controlNamePrefix}.paymentDate`
+  );
   const membershipPaymentMethod = getValues(
     `${membershipConfig?.controlNamePrefix}.paymentMethod`
   );
+
+  if (prevXact.ticketCount === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -51,6 +57,7 @@ export const TicketListReadonly: React.FC<EmptyProps> = () => {
                   ticketName: 'Membership Fee',
                   count: null,
                   price: membershipPrice ?? '',
+                  paymentDate: membershipPaymentDate ?? '',
                   paymentMethod: membershipPaymentMethod ?? '',
                 }}
               />
@@ -128,28 +135,26 @@ const TicketRow: React.FC<TicketRowProps> = ({ ticket }) => {
 const TicketListHeader: React.FC<PreviousTransaction> = ({ prevXact }) => {
   const { ticketCount, isExpanded, toggle } = prevXact;
 
+  const clickButton = React.useMemo(() => {
+    return (
+      <span className="text-primary">
+        {isExpanded ? 'Hide transactions' : 'Show transactions'}
+      </span>
+    );
+  }, [isExpanded]);
+
   return (
-    <div className={cn('col-span-full grid')}>
-      <div
-        className={cn(
-          'flex h-10 items-center gap-2 rounded-md border-2 border-divider px-2',
-          'cursor-pointer hover:opacity-hover'
-        )}
-        aria-label="Previous Transaction Toggle"
-        role="button"
-        onClick={toggle}
-      >
-        <motion.div
-          className="justify-self-center"
-          role="cell"
-          animate={{
-            rotate: isExpanded ? 90 : 0,
-          }}
-        >
-          <Icon icon="chevron-forward" />
-        </motion.div>
-        <span className="text-sm">Previous Transactions ({ticketCount})</span>
-      </div>
+    <div
+      className={cn('col-span-full grid', 'cursor-pointer hover:opacity-hover')}
+      aria-label="Previous Transaction Toggle"
+      role="button"
+      onClick={toggle}
+    >
+      <fieldset className="border-t-2 border-divider">
+        <legend className="m-auto px-4 text-sm text-foreground/60">
+          {ticketCount} Previous Transaction(s) ({clickButton})
+        </legend>
+      </fieldset>
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import { Community, Property } from '@prisma/client';
-import { isMember } from '~/graphql/schema/property/util';
 import { ByYear } from './by-year';
 export { type ByYearStat } from './by-year';
 export { type MemberSourceStat } from './member-source';
@@ -18,12 +17,12 @@ export class StatUtil {
     // Loop through all membership information and collect statistics
     propertyList.forEach(({ membershipList }) => {
       membershipList.forEach((entry, idx) => {
-        const isMemberThisYear = isMember(entry);
+        const isMemberThisYear = !!entry.isMember;
         /**
          * MembershipList are sorted in descending order, so previous year would
          * be the next entry
          */
-        const isMemberLastYear = isMember(membershipList[idx + 1]);
+        const isMemberLastYear = !!membershipList[idx + 1]?.isMember;
         this.byYear.add(entry, isMemberThisYear, isMemberLastYear);
       });
     });

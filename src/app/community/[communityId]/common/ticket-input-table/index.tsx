@@ -3,6 +3,7 @@ import React from 'react';
 import * as R from 'remeda';
 import { useFormContext } from '~/custom-hooks/hook-form';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
+import { MembershipRow } from './membership-row';
 import {
   TicketProvider,
   type MembershipConfig,
@@ -11,7 +12,6 @@ import {
 } from './ticket-context';
 import { TicketListReadonly } from './ticket-list-readonly';
 import {
-  MembershipRow,
   TicketRow,
   TicketRowHeader,
   TransactionFooter,
@@ -47,7 +47,9 @@ interface Props {
    *
    * NOTE: membership fee is not a ticket item, and cannot be removed
    */
-  onRemove?: (ticketIdx: number) => void;
+  onRemoveTicket?: (ticketIdx: number) => void;
+  /** Callback when membership is removed */
+  onRemoveMembership?: () => void;
 }
 
 export const TicketInputTable: React.FC<Props> = ({
@@ -56,7 +58,8 @@ export const TicketInputTable: React.FC<Props> = ({
   membershipConfig,
   transactionConfig,
   includeHiddenFields,
-  onRemove,
+  onRemoveTicket,
+  onRemoveMembership,
 }) => {
   const { formState } = useFormContext();
   const { errors } = formState;
@@ -95,7 +98,12 @@ export const TicketInputTable: React.FC<Props> = ({
             <TicketRowHeader />
             <TicketListReadonly />
             {transactionConfig != null && <TransactionHeader />}
-            <MembershipRow />
+            {membershipConfig != null && (
+              <MembershipRow
+                {...membershipConfig}
+                onRemove={() => onRemoveMembership?.()}
+              />
+            )}
             <ReorderGroup
               axis="vertical"
               items={ticketListMethods.fields}
@@ -109,7 +117,7 @@ export const TicketInputTable: React.FC<Props> = ({
                 >
                   <TicketRow
                     ticketIdx={ticketIdx}
-                    onRemove={() => onRemove?.(ticketIdx)}
+                    onRemove={() => onRemoveTicket?.(ticketIdx)}
                   />
                 </ReorderItem>
               ))}

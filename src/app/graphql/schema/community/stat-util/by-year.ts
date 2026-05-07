@@ -56,7 +56,8 @@ export class ByYear {
     isMemberThisYear: boolean,
     isMemberLastYear: boolean
   ) {
-    const { year, eventAttendedList } = membership;
+    const { year, paymentEventName, paymentDate, eventAttendedList } =
+      membership;
     const stat = this.getByYear(year);
 
     if (isMemberLastYear) {
@@ -68,8 +69,10 @@ export class ByYear {
     } else if (isMemberThisYear) {
       stat.new++;
     }
+
     // Gather statistics indexed by event name
     stat.memberSource.add(
+      paymentEventName,
       eventAttendedList,
       isMemberThisYear,
       isMemberLastYear
@@ -83,8 +86,7 @@ export class ByYear {
      * next year)
      */
     if (isMemberThisYear) {
-      const joinEvent = eventAttendedList[0];
-      const paymentYear = joinEvent.eventDate?.getUTCFullYear();
+      const paymentYear = paymentDate?.getUTCFullYear();
       if (paymentYear) {
         this.getByYear(paymentYear).membershipFee.add(membership);
       }

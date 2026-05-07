@@ -20,8 +20,9 @@ export const MemberStatus: React.FC<Props> = ({
 }) => {
   const { getValues } = useHookFormContext();
   const memberYear = getValues('membership.year');
-  const isMember = membership?.isMember;
-  const memberEvent = membership?.eventAttendedList?.[0];
+  const isMember = !!membership?.isMember;
+  const memberEventName = membership?.paymentEventName;
+  const memberEventDate = membership?.paymentDate;
 
   return (
     <div className="flex flex-col gap-0.5">
@@ -29,11 +30,11 @@ export const MemberStatus: React.FC<Props> = ({
         {memberYear}
       </MemberStatusChip>
       <div className="text-sm text-foreground/70">
-        {isMember && memberEvent ? (
+        {isMember && memberEventName ? (
           <div>
             These members registered at{' '}
-            <span className="font-semibold">{memberEvent.eventName}</span>
-            {memberEvent.eventDate != null && (
+            <span className="font-semibold">{memberEventName}</span>
+            {memberEventDate != null && (
               <span>
                 {' '}
                 on{' '}
@@ -42,7 +43,7 @@ export const MemberStatus: React.FC<Props> = ({
                    * Format date similar to getCurrentDate(), to be consistent with rest of the
                    * dialog. eventDate is stored as UTC date
                    */}
-                  {formatUTCDate(memberEvent.eventDate, 'MMM d, yyyy')}
+                  {formatUTCDate(memberEventDate, 'MMM d, yyyy')}
                 </span>
               </span>
             )}
