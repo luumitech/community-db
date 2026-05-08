@@ -114,7 +114,10 @@ export class BatchModify {
           input.eventAttended
         );
       }
-      // If input contains an membership entry, apply it to existing membership entries
+      /**
+       * If input contains an membership entry, selectively apply the fields to
+       * existing membership entries
+       */
       if (input.isMember) {
         membership.isMember = true;
         membership.price ??= input.price ?? null;

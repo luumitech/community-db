@@ -9,10 +9,13 @@ import { type Community } from '~/lib/xlsx-io/export';
  * @returns
  */
 export function getDefaultXlsxFn(community: Community) {
-  const { createdAt, updatedAt } = community;
-  const dateStr = formatLocalDate(
-    updatedAt ?? createdAt ?? new Date(),
-    'yyyyMMdd'
-  );
+  /**
+   * Originally wanted to use community updatedAt date to name the export file,
+   * but that is not enough to capture changes made to property only. Ideally,
+   * we want the date to reflect the date when last change was made to either
+   * property or community document.
+   */
+  // const { createdAt, updatedAt } = community;
+  const dateStr = formatLocalDate(new Date(), 'yyyyMMdd');
   return `${R.toKebabCase(community.name)}-${dateStr}.xlsx`;
 }

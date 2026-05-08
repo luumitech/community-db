@@ -17,15 +17,15 @@ export interface MembershipFeeStat {
 }
 
 export class MembershipFee {
-  private statMap = new Map<string, MembershipFeeStat>();
+  #statMap = new Map<string, MembershipFeeStat>();
 
   constructor() {}
 
   /** Get statistic entry */
-  private getByKey(membership: Membership): MembershipFeeStat {
+  #getByKey(membership: Membership): MembershipFeeStat {
     const { paymentMethod, paymentEventName, year } = membership;
     const key = `${year}-${paymentEventName}-${paymentMethod ?? ''}`;
-    let entry = this.statMap.get(key);
+    let entry = this.#statMap.get(key);
     if (!entry) {
       entry = {
         key,
@@ -35,7 +35,7 @@ export class MembershipFee {
         count: 0,
         price: '0',
       };
-      this.statMap.set(key, entry);
+      this.#statMap.set(key, entry);
     }
     return entry;
   }
@@ -47,7 +47,7 @@ export class MembershipFee {
    */
   add(membership: Membership) {
     const { price } = membership;
-    const stat = this.getByKey(membership);
+    const stat = this.#getByKey(membership);
     stat.count++;
     stat.price = decSum(stat.price, price);
   }
@@ -55,7 +55,7 @@ export class MembershipFee {
   /** Get membership fee statistic */
   getStat(): MembershipFeeStat[] {
     return (
-      [...this.statMap.values()]
+      [...this.#statMap.values()]
         // Only keep entries with +ve count or non zero price
         .filter((entry) => {
           return entry.count > 0 || isNonZeroDec(entry.price);

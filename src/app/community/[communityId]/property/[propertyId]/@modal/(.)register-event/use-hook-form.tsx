@@ -1,6 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
+import {
+  ticketListSchema,
+  type ExistingMembership,
+} from '~/community/[communityId]/common/ticket-input-table';
 import { useLayoutContext as useCommunityLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   useForm,
@@ -17,6 +20,14 @@ import { MembershipEditorFragment } from '../(.)membership-editor/use-hook-form'
 import { useLayoutContext } from '../../layout-context';
 
 function schema() {
+  const ExistingMembershipSchema = z.object({
+    year: z.number(),
+    isMember: z.boolean().nullable().optional(),
+    price: zz.coerce.toCurrency().optional(),
+    paymentDate: zz.coerce.toIsoDate({ nullable: true }).optional(),
+    paymentMethod: z.string().nullable().optional(),
+  }) satisfies z.ZodType<ExistingMembership>;
+
   return z
     .object({
       self: z.object({
@@ -45,8 +56,11 @@ function schema() {
         canRegister: z.boolean(),
         /** User does not have membership, and can add membership to transaction */
         canPayMembership: z.boolean(),
-        /** User has previously registered as a member in the current event */
-        hasMembershipInPreviousTransaction: z.boolean(),
+        /**
+         * If provided, will be shown in the previous transaction portion of the
+         * ticket input
+         */
+        existingMembership: ExistingMembershipSchema.optional(),
       }),
     })
     .refine(
@@ -95,7 +109,6 @@ function findEvent(
   const eventIdx = (membership?.eventAttendedList ?? []).findIndex(
     (entry) => entry.eventName === eventName
   );
-
   return {
     year,
     eventName,
@@ -130,10 +143,12 @@ function defaultInputData(
         ? {
             price: membership?.price ?? null,
             paymentDate: membership?.paymentDate ?? null,
+            paymentMethod: membership?.paymentMethod ?? null,
           }
         : {
             price: defaultSetting.membershipFee ?? null,
             paymentDate: getCurrentDateAsISOString(),
+            paymentMethod: null,
           }),
     },
     event: {
@@ -145,8 +160,9 @@ function defaultInputData(
     hidden: {
       canRegister,
       canPayMembership,
-      hasMembershipInPreviousTransaction:
-        membership?.paymentEventName === eventName,
+      ...(membership?.paymentEventName === eventName && {
+        existingMembership: membership,
+      }),
     },
   };
 }

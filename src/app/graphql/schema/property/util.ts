@@ -232,9 +232,12 @@ function propertyListFilterArgs(
         {
           membershipList: {
             some: {
-              // empty `eventAttendedList` implies user is not a member
-              eventAttendedList: { isEmpty: true },
               year: { in: nonMemberYearList },
+              OR: [
+                { isMember: false },
+                { isMember: null },
+                { isMember: { isSet: false } },
+              ],
             },
           },
         },

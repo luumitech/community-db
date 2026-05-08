@@ -17,7 +17,7 @@ const MembershipSourceFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MembershipSource on Community {
     communityStat {
       id
-      memberSourceStat(year: $year) {
+      byEventStat(year: $year) {
         eventName
         new
         renew
@@ -26,14 +26,14 @@ const MembershipSourceFragment = graphql(/* GraphQL */ `
   }
 `);
 
-type MemberSourceStat =
-  GQL.Dashboard_MembershipSourceFragment['communityStat']['memberSourceStat'][number];
+type ByEventStat =
+  GQL.Dashboard_MembershipSourceFragment['communityStat']['byEventStat'][number];
 
 class ChartDataHelper {
   #theme: EChartTheme;
-  #stat: MemberSourceStat[];
+  #stat: ByEventStat[];
 
-  constructor(theme: EChartTheme, stat: MemberSourceStat[]) {
+  constructor(theme: EChartTheme, stat: ByEventStat[]) {
     this.#theme = theme;
     this.#stat = stat.filter((entry) => entry.new + entry.renew > 0);
   }
@@ -108,10 +108,7 @@ export const MembershipSourceChart: React.FC<Props> = ({ className }) => {
   const communityStat = entry?.communityStat;
 
   const chartHelper = React.useMemo(() => {
-    const helper = new ChartDataHelper(
-      theme,
-      communityStat?.memberSourceStat ?? []
-    );
+    const helper = new ChartDataHelper(theme, communityStat?.byEventStat ?? []);
     return helper;
   }, [theme, communityStat]);
 

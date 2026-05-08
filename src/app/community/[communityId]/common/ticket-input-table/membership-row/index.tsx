@@ -13,11 +13,12 @@ export const MembershipRow: React.FC<MembershipRowProps> = ({
   onRemove,
   ...membershipConfig
 }) => {
-  const { canEdit, controlNamePrefix } = membershipConfig;
+  const { existingMembership, controlNamePrefix } = membershipConfig;
   const { watch } = useFormContext();
   const isMember = watch(`${controlNamePrefix}.isMember`);
 
-  if (!canEdit) {
+  // Should not allow membership editor function if user is already a member
+  if (existingMembership?.isMember) {
     return null;
   }
 

@@ -7,17 +7,24 @@ import { useHookFormContext } from './use-hook-form';
 export function useMembershipUtil() {
   const { watch, getValues } = useHookFormContext();
   const canPayMembership = getValues('hidden.canPayMembership');
-  const hasMembershipInPreviousTransaction = getValues(
-    'hidden.hasMembershipInPreviousTransaction'
-  );
+  const existingMembership = getValues('hidden.existingMembership');
   const isMember = watch('membership.isMember');
 
   /** Does the membership Fee entry exist in the current transaction */
   const hasMembershipEntry = canPayMembership && !!isMember;
 
   return {
+    /**
+     * Should the current transaction allow adding or editing membership fee
+     * information
+     */
     canPayMembership,
+    /**
+     * Does the current transaction has an membership fee entry. This is useful
+     * for deteriming if the total amount should include membership fee
+     */
     hasMembershipEntry,
-    hasMembershipInPreviousTransaction,
+    /** Show membership information in previous transaction section */
+    existingMembership,
   };
 }

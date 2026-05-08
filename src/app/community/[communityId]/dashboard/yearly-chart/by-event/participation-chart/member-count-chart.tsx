@@ -10,19 +10,19 @@ import {
   type EChartTheme,
   type EChartsOption,
 } from '~/view/base/echart';
-import { type MemberSourceStat } from '../_type';
+import { type ByEventStat } from '../_type';
 
 class ChartDataHelper {
   #theme: EChartTheme;
   #year: number;
-  #yearStat: MemberSourceStat | null;
-  #prevYearStat: MemberSourceStat | null;
+  #yearStat: ByEventStat | null;
+  #prevYearStat: ByEventStat | null;
 
   constructor(
     theme: EChartTheme,
     year: number,
-    yearStat: MemberSourceStat | null,
-    prevYearStat: MemberSourceStat | null
+    yearStat: ByEventStat | null,
+    prevYearStat: ByEventStat | null
   ) {
     this.#theme = theme;
     this.#year = year;
@@ -34,7 +34,10 @@ class ChartDataHelper {
     return [this.#year, this.#year - 1];
   }
 
-  barSeries(key: 'renew' | 'new' | 'existing', name: string): BarSeriesOption {
+  barSeries(
+    key: 'renew' | 'new' | 'existing' | 'nonMember',
+    name: string
+  ): BarSeriesOption {
     const curValue = this.#yearStat?.[key] ?? 0;
     const prevValue = this.#prevYearStat?.[key] ?? 0;
     const data = [
@@ -52,11 +55,11 @@ class ChartDataHelper {
 
   totalBarSeries(): BarSeriesOption {
     const totalUtil = new TotalUtil(this.#theme, {
-      categoryNum: 2,
+      categoryNum: this.categories().length,
       totalFn: (dataIndex) => {
         const entry = dataIndex === 0 ? this.#yearStat : this.#prevYearStat;
         if (entry != null) {
-          return entry.existing + entry.new + entry.renew;
+          return entry.existing + entry.new + entry.renew + entry.nonMember;
         } else {
           return 0;
         }
@@ -75,8 +78,8 @@ class ChartDataHelper {
 interface Props {
   className?: string;
   year: number;
-  yearStat: MemberSourceStat | null;
-  prevYearStat: MemberSourceStat | null;
+  yearStat: ByEventStat | null;
+  prevYearStat: ByEventStat | null;
 }
 
 export const MemberCountChart: React.FC<Props> = ({
@@ -92,6 +95,14 @@ export const MemberCountChart: React.FC<Props> = ({
     return helper;
   }, [theme, year, yearStat, prevYearStat]);
 
+  const a = [
+    chartHelper.barSeries('nonMember', 'non-member'),
+    chartHelper.barSeries('existing', 'existing'),
+    chartHelper.barSeries('renew', 'renewed'),
+    chartHelper.barSeries('new', 'new'),
+    chartHelper.totalBarSeries(),
+  ];
+
   const option = React.useMemo<EChartsOption>(() => {
     return {
       grid: {
@@ -102,7 +113,12 @@ export const MemberCountChart: React.FC<Props> = ({
       },
       legend: {
         bottom: 0,
-        data: [{ name: 'new' }, { name: 'renewed' }, { name: 'existing' }],
+        data: [
+          { name: 'new' },
+          { name: 'renewed' },
+          { name: 'existing' },
+          { name: 'non-member' },
+        ],
       },
       xAxis: {
         type: 'value',
@@ -120,13 +136,14 @@ export const MemberCountChart: React.FC<Props> = ({
         chartHelper.barSeries('existing', 'existing'),
         chartHelper.barSeries('renew', 'renewed'),
         chartHelper.barSeries('new', 'new'),
+        chartHelper.barSeries('nonMember', 'non-member'),
         chartHelper.totalBarSeries(),
       ],
     };
   }, [chartHelper]);
 
   return (
-    <Card.Body className={cn(className, 'h-[150px]')}>
+    <Card.Body className={cn(className, 'h-[170px]')}>
       <EChart className={className} option={option} />
     </Card.Body>
   );

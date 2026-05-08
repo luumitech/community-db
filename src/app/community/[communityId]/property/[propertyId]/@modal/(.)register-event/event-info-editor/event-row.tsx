@@ -42,11 +42,8 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
     name: 'event.ticketList',
   });
   const eventName = getValues('event.eventName');
-  const {
-    canPayMembership,
-    hasMembershipEntry,
-    hasMembershipInPreviousTransaction,
-  } = useMembershipUtil();
+  const { canPayMembership, hasMembershipEntry, existingMembership } =
+    useMembershipUtil();
 
   /**
    * Can select payment method for current transaction if:
@@ -97,10 +94,10 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
             controlNamePrefix: 'event.ticketList',
             fieldMethods: ticketListMethods,
           }}
-          {...((hasMembershipInPreviousTransaction || canPayMembership) && {
+          {...((!!existingMembership || canPayMembership) && {
             membershipConfig: {
               controlNamePrefix: 'membership',
-              canEdit: canPayMembership,
+              existingMembership,
             },
           })}
           onRemoveTicket={onTicketRemove}

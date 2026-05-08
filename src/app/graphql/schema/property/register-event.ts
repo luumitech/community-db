@@ -117,7 +117,8 @@ builder.mutationField('registerEvent', (t) =>
         eventInput.eventName
       );
       const membership = entry.membershipList[result.membershipIdx];
-      if (membershipInput.isMember) {
+      // Update membership information, if membership fee has been added
+      if (!membership.isMember && membershipInput.isMember) {
         membership.isMember = true;
         membership.price = membershipInput.price ?? null;
         membership.paymentEventName = eventInput.eventName ?? null;

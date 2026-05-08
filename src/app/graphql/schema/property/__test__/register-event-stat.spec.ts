@@ -29,7 +29,7 @@ const communityStatDocument = graphql(/* GraphQL */ `
       id
       communityStat {
         id
-        memberSourceStat(year: $year) {
+        byEventStat(year: $year) {
           eventName
           new
           renew
@@ -44,7 +44,7 @@ type Community =
   GQL.RegisterEventStatSpec_CommunityInfoQuery['userCurrent']['accessList'][number]['community'];
 type Property = Community['propertyList']['edges'][number]['node'];
 type CommunityStat =
-  GQL.RegisterEventStatSpec_CommunityStatQuery['communityFromId']['communityStat']['memberSourceStat'];
+  GQL.RegisterEventStatSpec_CommunityStatQuery['communityFromId']['communityStat']['byEventStat'];
 
 const registerEventDocument = graphql(/* GraphQL */ `
   mutation RegisterEventStatSpec_RegisterEvent($input: RegisterEventInput!) {
@@ -73,7 +73,7 @@ async function getCommunityStat(
     variables: { id: communityId, year },
   });
   const community = result.data?.communityFromId;
-  const stat = community?.communityStat.memberSourceStat;
+  const stat = community?.communityStat.byEventStat;
   return stat;
 }
 

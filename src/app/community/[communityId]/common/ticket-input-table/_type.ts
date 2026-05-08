@@ -1,4 +1,5 @@
 import { type UseFieldArrayReturn } from '~/custom-hooks/hook-form';
+import * as GQL from '~/graphql/generated/graphql';
 import { isNonZeroDec } from '~/lib/decimal-util';
 import { isInteger, isPositive, z, zz } from '~/lib/zod';
 
@@ -55,3 +56,13 @@ export type Ticket = TicketList[number];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TicketListFieldArray = UseFieldArrayReturn<any, any>;
+
+export type ExistingMembership = Pick<
+  GQL.Membership,
+  | 'year'
+  | 'isMember'
+  | 'paymentEventName'
+  | 'price'
+  | 'paymentDate'
+  | 'paymentMethod'
+>;

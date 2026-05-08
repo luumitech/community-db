@@ -19,12 +19,12 @@ export interface TicketInfoStat {
 }
 
 export class TicketInfo {
-  private statMap = new Map<string, TicketInfoStat>();
+  #statMap = new Map<string, TicketInfoStat>();
 
   constructor() {}
 
   /** Get statistic entry */
-  private getByKey(
+  #getByKey(
     membershipYear: number,
     eventName: string,
     ticket: Ticket
@@ -33,7 +33,7 @@ export class TicketInfo {
     const key = `${membershipYear}-${eventName}-${ticketName}-${
       paymentMethod ?? ''
     }`;
-    let entry = this.statMap.get(key);
+    let entry = this.#statMap.get(key);
     if (!entry) {
       entry = {
         key,
@@ -44,7 +44,7 @@ export class TicketInfo {
         count: 0,
         price: '0',
       };
-      this.statMap.set(key, entry);
+      this.#statMap.set(key, entry);
     }
     return entry;
   }
@@ -56,7 +56,7 @@ export class TicketInfo {
    */
   add(membershipYear: number, eventName: string, ticket: Ticket) {
     const { price, count } = ticket;
-    const stat = this.getByKey(membershipYear, eventName, ticket);
+    const stat = this.#getByKey(membershipYear, eventName, ticket);
     stat.count += count ?? 0;
     stat.price = decSum(stat.price, price);
   }
@@ -64,7 +64,7 @@ export class TicketInfo {
   /** Get ticket sold statistic */
   getStat(): TicketInfoStat[] {
     return (
-      [...this.statMap.values()]
+      [...this.#statMap.values()]
         // Only keep entries with +ve count or non zero price
         .filter((entry) => {
           return entry.count > 0 || isNonZeroDec(entry.price);

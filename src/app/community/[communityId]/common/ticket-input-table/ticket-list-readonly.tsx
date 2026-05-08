@@ -19,17 +19,8 @@ export const TicketListReadonly: React.FC<EmptyProps> = () => {
     return null;
   }
 
-  const showMembershipInfo =
-    membershipConfig != null && !membershipConfig.canEdit;
-  const membershipPrice = getValues(
-    `${membershipConfig?.controlNamePrefix}.price`
-  );
-  const membershipPaymentDate = getValues(
-    `${membershipConfig?.controlNamePrefix}.paymentDate`
-  );
-  const membershipPaymentMethod = getValues(
-    `${membershipConfig?.controlNamePrefix}.paymentMethod`
-  );
+  const membership = membershipConfig?.existingMembership;
+  const showMembershipInfo = !!membership?.isMember;
 
   if (prevXact.ticketCount === 0) {
     return null;
@@ -56,9 +47,9 @@ export const TicketListReadonly: React.FC<EmptyProps> = () => {
                 ticket={{
                   ticketName: 'Membership Fee',
                   count: null,
-                  price: membershipPrice ?? '',
-                  paymentDate: membershipPaymentDate ?? '',
-                  paymentMethod: membershipPaymentMethod ?? '',
+                  price: membership?.price ?? '',
+                  paymentDate: membership?.paymentDate ?? '',
+                  paymentMethod: membership?.paymentMethod ?? '',
                 }}
               />
             )}
@@ -83,8 +74,7 @@ function usePreviousTransaction() {
   const { ticketList = [] } = transactionConfig ?? {};
   const { getValues } = useFormContext();
 
-  const includeMembershipFee =
-    membershipConfig != null && !membershipConfig?.canEdit;
+  const includeMembershipFee = !!membershipConfig?.existingMembership?.isMember;
   const totalPrice = decSum(
     includeMembershipFee
       ? getValues(`${membershipConfig.controlNamePrefix}.price`)

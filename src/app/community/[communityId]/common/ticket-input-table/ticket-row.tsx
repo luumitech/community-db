@@ -164,7 +164,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
   const membershipPrice = watch(`${membershipConfig?.controlNamePrefix}.price`);
   const isMember = watch(`${membershipConfig?.controlNamePrefix}.isMember`);
   const totalPrice = decSum(
-    isMember && membershipConfig?.canEdit ? membershipPrice : 0,
+    isMember && membershipConfig ? membershipPrice : 0,
     ...ticketList.map(({ price }) => price)
   );
 

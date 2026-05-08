@@ -26,8 +26,8 @@ import {
 } from '../property/util';
 import {
   StatUtil,
+  type ByEventStat,
   type ByYearStat,
-  type MemberSourceStat,
   type MembershipFeeStat,
   type TicketInfoStat,
 } from './stat-util';
@@ -167,24 +167,25 @@ const byYearStatRef = builder.objectRef<ByYearStat>('ByYearStat').implement({
   }),
 });
 
-const memberSourceStatRef = builder
-  .objectRef<MemberSourceStat>('MemberSourceStat')
-  .implement({
-    fields: (t) => ({
-      eventName: t.exposeString('eventName', {
-        description: 'event name for this entry',
-      }),
-      existing: t.exposeInt('existing', {
-        description: 'number of members who attended event as a member',
-      }),
-      new: t.exposeInt('new', {
-        description: 'number of members who joined membership at the event',
-      }),
-      renew: t.exposeInt('renew', {
-        description: 'number of members who renewed membership at the event',
-      }),
+const byEventStatRef = builder.objectRef<ByEventStat>('ByEventStat').implement({
+  fields: (t) => ({
+    eventName: t.exposeString('eventName', {
+      description: 'event name for this entry',
     }),
-  });
+    existing: t.exposeInt('existing', {
+      description: 'number of members who attended event as a member',
+    }),
+    new: t.exposeInt('new', {
+      description: 'number of members who joined membership at the event',
+    }),
+    renew: t.exposeInt('renew', {
+      description: 'number of members who renewed membership at the event',
+    }),
+    nonMember: t.exposeInt('nonMember', {
+      description: 'number of non-members who attended the event',
+    }),
+  }),
+});
 
 const membershipFeeStatRef = builder
   .objectRef<MembershipFeeStat>('MembershipFeeStat')
@@ -276,19 +277,19 @@ const communityStatRef = builder
           return statUtil.memberCountStat();
         },
       }),
-      memberSourceStat: t.field({
-        description: 'Member source statistics for each event name',
+      byEventStat: t.field({
+        description: 'Member statistics for each event name',
         args: {
           year: t.arg.int({
             required: true,
             description: 'year to retrieve statistics for',
           }),
         },
-        type: [memberSourceStatRef],
+        type: [byEventStatRef],
         resolve: (parent, args, ctx) => {
           const { year } = args;
           const { statUtil } = parent;
-          return statUtil.memberSourceStat(year);
+          return statUtil.byEvent(year);
         },
       }),
       membershipFeeStat: t.field({
