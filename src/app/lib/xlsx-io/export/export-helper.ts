@@ -11,13 +11,10 @@ export abstract class ExportHelper {
     return input.toISOString();
   }
 
-  /**
-   * Convert database boolean (true/false/null) to xlsx cell value
-   * (1/0/undefined)
-   */
+  /** Convert database boolean (true/false/null) to xlsx cell value (1/0/null) */
   static toBool(input?: boolean | null) {
     if (input == null) {
-      return undefined;
+      return null;
     }
     return input ? 1 : 0;
   }

@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import * as GQL from '~/graphql/generated/graphql';
 import { Cipher } from '~/lib/cipher';
 import { Audience, Ping, Resource } from './resource';
@@ -35,7 +36,7 @@ export class MailchimpApi {
     const parts = apiKey.split('-');
     const server = apiKey.split('-').at(-1);
     if (parts.length !== 2 || !server) {
-      throw new Error('Mailchimp API key is not valid');
+      throw new GraphQLError('Mailchimp API key is not valid');
     }
     return new MailchimpApi({ apiKey, server });
   }
