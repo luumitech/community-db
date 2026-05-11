@@ -1,5 +1,4 @@
 import * as XLSX from 'xlsx';
-import { isMember } from '~/graphql/schema/property/util';
 import { type GeocodeResult } from '~/lib/geoapify-api/resource';
 import { worksheetNames, type WorksheetRows } from '~/lib/xlsx-io/multisheet';
 import type {
@@ -111,14 +110,27 @@ export class ExportMultisheet extends ExportHelper {
 
   private processMembership(membership: Membership, propertyId: number) {
     const membershipId = this.rows.membership.length + 1;
+    const defaultMembershipFee = this.community.defaultSetting?.membershipFee;
     this.rows.membership.push({
       membershipId,
       propertyId,
       year: membership.year ?? null,
-      isMember: ExportHelper.toBool(isMember(membership)),
-      paymentMethod: membership.paymentMethod ?? null,
-      price: membership.price ?? null,
-      paymentDeposited: ExportHelper.toBool(membership.paymentDeposited),
+      isMember: ExportHelper.toBool(membership.isMember),
+      ...(membership.isMember
+        ? {
+            paymentEventName: membership.paymentEventName ?? null,
+            price: membership.price ?? defaultMembershipFee ?? null,
+            paymentDate: ExportHelper.toDate(membership?.paymentDate),
+            paymentMethod: membership.paymentMethod ?? null,
+            paymentDeposited: ExportHelper.toBool(membership.paymentDeposited),
+          }
+        : {
+            paymentEventName: null,
+            price: null,
+            paymentDate: null,
+            paymentMethod: null,
+            paymentDeposited: null,
+          }),
     });
     membership.eventAttendedList.forEach((event) => {
       this.processEvent(event, membershipId);

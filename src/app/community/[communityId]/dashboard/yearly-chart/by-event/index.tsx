@@ -12,11 +12,12 @@ import { TicketSaleTable } from './ticket-sale-table';
 const EventTicketFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventTicket on Community {
     communityStat {
-      memberSourceStat(year: $year) {
+      byEventStat(year: $year) {
         eventName
         new
         renew
         existing
+        nonMember
       }
       ticketStat(year: $year) {
         key
@@ -46,12 +47,12 @@ const Chart: React.FC<Props> = ({ className }) => {
   const { eventSelected, community, year, isLoading } = usePageContext();
   const entry = getFragment(EventTicketFragment, community);
   const ticketStat = entry?.communityStat.ticketStat ?? [];
-  const memberSourceStat = entry?.communityStat.memberSourceStat ?? [];
+  const byEventStat = entry?.communityStat.byEventStat ?? [];
   const ticketList = ticketStat.filter(
     ({ eventName }) => eventName === eventSelected
   );
-  const eventList = memberSourceStat.map(({ eventName }) => eventName);
-  const yearMemberSourceStat = memberSourceStat.find(
+  const eventList = byEventStat.map(({ eventName }) => eventName);
+  const yearByEventStat = byEventStat.find(
     ({ eventName }) => eventName === eventSelected
   );
 
@@ -69,15 +70,12 @@ const Chart: React.FC<Props> = ({ className }) => {
     return (
       <>
         <Spacer y={4} />
-        <ParticipationChart
-          year={year}
-          memberSourceStat={yearMemberSourceStat ?? null}
-        />
+        <ParticipationChart year={year} byEventStat={yearByEventStat ?? null} />
         <Spacer y={4} />
         <TicketSaleTable ticketList={ticketList} />
       </>
     );
-  }, [eventList.length, eventSelected, year, yearMemberSourceStat, ticketList]);
+  }, [eventList.length, eventSelected, year, yearByEventStat, ticketList]);
 
   return (
     <Card className={cn(className)}>

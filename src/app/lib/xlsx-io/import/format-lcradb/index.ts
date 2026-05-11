@@ -101,7 +101,7 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
     const _membership = importHelper.mapping(
       rowIdx,
       {
-        // isMember: 'boolean',
+        isMember: 'boolean',
         eventNames: 'string',
         eventDates: 'string',
         eventTickets: 'string',
@@ -110,7 +110,7 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
         price: 'string',
       },
       {
-        // isMember: importHelper.labelColumn(`${prefix}`),
+        isMember: importHelper.labelColumn(`${prefix}`),
         // event names separated by semi-colons
         eventNames: importHelper.labelColumn(`${prefix}-event`),
         // event dates separated by semi-colons
@@ -138,9 +138,12 @@ export function importLcraDB(wb: XLSX.WorkBook): CommunityEntry {
       };
     });
 
+    const firstEventName = eventAttendedList[0]?.eventName;
+
     return {
       year: 2000 + year,
       ...membership,
+      ...(firstEventName && { paymentEventName: firstEventName }),
       eventAttendedList,
     };
   }

@@ -57,6 +57,11 @@ describe('import community xlsx (multisheet format)', () => {
                     membershipList {
                       year
                       isMember
+                      price
+                      paymentEventName
+                      paymentDate
+                      paymentMethod
+                      paymentDeposited
                       eventAttendedList {
                         eventName
                         eventDate
@@ -68,9 +73,6 @@ describe('import community xlsx (multisheet format)', () => {
                           paymentDate
                         }
                       }
-                      price
-                      paymentMethod
-                      paymentDeposited
                     }
                   }
                 }
@@ -193,7 +195,9 @@ describe('import community xlsx (multisheet format)', () => {
           __typename: 'Membership',
           eventAttendedList: [],
           isMember: false,
-          paymentDeposited: false,
+          paymentDate: null,
+          paymentEventName: null,
+          paymentDeposited: null,
           paymentMethod: null,
           price: null,
           year: 2024,
@@ -249,7 +253,9 @@ describe('import community xlsx (multisheet format)', () => {
             },
           ],
           isMember: true,
+          paymentDate: '2023-06-11',
           paymentDeposited: true,
+          paymentEventName: 'Summer Festival',
           paymentMethod: 'e-Transfer',
           price: '10',
           year: 2023,
@@ -265,9 +271,11 @@ describe('import community xlsx (multisheet format)', () => {
             },
           ],
           isMember: true,
+          paymentDate: '2022-02-10',
+          paymentEventName: 'Membership Carry Forward',
           paymentDeposited: false,
           paymentMethod: 'free',
-          price: null,
+          price: '0',
           year: 2022,
         },
         {
@@ -281,9 +289,11 @@ describe('import community xlsx (multisheet format)', () => {
             },
           ],
           isMember: true,
+          paymentDate: '2021-01-23',
+          paymentEventName: 'Membership Carry Forward',
           paymentDeposited: false,
           paymentMethod: 'free',
-          price: null,
+          price: '0',
           year: 2021,
         },
       ],

@@ -1,6 +1,6 @@
 import { Community, Membership } from '@prisma/client';
 import { GraphQLError } from 'graphql';
-import { MemberSource } from './member-source';
+import { ByEvent } from './by-event';
 import { MembershipFee } from './membership-fee';
 import { TicketInfo } from './ticket-info';
 
@@ -12,8 +12,8 @@ export interface ByYearStat {
   new: number;
   /** Number of households who were member last year, but did not renew this year */
   noRenewal: number;
-  /** Membership Source statistic */
-  memberSource: MemberSource;
+  /** Event statistic */
+  byEvent: ByEvent;
   /** Membership Fee statistics */
   membershipFee: MembershipFee;
   /** Ticket statistics */
@@ -22,24 +22,24 @@ export interface ByYearStat {
 
 /** Collect statistic (indexed by year) */
 export class ByYear {
-  private statMap = new Map<number, ByYearStat>();
+  #statMap = new Map<number, ByYearStat>();
 
   constructor(private community: Community) {}
 
   /** Get statistic entry for a given year */
-  private getByYear(year: number): ByYearStat {
-    let entry = this.statMap.get(year);
+  #getByYear(year: number): ByYearStat {
+    let entry = this.#statMap.get(year);
     if (!entry) {
       entry = {
         year,
         renew: 0,
         new: 0,
         noRenewal: 0,
-        memberSource: new MemberSource(this.community),
+        byEvent: new ByEvent(this.community),
         membershipFee: new MembershipFee(),
         ticketInfo: new TicketInfo(),
       };
-      this.statMap.set(year, entry);
+      this.#statMap.set(year, entry);
     }
     return entry;
   }
@@ -48,16 +48,13 @@ export class ByYear {
    * Process the membership entry, and collect statistics
    *
    * @param membership Membership entry
-   * @param isMemberThisYear Is this household a member this year?
-   * @param isMemberLastYear Is this household a member last year?
    */
-  add(
-    membership: Membership,
-    isMemberThisYear: boolean,
-    isMemberLastYear: boolean
-  ) {
-    const { year, eventAttendedList } = membership;
-    const stat = this.getByYear(year);
+  add(membership: Membership, prevYearMembership: Membership | undefined) {
+    const isMemberThisYear = !!membership.isMember;
+    const isMemberLastYear = !!prevYearMembership?.isMember;
+
+    const { year, paymentDate, eventAttendedList } = membership;
+    const stat = this.#getByYear(year);
 
     if (isMemberLastYear) {
       if (isMemberThisYear) {
@@ -68,12 +65,9 @@ export class ByYear {
     } else if (isMemberThisYear) {
       stat.new++;
     }
+
     // Gather statistics indexed by event name
-    stat.memberSource.add(
-      eventAttendedList,
-      isMemberThisYear,
-      isMemberLastYear
-    );
+    stat.byEvent.add(membership, isMemberLastYear);
 
     /**
      * Gather statistics related to fee collected during the year.
@@ -83,17 +77,16 @@ export class ByYear {
      * next year)
      */
     if (isMemberThisYear) {
-      const joinEvent = eventAttendedList[0];
-      const paymentYear = joinEvent.eventDate?.getUTCFullYear();
+      const paymentYear = paymentDate?.getUTCFullYear();
       if (paymentYear) {
-        this.getByYear(paymentYear).membershipFee.add(membership);
+        this.#getByYear(paymentYear).membershipFee.add(membership);
       }
       eventAttendedList.forEach((event) => {
         const { eventName, eventDate, ticketList } = event;
         const ticketYear = eventDate?.getUTCFullYear();
         if (ticketYear) {
           ticketList.forEach((ticket) => {
-            this.getByYear(ticketYear).ticketInfo.add(year, eventName, ticket);
+            this.#getByYear(ticketYear).ticketInfo.add(year, eventName, ticket);
           });
         }
       });
@@ -103,7 +96,7 @@ export class ByYear {
   /** Get all statistics for each year */
   getStat(): ByYearStat[] {
     return (
-      [...this.statMap.values()]
+      [...this.#statMap.values()]
         // Sort by year in ascending order
         .sort((a, b) => a.year - b.year)
     );
@@ -111,7 +104,7 @@ export class ByYear {
 
   /** Get statistic for a specified year */
   getOneStat(year: number): ByYearStat {
-    const entry = this.statMap.get(year);
+    const entry = this.#statMap.get(year);
     if (!entry) {
       throw new GraphQLError(`Statistics not available for year ${year}`);
     }

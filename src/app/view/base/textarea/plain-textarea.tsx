@@ -1,7 +1,7 @@
 import {
   Textarea as NextUITextarea,
   TextAreaProps as NextUITextareaProps,
-} from '@heroui/input';
+} from '@heroui/react';
 import React from 'react';
 
 export interface PlainTextareaProps extends NextUITextareaProps {}

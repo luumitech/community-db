@@ -6,19 +6,18 @@ const DatePicker = createDatePicker<InputData>();
 
 interface Props {
   className?: string;
-  eventPrefix: `membershipList.${number}.eventAttendedList.${number}`;
+  membershipPrefix: `membershipList.${number}`;
 }
 
-export const EventDatePicker: React.FC<Props> = ({
+export const PaymentDatePicker: React.FC<Props> = ({
   className,
-  eventPrefix,
+  membershipPrefix,
 }) => {
   return (
     <DatePicker
       className={className}
-      controlName={`${eventPrefix}.eventDate`}
-      aria-label="Event Date"
-      variant="underlined"
+      controlName={`${membershipPrefix}.paymentDate`}
+      label="Payment Date"
       granularity="day"
     />
   );

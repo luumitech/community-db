@@ -5,8 +5,8 @@ import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import * as GQL from '~/graphql/generated/graphql';
 import { EventInfoEditor } from './event-info-editor';
+import { MembershipEditor } from './membership-editor';
 import { useHookFormContext } from './use-hook-form';
-
 import { YearSelect } from './year-select';
 
 interface Props {
@@ -37,7 +37,7 @@ export const MembershipInfoEditor: React.FC<Props> = ({
   }, [selectedYear, fields]);
 
   return (
-    <div className={cn(className)}>
+    <div className={cn('flex flex-col gap-4', className)}>
       <YearSelect
         yearRange={[minYear, Math.max(fields[0].year, maxYear)]}
         membershipList={property.membershipList}
@@ -48,12 +48,11 @@ export const MembershipInfoEditor: React.FC<Props> = ({
           setSelectedYear(item.year.toString());
         }}
       />
-      <Spacer y={4} />
       {idx > -1 && (
-        <EventInfoEditor
-          key={fields[idx].id}
-          membershipPrefix={`membershipList.${idx}`}
-        />
+        <React.Fragment key={fields[idx].id}>
+          <MembershipEditor membershipPrefix={`membershipList.${idx}`} />
+          <EventInfoEditor membershipPrefix={`membershipList.${idx}`} />
+        </React.Fragment>
       )}
     </div>
   );

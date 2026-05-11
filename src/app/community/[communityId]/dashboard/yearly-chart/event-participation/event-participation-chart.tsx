@@ -17,24 +17,25 @@ const EventFragment = graphql(/* GraphQL */ `
   fragment Dashboard_EventParticipation on Community {
     communityStat {
       id
-      memberSourceStat(year: $year) {
+      byEventStat(year: $year) {
         eventName
         new
         renew
         existing
+        nonMember
       }
     }
   }
 `);
 
-type MemberSourceStat =
-  GQL.Dashboard_EventParticipationFragment['communityStat']['memberSourceStat'][number];
+type ByEventStat =
+  GQL.Dashboard_EventParticipationFragment['communityStat']['byEventStat'][number];
 
 class ChartDataHelper {
   #theme: EChartTheme;
-  #stat: MemberSourceStat[];
+  #stat: ByEventStat[];
 
-  constructor(theme: EChartTheme, stat: MemberSourceStat[]) {
+  constructor(theme: EChartTheme, stat: ByEventStat[]) {
     this.#theme = theme;
     this.#stat = stat;
   }
@@ -58,7 +59,7 @@ class ChartDataHelper {
   }
 
   barSeries(
-    key: 'renew' | 'new' | 'existing',
+    key: 'renew' | 'new' | 'existing' | 'nonMember',
     name: string,
     eventSelected?: string | null
   ): BarSeriesOption {
@@ -83,7 +84,7 @@ class ChartDataHelper {
       totalFn: (dataIndex) => {
         const entry = this.#stat[dataIndex];
         if (entry != null) {
-          return entry.existing + entry.new + entry.renew;
+          return entry.existing + entry.new + entry.renew + entry.nonMember;
         } else {
           return 0;
         }
@@ -110,10 +111,7 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
   const communityStat = entry?.communityStat;
 
   const chartHelper = React.useMemo(() => {
-    const helper = new ChartDataHelper(
-      theme,
-      communityStat?.memberSourceStat ?? []
-    );
+    const helper = new ChartDataHelper(theme, communityStat?.byEventStat ?? []);
     return helper;
   }, [theme, communityStat]);
 
@@ -140,7 +138,12 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
       },
       legend: {
         bottom: 0,
-        data: [{ name: 'new' }, { name: 'renewed' }, { name: 'existing' }],
+        data: [
+          { name: 'new' },
+          { name: 'renewed' },
+          { name: 'existing' },
+          { name: 'non-member' },
+        ],
       },
       xAxis: {
         type: 'category',
@@ -170,6 +173,7 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
         chartHelper.barSeries('existing', 'existing', eventSelected),
         chartHelper.barSeries('renew', 'renewed', eventSelected),
         chartHelper.barSeries('new', 'new', eventSelected),
+        chartHelper.barSeries('nonMember', 'non-member', eventSelected),
         chartHelper.totalBarSeries(),
       ],
     };

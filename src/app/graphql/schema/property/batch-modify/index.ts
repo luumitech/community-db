@@ -44,9 +44,11 @@ export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
 const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
   fields: (t) => ({
     year: t.int({ required: true }),
-    eventAttended: t.field({ type: EventInput, required: true }),
-    paymentMethod: t.string({ required: true }),
+    isMember: t.boolean(),
     price: t.string(),
+    paymentDate: t.string(),
+    paymentMethod: t.string(),
+    eventAttended: t.field({ type: EventInput, required: true }),
   }),
 });
 

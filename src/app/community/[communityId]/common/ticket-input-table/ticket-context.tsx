@@ -1,7 +1,7 @@
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { type SelectProps } from '~/view/base/select';
-import { type TicketListFieldArray } from './_type';
+import { type ExistingMembership, type TicketListFieldArray } from './_type';
 
 export interface TicketListConfig {
   /**
@@ -21,17 +21,19 @@ export interface MembershipConfig {
    * I.e. `membershipList.${yearIdx}`
    */
   controlNamePrefix: string;
-  /** Should be allowed to change membership information */
-  canEdit: boolean;
+  /**
+   * Existing membership entry.
+   *
+   * - If isMember field is true, then the information will be displayed in the
+   *   previous transaction section
+   * - Otherwise, Current transaction will allow addition of membership fee
+   */
+  existingMembership?: ExistingMembership;
 }
 
 export interface TransactionConfig {
-  /**
-   * Control name prefix for fields within the `Current Transaction Total`
-   *
-   * For example, used for payment method selection
-   */
-  controlNamePrefix: string;
+  /** Payment control name for the `Current Transaction Total` */
+  paymentControlName: string;
   /**
    * Existing ticket list
    *

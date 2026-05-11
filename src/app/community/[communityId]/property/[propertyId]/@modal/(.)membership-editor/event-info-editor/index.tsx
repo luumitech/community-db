@@ -79,7 +79,6 @@ export const EventInfoEditor: React.FC<Props> = ({
               key={field.id}
               membershipPrefix={membershipPrefix}
               eventPrefix={`${membershipPrefix}.eventAttendedList.${eventIdx}`}
-              isFirstEvent={eventIdx === 0}
               showTicketEditor={isExpanded(field.id)}
               onTicketEditorToggle={() => toggle(field.id)}
               onRemove={() => {

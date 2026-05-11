@@ -30,10 +30,25 @@ export class Cipher {
 
   /** Decrypt message */
   decrypt(encrypted: string) {
-    const decipher = crypto.createDecipheriv('aes-256-cbc', this.key, this.iv);
-    let decrypted = decipher.update(encrypted, 'base64', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
+    try {
+      const decipher = crypto.createDecipheriv(
+        'aes-256-cbc',
+        this.key,
+        this.iv
+      );
+      let decrypted = decipher.update(encrypted, 'base64', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    } catch (error) {
+      /**
+       * Decrypting unsuccessfully, just return garbage
+       *
+       * - We don't want to throw error because we want to allow invalid
+       *   CIPHER_KEY/CIPHER_IV combination
+       */
+
+      return '...';
+    }
   }
 
   /**

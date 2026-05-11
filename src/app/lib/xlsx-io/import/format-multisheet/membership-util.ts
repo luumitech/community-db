@@ -13,9 +13,12 @@ const mappingType = {
   membershipId: 'number',
   propertyId: 'number',
   year: 'number',
+  isMember: 'boolean',
+  paymentEventName: 'string',
+  price: 'string',
+  paymentDate: 'date',
   paymentMethod: 'string',
   paymentDeposited: 'boolean',
-  price: 'string',
 } satisfies MappingTypeSchema;
 type MappingEntry = MappingResult<typeof mappingType>;
 
@@ -36,9 +39,12 @@ export class MembershipUtil {
       membershipId: importHelper.labelColumn('membershipId'),
       propertyId: importHelper.labelColumn('propertyId'),
       year: importHelper.labelColumn('year'),
+      isMember: importHelper.labelColumn('isMember'),
+      paymentEventName: importHelper.labelColumn('paymentEventName'),
+      price: importHelper.labelColumn('price'),
+      paymentDate: importHelper.labelColumn('paymentDate'),
       paymentMethod: importHelper.labelColumn('paymentMethod'),
       paymentDeposited: importHelper.labelColumn('paymentDeposited'),
-      price: importHelper.labelColumn('price'),
     };
 
     for (let rowIdx = 1; rowIdx < importHelper.ws.rowCount; rowIdx++) {

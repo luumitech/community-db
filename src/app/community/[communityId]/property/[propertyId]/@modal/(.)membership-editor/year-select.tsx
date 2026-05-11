@@ -34,15 +34,7 @@ export const YearSelect: React.FC<Props> = ({
   const { errors } = formState;
 
   const yearItems = React.useMemo<YearItem[]>(() => {
-    const membershipListWithMember = membershipList.map((entry) => ({
-      ...entry,
-      isMember: entry.eventAttendedList.length > 0,
-    }));
-    const items = yearSelectItems(
-      yearRange,
-      membershipListWithMember,
-      selectedYear
-    );
+    const items = yearSelectItems(yearRange, membershipList, selectedYear);
     const maxYear = items[0].key;
 
     return [

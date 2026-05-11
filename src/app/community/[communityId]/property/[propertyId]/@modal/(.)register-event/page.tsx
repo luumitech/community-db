@@ -96,7 +96,8 @@ export default function RegisterEvent(props: RouteArgs) {
         })(),
         {
           pending: 'Saving...',
-          ...(hidden.isFirstEvent &&
+          ...(hidden.canPayMembership &&
+            input.membership.isMember &&
             hidden.canRegister && {
               success: {
                 autoClose: 10000, // 10s

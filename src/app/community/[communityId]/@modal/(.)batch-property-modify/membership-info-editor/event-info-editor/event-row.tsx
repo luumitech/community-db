@@ -69,7 +69,6 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
           }}
           membershipConfig={{
             controlNamePrefix: 'membership',
-            canEdit: true,
           }}
         />
       </div>

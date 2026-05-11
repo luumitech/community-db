@@ -4,21 +4,22 @@ import * as R from 'remeda';
 import { graphql } from '~/graphql/generated';
 import { Card } from '~/view/base/card';
 import { usePageContext } from '../../../page-context';
-import { type MemberSourceStat } from '../_type';
+import { type ByEventStat } from '../_type';
 import { MemberCountChart } from './member-count-chart';
 import { NoMember } from './no-member';
 
-const DashboardPrevYearMemberSourceStatQuery = graphql(/* GraphQL */ `
-  query dashboardPrevYearMemberSourceStat($id: String!, $year: Int!) {
+const DashboardPrevYearByEventStatQuery = graphql(/* GraphQL */ `
+  query dashboardPrevYearByEventStat($id: String!, $year: Int!) {
     communityFromId(id: $id) {
       id
       communityStat {
         id
-        memberSourceStat(year: $year) {
+        byEventStat(year: $year) {
           eventName
           new
           renew
           existing
+          nonMember
         }
       }
     }
@@ -28,36 +29,38 @@ const DashboardPrevYearMemberSourceStatQuery = graphql(/* GraphQL */ `
 interface Props {
   className?: string;
   year: number;
-  memberSourceStat: MemberSourceStat | null;
+  byEventStat: ByEventStat | null;
 }
 
 export const ParticipationChart: React.FC<Props> = ({
   className,
   year,
-  memberSourceStat,
+  byEventStat,
 }) => {
   const { communityId, eventSelected } = usePageContext();
   /**
    * This query can fail if there is no statistics available for the previous
    * year. In that case, let the query fail and handle it gracefully.
    */
-  const result = useQuery(DashboardPrevYearMemberSourceStatQuery, {
+  const result = useQuery(DashboardPrevYearByEventStatQuery, {
     variables: {
       id: communityId,
       year: year - 1,
     },
   });
   const prevYearStat = (
-    result.data?.communityFromId.communityStat.memberSourceStat ?? []
+    result.data?.communityFromId.communityStat.byEventStat ?? []
   ).find(({ eventName }) => eventName === eventSelected);
 
   /** Check if there are any member count data in the statistics */
   const noMember = React.useMemo(() => {
-    const sum = R.sumBy([memberSourceStat, prevYearStat], (entry) =>
-      entry != null ? entry.existing + entry.new + entry.renew : 0
+    const sum = R.sumBy([byEventStat, prevYearStat], (entry) =>
+      entry != null
+        ? entry.existing + entry.new + entry.renew + entry.nonMember
+        : 0
     );
     return sum === 0;
-  }, [memberSourceStat, prevYearStat]);
+  }, [byEventStat, prevYearStat]);
 
   return (
     <Card shadow="sm">
@@ -67,7 +70,7 @@ export const ParticipationChart: React.FC<Props> = ({
       ) : (
         <MemberCountChart
           year={year}
-          yearStat={memberSourceStat}
+          yearStat={byEventStat}
           prevYearStat={prevYearStat ?? null}
         />
       )}

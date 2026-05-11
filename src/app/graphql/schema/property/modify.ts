@@ -60,9 +60,12 @@ const TicketInput = builder.inputType('TicketInput', {
 export const MembershipInput = builder.inputType('MembershipInput', {
   fields: (t) => ({
     year: t.int({ required: true }),
-    eventAttendedList: t.field({ type: [EventInput] }),
-    paymentMethod: t.string(),
+    isMember: t.boolean(),
+    paymentEventName: t.string(),
     price: t.string(),
+    paymentDate: t.string(),
+    paymentMethod: t.string(),
+    eventAttendedList: t.field({ type: [EventInput] }),
   }),
 });
 

@@ -59,7 +59,7 @@ export interface OccupantRow {
   moveOutDate: string | null;
   firstName: string | null;
   lastName: string | null;
-  optOut: number | undefined;
+  optOut: number | null;
 }
 
 export interface ContactRow {
@@ -74,10 +74,12 @@ export interface MembershipRow {
   membershipId: number;
   propertyId: number;
   year: number | null;
-  isMember: number | undefined;
+  isMember: number | null;
+  paymentEventName: string | null;
   price: string | null;
+  paymentDate: string | null;
   paymentMethod: string | null;
-  paymentDeposited: number | undefined;
+  paymentDeposited: number | null;
 }
 
 export interface EventRow {

@@ -3,6 +3,7 @@ import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { TicketInputTable } from '~/community/[communityId]/common/ticket-input-table';
 import { useFieldArray } from '~/custom-hooks/hook-form';
+import { useMembershipUtil } from '../membership-util';
 import { useHookFormContext, useXtraArgContext } from '../use-hook-form';
 import { EventDatePicker } from './event-date-picker';
 
@@ -40,10 +41,9 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
     control,
     name: 'event.ticketList',
   });
-  const isMember = getValues('hidden.isMember');
-  const isFirstEvent = getValues('hidden.isFirstEvent');
   const eventName = getValues('event.eventName');
-  const applyToMembership = getValues('hidden.transaction.applyToMembership');
+  const { canPayMembership, hasMembershipEntry, existingMembership } =
+    useMembershipUtil();
 
   /**
    * Can select payment method for current transaction if:
@@ -52,11 +52,11 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
    * - At least one ticket has been added
    */
   const canSelectPayment =
-    applyToMembership || ticketListMethods.fields.length > 0;
+    hasMembershipEntry || ticketListMethods.fields.length > 0;
 
   const onTicketRemove = React.useCallback(
     (ticketIdx: number) => {
-      clearErrors('hidden.transaction.paymentMethod');
+      clearErrors('transactionPaymentMethod');
     },
     [clearErrors]
   );
@@ -84,7 +84,7 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
         <TicketInputTable
           className={cn('rounded-lg border-2 border-divider', 'ml-10 p-1')}
           transactionConfig={{
-            controlNamePrefix: 'hidden.transaction',
+            paymentControlName: 'transactionPaymentMethod',
             ticketList: ticketList ?? [],
             selectPaymentProps: {
               isDisabled: !canSelectPayment,
@@ -94,13 +94,13 @@ export const EventRow: React.FC<EventRowProps> = ({ className }) => {
             controlNamePrefix: 'event.ticketList',
             fieldMethods: ticketListMethods,
           }}
-          {...(isFirstEvent && {
+          {...((!!existingMembership || canPayMembership) && {
             membershipConfig: {
               controlNamePrefix: 'membership',
-              canEdit: !isMember,
+              existingMembership,
             },
           })}
-          onRemove={onTicketRemove}
+          onRemoveTicket={onTicketRemove}
         />
       </div>
     </>

@@ -7,7 +7,6 @@ import { DragHandle } from '~/view/base/drag-reorder';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { type TicketList } from './_type';
-import { MembershipPriceInput } from './membership-price-input';
 import { PaymentDatePicker } from './payment-date-picker';
 import { PaymentSelect } from './payment-select';
 import { PriceInput } from './price-input';
@@ -134,7 +133,7 @@ export const TransactionFooter: React.FC<EmptyProps> = () => {
   return (
     <div className={cn('col-span-full grid grid-cols-subgrid')}>
       <div />
-      <div>
+      <div className="col-span-3 flex gap-2">
         <TicketAddButton
           onClick={(ticket) => {
             ticketListConfig.fieldMethods.append({ ...ticket });
@@ -159,13 +158,20 @@ export const TransactionFooter: React.FC<EmptyProps> = () => {
 export const TransactionTotal: React.FC<EmptyProps> = () => {
   const { ticketListConfig, membershipConfig, transactionConfig } =
     useTicketContext();
-  const { watch, clearErrors } = useFormContext();
+  const formContext = useFormContext();
+  const { watch } = formContext;
   const ticketList: TicketList = watch(ticketListConfig.controlNamePrefix);
   const membershipPrice = watch(`${membershipConfig?.controlNamePrefix}.price`);
+  const isMember = watch(`${membershipConfig?.controlNamePrefix}.isMember`);
   const totalPrice = decSum(
-    membershipConfig?.canEdit ? membershipPrice : 0,
+    isMember && membershipConfig ? membershipPrice : 0,
     ...ticketList.map(({ price }) => price)
   );
+
+  if (!transactionConfig) {
+    return null;
+  }
+
   return (
     <div
       className={cn(
@@ -188,45 +194,11 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
       <div>{/* payment date */}</div>
       <div className="col-span-2" role="cell">
         <TransactionTotalPaymentSelect
-          controlName={`${transactionConfig?.controlNamePrefix}.paymentMethod`}
+          controlName={transactionConfig.paymentControlName}
           placeholder="Select Payment"
-          {...transactionConfig?.selectPaymentProps}
+          {...transactionConfig.selectPaymentProps}
         />
       </div>
-    </div>
-  );
-};
-
-export const MembershipRow: React.FC<EmptyProps> = () => {
-  const { membershipConfig, includeHiddenFields, transactionConfig } =
-    useTicketContext();
-
-  if (!membershipConfig?.canEdit) {
-    return null;
-  }
-
-  const { controlNamePrefix } = membershipConfig;
-
-  return (
-    <div className={cn('col-span-full mx-3 grid grid-cols-subgrid')} role="row">
-      <div role="cell" />
-      <div role="cell" className="pt-2 pl-1 text-sm">
-        Membership Fee
-      </div>
-      <div role="cell" />
-      <div role="cell">
-        <MembershipPriceInput controlNamePrefix={controlNamePrefix} />
-      </div>
-      <div role="cell" />
-      <div role="cell">
-        {!transactionConfig && (
-          <PaymentSelect
-            controlNamePrefix={controlNamePrefix}
-            includeHiddenFields={includeHiddenFields}
-          />
-        )}
-      </div>
-      <div className="flex gap-2 pt-3" role="cell" />
     </div>
   );
 };

@@ -1,6 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import { ticketListSchema } from '~/community/[communityId]/common/ticket-input-table';
+import {
+  ticketListSchema,
+  type ExistingMembership,
+} from '~/community/[communityId]/common/ticket-input-table';
 import { useLayoutContext as useCommunityLayoutContext } from '~/community/[communityId]/layout-context';
 import {
   useForm,
@@ -17,6 +20,14 @@ import { MembershipEditorFragment } from '../(.)membership-editor/use-hook-form'
 import { useLayoutContext } from '../../layout-context';
 
 function schema() {
+  const ExistingMembershipSchema = z.object({
+    year: z.number(),
+    isMember: z.boolean().nullable().optional(),
+    price: zz.coerce.toCurrency().optional(),
+    paymentDate: zz.coerce.toIsoDate({ nullable: true }).optional(),
+    paymentMethod: z.string().nullable().optional(),
+  }) satisfies z.ZodType<ExistingMembership>;
+
   return z
     .object({
       self: z.object({
@@ -26,35 +37,30 @@ function schema() {
       notes: z.string().nullable(),
       membership: z.object({
         year: zz.coerce.toNumber({ message: 'Must select a year' }),
+        isMember: z.boolean().nullable(),
         price: zz.coerce.toCurrency(),
-        paymentMethod: zz.string.nonEmpty('Must select a payment method'),
+        paymentDate: zz.coerce.toIsoDate({ nullable: true }),
       }),
       event: z.object({
         eventName: zz.string.nonEmpty('Must specify a value'),
         eventDate: zz.coerce.toIsoDate(),
-        ticketList: ticketListSchema,
+        ticketList: ticketListSchema(),
       }),
+      transactionPaymentMethod: z.string().nullable(),
       hidden: z.object({
-        /** Whether member is already a member when registering */
-        isMember: z.boolean(),
         /**
          * Determine if the register button should be enabled. For example, if
          * user is already registered in the event previously, then the register
          * button should not be enabled, unless they have modified the form.
          */
         canRegister: z.boolean(),
+        /** User does not have membership, and can add membership to transaction */
+        canPayMembership: z.boolean(),
         /**
-         * The first event is when membership fee is collected. This information
-         * is useful for determining if ticketList should show membership fee
+         * If provided, will be shown in the previous transaction portion of the
+         * ticket input
          */
-        isFirstEvent: z.boolean(),
-        /** Transaction related fields */
-        transaction: z.object({
-          /** Selected payment on `Current Transaction Total` */
-          paymentMethod: z.string().nullable(),
-          /** Selected payment should apply to membership also */
-          applyToMembership: z.boolean(),
-        }),
+        existingMembership: ExistingMembershipSchema.optional(),
       }),
     })
     .refine(
@@ -62,20 +68,20 @@ function schema() {
         /**
          * Payment Method is only required if:
          *
-         * - Membership fee has not been paid
+         * - Membership fee entry has been added
          * - Ticket items have been added
          */
         if (
-          form.hidden.transaction.applyToMembership ||
+          (form.hidden.canPayMembership && form.membership.isMember) ||
           form.event.ticketList.length > 0
         ) {
-          return !!form.hidden.transaction.paymentMethod;
+          return !!form.transactionPaymentMethod;
         }
         return true;
       },
       {
         message: 'Must specify payment method for current transaction',
-        path: ['hidden.transaction.paymentMethod'],
+        path: ['transactionPaymentMethod'],
       }
     );
 }
@@ -103,15 +109,11 @@ function findEvent(
   const eventIdx = (membership?.eventAttendedList ?? []).findIndex(
     (entry) => entry.eventName === eventName
   );
-
-  const isMember = !!membership?.isMember;
   return {
     year,
     eventName,
     membership,
     event: membership?.eventAttendedList?.[eventIdx],
-    isMember,
-    isFirstEvent: eventIdx === 0 || !isMember,
   };
 }
 
@@ -120,9 +122,9 @@ function defaultInputData(
   findEventResult: ReturnType<typeof findEvent>,
   defaultSetting: GQL.DefaultSetting
 ): InputData {
-  const { year, eventName, membership, event, isMember, isFirstEvent } =
-    findEventResult;
-  const canRegister = !isMember || !event;
+  const { year, eventName, membership, event } = findEventResult;
+  const canRegister = !membership?.isMember || !event;
+  const canPayMembership = !membership?.isMember;
 
   return {
     self: {
@@ -132,22 +134,35 @@ function defaultInputData(
     notes: item.notes ?? '',
     membership: {
       year,
-      price: membership?.price ?? defaultSetting.membershipFee ?? null,
-      paymentMethod: membership?.paymentMethod ?? '',
+      /**
+       * Always give option to add membership initially, user would need to
+       * remove the membership entry explicitly to opt out
+       */
+      isMember: true,
+      ...(membership?.isMember
+        ? {
+            price: membership?.price ?? null,
+            paymentDate: membership?.paymentDate ?? null,
+            paymentMethod: membership?.paymentMethod ?? null,
+          }
+        : {
+            price: defaultSetting.membershipFee ?? null,
+            paymentDate: getCurrentDateAsISOString(),
+            paymentMethod: null,
+          }),
     },
     event: {
       eventName: eventName ?? '',
       eventDate: event?.eventDate ?? getCurrentDateAsISOString(),
       ticketList: [],
     },
+    transactionPaymentMethod: null,
     hidden: {
-      isMember,
       canRegister,
-      isFirstEvent,
-      transaction: {
-        paymentMethod: '',
-        applyToMembership: !membership?.paymentMethod,
-      },
+      canPayMembership,
+      ...(membership?.paymentEventName === eventName && {
+        existingMembership: membership,
+      }),
     },
   };
 }
