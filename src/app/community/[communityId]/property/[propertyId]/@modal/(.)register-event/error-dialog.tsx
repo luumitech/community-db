@@ -17,17 +17,16 @@ export const ErrorDialog: React.FC<Props> = (props) => {
     <Modal
       isOpen
       onOpenChange={goBack}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
       <Modal.Content>
-        {(closeModal) => (
+        {({ close }) => (
           <>
             <Modal.Header>{appLabel('registerEvent')}</Modal.Header>
             <Modal.Body>Error: Event Name missing</Modal.Body>
             <Modal.Footer>
-              <Button variant="bordered" onPress={closeModal}>
+              <Button variant="bordered" onPress={close}>
                 OK
               </Button>
             </Modal.Footer>

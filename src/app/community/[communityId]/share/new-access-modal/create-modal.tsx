@@ -50,42 +50,40 @@ export const CreateModal: React.FC<Props> = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
-      scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header>Add User To Access List</Modal.Header>
-                <Modal.Body>
-                  <EmailEditor />
-                  <RoleSelect controlName="role" />
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="bordered"
-                    isDisabled={pending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    isDisabled={!formState.isDirty}
-                    isLoading={pending}
-                  >
-                    Share
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header>Add User To Access List</Modal.Header>
+            <Modal.Body>
+              <EmailEditor />
+              <RoleSelect controlName="role" />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="bordered" isDisabled={pending} onPress={close}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                isDisabled={!formState.isDirty}
+                isLoading={pending}
+              >
+                Share
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

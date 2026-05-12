@@ -7,9 +7,5 @@ import { Wizard } from './';
 export interface Step0Props {}
 
 export const Step0: React.FC<Step0Props> = () => {
-  return (
-    <Modal.Body>
-      <MethodSelect />
-    </Modal.Body>
-  );
+  return <MethodSelect />;
 };

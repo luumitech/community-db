@@ -52,7 +52,6 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
 
   return (
     <Modal
-      size="5xl"
       isOpen
       onOpenChange={goBack}
       confirmation={canSave}
@@ -67,62 +66,61 @@ export const ModalDialog: React.FC<Props> = ({ eventName, onSave }) => {
           ),
         },
       })}
-      scrollBehavior="outside"
+      size="cover"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <XtraArgProvider {...xtraProps}>
+          <FormProvider {...formMethods}>
+            <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+              {content}
+            </Form>
+          </FormProvider>
+        </XtraArgProvider>
+      )}
     >
-      <XtraArgProvider {...xtraProps}>
-        <FormProvider {...formMethods}>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <Modal.Content>
-              {(closeModal) => (
-                <>
-                  <Modal.Header className="flex-wrap gap-x-6 gap-y-0.5">
-                    {appLabel('registerEvent')}
-                    <div className="flex items-center gap-2">
-                      <EventChip eventName={eventName} />
-                      <span className="text-sm text-foreground/70">
-                        on {getCurrentDate()}
-                      </span>
-                    </div>
-                  </Modal.Header>
-                  <Modal.Body className="gap-6">
-                    <MemberStatus
-                      property={xtraProps.property}
-                      membership={xtraProps.membership}
-                    />
-                    <EventInfoEditor />
-                    <NotesEditor controlName="notes" />
-                  </Modal.Body>
-                  <Modal.Footer className="flex items-center justify-between">
-                    <LastModified
-                      updatedAt={xtraProps.property.updatedAt}
-                      updatedBy={xtraProps.property.updatedBy}
-                    />
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="bordered"
-                        isDisabled={pending}
-                        onPress={closeModal}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="primary"
-                        isLoading={pending}
-                        isDisabled={!canSave}
-                      >
-                        {canRegister ? 'Register' : 'Save'}
-                      </Button>
-                    </div>
-                  </Modal.Footer>
-                </>
-              )}
-            </Modal.Content>
-          </Form>
-        </FormProvider>
-      </XtraArgProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header className="flex-wrap gap-x-6 gap-y-0.5">
+              {appLabel('registerEvent')}
+              <div className="flex items-center gap-2">
+                <EventChip eventName={eventName} />
+                <span className="text-sm text-foreground/70">
+                  on {getCurrentDate()}
+                </span>
+              </div>
+            </Modal.Header>
+            <Modal.Body className="gap-6">
+              <MemberStatus
+                property={xtraProps.property}
+                membership={xtraProps.membership}
+              />
+              <EventInfoEditor />
+              <NotesEditor controlName="notes" />
+            </Modal.Body>
+            <Modal.Footer className="flex items-center justify-between">
+              <LastModified
+                updatedAt={xtraProps.property.updatedAt}
+                updatedBy={xtraProps.property.updatedBy}
+              />
+              <div className="flex items-center gap-2">
+                <Button variant="bordered" isDisabled={pending} onPress={close}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isLoading={pending}
+                  isDisabled={!canSave}
+                >
+                  {canRegister ? 'Register' : 'Save'}
+                </Button>
+              </div>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

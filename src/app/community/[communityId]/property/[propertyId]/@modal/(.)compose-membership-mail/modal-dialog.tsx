@@ -72,56 +72,56 @@ export const ModalDialog: React.FC<Props> = ({
 
   return (
     <Modal
-      size="2xl"
+      size="cover"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm}>{content}</Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header>{appLabel('composeMembershipMail')}</Modal.Header>
-                <Modal.Body>
-                  <MailForm />
-                </Modal.Body>
-                <Modal.Footer>
-                  {canEdit && (
-                    <Button
-                      color="primary"
-                      variant="bordered"
-                      isLoading={saveTemplatePending}
-                      isDisabled={sendMailPending || !isDirty}
-                      onPress={() => formMethods.handleSubmit(onSaveTemplate)()}
-                    >
-                      Save Email Template
-                    </Button>
-                  )}
-                  <div className="grow" />
-                  <Button
-                    isDisabled={saveTemplatePending || sendMailPending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    color="primary"
-                    isLoading={sendMailPending}
-                    isDisabled={saveTemplatePending}
-                    onPress={() => formMethods.handleSubmit(onSendMail)()}
-                  >
-                    Launch Email Client...
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header>{appLabel('composeMembershipMail')}</Modal.Header>
+            <Modal.Body>
+              <MailForm />
+            </Modal.Body>
+            <Modal.Footer>
+              {canEdit && (
+                <Button
+                  color="primary"
+                  variant="bordered"
+                  isLoading={saveTemplatePending}
+                  isDisabled={sendMailPending || !isDirty}
+                  onPress={() => formMethods.handleSubmit(onSaveTemplate)()}
+                >
+                  Save Email Template
+                </Button>
+              )}
+              <div className="grow" />
+              <Button
+                isDisabled={saveTemplatePending || sendMailPending}
+                onPress={close}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                isLoading={sendMailPending}
+                isDisabled={saveTemplatePending}
+                onPress={() => formMethods.handleSubmit(onSendMail)()}
+              >
+                Launch Email Client...
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

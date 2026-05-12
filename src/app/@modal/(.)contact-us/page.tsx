@@ -82,7 +82,6 @@ export default function ContactUs(props: RouteArgs) {
   return (
     <Modal
       size="lg"
-      scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}
       isDismissable

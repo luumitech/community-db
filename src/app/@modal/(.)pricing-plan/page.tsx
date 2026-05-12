@@ -10,8 +10,7 @@ export default function PricingPlan() {
 
   return (
     <Modal
-      size="xl"
-      scrollBehavior="outside"
+      size="lg"
       isOpen
       onOpenChange={() => router.back()}
       isDismissable={false}

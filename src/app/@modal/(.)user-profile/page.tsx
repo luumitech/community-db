@@ -16,17 +16,16 @@ export default function UserProfile() {
 
   return (
     <Modal
-      size="xl"
-      scrollBehavior="inside"
+      size="lg"
       isOpen
       onOpenChange={() => router.back()}
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
       <Modal.Content>
-        {(closeModal) => (
+        {({ close }) => (
           <>
-            <Modal.Header className="items-center gap-2 text-2xl">
+            <Modal.Header className="flex flex-row items-center gap-2 text-2xl">
               <Avatar
                 className="bg-transparent"
                 data-testid="signed-in-user-avatar"
@@ -43,7 +42,7 @@ export default function UserProfile() {
             </Modal.Body>
             <Modal.Footer>
               <BuiltBy className="grow" />
-              <Button color="primary" onPress={closeModal}>
+              <Button color="primary" onPress={close}>
                 OK
               </Button>
             </Modal.Footer>

@@ -36,11 +36,14 @@ export const Lightbox: React.FC<Props> = ({
     <Modal
       isOpen={disclosure.isOpen}
       size="full"
-      scrollBehavior="inside"
-      onClose={modalClose}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          modalClose();
+        }
+      }}
     >
       <Modal.Content>
-        {(onModalClose) => {
+        {({ close }) => {
           return (
             <>
               {/**

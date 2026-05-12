@@ -40,45 +40,43 @@ export const CreateModal: React.FC<Props> = ({ onSave }) => {
 
   return (
     <Modal
-      size="5xl"
+      size="cover"
       isOpen
       onOpenChange={goBack}
-      scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
       confirmation={isDirty}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header>{appLabel('propertyCreate')}</Modal.Header>
-                <Modal.Body>
-                  <AddressEditor />
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="bordered"
-                    isDisabled={pending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    color="primary"
-                    type="submit"
-                    isDisabled={!formState.isDirty}
-                    isLoading={pending}
-                  >
-                    Create
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header>{appLabel('propertyCreate')}</Modal.Header>
+            <Modal.Body>
+              <AddressEditor />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="bordered" isDisabled={pending} onPress={close}>
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                type="submit"
+                isDisabled={!formState.isDirty}
+                isLoading={pending}
+              >
+                Create
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

@@ -38,30 +38,32 @@ export const ModalDialog: React.FC<Props> = ({ onSave, focusEmail }) => {
 
   return (
     <Modal
-      size="5xl"
+      size="cover"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <OccupancyEditorProvider
-                control={control}
-                focusEmail={focusEmail}
-                closeModal={closeModal}
-                isPending={pending}
-              >
-                <OccupancyEditor />
-              </OccupancyEditorProvider>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <OccupancyEditorProvider
+            control={control}
+            focusEmail={focusEmail}
+            closeModal={close}
+            isPending={pending}
+          >
+            <OccupancyEditor />
+          </OccupancyEditorProvider>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

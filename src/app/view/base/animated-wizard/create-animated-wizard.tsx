@@ -80,6 +80,12 @@ export function createAnimatedWizard<
      * - Footer will not be aniamted
      */
     renderFooter?: (context: WizardContext) => React.ReactNode;
+    /**
+     * Wrap wizard body with a custom component
+     *
+     * - Useful if you need to render within a modal
+     */
+    renderBody?: (body: React.ReactNode) => React.ReactNode;
     /** Disables animation during transistion */
     disableAnimation?: boolean;
   }
@@ -87,6 +93,7 @@ export function createAnimatedWizard<
   function Wizard({
     renderHeader,
     renderFooter,
+    renderBody,
     disableAnimation,
     children,
   }: React.PropsWithChildren<WizardProps>) {
@@ -171,12 +178,12 @@ export function createAnimatedWizard<
       stepArg as Steps[StepNames]
     );
 
-    return (
-      <Context.Provider value={contextValue}>
-        {renderHeader?.(contextValue)}
-        {disableAnimation ? (
-          <div key={activeStep}>{content}</div>
-        ) : (
+    const wizardBody = React.useMemo(() => {
+      {
+        if (disableAnimation) {
+          return <div key={activeStep}>{content}</div>;
+        }
+        return (
           <div className="relative overflow-hidden">
             <AnimatePresence
               initial={false}
@@ -196,7 +203,14 @@ export function createAnimatedWizard<
               </motion.div>
             </AnimatePresence>
           </div>
-        )}
+        );
+      }
+    }, [activeStep, content, direction, disableAnimation]);
+
+    return (
+      <Context.Provider value={contextValue}>
+        {renderHeader?.(contextValue)}
+        {renderBody?.(wizardBody) ?? wizardBody}
         {renderFooter?.(contextValue)}
       </Context.Provider>
     );

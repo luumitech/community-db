@@ -10,6 +10,7 @@ export const Slide: React.FC<ScreenshotEntry> = ({
   className,
   caption,
   alt,
+  imageClassName,
   ...props
 }) => {
   return (
@@ -30,7 +31,7 @@ export const Slide: React.FC<ScreenshotEntry> = ({
           { 'cursor-zoom-in': !!props.onClick }
         )}
       >
-        <Image className="rounded-lg" alt={alt} {...props} />
+        <Image className={cn('rounded-lg')} alt={alt} {...props} />
       </div>
       {caption && (
         <div className="mb-5 text-center text-xl font-bold text-slate-700">

@@ -1,7 +1,6 @@
-import { Button } from '@heroui/react';
+import { AlertDialog, Button } from '@heroui-v3/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import { Modal, type ModalProps } from '~/view/base/modal';
 
 interface ContentArg {
   closeModal: () => void;
@@ -10,15 +9,6 @@ interface ContentArg {
 }
 
 export interface ConfirmationModalArg {
-  modalProps?: Omit<ModalProps, 'children'>;
-
-  /**
-   * Specify the entire content of the Modal
-   *
-   * If used, `body` will be ignored
-   */
-  content?: (arg: ContentArg) => React.ReactNode;
-
   /**
    * By default, if `content` is not specified, the confirmation modal will be
    * rendered with a default body, with cancel and OK button
@@ -47,52 +37,38 @@ export const ConfirmationModal: React.FC<Props> = () => {
     return null;
   }
 
-  const { modalProps, content, body, onConfirm, onCancel } = arg;
+  const { body, onConfirm, onCancel } = arg;
 
   return (
-    <Modal
-      classNames={{
-        base: 'border-warning border-2',
-      }}
-      size="xs"
+    <AlertDialog
       isOpen={disclosure.isOpen}
       onOpenChange={disclosure.onOpenChange}
-      isDismissable={false}
-      isKeyboardDismissDisabled={true}
-      hideCloseButton
-      {...modalProps}
     >
-      <Modal.Content>
-        {(closeModal) =>
-          content ? (
-            content({ closeModal, onConfirm, onCancel })
-          ) : (
-            <>
-              <Modal.Body>{body ?? 'Discard Changes?'}</Modal.Body>
-              <Modal.Footer>
-                <Button
-                  variant="bordered"
-                  onPress={(evt) => {
-                    onCancel?.();
-                    closeModal();
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={(evt) => {
-                    onConfirm?.();
-                    closeModal();
-                  }}
-                >
-                  OK
-                </Button>
-              </Modal.Footer>
-            </>
-          )
-        }
-      </Modal.Content>
-    </Modal>
+      <AlertDialog.Backdrop
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
+      >
+        <AlertDialog.Container size="xs">
+          <AlertDialog.Dialog>
+            <AlertDialog.Header>
+              <AlertDialog.Icon status="warning" />
+            </AlertDialog.Header>
+            <AlertDialog.Body>{body ?? 'Discard Changes?'}</AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button
+                variant="outline"
+                slot="close"
+                onPress={(evt) => onCancel?.()}
+              >
+                Cancel
+              </Button>
+              <Button slot="close" onPress={(evt) => onConfirm?.()}>
+                OK
+              </Button>
+            </AlertDialog.Footer>
+          </AlertDialog.Dialog>
+        </AlertDialog.Container>
+      </AlertDialog.Backdrop>
+    </AlertDialog>
   );
 };

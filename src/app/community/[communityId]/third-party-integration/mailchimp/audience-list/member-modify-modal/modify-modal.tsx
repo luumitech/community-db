@@ -67,50 +67,48 @@ export const ModifyModal: React.FC<Props> = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header className="flex flex-col">
-                  Modify Mailchimp Contact
-                  <div className="text-xs font-normal text-foreground/60">
-                    This changes information in Mailchimp only. To update
-                    contact information in the {appTitle}, please locate the
-                    occupant’s property and update the contact details there.
-                  </div>
-                </Modal.Header>
-                <Modal.Body>
-                  <EmailEditor />
-                  <FullNameEditor />
-                  <StatusEditor />
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="bordered"
-                    isDisabled={pending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    isDisabled={!formState.isDirty}
-                    isLoading={pending}
-                  >
-                    Save
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header className="flex flex-col">
+              Modify Mailchimp Contact
+              <div className="text-xs font-normal text-foreground/60">
+                This changes information in Mailchimp only. To update contact
+                information in the {appTitle}, please locate the occupant’s
+                property and update the contact details there.
+              </div>
+            </Modal.Header>
+            <Modal.Body>
+              <EmailEditor />
+              <FullNameEditor />
+              <StatusEditor />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="bordered" isDisabled={pending} onPress={close}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                isDisabled={!formState.isDirty}
+                isLoading={pending}
+              >
+                Save
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

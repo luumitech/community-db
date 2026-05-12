@@ -1,5 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
+import { Modal } from '~/view/base/modal';
 import {
   Footer,
   Header,
@@ -23,7 +24,11 @@ export const OccupancyEditor: React.FC<Props> = ({ className }) => {
   }, []);
 
   return (
-    <Wizard renderHeader={renderHeader} renderFooter={renderFooter}>
+    <Wizard
+      renderHeader={renderHeader}
+      renderFooter={renderFooter}
+      renderBody={(body) => <Modal.Body>{body}</Modal.Body>}
+    >
       <Wizard.Step name="editor">
         <Step0 />
       </Wizard.Step>
