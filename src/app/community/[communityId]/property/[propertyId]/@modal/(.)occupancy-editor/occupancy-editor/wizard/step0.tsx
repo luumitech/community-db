@@ -2,7 +2,6 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { useOccupancyEditorContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
 import { Button } from '~/view/base/button';
-import { Modal } from '~/view/base/modal';
 import { ContactInfoEditor } from '../contact-info-editor';
 import { HouseholdSelect } from '../household-select';
 import { Wizard } from './';
@@ -15,7 +14,7 @@ export const Step0: React.FC<Step0Props> = () => {
     useOccupancyEditorContext();
 
   return (
-    <Modal.Body className={cn('flex flex-col gap-3')}>
+    <div className={cn('m-1 flex flex-col gap-3')}>
       <div className={cn('flex items-start gap-2')}>
         <HouseholdSelect onSelect={setOccupancyFieldId} />
         <Button
@@ -33,6 +32,6 @@ export const Step0: React.FC<Step0Props> = () => {
           controlNamePrefix={`occupancyInfoList.${idx}`}
         />
       ))}
-    </Modal.Body>
+    </div>
   );
 };

@@ -1,7 +1,6 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
-import { appLabel } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { Modal } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
@@ -65,33 +64,37 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
 
   return (
     <Modal
-      size="5xl"
+      size="cover"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(children, clsNm) => {
+        return (
+          <FormProvider {...formMethods}>
+            <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+              {children}
+            </Form>
+          </FormProvider>
+        );
+      }}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header>{appLabel('batchPropertyModify')}</Modal.Header>
-                <Wizard
-                  renderHeader={renderHeader}
-                  renderFooter={renderFooter(closeModal)}
-                >
-                  <Step0 />
-                  <Step1 />
-                  <Step2 />
-                </Wizard>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <Wizard
+            renderHeader={renderHeader}
+            renderFooter={renderFooter(close)}
+            renderBody={(body) => {
+              return <Modal.Body>{body}</Modal.Body>;
+            }}
+          >
+            <Step0 />
+            <Step1 />
+            <Step2 />
+          </Wizard>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

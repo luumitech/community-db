@@ -39,52 +39,50 @@ export const ModifyModal: React.FC<Props> = ({ onSave }) => {
 
   return (
     <Modal
-      size="5xl"
+      size="cover"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header>{appLabel('propertyModify')}</Modal.Header>
-                <Modal.Body>
-                  <AddressEditor />
-                </Modal.Body>
-                <Modal.Footer className="flex items-center justify-between">
-                  <LastModified
-                    className="text-right"
-                    updatedAt={property.updatedAt}
-                    updatedBy={property.updatedBy}
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="bordered"
-                      isDisabled={pending}
-                      onPress={closeModal}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      isDisabled={!formState.isDirty}
-                      isLoading={pending}
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header>{appLabel('propertyModify')}</Modal.Header>
+            <Modal.Body>
+              <AddressEditor />
+            </Modal.Body>
+            <Modal.Footer className="flex items-center justify-between">
+              <LastModified
+                className="text-right"
+                updatedAt={property.updatedAt}
+                updatedBy={property.updatedBy}
+              />
+              <div className="flex items-center gap-2">
+                <Button variant="bordered" isDisabled={pending} onPress={close}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isDisabled={!formState.isDirty}
+                  isLoading={pending}
+                >
+                  Save
+                </Button>
+              </div>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

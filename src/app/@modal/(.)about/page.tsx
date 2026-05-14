@@ -14,14 +14,13 @@ export default function About() {
   return (
     <Modal
       size="lg"
-      scrollBehavior="inside"
       isOpen
       onOpenChange={() => router.back()}
       isDismissable
       // isKeyboardDismissDisabled
     >
       <Modal.Content>
-        <Modal.Header className="items-center gap-2">
+        <Modal.Header className="flex flex-row items-center gap-2 font-semibold">
           <AppLogo />
           {appTitle}
         </Modal.Header>

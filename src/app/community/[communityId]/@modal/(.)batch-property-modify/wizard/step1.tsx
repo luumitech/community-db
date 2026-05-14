@@ -26,18 +26,14 @@ export const Step1: React.FC<Step1Props> = (props) => {
     }
   }, [memberYearList, method]);
 
-  const body = React.useMemo(() => {
-    switch (method) {
-      case GQL.BatchModifyMethod.AddEvent:
-        return <FilterSelect className="mb-4" yearRequired />;
+  switch (method) {
+    case GQL.BatchModifyMethod.AddEvent:
+      return <FilterSelect className="mb-4" yearRequired />;
 
-      case GQL.BatchModifyMethod.AddGps:
-        return <FilterSelect className="mb-4" withGps />;
+    case GQL.BatchModifyMethod.AddGps:
+      return <FilterSelect className="mb-4" withGps />;
 
-      default:
-        throw new Error('Unsupported method');
-    }
-  }, [method]);
-
-  return <Modal.Body>{body}</Modal.Body>;
+    default:
+      throw new Error('Unsupported method');
+  }
 };

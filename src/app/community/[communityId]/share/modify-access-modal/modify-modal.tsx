@@ -51,58 +51,53 @@ export const ModifyModal: React.FC<Props> = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header>
-                  Modify Access for {access.user.email}
-                </Modal.Header>
-                <Modal.Body>
-                  <RoleSelect controlName="role" />
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="bordered"
-                    isDisabled={pending}
-                    onPress={closeModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    isDisabled={!formState.isDirty}
-                    isLoading={pending}
-                    // Trigger confirmation if removing own admin role
-                    confirmation={fragment.isSelf}
-                    confirmationArg={{
-                      body: (
-                        <>
-                          <p className="text-danger">
-                            Removing the{' '}
-                            <span className="font-semibold">Admin</span> role
-                            will prevent you from managing user access in the
-                            future.
-                          </p>
-                          <p>Proceed?</p>
-                        </>
-                      ),
-                    }}
-                  >
-                    Save
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header>Modify Access for {access.user.email}</Modal.Header>
+            <Modal.Body>
+              <RoleSelect controlName="role" />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="bordered" isDisabled={pending} onPress={close}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                isDisabled={!formState.isDirty}
+                isLoading={pending}
+                // Trigger confirmation if removing own admin role
+                confirmation={fragment.isSelf}
+                confirmationArg={{
+                  body: (
+                    <>
+                      <p className="text-danger">
+                        Removing the{' '}
+                        <span className="font-semibold">Admin</span> role will
+                        prevent you from managing user access in the future.
+                      </p>
+                      <p>Proceed?</p>
+                    </>
+                  ),
+                }}
+              >
+                Save
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

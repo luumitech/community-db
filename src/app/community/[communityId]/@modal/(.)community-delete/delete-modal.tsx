@@ -38,15 +38,14 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
 
   return (
     <Modal
-      size="5xl"
+      size="sm"
       isOpen
       onOpenChange={goBack}
-      scrollBehavior="inside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
       <Modal.Content>
-        {(closeModal) => (
+        {({ close }) => (
           <>
             <Modal.Header>{appLabel('communityDelete')}</Modal.Header>
             <Modal.Body>
@@ -56,7 +55,7 @@ export const DeleteModal: React.FC<Props> = ({ onDelete }) => {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="bordered" onPress={closeModal}>
+              <Button variant="bordered" onPress={close}>
                 Cancel
               </Button>
               <Button

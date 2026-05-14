@@ -49,76 +49,74 @@ export const ModifyModal: React.FC<Props> = ({
 
   return (
     <Modal
-      size="5xl"
+      size="cover"
       isOpen
       onOpenChange={goBack}
       confirmation={isDirty}
-      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      renderWrapper={(content, clsNm) => (
+        <FormProvider {...formMethods}>
+          <Form className={clsNm} onSubmit={handleSubmit(onSubmit)}>
+            {content}
+          </Form>
+        </FormProvider>
+      )}
     >
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Modal.Content>
-            {(closeModal) => (
-              <>
-                <Modal.Header className="flex justify-between">
-                  {appLabel('communityModify')}
-                </Modal.Header>
-                <Modal.Body>
-                  <Tabs
-                    aria-label={`${appLabel('communityModify')} Options`}
-                    classNames={{
-                      tabList:
-                        'gap-6 w-full relative rounded-none p-0 border-b border-divider',
-                      tab: 'max-w-fit px-0 h-12',
-                    }}
-                    color="primary"
-                    variant="underlined"
-                    defaultSelectedKey={defaultTab}
-                  >
-                    <Tab key="general" title="General">
-                      <GeneralTab />
-                    </Tab>
-                    <Tab key="events" title="Events">
-                      <EventListEditor />
-                    </Tab>
-                    <Tab key="tickets" title="Tickets">
-                      <TicketListEditor />
-                    </Tab>
-                    <Tab key="paymentMethods" title="Payment Methods">
-                      <PaymentMethodListEditor />
-                    </Tab>
-                  </Tabs>
-                </Modal.Body>
-                <Modal.Footer className="flex items-center justify-between">
-                  <LastModified
-                    updatedAt={community.updatedAt}
-                    updatedBy={community.updatedBy}
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="bordered"
-                      isDisabled={pending}
-                      onPress={closeModal}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      isDisabled={!isDirty}
-                      isLoading={pending}
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </Modal.Footer>
-              </>
-            )}
-          </Modal.Content>
-        </Form>
-      </FormProvider>
+      <Modal.Content>
+        {({ close }) => (
+          <>
+            <Modal.Header className="flex justify-between">
+              {appLabel('communityModify')}
+            </Modal.Header>
+            <Modal.Body>
+              <Tabs
+                aria-label={`${appLabel('communityModify')} Options`}
+                classNames={{
+                  tabList:
+                    'gap-6 w-full relative rounded-none p-0 border-b border-divider',
+                  tab: 'max-w-fit px-0 h-12',
+                }}
+                color="primary"
+                variant="underlined"
+                defaultSelectedKey={defaultTab}
+              >
+                <Tab key="general" title="General">
+                  <GeneralTab />
+                </Tab>
+                <Tab key="events" title="Events">
+                  <EventListEditor />
+                </Tab>
+                <Tab key="tickets" title="Tickets">
+                  <TicketListEditor />
+                </Tab>
+                <Tab key="paymentMethods" title="Payment Methods">
+                  <PaymentMethodListEditor />
+                </Tab>
+              </Tabs>
+            </Modal.Body>
+            <Modal.Footer className="flex items-center justify-between">
+              <LastModified
+                updatedAt={community.updatedAt}
+                updatedBy={community.updatedBy}
+              />
+              <div className="flex items-center gap-2">
+                <Button variant="bordered" isDisabled={pending} onPress={close}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  isDisabled={!isDirty}
+                  isLoading={pending}
+                >
+                  Save
+                </Button>
+              </div>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

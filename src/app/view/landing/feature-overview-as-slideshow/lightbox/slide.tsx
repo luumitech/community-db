@@ -8,6 +8,7 @@ export const Slide: React.FC<ScreenshotEntry> = ({
   className,
   alt,
   caption,
+  imageClassName,
   ...props
 }) => {
   /**
@@ -18,7 +19,7 @@ export const Slide: React.FC<ScreenshotEntry> = ({
   return (
     <div className={twMerge('flex-[0_0_100%]', 'space-y-5 px-2', className)}>
       <div className={cn('rounded-xl bg-slate-700 p-2')}>
-        <Image className="w-full rounded-lg" alt={alt} {...props} />
+        <Image className={cn('w-full rounded-lg')} alt={alt} {...props} />
       </div>
       {caption && (
         <div className="text-center text-xl font-bold text-foreground">

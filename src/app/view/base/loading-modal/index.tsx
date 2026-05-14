@@ -16,8 +16,8 @@ export const LoadingModal: React.FC<Props> = () => {
   return (
     <Modal
       size="xs"
-      backdrop="opaque"
       isOpen={isLoading}
+      variant="opaque"
       hideCloseButton
       isDismissable={false}
     >

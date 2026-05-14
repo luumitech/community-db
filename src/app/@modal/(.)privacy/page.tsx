@@ -11,8 +11,7 @@ export default function Privacy() {
   const router = useRouter();
   return (
     <Modal
-      size="3xl"
-      scrollBehavior="inside"
+      size="cover"
       isOpen
       onOpenChange={() => router.back()}
       isDismissable

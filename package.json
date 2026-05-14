@@ -42,6 +42,8 @@
     "@faker-js/faker": "^8.4.1",
     "@geoman-io/leaflet-geoman-free": "^2.19.3",
     "@graphql-yoga/plugin-persisted-operations": "^3.17.1",
+    "@heroui-v3/react": "npm:@heroui/react@latest",
+    "@heroui-v3/styles": "npm:@heroui/styles@latest",
     "@heroui/react": "^2.8.5",
     "@hookform/resolvers": "^3.3.4",
     "@iconify/react": "^5.2.1",

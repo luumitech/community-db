@@ -11,18 +11,14 @@ export const Step2: React.FC<Step2Props> = (props) => {
   const { watch } = useHookFormContext();
   const method = watch('method');
 
-  const body = React.useMemo(() => {
-    switch (method) {
-      case GQL.BatchModifyMethod.AddEvent:
-        return <MembershipInfoEditor />;
+  switch (method) {
+    case GQL.BatchModifyMethod.AddEvent:
+      return <MembershipInfoEditor />;
 
-      case GQL.BatchModifyMethod.AddGps:
-        return <GpsInputEditor />;
+    case GQL.BatchModifyMethod.AddGps:
+      return <GpsInputEditor />;
 
-      default:
-        throw new Error('Unsupported method');
-    }
-  }, [method]);
-
-  return <Modal.Body>{body}</Modal.Body>;
+    default:
+      throw new Error('Unsupported method');
+  }
 };
