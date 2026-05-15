@@ -1,7 +1,8 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useOccupancyEditorContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
 import { occupancyInfoDefault } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
+import { Button } from '~/view/base/button';
 import { ReorderGroup, ReorderItem } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';
 import { Wizard } from '../wizard';

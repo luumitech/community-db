@@ -9,7 +9,12 @@ export type {
   LabelFormatterCallback,
   LineSeriesOption,
   PieSeriesOption,
+  XAXisComponentOption,
 } from 'echarts';
+export type {
+  CallbackDataParams,
+  TopLevelFormatterParams,
+} from 'echarts/types/dist/shared';
 export * from './bar-chart';
 export { EChart } from './echart';
 export * from './pie-chart';

@@ -1,7 +1,8 @@
-import type { EChartsType, ElementEvent } from 'echarts';
+import type { EChartsOption, EChartsType, ElementEvent } from 'echarts';
 
-export type OnColumnClickCB = (
+export type OnColumnClickCB<DataT> = (
   chartInst: EChartsType,
+  xAxisData: DataT[],
   dataIndex: number
 ) => void;
 
@@ -19,9 +20,9 @@ export type OnColumnClickCB = (
  * @param cb Callback when a column is click (anywhere on the column where the
  *   bar lies)
  */
-export function registerColumnClick(
+export function registerColumnClick<DataT>(
   chartInst: EChartsType,
-  cb: OnColumnClickCB
+  cb: OnColumnClickCB<DataT>
 ) {
   const zr = chartInst.getZr();
 
@@ -36,7 +37,16 @@ export function registerColumnClick(
       // Convert pixels to data index
       const pointInGrid = chartInst.convertFromPixel('grid', pointInPixel);
       const dataIndex = pointInGrid[0];
-      cb(chartInst, dataIndex);
+
+      /** Get xAxis information */
+      const option = chartInst.getOption() as EChartsOption;
+      // Handle both single axis and multi-axis arrays
+      const xAxis = Array.isArray(option.xAxis)
+        ? option.xAxis[0]
+        : option.xAxis;
+      // @ts-expect-error unable to type data correctly
+      const xAxisData = xAxis?.data;
+      cb(chartInst, xAxisData, dataIndex);
     }
   });
 }

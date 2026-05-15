@@ -1,6 +1,7 @@
-import { Button, Spacer, cn } from '@heroui/react';
+import { Spacer, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
 import { PricePlan } from '../price-plan';

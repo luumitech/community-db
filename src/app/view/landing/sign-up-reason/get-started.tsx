@@ -1,7 +1,8 @@
 'use client';
-import { Button, Link, cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import { appPath } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 
 interface Props {
   className?: string;

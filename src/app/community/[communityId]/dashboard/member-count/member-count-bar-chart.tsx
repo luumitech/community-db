@@ -3,6 +3,7 @@ import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import {
   EChart,
+  TotalUtil,
   barStyle,
   useEChartTheme,
   type BarSeriesOption,
@@ -13,6 +14,7 @@ import {
   type ReactECharts,
 } from '~/view/base/echart';
 import { type MemberCountEntry } from './_type';
+import { tooltipFormatter } from './tooltip-formatter';
 
 const MemberCountFragment = graphql(/* GraphQL */ `
   fragment Dashboard_MemberCount on Community {
@@ -82,6 +84,27 @@ class ChartDataHelper {
     };
   }
 
+  totalBarSeries(): BarSeriesOption {
+    const totalUtil = new TotalUtil(this.#theme, {
+      categoryNum: this.#stat.length,
+      totalFn: (dataIndex) => {
+        const entry = this.#stat[dataIndex];
+        if (entry != null) {
+          return entry.new + entry.renew;
+        } else {
+          return 0;
+        }
+      },
+    });
+
+    return {
+      name: 'total',
+      type: 'bar',
+      stack: 'members',
+      ...totalUtil.totalBar('top'),
+    };
+  }
+
   lineSeries(key: 'noRenewal', name: string): LineSeriesOption {
     const data = this.#stat.map((entry) => ({
       value: entry[key],
@@ -124,20 +147,22 @@ export const MemberCountBarChart: React.FC<Props> = ({
     return helper;
   }, [theme, communityStat, yearRange]);
 
-  const onColumnClick = React.useCallback<OnColumnClickCB>(
-    (chartInst, dataIndex) => {
-      const year = chartHelper.toYear(dataIndex);
+  const onColumnClick = React.useCallback<OnColumnClickCB<number>>(
+    (chartInst, data, dataIndex) => {
+      const year = data[dataIndex];
       if (year != null) {
         onYearSelect?.(year);
       }
     },
-    [chartHelper, onYearSelect]
+    [onYearSelect]
   );
 
   const option = React.useMemo<EChartsOption>(() => {
     return {
       tooltip: {
         trigger: 'axis',
+        /** This will override the default valueFormatter for the totalSeries */
+        formatter: tooltipFormatter,
       },
       legend: {
         bottom: 0,
@@ -161,9 +186,14 @@ export const MemberCountBarChart: React.FC<Props> = ({
         minInterval: 1,
       },
       series: [
+        /**
+         * If the order of the series are modified or new series are added, make
+         * sure the tooltip formatters are adjusted accordingly
+         */
         chartHelper.lineSeries('noRenewal', 'no renewal'),
         chartHelper.barSeries('renew', 'renewed', selectedYear),
         chartHelper.barSeries('new', 'new', selectedYear),
+        chartHelper.totalBarSeries(),
       ],
     };
   }, [chartHelper, selectedYear]);

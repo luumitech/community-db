@@ -1,8 +1,8 @@
-import { Button } from '@heroui/react';
 import React from 'react';
 import * as XLSX from 'xlsx';
 import { XlsxView } from '~/community/[communityId]/common/xlsx-view';
 import { startDownloadBlob } from '~/lib/dom';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 
 /** Filename of the sample xlsx */

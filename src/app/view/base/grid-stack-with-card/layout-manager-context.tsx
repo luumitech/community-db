@@ -1,6 +1,7 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import { GridStack as GS } from 'gridstack';
 import React from 'react';
+import { Button } from '~/view/base/button';
 import {
   GridStack,
   useGridStackContext,

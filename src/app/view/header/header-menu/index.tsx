@@ -1,6 +1,6 @@
-import { Button, ButtonGroup } from '@heroui/react';
 import React from 'react';
 import { useSession } from '~/custom-hooks/auth';
+import { Button, ButtonGroup } from '~/view/base/button';
 import { Dropdown } from '~/view/base/dropdown';
 import { Icon } from '~/view/base/icon';
 import type { MenuItemEntry } from './_type';

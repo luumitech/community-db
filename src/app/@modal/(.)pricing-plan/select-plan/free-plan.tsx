@@ -1,6 +1,7 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { Button } from '~/view/base/button';
 import { usePlanContext } from '../plan-context';
 import { PricePlanWithDescription } from '../price-plan-with-description';
 import { Wizard } from '../wizard';

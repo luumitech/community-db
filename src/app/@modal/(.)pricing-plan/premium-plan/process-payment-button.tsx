@@ -1,10 +1,11 @@
 import { useMutation } from '@apollo/client';
-import { Button, ButtonProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import Script from 'next/script';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import type { HelcimPayJsCardInfoOutput } from '~/lib/helcim-api/_type';
+import { Button, type ButtonProps } from '~/view/base/button';
 import { toast } from '~/view/base/toastify';
 
 /**

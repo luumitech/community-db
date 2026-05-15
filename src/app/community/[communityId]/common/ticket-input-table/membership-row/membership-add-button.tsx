@@ -1,6 +1,7 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useFormContext } from '~/custom-hooks/hook-form';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { type MembershipConfig } from '../ticket-context';
 

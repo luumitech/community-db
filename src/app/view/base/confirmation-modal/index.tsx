@@ -1,6 +1,6 @@
-import { Button } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
+import { Button } from '~/view/base/button';
 import { Modal, type ModalProps } from '~/view/base/modal';
 
 interface ContentArg {

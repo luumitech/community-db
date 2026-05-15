@@ -115,14 +115,14 @@ export const EventParticipationChart: React.FC<Props> = ({ className }) => {
     return helper;
   }, [theme, communityStat]);
 
-  const onColumnClick = React.useCallback<OnColumnClickCB>(
-    (chartInst, dataIndex) => {
-      const eventName = chartHelper.toEventName(dataIndex);
+  const onColumnClick = React.useCallback<OnColumnClickCB<string>>(
+    (chartInst, data, dataIndex) => {
+      const eventName = data[dataIndex];
       if (eventName != null) {
         setEventSelected?.(eventName);
       }
     },
-    [chartHelper, setEventSelected]
+    [setEventSelected]
   );
 
   const option = React.useMemo<EChartsOption>(() => {

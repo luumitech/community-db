@@ -1,8 +1,7 @@
-import { ButtonGroup } from '@heroui/react';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
-import { Button } from '~/view/base/button';
+import { Button, ButtonGroup } from '~/view/base/button';
 import { Card } from '~/view/base/card';
 import { DragHandle } from '~/view/base/drag-reorder';
 import { Icon } from '~/view/base/icon';

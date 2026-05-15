@@ -1,12 +1,13 @@
 'use client';
 import { ApolloError, useQuery } from '@apollo/client';
-import { Button, Link } from '@heroui/react';
+import { Link } from '@heroui/react';
 import React from 'react';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 import { toast } from '~/view/base/toastify';
 
 export type CommunityEntry = GQL.CommunityLayoutQuery['communityFromId'];

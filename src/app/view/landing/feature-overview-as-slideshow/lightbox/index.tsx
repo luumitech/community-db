@@ -1,8 +1,9 @@
 'use client';
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import useEmblaCarousel from 'embla-carousel-react';
 import React from 'react';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { Modal } from '~/view/base/modal';
 import { type ScreenshotEntry } from '../../feature-overview-image-list';

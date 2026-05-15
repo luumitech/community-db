@@ -1,10 +1,10 @@
 'use client';
-import { Button } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { appLabel, appPath } from '~/lib/app-path';
 import { appTitle } from '~/lib/env';
 import { AppLogo } from '~/view/app-logo';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { Modal } from '~/view/base/modal';
 import { BuiltBy } from '~/view/footer/build-by';

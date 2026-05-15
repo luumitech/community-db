@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { Button, ButtonProps, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { graphql } from '~/graphql/generated';
+import { Button, type ButtonProps } from '~/view/base/button';
 import { toast } from '~/view/base/toastify';
 
 const HelcimCancelSubscription = graphql(/* GraphQL */ `
