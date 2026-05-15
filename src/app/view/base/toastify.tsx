@@ -1,4 +1,4 @@
-import { Button, Link, cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import {
   toast as toastify,
@@ -9,6 +9,7 @@ import {
   type UpdateOptions,
 } from 'react-toastify';
 import { appPath } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 
 export { type Id } from 'react-toastify';

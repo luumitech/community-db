@@ -115,12 +115,15 @@ export const MembershipSourceChart: React.FC<Props> = ({ className }) => {
   const onPieSelect = React.useCallback(
     (evt: ECElementEvent, chartInst: EChartsType) => {
       const dataIndex = evt.dataIndexInside;
-      const eventName = chartHelper.toEventName(dataIndex);
+      const labelSeries = chartInst.getOption().series as PieSeriesOption[];
+      const labels = labelSeries[0].data;
+      // @ts-expect-error labels conform to types in #pieDataLabel()
+      const eventName = labels?.[dataIndex].name;
       if (eventName != null) {
         setEventSelected?.(eventName);
       }
     },
-    [chartHelper, setEventSelected]
+    [setEventSelected]
   );
 
   const option = React.useMemo<EChartsOption>(() => {

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Button, Card, Link, Skeleton, cn } from '@heroui/react';
+import { Card, Link, Skeleton, cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import * as R from 'remeda';
@@ -8,6 +8,7 @@ import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 import { Loading } from '~/view/base/loading';
 import type { PropertyEntry } from './_type';
 import { MoreMenu } from './more-menu';

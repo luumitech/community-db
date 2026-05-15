@@ -1,9 +1,10 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { startDownloadBlob } from '~/lib/dom';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { type ContactInfo } from '../_type';
 

@@ -12,14 +12,17 @@ const THEME_PREFIX = 'cd-echart';
 echarts.registerTheme(`${THEME_PREFIX}-light`, lightTheme);
 echarts.registerTheme(`${THEME_PREFIX}-dark`, darkTheme);
 
-interface Props extends EChartsReactProps {
+interface Props<DataT = unknown> extends EChartsReactProps {
   className?: string;
   option: EChartsOption;
-  onColumnClick?: OnColumnClickCB;
+  onColumnClick?: OnColumnClickCB<DataT>;
 }
 
-export const EChart = React.forwardRef<ReactECharts, Props>(
-  ({ className, onColumnClick, onChartReady, ...props }, ref) => {
+export const EChart = React.forwardRef(
+  <DataT,>(
+    { className, onColumnClick, onChartReady, ...props }: Props<DataT>,
+    ref: React.ForwardedRef<ReactECharts>
+  ) => {
     const [divRef, { height, width }] = useMeasure<HTMLDivElement>();
     const { resolvedTheme: theme } = useTheme();
 
@@ -47,6 +50,8 @@ export const EChart = React.forwardRef<ReactECharts, Props>(
       </div>
     );
   }
-);
+) as (<DataT = unknown>(
+  props: Props<DataT> & { ref?: React.ForwardedRef<ReactECharts> }
+) => React.ReactElement) & { displayName?: string };
 
 EChart.displayName = 'EChart';

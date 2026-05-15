@@ -1,5 +1,5 @@
-import { Button } from '@heroui/react';
 import React from 'react';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { type WizardContext } from '..';
 

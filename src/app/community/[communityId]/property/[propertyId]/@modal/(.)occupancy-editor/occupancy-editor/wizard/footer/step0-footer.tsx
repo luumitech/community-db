@@ -1,7 +1,7 @@
-import { Button } from '@heroui/react';
 import React from 'react';
 import { useOccupancyEditorContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/occupancy-editor-context';
 import { useHookFormContext } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
+import { Button } from '~/view/base/button';
 import { type WizardContext } from '..';
 
 interface Props {

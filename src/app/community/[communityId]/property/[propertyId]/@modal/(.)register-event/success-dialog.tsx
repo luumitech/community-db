@@ -1,7 +1,8 @@
-import { Button, Link, cn } from '@heroui/react';
+import { Link, cn } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 
 interface Props {

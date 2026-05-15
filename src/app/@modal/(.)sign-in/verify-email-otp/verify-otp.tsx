@@ -1,7 +1,8 @@
-import { Button, Spinner, cn } from '@heroui/react';
+import { Spinner, cn } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { authClient, useSignIn } from '~/custom-hooks/auth';
+import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { createInputOtp } from '~/view/base/input-otp';
 import { Modal } from '~/view/base/modal';

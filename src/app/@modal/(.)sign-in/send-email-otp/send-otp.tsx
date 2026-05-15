@@ -1,6 +1,7 @@
-import { Button, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { authClient } from '~/custom-hooks/auth';
+import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { Icon } from '~/view/base/icon';
 import { createInput } from '~/view/base/input';

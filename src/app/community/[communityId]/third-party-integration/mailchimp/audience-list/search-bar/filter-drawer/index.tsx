@@ -1,7 +1,7 @@
-import { Button } from '@heroui/react';
 import { type UseDisclosureReturn } from '@heroui/use-disclosure';
 import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
+import { Button } from '~/view/base/button';
 import { Drawer } from '~/view/base/drawer';
 import { Form } from '~/view/base/form';
 import { StatusSelect } from '../../status-select';

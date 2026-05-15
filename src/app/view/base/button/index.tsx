@@ -1,12 +1,15 @@
 import {
   Button as NextUIButton,
-  ButtonProps as NextUIButtonProps,
   Tooltip,
+  type ButtonProps as NextUIButtonProps,
+  type TooltipProps,
 } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { useForwardRef } from '~/custom-hooks/forward-ref';
 import { type ConfirmationModalArg } from '~/view/base/confirmation-modal';
+
+export { ButtonGroup, type ButtonGroupProps } from '@heroui/react';
 
 export interface ButtonProps extends NextUIButtonProps {
   /**
@@ -30,6 +33,7 @@ export interface ButtonProps extends NextUIButtonProps {
   beforeConfirm?: () => Promise<boolean>;
   /** Tooltip description */
   tooltip?: string;
+  tooltipProps?: TooltipProps;
 }
 
 type OnPressFn = NonNullable<NextUIButtonProps['onPress']>;
@@ -41,6 +45,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       confirmationArg,
       beforeConfirm,
       tooltip,
+      tooltipProps,
       onPress,
       type,
       ...props
@@ -127,7 +132,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     if (tooltip) {
-      return <Tooltip content={tooltip}>{renderButton}</Tooltip>;
+      return (
+        <Tooltip content={tooltip} {...tooltipProps}>
+          {renderButton}
+        </Tooltip>
+      );
     }
 
     return renderButton;

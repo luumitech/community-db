@@ -1,7 +1,7 @@
-import { Button } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
 import * as GQL from '~/graphql/generated/graphql';
+import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';
 import { PricePlanWithDescription } from '../price-plan-with-description';

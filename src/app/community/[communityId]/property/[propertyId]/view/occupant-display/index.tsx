@@ -1,10 +1,11 @@
-import { Button, Link } from '@heroui/react';
+import { Link } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/graphql';
 import { appLabel, appPath } from '~/lib/app-path';
+import { Button } from '~/view/base/button';
 import { Card } from '~/view/base/card';
 import { Icon } from '~/view/base/icon';
 import { OccupantTable } from './occupant-table';
