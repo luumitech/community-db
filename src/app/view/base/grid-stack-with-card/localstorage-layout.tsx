@@ -1,12 +1,8 @@
-import {
-  GridStack as GS,
-  type GridStackNode,
-  type GridStackWidget,
-} from 'gridstack';
+import { type GridStackNode, type GridStackWidget } from 'gridstack';
 import React from 'react';
-import { useLatest, useLocalStorage } from 'react-use';
+import { useLatest, useLocalStorage, useWindowSize } from 'react-use';
 import { lsFlags } from '~/lib/env';
-import { type Widget } from '~/view/base/grid-stack';
+import { type Breakpoint, type Widget } from '~/view/base/grid-stack';
 
 /**
  * Type of the widget stored into local storage
@@ -71,10 +67,14 @@ interface LSFormat<WidgetId extends string> {
  *
  * @param suffix Suffix attached to localstorage key to store grid layout
  *   information
- * @param cols Number of columns in current grid layout
+ * @param breakpointConfig Breakpoint configuration, for determining number of
+ *   grid columns given current window width
  * @returns
  */
-export function useLocalStorageLayout<WidgetId extends string>(suffix: string) {
+export function useLocalStorageLayout<WidgetId extends string>(
+  suffix: string,
+  breakpointConfig: Breakpoint[]
+) {
   const [_value, setValue] = useLocalStorage<LSFormat<WidgetId>>(
     `${lsFlags.gridLayout}-${suffix}`,
     {}
@@ -83,40 +83,48 @@ export function useLocalStorageLayout<WidgetId extends string>(suffix: string) {
    * This avoids stale closure and guarantees that all methods within this hook
    * can access the latest value in localstorage
    */
-  const lsValue = useLatest(_value);
+  const lsRef = useLatest(_value);
+
+  const windowSz = useWindowSize();
+  const _cols = React.useMemo(() => {
+    const idx = breakpointConfig.findIndex(
+      (bp) => bp.w && windowSz.width >= bp.w
+    );
+    if (idx === -1) {
+      return breakpointConfig[breakpointConfig.length - 1].c;
+    } else if (idx === 0) {
+      return 12;
+    } else {
+      return breakpointConfig[idx - 1].c;
+    }
+  }, [breakpointConfig, windowSz.width]);
+  const colsRef = useLatest(_cols);
 
   /** Save List of visible widget IDs to localstorage */
   const saveLayoutIds = React.useCallback(
     (idList: WidgetId[]) => {
-      setValue({ ...lsValue.current, idList });
+      setValue({ ...lsRef.current, idList });
     },
-    [lsValue, setValue]
+    [lsRef, setValue]
   );
 
-  /**
-   * Get layout in localstorage and present it as a map indexed by widget ID
-   *
-   * @param grid GridStack instance
-   */
-  const getLayout = React.useCallback(
-    (grid: GS) => {
-      const cols = grid.getColumn();
-      return layoutArrayToMap<WidgetId>(lsValue.current?.[cols]);
-    },
-    [lsValue]
-  );
+  /** Get layout in localstorage and present it as a map indexed by widget ID */
+  const getLayoutAsMap = React.useCallback(() => {
+    const layoutArray = lsRef.current?.[colsRef.current];
+    return layoutArrayToMap<WidgetId>(layoutArray);
+  }, [colsRef, lsRef]);
 
   /**
    * Update layout details in localstorage to reflect the current grid
    * configuration
    *
-   * @param grid GridStack instance
    * @param items List of widgets layouts to update
    */
   const updateLayout = React.useCallback(
-    (grid: GS, items: GridStackNode[] | GridStackWidget[]) => {
-      const cols = grid.getColumn();
-      const prevLayoutMap = layoutArrayToMap<WidgetId>(lsValue.current?.[cols]);
+    (items: GridStackNode[] | GridStackWidget[]) => {
+      const cols = colsRef.current;
+      const layoutArray = lsRef.current?.[cols];
+      const prevLayoutMap = layoutArrayToMap<WidgetId>(layoutArray);
       items.forEach((item) => {
         /**
          * Only keep the serializable fields that are important for layout
@@ -129,28 +137,21 @@ export function useLocalStorageLayout<WidgetId extends string>(suffix: string) {
       });
 
       setValue({
-        ...lsValue.current,
+        ...lsRef.current,
         [cols]: Object.values(prevLayoutMap),
       });
     },
-    [lsValue, setValue]
+    [colsRef, lsRef, setValue]
   );
 
-  /**
-   * Reset layout by clearing the localstorage
-   *
-   * @param grid GridStack instance
-   */
-  const resetLayout = React.useCallback(
-    (grid: GS) => {
-      if (lsValue.current) {
-        const cols = grid.getColumn();
-        const { [cols]: _, idList, ...layout } = lsValue.current;
-        setValue(layout);
-      }
-    },
-    [lsValue, setValue]
-  );
+  /** Reset layout by clearing the localstorage */
+  const resetLayout = React.useCallback(() => {
+    if (lsRef.current) {
+      const cols = colsRef.current;
+      const { [cols]: _, idList, ...layout } = lsRef.current;
+      setValue(layout);
+    }
+  }, [colsRef, lsRef, setValue]);
 
   /** Reset all layouts by clearing the localstorage */
   const resetAllLayout = React.useCallback(() => {
@@ -158,9 +159,10 @@ export function useLocalStorageLayout<WidgetId extends string>(suffix: string) {
   }, [setValue]);
 
   return {
-    layoutIdList: lsValue.current?.idList,
+    cols: _cols,
+    layoutIdList: _value?.idList,
     saveLayoutIds,
-    getLayout,
+    getLayoutAsMap,
     updateLayout,
     resetLayout,
     resetAllLayout,

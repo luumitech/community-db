@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type GridStack } from 'gridstack';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { z, zz } from '~/lib/zod';
@@ -12,19 +11,16 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-function defaultInputData(
-  grid: GridStack,
-  widgetsToShow: readonly string[]
-): InputData {
+function defaultInputData(widgetsToShow: readonly string[]): InputData {
   return {
     widgetIdList: [...widgetsToShow],
   };
 }
 
-export function useHookForm(grid: GridStack, widgetsToShow: readonly string[]) {
+export function useHookForm(widgetsToShow: readonly string[]) {
   const defaultValues = React.useMemo(() => {
-    return defaultInputData(grid, widgetsToShow);
-  }, [grid, widgetsToShow]);
+    return defaultInputData(widgetsToShow);
+  }, [widgetsToShow]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),

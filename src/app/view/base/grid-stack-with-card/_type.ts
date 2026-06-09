@@ -5,10 +5,13 @@ import { type Widget } from '~/view/base/grid-stack';
  *
  * - Indexed by widgetId, so any widgets can be easily managed
  */
-export type WidgetMap<WidgetId extends string> = Record<
+export type AllowableWidget<WidgetId extends string> = Record<
   WidgetId,
   {
-    /** Contains widget dimension, render function */
+    /**
+     * Common widget information, i.e. id, title, dimensions, rendering
+     * functions
+     */
     widget: Widget<WidgetId>;
     /** Contains widget labels, descriptions */
     info: WidgetInfo;

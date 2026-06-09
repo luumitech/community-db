@@ -14647,7 +14647,7 @@ __metadata:
     graphql-scalars: "npm:^1.23.0"
     graphql-sse: "npm:^2.5.3"
     graphql-yoga: "npm:^5.15.1"
-    gridstack: "npm:^12.4.2"
+    gridstack: "npm:^12.6.0"
     http-status-codes: "npm:^2.3.0"
     immer: "npm:^10.1.1"
     jest: "npm:^30.2.0"
@@ -18005,10 +18005,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gridstack@npm:^12.4.2":
-  version: 12.4.2
-  resolution: "gridstack@npm:12.4.2"
-  checksum: 10c0/9b15dabf24947e3f8d529055cbfcd532449b0ea0d4b2ae3b7419eed1742ea394dd19148b023fcbd7d0d69f2b5bc9df33d0f3e01b4153e96f2a7b767e036499bc
+"gridstack@npm:^12.6.0":
+  version: 12.6.0
+  resolution: "gridstack@npm:12.6.0"
+  checksum: 10c0/f9794d65cf757fd63c9b10e0456566fc8f98de6a68166b1df564e1290de0ee485779737928a1d6e11d8250587a1e26a1c8bd362b464983c7f42d2d62b375e536
   languageName: node
   linkType: hard
 

@@ -1,6 +1,9 @@
 import React from 'react';
 import { defineWidget } from '~/view/base/grid-stack';
-import { WidgetTitle, type WidgetMap } from '~/view/base/grid-stack-with-card';
+import {
+  WidgetTitle,
+  type AllowableWidget,
+} from '~/view/base/grid-stack-with-card';
 import { CurrentEvent } from './current-event';
 import { MembershipStatus } from './membership-status';
 import { NotesView } from './notes-view';
@@ -25,92 +28,76 @@ export type WidgetId = (typeof widgetIdList)[number];
  * - Specifying x,y explicitly allows layout reset to restore layout to the
  *   explicitly specified position
  */
-const membershipStatus = defineWidget({
-  id: 'membershipStatus',
-  w: 6,
-  h: 3,
-  x: 0,
-  y: 0,
-  title: <WidgetTitle>Membership Status</WidgetTitle>,
-  content: <MembershipStatus className="h-full w-full" />,
-});
-const currentEvent = defineWidget({
-  id: 'currentEvent',
-  w: 6,
-  h: 3,
-  x: membershipStatus.x! + membershipStatus.w!,
-  y: membershipStatus.y!,
-  title: <WidgetTitle>Current Event</WidgetTitle>,
-  content: <CurrentEvent className="h-full w-full" />,
-});
-const notesView = defineWidget({
-  id: 'notesView',
-  w: 12,
-  h: 4,
-  x: membershipStatus.x!,
-  y: membershipStatus.y! + membershipStatus.h!,
-  title: <WidgetTitle>Notes</WidgetTitle>,
-  content: <NotesView className="h-full w-full" />,
-});
-const occupantDisplay = defineWidget({
-  id: 'occupantDisplay',
-  w: 12,
-  h: 4,
-  x: notesView.x!,
-  y: notesView.y! + notesView.h!,
-  title: <WidgetTitle>Contact</WidgetTitle>,
-  content: <OccupantDisplay className="h-full w-full" />,
-});
-const ticketStatus = defineWidget({
-  id: 'ticketStatus',
-  w: 6,
-  h: 4,
-  x: occupantDisplay.x!,
-  y: occupantDisplay.y! + occupantDisplay.h!,
-  title: <WidgetTitle>Ticket Status</WidgetTitle>,
-  content: <TicketStatus className="h-full w-full" />,
-});
-
-export const allowableWidgets: WidgetMap<WidgetId> = {
+export const allowableWidgets: AllowableWidget<WidgetId> = {
   membershipStatus: {
-    widget: membershipStatus,
     info: {
       label: 'Membership Status',
       description:
         "Review a member's standing for any given year. Also shows other events attended for the year.",
     },
+    widget: defineWidget({
+      id: 'membershipStatus',
+      title: <WidgetTitle>Membership Status</WidgetTitle>,
+      content: <MembershipStatus className="h-full w-full" />,
+      w: 6,
+      h: 3,
+    }),
   },
   currentEvent: {
-    widget: currentEvent,
     info: {
       label: 'Current Event',
       description:
         'Look up an event and register the current member as an attendee directly from this widget. Ideal for front-desk check-ins or manual registration.',
     },
+    widget: defineWidget({
+      id: 'currentEvent',
+      title: <WidgetTitle>Current Event</WidgetTitle>,
+      content: <CurrentEvent className="h-full w-full" />,
+      w: 6,
+      h: 3,
+    }),
   },
   notesView: {
-    widget: notesView,
     info: {
       label: 'Notes',
       description:
         "Read and update notes tied to this household. Useful for logging special requests, follow-ups, or any context that doesn't fit structured fields.",
     },
+    widget: defineWidget({
+      id: 'notesView',
+      title: <WidgetTitle>Notes</WidgetTitle>,
+      content: <NotesView className="h-full w-full" />,
+      w: 12,
+      h: 4,
+    }),
   },
   occupantDisplay: {
-    widget: occupantDisplay,
     info: {
       label: 'Contact',
       description:
         'View and update contact details for everyone in the current household.',
     },
+    widget: defineWidget({
+      id: 'occupantDisplay',
+      title: <WidgetTitle>Contact</WidgetTitle>,
+      content: <OccupantDisplay className="h-full w-full" />,
+      w: 12,
+      h: 4,
+    }),
   },
   ticketStatus: {
-    widget: ticketStatus,
     info: {
       label: 'Ticket Status',
       description:
         'See a summary of tickets purchased or assigned to this member for a selected year, including status and event associations.',
     },
+    widget: defineWidget({
+      id: 'ticketStatus',
+      title: <WidgetTitle>Ticket Status</WidgetTitle>,
+      content: <TicketStatus className="h-full w-full" />,
+      w: 6,
+      h: 4,
+    }),
     hide: true,
   },
 };
