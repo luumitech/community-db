@@ -76,7 +76,7 @@ export const ConfigContent: React.FC<Props> = ({ disclosure, ...arg }) => {
               color="danger"
               variant="bordered"
               onPress={() => {
-                resetLayout(grid);
+                resetLayout();
                 closeDrawer();
               }}
             >

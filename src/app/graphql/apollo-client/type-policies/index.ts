@@ -9,6 +9,8 @@ export const typePolicies: TypedTypePolicies = {
   Community: {
     fields: {
       propertyList: relayStylePagination(['filter']),
+      // When modifying partial settings within defaultSetting, merge the resulting object
+      defaultSetting: { merge: true },
     },
   },
   Property: {

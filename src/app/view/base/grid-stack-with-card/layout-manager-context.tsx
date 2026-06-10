@@ -1,5 +1,4 @@
 import { cn } from '@heroui/react';
-import { GridStack as GS } from 'gridstack';
 import React from 'react';
 import { Button } from '~/view/base/button';
 import {
@@ -9,9 +8,11 @@ import {
   type Widget,
 } from '~/view/base/grid-stack';
 import { Icon } from '~/view/base/icon';
-import type { WidgetFilterFn, WidgetInfo, WidgetMap } from './_type';
+import type { AllowableWidget, WidgetFilterFn } from './_type';
 import { ConfigDrawer } from './config-drawer';
 import { useLocalStorageLayout } from './localstorage-layout';
+
+type LocalStorageReturn = ReturnType<typeof useLocalStorageLayout>;
 
 interface ContextT<WidgetId extends string> {
   /** List of all widget IDs that should be rendered on screen */
@@ -23,9 +24,9 @@ interface ContextT<WidgetId extends string> {
   /** Render given set of widgets of a given ID */
   setWidgets: (idList: WidgetId[]) => void;
   /** Reset the saved layout of the current breakpoint */
-  resetLayout: (gs: GS) => void;
+  resetLayout: LocalStorageReturn['resetLayout'];
   /** Reset all saved layouts */
-  resetAllLayout: () => void;
+  resetAllLayout: LocalStorageReturn['resetAllLayout'];
 }
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -43,7 +44,7 @@ export const LAYOUT_MANAGER_PROPS = [
 /** Properties expected to be passed by user */
 export interface LayoutManagerProps<WidgetId extends string> {
   /** List of all allowable widgets that can be displayed in the grid */
-  allowableWidgets: WidgetMap<WidgetId>;
+  allowableWidgets: AllowableWidget<WidgetId>;
   /** Custom filter function to control if the widget should be shown */
   widgetFilter?: WidgetFilterFn<WidgetId>;
 }
@@ -61,18 +62,13 @@ export function LayoutManagerProvider<WidgetId extends string>({
 }: React.PropsWithChildren<Props<WidgetId>>) {
   const { grid } = useGridStackContext();
   const {
+    cols,
     layoutIdList,
     saveLayoutIds,
-    getLayout,
+    getLayoutAsMap,
     resetLayout,
     resetAllLayout,
   } = lsUtil;
-
-  /**
-   * This is not memoized because we want the latest layoutMap whenever
-   * localstorage is altered
-   */
-  const layoutMap = getLayout(grid);
 
   /** Set of widget IDs that should be visible on the GridStack */
   const widgetIdList = React.useMemo(() => {
@@ -164,6 +160,8 @@ export function LayoutManagerProvider<WidgetId extends string>({
    * information stored in layout to produce list of widgets to show
    */
   const widgets = React.useMemo<Widget<WidgetId>[]>(() => {
+    const layoutMap = getLayoutAsMap();
+
     const result: Widget<WidgetId>[] = [];
     for (const widgetId of widgetIdList) {
       const defaultWidget = allowableWidgets[widgetId].widget;
@@ -174,7 +172,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
         continue;
       }
       const widget = {
-        ...allowableWidgets[widgetId].widget,
+        ...defaultWidget,
         ...layoutMap[widgetId],
       };
       if (widgetFilter == null || widgetFilter?.(widget)) {
@@ -182,7 +180,7 @@ export function LayoutManagerProvider<WidgetId extends string>({
       }
     }
     return result;
-  }, [layoutMap, widgetIdList, allowableWidgets, widgetFilter]);
+  }, [getLayoutAsMap, widgetIdList, allowableWidgets, widgetFilter]);
 
   const Context = getContext<WidgetId>();
 
