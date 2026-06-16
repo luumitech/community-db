@@ -29,15 +29,6 @@ const nextConfig: NextConfig = {
      */
     // '@whatwg-node',
   ],
-  eslint: {
-    /**
-     * Make sure all directories are scanned. (by default, only 'src' is linted)
-     *
-     * See
-     * https://nextjs.org/docs/pages/building-your-application/configuring/eslint#additional-configurations
-     */
-    dirs: ['.'],
-  },
   // Pull all dependencies into .next build
   output: 'standalone',
 };
