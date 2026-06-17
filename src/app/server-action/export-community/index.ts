@@ -8,24 +8,6 @@ import {
 } from '~/lib/xlsx-io/export';
 import { ExportMethod, schema } from './_type';
 import { getDefaultXlsxFn } from './util';
-import { XlsxCache } from './xlsx-cache';
-
-/** Export community information */
-export async function exportCommunityAsUrl(communityId: string) {
-  const hdrs = await headers();
-  const session = await getServerSession(hdrs);
-  if (!session) {
-    throw new Error('Not authorized');
-  }
-  const form = schema.parse({
-    email: session.user.email,
-    communityId,
-  });
-
-  const cache = await XlsxCache.fromForm(form);
-  const url = await cache.downloadUrl();
-  return url;
-}
 
 /**
  * Export community information
