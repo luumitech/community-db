@@ -4,9 +4,8 @@ import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { EditorState, LexicalEditor } from 'lexical';
+import { LexicalEditor } from 'lexical';
 import {
   BeautifulMentionNode,
   BeautifulMentionsItem,
@@ -15,6 +14,7 @@ import {
 } from 'lexical-beautiful-mentions';
 import React from 'react';
 import { CustomMenu, CustomMenuItem } from './custom-menu';
+import { CustomOnChangePlugin } from './custom-onchange-plugin';
 import { MaxRowsPlugin } from './max-rows-plugin';
 
 export interface CustomLexicalProps {
@@ -23,8 +23,19 @@ export interface CustomLexicalProps {
   description?: React.ReactNode;
   mentionTheme?: BeautifulMentionsTheme;
   mentionItems?: Record<string, BeautifulMentionsItem[]>;
-  onEditorInit?: (editor: LexicalEditor) => void;
-  onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
+  /**
+   * Default editorState as serialized JSON string
+   *
+   * - Non controlled input
+   */
+  defaultValue?: string;
+  /**
+   * EditorState as serialized JSON string
+   *
+   * - Controlled input
+   */
+  value?: string;
+  onValueChange?: (editorStateAsStr: string, editor: LexicalEditor) => void;
   /** Maximum number of rows (newline characters) allowed in editor */
   maxRows?: number;
 }
@@ -35,34 +46,38 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
   description,
   mentionTheme,
   mentionItems,
-  onEditorInit,
-  onEditorChange,
+  defaultValue,
+  value,
+  onValueChange,
   maxRows,
 }) => {
-  const initialConfig = {
-    namespace: 'editor',
-    theme: {
-      beautifulMentions: mentionTheme,
-    },
-    nodes: [BeautifulMentionNode],
-    onError: (error: Error) => {
-      /**
-       * Catch any errors that occur during Lexical updates and log them or
-       * throw them as needed. If you don't throw them, Lexical will try to
-       * recover gracefully without losing user data.
-       */
-      console.error({ error });
-    },
-    editorState: (editor: LexicalEditor) => {
-      onEditorInit?.(editor);
-    },
-  };
-
-  const onChange = React.useCallback(
-    (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
-      onEditorChange?.(editorState, editor);
-    },
-    [onEditorChange]
+  const initialConfig = React.useMemo(
+    () => ({
+      namespace: 'editor',
+      theme: {
+        beautifulMentions: mentionTheme,
+      },
+      nodes: [BeautifulMentionNode],
+      onError: (error: Error) => {
+        /**
+         * Catch any errors that occur during Lexical updates and log them or
+         * throw them as needed. If you don't throw them, Lexical will try to
+         * recover gracefully without losing user data.
+         */
+        console.error({ error });
+      },
+      editorState: (editor: LexicalEditor) => {
+        if (defaultValue) {
+          try {
+            const parsedEditorState = editor.parseEditorState(defaultValue);
+            editor.setEditorState(parsedEditorState);
+          } catch (err) {
+            console.error('Failed to parse incoming Lexical EditorState', err);
+          }
+        }
+      },
+    }),
+    [mentionTheme, defaultValue]
   );
 
   return (
@@ -106,7 +121,7 @@ export const CustomLexical: React.FC<CustomLexicalProps> = ({
         )}
         <HistoryPlugin />
         <AutoFocusPlugin />
-        <OnChangePlugin onChange={onChange} />
+        <CustomOnChangePlugin value={value} onValueChange={onValueChange} />
         {mentionItems && (
           <BeautifulMentionsPlugin
             items={mentionItems}

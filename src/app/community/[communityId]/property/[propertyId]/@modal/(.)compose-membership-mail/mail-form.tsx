@@ -19,11 +19,13 @@ export const MailForm: React.FC<Props> = ({ className }) => {
       <InputEmail controlName="defaultSetting.membershipEmail.cc" label="Cc" />
       <TextEditor
         controlName="defaultSetting.membershipEmail.subject"
+        isControlled
         label="Subject"
         maxRows={1}
       />
       <TextEditor
         controlName="defaultSetting.membershipEmail.message"
+        isControlled
         label="Message"
         description={
           <div>

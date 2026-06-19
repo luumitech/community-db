@@ -1,13 +1,25 @@
 import { EditorState, LexicalEditor } from 'lexical';
 import React from 'react';
-import { useFormContext, type Path } from '~/custom-hooks/hook-form';
+import {
+  Controller,
+  useFormContext,
+  type Path,
+} from '~/custom-hooks/hook-form';
 import { CustomLexical, type CustomLexicalProps } from './custom-lexical';
 
 export { MentionUtil } from './mention-util';
 
-export interface RichTextEditorProps<TFieldValues>
-  extends Omit<CustomLexicalProps, 'onEditorInit'> {
+export interface RichTextEditorProps<TFieldValues> extends Omit<
+  CustomLexicalProps,
+  'onEditorInit'
+> {
   controlName: Path<TFieldValues>;
+  /**
+   * Force component into a controlled component, useful if you need setValue to
+   * work properly
+   */
+  isControlled?: boolean;
+  /** Triggered whenever content of editor is modified */
   onEditorChange?: (editorState: EditorState, editor: LexicalEditor) => void;
 }
 
@@ -19,34 +31,46 @@ export interface RichTextEditorProps<TFieldValues>
  */
 export function RichTextEditor<TFieldValues>({
   controlName,
+  isControlled,
   onEditorChange,
   ...props
 }: RichTextEditorProps<TFieldValues>) {
-  const { getValues, setValue } = useFormContext();
-  const _editorState = getValues<string>(controlName);
+  const { control } = useFormContext();
 
-  const onEditorInit = React.useCallback(
-    (editor: LexicalEditor) => {
-      const parsedEditorState = editor.parseEditorState(_editorState);
-      editor.setEditorState(parsedEditorState);
+  const customOnValueChange = React.useCallback(
+    (onChange: (value: string) => void) => {
+      return (editorStateAsStr: string, editor: LexicalEditor) => {
+        onChange(editorStateAsStr);
+        const parsedEditorState = editor.parseEditorState(editorStateAsStr);
+        onEditorChange?.(parsedEditorState, editor);
+      };
     },
-    [_editorState]
-  );
-
-  const customOnEditorChange = React.useCallback(
-    (editorState: EditorState, editor: LexicalEditor) => {
-      onEditorChange?.(editorState, editor);
-      const newEditorState = JSON.stringify(editorState.toJSON());
-      setValue<string>(controlName, newEditorState, { shouldDirty: true });
-    },
-    [controlName, onEditorChange, setValue]
+    [onEditorChange]
   );
 
   return (
-    <CustomLexical
-      onEditorInit={onEditorInit}
-      onEditorChange={customOnEditorChange}
-      {...props}
+    <Controller
+      control={control}
+      name={controlName}
+      render={({ field, fieldState }) => {
+        return (
+          <CustomLexical
+            {...(isControlled
+              ? { value: field.value }
+              : { defaultValue: field.value })}
+            onValueChange={customOnValueChange(field.onChange)}
+            /**
+             * TODO: handle errorMessage,
+             *
+             * - But not priority now, because we don't expect this form value to
+             *   cause errors
+             */
+            // errorMessage={fieldState.error?.message}
+            // isInvalid={fieldState.invalid}
+            {...props}
+          />
+        );
+      }}
     />
   );
 }
