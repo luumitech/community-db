@@ -3,7 +3,7 @@ import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useFieldArray } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { EventInfoEditor } from './event-info-editor';
 import { MembershipEditor } from './membership-editor';
 import { useHookFormContext } from './use-hook-form';

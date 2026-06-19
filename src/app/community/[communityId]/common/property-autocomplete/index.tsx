@@ -8,7 +8,7 @@ import {
 } from '~/community/[communityId]/property-list/property-table';
 import { actions, useDispatch } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { onError } from '~/graphql/on-error';
 import { appPath } from '~/lib/app-path';
 import { PlainComboBox } from '~/view/base/combo-box';

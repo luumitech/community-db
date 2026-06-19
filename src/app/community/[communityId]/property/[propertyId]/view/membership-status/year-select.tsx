@@ -5,7 +5,7 @@ import {
   yearSelectItems,
   type YearItem,
 } from '~/community/[communityId]/property/[propertyId]/year-select-items';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { PlainSelect, type PlainSelectProps } from '~/view/base/select';
 
 type CustomSelectProps = Omit<PlainSelectProps<YearItem>, 'items'>;

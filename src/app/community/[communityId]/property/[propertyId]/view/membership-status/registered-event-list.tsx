@@ -1,11 +1,11 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { EventChip } from '~/community/[communityId]/common/chip/event-chip';
-import * as GQL from '~/graphql/generated/graphql';
+import type { MembershipEntry } from './_type';
 
 interface Props {
   className?: string;
-  membership?: GQL.PropertyId_MembershipStatusFragment['membershipList'][number];
+  membership?: MembershipEntry;
 }
 
 export const RegisteredEventList: React.FC<Props> = ({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { usePlanContext } from '../plan-context';

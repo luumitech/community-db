@@ -1,4 +1,4 @@
-import { type CommunityAccessListQuery } from '~/graphql/generated/graphql';
+import { type CommunityAccessListQuery } from '~/graphql/generated/types';
 
 export type CommunityEntry = CommunityAccessListQuery['communityFromId'];
 

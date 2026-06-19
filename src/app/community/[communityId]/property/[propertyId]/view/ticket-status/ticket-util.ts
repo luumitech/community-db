@@ -1,4 +1,4 @@
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 
 export type TicketInfoEntry = ReturnType<typeof ticketInfoForYear>[number];
 export type TicketRowEntry = ReturnType<typeof makeTicketRow>;

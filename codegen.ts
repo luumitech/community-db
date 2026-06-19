@@ -18,6 +18,33 @@ const config: CodegenConfig = {
       config: {
         nonOptionalTypename: true,
         dedupeFragments: true,
+        enumType: 'native',
+        scalars: {
+          // ISOString (i.e. "2024-05-13T15:58:12.957Z")
+          DateTime: 'string',
+          Date: 'string',
+        },
+      },
+    },
+    /**
+     * Starting with @graphql-codegen/cli@^7
+     *
+     * - The generated 'graphql.ts' no longer includes all base types
+     * - So we generate them explicitly, and at the same time, we need to sync the
+     *   type configuration with the client-preset
+     */
+    './src/app/graphql/generated/types.ts': {
+      plugins: [
+        'typescript',
+        {
+          add: {
+            content: "export type * from './graphql'",
+          },
+        },
+      ],
+      config: {
+        nonOptionalTypename: true,
+        enumsAsTypes: false,
         scalars: {
           // ISOString (i.e. "2024-05-13T15:58:12.957Z")
           DateTime: 'string',

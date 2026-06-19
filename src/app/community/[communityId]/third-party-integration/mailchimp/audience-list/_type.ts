@@ -1,7 +1,7 @@
 import {
   type ThirdPartyIntegrationEmailPropertyListQuery,
   type ThirdPartyIntegrationMailchimpMemberListQuery,
-} from '~/graphql/generated/graphql';
+} from '~/graphql/generated/types';
 
 type AudienceEntry =
   ThirdPartyIntegrationMailchimpMemberListQuery['mailchimpMemberList'][number];

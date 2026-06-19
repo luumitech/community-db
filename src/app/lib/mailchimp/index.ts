@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Cipher } from '~/lib/cipher';
 import { Audience, Ping, Resource } from './resource';
 import { MailchimpCredential } from './resource/_type';

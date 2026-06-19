@@ -1,7 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { PlainSelect } from '~/view/base/select';
 import {
   SelectedYearItem,

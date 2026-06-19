@@ -7,7 +7,7 @@ import {
   OptOutChip,
   WarningChip,
 } from '~/community/[communityId]/common/chip';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { initialState, type FilterT } from '~/lib/reducers/mailchimp';
 import { Truncate } from '~/view/base/truncate';
 

@@ -2,7 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
 import { MailchimpStatusChip } from '~/community/[communityId]/common/chip';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Select, SelectItem, type SelectProps } from '~/view/base/select';
 
 export const subscriberStatusItems: SelectItem[] = [

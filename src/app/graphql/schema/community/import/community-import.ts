@@ -4,7 +4,7 @@ import { Job } from 'agenda';
 import { GraphQLError } from 'graphql';
 import * as R from 'remeda';
 import * as XLSX from 'xlsx';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { getGeoapifyApi } from '~/graphql/schema/geocode/util';
 import { jobProgress, type JobProgressOutput } from '~/graphql/schema/job/util';
 import { getSubscriptionEntry } from '~/graphql/schema/payment/util';

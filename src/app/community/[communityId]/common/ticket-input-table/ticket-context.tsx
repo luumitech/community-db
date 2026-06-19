@@ -1,5 +1,5 @@
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { type SelectProps } from '~/view/base/select';
 import { type ExistingMembership, type TicketListFieldArray } from './_type';
 

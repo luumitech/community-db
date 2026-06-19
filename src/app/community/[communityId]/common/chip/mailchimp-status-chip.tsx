@@ -1,6 +1,6 @@
 import { Chip, ChipProps } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Tooltip } from '~/view/base/tooltip';
 import { subscriberStatusItems } from '../../third-party-integration/mailchimp/audience-list/status-select';
 

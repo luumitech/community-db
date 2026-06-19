@@ -6,7 +6,7 @@ import {
   type UseFieldArrayReturn,
 } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { isInteger, isPositive, z, zz } from '~/lib/zod';
 
 const ModifyFragment = graphql(/* GraphQL */ `

@@ -8,7 +8,7 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { evictCache } from '~/graphql/apollo-client/cache-util/evict';
 import { trackJobProgress } from '~/graphql/apollo-client/track-job-progress';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { appPath } from '~/lib/app-path';
 import { Form } from '~/view/base/form';
 import { MoreMenu } from '../common/more-menu';

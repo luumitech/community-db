@@ -7,7 +7,7 @@ import type {
   Polygon,
   Position,
 } from 'geojson';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 
 type pointGridFn = typeof turf.pointGrid;
 

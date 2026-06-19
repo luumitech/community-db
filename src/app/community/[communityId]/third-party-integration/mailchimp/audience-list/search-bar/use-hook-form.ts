@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { initialState, isFilterSpecified } from '~/lib/reducers/mailchimp';
 import { z, zz } from '~/lib/zod';
 function schema() {

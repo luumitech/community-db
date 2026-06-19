@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Link } from '~/view/base/link';
 import { useHookFormContext } from '../use-hook-form';

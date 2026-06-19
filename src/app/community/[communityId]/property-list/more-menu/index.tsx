@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from '~/custom-hooks/redux';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { insertIf } from '~/lib/insert-if';
 import { HeaderMenu } from '~/view/header';
 import { useMenuItem } from './use-menu-item';

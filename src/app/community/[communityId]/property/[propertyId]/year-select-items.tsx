@@ -1,7 +1,7 @@
 import { Chip, cn, type SelectedItems } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { getCurrentYear } from '~/lib/date-util';
 import { Icon } from '~/view/base/icon';
 import { type SelectItem } from '~/view/base/select';

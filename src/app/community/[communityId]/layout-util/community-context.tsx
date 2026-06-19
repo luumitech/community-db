@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { getCurrentYear } from '~/lib/date-util';
 import { insertIf } from '~/lib/insert-if';
 import { type SelectItem, type SelectSection } from '~/view/base/select';

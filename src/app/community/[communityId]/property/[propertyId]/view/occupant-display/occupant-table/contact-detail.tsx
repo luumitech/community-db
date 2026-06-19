@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Icon } from '~/view/base/icon';
 import { ContactInfoEntry } from '../_type';
 

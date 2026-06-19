@@ -2,7 +2,7 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { MemberStatusChip } from '~/community/[communityId]/common/member-status-chip';
 import { Occupant } from '~/community/[communityId]/property-list/property-table/occupant';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { formatUTCDate } from '~/lib/date-util';
 import { useHookFormContext } from './use-hook-form';
 

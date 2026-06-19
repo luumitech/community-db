@@ -1,7 +1,7 @@
 import { Link } from '@heroui/react';
 import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/layout-context';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { appLabel, appPath } from '~/lib/app-path';
 import { useHookFormContext } from '../use-hook-form';
 

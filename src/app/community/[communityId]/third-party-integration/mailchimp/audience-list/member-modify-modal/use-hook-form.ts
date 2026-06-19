@@ -3,7 +3,7 @@ import React from 'react';
 import { usePageContext } from '~/community/[communityId]/third-party-integration/page-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { z, zz } from '~/lib/zod';
 
 export const ModifyFragment = graphql(/* GraphQL */ `

@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { SelectProps, createSelect, type SelectItem } from '~/view/base/select';
 import { type InputData } from '../modify-access-modal/use-hook-form';
 

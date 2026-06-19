@@ -1,6 +1,6 @@
 import React from 'react';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { type RootState } from '~/lib/reducers';
 import { type AudienceListArg, type AudienceMember } from './_type';
 import { type SortDescriptor } from './audience-table';

@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import { CommunityAccessListDocument } from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { CreateModal, type ModalArg } from './create-modal';
 import { InputData } from './use-hook-form';
@@ -41,7 +41,7 @@ export const NewAccessModal: React.FC<Props> = ({ modalControl }) => {
           refetchQueries: [
             // adding access creates new entry in access list
             {
-              query: GQL.CommunityAccessListDocument,
+              query: CommunityAccessListDocument,
               variables: { id: input.communityId },
             },
           ],

@@ -3,7 +3,7 @@ import React from 'react';
 import { useLayoutContext } from '~/community/[communityId]/property/[propertyId]/layout-context';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { appLabel, appPath } from '~/lib/app-path';
 import { Button } from '~/view/base/button';
 import { Card } from '~/view/base/card';

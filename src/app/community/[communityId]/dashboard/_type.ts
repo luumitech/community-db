@@ -1,3 +1,3 @@
-import type { DashboardYearlyChartQuery } from '~/graphql/generated/graphql';
+import type { DashboardYearlyChartQuery } from '~/graphql/generated/types';
 
 export type DashboardEntry = DashboardYearlyChartQuery['communityFromId'];

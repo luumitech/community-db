@@ -3,7 +3,7 @@ import type {
   SupportedPaymentMethod,
   SupportedTicketItem,
 } from '@prisma/client';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import prisma from '~/lib/prisma';
 import {
   extractEventList,
