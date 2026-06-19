@@ -3,8 +3,9 @@ import React from 'react';
 import { FormProvider } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { appLabel } from '~/lib/app-path';
-import { Button } from '~/view/base/button';
+import { Button, ButtonGroup } from '~/view/base/button';
 import { Form } from '~/view/base/form';
+import { Icon } from '~/view/base/icon';
 import { Modal } from '~/view/base/modal';
 import { useLayoutContext } from '../../layout-context';
 import { MailForm } from './mail-form';
@@ -29,7 +30,7 @@ export const ModalDialog: React.FC<Props> = ({
   const router = useRouter();
   const { property: propertyFragment } = useLayoutContext();
   const { canEdit } = useSelector((state) => state.community);
-  const { formMethods } = useHookForm(membershipYear);
+  const { formMethods, resetEmailTemplate } = useHookForm(membershipYear);
   const [saveTemplatePending, saveTemplateStartTransition] =
     React.useTransition();
   const [sendMailPending, sendMailStartTransition] = React.useTransition();
@@ -91,15 +92,27 @@ export const ModalDialog: React.FC<Props> = ({
                 </Modal.Body>
                 <Modal.Footer>
                   {canEdit && (
-                    <Button
-                      color="primary"
-                      variant="bordered"
-                      isLoading={saveTemplatePending}
-                      isDisabled={sendMailPending || !isDirty}
-                      onPress={() => formMethods.handleSubmit(onSaveTemplate)()}
-                    >
-                      Save Email Template
-                    </Button>
+                    <ButtonGroup variant="bordered">
+                      <Button
+                        tooltip="Save Current Message As Email Template"
+                        startContent={<Icon icon="download" />}
+                        isLoading={saveTemplatePending}
+                        isDisabled={sendMailPending || !isDirty}
+                        onPress={() =>
+                          formMethods.handleSubmit(onSaveTemplate)()
+                        }
+                      >
+                        Save Template
+                      </Button>
+                      <Button
+                        tooltip="Revert To Default Email Template"
+                        startContent={<Icon icon="undo" />}
+                        isDisabled={sendMailPending}
+                        onPress={() => resetEmailTemplate()}
+                      >
+                        Revert Template
+                      </Button>
+                    </ButtonGroup>
                   )}
                   <div className="grow" />
                   <Button

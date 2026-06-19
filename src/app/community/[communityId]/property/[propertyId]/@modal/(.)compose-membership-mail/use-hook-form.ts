@@ -300,8 +300,18 @@ export function useHookForm(membershipYear: string) {
     defaultValues,
     resolver: zodResolver(schema()),
   });
+  const { setValue } = formMethods;
 
-  return { formMethods };
+  const resetEmailTemplate = React.useCallback(() => {
+    setValue('defaultSetting.membershipEmail.subject', defaultSubject, {
+      shouldDirty: true,
+    });
+    setValue('defaultSetting.membershipEmail.message', defaultMessage, {
+      shouldDirty: true,
+    });
+  }, [setValue]);
+
+  return { formMethods, resetEmailTemplate };
 }
 
 export function useHookFormContext() {
