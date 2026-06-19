@@ -1,7 +1,7 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { getFragment, graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Tooltip } from '~/view/base/tooltip';
 import { type AccessEntry } from '../_type';
 import { roleItems } from '../role-select';

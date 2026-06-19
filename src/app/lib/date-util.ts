@@ -10,7 +10,7 @@ import {
 } from '@internationalized/date';
 import { format } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 
 type GQLDateTime = GQL.Scalars['DateTime']['output'];
 type GQLDate = GQL.Scalars['Date']['output'];

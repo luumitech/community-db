@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as R from 'remeda';
 import { type SortDescriptor } from '~/community/[communityId]/third-party-integration/mailchimp/audience-list/audience-table';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 
 /** Filters available on the mailchimp integration search bar */
 export interface FilterT {

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { z, zz } from '~/lib/zod';
 
 const SQUARE_KILOMETER_LIMIT = 3; // Maximum area of drawn boundary in km²

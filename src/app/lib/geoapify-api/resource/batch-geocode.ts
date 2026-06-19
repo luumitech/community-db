@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql';
 import { StatusCodes } from 'http-status-codes';
 import { jsonc } from 'jsonc';
 import * as R from 'remeda';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { timeout } from '~/lib/date-util';
 import type { GeocodeResult } from './_type';
 import { Resource } from './resource';

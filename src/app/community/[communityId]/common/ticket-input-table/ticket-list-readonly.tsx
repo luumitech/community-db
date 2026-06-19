@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { useToggle } from 'react-use';
 import { useFormContext } from '~/custom-hooks/hook-form';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { formatUTCDate } from '~/lib/date-util';
 import { decSum, formatCurrency } from '~/lib/decimal-util';
 import { useTicketContext } from './ticket-context';

@@ -1,5 +1,5 @@
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Modal } from '~/view/base/modal';
 import { GpsInputEditor } from '../gps-input-editor';
 import { MembershipInfoEditor } from '../membership-info-editor';

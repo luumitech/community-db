@@ -1,6 +1,6 @@
 import React from 'react';
 import { type Control } from 'react-hook-form';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import {
   useFieldArray,
   type InputData,

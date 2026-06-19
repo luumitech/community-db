@@ -13,7 +13,7 @@ import {
 import { useSelector } from '~/custom-hooks/redux';
 import * as xtraArg from '~/custom-hooks/xtra-arg-context';
 import { getFragment } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { z, zz } from '~/lib/zod';
 import { MembershipEditorFragment } from '../(.)membership-editor/use-hook-form';

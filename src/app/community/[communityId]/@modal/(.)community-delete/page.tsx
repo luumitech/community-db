@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { appPath } from '~/lib/app-path';
 import { toast } from '~/view/base/toastify';
 import { DeleteModal } from './delete-modal';

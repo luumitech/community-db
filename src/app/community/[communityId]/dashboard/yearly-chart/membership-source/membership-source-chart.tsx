@@ -1,6 +1,6 @@
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import {
   EChart,
   pieSeriesStyle,

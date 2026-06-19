@@ -9,7 +9,7 @@ import {
 } from '~/custom-hooks/hook-form';
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { isNonEmpty, z, zz } from '~/lib/zod';
 import { useLayoutContext } from '../../layout-context';
 import { yearSelectItems } from '../../year-select-items';

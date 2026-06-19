@@ -1,4 +1,4 @@
-import { type Dashboard_ByTicketFragment } from '~/graphql/generated/graphql';
+import { type Dashboard_ByTicketFragment } from '~/graphql/generated/types';
 
 export type ByTicketFragment = Dashboard_ByTicketFragment;
 export type TicketStat = ByTicketFragment['communityStat']['ticketStat'];

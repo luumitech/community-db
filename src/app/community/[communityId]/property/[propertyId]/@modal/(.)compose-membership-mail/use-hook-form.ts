@@ -3,7 +3,7 @@ import React from 'react';
 import { type PropertyEntry } from '~/community/[communityId]/property/[propertyId]/_type';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { z, zz } from '~/lib/zod';
 import { MentionUtil } from '~/view/base/rich-text-editor';
 import { useLayoutContext } from '../../layout-context';

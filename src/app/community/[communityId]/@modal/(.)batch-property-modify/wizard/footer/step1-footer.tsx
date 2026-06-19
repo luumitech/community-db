@@ -1,6 +1,6 @@
 import React from 'react';
 import * as R from 'remeda';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { type WizardContext } from '..';
 import { useHookFormContext } from '../../use-hook-form';
 import { FooterDefault } from './footer-default';

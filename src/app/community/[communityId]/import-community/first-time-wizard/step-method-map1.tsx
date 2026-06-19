@@ -1,5 +1,5 @@
 import React from 'react';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { appTitle } from '~/lib/env';
 import { importMethodSelectionList } from '../_type';
 import { usePageContext } from '../page-context';

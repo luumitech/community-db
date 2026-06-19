@@ -5,7 +5,7 @@ import {
   useHookFormContext,
   type InputData,
 } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Button } from '~/view/base/button';
 import { Card } from '~/view/base/card';
 import { Checkbox } from '~/view/base/checkbox';

@@ -2,7 +2,7 @@
 import { useQuery } from '@apollo/client';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import type { SubscriptionPlan } from './_type';
 
 const UserSubscriptionQuery = graphql(/* GraphQL */ `

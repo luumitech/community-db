@@ -1,7 +1,7 @@
 import { Tooltip, cn } from '@heroui/react';
 import React from 'react';
 import { useAppContext } from '~/custom-hooks/app-context';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { createSelect } from '~/view/base/select';
 import { importMethodSelectionList } from './_type';
 import { MethodMap } from './method-map';

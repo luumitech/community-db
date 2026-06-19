@@ -1,4 +1,4 @@
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 
 export type OccupantEntry =
   GQL.PropertyId_OccupantDisplayFragment['occupantList'][number] & {

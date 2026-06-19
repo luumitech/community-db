@@ -1,5 +1,5 @@
 import { type UseFieldArrayReturn } from '~/custom-hooks/hook-form';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { isNonZeroDec } from '~/lib/decimal-util';
 import { isInteger, isPositive, z, zz } from '~/lib/zod';
 

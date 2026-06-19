@@ -3,7 +3,7 @@ import { cn } from '@heroui/react';
 import Script from 'next/script';
 import React from 'react';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import type { HelcimPayJsCardInfoOutput } from '~/lib/helcim-api/_type';
 import { Button, type ButtonProps } from '~/view/base/button';
 import { toast } from '~/view/base/toastify';

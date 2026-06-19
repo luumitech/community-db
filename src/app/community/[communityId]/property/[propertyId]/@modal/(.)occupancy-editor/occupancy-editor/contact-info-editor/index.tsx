@@ -12,7 +12,7 @@ import {
   useHookFormContext,
 } from '~/community/[communityId]/property/[propertyId]/@modal/(.)occupancy-editor/use-hook-form';
 import { useAppContext } from '~/custom-hooks/app-context';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { Icon } from '~/view/base/icon';
 import { ContactEditor } from './contact-editor';
 import { ContactName } from './contact-name';

@@ -1,6 +1,6 @@
 import path from 'path';
 import { graphql } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { TestUtil } from '~/graphql/test-util';
 
 const communityInfoDocument = graphql(/* GraphQL */ `

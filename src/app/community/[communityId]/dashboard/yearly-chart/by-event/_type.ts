@@ -1,4 +1,4 @@
-import { type Dashboard_EventTicketFragment } from '~/graphql/generated/graphql';
+import { type Dashboard_EventTicketFragment } from '~/graphql/generated/types';
 
 export type EventTicketFragment = Dashboard_EventTicketFragment;
 export type TicketStat = EventTicketFragment['communityStat']['ticketStat'];

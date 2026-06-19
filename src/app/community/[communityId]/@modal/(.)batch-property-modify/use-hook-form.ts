@@ -5,7 +5,7 @@ import { useLayoutContext } from '~/community/[communityId]/layout-context';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
 import { useSelector, type RootState } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import { getCurrentDateAsISOString, getCurrentYear } from '~/lib/date-util';
 import { isNonEmpty, z, zz } from '~/lib/zod';
 

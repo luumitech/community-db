@@ -1,4 +1,4 @@
-import * as GQL from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/types';
 import type { ContactInfo, ContactListEntry, PropertyEntry } from './_type';
 
 /**
