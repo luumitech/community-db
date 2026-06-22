@@ -13,9 +13,14 @@ jobs:
   release:
     name: Create release
     runs-on: ubuntu-latest
+    permissions:
+      # needed to create tags and GitHub releases
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # needed to fetch all tags for version detection
 
       - name: Enable corepack to support yarn@4
         run: corepack enable
@@ -30,9 +35,11 @@ jobs:
         run: yarn install --immutable
 
       - name: Create release
-        run: yarn semantic-release
+        run: |
+          yarn add --no-immutable release-it @release-it/conventional-changelog
+          npx release-it --ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Azure deployment uses up way too much github action minutes
   # deploy:

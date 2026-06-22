@@ -1,0 +1,20 @@
+branches:
+  - main
+
+# Don't publish to npm, and don't read version from package.json
+npm: false
+
+git:
+  commit: false
+  tag: true
+  tagName: "v${version}"
+  requireBranch: main
+  push: true
+
+github:
+  release: true
+  releaseName: "v${version}"
+
+plugins:
+  "@release-it/conventional-changelog":
+    preset: angular
