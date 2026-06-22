@@ -34,10 +34,13 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Install release tools
+        run: yarn add release-it @release-it/conventional-changelog
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+
       - name: Create release
-        run: |
-          yarn add --no-immutable release-it @release-it/conventional-changelog
-          npx release-it --ci
+        run: npx release-it --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
