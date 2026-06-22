@@ -1,9 +1,9 @@
-/* eslint-disable playwright/no-standalone-expect */
 import { expect, test as setup } from '@playwright/test';
 import fs from 'fs';
 import { SETUP_FILE } from './setup-file';
 
 setup('authenticate', async ({ browser }) => {
+  // eslint-disable-next-line playwright/no-conditional-in-test
   const context = fs.existsSync(SETUP_FILE)
     ? await browser.newContext({ storageState: SETUP_FILE })
     : await browser.newContext();
