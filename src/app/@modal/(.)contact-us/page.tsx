@@ -96,26 +96,8 @@ export default function ContactUs(props: RouteArgs) {
               <EmailEditor messageDescription={messageDescription} />
             </Modal.Body>
             <Modal.Footer className="items-center">
-              <div className="text-xs">
-                This site is protected by reCAPTCHA and the Google{' '}
-                <Link
-                  className="text-xs"
-                  href="https://policies.google.com/privacy"
-                  isExternal
-                  showAnchorIcon
-                >
-                  Privacy Policy
-                </Link>{' '}
-                and{' '}
-                <Link
-                  className="text-xs"
-                  href="https://policies.google.com/terms"
-                  isExternal
-                  showAnchorIcon
-                >
-                  Terms of Service
-                </Link>{' '}
-                apply.
+              <div className="grow text-xs text-foreground/60">
+                This site is protected by reCAPTCHA.
               </div>
               <Button
                 className="min-w-24"
