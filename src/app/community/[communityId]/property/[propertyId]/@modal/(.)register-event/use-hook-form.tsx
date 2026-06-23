@@ -44,7 +44,7 @@ function schema() {
       event: z.object({
         eventName: zz.string.nonEmpty('Must specify a value'),
         eventDate: zz.coerce.toIsoDate(),
-        ticketList: ticketListSchema(),
+        ticketList: ticketListSchema({ validatePaymentMethod: false }),
       }),
       transactionPaymentMethod: z.string().nullable(),
       hidden: z.object({

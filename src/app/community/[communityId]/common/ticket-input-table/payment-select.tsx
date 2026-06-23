@@ -32,8 +32,6 @@ export const PaymentSelect: React.FC<Props> = ({
       <Select
         className="max-w-xs min-w-32"
         controlName={`${controlNamePrefix}.paymentMethod`}
-        // This is being controlled by the transaction total payment select
-        isControlled
         aria-label="Payment Method"
         variant="underlined"
         selectionMode="single"
