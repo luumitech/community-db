@@ -57,6 +57,9 @@ export const TicketRow: React.FC<TicketRowProps> = ({
   const { fieldMethods } = ticketListConfig;
   const controlNamePrefix = `${ticketListConfig.controlNamePrefix}.${ticketIdx}`;
   const ticketType = watch(`${controlNamePrefix}.ticketName`);
+  const transactionPaymentMethod = watch(
+    `${transactionConfig?.paymentControlName}`
+  );
 
   const ticketDef = ticketDefault.get(ticketType);
   const unitPrice = ticketDef?.unitPrice ?? '0.00';
@@ -91,12 +94,18 @@ export const TicketRow: React.FC<TicketRowProps> = ({
         <PaymentDatePicker controlNamePrefix={controlNamePrefix} />
       </div>
       <div role="cell">
-        {!transactionConfig && (
-          <PaymentSelect
-            controlNamePrefix={controlNamePrefix}
-            includeHiddenFields={includeHiddenFields}
-          />
-        )}
+        <PaymentSelect
+          controlNamePrefix={controlNamePrefix}
+          includeHiddenFields={includeHiddenFields}
+          /**
+           * In transaction mode, it is not necessary to specify payment method
+           * for each ticket item. If the transaction payment method has been
+           * specified, we show it as placeholder
+           */
+          {...(transactionPaymentMethod != null && {
+            placeholder: transactionPaymentMethod,
+          })}
+        />
       </div>
       <div className="flex gap-2 pt-3" role="cell">
         <FlatButton
@@ -165,7 +174,7 @@ export const TransactionTotal: React.FC<EmptyProps> = () => {
   const membershipPrice = watch(`${membershipConfig?.controlNamePrefix}.price`);
   const isMember = watch(`${membershipConfig?.controlNamePrefix}.isMember`);
   const totalPrice = decSum(
-    isMember && membershipConfig ? membershipPrice : 0,
+    membershipConfig?.existingMembership || !isMember ? 0 : membershipPrice,
     ...ticketList.map(({ price }) => price)
   );
 

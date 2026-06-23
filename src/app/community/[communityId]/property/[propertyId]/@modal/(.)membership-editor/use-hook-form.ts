@@ -10,6 +10,7 @@ import {
 import { useSelector } from '~/custom-hooks/redux';
 import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/types';
+import { getCurrentDateAsISOString } from '~/lib/date-util';
 import { isNonEmpty, z, zz } from '~/lib/zod';
 import { useLayoutContext } from '../../layout-context';
 import { yearSelectItems } from '../../year-select-items';
@@ -120,14 +121,15 @@ function schema() {
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
 export function membershipDefault(
-  year: number
+  year: number,
+  defaultMembershipFee?: string | null
 ): InputData['membershipList'][number] {
   return {
     year,
     isMember: null,
     paymentEventName: null,
-    price: null,
-    paymentDate: null,
+    price: defaultMembershipFee ?? null,
+    paymentDate: getCurrentDateAsISOString(),
     paymentMethod: null,
     eventAttendedList: [],
   };
@@ -136,7 +138,8 @@ export function membershipDefault(
 function defaultInputData(
   item: GQL.PropertyId_MembershipEditorFragment,
   yearRange: [number, number],
-  yearSelected?: number | null
+  yearSelected?: number | null,
+  defaultMembershipFee?: string | null
 ): InputData {
   const membershipList = yearSelectItems(
     yearRange,
@@ -156,7 +159,7 @@ function defaultInputData(
       const membershipItem = item.membershipList.find(
         (mEntry) => mEntry.year === key
       );
-      const defaultItem = membershipDefault(key);
+      const defaultItem = membershipDefault(key, defaultMembershipFee);
 
       return {
         year: membershipItem?.year ?? defaultItem.year,
@@ -186,14 +189,20 @@ function defaultInputData(
 }
 
 export function useHookForm() {
-  const { minYear, maxYear } = useCommunityLayoutContext();
+  const { community, minYear, maxYear } = useCommunityLayoutContext();
   const { yearSelected } = useSelector((state) => state.ui);
   const { property: fragment } = useLayoutContext();
   const property = getFragment(MembershipEditorFragment, fragment);
+  const defaultMembershipFee = community.defaultSetting?.membershipFee;
   const defaultValues = React.useMemo(() => {
-    const data = defaultInputData(property, [minYear, maxYear], yearSelected);
+    const data = defaultInputData(
+      property,
+      [minYear, maxYear],
+      yearSelected,
+      defaultMembershipFee
+    );
     return data;
-  }, [minYear, maxYear, property, yearSelected]);
+  }, [minYear, maxYear, property, yearSelected, defaultMembershipFee]);
   const formMethods = useForm({
     defaultValues,
     resolver: zodResolver(schema()),
