@@ -132,9 +132,17 @@ export function useTopMenu() {
 
         case 'share':
           items.push({
-            id: 'communityExport',
-            href: appPath('communityExport', { path: { communityId } }),
+            id: 'communityShare',
+            href: appPath('communityShare', { path: { communityId } }),
             children: appLabel('communityShare'),
+          });
+          break;
+
+        case 'access-modify':
+          items.push({
+            id: 'communityAccessModify',
+            href: appPath('communityAccessModify', { path: { communityId } }),
+            children: appLabel('communityAccessModify'),
           });
           break;
 

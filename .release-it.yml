@@ -6,6 +6,8 @@ npm: false
 
 git:
   commit: false
+  # installing plugins during release will dirty the working directory
+  requireCleanWorkingDir: false
   tag: true
   tagName: "v${version}"
   requireBranch: main

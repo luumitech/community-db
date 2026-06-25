@@ -29,6 +29,7 @@ export const MoreMenu: React.FC<Props> = ({ omitKeys }) => {
         ...insertIf(canEdit, 'communityModify'),
         ...insertIf(canEdit, 'batchPropertyModify'),
         'divider',
+        ...insertIf(isAdmin, 'communityAccessModify'),
         ...insertIf(isAdmin, 'communityImport'),
         ...insertIf(isAdmin, 'propertyCreate'),
       ]}

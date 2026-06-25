@@ -37,8 +37,6 @@ jobs:
       - name: Install release tools
         run: |
            yarn add release-it @release-it/conventional-changelog
-           # discard changes to yarn.lock, so working directory is clean
-           git checkout -- .
            git config --global user.name "github-actions[bot]"
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false

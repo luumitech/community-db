@@ -24,6 +24,7 @@ export const supportedPathTemplates = {
   communityExport: `${SPECIFIC_COMMUNITY_PATH}/export-xlsx`,
   contactExport: `${SPECIFIC_COMMUNITY_PATH}/export-contact`,
   communityShare: `${SPECIFIC_COMMUNITY_PATH}/share`,
+  communityAccessModify: `${SPECIFIC_COMMUNITY_PATH}/access-modify`,
   propertyList: `${SPECIFIC_COMMUNITY_PATH}/property-list`,
   communityDashboard: `${SPECIFIC_COMMUNITY_PATH}/dashboard`,
   thirdPartyIntegration: `${SPECIFIC_COMMUNITY_PATH}/third-party-integration`,
@@ -99,6 +100,7 @@ export function appPath(
     | 'communityExport'
     | 'contactExport'
     | 'communityShare'
+    | 'communityAccessModify'
     | 'propertyList'
     | 'communityDashboard'
     | 'communityMapView'
@@ -244,6 +246,8 @@ export function appLabel(key: keyof SupportedPath) {
       return 'Export Contacts';
     case 'communityShare':
       return 'Share';
+    case 'communityAccessModify':
+      return 'Modify Access';
     case 'propertyList':
       return 'Property List';
     case 'communityDashboard':

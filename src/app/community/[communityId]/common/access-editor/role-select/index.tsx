@@ -1,21 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import * as GQL from '~/graphql/generated/types';
-import { SelectProps, createSelect, type SelectItem } from '~/view/base/select';
-import { type InputData } from '../modify-access-modal/use-hook-form';
-
-const Select = createSelect<InputData>();
-
-/**
- * Status items and corresponding labels for GQL.Role
- *
- * - Used for SelectItem component
- */
-export interface RoleStatusItem {
-  key: GQL.Role;
-  label: string;
-  desc: string;
-}
+import { Select, SelectProps, type SelectItem } from '~/view/base/select';
 
 export const roleItems: SelectItem[] = [
   {
@@ -48,7 +34,6 @@ type CustomProps = Omit<SelectProps, 'items'>;
 
 interface Props extends CustomProps {
   className?: string;
-  controlName: `role`;
 }
 
 export const RoleSelect: React.FC<Props> = ({ className, ...props }) => {

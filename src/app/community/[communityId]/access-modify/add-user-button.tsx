@@ -1,28 +1,31 @@
 import React from 'react';
-import { Button } from '~/view/base/button';
+import { Button, type ButtonProps } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
-import { type AccessEntry } from './_type';
 import { NewAccessModal, useModalControl } from './new-access-modal';
 
-interface Props {
+interface Props extends ButtonProps {
   className?: string;
   communityId: string;
-  accessList: AccessEntry[];
+  accessEmailList: string[];
 }
 
 export const AddUserButton: React.FC<Props> = ({
   className,
   communityId,
-  accessList,
+  accessEmailList,
+  ...props
 }) => {
   const modalControl = useModalControl();
 
   return (
     <div className={className}>
       <Button
+        className="ml-3"
         color="primary"
+        variant="bordered"
         endContent={<Icon icon="person-add" />}
-        onPress={() => modalControl.open({ communityId, accessList })}
+        onPress={() => modalControl.open({ communityId, accessEmailList })}
+        {...props}
       >
         Add user...
       </Button>

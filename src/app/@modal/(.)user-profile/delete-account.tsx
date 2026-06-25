@@ -49,7 +49,7 @@ export const DeleteAccount: React.FC<Props> = ({ className }) => {
               <li key={id}>
                 <Link
                   className="text-sm"
-                  href={appPath('communityShare', {
+                  href={appPath('communityAccessModify', {
                     path: { communityId: id },
                   })}
                 >

@@ -5,7 +5,7 @@ import { getFragment, graphql, type FragmentType } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/types';
 import { z, zz } from '~/lib/zod';
 
-export const ModifyFragment = graphql(/* GraphQL */ `
+const ModifyFragment = graphql(/* GraphQL */ `
   fragment AccessList_Modify on Access {
     id
     updatedAt
