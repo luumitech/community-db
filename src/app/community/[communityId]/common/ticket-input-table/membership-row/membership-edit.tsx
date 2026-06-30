@@ -16,8 +16,11 @@ export const MembershipEdit: React.FC<Props> = ({
   ...membershipConfig
 }) => {
   const { transactionConfig, includeHiddenFields } = useTicketContext();
-  const { setValue } = useFormContext();
+  const { setValue, watch } = useFormContext();
   const membershipPrefix = membershipConfig.controlNamePrefix;
+  const transactionPaymentMethod = watch(
+    `${transactionConfig?.paymentControlName}`
+  );
 
   return (
     <>
@@ -31,12 +34,18 @@ export const MembershipEdit: React.FC<Props> = ({
         <PaymentDatePicker controlNamePrefix={membershipPrefix} />
       </div>
       <div role="cell">
-        {!transactionConfig && (
-          <PaymentSelect
-            controlNamePrefix={membershipPrefix}
-            includeHiddenFields={includeHiddenFields}
-          />
-        )}
+        <PaymentSelect
+          controlNamePrefix={membershipPrefix}
+          includeHiddenFields={includeHiddenFields}
+          /**
+           * In transaction mode, it is not necessary to specify payment method
+           * for membership row. If the transaction payment method has been
+           * specified, we show it as placeholder
+           */
+          {...(transactionPaymentMethod != null && {
+            placeholder: transactionPaymentMethod,
+          })}
+        />
       </div>
       <div className="flex gap-2 pt-3" role="cell">
         <FlatButton
