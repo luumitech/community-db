@@ -1,11 +1,12 @@
+import { cn } from '@heroui/react';
 import React from 'react';
 import { useCopyToClipboard } from 'react-use';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { appPath } from '~/lib/app-path';
-import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
 import { PlainInput } from '~/view/base/input';
 import { toast } from '~/view/base/toastify';
+import { Tooltip } from '~/view/base/tooltip';
 
 interface Props {
   className?: string;
@@ -28,7 +29,7 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
       toast.error(`Unable to copy: ${error.message}`);
     }
     if (value) {
-      toast.success('Copied');
+      toast.success('Link Copied');
     }
   }, [copiedState]);
 
@@ -40,16 +41,19 @@ export const CopyShareLink: React.FC<Props> = ({ className, communityId }) => {
           value={url}
           readOnly
           description="Only user in the access list can view this database"
+          endContent={
+            <Tooltip content="Copy Link">
+              <Icon
+                className={cn(
+                  'cursor-pointer text-primary',
+                  'opacity-disabled hover:opacity-hover'
+                )}
+                icon="copy"
+                onClick={() => copyToClipboard(url)}
+              />
+            </Tooltip>
+          }
         />
-        <Button
-          className="shrink-0"
-          variant="bordered"
-          color="primary"
-          endContent={<Icon icon="link" size={20} />}
-          onPress={() => copyToClipboard(url)}
-        >
-          Copy Link
-        </Button>
       </div>
     </div>
   );

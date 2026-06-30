@@ -114,8 +114,8 @@ export const ModalDialog: React.FC<Props> = ({
                       </Button>
                     </ButtonGroup>
                   )}
-                  <div className="grow" />
                   <Button
+                    className="ml-auto"
                     isDisabled={saveTemplatePending || sendMailPending}
                     onPress={closeModal}
                   >

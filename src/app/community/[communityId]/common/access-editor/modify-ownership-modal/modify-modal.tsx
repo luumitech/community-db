@@ -4,14 +4,15 @@ import { FormProvider } from '~/custom-hooks/hook-form';
 import { Button } from '~/view/base/button';
 import { Form } from '~/view/base/form';
 import { Modal } from '~/view/base/modal';
-import type { AccessEntry } from '../_type';
-import { RoleSelect } from '../role-select';
-import { EmailEditor } from './email-editor';
-import { InputData, useHookForm } from './use-hook-form';
+import { OwnerSelect } from './owner-select';
+import {
+  InputData,
+  useHookForm,
+  type ModifyFragmentType,
+} from './use-hook-form';
 
 export interface ModalArg {
-  communityId: string;
-  accessList: AccessEntry[];
+  community: ModifyFragmentType;
 }
 
 interface Props extends ModalArg {
@@ -19,15 +20,14 @@ interface Props extends ModalArg {
   onSave: (input: InputData) => Promise<void>;
 }
 
-export const CreateModal: React.FC<Props> = ({
-  communityId,
-  accessList,
+export const ModifyModal: React.FC<Props> = ({
+  community: fragment,
   disclosure,
   onSave,
 }) => {
   const { isOpen, onOpenChange, onClose } = disclosure;
   const [pending, startTransition] = React.useTransition();
-  const { formMethods } = useHookForm(communityId, accessList);
+  const { formMethods, community } = useHookForm(fragment);
   const { formState, handleSubmit } = formMethods;
   const { isDirty } = formState;
 
@@ -44,13 +44,17 @@ export const CreateModal: React.FC<Props> = ({
     [onSave, onClose]
   );
 
+  /**
+   * TODO: If billing is active, changing ownership also means subscription
+   * level for the database may be changing
+   */
   return (
     <Modal
       size="md"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       confirmation={isDirty}
-      scrollBehavior="inside"
+      scrollBehavior="outside"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
     >
@@ -59,10 +63,9 @@ export const CreateModal: React.FC<Props> = ({
           <Modal.Content>
             {(closeModal) => (
               <>
-                <Modal.Header>Add User To Access List</Modal.Header>
+                <Modal.Header>Modify Ownership</Modal.Header>
                 <Modal.Body>
-                  <EmailEditor />
-                  <RoleSelect controlName="role" />
+                  <OwnerSelect controlName="ownerId" community={community} />
                 </Modal.Body>
                 <Modal.Footer>
                   <Button
@@ -78,7 +81,7 @@ export const CreateModal: React.FC<Props> = ({
                     isDisabled={!formState.isDirty}
                     isLoading={pending}
                   >
-                    Share
+                    Save
                   </Button>
                 </Modal.Footer>
               </>

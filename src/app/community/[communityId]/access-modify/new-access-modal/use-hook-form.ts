@@ -1,11 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { getFragment } from '~/graphql/generated';
 import * as GQL from '~/graphql/generated/types';
 import { z, zz } from '~/lib/zod';
-import type { AccessEntry } from '../_type';
-import { UserInfoFragment } from '../access-table/user-info';
 
 function schema() {
   return z
@@ -14,17 +11,18 @@ function schema() {
       email: z.string().email(),
       role: z.nativeEnum(GQL.Role),
       hidden: z.object({
-        // Store accessList, so validator can use it to validate
-        // email field
-        accessList: z.array(z.unknown()),
+        /**
+         * Store email list for all users with access, so validator can use it
+         * to validate email field
+         */
+        accessEmailList: z.array(z.string()),
       }),
     })
     .refine(
       (form) => {
-        const accessList = form.hidden.accessList as AccessEntry[];
-        const exist = accessList.find((fragment) => {
-          const entry = getFragment(UserInfoFragment, fragment);
-          return !entry.user.email.localeCompare(form.email, undefined, {
+        const accessEmailList = form.hidden.accessEmailList;
+        const exist = accessEmailList.find((email) => {
+          return !email.localeCompare(form.email, undefined, {
             sensitivity: 'accent',
           });
         });
@@ -41,20 +39,20 @@ export type InputData = z.infer<ReturnType<typeof schema>>;
 
 function defaultInputData(
   communityId: string,
-  accessList: AccessEntry[]
+  accessEmailList: string[]
 ): InputData {
   return {
     communityId,
     email: '',
     role: GQL.Role.Viewer,
-    hidden: { accessList },
+    hidden: { accessEmailList },
   };
 }
 
-export function useHookForm(communityId: string, accessList: AccessEntry[]) {
+export function useHookForm(communityId: string, accessEmailList: string[]) {
   const defaultValues = React.useMemo(
-    () => defaultInputData(communityId, accessList),
-    [communityId, accessList]
+    () => defaultInputData(communityId, accessEmailList),
+    [communityId, accessEmailList]
   );
   const formMethods = useForm({
     defaultValues,

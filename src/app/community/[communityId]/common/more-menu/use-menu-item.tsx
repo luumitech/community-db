@@ -36,6 +36,12 @@ export function useMenuItem() {
         children: appLabel('communityShare'),
       },
       {
+        key: 'communityAccessModify',
+        href: appPath('communityAccessModify', { path: { communityId } }),
+        endContent: <Icon icon="access" />,
+        children: appLabel('communityAccessModify'),
+      },
+      {
         key: 'contactExport',
         href: appPath('contactExport', { path: { communityId } }),
         endContent: <Icon icon="export-contact" />,

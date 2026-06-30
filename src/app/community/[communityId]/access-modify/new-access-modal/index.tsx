@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import React from 'react';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { graphql } from '~/graphql/generated';
-import { CommunityAccessListDocument } from '~/graphql/generated/graphql';
+import * as GQL from '~/graphql/generated/graphql';
 import { toast } from '~/view/base/toastify';
 import { CreateModal, type ModalArg } from './create-modal';
 import { InputData } from './use-hook-form';
@@ -15,10 +15,6 @@ const AccessCreateMutation = graphql(/* GraphQL */ `
   mutation accessCreate($input: AccessCreateInput!) {
     accessCreate(input: $input) {
       id
-      ...AccessList_User
-      ...AccessList_Role
-      ...AccessList_Modify
-      ...AccessList_Delete
     }
   }
 `);
@@ -41,7 +37,7 @@ export const NewAccessModal: React.FC<Props> = ({ modalControl }) => {
           refetchQueries: [
             // adding access creates new entry in access list
             {
-              query: CommunityAccessListDocument,
+              query: GQL.CommunityAccessEditorDocument,
               variables: { id: input.communityId },
             },
           ],
