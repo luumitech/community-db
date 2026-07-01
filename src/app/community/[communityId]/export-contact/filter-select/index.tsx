@@ -1,18 +1,22 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { FilterChip } from '~/community/[communityId]/common/filter-component';
+import {
+  FilterChip,
+  FilterDrawer,
+  type FilterDrawerArg,
+  type FilterInputData,
+} from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
+import { type FilterT } from '~/lib/reducers/search-bar';
 import { Button } from '~/view/base/button';
 import { Icon } from '~/view/base/icon';
-import { FilterDrawer, type DrawerArg } from './filter-drawer';
-import { type InputData } from './use-hook-form';
 
-const useDrawerControl = useDisclosureWithArg<DrawerArg>;
+const useDrawerControl = useDisclosureWithArg<FilterDrawerArg>;
 
 interface Props {
   className?: string;
-  filters: DrawerArg;
-  onFilterChange?: (input: InputData) => Promise<void>;
+  filters: FilterT;
+  onFilterChange?: (input: FilterInputData) => Promise<void>;
   isDisabled?: boolean;
 }
 
@@ -24,9 +28,7 @@ export const FilterSelect: React.FC<Props> = ({
 }) => {
   const { arg, disclosure, open } = useDrawerControl();
 
-  const openDrawer = React.useCallback(() => {
-    open(filters);
-  }, [open, filters]);
+  const openDrawer = React.useCallback(() => open({}), [open]);
 
   return (
     <div className={cn(className)}>
@@ -36,7 +38,7 @@ export const FilterSelect: React.FC<Props> = ({
           variant="faded"
           isDisabled={isDisabled}
           startContent={<Icon icon="filter" />}
-          onPress={() => openDrawer()}
+          onPress={() => open({})}
         >
           Optional Filter...
         </Button>
@@ -52,6 +54,13 @@ export const FilterSelect: React.FC<Props> = ({
         <FilterDrawer
           {...arg}
           disclosure={disclosure}
+          filtersToShow={[
+            'memberYearList',
+            'nonMemberYearList',
+            'memberEventList',
+            'ticketList',
+          ]}
+          defaultState={filters}
           onFilterChange={onFilterChange}
         />
       )}
