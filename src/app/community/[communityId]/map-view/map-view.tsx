@@ -6,6 +6,7 @@ import {
   MapContainer,
   MapEventListener,
 } from '~/view/base/map';
+import { ExportGoogleMap } from './export-google-map';
 import { Footer } from './footer';
 import { HullBoundary } from './hull-boundary';
 import { MapReset } from './map-reset';
@@ -14,20 +15,15 @@ import { PropertyMarker } from './property-marker';
 
 interface Props {
   className?: string;
-  selectedYear?: number | null;
 }
 
-export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
-  const { propertyWithGps } = usePageContext();
+export const MapView: React.FC<Props> = ({ className }) => {
+  const { matchPropertyWithGps } = usePageContext();
   const [zoom, setZoom] = React.useState<number>();
 
   const positions = React.useMemo(() => {
-    return propertyWithGps.map((entry) => entry.loc);
-  }, [propertyWithGps]);
-
-  if (propertyWithGps.length === 0) {
-    return <div>No GPS Information available</div>;
-  }
+    return matchPropertyWithGps.map((entry) => entry.loc);
+  }, [matchPropertyWithGps]);
 
   return (
     <MapContainer
@@ -38,19 +34,14 @@ export const MapView: React.FC<Props> = ({ className, selectedYear }) => {
       scrollWheelZoom
     >
       <MapReset positions={positions} />
-      <ExportControl fileName="map.png" />
+      <ExportControl fileName="map.png">
+        <ExportGoogleMap />
+      </ExportControl>
       <MapEventListener onZoomChange={setZoom} />
       <FitBound bounds={positions} />
       <HullBoundary positions={positions} />
-      {propertyWithGps.map((entry) => (
-        <PropertyMarker
-          key={entry.id}
-          locEntry={entry}
-          {...(selectedYear != null && {
-            isMember: entry.isMemberInYear(selectedYear),
-          })}
-          zoom={zoom}
-        />
+      {matchPropertyWithGps.map((entry) => (
+        <PropertyMarker key={entry.id} locEntry={entry} zoom={zoom} isMember />
       ))}
       <Footer />
     </MapContainer>

@@ -33,7 +33,7 @@ export const FilterSelect: React.FC<Props> = ({
   const openDrawer = React.useCallback(() => open({}), [open]);
 
   return (
-    <div className={cn('flex flex-col', className)}>
+    <div className={cn('flex flex-col gap-0.5', className)}>
       <div className="flex flex-wrap items-center gap-2">
         <Button
           size="sm"

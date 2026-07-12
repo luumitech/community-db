@@ -3,9 +3,8 @@ import React from 'react';
 import { useMap } from 'react-leaflet';
 import { useAppContext } from '~/custom-hooks/app-context';
 import { startDownloadUrl } from '~/lib/dom';
-import { ToolbarControl } from '~/view/base/map';
+import { ToolbarButton, ToolbarControl } from '~/view/base/map';
 import { toast } from '~/view/base/toastify';
-import { ToolbarButton } from '../toolbar';
 import { mapToPNG } from './map-to-png';
 import { printHtml } from './print-html';
 
@@ -26,15 +25,17 @@ interface Props {
   fileName?: string;
 }
 
-export const ExportControl: React.FC<Props> = ({
+export const ExportControl: React.FC<React.PropsWithChildren<Props>> = ({
   position = 'topleft',
   fileName = 'map.png',
-  ...props
+  /** Additional buttons to be rendered in the export map menu */
+  children,
 }) => {
   const { loadingModal } = useAppContext();
   const map = useMap();
   const { setLoading } = loadingModal;
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const childArray = React.Children.toArray(children);
 
   const toPNG = React.useCallback(
     async (cb: ToPNGFn) => {
@@ -111,6 +112,11 @@ export const ExportControl: React.FC<Props> = ({
                   onClick={() => toPNG(printPNG)}
                 />
               </motion.div>
+              {childArray.map((child, idx) => (
+                <motion.div key={idx} className="leaflet-bar" variants={item}>
+                  {child}
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         )}

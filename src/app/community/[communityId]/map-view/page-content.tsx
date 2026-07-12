@@ -2,18 +2,19 @@
 import { useQuery } from '@apollo/client';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
+import { type FilterInputData } from '~/community/[communityId]/common/filter-component';
+import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
 import Loading from '~/loading';
 import { MapContextProvider } from '~/view/base/map';
+import { FilterSelect } from './filter-select';
 import { MapView } from './map-view';
 import { MemberStat } from './member-stat';
 import { PageProvider } from './page-context';
-import { YearSelect } from './year-select';
 
 const MapView_CommunityQuery = graphql(/* GraphQL */ `
-  query mapViewCommunity($id: String!) {
+  query mapViewCommunity($id: String!, $filter: PropertyFilterInput!) {
     communityFromId(id: $id) {
       id
       maxYear
@@ -24,15 +25,11 @@ const MapView_CommunityQuery = graphql(/* GraphQL */ `
           total
         }
       }
-      rawPropertyList(filter: { withGps: true }) {
+      rawPropertyList(filter: $filter) {
         id
         address
         lat
         lon
-        membershipList {
-          year
-          isMember
-        }
       }
     }
   }
@@ -44,27 +41,23 @@ interface Props {
 }
 
 export const PageContent: React.FC<Props> = ({ className, communityId }) => {
-  const dispatch = useDispatch();
-  const uiYearSelected = useSelector((state) => state.ui.yearSelected);
-  const [year, setYear] = React.useState<number>();
+  const searchBar = useSelector((state) => state.searchBar);
+  const [filter, setFilter] = React.useState(searchBar.filter);
   const result = useQuery(MapView_CommunityQuery, {
-    variables: { id: communityId },
+    variables: {
+      id: communityId,
+      filter,
+    },
     onError,
   });
 
-  const setYearSelected = React.useCallback(
-    (yr: number) => {
-      setYear(yr);
-      if (yr > 0) {
-        dispatch(actions.ui.setYearSelected(yr));
-      }
+  const onFilterChange = React.useCallback(
+    async (input: FilterInputData) => {
+      result.refetch({ id: communityId, filter: input });
+      setFilter(input);
     },
-    [dispatch]
+    [result, communityId]
   );
-
-  const yearSelected = React.useMemo(() => {
-    return year ?? uiYearSelected;
-  }, [year, uiYearSelected]);
 
   const community = result.data?.communityFromId;
   if (community == null) {
@@ -74,17 +67,13 @@ export const PageContent: React.FC<Props> = ({ className, communityId }) => {
   return (
     <div className={twMerge('flex flex-col gap-3', className)}>
       <PageProvider community={community}>
-        <YearSelect
-          selectedKeys={yearSelected != null ? [yearSelected.toString()] : []}
-          onSelectionChange={(keys) => {
-            const [firstKey] = keys;
-            const asNum = parseInt(firstKey as string, 10);
-            setYearSelected(asNum);
-          }}
-          description={<MemberStat selectedYear={yearSelected} />}
+        <FilterSelect
+          filters={filter}
+          onFilterChange={onFilterChange}
+          description={<MemberStat />}
         />
         <MapContextProvider>
-          <MapView className="grow" selectedYear={yearSelected} />
+          <MapView className="grow" />
         </MapContextProvider>
       </PageProvider>
     </div>

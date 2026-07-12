@@ -51,6 +51,7 @@ const supportedIcon = {
   sun: 'lucide:sun',
   moon: 'lucide:moon',
   google: 'logos:google-icon',
+  googleMap: 'logos:google-maps',
   facebook: 'logos:facebook',
   x: 'ri:twitter-x-fill',
   'modify-community': 'gravity-ui:gear',

@@ -75,8 +75,10 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
           isDisabled={isLoading}
           filters={filter}
           onFilterChange={onFilterChange}
+          description={
+            <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
+          }
         />
-        <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
       </div>
     );
   }, [contactInfo, filter, isLoading, onFilterChange]);
