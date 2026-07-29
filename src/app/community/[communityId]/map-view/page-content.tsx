@@ -19,10 +19,18 @@ const MapView_CommunityQuery = graphql(/* GraphQL */ `
       id
       maxYear
       communityStat {
+        id
         propertyCount
         memberCountStat {
           year
           total
+        }
+      }
+      communityGeo {
+        id
+        hullBoundary {
+          lat
+          lon
         }
       }
       rawPropertyList(filter: $filter) {

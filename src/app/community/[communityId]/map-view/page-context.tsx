@@ -1,4 +1,5 @@
 import React from 'react';
+import type { GeoCoord } from '~/graphql/generated/types';
 import { parseAsNumber } from '~/lib/number-util';
 import type { CommunityEntry, PropertyEntry } from './_type';
 
@@ -14,6 +15,8 @@ type ContextT = Readonly<{
   matchPropertyCount: number;
   /** Property matching filters with GPS coordinates */
   matchPropertyWithGps: PropertyWithGpsEntry[];
+  /** Hull boundary around properties with GPS */
+  hullBoundary: GeoCoord[];
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
@@ -48,6 +51,7 @@ export function PageProvider({ community, ...props }: Props) {
         propertyCount: community.communityStat.propertyCount,
         matchPropertyCount: community.rawPropertyList.length,
         matchPropertyWithGps,
+        hullBoundary: community.communityGeo.hullBoundary,
       }}
       {...props}
     />

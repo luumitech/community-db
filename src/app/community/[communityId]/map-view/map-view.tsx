@@ -39,7 +39,7 @@ export const MapView: React.FC<Props> = ({ className }) => {
       </ExportControl>
       <MapEventListener onZoomChange={setZoom} />
       <FitBound bounds={positions} />
-      <HullBoundary positions={positions} />
+      <HullBoundary />
       {matchPropertyWithGps.map((entry) => (
         <PropertyMarker key={entry.id} locEntry={entry} zoom={zoom} isMember />
       ))}
