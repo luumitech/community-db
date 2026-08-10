@@ -44,7 +44,10 @@ jobs:
       - name: Create release
         run: npx release-it --ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # A workflow triggered by GITHUB_TOKEN cannot trigger other workflows.
+          # since release.yml should be triggered after every release creation
+          # we must use our own repository secret
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
 
   # Azure deployment uses up way too much github action minutes
   # deploy:
