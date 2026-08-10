@@ -1,4 +1,5 @@
 import React from 'react';
+import simplur from 'simplur';
 import { twMerge } from 'tailwind-merge';
 import { PropertySearchBar } from '~/community/[communityId]/common/property-search-bar';
 import { type CommunityEntry } from '../_type';
@@ -19,7 +20,7 @@ export const PropertySearchHeader: React.FC<Props> = ({
         autoFocus
         description={
           <span className="text-xs text-foreground/50">
-            {totalCount} entries found
+            {simplur`${totalCount} entr[y|ies] found`}
           </span>
         }
       />

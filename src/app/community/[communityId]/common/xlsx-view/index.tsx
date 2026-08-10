@@ -8,30 +8,51 @@ import { XlsxSheetView } from './xlsx-sheet-view';
 
 interface Props {
   className?: string;
-  workbook: XLSX.WorkBook;
+  workbook?: XLSX.WorkBook;
+  /** Show loading state */
+  loading?: boolean;
+  /** Default columns to render during loading screen (default to 4) */
+  defaultColumns?: number;
+  /** Hide tabs (disable navigation of different sheets) */
+  hideSheetTabs?: boolean;
 }
 
-export const XlsxView: React.FC<Props> = ({ className, workbook }) => {
+export const XlsxView: React.FC<Props> = ({
+  className,
+  workbook,
+  loading,
+  hideSheetTabs,
+  defaultColumns = 4,
+}) => {
   const [pending, startTransition] = React.useTransition();
-  const [sheetName, setSheetName] = React.useState<string>(
-    workbook.SheetNames[0]
-  );
+  const [sheetName, setSheetName] = React.useState<string>();
   const { data, columns, updateWorksheet } = useMakeXlsxData();
 
   React.useEffect(() => {
-    startTransition(async () => {
-      const worksheet = new WorksheetHelper(workbook, sheetName);
-      updateWorksheet(worksheet);
-    });
+    if (workbook) {
+      if (!sheetName) {
+        setSheetName(workbook.SheetNames[0]);
+      } else {
+        startTransition(async () => {
+          const worksheet = new WorksheetHelper(workbook, sheetName);
+          updateWorksheet(worksheet);
+        });
+      }
+    }
   }, [workbook, sheetName, updateWorksheet]);
 
-  if (pending || !data || !columns) {
+  if (!!loading || pending || !data || !columns) {
     return (
-      <div className={cn(className, 'grid grid-cols-4 gap-2')}>
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div
+        className={cn(className, 'grid gap-2')}
+        style={{
+          gridTemplateColumns: `repeat(${defaultColumns}, minmax(0, 1fr))`,
+        }}
+      >
+        {Array.from({ length: defaultColumns }).map((_, i) => (
           <Skeleton key={i} className="h-8 rounded-lg" />
         ))}
-        {Array.from({ length: 16 }).map((_, i) => (
+        {Array.from({ length: defaultColumns * 4 }).map((_, i) => (
           <Skeleton key={i} className="h-6 rounded-lg" />
         ))}
       </div>
@@ -41,11 +62,13 @@ export const XlsxView: React.FC<Props> = ({ className, workbook }) => {
   return (
     <>
       <XlsxSheetView data={data} columns={columns} />
-      <TabSelect
-        sheetNames={workbook.SheetNames}
-        selectedSheetName={sheetName}
-        onChange={setSheetName}
-      />
+      {!hideSheetTabs && !!workbook && !!sheetName && (
+        <TabSelect
+          sheetNames={workbook.SheetNames}
+          selectedSheetName={sheetName}
+          onChange={setSheetName}
+        />
+      )}
     </>
   );
 };

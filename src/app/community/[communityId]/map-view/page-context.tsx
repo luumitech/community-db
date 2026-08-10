@@ -1,39 +1,23 @@
 import React from 'react';
+import type { GeoCoord } from '~/graphql/generated/types';
 import { parseAsNumber } from '~/lib/number-util';
-import type { CommunityEntry, MemberCountStat, PropertyEntry } from './_type';
-
-type MemberCountStatFn = (year?: number | null) => MemberCountStat | undefined;
+import type { CommunityEntry, PropertyEntry } from './_type';
 
 interface PropertyWithGpsEntry extends Pick<PropertyEntry, 'id' | 'address'> {
   loc: L.LatLngTuple;
-  isMemberInYear: (year: number) => boolean;
 }
 
 type ContextT = Readonly<{
   community: CommunityEntry;
-  propertyWithGps: PropertyWithGpsEntry[];
+  /** Total property count */
   propertyCount: number;
-  memberCountStat: MemberCountStatFn;
+  /** Total count of properties matching filter */
+  matchPropertyCount: number;
+  /** Property matching filters with GPS coordinates */
+  matchPropertyWithGps: PropertyWithGpsEntry[];
+  /** Hull boundary around properties with GPS */
+  hullBoundary: GeoCoord[];
 }>;
-
-/**
- * Check if property has membership for a given year
- *
- * @param entry Property entry
- * @param selectedYear Year to check for member
- */
-function isMemberInYear(entry: PropertyEntry, selectedYear: number) {
-  /**
-   * SelectedYear === 0: All properties
-   *
-   * See: `year-select.tsx`
-   */
-  if (selectedYear === 0) {
-    return true;
-  }
-  const found = entry.membershipList.find(({ year }) => year === selectedYear);
-  return !!found?.isMember;
-}
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
@@ -44,22 +28,7 @@ interface Props {
 }
 
 export function PageProvider({ community, ...props }: Props) {
-  /**
-   * Check member count statistic of a given year
-   *
-   * @param selectedYear Year to check for member
-   */
-  const memberCountStat = React.useCallback<MemberCountStatFn>(
-    (selectedYear) => {
-      const stat = community.communityStat.memberCountStat.find(
-        ({ year }) => year === selectedYear
-      );
-      return stat;
-    },
-    [community]
-  );
-
-  const propertyWithGps = React.useMemo(() => {
+  const matchPropertyWithGps = React.useMemo(() => {
     const result: PropertyWithGpsEntry[] = [];
     community.rawPropertyList.forEach((entry) => {
       const lat = parseAsNumber(entry.lat);
@@ -69,7 +38,6 @@ export function PageProvider({ community, ...props }: Props) {
           id: entry.id,
           address: entry.address,
           loc: [lat, lon] as L.LatLngTuple,
-          isMemberInYear: (year: number) => isMemberInYear(entry, year),
         });
       }
     });
@@ -81,8 +49,9 @@ export function PageProvider({ community, ...props }: Props) {
       value={{
         community,
         propertyCount: community.communityStat.propertyCount,
-        memberCountStat,
-        propertyWithGps,
+        matchPropertyCount: community.rawPropertyList.length,
+        matchPropertyWithGps,
+        hullBoundary: community.communityGeo.hullBoundary,
       }}
       {...props}
     />

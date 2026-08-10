@@ -1,16 +1,19 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { FilterChip } from '~/community/[communityId]/common/filter-component';
+import {
+  FilterChip,
+  FilterDrawer,
+  type FilterDrawerArg,
+  type FilterInputData,
+} from '~/community/[communityId]/common/filter-component';
 import { useDisclosureWithArg } from '~/custom-hooks/disclosure-with-arg';
 import { actions, useDispatch, useSelector } from '~/custom-hooks/redux';
 import { FlatButton } from '~/view/base/flat-button';
 import { Icon } from '~/view/base/icon';
 import { PlainInput, type PlainInputProps } from '~/view/base/input';
 import { FilterButton } from './filter-button';
-import { FilterDrawer, type DrawerArg } from './filter-drawer';
-import { InputData } from './use-hook-form';
 
-const useDrawerControl = useDisclosureWithArg<DrawerArg>;
+const useDrawerControl = useDisclosureWithArg<FilterDrawerArg>;
 
 type CustomInputProps = PlainInputProps;
 interface Props extends CustomInputProps {
@@ -31,7 +34,7 @@ export const PropertySearchBar: React.FC<Props> = ({
   };
 
   const onFilterChange = React.useCallback(
-    async (input: InputData) => {
+    async (input: FilterInputData) => {
       dispatch(actions.searchBar.setFilter(input));
       onChange?.();
     },
@@ -85,6 +88,14 @@ export const PropertySearchBar: React.FC<Props> = ({
         <FilterDrawer
           {...arg}
           disclosure={disclosure}
+          filtersToShow={[
+            'memberYearList',
+            'nonMemberYearList',
+            'memberEventList',
+            'ticketList',
+            'withGps',
+          ]}
+          defaultState={searchBar.filter}
           onFilterChange={onFilterChange}
         />
       )}

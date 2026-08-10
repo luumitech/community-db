@@ -1,8 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm, useFormContext } from '~/custom-hooks/hook-form';
-import { useSelector } from '~/custom-hooks/redux';
-import { initialState, isFilterSpecified } from '~/lib/reducers/search-bar';
+import {
+  initialState,
+  isFilterSpecified,
+  type FilterT,
+} from '~/lib/reducers/search-bar';
 import { z, zz } from '~/lib/zod';
 
 function schema() {
@@ -17,14 +20,22 @@ function schema() {
 
 export type InputData = z.infer<ReturnType<typeof schema>>;
 
-export function useHookForm() {
-  const searchBar = useSelector((state) => state.searchBar);
-  const defaultValues = React.useMemo(
-    () => searchBar.filter,
-    [searchBar.filter]
-  );
+export interface HookFormArg {
+  /**
+   * Filters to show in the drawer
+   *
+   * I.e. ['memberYearList', 'nonMemberYearList', 'memberEventList',
+   * 'ticketList']
+   */
+  filtersToShow: (keyof FilterT)[];
+  /** Default filter state when drawer is first opened */
+  defaultState: FilterT;
+}
+
+export function useHookForm(arg: HookFormArg) {
+  const { filtersToShow, defaultState } = arg;
   const formMethods = useForm({
-    defaultValues,
+    defaultValues: defaultState,
     resolver: zodResolver(schema()),
   });
   const { setValue, watch } = formMethods;
@@ -47,12 +58,22 @@ export function useHookForm() {
       ticketList,
       withGps,
     } = initialState.filter;
-    setValue('memberYearList', memberYearList, { shouldDirty: true });
-    setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
-    setValue('memberEventList', memberEventList, { shouldDirty: true });
-    setValue('ticketList', ticketList, { shouldDirty: true });
-    setValue('withGps', withGps, { shouldDirty: true });
-  }, [setValue]);
+    if (filtersToShow.includes('memberEventList')) {
+      setValue('memberYearList', memberYearList, { shouldDirty: true });
+    }
+    if (filtersToShow.includes('nonMemberYearList')) {
+      setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
+    }
+    if (filtersToShow.includes('memberEventList')) {
+      setValue('memberEventList', memberEventList, { shouldDirty: true });
+    }
+    if (filtersToShow.includes('ticketList')) {
+      setValue('ticketList', ticketList, { shouldDirty: true });
+    }
+    if (filtersToShow.includes('withGps')) {
+      setValue('withGps', withGps, { shouldDirty: true });
+    }
+  }, [filtersToShow, setValue]);
 
   return { formMethods, canReset, reset };
 }

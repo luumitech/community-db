@@ -166,7 +166,7 @@ test.describe.serial('Take @screenshot for landing screen', () => {
     await select(page, 'Export Methods', 'Single Sheet');
 
     // Make sure table is propagated with data
-    const table = page.getByTestId('export-xlsx');
+    const table = page.getByTestId('xlsx-view-table');
     const rows = table.locator('tbody > tr');
     await expect(rows.nth(5)).toBeVisible();
 

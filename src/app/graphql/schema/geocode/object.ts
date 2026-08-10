@@ -21,23 +21,13 @@ export const geocodeRef = builder.objectRef<Geocode>('Geocode').implement({
     postalCode: t.exposeString('postalCode', { nullable: true }),
     city: t.exposeString('city', { nullable: true }),
     country: t.exposeString('country', { nullable: true }),
-    lat: t.field({
+    lat: t.exposeFloat('lat', {
       description: 'GPS Latitude',
-      type: 'String',
       nullable: true,
-      resolve: async (parent, args, ctx) => {
-        const { lat } = parent;
-        return lat?.toString();
-      },
     }),
-    lon: t.field({
+    lon: t.exposeFloat('lon', {
       description: 'GPS Longitude',
-      type: 'String',
       nullable: true,
-      resolve: async (parent, args, ctx) => {
-        const { lon } = parent;
-        return lon?.toString();
-      },
     }),
   }),
 });

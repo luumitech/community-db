@@ -17,6 +17,7 @@ import { getCurrentYear } from '~/lib/date-util';
 import { Logger } from '~/lib/logger';
 import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
+import { geoCoordRef } from '../geo/object';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
 import { PropertyFilterInput } from '../property/batch-modify';
 import { propertyRef } from '../property/object';
@@ -24,6 +25,7 @@ import {
   getPropertyEntryWithinCommunity,
   propertyListFindManyArgs,
 } from '../property/util';
+import { GeoUtil } from './geo-util';
 import {
   StatUtil,
   type ByEventStat,
@@ -44,6 +46,15 @@ interface CommunityStat {
   propertyCount: number;
   /** Community statistics */
   statUtil: StatUtil;
+}
+
+interface CommunityGeo {
+  /**
+   * Unique id representing membership information for all properties within
+   * this community
+   */
+  id: string;
+  geoUtil: GeoUtil;
 }
 
 const emailSettingRef = builder
@@ -325,6 +336,22 @@ const communityStatRef = builder
     }),
   });
 
+const communityGeoRef = builder
+  .objectRef<CommunityGeo>('CommunityGeo')
+  .implement({
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      hullBoundary: t.field({
+        description: 'hull boundary containing all properties (polygon points)',
+        type: [geoCoordRef],
+        resolve: async (parent, args, ctx) => {
+          const { geoUtil } = parent;
+          return geoUtil.hullBoundary();
+        },
+      }),
+    }),
+  });
+
 builder.prismaObject('Community', {
   fields: (t) => ({
     id: t.exposeString('shortId'),
@@ -472,8 +499,9 @@ builder.prismaObject('Community', {
       },
     }),
     /**
-     * Return statistics for community Primary purpose is for rendering
-     * dashboard information
+     * Return statistics for community
+     *
+     * - Primary purpose is for rendering dashboard information
      */
     communityStat: t.field({
       type: communityStatRef,
@@ -490,6 +518,26 @@ builder.prismaObject('Community', {
           communityId,
           propertyCount: propertyList.length,
           statUtil,
+        };
+      },
+    }),
+    /**
+     * Return geo coordinate related information for community
+     *
+     * - Primary purpose is for rendering information for the map view
+     */
+    communityGeo: t.field({
+      type: communityGeoRef,
+      resolve: async (parent, args, ctx) => {
+        const communityId = parent.id;
+        const propertyList = await prisma.property.findMany({
+          where: { communityId },
+          select: { id: true, lat: true, lon: true },
+        });
+        const geoUtil = new GeoUtil(parent, propertyList);
+        return {
+          id: parent.shortId,
+          geoUtil,
         };
       },
     }),

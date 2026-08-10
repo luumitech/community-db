@@ -1,6 +1,7 @@
-import { Link, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import Image from 'next/image';
 import React from 'react';
+import { Link } from '~/view/base/link';
 import { BmcUrl } from './_type';
 import buyMeACoffeeButtonImg from './buy-me-a-coffee-button.png';
 

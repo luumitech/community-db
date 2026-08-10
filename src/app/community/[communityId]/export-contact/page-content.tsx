@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { cn, Divider } from '@heroui/react';
 import React from 'react';
+import { type FilterInputData } from '~/community/[communityId]/common/filter-component';
 import { useSelector } from '~/custom-hooks/redux';
 import { graphql } from '~/graphql/generated';
 import { onError } from '~/graphql/on-error';
@@ -9,7 +10,6 @@ import { ContactTable } from './contact-table';
 import { toContactList } from './contact-util';
 import { ExportOptions } from './export-options';
 import { FilterSelect } from './filter-select';
-import { type InputData } from './filter-select/use-hook-form';
 
 const ExportContact_PropertyListQuery = graphql(/* GraphQL */ `
   query exportContactPropertyList($id: String!, $filter: PropertyFilterInput!) {
@@ -59,7 +59,7 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
   const contactList = contactInfo?.contactList ?? [];
 
   const onFilterChange = React.useCallback(
-    async (input: InputData) => {
+    async (input: FilterInputData) => {
       result.refetch({ id: communityId, filter: input });
       setFilter(input);
     },
@@ -75,8 +75,10 @@ export const PageContent: React.FC<Props> = ({ communityId }) => {
           isDisabled={isLoading}
           filters={filter}
           onFilterChange={onFilterChange}
+          description={
+            <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
+          }
         />
-        <ContactSummary contactInfo={contactInfo} isLoading={isLoading} />
       </div>
     );
   }, [contactInfo, filter, isLoading, onFilterChange]);

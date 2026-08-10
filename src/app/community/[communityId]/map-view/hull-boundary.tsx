@@ -1,13 +1,13 @@
 import { cn } from '@heroui/react';
-import * as turf from '@turf/turf';
-import type { MultiPolygon, Polygon } from 'geojson';
+import type { Polygon } from 'geojson';
 import dynamic from 'next/dynamic';
 import React from 'react';
-import { useMap } from 'react-leaflet';
 import { useLocalStorage } from 'react-use';
+import type { GeoCoord } from '~/graphql/generated/types';
 import { lsFlags } from '~/lib/env';
 import { Checkbox } from '~/view/base/checkbox';
 import { ToolbarControl } from '~/view/base/map';
+import { usePageContext } from './page-context';
 
 const Polygon = dynamic(
   async () => {
@@ -17,50 +17,23 @@ const Polygon = dynamic(
   { ssr: false }
 );
 
-function toLeafletLatLngs(geojson: Polygon | MultiPolygon) {
-  const coords = geojson.coordinates[0]; // Outer ring
-  return coords.map(
-    (coord) =>
-      // Swap [lng, lat] to [lat, lng]
-      [coord[1], coord[0]] as L.LatLngTuple
-  );
+function toLeafletLatLngs(coordList: GeoCoord[]) {
+  return coordList.map((coord) => [coord.lat, coord.lon] as L.LatLngTuple);
 }
 
-function toTurf(bounds: L.LatLngBoundsLiteral) {
-  const points = bounds.map((coord) =>
-    // Note: Turf uses [lng, lat]
-    turf.point([coord[1], coord[0]])
-  );
-  return points;
-}
-
-interface Props {
-  positions: L.LatLngBoundsLiteral;
-}
+interface Props {}
 
 /** Draw boundary around the points that are given in the input */
-export const HullBoundary: React.FC<Props> = ({ positions }) => {
-  const map = useMap();
-  const [hull, setHull] = React.useState<L.LatLngBoundsLiteral>();
+export const HullBoundary: React.FC<Props> = ({}) => {
+  const { hullBoundary } = usePageContext();
   const [showBoundary = true, setShowBoundary] = useLocalStorage(
     lsFlags.mapViewShowBoundary,
     true
   );
 
-  React.useEffect(() => {
-    // Convert to Turf.js points
-    const points = turf.featureCollection(toTurf(positions));
-
-    // Compute convex hull
-    const convexPts = turf.convex(points, { concavity: 6 });
-    if (convexPts) {
-      const hullPts = turf.buffer(convexPts, 50, { units: 'meters' });
-      if (hullPts) {
-        const polygon = toLeafletLatLngs(hullPts.geometry);
-        setHull(polygon);
-      }
-    }
-  }, [map, positions]);
+  const hull = React.useMemo(() => {
+    return toLeafletLatLngs(hullBoundary);
+  }, [hullBoundary]);
 
   return (
     <>

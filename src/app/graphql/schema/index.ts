@@ -2,6 +2,7 @@ import { builder } from '../builder';
 
 import './access';
 import './community';
+import './geo';
 import './geocode';
 import './job';
 import './mailchimp';
