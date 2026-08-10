@@ -2,7 +2,7 @@ import { betterAuth, type User } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { APIError } from 'better-auth/api';
 import { emailOTP, openAPI } from 'better-auth/plugins';
-import { appTitle, isProduction, isRunningTest } from '~/lib/env';
+import { appTitle, isBuilding, isProduction, isRunningTest } from '~/lib/env';
 import { env } from '~/lib/env/server-env';
 import { insertIf } from '~/lib/insert-if';
 import prisma from '~/lib/prisma';
@@ -14,6 +14,18 @@ const isDev = !isProduction() || isRunningTest();
 
 export const auth = betterAuth({
   appName: appTitle,
+  /**
+   * This is used to prevent warning during `yarn build`
+   *
+   * See:
+   *
+   * - https://github.com/luumitech/community-db/issues/373
+   * - https://github.com/luumitech/community-db/issues/375
+   */
+  ...(isBuilding() && {
+    baseURL: 'http://localhost:3000',
+    secret: 'abcdefghijklmnopqrstuvwxyz0123456789',
+  }),
   database: prismaAdapter(prisma, { provider: 'mongodb' }),
   advanced: {
     database: {
