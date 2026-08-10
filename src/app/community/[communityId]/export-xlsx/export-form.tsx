@@ -66,14 +66,7 @@ export const ExportForm: React.FC<Props> = ({ className, communityId }) => {
       >
         Download {exportResult?.fn}
       </Button>
-      {pending ? (
-        <div className="mb-4 flex grow flex-col gap-3">
-          <Skeleton className="h-12 rounded-lg" />
-          <Skeleton className="grow rounded-lg" />
-        </div>
-      ) : (
-        !!workbook && <XlsxView workbook={workbook} />
-      )}
+      <XlsxView loading={pending} workbook={workbook} />
     </div>
   );
 };

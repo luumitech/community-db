@@ -100,7 +100,7 @@ export function XlsxSheetView<T>({
       ref={tableContainerRef}
       className={twMerge('relative grow overflow-auto', className)}
     >
-      <table data-testid="export-xlsx">
+      <table data-testid="xlsx-view-table">
         <thead className="sticky top-0 z-10 grid bg-background">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="flex w-full">
