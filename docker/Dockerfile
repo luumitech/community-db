@@ -41,6 +41,9 @@ ARG GIT_COMMIT_HASH
 ENV NEXT_PUBLIC_APP_VERSION=${APP_VERSION} \
     NEXT_PUBLIC_GIT_BRANCH=${GIT_BRANCH} \
     NEXT_PUBLIC_GIT_COMMIT_HASH=${GIT_COMMIT_HASH} \
+    # This is used to prevent warning during build
+    # See: https://github.com/luumitech/community-db/issues/373
+    BETTER_AUTH_URL=http://localhost:3000 \
     NEXT_TELEMETRY_DISABLED=1
 
 RUN yarn build
