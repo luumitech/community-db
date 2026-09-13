@@ -30,14 +30,17 @@ export const XlsxView: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (workbook) {
-      if (!sheetName) {
-        setSheetName(workbook.SheetNames[0]);
-      } else {
-        startTransition(async () => {
-          const worksheet = new WorksheetHelper(workbook, sheetName);
-          updateWorksheet(worksheet);
-        });
-      }
+      // Display the first sheet when a new workbook arrives
+      setSheetName(workbook.SheetNames[0]);
+    }
+  }, [workbook]);
+
+  React.useEffect(() => {
+    if (workbook && sheetName) {
+      startTransition(async () => {
+        const worksheet = new WorksheetHelper(workbook, sheetName);
+        updateWorksheet(worksheet);
+      });
     }
   }, [workbook, sheetName, updateWorksheet]);
 

@@ -1,4 +1,4 @@
-import { Skeleton, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { toast } from 'react-toastify';
 import * as XLSX from 'xlsx';
