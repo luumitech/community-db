@@ -12,6 +12,7 @@ export const darkTheme = {
     color: herouiDefault500,
   },
   tooltip: {
+    ...commonTheme.tooltip,
     backgroundColor: herouiDefault100,
     textStyle: {
       color: herouiForeground,
