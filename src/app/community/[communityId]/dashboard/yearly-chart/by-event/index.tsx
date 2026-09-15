@@ -1,4 +1,4 @@
-import { Skeleton, Spacer, cn } from '@heroui/react';
+import { ScrollShadow, Skeleton, Spacer, cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { Card } from '~/view/base/card';
@@ -79,16 +79,18 @@ const Chart: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className)}>
-      <Card.Body>
-        <Skeleton
-          className="flex h-full flex-col rounded-lg"
-          aria-label="skeleton"
-          isLoaded={!isLoading}
-        >
-          <EventSelect />
-          <EventDetails />
-        </Skeleton>
-      </Card.Body>
+      <ScrollShadow>
+        <Card.Body>
+          <Skeleton
+            className="flex h-full flex-col rounded-lg"
+            aria-label="skeleton"
+            isLoaded={!isLoading}
+          >
+            <EventSelect />
+            <EventDetails />
+          </Skeleton>
+        </Card.Body>
+      </ScrollShadow>
     </Card>
   );
 };

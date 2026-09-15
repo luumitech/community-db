@@ -65,7 +65,6 @@ export const commonTheme = {
     bottom: 10,
   },
   tooltip: {
-    confine: true,
     axisPointer: {
       lineStyle: {
         color: '#ccc',
@@ -76,6 +75,9 @@ export const commonTheme = {
         width: 1,
       },
     },
+    // confine: true,
+    // allow tooltip to show beyond the graph container
+    appendToBody: true,
   },
   categoryAxis: {
     axisLine: {

@@ -8,6 +8,7 @@ const herouiForeground = 'hsl(201.82 24.44% 8.82% /1)';
 export const lightTheme = {
   ...commonTheme,
   tooltip: {
+    ...commonTheme.tooltip,
     backgroundColor: herouiDefault100,
     textStyle: {
       color: herouiForeground,
