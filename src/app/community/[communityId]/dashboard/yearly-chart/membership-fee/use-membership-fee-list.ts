@@ -2,7 +2,7 @@ import React from 'react';
 import * as R from 'remeda';
 import { decCompareTo, decSum } from '~/lib/decimal-util';
 import type { MembershipFeeStat, MembershipFeeStatEntry } from './_type';
-import { type SortDescriptor } from './fee-table';
+import { type SortDescriptor } from './fee-grid-table';
 
 export function useMembershipFeeList(stat: MembershipFeeStat, groupBy: string) {
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>();

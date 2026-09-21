@@ -2,34 +2,38 @@ import { cn } from '@heroui/react';
 import React from 'react';
 import { useLocalStorage } from 'react-use';
 import { lsFlags } from '~/lib/env';
-import { type MembershipFeeStat } from './_type';
-import { FeeGridTable, type ColumnKey } from './fee-grid-table';
+import { type TicketStat } from './_type';
 import { GroupBy } from './group-by';
-import { useMembershipFeeList } from './use-membership-fee-list';
+import { TicketGridTable, type ColumnKey } from './ticket-grid-table';
+import { TicketNameSelect } from './ticket-name-select';
+import { useTicketList } from './use-ticket-list';
 
 export interface Props {
   className?: string;
-  membershipFeeStat: MembershipFeeStat;
+  ticketStat: TicketStat;
   isLoading?: boolean;
 }
 
-export const MembershipFeeTable: React.FC<Props> = ({
+export const TicketTable: React.FC<Props> = ({
   className,
-  membershipFeeStat,
+  ticketStat,
   isLoading,
 }) => {
   const [groupBy = 'none', setGroupBy] = useLocalStorage(
-    lsFlags.dashboardMembershipFeeGroupBy,
+    lsFlags.dashboardByTicketGroupBy,
     'none'
   );
-  const { membershipFeeStatWithId, doSort, sortDescriptor } =
-    useMembershipFeeList(membershipFeeStat, groupBy);
+  const ticketNameList = React.useMemo(() => {
+    const result = new Set<string>();
+    ticketStat.forEach(({ ticketName }) => result.add(ticketName));
+    return [...result];
+  }, [ticketStat]);
+
+  const { ticketStatWithId, ticketSelected, doSort, sortDescriptor } =
+    useTicketList(ticketStat, groupBy);
 
   const columnKeys = React.useMemo<ColumnKey[]>(() => {
     switch (groupBy) {
-      case 'membershipYear':
-        return ['membershipYear', 'count', 'price'];
-
       case 'eventName':
         return ['eventName', 'count', 'price'];
 
@@ -38,28 +42,27 @@ export const MembershipFeeTable: React.FC<Props> = ({
 
       case 'none':
       default:
-        return [
-          'membershipYear',
-          'eventName',
-          'count',
-          'price',
-          'paymentMethod',
-        ];
+        return ['eventName', 'count', 'price', 'paymentMethod'];
     }
   }, [groupBy]);
 
   return (
     <div className={cn(className, 'flex flex-col gap-2')}>
-      <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
+      <TicketNameSelect ticketNameList={ticketNameList} />
+      <GroupBy
+        isDisabled={!ticketNameList.includes(ticketSelected)}
+        defaultValue={groupBy}
+        onValueChange={setGroupBy}
+      />
       <div className="overflow-y-auto">
-        <FeeGridTable
+        <TicketGridTable
           // This is applied to the grid container
           className={
             groupBy === 'none'
-              ? 'grid-cols-[repeat(2,auto)_repeat(2,min-content)_auto]'
+              ? 'grid-cols-[auto_repeat(2,min-content)_auto]'
               : 'grid-cols-[auto_repeat(2,min-content)]'
           }
-          items={membershipFeeStatWithId}
+          items={ticketStatWithId}
           isLoading={isLoading}
           columnKeys={columnKeys}
           columnConfig={{
@@ -69,7 +72,6 @@ export const MembershipFeeTable: React.FC<Props> = ({
             price: cn('pr-2.5'),
             // paymentMethod: cn('font-semibold sm:font-normal'),
           }}
-          // topContent={topContent}
           sortDescriptor={sortDescriptor}
           onSortChange={doSort}
         />

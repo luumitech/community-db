@@ -34,7 +34,7 @@ interface Props {
 }
 
 const Chart: React.FC<Props> = ({ className }) => {
-  const { community, year, isLoading } = usePageContext();
+  const { community, isLoading } = usePageContext();
   const entry = getFragment(EventMembershipFragment, community);
 
   const membershipFeeStat = entry?.communityStat.membershipFeeStat ?? [];

@@ -1,6 +1,5 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 import { formatCurrency } from '~/lib/decimal-util';
 import {
   GridTable,
@@ -32,11 +31,14 @@ type CustomGridTableProps = Omit<
   'config' | 'renderHeader' | 'renderItem' | 'itemCardProps'
 >;
 
-export interface FeeTableProps extends CustomGridTableProps {
+export interface FeeGridTableProps extends CustomGridTableProps {
   className?: string;
 }
 
-export const FeeTable: React.FC<FeeTableProps> = ({ className, ...props }) => {
+export const FeeGridTable: React.FC<FeeGridTableProps> = ({
+  className,
+  ...props
+}) => {
   const renderHeader: GTProps['renderHeader'] = React.useCallback((key) => {
     switch (key) {
       case 'membershipYear':

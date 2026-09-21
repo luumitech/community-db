@@ -2,4 +2,7 @@ import { type Dashboard_ByTicketFragment } from '~/graphql/generated/types';
 
 export type ByTicketFragment = Dashboard_ByTicketFragment;
 export type TicketStat = ByTicketFragment['communityStat']['ticketStat'];
-export type TicketStatEntry = Omit<TicketStat[number], '__typename'>;
+export type TicketStatEntry = Omit<TicketStat[number], '__typename'> & {
+  /** Unique ID for each entry, required for GridTable rendering */
+  id: string;
+};
