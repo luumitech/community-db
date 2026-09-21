@@ -1,4 +1,4 @@
-import { ScrollShadow, Skeleton, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
 import { getFragment, graphql } from '~/graphql/generated';
 import { Card } from '~/view/base/card';
@@ -40,18 +40,14 @@ const Chart: React.FC<Props> = ({ className }) => {
   const membershipFeeStat = entry?.communityStat.membershipFeeStat ?? [];
 
   return (
-    <Card className={cn(className)}>
-      <ScrollShadow>
-        <Card.Body>
-          <Skeleton
-            className="h-full rounded-lg"
-            aria-label="skeleton"
-            isLoaded={!isLoading}
-          >
-            <MembershipFeeTable membershipFeeStat={membershipFeeStat} />
-          </Skeleton>
-        </Card.Body>
-      </ScrollShadow>
+    <Card className={cn(className, 'h-full')}>
+      <Card.Body>
+        <MembershipFeeTable
+          className="h-full"
+          membershipFeeStat={membershipFeeStat}
+          isLoading={isLoading}
+        />
+      </Card.Body>
     </Card>
   );
 };

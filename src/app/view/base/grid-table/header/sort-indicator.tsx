@@ -4,13 +4,22 @@ import { Icon } from '~/view/base/icon';
 import type { SortDirection } from '../_type';
 
 interface Props {
+  className?: string;
   sortDirection: SortDirection | null;
 }
 
-export const SortIndicator: React.FC<Props> = ({ sortDirection }) => {
+export const SortIndicator: React.FC<Props> = ({
+  className,
+  sortDirection,
+}) => {
   if (!sortDirection) {
-    return <Icon icon="sortNone" />;
+    return <Icon className={className} icon="sortNone" />;
   }
 
-  return <Icon icon={sortDirection === 'ascending' ? 'sortAsc' : 'sortDesc'} />;
+  return (
+    <Icon
+      className={className}
+      icon={sortDirection === 'ascending' ? 'sortAsc' : 'sortDesc'}
+    />
+  );
 };
