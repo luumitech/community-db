@@ -62,7 +62,6 @@ export function useTicketList(stat: TicketStat, groupBy: string) {
 
   return {
     ticketStatWithId,
-    ticketSelected,
     doSort: setSortDescriptor,
     sortDescriptor,
   };

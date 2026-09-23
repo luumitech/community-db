@@ -54,6 +54,7 @@ export const CLASS_DEFAULT: ClassDefault = {
     'text-xs font-semibold text-foreground/60'
   ),
   bodyContainer: cn(''),
+  bottomContainer: cn(''),
 };
 
 /** Properties in HeaderProps */

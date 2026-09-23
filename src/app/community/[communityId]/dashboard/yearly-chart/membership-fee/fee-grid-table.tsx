@@ -1,7 +1,9 @@
-import { cn } from '@heroui/react';
+import { Divider, cn } from '@heroui/react';
 import React from 'react';
-import { formatCurrency } from '~/lib/decimal-util';
+import * as R from 'remeda';
+import { decSum, formatCurrency } from '~/lib/decimal-util';
 import {
+  CLASS_DEFAULT,
   GridTable,
   type GridTableProps as GenericGTProps,
 } from '~/view/base/grid-table';
@@ -67,10 +69,54 @@ export const FeeGridTable: React.FC<FeeGridTableProps> = ({
           </div>
         );
 
+      case 'membershipYear':
+        if (!isNaN(item[key])) {
+          return <span>{item[key]}</span>;
+        }
+        break;
+
       default:
         return <span>{item[key]}</span>;
     }
+    return null;
   }, []);
+
+  /** Render a total line at the bottom of the table */
+  const bottomContent = React.useMemo(() => {
+    if (!props.items.length) {
+      return null;
+    }
+
+    const totalRow: MembershipFeeStatEntry = {
+      id: 'not-used',
+      key: 'not-used',
+      membershipYear: NaN,
+      eventName: '',
+      count: R.sumBy(props.items, ({ count }) => count),
+      price: decSum(...props.items.map(({ price }) => price)),
+      paymentMethod: '',
+    };
+
+    return (
+      <>
+        <Divider className="col-span-full" />
+        <div
+          className={cn(
+            CLASS_DEFAULT.inheritContainer,
+            CLASS_DEFAULT.commonContainer,
+            CLASS_DEFAULT.bodyContainer,
+            'px-2 py-1 text-sm'
+          )}
+        >
+          {props.columnKeys.map((key) => (
+            <div key={`${key}-total`} className={props.columnConfig?.[key]}>
+              {renderItem(key, totalRow)}
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  }, [props.columnConfig, props.columnKeys, props.items, renderItem]);
 
   return (
     <GridTable
@@ -80,6 +126,12 @@ export const FeeGridTable: React.FC<FeeGridTableProps> = ({
         gridContainer: className,
         headerContainer: cn('mx-0.5 px-3 py-2'),
         bodyContainer: cn('px-2 py-1 text-sm', 'hover:bg-primary-50'),
+        bottomContainer: cn(
+          'sticky bottom-0 z-30',
+          /** Matches the default background color */
+          'bg-background',
+          'grid grid-cols-subgrid'
+        ),
       }}
       sortableColumnKeys={[
         'membershipYear',
@@ -90,6 +142,7 @@ export const FeeGridTable: React.FC<FeeGridTableProps> = ({
       ]}
       renderHeader={renderHeader}
       renderItem={renderItem}
+      bottomContent={bottomContent}
       {...props}
     />
   );

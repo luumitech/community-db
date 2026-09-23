@@ -1,27 +1,23 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { useLocalStorage } from 'react-use';
-import { lsFlags } from '~/lib/env';
+import { twMerge } from 'tailwind-merge';
 import { type MembershipFeeStat } from './_type';
 import { FeeGridTable, type ColumnKey } from './fee-grid-table';
-import { GroupBy } from './group-by';
 import { useMembershipFeeList } from './use-membership-fee-list';
 
 export interface Props {
   className?: string;
   membershipFeeStat: MembershipFeeStat;
   isLoading?: boolean;
+  groupBy: string;
 }
 
 export const MembershipFeeTable: React.FC<Props> = ({
   className,
   membershipFeeStat,
   isLoading,
+  groupBy,
 }) => {
-  const [groupBy = 'none', setGroupBy] = useLocalStorage(
-    lsFlags.dashboardMembershipFeeGroupBy,
-    'none'
-  );
   const { membershipFeeStatWithId, doSort, sortDescriptor } =
     useMembershipFeeList(membershipFeeStat, groupBy);
 
@@ -49,31 +45,27 @@ export const MembershipFeeTable: React.FC<Props> = ({
   }, [groupBy]);
 
   return (
-    <div className={cn(className, 'flex flex-col gap-2')}>
-      <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
-      <div className="overflow-y-auto">
-        <FeeGridTable
-          // This is applied to the grid container
-          className={
-            groupBy === 'none'
-              ? 'grid-cols-[repeat(2,auto)_repeat(2,min-content)_auto]'
-              : 'grid-cols-[auto_repeat(2,min-content)]'
-          }
-          items={membershipFeeStatWithId}
-          isLoading={isLoading}
-          columnKeys={columnKeys}
-          columnConfig={{
-            // membershipYear: cn('font-semibold sm:font-normal'),
-            // eventName: cn('font-semibold sm:font-normal'),
-            count: cn('pr-2.5'),
-            price: cn('pr-2.5'),
-            // paymentMethod: cn('font-semibold sm:font-normal'),
-          }}
-          // topContent={topContent}
-          sortDescriptor={sortDescriptor}
-          onSortChange={doSort}
-        />
-      </div>
-    </div>
+    <FeeGridTable
+      // This is applied to the grid container
+      className={twMerge(
+        'overflow-y-auto',
+        groupBy === 'none'
+          ? 'grid-cols-[repeat(2,auto)_repeat(2,min-content)_auto]'
+          : 'grid-cols-[auto_repeat(2,min-content)]',
+        className
+      )}
+      items={membershipFeeStatWithId}
+      isLoading={isLoading}
+      columnKeys={columnKeys}
+      columnConfig={{
+        // membershipYear: cn('font-semibold sm:font-normal'),
+        // eventName: cn('font-semibold sm:font-normal'),
+        count: cn('pr-2.5'),
+        price: cn('pr-2.5'),
+        // paymentMethod: cn('font-semibold sm:font-normal'),
+      }}
+      sortDescriptor={sortDescriptor}
+      onSortChange={doSort}
+    />
   );
 };

@@ -33,6 +33,14 @@ export interface ClassNameConfig {
    * - Good for specifying text styles within data rows
    */
   bodyContainer?: string;
+  /**
+   * Classes applied to bottom content container
+   *
+   * For example:
+   *
+   * - Good for adding sticky-ness to bottom content
+   */
+  bottomContainer?: string;
 }
 
 type DivProps = React.ComponentProps<'div'>;
