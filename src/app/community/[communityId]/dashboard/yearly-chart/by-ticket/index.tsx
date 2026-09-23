@@ -58,7 +58,7 @@ const Chart: React.FC<Props> = ({ className }) => {
 
   return (
     <Card className={cn(className, 'h-full')}>
-      <Card.Body className="flex flex-col gap-2">
+      <Card.Body className="gap-2">
         <TicketNameSelect ticketNameList={ticketNameList} />
         <GroupBy
           isDisabled={!ticketNameList.includes(ticketSelected)}

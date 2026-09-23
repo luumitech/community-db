@@ -56,13 +56,6 @@ const Chart: React.FC<Props> = ({ className }) => {
     ({ eventName }) => eventName === eventSelected
   );
 
-  const EventSelect = React.useCallback(() => {
-    if (!eventList.length) {
-      return null;
-    }
-    return <EventNameSelect eventList={eventList} />;
-  }, [eventList]);
-
   const EventDetails = React.useCallback(() => {
     if (!eventList.length || !eventSelected || !year) {
       return null;
@@ -78,7 +71,7 @@ const Chart: React.FC<Props> = ({ className }) => {
   return (
     <Card className={cn(className, 'h-full')}>
       <Card.Body className="flex flex-col gap-2">
-        <EventSelect />
+        <EventNameSelect eventList={eventList} />
         <EventDetails />
       </Card.Body>
     </Card>

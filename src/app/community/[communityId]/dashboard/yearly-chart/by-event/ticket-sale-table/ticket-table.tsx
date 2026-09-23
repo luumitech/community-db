@@ -1,76 +1,62 @@
-import { Divider, ScrollShadow, cn } from '@heroui/react';
+import { cn } from '@heroui/react';
 import React from 'react';
-import { useLocalStorage } from 'react-use';
-import * as R from 'remeda';
-import { lsFlags } from '~/lib/env';
-import { Card } from '~/view/base/card';
 import { type TicketStat } from '../_type';
-import { GroupBy } from './group-by';
-import { TableHeader, TableRow, TableSumRow } from './table-row';
+import { TicketGridTable, type ColumnKey } from './ticket-grid-table';
+import { useTicketList } from './use-ticket-list';
 
 export interface Props {
   className?: string;
   ticketList: TicketStat;
+  isLoading?: boolean;
+  groupBy: string;
 }
 
-export const TicketTable: React.FC<Props> = ({ className, ticketList }) => {
-  const [groupBy = 'none', setGroupBy] = useLocalStorage(
-    lsFlags.dashboardEventTicketSaleGroupBy,
-    'none'
+export const TicketTable: React.FC<Props> = ({
+  className,
+  ticketList,
+  isLoading,
+  groupBy,
+}) => {
+  const { ticketStatWithId, doSort, sortDescriptor } = useTicketList(
+    ticketList,
+    groupBy
   );
 
+  const columnKeys = React.useMemo<ColumnKey[]>(() => {
+    switch (groupBy) {
+      case 'ticketName':
+        return ['ticketName', 'count', 'price'];
+
+      case 'paymentMethod':
+        return ['paymentMethod', 'count', 'price'];
+
+      case 'none':
+      default:
+        return ['ticketName', 'count', 'price', 'paymentMethod'];
+    }
+  }, [groupBy]);
+
   return (
-    <Card.Body className={cn(className, 'gap-2')}>
-      <GroupBy defaultValue={groupBy} onValueChange={setGroupBy} />
-      <ScrollShadow className="overflow-y-hidden" orientation="horizontal">
-        <div className="grid grid-cols-[repeat(5,max-content)] gap-x-6 gap-y-2">
-          <TableHeader />
-          {groupBy === 'none' &&
-            ticketList.map((ticket) => (
-              <TableRow key={ticket.key} ticket={ticket} />
-            ))}
-          {groupBy === 'membershipYear' &&
-            Object.entries(R.groupBy(ticketList, R.prop('membershipYear'))).map(
-              ([yearStr, tickets]) => {
-                return (
-                  <TableSumRow
-                    key={yearStr}
-                    ticketList={tickets}
-                    membershipYear={parseInt(yearStr, 10)}
-                  />
-                );
-              }
-            )}
-          {groupBy === 'ticketName' &&
-            Object.entries(R.groupBy(ticketList, R.prop('ticketName'))).map(
-              ([ticketName, tickets]) => {
-                return (
-                  <TableSumRow
-                    key={ticketName}
-                    ticketList={tickets}
-                    ticketName={ticketName}
-                  />
-                );
-              }
-            )}
-          {groupBy === 'paymentMethod' &&
-            Object.entries(R.groupBy(ticketList, R.prop('paymentMethod'))).map(
-              ([paymentMethod, tickets]) => {
-                return (
-                  <TableSumRow
-                    key={paymentMethod}
-                    ticketList={tickets}
-                    paymentMethod={paymentMethod}
-                  />
-                );
-              }
-            )}
-          <div className="col-span-full">
-            <Divider />
-          </div>
-          <TableSumRow ticketList={ticketList} />
-        </div>
-      </ScrollShadow>
-    </Card.Body>
+    <TicketGridTable
+      // This is applied to the grid container
+      className={cn(
+        'overflow-y-auto',
+        groupBy === 'none'
+          ? 'grid-cols-[auto_repeat(2,min-content)_auto]'
+          : 'grid-cols-[auto_repeat(2,min-content)]'
+      )}
+      items={ticketStatWithId}
+      isLoading={isLoading}
+      columnKeys={columnKeys}
+      columnConfig={{
+        // membershipYear: cn('font-semibold sm:font-normal'),
+        // eventName: cn('font-semibold sm:font-normal'),
+        count: cn('pr-2.5'),
+        price: cn('pr-2.5'),
+        // paymentMethod: cn('font-semibold sm:font-normal'),
+      }}
+      sortDescriptor={sortDescriptor}
+      onSortChange={doSort}
+    />
   );
 };
