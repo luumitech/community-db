@@ -27,7 +27,13 @@ export const CLASS_DEFAULT: ClassDefault = {
   ),
   gridContainer: cn(
     /** Default grid layout, 6 equal columns */
-    'grid-cols-6'
+    'grid-cols-6',
+    /**
+     * Default grid uses align-content: stretch, which distributes spaces evenly
+     * across rows, by default we don't want rows heights to stretch all
+     * available spaces
+     */
+    'content-start'
   ),
   commonContainer: cn(
     /** Default gap between each column cells */

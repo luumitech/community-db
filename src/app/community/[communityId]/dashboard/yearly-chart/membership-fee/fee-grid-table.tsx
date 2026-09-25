@@ -124,13 +124,18 @@ export const FeeGridTable: React.FC<FeeGridTableProps> = ({
       isHeaderSticky
       config={{
         gridContainer: className,
+        headerSticky: cn(
+          /** Matches Card's background color */
+          'bg-content1'
+        ),
         headerContainer: cn('mx-0.5 px-3 py-2'),
         bodyContainer: cn('px-2 py-1 text-sm', 'hover:bg-primary-50'),
         bottomContainer: cn(
           'sticky bottom-0 z-30',
-          /** Matches the default background color */
-          'bg-background',
-          'grid grid-cols-subgrid'
+
+          'grid grid-cols-subgrid',
+          /** Matches Card's background color */
+          'bg-content1'
         ),
       }}
       sortableColumnKeys={[
