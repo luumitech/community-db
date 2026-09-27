@@ -19,8 +19,8 @@ export const GroupBy: React.FC<Props> = ({ className, ...props }) => {
         <Radio classNames={{ label: cn('text-xs') }} value="none">
           None
         </Radio>
-        <Radio classNames={{ label: cn('text-xs') }} value="ticketName">
-          Ticket Type
+        <Radio classNames={{ label: cn('text-xs') }} value="itemName">
+          Item Name
         </Radio>
         <Radio classNames={{ label: cn('text-xs') }} value="paymentMethod">
           Payment Method

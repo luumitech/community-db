@@ -3,19 +3,19 @@ import React from 'react';
 import { useLocalStorage } from 'react-use';
 import { lsFlags } from '~/lib/env';
 import { Card } from '~/view/base/card';
-import { type TicketStat } from '../_type';
+import { type RevenueStat } from '../_type';
 import { GroupBy } from './group-by';
-import { TicketTable } from './ticket-table';
+import { RevenueTable } from './revenue-table';
 
 export interface Props {
   className?: string;
-  ticketList: TicketStat;
+  revenueStat: RevenueStat;
   isLoading?: boolean;
 }
 
-export const TicketSaleTable: React.FC<Props> = ({
+export const TotalSales: React.FC<Props> = ({
   className,
-  ticketList,
+  revenueStat,
   isLoading,
 }) => {
   const [groupBy = 'none', setGroupBy] = useLocalStorage(
@@ -25,15 +25,15 @@ export const TicketSaleTable: React.FC<Props> = ({
 
   return (
     <Card className={cn(className)} shadow="sm">
-      <Card.Header className="font-semibold">Ticket Sale</Card.Header>
+      <Card.Header className="font-semibold">Total Sales</Card.Header>
       <Card.Body className="gap-2">
         <GroupBy
           defaultValue={groupBy}
           onValueChange={setGroupBy}
-          isDisabled={!ticketList.length}
+          isDisabled={!revenueStat.length}
         />
-        <TicketTable
-          ticketList={ticketList}
+        <RevenueTable
+          revenueStat={revenueStat}
           isLoading={isLoading}
           groupBy={groupBy}
         />

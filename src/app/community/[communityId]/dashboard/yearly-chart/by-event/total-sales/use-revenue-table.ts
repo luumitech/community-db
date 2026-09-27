@@ -1,21 +1,20 @@
 import React from 'react';
 import * as R from 'remeda';
 import { decCompareTo, decSum } from '~/lib/decimal-util';
-import type { TicketStat, TicketStatEntry } from '../_type';
-import { type SortDescriptor } from './ticket-grid-table';
+import type { RevenueEntry, RevenueStat } from '../_type';
+import { type SortDescriptor } from './revenue-grid-table';
 
-export function useTicketList(stat: TicketStat, groupBy: string) {
+export function useRevenueTable(stat: RevenueStat, groupBy: string) {
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>();
 
-  const rawTicketStat = React.useMemo(() => {
+  const rawStat = React.useMemo(() => {
     switch (groupBy) {
-      case 'ticketName':
-        return Object.entries(R.groupBy(stat, R.prop('ticketName'))).map(
-          ([ticketName, ticketStat]) => ({
-            id: ticketName,
+      case 'itemName':
+        return Object.entries(R.groupBy(stat, R.prop('itemName'))).map(
+          ([itemName, ticketStat]) => ({
+            id: itemName,
             key: 'not-used',
-            ticketName,
-            membershipYear: NaN,
+            itemName,
             eventName: 'not-used',
             paymentMethod: 'not-displayed',
             count: R.sumBy(ticketStat, ({ count }) => count),
@@ -28,8 +27,7 @@ export function useTicketList(stat: TicketStat, groupBy: string) {
           ([paymentMethod, feeStat]) => ({
             id: paymentMethod,
             key: 'not-used',
-            ticketName: 'not-used',
-            membershipYear: NaN,
+            itemName: 'not-used',
             eventName: 'not-displayed',
             paymentMethod,
             count: R.sumBy(feeStat, ({ count }) => count),
@@ -47,21 +45,21 @@ export function useTicketList(stat: TicketStat, groupBy: string) {
   }, [stat, groupBy]);
 
   /** Filter rawAudienceList based on filters and sort schemes */
-  const ticketStatWithId = React.useMemo(() => {
-    return sortAndFilter(rawTicketStat, sortDescriptor);
-  }, [rawTicketStat, sortDescriptor]);
+  const statWithId = React.useMemo(() => {
+    return sortAndFilter(rawStat, sortDescriptor);
+  }, [rawStat, sortDescriptor]);
 
   return {
-    ticketStatWithId,
+    statWithId,
     doSort: setSortDescriptor,
     sortDescriptor,
   };
 }
 
 function sortAndFilter(
-  _stat: TicketStatEntry[],
+  _stat: RevenueEntry[],
   sortDescriptor?: SortDescriptor
-): TicketStatEntry[] {
+): RevenueEntry[] {
   const stat = [..._stat];
   if (sortDescriptor != null) {
     const { columnKey, direction } = sortDescriptor;
@@ -84,7 +82,7 @@ function sortAndFilter(
         });
         break;
 
-      case 'ticketName':
+      case 'itemName':
       case 'paymentMethod':
         stat.sort((a, b) => {
           const aVal = a[columnKey] ?? '';

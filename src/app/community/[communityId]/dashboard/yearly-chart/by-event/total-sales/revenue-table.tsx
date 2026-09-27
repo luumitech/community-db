@@ -1,43 +1,43 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { type TicketStat } from '../_type';
-import { TicketGridTable, type ColumnKey } from './ticket-grid-table';
-import { useTicketList } from './use-ticket-list';
+import { type RevenueStat } from '../_type';
+import { RevenueGridTable, type ColumnKey } from './revenue-grid-table';
+import { useRevenueTable } from './use-revenue-table';
 
 export interface Props {
   className?: string;
-  ticketList: TicketStat;
+  revenueStat: RevenueStat;
   isLoading?: boolean;
   groupBy: string;
 }
 
-export const TicketTable: React.FC<Props> = ({
+export const RevenueTable: React.FC<Props> = ({
   className,
-  ticketList,
+  revenueStat,
   isLoading,
   groupBy,
 }) => {
-  const { ticketStatWithId, doSort, sortDescriptor } = useTicketList(
-    ticketList,
+  const { statWithId, doSort, sortDescriptor } = useRevenueTable(
+    revenueStat,
     groupBy
   );
 
   const columnKeys = React.useMemo<ColumnKey[]>(() => {
     switch (groupBy) {
-      case 'ticketName':
-        return ['ticketName', 'count', 'price'];
+      case 'itemName':
+        return ['itemName', 'count', 'price'];
 
       case 'paymentMethod':
         return ['paymentMethod', 'count', 'price'];
 
       case 'none':
       default:
-        return ['ticketName', 'count', 'price', 'paymentMethod'];
+        return ['itemName', 'count', 'price', 'paymentMethod'];
     }
   }, [groupBy]);
 
   return (
-    <TicketGridTable
+    <RevenueGridTable
       // This is applied to the grid container
       className={cn(
         'overflow-y-auto',
@@ -45,7 +45,7 @@ export const TicketTable: React.FC<Props> = ({
           ? 'grid-cols-[auto_repeat(2,min-content)_auto]'
           : 'grid-cols-[auto_repeat(2,min-content)]'
       )}
-      items={ticketStatWithId}
+      items={statWithId}
       isLoading={isLoading}
       columnKeys={columnKeys}
       columnConfig={{

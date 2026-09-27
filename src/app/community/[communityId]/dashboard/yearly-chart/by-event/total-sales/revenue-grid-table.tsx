@@ -7,7 +7,7 @@ import {
   GridTable,
   type GridTableProps as GenericGTProps,
 } from '~/view/base/grid-table';
-import { type TicketStatEntry } from '../_type';
+import { type RevenueEntry } from '../_type';
 
 /**
  * Defines column keys used for rendering table,
@@ -15,11 +15,8 @@ import { type TicketStatEntry } from '../_type';
  * - Put in generic type for GridTableProps
  * - Make all field required, so it's easier to define callback functions
  */
-export type ColumnKey = 'ticketName' | 'count' | 'price' | 'paymentMethod';
-type GridTableProps = GenericGTProps<
-  ColumnKey,
-  TicketStatEntry & { id: string }
->;
+export type ColumnKey = 'itemName' | 'count' | 'price' | 'paymentMethod';
+type GridTableProps = GenericGTProps<ColumnKey, RevenueEntry & { id: string }>;
 type GTProps = Required<GridTableProps>;
 export type SortDescriptor = GTProps['sortDescriptor'];
 
@@ -28,21 +25,20 @@ type CustomGridTableProps = Omit<
   'config' | 'renderHeader' | 'renderItem' | 'itemCardProps'
 >;
 
-export interface TicketGridTableProps extends CustomGridTableProps {
+export interface RevenueGridTableProps extends CustomGridTableProps {
   className?: string;
 }
 
-export const TicketGridTable: React.FC<TicketGridTableProps> = ({
+export const RevenueGridTable: React.FC<RevenueGridTableProps> = ({
   className,
   ...props
 }) => {
   const renderHeader: GTProps['renderHeader'] = React.useCallback((key) => {
     switch (key) {
-      case 'ticketName':
-        return 'Ticket';
+      case 'itemName':
+        return 'Item Name';
       case 'count':
-        // Don't want 'Ticket #' to wrap
-        return <span className="whitespace-nowrap">Ticket #</span>;
+        return '#';
       case 'price':
         return 'Price';
       case 'paymentMethod':
@@ -74,11 +70,10 @@ export const TicketGridTable: React.FC<TicketGridTableProps> = ({
       return null;
     }
 
-    const totalRow: TicketStatEntry = {
+    const totalRow: RevenueEntry = {
       id: 'not-used',
       key: 'not-used',
-      membershipYear: NaN,
-      ticketName: '',
+      itemName: '',
       eventName: 'not-used',
       count: R.sumBy(props.items, ({ count }) => count),
       price: decSum(...props.items.map(({ price }) => price)),
@@ -108,7 +103,7 @@ export const TicketGridTable: React.FC<TicketGridTableProps> = ({
 
   return (
     <GridTable
-      aria-label="Ticket Sale"
+      aria-label="Event Revenue"
       isHeaderSticky
       config={{
         gridContainer: className,
@@ -125,7 +120,7 @@ export const TicketGridTable: React.FC<TicketGridTableProps> = ({
           'grid grid-cols-subgrid'
         ),
       }}
-      sortableColumnKeys={['ticketName', 'count', 'price', 'paymentMethod']}
+      sortableColumnKeys={['itemName', 'count', 'price', 'paymentMethod']}
       renderHeader={renderHeader}
       renderItem={renderItem}
       bottomContent={bottomContent}
