@@ -25,7 +25,7 @@ export const TotalSales: React.FC<Props> = ({
 
   return (
     <Card className={cn(className)} shadow="sm">
-      <Card.Header className="font-semibold">Total Sales</Card.Header>
+      <Card.Header className="pb-0 font-semibold">Total Sales</Card.Header>
       <Card.Body className="gap-2">
         <GroupBy
           defaultValue={groupBy}

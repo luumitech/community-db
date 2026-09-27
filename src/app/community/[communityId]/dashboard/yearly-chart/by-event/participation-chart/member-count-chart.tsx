@@ -143,8 +143,8 @@ export const MemberCountChart: React.FC<Props> = ({
   }, [chartHelper]);
 
   return (
-    <Card.Body className={cn(className, 'h-[170px]')}>
-      <EChart className={className} option={option} />
+    <Card.Body className={className}>
+      <EChart option={option} />
     </Card.Body>
   );
 };

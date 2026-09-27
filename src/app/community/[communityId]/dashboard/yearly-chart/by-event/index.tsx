@@ -82,6 +82,7 @@ const Chart: React.FC<Props> = ({ className }) => {
         <EventNameSelect eventList={eventList} />
         {year != null && (
           <ParticipationChart
+            className="shrink-0"
             year={year}
             byEventStat={yearByEventStat ?? null}
           />
