@@ -1,7 +1,8 @@
-import { cn } from '@heroui/react';
 import React from 'react';
+import { useMeasure } from 'react-use';
 import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
+import { parseAsNumber } from '~/lib/number-util';
 import { Ellipsis } from './ellipsis';
 
 export { Ellipsis } from './ellipsis';
@@ -21,178 +22,158 @@ export type EllipsisFn = (
 
 export interface TruncateProps extends DivProps {
   className?: string;
-  /** Space between children, in px. Default: 4. */
-  gap?: number;
   /**
    * Shown after the last visible child when some children are hidden. Either a
    * node or a function of the hidden count. Default is the `Ellipsis`
    * component.
    */
-  ellipsis?: React.ReactNode | EllipsisFn;
+  ellipsis?: EllipsisFn;
 }
 
-/**
- * Renders as many leading children as fit completely inside the parent and
- * stops at the first child that would be clipped. If any children are hidden,
- * an ellipsis is shown after the last visible one.
- *
- * Every child is rendered once, in a wrapper. Hidden children stay mounted (so
- * state and effects are preserved) but are taken out of flow and made invisible
- * so they can still be measured. A ResizeObserver recomputes the visible count
- * whenever the container, a child, or the ellipsis changes size. The
- * computation runs in a layout effect, so there is no flash of overflow.
- *
- * Usage
- *
- *     <div className="flex">
- *       <Truncate gap={6}>
- *         <Tag>React</Tag>
- *         <Tag>TypeScript</Tag>
- *         <Tag>GraphQL</Tag>
- *         <Tag>Postgres</Tag>
- *       </Truncate>
- *     </div>
- *
- *     // Custom ellipsis showing how many are hidden:
- *     <Truncate ellipsis={(n) => <span>+{n} more</span>}>...</Truncate>
- */
-export const Truncate: React.FC<React.PropsWithChildren<TruncateProps>> = ({
+export const Truncate: React.FC<TruncateProps> = ({
   className,
-  gap = 4,
-  ellipsis = <Ellipsis />,
+  ellipsis: renderEllipsis = <Ellipsis />,
   children,
   ...props
 }) => {
-  const items = React.Children.toArray(children);
-  const total = items.length;
-
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const itemRefs = React.useRef<(HTMLDivElement | null)[]>([]);
-  const ellipsisRef = React.useRef<HTMLDivElement>(null);
-
-  // Start optimistic (everything visible); corrected before first paint.
-  const [visibleCount, setVisibleCount] = React.useState<number>(total);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const childRefs = React.useRef<HTMLDivElement[]>([]);
+  const ellipsisRef = React.useRef<HTMLDivElement | null>(null);
+  const [ellipsisMeasureRef, ellipsisSz] = useMeasure<HTMLDivElement>();
+  const [visibleCount, setVisibleCount] = React.useState<number>();
 
   React.useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container) {
+    const ellipsis = ellipsisRef.current;
+    if (!container || !ellipsis || ellipsisSz == null) {
       return;
     }
 
-    const measure = (): void => {
-      const available = container.clientWidth;
-      const widths = itemRefs.current
-        .slice(0, total)
-        .map((el) => (el ? el.getBoundingClientRect().width : 0));
-      const ellipsisWidth = ellipsisRef.current
-        ? ellipsisRef.current.getBoundingClientRect().width
-        : 0;
+    const childElemList = childRefs.current;
 
-      // Width of the first n children laid out with `gap` between them.
-      const usedBy = (n: number): number => {
-        let sum = 0;
-        for (let i = 0; i < n; i++) {
-          sum += widths[i];
-        }
-        return sum + gap * Math.max(0, n - 1);
-      };
+    /**
+     * Look at the layout of the children element, and only show those that have
+     * not been clipped by the container. And show the ellipsis component if
+     * some children have been hidden by this logic.
+     */
+    const update = () => {
+      // Before measuring, show all children and hide the ellipsis
+      ellipsis.style.display = 'none';
+      childElemList.forEach((el) => {
+        el.style.display = '';
+      });
 
-      let fit = 0;
-      for (let n = 1; n <= total; n++) {
-        if (usedBy(n) > available) {
+      /**
+       * Measure the container width after forcing all child elements to be
+       * visible.
+       *
+       * In the case when container overflows the window, restrict size to
+       * `window.innerWidth`
+       */
+      const containerRect = container.getBoundingClientRect();
+      const containerRectRight =
+        containerRect.right > window.innerWidth
+          ? window.innerWidth
+          : containerRect.right;
+
+      /**
+       * If this is a flex container, find the gap, so we can use it when
+       * measuring ellipsis width
+       */
+      const containerStyle = getComputedStyle(container);
+      const gap =
+        parseAsNumber(containerStyle.columnGap, { lenient: true }) ?? 0;
+
+      let firstHiddenIndex: number | null = null;
+
+      /**
+       * It's possible that some elements within childElemList may have zero
+       * width, so we must iterate through the entire list and find ones with
+       * positive width.
+       *
+       * Then we can deterimine if we need to add ellipsis by calculating if the
+       * child element(s) fit inside the container width
+       */
+      const childRectList = childElemList
+        .map((elem, idx) => ({
+          elemIdx: idx,
+          rect: elem.getBoundingClientRect(),
+        }))
+        .filter(({ rect }) => rect.width > 0);
+
+      for (let i = 0; i < childRectList.length; i++) {
+        const childRect = childRectList[i].rect;
+
+        // ellipsis is not shown for last element
+        const ellipsisWidth =
+          i === childRectList.length - 1 ? 0 : gap + ellipsisSz.width;
+
+        if (childRect.right + ellipsisWidth > containerRectRight) {
+          firstHiddenIndex = childRectList[i].elemIdx;
           break;
-        } // first clipped child: stop here
-        fit = n;
-      }
-
-      // If something is hidden, the ellipsis needs room too. Give up children
-      // from the end until the ellipsis fits alongside them.
-      if (fit < total) {
-        while (fit > 0 && usedBy(fit) + gap + ellipsisWidth > available) {
-          fit--;
         }
       }
 
-      setVisibleCount((prev) => (prev === fit ? prev : fit));
+      if (firstHiddenIndex !== null) {
+        setVisibleCount(firstHiddenIndex);
+        for (let i = firstHiddenIndex; i < childElemList.length; i++) {
+          childElemList[i].style.display = 'none';
+        }
+        // Show the ellipsis
+        ellipsis.style.display = '';
+      } else {
+        setVisibleCount(childElemList.length);
+      }
     };
 
-    measure();
-
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(update);
     observer.observe(container);
-    itemRefs.current.slice(0, total).forEach((el) => {
-      if (el) {
-        observer.observe(el);
-      }
-    });
-    if (ellipsisRef.current) {
-      observer.observe(ellipsisRef.current);
-    }
+    update();
 
     return () => observer.disconnect();
-  }, [total, gap]);
-
-  const shown = Math.min(visibleCount, total);
-  const hiddenCount = total - shown;
-  const hasHidden = hiddenCount > 0;
+  }, [children, ellipsisSz]);
 
   const [visibleList, hiddenList] = React.useMemo(() => {
+    const childCount = React.Children.toArray(children).length;
     return R.partition(
       React.Children.toArray(children),
-      (elem, idx) => idx < shown
+      (elem, idx) => idx < (visibleCount ?? childCount)
     );
-  }, [children, shown]);
-
-  // Hidden nodes stay mounted and measurable but take no space and are invisible.
-  const hiddenClass = cn('pointer-events-none invisible absolute top-0 left-0');
+  }, [children, visibleCount]);
 
   return (
     <div
       ref={containerRef}
-      className={twMerge(
-        'relative min-w-0 overflow-hidden',
-        /**
-         * If parent is flex-col, you should pass 'flex-none', othewise 'flex-1'
-         * will affect its height
-         */
-        'flex flex-1 flex-nowrap items-center',
-        className
-      )}
-      style={{ gap }}
+      className={twMerge('overflow-hidden', className)}
       {...props}
     >
-      {items.map((child, i) => {
-        const isVisible = i < shown;
-        // Children.toArray assigns stable keys to elements; fall back to index.
-        const key =
-          React.isValidElement(child) && child.key != null ? child.key : i;
-        return (
-          <div
-            key={key}
-            ref={(el) => {
-              itemRefs.current[i] = el;
-            }}
-            aria-hidden={isVisible ? undefined : true}
-            className={cn('w-max flex-none', {
-              [hiddenClass]: !isVisible,
-            })}
-          >
-            {child}
-          </div>
-        );
-      })}
-
-      <div
-        ref={ellipsisRef}
-        aria-hidden={hasHidden ? undefined : true}
-        className={cn('w-max flex-none', {
-          [hiddenClass]: !hasHidden,
-        })}
+      {React.Children.toArray(children).map((child, i) => (
+        <div
+          key={i}
+          ref={(el) => {
+            if (el) {
+              childRefs.current[i] = el;
+            }
+          }}
+          className="flex-none"
+        >
+          {child}
+        </div>
+      ))}
+      <span ref={ellipsisRef}>
+        {typeof renderEllipsis === 'function'
+          ? renderEllipsis(hiddenList, visibleList)
+          : renderEllipsis}
+      </span>
+      {/** For measuring the size of the ellipsis component */}
+      <span
+        ref={ellipsisMeasureRef}
+        className="pointer-events-none invisible absolute start-0"
       >
-        {typeof ellipsis === 'function'
-          ? ellipsis(hiddenList, visibleList)
-          : ellipsis}
-      </div>
+        {typeof renderEllipsis === 'function'
+          ? renderEllipsis([], [])
+          : renderEllipsis}
+      </span>
     </div>
   );
 };

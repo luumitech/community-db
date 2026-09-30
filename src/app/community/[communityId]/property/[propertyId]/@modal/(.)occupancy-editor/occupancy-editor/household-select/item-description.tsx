@@ -29,7 +29,11 @@ export const ItemDescription: React.FC<Props> = ({
   }
 
   return (
-    <Truncate className={className} data-testid="member-names" role="list">
+    <Truncate
+      className={twMerge('flex items-center gap-2', className)}
+      data-testid="member-names"
+      role="list"
+    >
       {nameList.map((name, idx) => (
         <Chip
           key={idx}

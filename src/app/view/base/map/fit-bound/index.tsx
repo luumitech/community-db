@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMap } from 'react-leaflet';
+import { hasCoordinates } from '../map-util';
 
 interface Props {
   bounds: L.LatLngBoundsExpression;
@@ -10,7 +11,9 @@ export const FitBound: React.FC<Props> = ({ bounds }) => {
   const map = useMap();
 
   React.useEffect(() => {
-    map.fitBounds(bounds);
+    if (hasCoordinates(bounds)) {
+      map.fitBounds(bounds);
+    }
   }, [map, bounds]);
 
   return null;

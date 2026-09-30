@@ -45,6 +45,7 @@ export const FilterSelect: React.FC<Props> = ({
           Optional Filter...
         </Button>
         <FilterChip
+          className="grow"
           isDisabled={isDisabled}
           filters={filters}
           onFilterChange={onFilterChange}
