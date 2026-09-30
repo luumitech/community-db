@@ -13,6 +13,7 @@ interface NullableCoerceOpt extends CoerceOpt {
 }
 
 interface ToBooleanOpt extends NullableCoerceOpt {}
+interface ToStringOpt extends NullableCoerceOpt {}
 interface ToIsoDateOpt extends NullableCoerceOpt {}
 interface ToNumberOpt extends NullableCoerceOpt {
   /**
@@ -91,6 +92,22 @@ export class Coerce {
         return null as unknown as boolean;
       }
       return val === 'true' || val === '1';
+    });
+  }
+
+  /**
+   * Coerce to string:
+   *
+   * - This is similar to `z.string().nullable()`, with an additional check to
+   *   coerce empty strings into null.
+   * - If nullable check is off, then it is exactly the same as `z.string()`
+   */
+  toString<T extends ToStringOpt>(opt?: T): CoerceResult<T, string> {
+    return z.any().transform((val, ctx) => {
+      if (opt?.nullable && !val?.trim()) {
+        return null as unknown as string;
+      }
+      return val.toString();
     });
   }
 

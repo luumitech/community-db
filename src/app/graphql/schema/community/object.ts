@@ -12,6 +12,7 @@ import {
 import { EJSON, ObjectId } from 'bson';
 import { GraphQLError } from 'graphql';
 import { builder } from '~/graphql/builder';
+import { PropertyFilterInput } from '~/graphql/schema/property/property-filter';
 import { Cipher } from '~/lib/cipher';
 import { getCurrentYear } from '~/lib/date-util';
 import { Logger } from '~/lib/logger';
@@ -19,7 +20,6 @@ import prisma from '~/lib/prisma';
 import { verifyAccess } from '../access/util';
 import { geoCoordRef } from '../geo/object';
 import { resolveCustomOffsetConnection } from '../offset-pagination';
-import { PropertyFilterInput } from '../property/batch-modify';
 import { propertyRef } from '../property/object';
 import {
   getPropertyEntryWithinCommunity,

@@ -12,6 +12,7 @@ function schema() {
   return z.object({
     memberYearList: zz.coerce.toNumberList(),
     nonMemberYearList: zz.coerce.toNumberList(),
+    membershipFeeEvent: zz.coerce.toString({ nullable: true }),
     memberEventList: zz.coerce.toStringList(),
     ticketList: zz.coerce.toStringList(),
     withGps: zz.coerce.toBoolean({ nullable: true }),
@@ -54,6 +55,7 @@ export function useHookForm(arg: HookFormArg) {
     const {
       memberYearList,
       nonMemberYearList,
+      membershipFeeEvent,
       memberEventList,
       ticketList,
       withGps,
@@ -63,6 +65,9 @@ export function useHookForm(arg: HookFormArg) {
     }
     if (filtersToShow.includes('nonMemberYearList')) {
       setValue('nonMemberYearList', nonMemberYearList, { shouldDirty: true });
+    }
+    if (filtersToShow.includes('membershipFeeEvent')) {
+      setValue('membershipFeeEvent', membershipFeeEvent, { shouldDirty: true });
     }
     if (filtersToShow.includes('memberEventList')) {
       setValue('memberEventList', memberEventList, { shouldDirty: true });

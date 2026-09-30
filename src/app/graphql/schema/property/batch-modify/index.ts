@@ -5,41 +5,10 @@ import { builder } from '~/graphql/builder';
 import { verifyAccess } from '~/graphql/schema/access/util';
 import { UpdateInput } from '~/graphql/schema/common';
 import { jobPayloadRef } from '~/graphql/schema/job/object';
+import { PropertyFilterInput } from '~/graphql/schema/property/property-filter';
 import { type ContextUser } from '~/lib/context-user';
 import { EventInput } from '../modify';
 import { BatchModify } from './batch-modify';
-
-export const PropertyFilterInput = builder.inputType('PropertyFilterInput', {
-  fields: (t) => ({
-    searchText: t.string({
-      description: 'Match against property address/first name/last name',
-    }),
-    memberYearList: t.field({
-      description: 'Only properties that are member of the given year(s)',
-      type: ['Int'],
-    }),
-    nonMemberYearList: t.field({
-      description: 'Only properties that are NOT member of the given year(s)',
-      type: ['Int'],
-    }),
-    memberEventList: t.field({
-      description: 'Only properties that attended the given event(s)',
-      type: ['String'],
-    }),
-    ticketList: t.field({
-      description: 'Only properties that purchased the given ticket(s)',
-      type: ['String'],
-    }),
-    withGps: t.boolean({
-      description:
-        'If true, properties with GPS.  If false, properties without GPS',
-    }),
-    emailList: t.field({
-      description: 'Only properties with occupants with given email',
-      type: ['String'],
-    }),
-  }),
-});
 
 const BatchMembershipInput = builder.inputType('BatchMembershipInput', {
   fields: (t) => ({

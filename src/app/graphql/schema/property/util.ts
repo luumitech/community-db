@@ -4,8 +4,8 @@ import * as R from 'remeda';
 import { type ContextUser } from '~/lib/context-user';
 import prisma from '~/lib/prisma';
 import { getCommunityOwnerSubscriptionEntry } from '../payment/util';
-import { PropertyFilterInput } from './batch-modify';
 import { EventInput } from './modify';
+import { PropertyFilterInput } from './property-filter';
 
 type FindArgs = Omit<Prisma.PropertyFindFirstOrThrowArgs, 'where'>;
 
@@ -130,6 +130,7 @@ function propertyListFilterArgs(
     nonMemberYearList,
     memberYearList,
     memberEventList,
+    membershipFeeEvent,
     ticketList,
     withGps,
     emailList,
@@ -252,6 +253,14 @@ function propertyListFilterArgs(
     });
   }
 
+  function getMembershipFeeEventFilter() {
+    if (membershipFeeEvent != null) {
+      return {
+        paymentEventName: membershipFeeEvent,
+      };
+    }
+  }
+
   function getMemberEventFilter() {
     const memberEventSpecified =
       memberEventList != null && memberEventList.length > 0;
@@ -288,6 +297,7 @@ function propertyListFilterArgs(
 
   const memberYearSpecified =
     memberYearList != null && memberYearList.length > 0;
+  const membershipFeeEventFilter = getMembershipFeeEventFilter();
   const memberEventFilter = getMemberEventFilter();
   if (memberYearSpecified) {
     AND.push(
@@ -296,15 +306,17 @@ function propertyListFilterArgs(
           some: {
             year: memberYear,
             isMember: true,
+            ...membershipFeeEventFilter,
             ...memberEventFilter,
           },
         },
       }))
     );
-  } else if (memberEventFilter != null) {
+  } else if (memberEventFilter != null || membershipFeeEventFilter != null) {
     AND.push({
       membershipList: {
         some: {
+          ...membershipFeeEventFilter,
           ...memberEventFilter,
         },
       },
