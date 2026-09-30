@@ -88,7 +88,8 @@ export const FilterChip: React.FC<Props> = ({
   return (
     <Truncate
       className={twMerge(
-        'hidden items-center gap-2 sm:flex',
+        // Don't show chips if screen too narrow
+        'hidden sm:flex',
         'cursor-pointer',
         className
       )}
