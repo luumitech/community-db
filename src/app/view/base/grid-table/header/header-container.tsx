@@ -97,7 +97,12 @@ export function HeaderContainer<ColumnKey extends Readonly<string>>(
           {...(sortEnabled && { onClick: onSortPressed(key) })}
         >
           {renderHeader(key)}
-          {sortEnabled && <SortIndicator sortDirection={sortDirection(key)} />}
+          {sortEnabled && (
+            <SortIndicator
+              className="shrink-0"
+              sortDirection={sortDirection(key)}
+            />
+          )}
         </div>
       );
     }),

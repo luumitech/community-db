@@ -1,6 +1,7 @@
 import { cn } from '@heroui/react';
 import React from 'react';
 import * as R from 'remeda';
+import { twMerge } from 'tailwind-merge';
 import { Loading } from '~/view/base/loading';
 import {
   BODY_PROPS,
@@ -77,7 +78,17 @@ export function GridTable<
       ) : (
         <Body scrollRef={scrollRef} {...bodyProps} {...commonProps} />
       )}
-      {!!bottomContent && <div className="col-span-full">{bottomContent}</div>}
+      {!!bottomContent && (
+        <div
+          className={twMerge(
+            'col-span-full',
+            CLASS_DEFAULT.bottomContainer,
+            commonProps.config?.bottomContainer
+          )}
+        >
+          {bottomContent}
+        </div>
+      )}
     </Container>
   );
 }

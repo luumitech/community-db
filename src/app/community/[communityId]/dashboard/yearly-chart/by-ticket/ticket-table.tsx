@@ -1,31 +1,29 @@
 import { cn } from '@heroui/react';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
-import { type MembershipFeeStat } from './_type';
-import { FeeGridTable, type ColumnKey } from './fee-grid-table';
-import { useMembershipFeeList } from './use-membership-fee-list';
+import { type TicketStat } from './_type';
+import { TicketGridTable, type ColumnKey } from './ticket-grid-table';
+import { useTicketList } from './use-ticket-list';
 
 export interface Props {
   className?: string;
-  membershipFeeStat: MembershipFeeStat;
+  ticketStat: TicketStat;
   isLoading?: boolean;
   groupBy: string;
 }
 
-export const MembershipFeeTable: React.FC<Props> = ({
+export const TicketTable: React.FC<Props> = ({
   className,
-  membershipFeeStat,
+  ticketStat,
   isLoading,
   groupBy,
 }) => {
-  const { membershipFeeStatWithId, doSort, sortDescriptor } =
-    useMembershipFeeList(membershipFeeStat, groupBy);
+  const { ticketStatWithId, doSort, sortDescriptor } = useTicketList(
+    ticketStat,
+    groupBy
+  );
 
   const columnKeys = React.useMemo<ColumnKey[]>(() => {
     switch (groupBy) {
-      case 'membershipYear':
-        return ['membershipYear', 'count', 'price'];
-
       case 'eventName':
         return ['eventName', 'count', 'price'];
 
@@ -34,27 +32,20 @@ export const MembershipFeeTable: React.FC<Props> = ({
 
       case 'none':
       default:
-        return [
-          'membershipYear',
-          'eventName',
-          'count',
-          'price',
-          'paymentMethod',
-        ];
+        return ['eventName', 'count', 'price', 'paymentMethod'];
     }
   }, [groupBy]);
 
   return (
-    <FeeGridTable
+    <TicketGridTable
       // This is applied to the grid container
-      className={twMerge(
+      className={cn(
         'overflow-y-auto',
         groupBy === 'none'
-          ? 'grid-cols-[repeat(2,auto)_repeat(2,min-content)_auto]'
-          : 'grid-cols-[auto_repeat(2,min-content)]',
-        className
+          ? 'grid-cols-[auto_repeat(2,min-content)_auto]'
+          : 'grid-cols-[auto_repeat(2,min-content)]'
       )}
-      items={membershipFeeStatWithId}
+      items={ticketStatWithId}
       isLoading={isLoading}
       columnKeys={columnKeys}
       columnConfig={{

@@ -31,6 +31,7 @@ function schema() {
       filter: z.object({
         memberYearList: zz.coerce.toNumberList(),
         memberEventList: zz.coerce.toStringList(),
+        membershipFeeEvent: zz.coerce.toString({ nullable: true }),
         withGps: zz.coerce.toBoolean({ nullable: true }),
       }),
       membership: z.object({

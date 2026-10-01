@@ -9,23 +9,30 @@ export { Ellipsis } from './ellipsis';
 
 type DivProps = React.ComponentProps<'div'>;
 
+/**
+ * Customize ellipsis element to render
+ *
+ * @param hidden List of items not shown on screen
+ * @param visible List of visible items shown on screen
+ */
+export type EllipsisFn = (
+  hidden: React.ReactNode[],
+  visible: React.ReactNode[]
+) => React.ReactNode;
+
 export interface TruncateProps extends DivProps {
   className?: string;
   /**
-   * Customize ellipsis element to render
-   *
-   * @param hidden List of items not shown on screen
-   * @param visible List of visible items shown on screen
+   * Shown after the last visible child when some children are hidden. Either a
+   * node or a function of the hidden count. Default is the `Ellipsis`
+   * component.
    */
-  renderEllipsis?: (
-    hidden: React.ReactNode[],
-    visible: React.ReactNode[]
-  ) => React.ReactNode;
+  ellipsis?: EllipsisFn;
 }
 
 export const Truncate: React.FC<TruncateProps> = ({
   className,
-  renderEllipsis,
+  ellipsis: renderEllipsis = <Ellipsis />,
   children,
   ...props
 }) => {
@@ -59,8 +66,15 @@ export const Truncate: React.FC<TruncateProps> = ({
       /**
        * Measure the container width after forcing all child elements to be
        * visible.
+       *
+       * In the case when container overflows the window, restrict size to
+       * `window.innerWidth`
        */
       const containerRect = container.getBoundingClientRect();
+      const containerRectRight =
+        containerRect.right > window.innerWidth
+          ? window.innerWidth
+          : containerRect.right;
 
       /**
        * If this is a flex container, find the gap, so we can use it when
@@ -94,7 +108,7 @@ export const Truncate: React.FC<TruncateProps> = ({
         const ellipsisWidth =
           i === childRectList.length - 1 ? 0 : gap + ellipsisSz.width;
 
-        if (childRect.right + ellipsisWidth > containerRect.right) {
+        if (childRect.right + ellipsisWidth > containerRectRight) {
           firstHiddenIndex = childRectList[i].elemIdx;
           break;
         }
@@ -147,14 +161,18 @@ export const Truncate: React.FC<TruncateProps> = ({
         </div>
       ))}
       <span ref={ellipsisRef}>
-        {renderEllipsis?.(hiddenList, visibleList) ?? <Ellipsis />}
+        {typeof renderEllipsis === 'function'
+          ? renderEllipsis(hiddenList, visibleList)
+          : renderEllipsis}
       </span>
       {/** For measuring the size of the ellipsis component */}
       <span
         ref={ellipsisMeasureRef}
         className="pointer-events-none invisible absolute start-0"
       >
-        {renderEllipsis?.([], []) ?? <Ellipsis />}
+        {typeof renderEllipsis === 'function'
+          ? renderEllipsis([], [])
+          : renderEllipsis}
       </span>
     </div>
   );

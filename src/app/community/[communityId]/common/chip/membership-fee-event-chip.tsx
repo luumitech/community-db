@@ -1,17 +1,20 @@
 import { Chip, ChipProps, cn } from '@heroui/react';
 import React from 'react';
+import { useSelector } from '~/custom-hooks/redux';
 import { Icon } from '~/view/base/icon';
 
 interface Props extends ChipProps {
   className?: string;
-  ticketName: string;
+  eventName: string;
 }
 
-export const TicketChip: React.FC<Props> = ({
+export const MembershipFeeEventChip: React.FC<Props> = ({
   className,
-  ticketName,
+  eventName,
   ...props
 }) => {
+  const { lastEventSelected } = useSelector((state) => state.ui);
+
   return (
     <Chip
       classNames={{
@@ -20,10 +23,12 @@ export const TicketChip: React.FC<Props> = ({
       }}
       radius="sm"
       variant="faded"
+      color="secondary"
+      {...(lastEventSelected === eventName && { color: 'primary' })}
       {...props}
     >
-      {ticketName}
-      <Icon icon="ticket" size={16} />
+      {eventName}
+      <Icon icon="pricing" size={16} />
     </Chip>
   );
 };

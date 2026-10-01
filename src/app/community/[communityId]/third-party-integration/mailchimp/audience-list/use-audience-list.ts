@@ -118,7 +118,9 @@ function sortAndFilterAudienceList(
         list.sort((a, b) => {
           const aVal = a[columnKey] ? 1 : 0;
           const bVal = b[columnKey] ? 1 : 0;
-          return direction === 'ascending' ? bVal - aVal : aVal - bVal;
+          // ascending implies true values go on top
+          const comp = bVal - aVal;
+          return direction === 'ascending' ? comp : -comp;
         });
         break;
 
@@ -126,7 +128,9 @@ function sortAndFilterAudienceList(
         list.sort((a, b) => {
           const aVal = a.occupant?.optOut ? 1 : 0;
           const bVal = b.occupant?.optOut ? 1 : 0;
-          return direction === 'ascending' ? bVal - aVal : aVal - bVal;
+          // ascending implies true values go on top
+          const comp = bVal - aVal;
+          return direction === 'ascending' ? comp : -comp;
         });
         break;
 

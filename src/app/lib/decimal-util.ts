@@ -55,7 +55,7 @@ export function decIsEqual(
   }
   const v1Dec = new Decimal(v1);
   const v2Dec = new Decimal(v2);
-  return v1Dec.equals(v2);
+  return v1Dec.equals(v2Dec);
 }
 
 /**
@@ -70,6 +70,20 @@ export function decMul(...arr: (Decimal.Value | null | undefined)[]) {
   );
   const mulDec = arrDec.reduce((a, b) => a.mul(b), new Decimal(1));
   return mulDec.toString();
+}
+
+/**
+ * Compare v1 against v2,
+ *
+ * Useful for sort(), works similar to v1 - v2
+ */
+export function decCompareTo(
+  v1: Decimal.Value | null | undefined,
+  v2: Decimal.Value | null | undefined
+) {
+  const v1Dec = isValidDecInput(v1) ? new Decimal(v1) : new Decimal(0);
+  const v2Dec = isValidDecInput(v2) ? new Decimal(v2) : new Decimal(0);
+  return v1Dec.comparedTo(v2Dec);
 }
 
 /**

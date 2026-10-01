@@ -63,12 +63,13 @@ export const ParticipationChart: React.FC<Props> = ({
   }, [byEventStat, prevYearStat]);
 
   return (
-    <Card shadow="sm">
-      <Card.Header className="font-semibold">Member Count</Card.Header>
+    <Card className={className} shadow="sm">
+      <Card.Header className="pb-0 font-semibold">Participation</Card.Header>
       {noMember ? (
         <NoMember />
       ) : (
         <MemberCountChart
+          className="h-[140px]"
           year={year}
           yearStat={byEventStat}
           prevYearStat={prevYearStat ?? null}

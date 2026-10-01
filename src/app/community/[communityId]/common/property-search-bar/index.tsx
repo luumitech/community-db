@@ -91,6 +91,7 @@ export const PropertySearchBar: React.FC<Props> = ({
           filtersToShow={[
             'memberYearList',
             'nonMemberYearList',
+            'membershipFeeEvent',
             'memberEventList',
             'ticketList',
             'withGps',
