@@ -3,6 +3,7 @@ import * as R from 'remeda';
 import { twMerge } from 'tailwind-merge';
 import {
   EventChip,
+  MembershipFeeEventChip,
   TicketChip,
   WithGpsChip,
   YearChip,
@@ -30,6 +31,7 @@ export const FilterChip: React.FC<Props> = ({
   const {
     memberYearList,
     nonMemberYearList,
+    membershipFeeEvent,
     memberEventList,
     ticketList,
     withGps,
@@ -86,6 +88,7 @@ export const FilterChip: React.FC<Props> = ({
   return (
     <Truncate
       className={twMerge(
+        // Don't show chips if screen too narrow
         'hidden items-center gap-2 sm:flex',
         'cursor-pointer',
         className
@@ -118,6 +121,19 @@ export const FilterChip: React.FC<Props> = ({
             onClose={() => removeNonMemberYear(year)}
           />
         ))}
+
+      {membershipFeeEvent != null && (
+        <MembershipFeeEventChip
+          eventName={membershipFeeEvent}
+          isDisabled={isDisabled}
+          onClose={() =>
+            onFilterChange?.({
+              ...filters,
+              membershipFeeEvent: initialState.filter.membershipFeeEvent,
+            })
+          }
+        />
+      )}
 
       {!R.isDeepEqual(memberEventList, initialState.filter.memberEventList) &&
         memberEventList.map((eventName) => (

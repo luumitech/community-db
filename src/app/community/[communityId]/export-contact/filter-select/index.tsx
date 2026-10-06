@@ -34,7 +34,7 @@ export const FilterSelect: React.FC<Props> = ({
 
   return (
     <div className={cn('flex flex-col', className)}>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-2">
         <Button
           size="sm"
           variant="faded"
@@ -45,7 +45,7 @@ export const FilterSelect: React.FC<Props> = ({
           Optional Filter...
         </Button>
         <FilterChip
-          className="flex-wrap overflow-auto"
+          className="grow"
           isDisabled={isDisabled}
           filters={filters}
           onFilterChange={onFilterChange}
@@ -60,6 +60,7 @@ export const FilterSelect: React.FC<Props> = ({
           filtersToShow={[
             'memberYearList',
             'nonMemberYearList',
+            'membershipFeeEvent',
             'memberEventList',
             'ticketList',
           ]}

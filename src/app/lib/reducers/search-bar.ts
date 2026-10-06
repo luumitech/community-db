@@ -7,6 +7,7 @@ import { startListening } from './listener';
 export interface FilterT {
   memberYearList: number[];
   nonMemberYearList: number[];
+  membershipFeeEvent: string | null;
   memberEventList: string[];
   ticketList: string[];
   withGps: boolean | null;
@@ -46,6 +47,7 @@ export const initialState: State = {
   filter: {
     memberYearList: [],
     nonMemberYearList: [],
+    membershipFeeEvent: null,
     memberEventList: [],
     ticketList: [],
     withGps: null,
@@ -80,6 +82,10 @@ function filterArg(state: State) {
   arg.memberEventList = state.filter.memberEventList;
   arg.ticketList = state.filter.ticketList;
 
+  if (state.filter.membershipFeeEvent != null) {
+    arg.membershipFeeEvent = state.filter.membershipFeeEvent;
+  }
+
   if (state.filter.withGps != null) {
     arg.withGps = state.filter.withGps;
   }
@@ -104,6 +110,7 @@ export const searchBarSlice = createSlice({
     setFilter: (state, { payload }: PayloadAction<FilterT>) => {
       state.filter.memberYearList = payload.memberYearList;
       state.filter.nonMemberYearList = payload.nonMemberYearList;
+      state.filter.membershipFeeEvent = payload.membershipFeeEvent;
       state.filter.memberEventList = payload.memberEventList;
       state.filter.ticketList = payload.ticketList;
       state.filter.withGps = payload.withGps;

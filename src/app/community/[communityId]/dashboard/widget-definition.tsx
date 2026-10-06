@@ -87,7 +87,7 @@ export const allowableWidgets: AllowableWidget<WidgetId> = {
       content: <EventParticipation.Chart className="h-full w-full" />,
       minW: 4,
       w: 6,
-      h: 10,
+      h: 12,
     }),
   },
   byEvent: {
@@ -102,7 +102,7 @@ export const allowableWidgets: AllowableWidget<WidgetId> = {
       content: <ByEvent.Chart className="h-full w-full" />,
       minW: 4,
       w: 6,
-      h: 10,
+      h: 12,
     }),
   },
   byTicket: {

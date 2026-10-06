@@ -45,6 +45,7 @@ export const FilterChip: React.FC<Props> = ({
   return (
     <Truncate
       className={twMerge(
+        // Don't show chips if screen too narrow
         'hidden items-center gap-2 sm:flex',
         'cursor-pointer',
         className
@@ -70,7 +71,10 @@ export const FilterChip: React.FC<Props> = ({
           variant="faded"
           isDisabled={isDisabled}
           onClose={() =>
-            onFilterChange?.({ ...filters, optOut: initialState.filter.optOut })
+            onFilterChange?.({
+              ...filters,
+              optOut: initialState.filter.optOut,
+            })
           }
         />
       )}

@@ -16,11 +16,15 @@ type ContextT = Readonly<{
   /** Property matching filters with GPS coordinates */
   matchPropertyWithGps: PropertyWithGpsEntry[];
   /** Hull boundary around properties with GPS */
-  hullBoundary: GeoCoord[];
+  hullBoundary: L.LatLngTuple[];
 }>;
 
 // @ts-expect-error: intentionally leaving default value to be empty
 const Context = React.createContext<ContextT>();
+
+function toLeafletLatLngs(coordList: GeoCoord[]) {
+  return coordList.map((coord) => [coord.lat, coord.lon] as L.LatLngTuple);
+}
 
 interface Props {
   community: CommunityEntry;
@@ -44,6 +48,10 @@ export function PageProvider({ community, ...props }: Props) {
     return result;
   }, [community]);
 
+  const hullBoundary = React.useMemo(() => {
+    return toLeafletLatLngs(community.communityGeo.hullBoundary);
+  }, [community.communityGeo.hullBoundary]);
+
   return (
     <Context.Provider
       value={{
@@ -51,7 +59,7 @@ export function PageProvider({ community, ...props }: Props) {
         propertyCount: community.communityStat.propertyCount,
         matchPropertyCount: community.rawPropertyList.length,
         matchPropertyWithGps,
-        hullBoundary: community.communityGeo.hullBoundary,
+        hullBoundary,
       }}
       {...props}
     />

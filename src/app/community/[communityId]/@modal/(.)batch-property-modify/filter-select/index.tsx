@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import {
   EventSelect,
   GpsSelect,
+  MembershipFeeEventSelect,
   YearSelect,
 } from '~/community/[communityId]/common/filter-component';
 
@@ -33,6 +34,12 @@ export const FilterSelect: React.FC<Props> = ({
       <EventSelect
         className="ml-4 max-w-xs min-w-32"
         controlName="filter.memberEventList"
+        size="sm"
+        isClearable
+      />
+      <MembershipFeeEventSelect
+        className="ml-4 max-w-xs min-w-32"
+        controlName="filter.membershipFeeEvent"
         size="sm"
         isClearable
       />

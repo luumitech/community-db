@@ -6,6 +6,7 @@ import {
   MapContainer,
   MapEventListener,
 } from '~/view/base/map';
+import { hasCoordinates } from '~/view/base/map/map-util';
 import { ExportGoogleMap } from './export-google-map';
 import { Footer } from './footer';
 import { HullBoundary } from './hull-boundary';
@@ -18,12 +19,18 @@ interface Props {
 }
 
 export const MapView: React.FC<Props> = ({ className }) => {
-  const { matchPropertyWithGps } = usePageContext();
+  const { matchPropertyWithGps, hullBoundary } = usePageContext();
   const [zoom, setZoom] = React.useState<number>();
 
+  /** Calculate coordinate(s) to zoom map to */
   const positions = React.useMemo(() => {
-    return matchPropertyWithGps.map((entry) => entry.loc);
-  }, [matchPropertyWithGps]);
+    const matchedLoc = matchPropertyWithGps.map((entry) => entry.loc);
+    if (hasCoordinates(matchedLoc)) {
+      return matchedLoc;
+    }
+    // If no properties matched, then use hullboundary, if available
+    return hullBoundary;
+  }, [matchPropertyWithGps, hullBoundary]);
 
   return (
     <MapContainer

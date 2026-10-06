@@ -6,6 +6,7 @@ import { Drawer } from '~/view/base/drawer';
 import { Form } from '~/view/base/form';
 import { EventSelect } from '../event-select';
 import { GpsSelect } from '../gps-select';
+import { MembershipFeeEventSelect } from '../membership-fee-event-select';
 import { TicketSelect } from '../ticket-select';
 import { YearSelect } from '../year-select';
 import { useHookForm, type HookFormArg, type InputData } from './use-hook-form';
@@ -66,6 +67,15 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
                   description="Show properties that are NOT members in the specified year(s)"
                   isMember={false}
                   controlName="nonMemberYearList"
+                  isControlled
+                  size="sm"
+                  isClearable
+                />
+              )}
+              {filtersToShow.includes('membershipFeeEvent') && (
+                <MembershipFeeEventSelect
+                  description="Show properties that paid membership fee at the specified event"
+                  controlName="membershipFeeEvent"
                   isControlled
                   size="sm"
                   isClearable
