@@ -57,20 +57,31 @@ function debugEnabled(flag: string) {
   return flagList.includes(true);
 }
 
-const STREAM_STDOUT: pino.StreamEntry = {
-  level: 'trace',
-  stream: pino.destination(1),
-};
+/**
+ * Lazily create the stdout destination so that pino.destination(1) is only
+ * called when actually needed (i.e. in production). Calling it at module-load
+ * time in Jest registers an 'exit' listener per test file via
+ * on-exit-leak-free, which triggers a MaxListenersExceededWarning once >10 test
+ * files are loaded.
+ */
+function streamStdout(): pino.StreamEntry {
+  return {
+    level: 'trace',
+    stream: pino.destination(1),
+  };
+}
 
 /** Pino-pretty streamer for development build */
-const STREAM_PRETTY: pino.StreamEntry = {
-  level: 'trace',
-  stream: pretty({
-    // Options: https://github.com/pinojs/pino-pretty#options
-    translateTime: 'SYS:standard',
-    sync: true,
-  }),
-};
+function streamPretty(): pino.StreamEntry {
+  return {
+    level: 'trace',
+    stream: pretty({
+      // Options: https://github.com/pinojs/pino-pretty#options
+      translateTime: 'SYS:standard',
+      sync: true,
+    }),
+  };
+}
 
 /**
  * Fixed size buffer for storing log data
@@ -92,10 +103,12 @@ export const recentServerLogStream = new stream.Writable({
   },
 });
 
-const STREAM_MEMORY: pino.StreamEntry = {
-  level: 'trace',
-  stream: recentServerLogStream,
-};
+function streamMemory(): pino.StreamEntry {
+  return {
+    level: 'trace',
+    stream: recentServerLogStream,
+  };
+}
 
 /** Logger for server component */
 function logger(src: string, opts: pino.LoggerOptions = {}) {
@@ -113,9 +126,9 @@ function logger(src: string, opts: pino.LoggerOptions = {}) {
   return pino(
     pinoOpts,
     pino.multistream([
-      ...insertIf(isProduction(), STREAM_STDOUT),
-      ...insertIf(!isProduction(), STREAM_PRETTY),
-      STREAM_MEMORY,
+      ...insertIf(isProduction(), streamStdout()),
+      ...insertIf(!isProduction(), streamPretty()),
+      streamMemory(),
     ])
   );
 }
