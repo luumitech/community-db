@@ -1,5 +1,6 @@
 'server only';
 import { cn } from '@heroui/react';
+import * as React from 'react';
 import {
   Body,
   Container,
@@ -10,8 +11,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from '@react-email/components';
-import * as React from 'react';
+} from 'react-email';
 import { appTitle } from '~/lib/env';
 import { env } from '~/lib/env/server-env';
 
