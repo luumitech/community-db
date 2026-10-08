@@ -29,6 +29,7 @@ const EventTicketFragment = graphql(/* GraphQL */ `
       }
       membershipFeeStat(year: $year) {
         key
+        membershipYear
         eventName
         paymentMethod
         count
@@ -63,18 +64,30 @@ const Chart: React.FC<Props> = ({ className }) => {
     return [
       ...(entry?.communityStat.ticketStat ?? [])
         .filter(({ eventName }) => eventName === eventSelected)
-        .map(({ ticketName, ...rest }) => ({
-          ...rest,
+        .map(({ ticketName, ...ticketEntry }) => ({
+          ...ticketEntry,
           itemName: ticketName,
         })),
       ...(entry?.communityStat.membershipFeeStat ?? [])
         .filter(({ eventName }) => eventName === eventSelected)
-        .map((feeEntry) => ({
+        .map(({ membershipYear, ...feeEntry }) => ({
           ...feeEntry,
-          itemName: 'Membership Fee',
+          /**
+           * We want to differentiate membership fee that are paid for this year
+           * vs. for other years
+           */
+          itemName:
+            year === membershipYear
+              ? 'Membership Fee'
+              : `Membership Fee (${membershipYear})`,
         })),
     ];
-  }, [entry?.communityStat, eventSelected]);
+  }, [
+    entry?.communityStat.membershipFeeStat,
+    entry?.communityStat.ticketStat,
+    eventSelected,
+    year,
+  ]);
 
   return (
     <Card className={cn(className, 'h-full')}>
